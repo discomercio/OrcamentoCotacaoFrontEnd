@@ -9,5 +9,5 @@ sassdoc
 
 src/assets/theme/theme-*.css
 src/assets/layout/css/*.css
-src/assets/sass/theme/designer
+
 src/assets/sass/theme/_vendor_extensions

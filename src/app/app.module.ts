@@ -90,21 +90,11 @@ import {AppCodeModule} from './app.code.component';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
 import {AppConfigComponent} from './app.config.component';
-import {AppNotfoundComponent} from './pages/app.notfound.component';
-import {AppErrorComponent} from './pages/app.error.component';
-import {AppAccessdeniedComponent} from './pages/app.accessdenied.component';
-import {AppLoginComponent} from './pages/app.login.component';
 import {AppMenuComponent} from './app.menu.component';
 import {AppMenuitemComponent} from './app.menuitem.component';
 import {AppTopBarComponent} from './app.topbar.component';
 import {AppFooterComponent} from './app.footer.component';
 import {AppProfileComponent} from './app.profile.component';
-import {AppInvoiceComponent} from './pages/app.invoice.component';
-import {AppCrudComponent} from './pages/app.crud.component';
-import {AppCalendarComponent} from './pages/app.calendar.component';
-import {AppTimelineDemoComponent} from './pages/app.timelinedemo.component';
-import {AppHelpComponent} from './pages/app.help.component';
-import {AppWizardComponent} from './pages/app.wizard.component';
 import {DashboardDemoComponent} from './demo/view/dashboarddemo.component';
 import {DashboardBankingComponent} from './demo/view/dashboardbanking.component';
 import {FormLayoutDemoComponent} from './demo/view/formlayoutdemo.component';
@@ -270,17 +260,7 @@ import {IconService} from './demo/service/iconservice';
         SpacingComponent,
         TypographyComponent,
         TextComponent,
-        WidgetsComponent,
-        AppNotfoundComponent,
-        AppErrorComponent,
-        AppAccessdeniedComponent,
-        AppLoginComponent,
-        AppCrudComponent,
-        AppCalendarComponent,
-        AppTimelineDemoComponent,
-        AppInvoiceComponent,
-        AppHelpComponent,
-        AppWizardComponent
+        WidgetsComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
