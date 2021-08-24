@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-menu',
@@ -15,14 +15,15 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.model = [
             {
-                label: 'Favorites', icon: 'pi pi-home',
                 items: [
-                    {label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
+                    {
+                        label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
                         items: [
-                            {label: 'Generic', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards/generic']}
+                            { label: 'Generic', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards/generic'] }
                         ]
-                    }
-                ]
+                    },
+                    { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads/downloads'] }
+                ],
             }
         ];
     }

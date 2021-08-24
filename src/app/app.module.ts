@@ -133,6 +133,7 @@ import {CustomerService} from './demo/service/customerservice';
 import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {IconService} from './demo/service/iconservice';
+import { DownloadsComponent } from './downloads/downloads/downloads.component';
 
 @NgModule({
     imports: [
@@ -260,7 +261,8 @@ import {IconService} from './demo/service/iconservice';
         SpacingComponent,
         TypographyComponent,
         TextComponent,
-        WidgetsComponent
+        WidgetsComponent,
+        DownloadsComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
