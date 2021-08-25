@@ -134,6 +134,8 @@ import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {IconService} from './demo/service/iconservice';
 import { DownloadsComponent } from './downloads/downloads/downloads.component';
+import { MensagemComponent } from './utilities/mensagem/mensagem.component';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
     imports: [
@@ -262,12 +264,13 @@ import { DownloadsComponent } from './downloads/downloads/downloads.component';
         TypographyComponent,
         TextComponent,
         WidgetsComponent,
-        DownloadsComponent
+        DownloadsComponent,
+        MensagemComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService
+        PhotoService, ProductService, MenuService, MessageService
     ],
     bootstrap: [AppComponent]
 })

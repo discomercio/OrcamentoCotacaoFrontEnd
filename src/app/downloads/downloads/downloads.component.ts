@@ -3,6 +3,8 @@ import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
+import { MensagemComponent } from 'src/app/utilities/mensagem/mensagem.component';
+
 
 @Component({
   selector: 'app-downloads',
@@ -13,7 +15,8 @@ export class DownloadsComponent implements OnInit {
 
   constructor(private readonly downloadsService: DownloadsService,
     private readonly router: Router,
-    public readonly activatedRoute: ActivatedRoute) {
+    public readonly activatedRoute: ActivatedRoute,
+    private mensagem:MensagemComponent) {
 
   }
 
@@ -48,7 +51,6 @@ export class DownloadsComponent implements OnInit {
     }
   }
 
-
   criarPastaTable() {
     if (this.novaPasta) {
       this.novaPasta = false;
@@ -73,7 +75,10 @@ export class DownloadsComponent implements OnInit {
 
     let nome: HTMLInputElement = document.getElementById("pastaTable") as HTMLInputElement;
     let descricao: HTMLInputElement = document.getElementById("descricaoTable") as HTMLInputElement;
-    if (!nome.value) return;
+    if (!nome.value) {
+      this.mensagem.showErrorViaToast();
+      return;
+    }
     novaPastaTree.data.name = nome.value;
     novaPastaTree.data.size = "0kb";
     novaPastaTree.data.descricao = descricao.value;
