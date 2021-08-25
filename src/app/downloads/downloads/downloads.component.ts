@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
+import * as fileSaver from 'file-saver';
 
 @Component({
   selector: 'app-downloads',
@@ -19,7 +20,6 @@ export class DownloadsComponent implements OnInit {
   ngOnInit(): void {
     this.novaPasta = false;
 
-    this.downloadsService.buscar().then(files => this.files1 = files);
     this.downloadsService.buscarToTree().then(files => this.files2 = files);
     this.cols = [
       { field: 'name', header: 'Name' },
@@ -28,10 +28,6 @@ export class DownloadsComponent implements OnInit {
     ];
   }
 
-
-  files1: TreeNode[];
-  selectedFiles1: TreeNode;
-
   files2: TreeNode[];
   selectedFiles2: TreeNode;
   cols: any[];
@@ -39,25 +35,9 @@ export class DownloadsComponent implements OnInit {
   public novaPasta: boolean;
   public ehArquivo: boolean = false;
 
-  public criarPasta() {
-    if (!!this.selectedFiles1) {
-      if (this.novaPasta) {
-        this.novaPasta = false;
-        return;
-      }
-      this.upload();
-      this.novaPasta = true;
-    }
-    else {
-      this.novaPasta = false;
-      console.log("falta mostrar uma mensagem");
-    }
-  }
-
   public controlaBotoes() {
-    debugger;
-    if (!!this.selectedFiles1) {
-      if (this.selectedFiles1.label.indexOf(".") > -1) {
+    if (!!this.selectedFiles2) {
+      if (this.selectedFiles2.data.name.indexOf(".") > -1) {
         this.ehArquivo = true;
         this.novaPasta = false;
       }
@@ -70,22 +50,16 @@ export class DownloadsComponent implements OnInit {
 
 
   criarPastaTable() {
-    if (!!this.selectedFiles2) {
-      if (this.novaPasta) {
-        this.novaPasta = false;
-        return;
-      }
-      this.novaPasta = true;
-    }
-    else {
+    if (this.novaPasta) {
       this.novaPasta = false;
-      console.log("falta mostrar uma mensagem");
+      return;
     }
-
+    this.novaPasta = true;
+    if (this.ehUpload)
+      this.upload();
   }
 
   addPastaTable() {
-    debugger;
     let novaPastaTree: TreeNode = {
       data: {
         "name": "",
@@ -103,7 +77,10 @@ export class DownloadsComponent implements OnInit {
     novaPastaTree.data.name = nome.value;
     novaPastaTree.data.size = "0kb";
     novaPastaTree.data.descricao = descricao.value;
-    this.selectedFiles2.children.push(novaPastaTree);
+    if (this.selectedFiles2)
+      this.selectedFiles2.children.push(novaPastaTree);
+    else
+      this.files2.push(novaPastaTree);
 
     this.files2 = [...this.files2];
     this.novaPasta = false;
@@ -112,11 +89,32 @@ export class DownloadsComponent implements OnInit {
   uploadedFiles: any[] = [];
   public ehUpload: boolean = false;
   upload() {
-    this.criarPasta();
     if (this.ehUpload) {
       this.ehUpload = false;
       return;
     }
     this.ehUpload = true;
+    if (this.novaPasta)
+      this.criarPastaTable();
+  }
+
+  download() {
+    if (!!this.selectedFiles2) {
+      this.downloadsService.download().subscribe((response: any) => {
+        let blob: any = new Blob([response], { type: 'text/json; charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        fileSaver.saveAs(blob, this.selectedFiles2.data.name + ".json");
+      }), (error: any) => console.log('Erro ao baixar o arquivo!');
+      return;
+    }
+
+    console.log("Selecione um arquivo!");
+  }
+
+  onUpload(event) {
+    for (let file of event.files) {
+      this.uploadedFiles.push(file);
+    }
+    console.log("Salvo com sucesso!");
   }
 }
