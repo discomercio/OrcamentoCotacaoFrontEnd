@@ -1,5 +1,5 @@
 import {NgModule} from '@angular/core';
-import {FormsModule} from '@angular/forms';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {HttpClientModule} from '@angular/common/http';
 import {BrowserModule} from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -136,6 +136,8 @@ import {IconService} from './demo/service/iconservice';
 import { DownloadsComponent } from './downloads/downloads/downloads.component';
 import { MensagemComponent } from './utilities/mensagem/mensagem.component';
 import { MessageService } from 'primeng/api';
+import {KeyFilterModule} from 'primeng/keyfilter';
+import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 
 @NgModule({
     imports: [
@@ -223,7 +225,10 @@ import { MessageService } from 'primeng/api';
         TreeModule,
         TreeTableModule,
         VirtualScrollerModule,
-        AppCodeModule
+        AppCodeModule,
+        KeyFilterModule,
+        FormsModule,
+        ReactiveFormsModule
     ],
     declarations: [
         AppComponent,
@@ -265,7 +270,8 @@ import { MessageService } from 'primeng/api';
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        MensagemComponent
+        MensagemComponent,
+        ValidacaoFormularioComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},

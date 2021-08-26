@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
 import { MensagemComponent } from 'src/app/utilities/mensagem/mensagem.component';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 
 
 @Component({
@@ -12,15 +14,31 @@ import { MensagemComponent } from 'src/app/utilities/mensagem/mensagem.component
   styleUrls: ['./downloads.component.scss']
 })
 export class DownloadsComponent implements OnInit {
-
   constructor(private readonly downloadsService: DownloadsService,
     private readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
-    private mensagem:MensagemComponent) {
+    private mensagem: MensagemComponent,
+    private fb: FormBuilder,
+    private readonly validacaoFormGroup: ValidacaoFormularioComponent) {
 
   }
 
+  public form: FormGroup;
+  public mensagemErro: string = "*Campo obrigatório.";
+  public uploadedFiles: any[] = [];
+  public files2: TreeNode[];
+  public selectedFiles2: TreeNode;
+  public cols: any[];
+  public novaPasta: boolean;
+  public ehArquivo: boolean = false;
+
   ngOnInit(): void {
+
+    this.form = this.fb.group({
+      pasta: ['', [Validators.required]],
+      descricaoPasta: ['', [Validators.required]]
+    });
+
     this.novaPasta = false;
 
     this.downloadsService.buscarToTree().then(files => this.files2 = files);
@@ -31,12 +49,7 @@ export class DownloadsComponent implements OnInit {
     ];
   }
 
-  files2: TreeNode[];
-  selectedFiles2: TreeNode;
-  cols: any[];
 
-  public novaPasta: boolean;
-  public ehArquivo: boolean = false;
 
   public controlaBotoes() {
     if (!!this.selectedFiles2) {
@@ -44,10 +57,7 @@ export class DownloadsComponent implements OnInit {
         this.ehArquivo = true;
         this.novaPasta = false;
       }
-      else {
-        this.ehArquivo = false;
-
-      }
+      else this.ehArquivo = false;
     }
   }
 
@@ -57,11 +67,12 @@ export class DownloadsComponent implements OnInit {
       return;
     }
     this.novaPasta = true;
-    if (this.ehUpload)
-      this.upload();
+    if (this.ehUpload) this.upload();
   }
 
   addPastaTable() {
+    if (!this.validacaoFormGroup.validaForm(this.form)) return;
+
     let novaPastaTree: TreeNode = {
       data: {
         "name": "",
@@ -73,15 +84,10 @@ export class DownloadsComponent implements OnInit {
       parent: null
     };
 
-    let nome: HTMLInputElement = document.getElementById("pastaTable") as HTMLInputElement;
-    let descricao: HTMLInputElement = document.getElementById("descricaoTable") as HTMLInputElement;
-    if (!nome.value) {
-      this.mensagem.showErrorViaToast();
-      return;
-    }
-    novaPastaTree.data.name = nome.value;
+    novaPastaTree.data.name = this.form.controls.pasta.value;
     novaPastaTree.data.size = "0kb";
-    novaPastaTree.data.descricao = descricao.value;
+    novaPastaTree.data.descricao = this.form.controls.descricaoPasta.value;
+
     if (this.selectedFiles2)
       this.selectedFiles2.children.push(novaPastaTree);
     else
@@ -89,9 +95,9 @@ export class DownloadsComponent implements OnInit {
 
     this.files2 = [...this.files2];
     this.novaPasta = false;
+    this.form.reset();
   }
 
-  uploadedFiles: any[] = [];
   public ehUpload: boolean = false;
   upload() {
     if (this.ehUpload) {
