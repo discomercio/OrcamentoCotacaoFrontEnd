@@ -134,7 +134,6 @@ import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {IconService} from './demo/service/iconservice';
 import { DownloadsComponent } from './downloads/downloads/downloads.component';
-import { MensagemComponent } from './utilities/mensagem/mensagem.component';
 import { MessageService } from 'primeng/api';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
@@ -270,7 +269,6 @@ import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/v
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        MensagemComponent,
         ValidacaoFormularioComponent
     ],
     providers: [

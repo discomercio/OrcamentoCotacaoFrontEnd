@@ -3,9 +3,9 @@ import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
-import { MensagemComponent } from 'src/app/utilities/mensagem/mensagem.component';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 
 
 @Component({
@@ -17,9 +17,9 @@ export class DownloadsComponent implements OnInit {
   constructor(private readonly downloadsService: DownloadsService,
     private readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
-    private mensagem: MensagemComponent,
     private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent) {
+    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    private readonly mensagemService:MensagemService) {
 
   }
 
@@ -115,17 +115,18 @@ export class DownloadsComponent implements OnInit {
         let blob: any = new Blob([response], { type: 'text/json; charset=utf-8' });
         const url = window.URL.createObjectURL(blob);
         fileSaver.saveAs(blob, this.selectedFiles2.data.name + ".json");
-      }), (error: any) => console.log('Erro ao baixar o arquivo!');
+        this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+      }), (error: any) => this.mensagemService.showErrorViaToast("Erro ao fazer o download.");
       return;
     }
 
-    console.log("Selecione um arquivo!");
+    this.mensagemService.showWarnViaToast("Selecione um arquivo.");
   }
 
   onUpload(event) {
     for (let file of event.files) {
       this.uploadedFiles.push(file);
     }
-    console.log("Salvo com sucesso!");
+    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
   }
 }
