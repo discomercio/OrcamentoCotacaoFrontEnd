@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
@@ -6,6 +6,7 @@ import * as fileSaver from 'file-saver';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
 
 @Component({
@@ -19,7 +20,8 @@ export class DownloadsComponent implements OnInit {
     public readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,
-    private readonly mensagemService:MensagemService) {
+    private readonly mensagemService: MensagemService,
+    public alert: AlertaService) {
 
   }
 
@@ -48,8 +50,6 @@ export class DownloadsComponent implements OnInit {
       { field: 'descricao', header: 'Descrição' }
     ];
   }
-
-
 
   public controlaBotoes() {
     if (!!this.selectedFiles2) {

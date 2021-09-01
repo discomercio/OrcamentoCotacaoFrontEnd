@@ -1,0 +1,29 @@
+::ng-deep .dynamicDialog .p-dialog-content{
+    padding: 0;
+    border-bottom-left-radius: 4px !important;
+    border-bottom-right-radius: 4px !important;
+}
+
+
+:host {
+    .container {
+      padding: 1rem;
+    }
+  
+    .footer {
+      border-top: 0;
+      background: white;
+      padding: 1rem;
+      text-align: right;
+      border-top: 1px solid #e9ecef;
+      border-bottom-right-radius: 2px;
+      border-bottom-left-radius: 2px;
+      display: flex;
+      justify-content: center;
+    }
+  
+    .footer button {
+      margin: 0 .5rem 0 0;
+      width: auto;
+    }
+  }

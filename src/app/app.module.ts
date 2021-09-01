@@ -137,6 +137,9 @@ import { DownloadsComponent } from './downloads/downloads/downloads.component';
 import { MessageService } from 'primeng/api';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
+import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
+import { DialogService } from 'primeng/dynamicdialog';
+
 
 @NgModule({
     imports: [
@@ -269,12 +272,13 @@ import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/v
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        ValidacaoFormularioComponent
+        ValidacaoFormularioComponent,
+        AlertDialogComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, MessageService
+        PhotoService, ProductService, MenuService, MessageService, DialogService
     ],
     bootstrap: [AppComponent]
 })
