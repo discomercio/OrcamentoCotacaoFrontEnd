@@ -1,0 +1,66 @@
+{
+    "data": [
+        {
+            "data": {
+                "name": "Manuais Técnicos",
+                "size": "200mb",
+                "type": "Folder",
+                "descricao": "Manuais técnicos de Produtos"
+            },
+            "children": [
+                {
+                    "data": {
+                        "name": "Electrolux",
+                        "size": "25mb",
+                        "type": "Folder",
+                        "descricao": "Manuais técnicos de Produtos"
+                    },
+                    "children": [
+                        {
+                            "data": {
+                                "name": "Manual de instalação.pdf",
+                                "size": "10mb",
+                                "type": "Arquivo",
+                                "descricao": "Manuais de instalação"
+                            }
+                        },
+                        {
+                            "data": {
+                                "name": "Manual técnico para limpeza.pdf",
+                                "size": "10mb",
+                                "type": "Arquivo",
+                                "descricao": "Manuais de limpeza"
+                            }
+                        }
+                    ]
+                },
+                {
+                    "data": {
+                        "name": "Samsung",
+                        "size": "25mb",
+                        "type": "Folder",
+                        "descricao": "Manuais de técnico"
+                    },
+                    "children": [
+                        {
+                            "data": {
+                                "name": "Manual de instalação.pdf",
+                                "size": "10mb",
+                                "type": "Arquivo",
+                                "descricao": "Manuais de instalação"
+                            }
+                        },
+                        {
+                            "data": {
+                                "name": "Manual técnico para limpeza.pdf",
+                                "size": "10mb",
+                                "type": "Arquivo",
+                                "descricao": "Manuais de limpeza"
+                            }
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

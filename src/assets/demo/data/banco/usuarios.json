@@ -1,0 +1,50 @@
+[
+	{
+		"id": "01",
+		"responsavel": "Administrador",
+		"papel": "Gestor",
+		"nome": "Adriano Santana",
+		"apelido": "A. SANTANA",
+		"ativo": "Sim"
+	},
+	{
+		"id": "02",
+		"responsavel": "Administrador",
+		"papel": "Gestor",
+		"nome": "Adriano Santana",
+		"apelido": "A. SANTANA",
+		"ativo": "Sim"
+	},
+	{
+		"id": "03",
+		"responsavel": "Vendedor",
+		"papel": "Vendedor Internet",
+		"nome": "Adailton Silva",
+		"apelido": "ADAILTON S",
+		"ativo": "Sim"
+	},
+	{
+		"id": "04",
+		"responsavel": "Administrador",
+		"papel": "Dono de loja",
+		"nome": "Adriana Albano",
+		"apelido": "ALBANO",
+		"ativo": "Sim"
+	},
+	{
+		"id": "05",
+		"responsavel": "Vendedor",
+		"papel": "Vendedor",
+		"nome": "Agnaldo Torrezan",
+		"apelido": "AGNALDO",
+		"ativo": "Sim"
+	},
+	{
+		"id": "06",
+		"responsavel": "Vendedor",
+		"papel": "Parceiro",
+		"nome": "Refrigeração 2 Irmãos",
+		"apelido": "2 IRMÃO/MG",
+		"ativo": "Sim"
+	}
+]

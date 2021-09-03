@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { MenuItem } from 'primeng/api/menuitem';
+import { MenuService } from './service/menu/menu.service';
+import { element } from 'protractor';
 
 @Component({
     selector: 'app-menu',
@@ -10,21 +13,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AppMenuComponent implements OnInit {
 
-    model: any[];
-
+    constructor(private readonly menuService: MenuService) {
+        
+    }
+    
+    public model: MenuItem[];
     ngOnInit() {
-        this.model = [
-            {
-                items: [
-                    {
-                        label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
-                        items: [
-                            { label: 'Generic', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards/generic'] }
-                        ]
-                    },
-                    { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads/downloads'] }
-                ],
+        this.menuService.buscar().toPromise().then((r) => {
+            if (!!r) {
+                this.model = r;
             }
-        ];
+        });
     }
 }

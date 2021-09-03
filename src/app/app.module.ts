@@ -139,6 +139,8 @@ import {KeyFilterModule} from 'primeng/keyfilter';
 import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import { UsuariosComponent } from './usuarios/usuarios.component';
+import { UsuarioEdicaoComponent } from './usuario-edicao/usuario-edicao.component';
 
 
 @NgModule({
@@ -273,12 +275,15 @@ import { DialogService } from 'primeng/dynamicdialog';
         WidgetsComponent,
         DownloadsComponent,
         ValidacaoFormularioComponent,
-        AlertDialogComponent
+        AlertDialogComponent,
+        UsuariosComponent,
+        UsuarioEdicaoComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
-        PhotoService, ProductService, MenuService, MessageService, DialogService
+        PhotoService, ProductService, MenuService, MessageService, DialogService,
+        AppMenuComponent
     ],
     bootstrap: [AppComponent]
 })
