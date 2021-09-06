@@ -2,11 +2,11 @@ import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
 import { DashboardDemoComponent } from './demo/view/dashboarddemo.component';
-import { DownloadsComponent } from './downloads/downloads/downloads.component';
+import { DownloadsComponent } from './downloads/downloads.component';
 
 import { AppMainComponent } from './app.main.component';
-import { UsuariosComponent } from './usuarios/usuarios.component';
-import { UsuarioEdicaoComponent } from './usuario-edicao/usuario-edicao.component';
+import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
+import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
 
 @NgModule({
     imports: [
@@ -16,12 +16,12 @@ import { UsuarioEdicaoComponent } from './usuario-edicao/usuario-edicao.componen
                 children: [
                     { path: '', component: DashboardDemoComponent },
                     { path: 'dashboards/generic', component: DashboardDemoComponent },
-                    { path: 'downloads/downloads', component: DownloadsComponent },
-                    { path: 'usuarios', component: UsuariosComponent },
-                    { path: 'usuario-edicao/:apelido', component: UsuarioEdicaoComponent }
+                    { path: 'downloads', component: DownloadsComponent },
+                    { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
+                    { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent }
                 ]
             },
-            { path: '**', redirectTo: '/notfound' },
+            { path: 'dashboards/generic', component: DashboardDemoComponent },
         ], { scrollPositionRestoration: 'enabled' })
     ],
     exports: [RouterModule]

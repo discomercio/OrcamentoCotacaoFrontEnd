@@ -10,7 +10,7 @@ export class MenuService {
 
   constructor(private http: HttpClient) { }
 
-  buscar():Observable<any[]>{
-    return this.http.get<any[]>('assets/demo/data/banco/menu.json');
+  buscar():Observable<MenuItem[]>{
+    return this.http.get<MenuItem[]>('assets/demo/data/banco/menu.json');
   }
 }

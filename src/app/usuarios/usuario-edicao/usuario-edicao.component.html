@@ -1,0 +1,102 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <h4>Novo Usuário</h4>
+            <form [formGroup]="form">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="nome">Nome</label>
+                        <input id="nome" type="text" pInputText placeholder="" formControlName="nome" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'nome')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="apelido">Apelido</label>
+                        <input id="apelido" type="text" pInputText placeholder="" formControlName="apelido" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="email">E-mail</label>
+                        <input id="email" type="text" pInputText placeholder="" formControlName="email" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="perfil">Perfil</label>
+                        <p-dropdown [options]="lstPerfil" formControlName="perfil" placeholder="Selecione"></p-dropdown>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="senha">Senha</label>
+                        <input id="senha" type="text" pInputText placeholder="" formControlName="senha" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'senha')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="confirmacao">Confirmação</label>
+                        <input id="confirmacao" type="text" pInputText placeholder="" formControlName="confirmacao" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'confirmacao')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2">
+                        <label for="tipo">Tipo</label>
+                        <p-dropdown [options]="lstTipo" formControlName="tipo" placeholder="Selecione"></p-dropdown>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5">
+                        <label for="cpf_cnpj">CPF/CNPJ</label>
+                        <input id="cpf_cnpj" type="text" pInputText placeholder="" formControlName="cpf_cnpj" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'cpf_cnpj')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5">
+                        <label for="rg_ie">RG/IE</label>
+                        <input id="rg_ie" type="text" pInputText placeholder="" formControlName="rg_ie" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'rg_ie')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="ddd1_telefone1">Telefone1</label>
+                        <input id="ddd1_telefone1" type="text" pInputText placeholder=""
+                            formControlName="ddd1_telefone1" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd1_telefone1')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="ddd2_telefone2">Telefone2</label>
+                        <input id="ddd2_telefone2" type="text" pInputText placeholder=""
+                            formControlName="ddd2_telefone2" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd2_telefone2')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="ddd3_telefone3">Telefone3</label>
+                        <input id="ddd3_telefone3" type="text" pInputText placeholder=""
+                            formControlName="ddd3_telefone3" />
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd3_telefone3')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-col-12 p-formgroup-inline">
+                        <div class="p-field-radiobutton">
+                            <p-radioButton name="ativo" value="ativo" formControlName="ativo" id="ativo">
+                            </p-radioButton>
+                            <label for="ativo">Sim</label>
+                        </div>
+
+                        <div class="p-field-radiobutton">
+                            <p-radioButton name="ativo" value="ativo" formControlName="ativo" id="ativo">
+                            </p-radioButton>
+                            <label for="ativo">Não</label>
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <div class="p-field p-d-flex p-jc-between">
+
+                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left"
+                    [routerLink]="['/usuarios/usuario-lista']"></button>
+
+                <button pButton pRipple label="Cadastrar" icon="pi pi-save" (click)="teste()"></button>
+            </div>
+        </div>
+    </div>
+</div>

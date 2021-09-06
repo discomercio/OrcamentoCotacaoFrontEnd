@@ -1,19 +1,18 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ValidacaoFormularioComponent } from '../utilities/validacao-formulario/validacao-formulario.component';
-import { SelectItem } from 'primeng/api/selectitem';
-import { UsuariosService } from '../service/usuarios/usuarios.service';
-import { Usuarios } from '../dto/usuarios/usuarios';
-import { AlertaService } from '../utilities/alert-dialog/alerta.service';
-import { Table } from 'primeng/table';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Router } from '@angular/router';
+import { Table } from 'primeng/table';
+import { Usuarios } from 'src/app/dto/usuarios/usuarios';
+import { SelectItem } from 'primeng/api/selectitem';
 
 @Component({
-  selector: 'app-usuarios',
-  templateUrl: './usuarios.component.html',
-  styleUrls: ['./usuarios.component.scss']
+  selector: 'app-usuario-lista',
+  templateUrl: './usuario-lista.component.html',
+  styleUrls: ['./usuario-lista.component.scss']
 })
-export class UsuariosComponent implements OnInit {
+export class UsuarioListaComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private readonly usuariosService: UsuariosService,
@@ -31,6 +30,7 @@ export class UsuariosComponent implements OnInit {
   ngOnInit(): void {
     this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
       if (r == null) {
+        debugger;
         this.alertaService.mostrarErroInternet(r);
         return;
       }
@@ -51,11 +51,9 @@ export class UsuariosComponent implements OnInit {
     ];
   }
 
-  
-
   editarUsuario() {
     if (!!this.usuarioSelecionado) {
-      this.router.navigate(['usuario-edicao/', this.usuarioSelecionado.apelido]);
-     }
+      this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.apelido]);
+    }
   }
 }

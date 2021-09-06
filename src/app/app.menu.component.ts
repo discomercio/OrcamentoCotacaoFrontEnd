@@ -14,15 +14,31 @@ import { element } from 'protractor';
 export class AppMenuComponent implements OnInit {
 
     constructor(private readonly menuService: MenuService) {
-        
+
     }
-    
+
     public model: MenuItem[];
+
+
     ngOnInit() {
-        this.menuService.buscar().toPromise().then((r) => {
-            if (!!r) {
-                this.model = r;
+        this.model = [
+            {
+                items: [
+                    {
+                        label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
+                        items: [
+                            { label: 'Generic', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards/generic'] }
+                        ]
+                    },
+                    { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads'] },
+                    {
+                        label: 'Usuários', icon: 'pi pi-users', routerLink: ['/usuarios/usuario-lista'],
+                        items: [
+                            { label: 'Administradores', icon: "pi pi-users", routerLink: ['/usuarios/usuario-lista'] }
+                        ]
+                    }
+                ],
             }
-        });
+        ];
     }
 }

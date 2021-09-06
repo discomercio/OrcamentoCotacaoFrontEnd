@@ -4,24 +4,24 @@
             {
                 "label": "Dashboards",
                 "icon": "pi pi-fw pi-home",
-                "routerLink": "[/dashboards]",
+                "routerLink": "/dashboards",
                 "items": [
                     {
                         "label": "Generic",
                         "icon": "pi pi-fw pi-home",
-                        "routerLink": "[/dashboards/generic]"
+                        "routerLink": "/dashboards/generic"
                     }
                 ]
             },
             {
                 "label": "Downloads",
                 "icon": "pi pi-download",
-                "routerLink": "[/downloads/downloads]"
+                "routerLink": "/downloads/downloads"
             },
             {
                 "label": "Usuários",
                 "icon": "pi pi-user",
-                "routerLink": "[/usuarios]",
+                "routerLink": "/usuarios",
                 "items": [
                     {
                         "label": "Administradores",
@@ -31,32 +31,32 @@
                     {
                         "label": "Gestores",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     },
                     {
                         "label": "Vendedores",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     },
                     {
                         "label": "Parceiros",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     },
                     {
                         "label": "Vendedores do Parceiro",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     },
                     {
                         "label": "Permissões",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     },
                     {
                         "label": "Configurações",
                         "icon": "pi pi-chevron-right",
-                        "routerLink": "[/usuarios]"
+                        "routerLink": "/usuarios"
                     }
                 ]
             }

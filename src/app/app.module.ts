@@ -133,14 +133,14 @@ import {CustomerService} from './demo/service/customerservice';
 import {PhotoService} from './demo/service/photoservice';
 import {ProductService} from './demo/service/productservice';
 import {IconService} from './demo/service/iconservice';
-import { DownloadsComponent } from './downloads/downloads/downloads.component';
+import { DownloadsComponent } from './downloads/downloads.component';
 import { MessageService } from 'primeng/api';
 import {KeyFilterModule} from 'primeng/keyfilter';
 import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { UsuariosComponent } from './usuarios/usuarios.component';
-import { UsuarioEdicaoComponent } from './usuario-edicao/usuario-edicao.component';
+import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
+import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
 
 
 @NgModule({
@@ -276,8 +276,8 @@ import { UsuarioEdicaoComponent } from './usuario-edicao/usuario-edicao.componen
         DownloadsComponent,
         ValidacaoFormularioComponent,
         AlertDialogComponent,
-        UsuariosComponent,
-        UsuarioEdicaoComponent
+        UsuarioEdicaoComponent,
+        UsuarioListaComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
