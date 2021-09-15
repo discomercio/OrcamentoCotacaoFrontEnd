@@ -1,101 +1,192 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <h4>Novo Usuário</h4>
+            <h4 *ngIf="novoUsuario">Novo Usuário</h4>
+            <h4 *ngIf="!novoUsuario">Consulta/Edição de Usuário Cadastrado</h4>
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="nome">Nome</label>
                         <input id="nome" type="text" pInputText placeholder="" formControlName="nome" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'nome')">{{mensagemErro}}</small>
+                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'nome')">
+                            <small class="p-error" *ngIf="form.controls.nome.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small>
+                        </div>
+
                     </div>
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="apelido">Apelido</label>
                         <input id="apelido" type="text" pInputText placeholder="" formControlName="apelido" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">{{mensagemErro}}</small>
+                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">
+                            <small class="p-error"
+                                *ngIf="form.controls.apelido.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.apelido.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de {{form.controls.apelido.errors.maxlength.requiredLength}}</small>
+                        </div>
+
                     </div>
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="email">E-mail</label>
                         <input id="email" type="text" pInputText placeholder="" formControlName="email" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">{{mensagemErro}}</small>
+                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'email')">
+                            <small class="p-error" *ngIf="form.controls.email.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.email.errors?.pattern">Endereço de e-mail
+                                inválido!</small>
+                            <small class="p-error" *ngIf="form.controls.email.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de {{form.controls.email.errors.maxlength.requiredLength}}</small>
+                        </div>
+
                     </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                         <label for="perfil">Perfil</label>
-                        <p-dropdown [options]="lstPerfil" formControlName="perfil" placeholder="Selecione"></p-dropdown>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                        <label for="senha">Senha</label>
-                        <input id="senha" type="text" pInputText placeholder="" formControlName="senha" />
+                        <p-dropdown id="perfil" [options]="lstPerfil" formControlName="perfil" placeholder="Selecione"
+                            optionLabel="label" (onChange)="desabilitarCampos()">
+                        </p-dropdown>
                         <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'senha')">{{mensagemErro}}</small>
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
+                        <label for="perfil">Vendedor da Loja</label>
+                        <p-multiSelect [showHeader]="false" [options]="lojas" formControlName="lojasSelecionadas"
+                            optionLabel="nome" optionValue="loja" [selectedItemsLabel]="'{0} itens selecionado'"
+                            placeholder="Selecione">
+                        </p-multiSelect>
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'lojasSelecionadas')">{{mensagemErro}}</small>
+                    </div>
+
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 login-input">
+                        <label for="senha">Senha</label>
+                        <span class="p-input-icon-right">
+                            <i style="cursor: pointer"
+                                [ngClass]="password.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
+                                (click)=" password.type = password.type == 'password' ? 'text' : 'password'"></i>
+                            <input id="senha" type="password" pPassword formControlName="senha" [feedback]="false"
+                                #password />
+                            <div *ngIf="validacaoFormGroup.verificaCampo(form,'senha')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve
+                                    possuir no mínimo 5 caracteres!</small>
+                                <small class="p-error" *ngIf="form.controls.senha.errors?.maxlength">Quantidade de
+                                    caracteres
+                                    excede a o limite de {{form.controls.senha.errors.maxlength.requiredLength}}</small>
+                            </div>
+
+                        </span>
                     </div>
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="confirmacao">Confirmação</label>
-                        <input id="confirmacao" type="text" pInputText placeholder="" formControlName="confirmacao" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'confirmacao')">{{mensagemErro}}</small>
+                        <span class="p-input-icon-right">
+                            <i style="cursor: pointer"
+                                [ngClass]="confirmaPassword.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
+                                (click)=" confirmaPassword.type = confirmaPassword.type == 'password' ? 'text' : 'password'"></i>
+                            <input id="confirmacao" type="password" pInputText placeholder=""
+                                formControlName="confirmacao" #confirmaPassword />
+                            <div *ngIf="validacaoFormGroup.verificaCampo(form,'confirmacao')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
+                                    possuir no mínimo 5 caracteres!</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
+                                    caracteres
+                                    excede a o limite de
+                                    {{form.controls.confirmacao.errors.maxlength.requiredLength}}</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.confirmacao">
+                                    A confirmação de senha não está correta.</small>
+                            </div>
+                        </span>
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2">
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2" *ngIf="disabled">
                         <label for="tipo">Tipo</label>
-                        <p-dropdown [options]="lstTipo" formControlName="tipo" placeholder="Selecione"></p-dropdown>
+                        <p-dropdown [options]="lstTipo" formControlName="tipo" placeholder="Selecione"
+                            optionLabel="label"></p-dropdown>
                     </div>
-                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5">
+                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5" *ngIf="disabled">
                         <label for="cpf_cnpj">CPF/CNPJ</label>
                         <input id="cpf_cnpj" type="text" pInputText placeholder="" formControlName="cpf_cnpj" />
                         <small class="p-error"
                             *ngIf="validacaoFormGroup.verificaCampo(form,'cpf_cnpj')">{{mensagemErro}}</small>
                     </div>
-                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5">
+                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5" *ngIf="disabled">
                         <label for="rg_ie">RG/IE</label>
                         <input id="rg_ie" type="text" pInputText placeholder="" formControlName="rg_ie" />
                         <small class="p-error"
                             *ngIf="validacaoFormGroup.verificaCampo(form,'rg_ie')">{{mensagemErro}}</small>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd1_telefone1">Telefone1</label>
-                        <input id="ddd1_telefone1" type="text" pInputText placeholder=""
-                            formControlName="ddd1_telefone1" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd1_telefone1')">{{mensagemErro}}</small>
+
+                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd1_telefone1.value)" id="ddd1_telefone1"
+                            type="text" formControlName="ddd1_telefone1" mask="(99) 9999-9999?9"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <p-inputMask *ngIf="verificaTel(form.controls.ddd1_telefone1.value)" id="ddd1_telefone1"
+                            type="text" formControlName="ddd1_telefone1" mask="(99) 99999-9999"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <small class="p-error" *ngIf="form.controls.ddd1_telefone1.errors?.minlength">A senha deve
+                            possuir no mínimo {{form.controls.ddd1_telefone1.errors.minlength.requiredLength}}
+                            caracteres!</small>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd2_telefone2">Telefone2</label>
-                        <input id="ddd2_telefone2" type="text" pInputText placeholder=""
-                            formControlName="ddd2_telefone2" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd2_telefone2')">{{mensagemErro}}</small>
+                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd2_telefone2.value)" id="ddd2_telefone2"
+                            type="text" formControlName="ddd2_telefone2" mask="(99) 9999-9999?9"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <p-inputMask *ngIf="verificaTel(form.controls.ddd2_telefone2.value)" id="ddd2_telefone2"
+                            type="text" formControlName="ddd2_telefone2" mask="(99) 99999-9999"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <small class="p-error" *ngIf="form.controls.ddd2_telefone2.errors?.minlength">A senha deve
+                            possuir no mínimo {{form.controls.ddd2_telefone2.errors.minlength.requiredLength}}
+                            caracteres!</small>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd3_telefone3">Telefone3</label>
-                        <input id="ddd3_telefone3" type="text" pInputText placeholder=""
-                            formControlName="ddd3_telefone3" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'ddd3_telefone3')">{{mensagemErro}}</small>
+                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd3_telefone3.value)" id="ddd3_telefone3"
+                            type="text" formControlName="ddd3_telefone3" mask="(99) 9999-9999?9"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <p-inputMask *ngIf="verificaTel(form.controls.ddd3_telefone3.value)" id="ddd3_telefone3"
+                            type="text" formControlName="ddd3_telefone3" mask="(99) 99999-9999"
+                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
+                        </p-inputMask>
+                        <small class="p-error" *ngIf="form.controls.ddd3_telefone3.errors?.minlength">A senha deve
+                            possuir no mínimo {{form.controls.ddd3_telefone3.errors.minlength.requiredLength}}
+                            caracteres!</small>
                     </div>
                     <div class="p-col-12 p-formgroup-inline">
-                        <div class="p-field-radiobutton">
-                            <p-radioButton name="ativo" value="ativo" formControlName="ativo" id="ativo">
+                        <div class="p-field-radiobutton p-mb-1">
+                            <p-radioButton name="ativo" value="Sim" formControlName="ativo" id="ativo">
                             </p-radioButton>
                             <label for="ativo">Sim</label>
                         </div>
 
-                        <div class="p-field-radiobutton">
-                            <p-radioButton name="ativo" value="ativo" formControlName="ativo" id="ativo">
+                        <div class="p-field-radiobutton p-mb-1">
+                            <p-radioButton name="ativo" value="Não" formControlName="ativo" id="ativo">
                             </p-radioButton>
                             <label for="ativo">Não</label>
                         </div>
+
+                    </div>
+                    <div *ngIf="validacaoFormGroup.verificaCampo(form,'ativo')">
+                        <small class="p-error" *ngIf="form.controls.ativo.errors?.required">Informe se o usuário tem
+                            acesso permitido ou bloqueado.</small>
                     </div>
                 </div>
             </form>
-            <div class="p-field p-d-flex p-jc-between">
+            <div class="p-field p-d-flex p-jc-between p-mb-0 p-mt-3">
 
                 <button pButton pRipple label="Voltar" icon="pi pi-arrow-left"
                     [routerLink]="['/usuarios/usuario-lista']"></button>
 
-                <button pButton pRipple label="Cadastrar" icon="pi pi-save" (click)="teste()"></button>
+                <button pButton pRipple label="Cadastrar" icon="pi pi-save" (click)="atualizar()"></button>
             </div>
         </div>
     </div>

@@ -10,8 +10,9 @@ $gutter: .5rem; //for primeflex grid system
 @import "assets/demo/flags/flags.css";
 
 
+
 .card{
-    min-height: calc(100vh - 77%) !important;
+    min-height: calc(100vh - 64%) !important;
 }
 
 @keyframes loading {

@@ -55,5 +55,8 @@ export class UsuarioListaComponent implements OnInit {
     if (!!this.usuarioSelecionado) {
       this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.apelido]);
     }
+    else{
+      this.router.navigate(['/usuarios/usuario-edicao', 'novo']);
+    }
   }
 }

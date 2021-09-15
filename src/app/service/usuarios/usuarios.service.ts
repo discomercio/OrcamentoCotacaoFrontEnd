@@ -16,13 +16,15 @@ export class UsuariosService {
 
   buscarUsuario(apelido: string) {
     let usuario: Usuarios;
+
     this.buscarTodosUsuarios().toPromise().then((r) => {
       if (!!r) {
+        debugger;
         let usuarios: Usuarios[] = r;
         usuario = usuarios.filter(usuario => usuario.apelido == apelido)[0];
       }
     });
-
-    return usuario;
+      return usuario;
+    // return this.http.get<Usuarios>(JSON.stringify(usuario));
   }
 }

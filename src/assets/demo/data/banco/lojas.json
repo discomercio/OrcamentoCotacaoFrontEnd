@@ -1,0 +1,74 @@
+[
+    {
+        "loja": "01",
+        "nome": "Transferencia"
+    },
+    {
+        "loja": "02",
+        "nome": "Kits"
+    },
+    {
+        "loja": "200",
+        "nome": "Matriz"
+    },
+    {
+        "loja": "201",
+        "nome": "Arclube"
+    },
+    {
+        "loja": "202",
+        "nome": "Bonshop"
+    },
+    {
+        "loja": "203",
+        "nome": "Bonificação"
+    },
+    {
+        "loja": "204",
+        "nome": "Laboratorio"
+    },
+    {
+        "loja": "205",
+        "nome": "Unis - Instaladores"
+    },
+    {
+        "loja": "206",
+        "nome": "Unis - Arquitetura"
+    },
+    {
+        "loja": "207",
+        "nome": "INATIVOS"
+    },
+    {
+        "loja": "208",
+        "nome": "Unis - BH"
+    },
+    {
+        "loja": "209",
+        "nome": "Unis - Construtora"
+    },
+    {
+        "loja": "210",
+        "nome": "Unis - RJ"
+    },
+    {
+        "loja": "211",
+        "nome": "Unis - Bertioga"
+    },
+    {
+        "loja": "212",
+        "nome": "Bonshop - Home"
+    },
+    {
+        "loja": "213",
+        "nome": "Unis Ribeirao Preto"
+    },
+    {
+        "loja": "305",
+        "nome": "MARCELO ARTVEN"
+    },
+    {
+        "loja": "999",
+        "nome": "GARANTIA"
+    }
+]

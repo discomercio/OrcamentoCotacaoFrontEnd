@@ -10,7 +10,7 @@ export class Usuarios {
     senha:string;
     tipo:string;
     cpf_cnpj:string;
-    rg:string;
+    ie_rg:string;
     ddd1:string;
     telefone1:string;
     ddd2:string;

@@ -4,35 +4,10 @@
             <h4>Usuários</h4>
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-jc-end p-mx-0 p-px-0">
-                    <!-- <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-6">
-                        <label for="usuario">Nome</label>
-                        <input id="usuario" type="text" pInputText formControlName="usuario" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'usuario')">{{mensagemErro}}</small>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-6">
-                        <label for="apelido">Apelido</label>
-                        <input id="apelido" type="text" pInputText formControlName="apelido" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">{{mensagemErro}}</small>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-6">
-                        <label for="perfil">Perfil</label>
-                        <p-dropdown id="perfil" [options]="perfil" formControlName="perfil" [(ngModel)]="perfil"
-                            placeholder="Selecione o perfil" [showClear]="true"></p-dropdown>
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small>
-                    </div> -->
-
-                    <!-- <div class="p-field p-col-12 p-as-end p-lg-1 p-md-4 p-sm-2">
-                        <button pButton pRipple label="Pesquisar" class="p-as-end"></button>
-                    </div>-->
                     <div class="p-field p-col-12 p-lg-2 p-sm-3 p-mb-1 p-px-1">
-                        <button pButton pRipple label="Editar" class="p-as-end" icon="pi pi-user-edit"
-                            *ngIf="!!usuarioSelecionado" (click)="editarUsuario()"></button>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-sm-3 p-mb-1 p-px-1">
-                        <button pButton pRipple label="Novo Usuário" icon="pi pi-plus" class="p-as-end"></button>
+                        <button pButton pRipple label="{{!!usuarioSelecionado ? 'Editar': 'Novo Usuário'}}"
+                            class="p-as-end" icon="{{!!usuarioSelecionado?'pi pi-user-edit': 'pi pi-plus'}}"
+                            (click)="editarUsuario()"></button>
                     </div>
                 </div>
             </form>
@@ -59,9 +34,6 @@
                         <th class="p-py-2" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 {{col.header}}
-                                <!-- <p-sortIcon field="responsavel"></p-sortIcon> -->
-                                <!-- <p-columnFilter type="text" field="responsavel" display="menu" class="p-ml-auto">
-                                </p-columnFilter> -->
                             </div>
                         </th>
                     </tr>
