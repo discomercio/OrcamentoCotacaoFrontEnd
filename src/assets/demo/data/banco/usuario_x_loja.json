@@ -1,0 +1,1662 @@
+[
+    {
+        "usuario": "ADAILTON S",
+        "loja": "01",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADAILTON S",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADAILTON S",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADAILTON S",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "01",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ADRIANA",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "AGNALDO",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ALMIR R",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ALMIR R",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ALTAIR",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "AMANDA S",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ANDREWS",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ANDREZA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ANDREZA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ANNA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ANTONIO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ARTUR M",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "BRUNA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "BRUNO N",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAIO",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAIO",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "01",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAMILA S",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLA SP",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CARLOS",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAROLINE",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CAROLINE",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "CRISTYANA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANIEL",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANIEL M",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANIELA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANIELA S",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANIELE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANILO O",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DANILO O",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DEVEDOR",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "DIEGO S",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDIVALDO",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDNA",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDNA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDNA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDNA",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EDNA",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "EVANDRO",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "F RAMOS",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "F RAMOS",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "F RAMOS",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "FABIANO B",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "FAGNER L",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "FELIPE",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "FERNANDO M",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "G MOURA",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "GABRIEL",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "GABRIEL",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "GABRIELLE",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "GILSON",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "GUSTAVO S",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HAMILTON",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "HUGO M",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "INATIVO",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "INGRID",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "INTERNET",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "IVETE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JAMESON",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "01",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JARBELLE",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JESSICA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "JULIO O",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KAREN O",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KARINA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KESLEY",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KETELS",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KETELS",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "KEYLA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LEANDRO L",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LETICIA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCAS M",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCAS V",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCAS V",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCIANO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCYANE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUCYANE",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "LUIS",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "M SOUZA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "M SOUZA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MAIARA",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO BH",
+        "loja": "305",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCELO NE",
+        "loja": "305",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCIA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCIA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCIA S",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCIA S",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCOS D",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCOS D",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARCOS V",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARIO S",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MARISTELA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATEUS B",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MATHEUS",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MICHELE",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MILE",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MONICA M",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MORIM",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "MYLENA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "NATACHA",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "NATALIA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "NICHOLAS",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "NICHOLAS",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "NICHOLAS",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ORLANDO F",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PATRICIA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "PRAGMATICA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RAFAEL",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RAFAEL C",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RAFAEL C",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RAPHAEL",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RENATO N",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RENATO N",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RICARDO B",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBERTO",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBERTO",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBSON M",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBSON M",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBSON P",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROBSON P",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RODOLFO",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "RODRIGO B",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "ROGERIO AN",
+        "loja": "305",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SARAIVA",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SERGIO",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SHILEY",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SILVIO D",
+        "loja": "213",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "01",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "02",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "204",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "212",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUEINE",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "SUELI",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "TAMARA",
+        "loja": "211",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "TAMIRIS",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "TASSIA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "206",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "305",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA",
+        "loja": "999",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA B",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALITA Q",
+        "loja": "200",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THALLISON",
+        "loja": "208",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "THIAGO",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "VANESSA",
+        "loja": "202",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "VINICIUS",
+        "loja": "209",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "VINICIUS B",
+        "loja": "210",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "WALTER R",
+        "loja": "205",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "WALTER R",
+        "loja": "207",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "WELLINGTON",
+        "loja": "201",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "WELLINGTON",
+        "loja": "203",
+        "bloqueado": 0
+    },
+    {
+        "usuario": "WILLIAM N",
+        "loja": "210",
+        "bloqueado": 0
+    }
+]

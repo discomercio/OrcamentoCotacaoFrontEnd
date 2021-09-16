@@ -141,6 +141,8 @@ import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.comp
 import { DialogService } from 'primeng/dynamicdialog';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
+import { NovoComponent } from './orcamentos/novo/novo.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 
 
 @NgModule({
@@ -232,7 +234,8 @@ import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.co
         AppCodeModule,
         KeyFilterModule,
         FormsModule,
-        ReactiveFormsModule
+        ReactiveFormsModule,
+        FontAwesomeModule
     ],
     declarations: [
         AppComponent,
@@ -277,7 +280,8 @@ import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.co
         ValidacaoFormularioComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
-        UsuarioListaComponent
+        UsuarioListaComponent,
+        NovoComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},

@@ -7,6 +7,7 @@ import { DownloadsComponent } from './downloads/downloads.component';
 import { AppMainComponent } from './app.main.component';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
+import { NovoComponent } from './orcamentos/novo/novo.component';
 
 @NgModule({
     imports: [
@@ -16,6 +17,7 @@ import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.co
                 children: [
                     { path: '', component: DashboardDemoComponent },
                     { path: 'dashboards/generic', component: DashboardDemoComponent },
+                    {path:'orcamentos/novo', component:NovoComponent},
                     { path: 'downloads', component: DownloadsComponent },
                     { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                     { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent }
