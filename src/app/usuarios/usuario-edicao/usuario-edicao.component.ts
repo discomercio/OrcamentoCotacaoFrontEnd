@@ -38,8 +38,10 @@ export class UsuarioEdicaoComponent implements OnInit {
   public formataTelefone = FormataTelefone;
   public lojas = new Array<Lojas>();
   public lojasSelecionadas = new Array<Lojas>();
+  public mascaraTelefone: string;
 
   ngOnInit(): void {
+    this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.apelido = this.activatedRoute.snapshot.params.apelido;
 
@@ -116,7 +118,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       ddd2_telefone2: [this.usuario.ddd2 + this.usuario.telefone2, [Validators.minLength(10), Validators.maxLength(11)]],
       ddd3_telefone3: [this.usuario.ddd3 + this.usuario.telefone3, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required],
-      lojasSelecionadas:['', [Validators.required]]
+      lojasSelecionadas: ['', [Validators.required]]
     },
       { validators: compararSenha() });
     this.selectPerfil();
@@ -142,7 +144,6 @@ export class UsuarioEdicaoComponent implements OnInit {
   }
 
   atualizar() {
-    debugger;
     if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     console.log("passou");
@@ -153,29 +154,6 @@ export class UsuarioEdicaoComponent implements OnInit {
   celular2 = false;
   celular3 = false;
 
-  mascaraTelefone(input) {
-    if (input != undefined && input != "") {
-      if (input.length >= 10) {
-        if (input.length === 11) {
-          this.celular = true;
-        } else if (input.length <= 10) {
-          this.celular = false;
-        }
-      }
-    }
-  }
-
-  verificaTel(input) {
-    if (input != undefined && input != "") {
-      if (input.length === 11) {
-        return true;
-      } else if (input.length <= 10) {
-        return false;
-      }
-
-    }
-    return false;
-  }
 }
 
 export function compararSenha(): ValidatorFn {

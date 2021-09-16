@@ -143,6 +143,7 @@ import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
 import { NovoComponent } from './orcamentos/novo/novo.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import{NgxMaskModule} from 'ngx-mask'
 
 
 @NgModule({
@@ -235,7 +236,8 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
         KeyFilterModule,
         FormsModule,
         ReactiveFormsModule,
-        FontAwesomeModule
+        FontAwesomeModule,
+        NgxMaskModule.forRoot()
     ],
     declarations: [
         AppComponent,

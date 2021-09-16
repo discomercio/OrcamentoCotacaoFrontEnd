@@ -1,6 +1,7 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
+            <div class='calculator'>teste</div>
             <h4 *ngIf="novoUsuario">Novo Usuário</h4>
             <h4 *ngIf="!novoUsuario">Consulta/Edição de Usuário Cadastrado</h4>
             <form [formGroup]="form">
@@ -120,44 +121,25 @@
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd1_telefone1">Telefone1</label>
-
-                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd1_telefone1.value)" id="ddd1_telefone1"
-                            type="text" formControlName="ddd1_telefone1" mask="(99) 9999-9999?9"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <p-inputMask *ngIf="verificaTel(form.controls.ddd1_telefone1.value)" id="ddd1_telefone1"
-                            type="text" formControlName="ddd1_telefone1" mask="(99) 99999-9999"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <small class="p-error" *ngIf="form.controls.ddd1_telefone1.errors?.minlength">A senha deve
+                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd1_telefone1"
+                            formControlName="ddd1_telefone1" mask="{{mascaraTelefone}}" />
+                        <small class="p-error" *ngIf="form.controls.ddd1_telefone1.errors?.minlength">O telefone deve
                             possuir no mínimo {{form.controls.ddd1_telefone1.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd2_telefone2">Telefone2</label>
-                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd2_telefone2.value)" id="ddd2_telefone2"
-                            type="text" formControlName="ddd2_telefone2" mask="(99) 9999-9999?9"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <p-inputMask *ngIf="verificaTel(form.controls.ddd2_telefone2.value)" id="ddd2_telefone2"
-                            type="text" formControlName="ddd2_telefone2" mask="(99) 99999-9999"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <small class="p-error" *ngIf="form.controls.ddd2_telefone2.errors?.minlength">A senha deve
+                        <input type="text" pInputText id="ddd2_telefone2" formControlName="ddd2_telefone2"
+                            mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
+                        <small class="p-error" *ngIf="form.controls.ddd2_telefone2.errors?.minlength">O telefone deve
                             possuir no mínimo {{form.controls.ddd2_telefone2.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd3_telefone3">Telefone3</label>
-                        <p-inputMask *ngIf="!verificaTel(form.controls.ddd3_telefone3.value)" id="ddd3_telefone3"
-                            type="text" formControlName="ddd3_telefone3" mask="(99) 9999-9999?9"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <p-inputMask *ngIf="verificaTel(form.controls.ddd3_telefone3.value)" id="ddd3_telefone3"
-                            type="text" formControlName="ddd3_telefone3" mask="(99) 99999-9999"
-                            (ngModelChange)="mascaraTelefone($event)" [unmask]="true" [autoClear]="false">
-                        </p-inputMask>
-                        <small class="p-error" *ngIf="form.controls.ddd3_telefone3.errors?.minlength">A senha deve
+                        <input type="text" pInputText id="ddd3_telefone3" formControlName="ddd3_telefone3"
+                            placeholder="(00) 0000-0000" mask="{{mascaraTelefone}}" />
+                        <small class="p-error" *ngIf="form.controls.ddd3_telefone3.errors?.minlength">O telefone deve
                             possuir no mínimo {{form.controls.ddd3_telefone3.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
