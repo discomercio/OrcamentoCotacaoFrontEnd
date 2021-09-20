@@ -2,6 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Usuarios } from 'src/app/dto/usuarios/usuarios';
 import { HttpClient } from '@angular/common/http';
+import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
+import { Parceiro } from 'src/app/dto/parceiros/parceiro';
 
 @Injectable({
   providedIn: 'root'
@@ -14,17 +16,11 @@ export class UsuariosService {
     return this.http.get<Usuarios[]>('assets/demo/data/banco/usuarios.json');
   }
 
-  buscarUsuario(apelido: string) {
-    let usuario: Usuarios;
+  buscarVendedores():Observable<UsuarioXLoja[]>{
+    return this.http.get<UsuarioXLoja[]>('assets/demo/data/banco/usuario_x_loja.json');
+  }
 
-    this.buscarTodosUsuarios().toPromise().then((r) => {
-      if (!!r) {
-        debugger;
-        let usuarios: Usuarios[] = r;
-        usuario = usuarios.filter(usuario => usuario.apelido == apelido)[0];
-      }
-    });
-      return usuario;
-    // return this.http.get<Usuarios>(JSON.stringify(usuario));
+  buscarParceiros():Observable<Parceiro[]>{
+    return this.http.get<Parceiro[]>('assets/demo/data/banco/parceiro_x_usuario.json');
   }
 }

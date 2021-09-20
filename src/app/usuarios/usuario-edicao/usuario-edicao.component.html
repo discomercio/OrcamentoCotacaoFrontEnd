@@ -1,7 +1,6 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <div class='calculator'>teste</div>
             <h4 *ngIf="novoUsuario">Novo Usuário</h4>
             <h4 *ngIf="!novoUsuario">Consulta/Edição de Usuário Cadastrado</h4>
             <form [formGroup]="form">
@@ -17,20 +16,9 @@
                         </div>
 
                     </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                        <label for="apelido">Apelido</label>
-                        <input id="apelido" type="text" pInputText placeholder="" formControlName="apelido" />
-                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'apelido')">
-                            <small class="p-error"
-                                *ngIf="form.controls.apelido.errors?.required">{{mensagemErro}}</small>
-                            <small class="p-error" *ngIf="form.controls.apelido.errors?.maxlength">Quantidade de
-                                caracteres
-                                excede a o limite de {{form.controls.apelido.errors.maxlength.requiredLength}}</small>
-                        </div>
 
-                    </div>
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                        <label for="email">E-mail</label>
+                        <label for="email">E-mail/Login</label>
                         <input id="email" type="text" pInputText placeholder="" formControlName="email" />
                         <div *ngIf="validacaoFormGroup.verificaCampo(form,'email')">
                             <small class="p-error" *ngIf="form.controls.email.errors?.required">{{mensagemErro}}</small>
@@ -42,23 +30,8 @@
                         </div>
 
                     </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
-                        <label for="perfil">Perfil</label>
-                        <p-dropdown id="perfil" [options]="lstPerfil" formControlName="perfil" placeholder="Selecione"
-                            optionLabel="label" (onChange)="desabilitarCampos()">
-                        </p-dropdown>
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
-                        <label for="perfil">Vendedor da Loja</label>
-                        <p-multiSelect [showHeader]="false" [options]="lojas" formControlName="lojasSelecionadas"
-                            optionLabel="nome" optionValue="loja" [selectedItemsLabel]="'{0} itens selecionado'"
-                            placeholder="Selecione">
-                        </p-multiSelect>
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'lojasSelecionadas')">{{mensagemErro}}</small>
-                    </div>
+
+
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 login-input">
                         <label for="senha">Senha</label>
@@ -102,58 +75,36 @@
                             </div>
                         </span>
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2" *ngIf="disabled">
-                        <label for="tipo">Tipo</label>
-                        <p-dropdown [options]="lstTipo" formControlName="tipo" placeholder="Selecione"
-                            optionLabel="label"></p-dropdown>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5" *ngIf="disabled">
-                        <label for="cpf_cnpj">CPF/CNPJ</label>
-                        <input id="cpf_cnpj" type="text" pInputText placeholder="" formControlName="cpf_cnpj" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'cpf_cnpj')">{{mensagemErro}}</small>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5" *ngIf="disabled">
-                        <label for="rg_ie">RG/IE</label>
-                        <input id="rg_ie" type="text" pInputText placeholder="" formControlName="rg_ie" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'rg_ie')">{{mensagemErro}}</small>
-                    </div>
+
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
-                        <label for="ddd1_telefone1">Telefone1</label>
-                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd1_telefone1"
-                            formControlName="ddd1_telefone1" mask="{{mascaraTelefone}}" />
-                        <small class="p-error" *ngIf="form.controls.ddd1_telefone1.errors?.minlength">O telefone deve
-                            possuir no mínimo {{form.controls.ddd1_telefone1.errors.minlength.requiredLength}}
+                        <label for="ddd_telefone">Telefone </label>
+                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd_telefone"
+                            formControlName="ddd_telefone" mask="{{mascaraTelefone}}" />
+                        <small class="p-error" *ngIf="form.controls.ddd_telefone.errors?.minlength">O telefone deve
+                            possuir no mínimo {{form.controls.ddd_telefone.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
-                        <label for="ddd2_telefone2">Telefone2</label>
-                        <input type="text" pInputText id="ddd2_telefone2" formControlName="ddd2_telefone2"
+                        <label for="dddCel_telefoneCel">celular</label>
+                        <input type="text" pInputText id="dddCel_telefoneCel" formControlName="dddCel_telefoneCel"
                             mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
-                        <small class="p-error" *ngIf="form.controls.ddd2_telefone2.errors?.minlength">O telefone deve
-                            possuir no mínimo {{form.controls.ddd2_telefone2.errors.minlength.requiredLength}}
+                        <small class="p-error" *ngIf="form.controls.dddCel_telefoneCel.errors?.minlength">O telefone
+                            deve
+                            possuir no mínimo {{form.controls.dddCel_telefoneCel.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
-                        <label for="ddd3_telefone3">Telefone3</label>
-                        <input type="text" pInputText id="ddd3_telefone3" formControlName="ddd3_telefone3"
-                            placeholder="(00) 0000-0000" mask="{{mascaraTelefone}}" />
-                        <small class="p-error" *ngIf="form.controls.ddd3_telefone3.errors?.minlength">O telefone deve
-                            possuir no mínimo {{form.controls.ddd3_telefone3.errors.minlength.requiredLength}}
-                            caracteres!</small>
-                    </div>
+
                     <div class="p-col-12 p-formgroup-inline">
                         <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" value="Sim" formControlName="ativo" id="ativo">
+                            <p-radioButton name="ativo" value="1" formControlName="ativo" id="ativo">
                             </p-radioButton>
-                            <label for="ativo">Sim</label>
+                            <label for="ativo">Ativo</label>
                         </div>
 
                         <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" value="Não" formControlName="ativo" id="ativo">
+                            <p-radioButton name="ativo" value="0" formControlName="ativo" id="ativo">
                             </p-radioButton>
-                            <label for="ativo">Não</label>
+                            <label for="ativo">Inativo</label>
                         </div>
 
                     </div>

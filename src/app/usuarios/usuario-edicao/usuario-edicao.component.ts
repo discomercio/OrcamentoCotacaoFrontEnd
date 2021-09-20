@@ -106,19 +106,12 @@ export class UsuarioEdicaoComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
-      apelido: [this.usuario.apelido, [Validators.required, Validators.maxLength(20)]],
       email: [this.usuario.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
-      perfil: ['', [Validators.required]],
       senha: [this.usuario.senha, [Validators.required, Validators.minLength(5), Validators.maxLength(15)]],
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(5)]],
-      tipo: [this.usuario.tipo],
-      cpf_cnpj: [this.usuario.cpf_cnpj],
-      rg_ie: [this.usuario.ie_rg],
-      ddd1_telefone1: [this.usuario.ddd1 + this.usuario.telefone1, [Validators.minLength(10), Validators.maxLength(11)]],
-      ddd2_telefone2: [this.usuario.ddd2 + this.usuario.telefone2, [Validators.minLength(10), Validators.maxLength(11)]],
-      ddd3_telefone3: [this.usuario.ddd3 + this.usuario.telefone3, [Validators.minLength(10), Validators.maxLength(11)]],
-      ativo: [this.usuario.ativo, Validators.required],
-      lojasSelecionadas: ['', [Validators.required]]
+      ddd_telefone: [this.usuario.ddd1 + this.usuario.telefone1, [Validators.minLength(10), Validators.maxLength(11)]],
+      dddCel_telefoneCel: [this.usuario.ddd2 + this.usuario.telefone2, [Validators.minLength(10), Validators.maxLength(11)]],
+      ativo: [this.usuario.ativo, Validators.required]
     },
       { validators: compararSenha() });
     this.selectPerfil();
