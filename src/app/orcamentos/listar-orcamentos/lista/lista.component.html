@@ -1,0 +1,82 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <h4 *ngIf="emPedidos">Lista de Pedidos</h4>
+            <h4 *ngIf="!emPedidos">Lista de Orçamentos</h4>
+            <form [formGroup]="form" class="p-col-12 p-px-0">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
+                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-4 p-as-end">
+                        <label for="filtro">Status</label>
+                        <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
+                            placeholder="Selecione" formControlName="filtro"
+                            [selectedItemsLabel]="'{0} itens selecionados'" [showHeader]="false"
+                            emptyFilterMessage="Nenhum item encontrado" 
+                            pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
+                        </p-multiSelect>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-4 p-as-end">
+                        <label for="nomeObra">Nome</label>
+                        <input id="nomeObra" type="text" pInputText placeholder="" />
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                        <label for="dataInicio">Data início</label>
+                        <input id="dataInicio" type="date" pInputText placeholder="" formControlName="dataInicio" />
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                        <label for="dataFinal">Data final</label>
+                        <input id="dataFinal" type="date" pInputText placeholder="" formControlName="dataFinal" />
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
+                        <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
+                            (click)="filtrar()"></button>
+                    </div>
+
+                </div>
+            </form>
+            <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
+                [responsive]="true" responsiveLayout="stack" breakpoint="680px"
+                styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
+                [paginator]="true" [filterDelay]="0"
+                [globalFilterFields]="['Data','Orcamento','Nome','Status', 'Valor']">
+                <!-- <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
+                        Lista de Orçamentos
+                        <span class="p-input-icon-left">
+                            <i class="pi pi-search"></i>
+                            <input pInputText type="text"
+                                (input)="dataTable.filterGlobal($event.target.value, 'contains')"
+                                placeholder="Procura" />
+                        </span>
+                    </div>
+                </ng-template> -->
+                <ng-template pTemplate="header" let-columns>
+                    <tr>
+                        <th style="width: 45px"></th>
+                        <th class="p-py-2" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
+                            <div class="p-d-flex p-jc-between p-ai-center">
+                                {{col.header}}
+                            </div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-rowData let-columns="columns">
+                    <tr class="p-selectable-row" [pSelectableRow]="rowData">
+                        <td>
+                            <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
+                        </td>
+                        <td *ngFor="let col of columns">
+                            {{col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]): rowData[col.field]}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage" let-columns>
+                    <tr>
+                        <td [attr.colspan]="columns.length">
+                            Nenhum dado encontrado.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>

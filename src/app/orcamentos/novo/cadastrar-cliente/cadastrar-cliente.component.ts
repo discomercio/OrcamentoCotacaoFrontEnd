@@ -1,21 +1,21 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
-import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { CepsService } from 'src/app/service/ceps/ceps.service';
 import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 import { Parceiro } from 'src/app/dto/parceiros/parceiro';
-import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Estado } from 'src/app/dto/ceps/estado';
-import { CepsService } from 'src/app/service/ceps/ceps.service';
+import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { SelectItem } from 'primeng/api';
 
 @Component({
-  selector: 'app-novo',
-  templateUrl: './novo.component.html',
-  styleUrls: ['./novo.component.scss']
+  selector: 'app-cadastrar-cliente',
+  templateUrl: './cadastrar-cliente.component.html',
+  styleUrls: ['./cadastrar-cliente.component.scss']
 })
-export class NovoComponent implements OnInit {
+export class CadastrarClienteComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,

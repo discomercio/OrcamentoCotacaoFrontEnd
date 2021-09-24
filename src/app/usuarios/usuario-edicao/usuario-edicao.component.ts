@@ -65,15 +65,6 @@ export class UsuarioEdicaoComponent implements OnInit {
               this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
               this.criarForm();
 
-              let perfilUsuario = this.lstPerfil.find(p => p.label == this.usuario.perfil);
-              if (perfilUsuario.label != "Parceiro" && perfilUsuario.label != "Vendedor Parceiro") {
-                this.disabled = false;
-              }
-              this.form.controls.perfil.setValue(perfilUsuario);
-
-              let tipoUsuario = this.lstTipo.find(t => t.label == this.usuario.tipo);
-              this.form.controls.tipo.setValue(tipoUsuario);
-
               const datastamp = this.usuario.senha;
               const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
               this.form.controls.senha.setValue(senhaConvertida);
@@ -82,25 +73,6 @@ export class UsuarioEdicaoComponent implements OnInit {
           });
         }
       }
-  }
-
-  lstPerfil: SelectItem[];
-  selectPerfil() {
-    this.lstPerfil = [
-      { label: "Administrador", value: { id: 1, name: "Administrador" } },
-      { label: "Gestor", value: { id: 2, name: "Gestor" } },
-      { label: "Vendedor", value: { id: 3, name: "Vendedor" } },
-      { label: "Parceiro", value: { id: 4, name: "Parceiro" } },
-      { label: "Vendedor Parceiro", value: { id: 5, name: "Vendedor Parceiro" } },
-    ];
-  }
-
-  lstTipo: SelectItem[];
-  selectTipo() {
-    this.lstTipo = [
-      { label: "PF", value: { id: 1, name: "PF" } },
-      { label: "PJ", value: { id: 2, name: "PJ" } }
-    ]
   }
 
   criarForm() {
@@ -114,8 +86,6 @@ export class UsuarioEdicaoComponent implements OnInit {
       ativo: [this.usuario.ativo, Validators.required]
     },
       { validators: compararSenha() });
-    this.selectPerfil();
-    this.selectTipo();
 
   }
 

@@ -141,10 +141,10 @@ import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.comp
 import { DialogService } from 'primeng/dynamicdialog';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
-import { NovoComponent } from './orcamentos/novo/novo.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import{NgxMaskModule} from 'ngx-mask'
-
+import{NgxMaskModule} from 'ngx-mask';
+import { CadastrarClienteComponent } from './orcamentos/novo/cadastrar-cliente/cadastrar-cliente.component';
+import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component'
 
 @NgModule({
     imports: [
@@ -283,7 +283,8 @@ import{NgxMaskModule} from 'ngx-mask'
         AlertDialogComponent,
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
-        NovoComponent
+        CadastrarClienteComponent,
+        ListaComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},

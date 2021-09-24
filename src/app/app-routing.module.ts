@@ -7,7 +7,8 @@ import { DownloadsComponent } from './downloads/downloads.component';
 import { AppMainComponent } from './app.main.component';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
-import { NovoComponent } from './orcamentos/novo/novo.component';
+import { CadastrarClienteComponent } from './orcamentos/novo/cadastrar-cliente/cadastrar-cliente.component';
+import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
 
 @NgModule({
     imports: [
@@ -17,7 +18,8 @@ import { NovoComponent } from './orcamentos/novo/novo.component';
                 children: [
                     { path: '', component: DashboardDemoComponent },
                     { path: 'dashboards/generic', component: DashboardDemoComponent },
-                    {path:'orcamentos/novo', component:NovoComponent},
+                    { path: 'orcamentos/novo', component: CadastrarClienteComponent },
+                    { path: 'orcamentos/listar-orcamentos/lista/:filtro', component: ListaComponent },
                     { path: 'downloads', component: DownloadsComponent },
                     { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                     { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent }

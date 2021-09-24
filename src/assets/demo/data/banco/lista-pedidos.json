@@ -1,0 +1,1402 @@
+[
+    {
+        "Data": "22/01/2021",
+        "Numero": "222268N",
+        "Nome": "Gabriel Prada Teodoro",
+        "Status": "Em espera",
+        "Valor": 3296.50
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222246N",
+        "Nome": "Guarucorp Climatizacao Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 24500.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222237N",
+        "Nome": "Vanessa Fernandes Couve Servicos",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222236N",
+        "Nome": "Sebastião Soffner",
+        "Status": "Separar Mercadoria",
+        "Valor": 9469.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222232N",
+        "Nome": "Smi - Solucoes em Manutenção Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 10990.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222226N",
+        "Nome": "Saeng Engenharia e Comércio Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 19376.46
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222225N",
+        "Nome": "Alexandre Martin Prieto",
+        "Status": "Split Possível",
+        "Valor": 17365.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222223N",
+        "Nome": "Misael Moura Badega",
+        "Status": "Separar Mercadoria",
+        "Valor": 17500.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222219N",
+        "Nome": "Paulo Cesar dos Santos",
+        "Status": "Separar Mercadoria",
+        "Valor": 7999.59
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222191N",
+        "Nome": "Escritorio Contabil Bazaga, Gomes e Moura",
+        "Status": "Separar Mercadoria",
+        "Valor": 2470.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222158N",
+        "Nome": "Ricardo Egydio Setubal",
+        "Status": "Separar Mercadoria",
+        "Valor": 6600.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222157N",
+        "Nome": "Luciana Isliker Moura Patria",
+        "Status": "Separar Mercadoria",
+        "Valor": 1950.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222152N",
+        "Nome": "Raphael Cesar Lahoz dos Santos",
+        "Status": "Separar Mercadoria",
+        "Valor": 1276.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222150N",
+        "Nome": "Rafael Ormeneze",
+        "Status": "Separar Mercadoria",
+        "Valor": 9500.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222147N",
+        "Nome": "Novo Normal Producoes Artisticas Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 1690.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222131N",
+        "Nome": "Daniela Borges Baricali",
+        "Status": "Split Possível",
+        "Valor": 20500.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222123N",
+        "Nome": "Sidnei Brandão",
+        "Status": "Separar Mercadoria",
+        "Valor": 2360.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222116N",
+        "Nome": "Glaucia Pereira de Lima",
+        "Status": "Separar Mercadoria",
+        "Valor": 2250.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222109N",
+        "Nome": "QG Administracao e Participacoes Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 2420.00
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222101N",
+        "Nome": "Thelly Baptista Leandrini",
+        "Status": "Separar Mercadoria",
+        "Valor": 1946.16
+    },
+    {
+        "Data": "02/12/2020",
+        "Numero": "222077N",
+        "Nome": "Bruno Kutotaki Okazaki",
+        "Status": "Split Possível",
+        "Valor": 16500.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222048N",
+        "Nome": "Ana Cecilia Ramos de Oliveira",
+        "Status": "Split Possível",
+        "Valor": 17880.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222047N",
+        "Nome": "Leiner Antonio Abrantes",
+        "Status": "Separar Mercadoria",
+        "Valor": 4203.1700
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222042N",
+        "Nome": "Maria Eduarda de Almeida Senna",
+        "Status": "Separar Mercadoria",
+        "Valor": 7000.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222030N",
+        "Nome": "FMRL Bar e Restaurante Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 17500.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222011N",
+        "Nome": "Christian David Medeiros Ferracini Ribeiro",
+        "Status": "A entregar",
+        "Valor": 6100.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "222007N",
+        "Nome": "Christian David Medeiros Ferracini Ribeiro",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221997N/A",
+        "Nome": "Tabas Tecnologia Imobiliaria Ltda",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221997N",
+        "Nome": "Tabas Tecnologia Imobiliaria Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 5175.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221995N",
+        "Nome": "Wesley Mendes da Silva",
+        "Status": "Separar Mercadoria",
+        "Valor": 6650.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221990N",
+        "Nome": "Servicenter Serviços de Engenharia Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 2470.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221979N",
+        "Nome": "David Silva de Oliveira",
+        "Status": "Separar Mercadoria",
+        "Valor": 8534.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221973N",
+        "Nome": "Fernando de Oliveira e Silva",
+        "Status": "A entregar",
+        "Valor": 15700.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221972N",
+        "Nome": "Lucia Maria da Silva Lia",
+        "Status": "Separar Mercadoria",
+        "Valor": 16200.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221964N",
+        "Nome": "VLBM Participacoes Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 13340.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221952N",
+        "Nome": "Alexandre Martin Prieto",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221950N",
+        "Nome": "Eduardo M Oliveira Ar Condicionado e Refrigeracao",
+        "Status": "Separar Mercadoria",
+        "Valor": 4450.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221943N",
+        "Nome": "Pinese Vieira Engenharia Ltda.",
+        "Status": "A entregar",
+        "Valor": 7970.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221934N",
+        "Nome": "Paulo Fernando Soubuhe Sawaya",
+        "Status": "A entregar",
+        "Valor": 5118.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221925N-A",
+        "Nome": "Kalu Participacoes em Empreendimentos Ltda.",
+        "Status": "Separar Mercadoria",
+        "Valor": 0.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221925N",
+        "Nome": "Kalu Participacoes em Empreendimentos Ltda.",
+        "Status": "Separar Mercadoria",
+        "Valor": 64732.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221924N",
+        "Nome": "Pedro Henrique Furlan Esteves de Campos",
+        "Status": "Separar Mercadoria",
+        "Valor": 6640.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221923N",
+        "Nome": "Katia Regina Melo",
+        "Status": "Split Possível",
+        "Valor": 6790.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221912N",
+        "Nome": "Amauri Marchi Junior",
+        "Status": "A entregar",
+        "Valor": 63000.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221897N",
+        "Nome": "Ice Cartões Especiais Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 2972.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221879N",
+        "Nome": "Caio Mário da Silva Pereira Neto",
+        "Status": "Split Possível",
+        "Valor": 20500.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221865N",
+        "Nome": "Leonardo Antunes Zerati",
+        "Status": "A entregar",
+        "Valor": 2180.00
+    },
+    {
+        "Data": "01/12/2020",
+        "Numero": "221855N",
+        "Nome": "Anna Paula Secco",
+        "Status": "Split Possível",
+        "Valor": 9510.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221830N",
+        "Nome": "Andrade & Maia Estetica Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 7200.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221829N",
+        "Nome": "Rafael Ormeneze",
+        "Status": "Separar Mercadoria",
+        "Valor": 19400.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221821N",
+        "Nome": "Rosangela Gaspar Lara",
+        "Status": "Separar Mercadoria",
+        "Valor": 50500.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221818N",
+        "Nome": "Jose Aparecido Serio",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221817N",
+        "Nome": "Francisco Mauro do Carmo 26093861848",
+        "Status": "A entregar",
+        "Valor": 13000.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221815N",
+        "Nome": "Condominio Edificio Stanford Park",
+        "Status": "Separar Mercadoria",
+        "Valor": 12000.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221814N",
+        "Nome": "Marco Sergio Neves Duarte",
+        "Status": "Split Possível",
+        "Valor": 7060.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221811N",
+        "Nome": "Jailson Auto Service Ltda",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221789N-A",
+        "Nome": "DXL Servicos e Apoio Administrativo Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 0.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221789N",
+        "Nome": "DXL Servicos e Apoio Administrativo Eireli",
+        "Status": "Em espera",
+        "Valor": 35000.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221786N",
+        "Nome": "Flavio Faria Tomsic",
+        "Status": "Separar Mercadoria",
+        "Valor": 35700.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221783N",
+        "Nome": "Sindicato dos Empregados no Comercio de Jundiai",
+        "Status": "Separar Mercadoria",
+        "Valor": 13130.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221758N",
+        "Nome": "Elder Jascolka dos Santos",
+        "Status": "Split Possível",
+        "Valor": 12800.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221754N",
+        "Nome": "Concept Caieiras Spe Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 38700.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221753N",
+        "Nome": "Polo Norte Ar Condicionado e Refrigeracao Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 14800.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221715N",
+        "Nome": "Bianca Fernandes Gadelha de Lima",
+        "Status": "Entregue",
+        "Valor": 6400.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221701N",
+        "Nome": "Emerson Jose Hugo",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221698N",
+        "Nome": "Rafael Kin Kanasoro",
+        "Status": "Split Possível",
+        "Valor": 6300.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221692N",
+        "Nome": "Almeida Equipamentos Rodoviários Ltda.",
+        "Status": "A entregar",
+        "Valor": 4578.9000
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221646N",
+        "Nome": "Sindicato dos Empregados no Comercio de Jundiai",
+        "Status": "Split Possível",
+        "Valor": 145370.00
+    },
+    {
+        "Data": "30/11/2020",
+        "Numero": "221627N",
+        "Nome": "Sindicato dos Empregados no Comercio de Jundiai",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "28/11/2020",
+        "Numero": "221469N",
+        "Nome": "Regina Aparecida Vega Sevilha",
+        "Status": "Separar Mercadoria",
+        "Valor": 2080.00
+    },
+    {
+        "Data": "28/11/2020",
+        "Numero": "221436N",
+        "Nome": "Camila Marinho Mendes",
+        "Status": "Entregue",
+        "Valor": 2100.00
+    },
+    {
+        "Data": "28/11/2020",
+        "Numero": "221289N",
+        "Nome": "Amanda Gomes Parentoni Magalhaes",
+        "Status": "Split Possível",
+        "Valor": 20300.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221272N",
+        "Nome": "José Luiz de Freitas",
+        "Status": "Separar Mercadoria",
+        "Valor": 2379.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221271N",
+        "Nome": "Coop de Credito Rural com Interacao Solidaria de Rondonia",
+        "Status": "Separar Mercadoria",
+        "Valor": 45280.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221270N",
+        "Nome": "Maria de Fatima W Pistoni",
+        "Status": "Separar Mercadoria",
+        "Valor": 3800.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221269N",
+        "Nome": "Fabio Gironda Barbirato",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221268N",
+        "Nome": "Claudia Baruzzi Rubio Dias",
+        "Status": "Entregue",
+        "Valor": 17000.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221266N",
+        "Nome": "Tec Lab Medicina Diagnostica S\/A",
+        "Status": "Separar Mercadoria",
+        "Valor": 9618.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221265N",
+        "Nome": "Starx Importação e Exportação Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 6567.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221253N",
+        "Nome": "ED2L Administração de Bens e Participações Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 49900.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221248N",
+        "Nome": "Roberta de Moura Barnabe",
+        "Status": "Split Possível",
+        "Valor": 10575.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221245N",
+        "Nome": "Apoena Construtora Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 2650.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221241N",
+        "Nome": "Pain Gaming Esportes Eletronicos Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 2390.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221215N",
+        "Nome": "Therezinha Astolphi Caserta",
+        "Status": "Entregue",
+        "Valor": 16750.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221201N",
+        "Nome": "Dimitri Suliman Grudzinski",
+        "Status": "Entregue",
+        "Valor": 14600.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221169N",
+        "Nome": "Luis Fernando Menezes Garcia",
+        "Status": "Entregue",
+        "Valor": 8328.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221130N",
+        "Nome": "Julio Cesar Salles Vasques",
+        "Status": "A entregar",
+        "Valor": 28900.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221118N",
+        "Nome": "Volll Holding Ltda",
+        "Status": "Entregue",
+        "Valor": 8500.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221073N-A",
+        "Nome": "Rodrigo Guidon Rocha",
+        "Status": "Separar Mercadoria",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221073N",
+        "Nome": "Rodrigo Guidon Rocha",
+        "Status": "Separar Mercadoria",
+        "Valor": 16300.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221067N",
+        "Nome": "Conservias Comercial Ltda",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221058N",
+        "Nome": "Ipatintas 3D Construtora Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 56316.44
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221057N",
+        "Nome": "Ipatintas 3D Construtora Eireli",
+        "Status": "Separar Mercadoria",
+        "Valor": 42917.56
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221049N",
+        "Nome": "Concept Caieiras Spe Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 4578.90
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221048N",
+        "Nome": "Cbaa- Asfaltos Ltda",
+        "Status": "Entregue",
+        "Valor": 3150.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221018N",
+        "Nome": "Ricardo Hissao Kato",
+        "Status": "Entregue",
+        "Valor": 1880.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221010N",
+        "Nome": "Polyplastic Industria e Comercio Ltda.",
+        "Status": "Separar Mercadoria",
+        "Valor": 2199.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221009N",
+        "Nome": "Auto Posto Sao Lucas LT",
+        "Status": "Entregue",
+        "Valor": 4579.90
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "221003N",
+        "Nome": "Sum Engenharia SP Ltda",
+        "Status": "Entregue",
+        "Valor": 1690.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220995N",
+        "Nome": "Fabio Machado Hermsdorff",
+        "Status": "Entregue",
+        "Valor": 17625.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220982N",
+        "Nome": "Fabio Gironda Barbirato",
+        "Status": "A entregar",
+        "Valor": 2600.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220927N",
+        "Nome": "Bruna Valente",
+        "Status": "Entregue",
+        "Valor": 2160.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220903N",
+        "Nome": "Felipe Takatsu",
+        "Status": "Entregue",
+        "Valor": 2328.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220885N",
+        "Nome": "Pedro Henrique Menegatti",
+        "Status": "Entregue",
+        "Valor": 2150.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220876N",
+        "Nome": "Katia Ronise Fernandes Tedeschi",
+        "Status": "Entregue",
+        "Valor": 2600.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220869N",
+        "Nome": "Auto Posto Sao Lucas LT",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220857N",
+        "Nome": "Silvana Zalazar",
+        "Status": "Entregue",
+        "Valor": 1890.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220855N",
+        "Nome": "Evandro Roque de Oliveira",
+        "Status": "Separar Mercadoria",
+        "Valor": 5210.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220840N",
+        "Nome": "Giovanna Gogosz",
+        "Status": "Separar Mercadoria",
+        "Valor": 6300.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220832N",
+        "Nome": "Igreja Plenitude Crista",
+        "Status": "A entregar",
+        "Valor": 2785.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220816N",
+        "Nome": "Kalu Participacoes em Empreendimentos Ltda.",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220814N",
+        "Nome": "Aline Lança Lanfranchi",
+        "Status": "Entregue",
+        "Valor": 1950.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220804N",
+        "Nome": "Edna Lagnado",
+        "Status": "Separar Mercadoria",
+        "Valor": 6300.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220803N",
+        "Nome": "Diogenes Bellinati Guazzi",
+        "Status": "Entregue",
+        "Valor": 5800.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220796N-A",
+        "Nome": "C.H.Sakuyama Comércio de Piscinas",
+        "Status": "Separar Mercadoria",
+        "Valor": 0.00
+    },
+    {
+        "Data": "27/11/2020",
+        "Numero": "220796N",
+        "Nome": "C.H.Sakuyama Comércio de Piscinas",
+        "Status": "Separar Mercadoria",
+        "Valor": 49000.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220747N",
+        "Nome": "Jose Linaldo Camara de Araujo",
+        "Status": "A entregar",
+        "Valor": 14700.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220745N",
+        "Nome": "George Gabriel Zsego",
+        "Status": "A entregar",
+        "Valor": 21600.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220733N",
+        "Nome": "Sandra Opice",
+        "Status": "Split Possível",
+        "Valor": 38000.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220729N",
+        "Nome": "Alexandra Khichfy Alex",
+        "Status": "Split Possível",
+        "Valor": 10623.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220727N",
+        "Nome": "Visum Retina Clínica de Olhos Ltda",
+        "Status": "Entregue",
+        "Valor": 13100.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220720N",
+        "Nome": "Fábio Eduardo de Pieri Spina",
+        "Status": "Split Possível",
+        "Valor": 28500.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220719N",
+        "Nome": "Calil Jesus Sarmento",
+        "Status": "Entregue",
+        "Valor": 26000.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220706N",
+        "Nome": "José Garcia",
+        "Status": "A entregar",
+        "Valor": 2379.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220704N",
+        "Nome": "Laura Maria Cardoso Andrade",
+        "Status": "Entregue",
+        "Valor": 15000.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220674N",
+        "Nome": "Roberto Daniel Negrete",
+        "Status": "Entregue",
+        "Valor": 9000.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220667N",
+        "Nome": "Cofco International Brasil S.A.",
+        "Status": "Separar Mercadoria",
+        "Valor": 13160.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220666N",
+        "Nome": "Garrett Motion Industria Automotiva Brasil Ltda.",
+        "Status": "Entregue",
+        "Valor": 3310.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220655N",
+        "Nome": "Fabio Penteado de Ulhôa Rodrigues",
+        "Status": "Entregue",
+        "Valor": 3775.86
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220641N",
+        "Nome": "Jean Carlo Boldrim",
+        "Status": "Entregue",
+        "Valor": 11549.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220634N",
+        "Nome": "Ifp Promotora de Servicos de Consultoria e Cadastro Ltda",
+        "Status": "Entregue",
+        "Valor": 4370.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220631N",
+        "Nome": "Arpol Conforto Térmico Ltda.",
+        "Status": "Separar Mercadoria",
+        "Valor": 1670.00
+    },
+    {
+        "Data": "26/11/2020",
+        "Numero": "220601N",
+        "Nome": "Paulo Signoretti Domingues",
+        "Status": "Entregue",
+        "Valor": 17835.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220593N",
+        "Nome": "Felipe Simas",
+        "Status": "Entregue",
+        "Valor": 9760.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220583N",
+        "Nome": "Sociedade Agostiniana de Educação e Assistencia",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220580N-A",
+        "Nome": "João dos Santos Braga Neto",
+        "Status": "Entregue",
+        "Valor": 0.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220580N",
+        "Nome": "João dos Santos Braga Neto",
+        "Status": "Em espera",
+        "Valor": 79000.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220579N",
+        "Nome": "Eduardo Pires",
+        "Status": "Entregue",
+        "Valor": 12860.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220578N",
+        "Nome": "Jacob Cattan",
+        "Status": "Split Possível",
+        "Valor": 36973.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220577N",
+        "Nome": "Enebras Refrigeracao e Ar Condicionado Eireli",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220576N",
+        "Nome": "Nelson B. Filho",
+        "Status": "Entregue",
+        "Valor": 3675.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220566N",
+        "Nome": "Susanne Bussem",
+        "Status": "Entregue",
+        "Valor": 2278.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220560N",
+        "Nome": "Claudia Kaissar Nasr",
+        "Status": "Separar Mercadoria",
+        "Valor": 14500.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220559N",
+        "Nome": "Nathalia Zoli Santana Zoccoli",
+        "Status": "Entregue",
+        "Valor": 6000.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220554N",
+        "Nome": "João Frederico Luciano de Melo",
+        "Status": "Entregue",
+        "Valor": 2499.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220553N",
+        "Nome": "Mariana Dias Rabelo Pimenta",
+        "Status": "Entregue",
+        "Valor": 17450.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220552N",
+        "Nome": "Luis Fernando Medeiros",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220550N",
+        "Nome": "Mitsui Prime Advanced Compositora do Brasil Industria e Come",
+        "Status": "Entregue",
+        "Valor": 1084.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220534N",
+        "Nome": "Luis Fernando Medeiros",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220529N",
+        "Nome": "Farm Market Comercio de Hortifrutis e Frutaria Ltda",
+        "Status": "Entregue",
+        "Valor": 1565.60
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220526N",
+        "Nome": "Nova Aliança Montagens e Locações Ltda",
+        "Status": "Entregue",
+        "Valor": 55000.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220522N",
+        "Nome": "Bruno de Amicis Zanchetta",
+        "Status": "Entregue",
+        "Valor": 2660.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220521N",
+        "Nome": "Tabas Tecnologia Imobiliaria Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 2400.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220520N",
+        "Nome": "Gilberto Rangel Junior",
+        "Status": "Split Possível",
+        "Valor": 30700.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220512N",
+        "Nome": "Walter Juliano Gola",
+        "Status": "Entregue",
+        "Valor": 2215.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220506N",
+        "Nome": "Mariangela Garcia Trevizan",
+        "Status": "Split Possível",
+        "Valor": 16760.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220500N",
+        "Nome": "Fábio de Conti Santos",
+        "Status": "Separar Mercadoria",
+        "Valor": 2925.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220496N",
+        "Nome": "Osasco Emplacamento Veicular Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 1650.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220481N",
+        "Nome": "José Ginaldo da Silva Pinho",
+        "Status": "Entregue",
+        "Valor": 5700.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220468N",
+        "Nome": "Olavo Romão da Silva",
+        "Status": "A entregar",
+        "Valor": 2650.00
+    },
+    {
+        "Data": "25/11/2020",
+        "Numero": "220467N",
+        "Nome": "Sociedade Agostiniana de Educação e Assistencia",
+        "Status": "Entregue",
+        "Valor": 3080.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220461N",
+        "Nome": "Newset Service Comercio e Servicos de Ar Condicionado Eireli",
+        "Status": "Entregue",
+        "Valor": 560.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220460N",
+        "Nome": "Glauco Vedrano",
+        "Status": "Entregue",
+        "Valor": 23525.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220457N",
+        "Nome": "Rede D'Or São Luiz S.A.",
+        "Status": "Entregue",
+        "Valor": 4845.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220445N",
+        "Nome": "Maria Cecilia Gouvea Vieira Almeida e Silva",
+        "Status": "Entregue",
+        "Valor": 4900.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220443N",
+        "Nome": "Roberto Catalão Cardoso",
+        "Status": "Entregue",
+        "Valor": 9100.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220442N",
+        "Nome": "Eliane Sanches",
+        "Status": "Entregue",
+        "Valor": 5070.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220434N",
+        "Nome": "Caio Fraga",
+        "Status": "Entregue",
+        "Valor": 22883.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220426N",
+        "Nome": "Daniel Lourenço Amorim",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220425N",
+        "Nome": "Fabio Pontes Ramon Felin Takara",
+        "Status": "Entregue",
+        "Valor": 7700.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220422N",
+        "Nome": "Abros Empreendimentos e Participacoes Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 13400.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220401N",
+        "Nome": "Project-Tech Solucoes em Manutencao e Reforma Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 26187.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220396N",
+        "Nome": "Mauro Gustavo Paschkes",
+        "Status": "Split Possível",
+        "Valor": 36150.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220388N",
+        "Nome": "Tabas Tecnologia Imobiliaria Ltda",
+        "Status": "Separar Mercadoria",
+        "Valor": 12300.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220384N",
+        "Nome": "Sum Engenharia SP Ltda",
+        "Status": "Split Possível",
+        "Valor": 119742.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220382N",
+        "Nome": "Tabas Tecnologia Imobiliaria Ltda",
+        "Status": "Entregue",
+        "Valor": 5175.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220379N",
+        "Nome": "Renato Maggio",
+        "Status": "Entregue",
+        "Valor": 7430.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220377N",
+        "Nome": "Felipe Augusto Martins",
+        "Status": "Entregue",
+        "Valor": 1035.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220375N",
+        "Nome": "Debora Pereira Vaccari",
+        "Status": "Entregue",
+        "Valor": 2250.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220374N",
+        "Nome": "Rita de Cássia Menezes Honorio",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220359N",
+        "Nome": "Joice Chukr Lemes da Silva  de Azevedo",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220342N",
+        "Nome": "Gilberto de Biasi",
+        "Status": "Entregue",
+        "Valor": 9300.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220341N",
+        "Nome": "Victor Henrique Foroni",
+        "Status": "Entregue",
+        "Valor": 6040.00
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220338N",
+        "Nome": "Maria Clara Bonetto",
+        "Status": "Entregue",
+        "Valor": 8581.5900
+    },
+    {
+        "Data": "24/11/2020",
+        "Numero": "220335N",
+        "Nome": "Rni Incorporadora Imobiliaria 461 Ltda",
+        "Status": "Entregue",
+        "Valor": 6237.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220315N",
+        "Nome": "Milena Lie Kawabuti",
+        "Status": "Entregue",
+        "Valor": 15520.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220309N",
+        "Nome": "Afonso Cândido de Oliveira Junior",
+        "Status": "Entregue",
+        "Valor": 2199.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220307N",
+        "Nome": "Eliza Correia de Almeida Nobre",
+        "Status": "Entregue",
+        "Valor": 2060.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220305N",
+        "Nome": "Felipe Ortiz de Seixas",
+        "Status": "Separar Mercadoria",
+        "Valor": 13800.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220302N-A",
+        "Nome": "Condomínio Parque Guarulhos",
+        "Status": "Entregue",
+        "Valor": 0.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220302N",
+        "Nome": "Condomínio Parque Guarulhos",
+        "Status": "Entregue",
+        "Valor": 44950.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220297N",
+        "Nome": "Rodrigo Ferreira Real",
+        "Status": "Separar Mercadoria",
+        "Valor": 12125.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220293N",
+        "Nome": "Rafael Pizzotti Machado",
+        "Status": "Entregue",
+        "Valor": 31700.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220289N",
+        "Nome": "Gabriel Provenzale Guper",
+        "Status": "Separar Mercadoria",
+        "Valor": 11700.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220277N",
+        "Nome": "Elga Costa de Oliveira",
+        "Status": "Entregue",
+        "Valor": 14600.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220270N",
+        "Nome": "Maria Beatriz de Almeida Prado Sassi",
+        "Status": "Entregue",
+        "Valor": 12800.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220247N",
+        "Nome": "Condominio Edificio Comercial HR Bastos",
+        "Status": "Entregue",
+        "Valor": 39940.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220246N",
+        "Nome": "Condominio Edificio Comercial HR Bastos",
+        "Status": "Entregue",
+        "Valor": 40835.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220229N",
+        "Nome": "Mirta Beatriz Branda Acevedo Viriato",
+        "Status": "Entregue",
+        "Valor": 6360.00
+    },
+    {
+        "Data": "23/11/2020",
+        "Numero": "220217N",
+        "Nome": "Nelson B. Filho",
+        "Status": "Cancelado",
+        "Valor": 0.00
+    }
+]
