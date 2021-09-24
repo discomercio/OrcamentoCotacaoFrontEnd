@@ -5,7 +5,7 @@
             <h4 *ngIf="!emPedidos">Lista de Orçamentos</h4>
             <form [formGroup]="form" class="p-col-12 p-px-0">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
-                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-4 p-as-end">
+                    <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-as-end">
                         <label for="filtro">Status</label>
                         <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
                             placeholder="Selecione" formControlName="filtro"
@@ -14,45 +14,33 @@
                             pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
                         </p-multiSelect>
                     </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-4 p-sm-4 p-as-end">
+                    <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-as-end">
                         <label for="nomeObra">Nome</label>
                         <input id="nomeObra" type="text" pInputText placeholder="" />
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                    <div class="p-field p-col-12 p-lg-2 p-md-5 p-sm-5 p-as-end">
                         <label for="dataInicio">Data início</label>
                         <input id="dataInicio" type="date" pInputText placeholder="" formControlName="dataInicio" />
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                    <div class="p-field p-col-12 p-lg-2 p-md-5 p-sm-5 p-as-end">
                         <label for="dataFinal">Data final</label>
                         <input id="dataFinal" type="date" pInputText placeholder="" formControlName="dataFinal" />
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
                         <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
-                            (click)="filtrar()"></button>
+                            (click)="filtrar(true)"></button>
                     </div>
 
                 </div>
             </form>
             <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
-                [responsive]="true" responsiveLayout="stack" breakpoint="680px"
+                [responsive]="true" responsiveLayout="stack" breakpoint="680px" 
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
-                [paginator]="true" [filterDelay]="0"
+                [paginator]="true" [filterDelay]="0" (onRowSelect)="filtrar(true)"
                 [globalFilterFields]="['Data','Orcamento','Nome','Status', 'Valor']">
-                <!-- <ng-template pTemplate="caption">
-                    <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
-                        Lista de Orçamentos
-                        <span class="p-input-icon-left">
-                            <i class="pi pi-search"></i>
-                            <input pInputText type="text"
-                                (input)="dataTable.filterGlobal($event.target.value, 'contains')"
-                                placeholder="Procura" />
-                        </span>
-                    </div>
-                </ng-template> -->
-                <ng-template pTemplate="header" let-columns>
+                <ng-template pTemplate="header" let-columns >
                     <tr>
-                        <th style="width: 45px"></th>
-                        <th class="p-py-2" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
+                        <th  class="p-py-2 p-pl-6" pSortableColumn="{{col.field}}" *ngFor="let col of columns" >
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 {{col.header}}
                             </div>
@@ -61,10 +49,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="p-selectable-row" [pSelectableRow]="rowData">
-                        <td>
-                            <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
-                        </td>
-                        <td *ngFor="let col of columns">
+                        <td *ngFor="let col of columns" class="p-pl-5">
                             {{col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]): rowData[col.field]}}
                         </td>
                     </tr>

@@ -36,7 +36,7 @@ export class ListaComponent implements OnInit {
   cols: any[];
   lstDto: Array<ListaDto> = new Array();
   lstDtoFiltrada: Array<ListaDto> = new Array();
-  moedaUtils:MoedaUtils = new MoedaUtils();
+  moedaUtils: MoedaUtils = new MoedaUtils();
 
   ngOnInit(): void {
     this.criarForm();
@@ -69,18 +69,18 @@ export class ListaComponent implements OnInit {
       this.montarSelectFiltro();
       this.setarFiltro(this.param);
       this.buscarOrcamentos();
-      this.filtrar();
+      this.filtrar(false);
     }
     if (this.param == "pedido") {
       this.emPedidos = true;
       this.montarSelectFiltro();
       this.setarFiltro("todos");
       this.buscarPedidos();
-      this.filtrar();
+      this.filtrar(false);
     }
   }
 
-  setarFiltro(filtro:string) {
+  setarFiltro(filtro: string) {
     this.filtro = new Array<SelectItem>();
     this.lstFiltro.map((m) => {
       let map: string = m.value.toLowerCase();
@@ -88,6 +88,7 @@ export class ListaComponent implements OnInit {
         this.filtro.push(m.value);
       }
     });
+    this.form.controls.filtro.setValue(this.filtro);
   }
 
   buscarOrcamentos() {
@@ -138,8 +139,9 @@ export class ListaComponent implements OnInit {
 
   }
 
-  filtrar() {
-    this.mensagemService.showWarnViaToast("Estamos implementando!");
+  filtrar(mostrarMensagem: boolean) {
+    if (mostrarMensagem)
+      this.mensagemService.showWarnViaToast("Estamos implementando!");
   }
 
   ngOnDestroy() {
