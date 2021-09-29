@@ -144,7 +144,10 @@ import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.co
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import{NgxMaskModule} from 'ngx-mask';
 import { CadastrarClienteComponent } from './orcamentos/novo/cadastrar-cliente/cadastrar-cliente.component';
-import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component'
+import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
+import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component'
+import { ProdutoService } from './service/produto/produto.service';
+import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 
 @NgModule({
     imports: [
@@ -284,13 +287,15 @@ import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.compo
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
         CadastrarClienteComponent,
-        ListaComponent
+        ListaComponent,
+        ListaProdutosComponent,
+        VisualizarProdutoComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent
+        AppMenuComponent, ProdutoService
     ],
     bootstrap: [AppComponent]
 })
