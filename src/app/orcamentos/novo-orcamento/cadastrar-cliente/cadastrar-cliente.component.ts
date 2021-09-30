@@ -1,3 +1,5 @@
+
+
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
@@ -9,6 +11,10 @@ import { Parceiro } from 'src/app/dto/parceiros/parceiro';
 import { Estado } from 'src/app/dto/ceps/estado';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { SelectItem } from 'primeng/api';
+import { Router } from '@angular/router';
+import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -21,14 +27,16 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,
     private readonly usuarioService: UsuariosService,
     private readonly alertaService: AlertaService,
-    private readonly cepService:CepsService) { }
+    private readonly cepService: CepsService,
+    public readonly router: Router,
+    public readonly novoOrcamentoService: NovoOrcamentoService) { }
 
   public mascaraTelefone: string;
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public lstVendedores: Array<UsuarioXLoja>;
   public lstParceiro: Array<Parceiro>;
-  public lstEstado:Array<Estado>;
+  public lstEstado: Array<Estado>;
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -60,9 +68,9 @@ export class CadastrarClienteComponent implements OnInit {
     });
   }
 
-  buscarEstados(){
-    this.cepService.buscarEstados().toPromise().then((r) =>{
-      if(r != null){
+  buscarEstados() {
+    this.cepService.buscarEstados().toPromise().then((r) => {
+      if (r != null) {
         this.lstEstado = r;
       }
     })
@@ -78,23 +86,26 @@ export class CadastrarClienteComponent implements OnInit {
 
   criarForm() {
     this.form = this.fb.group({
-      nome: ['', [Validators.required]],
-      nomeObra:[''],
-      vendedor: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
-      parceiro: [''],
-      telefone: [''],
-      concorda: [''],
-      validade: ['', [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
-      vendedorParceiro: [''],
-      estado: ['', [Validators.required]],
-      tipo: ['', [Validators.required]]
+      Nome: ['', [Validators.required]],
+      NomeObra: [''],
+      Vendedor: ['', [Validators.required]],
+      Email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
+      Parceiro: [''],
+      Telefone: [''],
+      Concorda: [''],
+      Validade: ['', [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      VendedorParceiro: [''],
+      Uf: ['', [Validators.required]],
+      Tipo: ['', [Validators.required]]
     })
   }
 
   iniciarOrcamento() {
-    if (!this.validacaoFormGroup.validaForm(this.form)) return;
+    // if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
-    console.log("passou");
+    this.novoOrcamentoService.criarNovo();
+    let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
+    this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.router.navigate(['novo-orcamento/itens']);
   }
 }

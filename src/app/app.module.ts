@@ -143,11 +143,12 @@ import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import{NgxMaskModule} from 'ngx-mask';
-import { CadastrarClienteComponent } from './orcamentos/novo/cadastrar-cliente/cadastrar-cliente.component';
 import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
 import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component'
 import { ProdutoService } from './service/produto/produto.service';
 import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
+import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
+import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 
 @NgModule({
     imports: [
@@ -240,7 +241,8 @@ import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visual
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
-        NgxMaskModule.forRoot()
+        NgxMaskModule.forRoot(),
+        NovoOrcamentoModule
     ],
     declarations: [
         AppComponent,
@@ -286,7 +288,6 @@ import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visual
         AlertDialogComponent,
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
-        CadastrarClienteComponent,
         ListaComponent,
         ListaProdutosComponent,
         VisualizarProdutoComponent
