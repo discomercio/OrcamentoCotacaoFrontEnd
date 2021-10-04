@@ -4,6 +4,7 @@ import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -21,8 +22,11 @@ export class ListaProdutosComponent implements OnInit {
   listaProdutoDto: ListaProdutoDto[];
   cols: any[];
   carregando: boolean = false;
+  stringUtils = StringUtils;
+
 
   ngOnInit(): void {
+
     this.carregando = true;
     this.criarForm();
     this.criarTabela();
@@ -63,11 +67,4 @@ export class ListaProdutosComponent implements OnInit {
     console.log(prod);
     this.router.navigate(["/produtos/visualizar-produto/visualizar-produto", prod.Fabricante, prod.Produto]);
   }
-
-  formatarDescrcao(linha: ListaProdutoDto) {
-    let texto: string = linha.FabricanteNome + " - " + linha.Fabricante + "/" + linha.Produto + " - " + linha.Descricao_Html;
-    return texto;
-  }
-
-
 }

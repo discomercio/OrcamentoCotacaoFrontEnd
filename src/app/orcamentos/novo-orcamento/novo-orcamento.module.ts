@@ -11,6 +11,8 @@ import { NgxMaskModule } from 'ngx-mask';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ItensComponent } from './itens/itens.component';
 import { DividerModule } from 'primeng/divider';
+import { TableModule } from 'primeng/table';
+import { InputTextareaModule } from 'primeng/inputtextarea';
 
 @NgModule({
     imports:[
@@ -22,7 +24,9 @@ import { DividerModule } from 'primeng/divider';
         NovoOrcamentoRoutingModule,
         ButtonModule,
         NgxMaskModule.forRoot(),
-        DividerModule
+        DividerModule,
+        TableModule,
+        InputTextareaModule
     ],
     exports:[
 

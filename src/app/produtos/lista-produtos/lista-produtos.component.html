@@ -49,7 +49,7 @@
                     <tr class="p-selectable-row">
                         <td>
                             <input type="hidden" value="{{lista.Produto}}" />
-                            <p [innerHtml]="formatarDescrcao(lista)"></p>
+                            <p [innerHtml]="stringUtils.formatarDescricao(lista.Fabricante, lista.FabricanteNome, lista.Produto, lista.Descricao_Html)"></p>
                         </td>
                         <td style="text-align: center">{{lista.Categoria}}</td>
                         <td style="text-align: center">{{lista.Ativo == 'S'? 'Sim':'Não'}}</td>
