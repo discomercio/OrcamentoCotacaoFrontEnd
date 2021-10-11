@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="p-col-12 p-px-0">
+        <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+            <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                <label for="nome">Produto (código)</label>
+                <input id="nome" type="text" pInputText [(ngModel)]="codigoProduto" (change)="digitouProd($event)"
+                    (keyup)="digitouProd($event)" />
+            </div>
+        </div>
+        <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack"
+            [ngClass]="{'carregando': carregando}" autoLayout="true" selectionMode="single" [(selection)]="selecionado"
+            styleClass="p-datatable-customers p-datatable-sm p-datatable-striped" [rows]="3" [filterDelay]="0"
+            [paginator]="true">
+            <ng-template pTemplate="body" let-p>
+                <ng-container *ngIf="p.visivel">
+                    <tr class="p-selectable-row" class="font-size">
+                        <td>
+                            <p-tableRadioButton [value]="p"></p-tableRadioButton>
+                        </td>
+                        <td>
+                            <span class="p-column-title">Produto</span>
+                            {{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}
+                            <span [innerHTML]="p.produtoDto.Descricao_html"></span>
+                        </td>
+                        <td>
+                            <span class="p-column-title">VL Lista:</span>
+                            <div class="p-text-right">
+                                {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.Preco_lista)}}
+                            </div>
+                        </td>
+                    </tr>
+                    <tr *ngFor="let f of p.Filhos">
+                        <td></td>
+                        <td class="p-pl-6">
+                            <span class="p-column-title">Produto</span>
+                            {{ProdutoTelaFabrProd(f.Fabricante, f.Fabricante_Nome, f.Produto)}} -
+                            <span [innerHTML]="f.Descricao_html"></span>
+                        </td>
+                        <td class="p-pl-6">
+                            <span class="p-column-title">VL Lista:</span>
+                            <div class="p-text-right">
+                                {{moedaUtils.formatarMoedaComPrefixo(f.Preco_lista)}}
+                            </div>
+                        </td>
+                    </tr>
+                </ng-container>
+            </ng-template>
+        </p-table>
+    </div>
+</div>
+<div class="footer">
+    <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button>
+</div>

@@ -6,3 +6,14 @@
 .font-size {
     font-size: small !important; 
 }
+
+.alerta{
+    background-color: antiquewhite !important;
+    color:red !important;
+    font-weight: bold;
+}
+
+
+::ng-deep .p-datatable .p-datatable-tbody > tr{
+    border-bottom: 2px solid #cecece !important;
+}

@@ -13,6 +13,10 @@ import { ItensComponent } from './itens/itens.component';
 import { DividerModule } from 'primeng/divider';
 import { TableModule } from 'primeng/table';
 import { InputTextareaModule } from 'primeng/inputtextarea';
+import { SelectProdDialogComponent } from './select-prod-dialog/select-prod-dialog.component';
+import { DialogModule } from 'primeng/dialog';
+import { DialogService } from 'primeng/dynamicdialog';
+import { PaginatorModule } from 'primeng/paginator';
 
 @NgModule({
     imports:[
@@ -25,8 +29,10 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
         ButtonModule,
         NgxMaskModule.forRoot(),
         DividerModule,
+        DialogModule,
         TableModule,
-        InputTextareaModule
+        InputTextareaModule,
+        PaginatorModule
     ],
     exports:[
 
@@ -34,8 +40,9 @@ import { InputTextareaModule } from 'primeng/inputtextarea';
     declarations:[
         NovoOrcamentoComponent,
         CadastrarClienteComponent,
-        ItensComponent
+        ItensComponent,
+        SelectProdDialogComponent
     ],
-    providers:[]
+    providers:[DialogService]
 })
 export class NovoOrcamentoModule { }

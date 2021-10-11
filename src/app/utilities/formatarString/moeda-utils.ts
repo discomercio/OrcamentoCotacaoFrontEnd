@@ -12,8 +12,19 @@ export class MoedaUtils {
     }
 
     public formatarMoedaSemPrefixo(nro: number) {
-        if (!!!nro)
+        if (!!!nro){
             return "";
+        }
+        return this.formatter.format(nro);
+    }
+
+    public formatarDecimal(valor: number): number {
+        return Number.parseFloat(valor.toFixed(2));
+    }
+
+    public formatarValorDuasCasaReturnZero(nro: number) {
+        if (!!!nro)
+            return "0,00";
         return this.formatter.format(nro);
     }
 }

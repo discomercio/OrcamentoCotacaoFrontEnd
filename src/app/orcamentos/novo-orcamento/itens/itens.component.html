@@ -2,151 +2,158 @@
     <div class="p-col-12 p-pb-0">
         <div class="card">
             <h4>Produtos e Pagamentos</h4>
-            <form [formGroup]="form">
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex p-jc-end p-px-0">
-                        <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12">
-                            <button pButton pRipple label="Adicionar Produto" icon="pi pi-plus"
-                                (click)="lista()"></button>
-                        </div>
+            <!-- <form> -->
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex p-jc-end p-px-0">
+                    <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12">
+                        <button pButton pRipple label="Adicionar Produto" icon="pi pi-plus"
+                            (click)="adicionarProduto()"></button>
                     </div>
-                    <div class="p-col-12 p-px-0">
-                        <p-table #dataTable [value]="produtos.controls" [responsive]="true" responsiveLayout="stack"
-                            [ngClass]="{'carregando': carregando}" autoLayout="true"
-                            styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
-                            <ng-template pTemplate="header">
-                                <tr class="font-size">
-                                    <th class="">Produto</th>
-                                    <th class="p-text-right">Qtde</th>
-                                    <th class="p-text-right">Preço NF</th>
-                                    <th class="p-text-right">Vl Lista</th>
-                                    <th class="p-text-right">Desc%</th>
-                                    <th class="p-text-right">Vl Venda</th>
-                                    <th class="p-text-right">Vl Total</th>
-                                    <th class="p-text-right">Excluir</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" formArrayName="produtos" let-rowIndex="rowIndex">
-                                <tr class="p-selectable-row" class="font-size" [formGroupName]="rowIndex">
-                                    <td>
-                                        <span class="p-column-title">Produto</span>
-                                        <input type="hidden" value="{{produtos.controls[rowIndex].value.Produto}}"
-                                            formControlName="Produto" />
-                                        <p
-                                            [innerHtml]="stringUtils.formatarDescricao(produtos.controls[rowIndex].value.Fabricante, produtos.controls[rowIndex].value.Fabricante_Nome, produtos.controls[rowIndex].value.Produto, produtos.controls[rowIndex].value.Descricao)">
-                                        </p>
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">Qtde</span>
-                                        <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
-                                            [value]="produtos.controls[rowIndex].value.Qtde"
-                                            (change)="digitouQte(produtos.controls[rowIndex].value)"
-                                            formControlName="Qtde" />
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">Preço NF</span>
-                                        <input class="p-text-right" id="precoNF" type="text" pInputText placeholder=""
-                                            formControlName="Preco_NF"
-                                            [value]="moedaUtils.formatarMoedaSemPrefixo(produtos.controls[rowIndex].value.Preco_NF)"
-                                            (blur)="digitouPreco_NF(produtos.controls[rowIndex].value)"
-                                            (keyup)="formatarPreco_NF(produtos.controls[rowIndex].value)" />
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">VL Lista:</span>
-                                        <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(produtos.controls[rowIndex].value.CustoFinancFornecPrecoListaBase)}}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">Desc%</span>
-                                        <div class="p-d-flex p-ai-center ">
-                                            <input class="p-text-right font-size" pInputText id="desconto" type="text"
-                                                [value]="produtos.controls[rowIndex].value.Desc_Dado" /> %
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">Vl Total</span>
-                                        <input class="p-text-right" pInputText id="vlVenda" type="text"
-                                            [value]="moedaUtils.formatarMoedaSemPrefixo(produtos.controls[rowIndex].value.Preco_Venda)" />
-                                    </td>
-                                    <td>
-                                        <span class="p-column-title">Vl Total:</span>
-                                        <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(produtos.controls[rowIndex].value.TotalItem)}}
-                                        </div>
-                                    </td>
-                                    <td class="p-pr-3">
-                                        <span class="p-column-title">Excluir:</span>
-                                        <div class="p-text-right">
-                                            <i class="pi pi-trash" style="color: red"
-                                                (click)="removerItem(rowIndex)"></i>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="8">mensagem de alerta</td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="footer" class="font-size">
-                                <tr class="font-size">
-                                    <td class="p-text-right">RA 506,20</td>
-                                    <td></td>
-                                    <td class="p-text-right">531,02</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="p-text-right">Total</td>
-                                    <td class="p-text-right">1.230,00</td>
-                                    <td></td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                        <div *ngIf="onResize() && produtos.controls.length > 0"
-                            style="border: 1px solid #cecece; border-radius: 0.5rem" class="p-mt-4">
-                            <div class="p-d-flex p-jc-between p-text-bold font-size">
-                                <span>RA</span>
-                                <span>506,20</span>
-                            </div>
-                            <div class="p-d-flex p-jc-between p-text-bold font-size">
-                                <span>Total Preço NF</span>
-                                <span>506,20</span>
-                            </div>
-                            <div class="p-d-flex p-jc-between p-text-bold font-size">
-                                <span>Total</span>
-                                <span>506,20</span>
-                            </div>
+                </div>
+                <div class="p-col-12 p-px-0">
+                    <p-table #dataTable [value]="lstProdutos" [responsive]="true" responsiveLayout="stack"
+                        [ngClass]="{'carregando': carregando}" autoLayout="true"
+                        styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
+                        <ng-template pTemplate="header">
+                            <tr class="font-size">
+                                <th class="">Produto</th>
+                                <th class="p-text-right">Qtde</th>
+                                <th class="p-text-right">Preço NF</th>
+                                <th class="p-text-right">Vl Lista</th>
+                                <th class="p-text-right">Desc%</th>
+                                <th class="p-text-right">Vl Venda</th>
+                                <th class="p-text-right">Vl Total</th>
+                                <th class="p-text-right">Excluir</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-p let-index="rowIndex">
+                            <tr class="p-selectable-row" class="font-size">
+                                <td>
+                                    <span class="p-column-title">Produto</span>
+                                    <input type="hidden" value="{{p.Produto}}" [(ngModel)]="p.Produto" />
+                                    <p
+                                        [innerHtml]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto, p.Descricao)">
+                                    </p>
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Qtde</span>
+                                    <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
+                                        [value]="p.Qtde" [(ngModel)]="p.Qtde" (change)="digitouQte(p)" />
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Preço NF</span>
+                                    <input class="p-text-right" id="precoNF" type="text" pInputText placeholder=""
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.Preco_NF)"
+                                        (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
+                                </td>
+                                <td>
+                                    <span class="p-column-title">VL Lista:</span>
+                                    <div class="p-text-right">
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.CustoFinancFornecPrecoListaBase)}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Desc%</span>
+                                    <div class="p-d-flex p-ai-center ">
+                                        <input class="p-text-right font-size" pInputText id="desconto" type="text"
+                                            [value]="moedaUtils.formatarMoedaSemPrefixo(p.Desc_Dado)"
+                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Vl Total</span>
+                                    <input class="p-text-right" pInputText id="vlVenda" type="text"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.Preco_Venda)" 
+                                        (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)"/>
+                                </td>
+                                <td>
+                                    <span class="p-column-title">Vl Total:</span>
+                                    <div class="p-text-right">
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.TotalItem)}}
+                                    </div>
+                                </td>
+                                <td class="p-pr-3">
+                                    <span class="p-column-title">Excluir:</span>
+                                    <div class="p-text-right">
+                                        <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr *ngIf="estoqueExcedido(p)" class="alerta">
+                                <td colspan="8" class="font-size">AVISO: Quantidade solicitada é maior que o estoque
+                                    disponível!</td>
+                            </tr>
+                            <tr *ngIf="produtoTemAviso(p)" >
+                                <td colspan="8" class="font-size alerta">AVISO: {{mensagemAlerta}}</td>
+                            </tr>
+                            <tr *ngIf="qtdeVendaPermitida(p)" class="alerta">
+                                <td colspan="8" class="font-size">AVISO: Quantidade solicitada excede a quantidade
+                                    máxima de venda permitida!</td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="footer" class="font-size">
+                            <tr class="font-size">
+                                <td class="p-text-right">RA {{somarRA()}}</td>
+                                <td></td>
+                                <td class="p-text-right">
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.totalPedidoRA())}}
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td class="p-text-right">Total</td>
+                                <td class="p-text-right">
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.totalPedido())}}</td>
+                                <td></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div *ngIf="onResize() && lstProdutos.length > 0"
+                        style="border: 1px solid #cecece; border-radius: 0.5rem" class="p-mt-4">
+                        <div class="p-d-flex p-jc-between p-text-bold font-size">
+                            <span>RA</span>
+                            <span>{{somarRA()}}</span>
+                        </div>
+                        <div class="p-d-flex p-jc-between p-text-bold font-size">
+                            <span>Total Preço NF</span>
+                            <span>{{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.totalPedidoRA())}}</span>
+                        </div>
+                        <div class="p-d-flex p-jc-between p-text-bold font-size">
+                            <span>Total</span>
+                            <span>{{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.totalPedido())}}</span>
                         </div>
                     </div>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+            </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
 
-                    <div *ngIf="produtos.controls.length > 0"
-                        class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-jc-between p-px-0">
-                        <div class="p-col-12 p-lg-6 p-md-6 p-sm-12 p-px-0 p-py-1">
-                            <textarea rows="4" cols="3" placeholder="Observações" pInputTextarea></textarea>
+                <div *ngIf="lstProdutos.length > 0"
+                    class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-jc-between p-px-0">
+                    <div class="p-col-12 p-lg-6 p-md-6 p-sm-12 p-px-0 p-py-1">
+                        <textarea rows="4" cols="3" placeholder="Observações" pInputTextarea></textarea>
+                    </div>
+                    <div class="p-col-12 p-lg-4 p-md-4 p-sm-4 p-px-0 p-px-md-4 p-py-1">
+                        <h6>Formas de pagamento</h6>
+                        <div class="p-field-checkbox">
+                            <p-checkbox name="avista" value="" inputId="avista">
+                            </p-checkbox>
+                            <label class="font-size" for="avista">Á vista (3% desconto)</label>
                         </div>
-                        <div class="p-col-12 p-lg-4 p-md-4 p-sm-4 p-px-0 p-px-md-4 p-py-1">
-                            <h6>Formas de pagamento</h6>
-                            <div class="p-field-checkbox">
-                                <p-checkbox name="avista" value="" inputId="avista">
-                                </p-checkbox>
-                                <label class="font-size" for="avista">Á vista (3% desconto)</label>
-                            </div>
-                            <div class="p-field-checkbox">
-                                <p-checkbox name="parcelado" value="" inputId="parcelado">
-                                </p-checkbox>
-                                <label class="font-size" for="parcelado">Parcelado</label>
-                            </div>
-                        </div>
-                        <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12">
-                            <button pButton pRipple label="Incluir Produtos" (click)="incluirProduto()"></button>
+                        <div class="p-field-checkbox">
+                            <p-checkbox name="parcelado" value="" inputId="parcelado">
+                            </p-checkbox>
+                            <label class="font-size" for="parcelado">Parcelado</label>
                         </div>
                     </div>
+                    <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12">
+                        <button pButton pRipple label="Incluir Produtos" (click)="incluirProduto()"></button>
+                    </div>
                 </div>
-                <div class="p-formgrid p-col-12 divider"></div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+            </div>
+            <div class="p-formgrid p-col-12 divider"></div>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
 
-                </div>
-            </form>
+            </div>
+            <!-- </form> -->
         </div>
     </div>
 </div>

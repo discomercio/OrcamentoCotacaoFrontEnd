@@ -9,6 +9,7 @@ export class ProdutoOrcamentoDto{
     Desc_Dado: number | null;
     Preco_Venda: number;
     TotalItem: number | null;
+    TotalItemRA: number | null;
 
     VL_Lista: number;
     Obs: string;
@@ -16,7 +17,6 @@ export class ProdutoOrcamentoDto{
     BlnTemRa: boolean;
     VlTotalRA: number;
     Comissao: number | null;
-    TotalItemRA: number | null;
     AlterouValorRa: boolean | null;
     Alterou_Preco_Venda: boolean | null;
     //verificar a necessidade dessa variavel
