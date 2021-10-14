@@ -1,7 +1,7 @@
 
 
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
@@ -13,8 +13,9 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -29,7 +30,8 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly cepService: CepsService,
     public readonly router: Router,
-    public readonly novoOrcamentoService: NovoOrcamentoService) { }
+    public readonly novoOrcamentoService: NovoOrcamentoService,
+    private datePipe: DatePipe) { }
 
   public mascaraTelefone: string;
   public form: FormGroup;
@@ -37,6 +39,7 @@ export class CadastrarClienteComponent implements OnInit {
   public lstVendedores: Array<UsuarioXLoja>;
   public lstParceiro: Array<Parceiro>;
   public lstEstado: Array<Estado>;
+  public desabilitado: boolean = true;
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -85,27 +88,47 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   criarForm() {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined)
+      this.novoOrcamentoService.criarNovo();
+
+    let clienteOrcamentoCotacao = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
-      Nome: ['', [Validators.required]],
-      NomeObra: [''],
-      Vendedor: ['', [Validators.required]],
-      Email: ['', [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
-      Parceiro: [''],
-      Telefone: [''],
-      Concorda: [''],
-      Validade: ['', [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
-      VendedorParceiro: [''],
-      Uf: ['', [Validators.required]],
-      Tipo: ['', [Validators.required]]
-    })
+      Nome: [clienteOrcamentoCotacao.Nome, [Validators.required]],
+      NomeObra: [clienteOrcamentoCotacao.NomeObra],
+      Vendedor: [clienteOrcamentoCotacao.Vendedor, [Validators.required]],
+      Email: [clienteOrcamentoCotacao.Email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
+      Parceiro: [clienteOrcamentoCotacao.Parceiro],
+      Telefone: [clienteOrcamentoCotacao.Telefone],
+      Concorda: [clienteOrcamentoCotacao.Concorda],
+      Validade: [clienteOrcamentoCotacao.Validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      VendedorParceiro: [clienteOrcamentoCotacao.VendedorParceiro],
+      Uf: [clienteOrcamentoCotacao.Uf, [Validators.required]],
+      Tipo: [clienteOrcamentoCotacao.Tipo, [Validators.required]]
+    });
+
+    this.verificaDataValidade();
+    
+  }
+
+  verificaDataValidade(){
+    if(!this.form.controls.Validade.value){
+      let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+      this.form.controls.Validade.setValue(this.datePipe.transform(data,"yyyy-MM-dd"));
+      this.form.controls.Validade.disable();
+    }
+
+    let validacaoData:Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    if(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade < validacaoData){
+      this.form.controls.Validade.enable();
+    }
   }
 
   iniciarOrcamento() {
-    // if (!this.validacaoFormGroup.validaForm(this.form)) return;
-
     this.novoOrcamentoService.criarNovo();
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
-    this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
     this.router.navigate(['novo-orcamento/itens']);
   }
 }

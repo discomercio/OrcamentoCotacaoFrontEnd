@@ -1,0 +1,94 @@
+{
+    "ListaAvista": [
+        {
+            "Id": 1,
+            "Descricao": "Dinheiro",
+            "Ordenacao": 100
+        },
+        {
+            "Id": 2,
+            "Descricao": "Depósito",
+            "Ordenacao": 200
+        },
+        {
+            "Id": 6,
+            "Descricao": "Boleto AV",
+            "Ordenacao": 600
+        }
+    ],
+    "ListaParcUnica": [
+        {
+            "Id": 1,
+            "Descricao": "Dinheiro",
+            "Ordenacao": 100
+        },
+        {
+            "Id": 2,
+            "Descricao": "Depósito",
+            "Ordenacao": 200
+        },
+        {
+            "Id": 4,
+            "Descricao": "Boleto",
+            "Ordenacao": 400
+        }
+    ],
+    "ParcCartaoInternet": true,
+    "ParcCartaoMaquineta": true,
+    "ListaParcComEntrada": [
+        {
+            "Id": 1,
+            "Descricao": "Dinheiro",
+            "Ordenacao": 100
+        },
+        {
+            "Id": 2,
+            "Descricao": "Depósito",
+            "Ordenacao": 200
+        },
+        {
+            "Id": 4,
+            "Descricao": "Boleto",
+            "Ordenacao": 400
+        },
+        {
+            "Id": 5,
+            "Descricao": "Cartão (internet)",
+            "Ordenacao": 500
+        },
+        {
+            "Id": 7,
+            "Descricao": "Cartão (maquineta)",
+            "Ordenacao": 550
+        }
+    ],
+    "ListaParcComEntPrestacao": [
+        {
+            "Id": 1,
+            "Descricao": "Dinheiro",
+            "Ordenacao": 100
+        },
+        {
+            "Id": 2,
+            "Descricao": "Depósito",
+            "Ordenacao": 200
+        },
+        {
+            "Id": 4,
+            "Descricao": "Boleto",
+            "Ordenacao": 400
+        },
+        {
+            "Id": 5,
+            "Descricao": "Cartão (internet)",
+            "Ordenacao": 500
+        },
+        {
+            "Id": 7,
+            "Descricao": "Cartão (maquineta)",
+            "Ordenacao": 550
+        }
+    ],
+    "ListaParcSemEntPrimPrest": null,
+    "ListaParcSemEntPrestacao": null
+}

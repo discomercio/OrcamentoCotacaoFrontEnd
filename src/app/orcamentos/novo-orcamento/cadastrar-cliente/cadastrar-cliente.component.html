@@ -1,114 +1,113 @@
 <div class="p-grid">
-        <div class="p-col-12 p-pb-0">
-            <div class="card">
-                <h4>Criar Orçamento</h4>
-                <form [formGroup]="form">
-                    <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                            <label for="nome">Nome do cliente</label>
-                            <input id="nome" type="text" pInputText formControlName="Nome" />
-                            <div *ngIf="validacaoFormGroup.verificaCampo(form,'Nome')">
-                                <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
-                                <!-- <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">Quantidade de caracteres
+    <div class="p-col-12 p-pb-0">
+        <div class="card">
+            <h4>Criar Orçamento</h4>
+            <form [formGroup]="form">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="nome">Nome do cliente</label>
+                        <input id="nome" type="text" pInputText formControlName="Nome" />
+                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'Nome')">
+                            <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
+                            <!-- <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">Quantidade de caracteres
                                     excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small> -->
-                            </div>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                            <label for="nomeObra">Nome da obra</label>
-                            <input id="nomeObra" type="text" pInputText formControlName="NomeObra" />
                         </div>
                     </div>
-                    <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                            <label for="email">E-mail do cliente</label>
-                            <input id="email" type="text" pInputText placeholder="" formControlName="Email" />
-                            <div *ngIf="validacaoFormGroup.verificaCampo(form,'Email')">
-                                <small class="p-error" *ngIf="form.controls.Email.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.Email.errors?.pattern">Endereço de e-mail
-                                    inválido!</small>
-                                <small class="p-error" *ngIf="form.controls.Email.errors?.maxlength">Quantidade de
-                                    caracteres
-                                    excede a o limite de {{form.controls.Email.errors.maxlength.requiredLength}}</small>
-                            </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="nomeObra">Nome da obra</label>
+                        <input id="nomeObra" type="text" pInputText formControlName="NomeObra" />
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+                        <label for="email">E-mail do cliente</label>
+                        <input id="email" type="text" pInputText placeholder="" formControlName="Email" />
+                        <div *ngIf="validacaoFormGroup.verificaCampo(form,'Email')">
+                            <small class="p-error" *ngIf="form.controls.Email.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Email.errors?.pattern">Endereço de e-mail
+                                inválido!</small>
+                            <small class="p-error" *ngIf="form.controls.Email.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de {{form.controls.Email.errors.maxlength.requiredLength}}</small>
                         </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
-                            <label for="telefone">Telefone</label>
-                            <input id="telefone" type="text" pInputText placeholder="" mask="{{mascaraTelefone}}"
-                                placeholder="(00) 0000-0000" formControlName="Telefone" />
-                            <!-- <div *ngIf="validacaoFormGroup.verificaCampo(form,'nome')">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
+                        <label for="telefone">Telefone</label>
+                        <input id="telefone" type="text" pInputText placeholder="" mask="{{mascaraTelefone}}"
+                            placeholder="(00) 0000-0000" formControlName="Telefone" />
+                        <!-- <div *ngIf="validacaoFormGroup.verificaCampo(form,'nome')">
                                 <small class="p-error" *ngIf="form.controls.nome.errors?.required">{{mensagemErro}}</small>
                                 <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">Quantidade de caracteres
                                     excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small>
                             </div> -->
-    
-                        </div>
-                        <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup">
-                            <p-checkbox name="concorda" value="1" formControlName="Concorda"></p-checkbox>
-                            <label for="concorda">
-                                Cliente concorda que a Unis pode enviar Whatsapp neste número
-                            </label>
-                        </div>
-    
+
                     </div>
-                    <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-    
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="validade">Validade</label>
-                            <p-dropdown id="validade" [options]="" placeholder="Selecione" formControlName="Validade">
-                            </p-dropdown>
-                            <small class="p-error"
-                                *ngIf="validacaoFormGroup.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="estado">Estado</label>
-                            <p-dropdown id="estado" [options]="lstEstado" placeholder="Selecione" formControlName="Uf"
-                                optionLabel="uf">
-                            </p-dropdown>
-                            <small class="p-error"
-                                *ngIf="validacaoFormGroup.verificaCampo(form,'Uf')">{{mensagemErro}}</small>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="tipo">Tipo</label>
-                            <p-dropdown id="tipo" [options]="lstTipo" placeholder="Selecione" formControlName="Tipo"
-                                optionLabel="label">
-                            </p-dropdown>
-                            <small class="p-error"
-                                *ngIf="validacaoFormGroup.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
-                        </div>
+                    <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup">
+                        <p-checkbox name="concorda" value="1" formControlName="Concorda"></p-checkbox>
+                        <label for="concorda">
+                            Cliente concorda que a Unis pode enviar Whatsapp neste número
+                        </label>
                     </div>
-    
-                    <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="vendedor">Vendedor</label>
-                            <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione"
-                                formControlName="Vendedor" optionLabel="usuario" (onChange)="buscarParceiros()">
-                            </p-dropdown>
-                            <small class="p-error"
-                                *ngIf="validacaoFormGroup.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="parceiro">Parceiro</label>
-                            <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione"
-                                formControlName="Parceiro" optionLabel="apelido">
-                            </p-dropdown>
-                            <!-- <small class="p-error"
-                                    *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                            <label for="vendedorParceiro">Vendedor do parceiro</label>
-                            <p-dropdown id="vendedorParceiro" [options]="" placeholder="Selecione"
-                                formControlName="VendedorParceiro">
-                            </p-dropdown>
-                            <!-- <small class="p-error"
-                                        *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
-                        </div>
-    
-                    </div>
-                </form>
-                <div class="p-d-flex p-jc-center">
-                    <button pButton pRipple label="Iniciar orçamento" icon="pi pi-plus"
-                        (click)="iniciarOrcamento()"></button>
+
                 </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="validade">Validade</label>
+                        <input id="validade" type="date" pInputText formControlName="Validade"/>
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="estado">Estado</label>
+                        <p-dropdown id="estado" [options]="lstEstado" placeholder="Selecione" formControlName="Uf"
+                            optionLabel="uf">
+                        </p-dropdown>
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'Uf')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="tipo">Tipo</label>
+                        <p-dropdown id="tipo" [options]="lstTipo" placeholder="Selecione" formControlName="Tipo"
+                            optionLabel="label">
+                        </p-dropdown>
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
+                    </div>
+                </div>
+
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="vendedor">Vendedor</label>
+                        <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione"
+                            formControlName="Vendedor" optionLabel="usuario" (onChange)="buscarParceiros()">
+                        </p-dropdown>
+                        <small class="p-error"
+                            *ngIf="validacaoFormGroup.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="parceiro">Parceiro</label>
+                        <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione"
+                            formControlName="Parceiro" optionLabel="apelido">
+                        </p-dropdown>
+                        <!-- <small class="p-error"
+                                    *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label for="vendedorParceiro">Vendedor do parceiro</label>
+                        <p-dropdown id="vendedorParceiro" [options]="" placeholder="Selecione"
+                            formControlName="VendedorParceiro">
+                        </p-dropdown>
+                        <!-- <small class="p-error"
+                                        *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
+                    </div>
+
+                </div>
+            </form>
+            <div class="p-d-flex p-jc-center">
+                <button pButton pRipple label="Iniciar orçamento" icon="pi pi-plus"
+                    (click)="iniciarOrcamento()"></button>
             </div>
         </div>
     </div>
+</div>

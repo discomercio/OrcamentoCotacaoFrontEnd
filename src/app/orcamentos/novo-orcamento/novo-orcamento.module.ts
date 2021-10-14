@@ -1,6 +1,6 @@
 import { NgModule } from "@angular/core";
 import { NovoOrcamentoComponent } from './novo-orcamento.component';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DatePipe } from '@angular/common';
 import { CadastrarClienteComponent } from './cadastrar-cliente/cadastrar-cliente.component';
 import { NovoOrcamentoRoutingModule } from './novo-orcamento.routing.module';
 import { DropdownModule } from 'primeng/dropdown';
@@ -17,6 +17,7 @@ import { SelectProdDialogComponent } from './select-prod-dialog/select-prod-dial
 import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorModule } from 'primeng/paginator';
+import { AccordionModule } from 'primeng/accordion';
 
 @NgModule({
     imports:[
@@ -32,7 +33,8 @@ import { PaginatorModule } from 'primeng/paginator';
         DialogModule,
         TableModule,
         InputTextareaModule,
-        PaginatorModule
+        PaginatorModule,
+        AccordionModule
     ],
     exports:[
 
@@ -43,6 +45,6 @@ import { PaginatorModule } from 'primeng/paginator';
         ItensComponent,
         SelectProdDialogComponent
     ],
-    providers:[DialogService]
+    providers:[DialogService, DatePipe]
 })
 export class NovoOrcamentoModule { }
