@@ -1,0 +1,63 @@
+<div class="p-grid">
+    <div class="p-col-12 p-pb-0">
+        <div class="card">
+            <h4>Orçamento</h4>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <p-accordion class="p-col-12"
+                    *ngFor="let orcamento of novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto; let i = index">
+                    <p-accordionTab>
+                        <ng-template pTemplate="header">
+                            Opção {{i + 1}}
+                            <div class="p-ml-auto p-p-0 p-text-right">
+                                <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}</span>
+                                <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(index)"></i>
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="content">
+                            <div class="p-col-12 p-px-0">
+                                <div class="p-grid p-jc-start p-jc-lg-end p-jc-md-end p-jc-sm-end">
+                                    <div class=" p-text-lg-center p-text-md-center p-text-sm-center p-px-2"
+                                        *ngFor="let fp of orcamento.FormaPagto; let y = index">
+                                        <div class="p-d-inline-flex p-d-lg-inline p-d-md-inline p-d-sm-inline">
+                                            <div class="p-as-center p-m-1">
+                                                <p-radioButton [inputId]="y" [value]="y" [(ngModel)]="opcaoPagto">
+                                                </p-radioButton>
+                                            </div>
+                                            <div class="p-p-2 p-m-1">
+                                                <div class="p-grid p-d-block">
+                                                    <div class="p-py-1 p-col-12">
+                                                        <span class="p-text-bold">{{fp}}</span>
+                                                    </div>
+                                                    <div class="p-col-12">
+                                                        <div *ngIf="fp=='Á vista (3% desconto)'">
+                                                            <span class="p-text-bold p-text-light"
+                                                                style="text-decoration: line-through">
+                                                                {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                            </span>
+                                                        </div>
+
+                                                        <span class="p-text-bold" *ngIf="fp=='Á vista (3% desconto)'">
+                                                            {{moedaUtils.formatarMoedaComPrefixo(novoOrcamentoService.calcularDesconto(orcamento.VlTotalDestePedido, desconto))}}
+                                                        </span>
+                                                        <span class="p-text-bold" *ngIf="fp=='Parcelado'">
+                                                            {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                        </span>
+                                                        <p-dropdown id="parceiro" [options]="parcelamento"
+                                                            *ngIf="fp=='Parcelado'" placeholder="Selecione"
+                                                            optionLabel="apelido">
+                                                        </p-dropdown>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </ng-template>
+                    </p-accordionTab>
+                </p-accordion>
+            </div>
+        </div>
+    </div>
+</div>

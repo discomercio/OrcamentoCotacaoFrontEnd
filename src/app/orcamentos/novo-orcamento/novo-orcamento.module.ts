@@ -18,6 +18,11 @@ import { DialogModule } from 'primeng/dialog';
 import { DialogService } from 'primeng/dynamicdialog';
 import { PaginatorModule } from 'primeng/paginator';
 import { AccordionModule } from 'primeng/accordion';
+import { TagModule } from 'primeng/tag';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { VisualizarOrcamentoComponent } from './visualizar-orcamento/visualizar-orcamento.component';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 @NgModule({
     imports:[
@@ -34,7 +39,10 @@ import { AccordionModule } from 'primeng/accordion';
         TableModule,
         InputTextareaModule,
         PaginatorModule,
-        AccordionModule
+        AccordionModule,
+        AvatarModule,
+        TooltipModule,
+        RadioButtonModule
     ],
     exports:[
 
@@ -43,7 +51,8 @@ import { AccordionModule } from 'primeng/accordion';
         NovoOrcamentoComponent,
         CadastrarClienteComponent,
         ItensComponent,
-        SelectProdDialogComponent
+        SelectProdDialogComponent,
+        VisualizarOrcamentoComponent
     ],
     providers:[DialogService, DatePipe]
 })

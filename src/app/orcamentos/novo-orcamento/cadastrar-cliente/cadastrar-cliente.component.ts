@@ -45,6 +45,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.buscarVendedores();
+    this.buscarParceiros();
     this.buscarEstados();
     this.selectTipo();
   }
@@ -52,23 +53,21 @@ export class CadastrarClienteComponent implements OnInit {
   buscarVendedores() {
     this.usuarioService.buscarVendedores().toPromise().then((r) => {
       if (r != null) {
-        // debugger;
         this.lstVendedores = r.filter((item, i, arr) => arr.findIndex((f) => f.usuario === item.usuario) === i);
       }
     });
   }
 
   buscarParceiros() {
-    let vendedor: string = this.form.controls.vendedor.value.usuario;
-    if (!vendedor) {
-      this.alertaService.mostrarMensagem('Selecione um vendedor para o orçamento!');
-      return;
+    if (this.form.controls.Vendedor.value) {
+      let vendedor: string = this.form.controls.Vendedor.value.usuario;
+
+      this.usuarioService.buscarParceiros().toPromise().then((r) => {
+        if (r != null) {
+          this.lstParceiro = r.filter(parca => parca.vendedor === vendedor);
+        }
+      });
     }
-    this.usuarioService.buscarParceiros().toPromise().then((r) => {
-      if (r != null) {
-        this.lstParceiro = r.filter(parca => parca.vendedor === vendedor);
-      }
-    });
   }
 
   buscarEstados() {
@@ -107,18 +106,18 @@ export class CadastrarClienteComponent implements OnInit {
     });
 
     this.verificaDataValidade();
-    
+
   }
 
-  verificaDataValidade(){
-    if(!this.form.controls.Validade.value){
+  verificaDataValidade() {
+    if (!this.form.controls.Validade.value) {
       let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      this.form.controls.Validade.setValue(this.datePipe.transform(data,"yyyy-MM-dd"));
+      this.form.controls.Validade.setValue(this.datePipe.transform(data, "yyyy-MM-dd"));
       this.form.controls.Validade.disable();
     }
 
-    let validacaoData:Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    if(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade < validacaoData){
+    let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade < validacaoData) {
       this.form.controls.Validade.enable();
     }
   }

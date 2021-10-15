@@ -57,7 +57,7 @@ export class ProdutoTela {
         for (let i = 0; i < arr.length; i++) {
             let este = arr[i];
             if (digitado != "") {
-                if (digitado.length >= 3 && este.stringBusca.indexOf(digitado) > -1) {
+                if (digitado.length >= 2 && este.stringBusca.indexOf(digitado) > -1) {
                     este.visivel = true;
                 }
                 else {

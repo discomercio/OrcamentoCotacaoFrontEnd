@@ -41,4 +41,9 @@ export class NovoOrcamentoService {
         this.orcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
 
   }
+
+  public calcularDesconto(valor:number, desconto:number){
+    let valorDescontado = valor * (1 - desconto / 100);
+      return Number.parseFloat(valorDescontado.toFixed(2));
+  }
 }

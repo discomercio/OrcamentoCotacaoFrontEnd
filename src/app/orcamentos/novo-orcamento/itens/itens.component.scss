@@ -13,7 +13,8 @@
     font-weight: bold;
 }
 
-
 ::ng-deep .p-datatable .p-datatable-tbody > tr{
-    border-bottom: 2px solid #cecece !important;
+    @media only screen and (max-width: 641px) {
+        border-bottom: 3px solid #cecece !important;
+    }
 }

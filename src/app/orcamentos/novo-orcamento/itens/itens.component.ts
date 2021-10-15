@@ -37,13 +37,13 @@ export class ItensComponent implements OnInit {
   moedaUtils: MoedaUtils = new MoedaUtils();
   lstProdutos: ProdutoOrcamentoDto[] = new Array();
   pagtoSelecionados: string[] = new Array();
-  observacaoOpcao:string;
-  observacoesGerais:string;
+  observacaoOpcao: string;
+  observacoesGerais: string;
 
   formaPagtoDto: FormaPagtoDto = new FormaPagtoDto();
 
   ngOnInit(): void {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
+    // if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
 
     this.inscreveProdutoComboDto();
     this.inscreverFormaPagto();
@@ -51,7 +51,11 @@ export class ItensComponent implements OnInit {
   }
 
   inscreverFormaPagto() {
-    this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.Tipo).toPromise().then((r) => {
+    let tipo = "";
+    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto) {
+      tipo = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.Tipo;
+    }
+    this.formaPagtoService.buscarFormaPagto(tipo).toPromise().then((r) => {
       if (r != null) {
         this.formaPagtoDto = r;
         console.log(this.formaPagtoDto);
@@ -77,9 +81,10 @@ export class ItensComponent implements OnInit {
   mostrarProdutos(linha: ProdutoOrcamentoDto): void {
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
     this.selecProdInfo.ClicouOk = false;
+    let largura: string = this.onResize() ? "" : "65vw";
     const ref = this.dialogService.open(SelectProdDialogComponent,
       {
-        width: "65vw",
+        width: largura,
         styleClass: 'dynamicDialog',
         data: this.selecProdInfo
       });
@@ -115,6 +120,7 @@ export class ItensComponent implements OnInit {
     prod.Alterou_Preco_Venda = false;
 
     this.lstProdutos.push(prod);
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.novoOrcamentoService.orcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
     this.novoOrcamentoService.totalPedido();
     this.novoOrcamentoService.totalPedidoRA();
@@ -334,20 +340,20 @@ export class ItensComponent implements OnInit {
       this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
       return;
     }
-    if(this.pagtoSelecionados.length <= 0){
+    if (this.pagtoSelecionados.length <= 0) {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
-    debugger;
+    
     this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.pagtoSelecionados;
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
     this.novoOrcamentoService.criarNovoOrcamentoItem();
-    
+
     this.limparCampos();
   }
-  
-  limparCampos(){
+
+  limparCampos() {
     this.lstProdutos = new Array();
     this.pagtoSelecionados = new Array();
   }
@@ -360,7 +366,7 @@ export class ItensComponent implements OnInit {
     this.lstProdutos.splice(index, 1);
   }
 
-  enviar(){
+  enviar() {
     debugger;
   }
   @HostListener('window:resize', ['$event'])

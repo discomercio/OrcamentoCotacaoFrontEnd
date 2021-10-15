@@ -7,13 +7,13 @@
                     (keyup)="digitouProd($event)" />
             </div>
         </div>
-        <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack"
-            [ngClass]="{'carregando': carregando}" autoLayout="true" selectionMode="single" [(selection)]="selecionado"
-            styleClass="p-datatable-customers p-datatable-sm p-datatable-striped" [rows]="3" [filterDelay]="0"
-            [paginator]="true">
+        <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
+            [ngClass]="{'carregando': carregando}" autoLayout="true" [(selection)]="selecionado"
+            styleClass="p-datatable-customers p-datatable-sm" [rows]="3" [filterDelay]="0" [paginator]="true">
             <ng-template pTemplate="body" let-p>
                 <ng-container *ngIf="p.visivel">
-                    <tr class="p-selectable-row" class="font-size">
+
+                    <tr class="p-selectable-row" class="font-size" [pSelectableRow]="p">
                         <td>
                             <p-tableRadioButton [value]="p"></p-tableRadioButton>
                         </td>
@@ -37,9 +37,13 @@
                             <span [innerHTML]="f.Descricao_html"></span>
                         </td>
                         <td class="p-pl-6">
-                            <span class="p-column-title">VL Lista:</span>
-                            <div class="p-text-right">
-                                {{moedaUtils.formatarMoedaComPrefixo(f.Preco_lista)}}
+                            <span class="p-column-title" *ngIf="f.Alertas != null">Alerta:</span>
+                            <div class="p-text-right" *ngIf="f.Alertas != null">
+                                <!-- <i class="pi pi-exclamation-circle" pBadge style="font-size: 1rem"></i> -->
+                                <!-- {{moedaUtils.formatarMoedaComPrefixo(f.Preco_lista)}} -->
+                                <!-- <p-tag severity="danger" value="!" [rounded]="true"></p-tag> -->
+                                <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle" pTooltip="{{f.Alertas}}"
+                                    [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}"></p-avatar>
                             </div>
                         </td>
                     </tr>

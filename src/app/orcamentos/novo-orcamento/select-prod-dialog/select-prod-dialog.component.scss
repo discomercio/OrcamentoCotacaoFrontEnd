@@ -2,7 +2,13 @@
     padding: 0;
     border-bottom-left-radius: 4px !important;
     border-bottom-right-radius: 4px !important;
+    overflow-y:hidden;
 }
+
+::ng-deep .p-datatable-wrapper{
+  max-height: 75vw;
+}
+
 :host {
     .container {
       padding: 1rem;
