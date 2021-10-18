@@ -23,6 +23,7 @@ import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { VisualizarOrcamentoComponent } from './visualizar-orcamento/visualizar-orcamento.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
+import { GalleriaModule } from 'primeng/galleria';
 
 @NgModule({
     imports:[
@@ -42,7 +43,8 @@ import { RadioButtonModule } from 'primeng/radiobutton';
         AccordionModule,
         AvatarModule,
         TooltipModule,
-        RadioButtonModule
+        RadioButtonModule,
+        GalleriaModule
     ],
     exports:[
 

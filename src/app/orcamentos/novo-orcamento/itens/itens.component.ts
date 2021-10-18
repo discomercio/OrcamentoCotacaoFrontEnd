@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
@@ -13,8 +13,10 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ProdutoTela } from '../select-prod-dialog/produto-tela';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { Router } from '@angular/router';
-import { FormaPagtoDto } from 'src/app/dto/forma-pagto/forma-pagto-dto';
-import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
+import { SelectItem } from 'primeng/api/selectitem';
+import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
+import { Constantes } from 'src/app/utilities/constantes';
+import { VisualizarOrcamentoComponent } from '../visualizar-orcamento/visualizar-orcamento.component';
 
 @Component({
   selector: 'app-itens',
@@ -28,8 +30,7 @@ export class ItensComponent implements OnInit {
     private produtoService: ProdutoService,
     public dialogService: DialogService,
     public mensagemService: MensagemService,
-    public readonly router: Router,
-    private formaPagtoService: FormaPagtoService) { }
+    public readonly router: Router) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -39,29 +40,14 @@ export class ItensComponent implements OnInit {
   pagtoSelecionados: string[] = new Array();
   observacaoOpcao: string;
   observacoesGerais: string;
-
-  formaPagtoDto: FormaPagtoDto = new FormaPagtoDto();
+  opcoesPagto: PagtoOpcao[];
+  public constantes: Constantes = new Constantes();
 
   ngOnInit(): void {
     // if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
 
     this.inscreveProdutoComboDto();
-    this.inscreverFormaPagto();
-
-  }
-
-  inscreverFormaPagto() {
-    let tipo = "";
-    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto) {
-      tipo = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.Tipo;
-    }
-    this.formaPagtoService.buscarFormaPagto(tipo).toPromise().then((r) => {
-      if (r != null) {
-        this.formaPagtoDto = r;
-        console.log(this.formaPagtoDto);
-      }
-    });
-
+    this.montarOpcoesPagto();
   }
 
   produtoComboDto: ProdutoComboDto;
@@ -73,6 +59,24 @@ export class ItensComponent implements OnInit {
     })
   }
 
+  montarOpcoesPagto() {
+    this.opcoesPagto = new Array();
+
+    let opcao1: PagtoOpcao = new PagtoOpcao();
+    opcao1.codigo = this.constantes.COD_PAGTO_AVISTA;
+    opcao1.descricao = "Á vista (3% desconto)";
+    opcao1.incluir = false;
+    opcao1.qtdeParcelas = 1;
+    this.opcoesPagto.push(opcao1);
+
+    let opcao2: PagtoOpcao = new PagtoOpcao();
+    opcao2.codigo = this.constantes.COD_PAGTO_PARCELADO;
+    opcao2.descricao = "Parcelado";
+    opcao2.incluir = false;
+    opcao2.qtdeParcelas = 10;
+    this.opcoesPagto.push(opcao2);
+  }
+
   adicionarProduto(): void {
     this.mostrarProdutos(null);
   }
@@ -81,7 +85,7 @@ export class ItensComponent implements OnInit {
   mostrarProdutos(linha: ProdutoOrcamentoDto): void {
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
     this.selecProdInfo.ClicouOk = false;
-    let largura: string = this.onResize() ? "" : "65vw";
+    let largura: string = this.novoOrcamentoService.onResize() ? "" : "65vw";
     const ref = this.dialogService.open(SelectProdDialogComponent,
       {
         width: largura,
@@ -101,6 +105,21 @@ export class ItensComponent implements OnInit {
         this.inserirProduto(resultado);
       }
     });
+  }
+
+  visualizarOrcamento() {
+    //  [routerLink]="['/novo-orcamento/visualizar-orcamento']"
+    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
+      this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
+      return;
+    }
+
+    let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
+    const ref = this.dialogService.open(VisualizarOrcamentoComponent,{
+      width:largura,
+      styleClass: 'dynamicDialog',
+      header:"Orçamentos"
+    })
   }
 
   inserirProduto(produto: ProdutoTela): void {
@@ -335,6 +354,10 @@ export class ItensComponent implements OnInit {
 
   }
 
+  selecionaOpcaoPagto(pagto: PagtoOpcao) {
+    pagto.incluir = true;
+  }
+
   incluirOpcao() {
     if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
       this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
@@ -344,8 +367,8 @@ export class ItensComponent implements OnInit {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
-    
-    this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.pagtoSelecionados;
+
+    this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
     this.novoOrcamentoService.criarNovoOrcamentoItem();
@@ -369,11 +392,5 @@ export class ItensComponent implements OnInit {
   enviar() {
     debugger;
   }
-  @HostListener('window:resize', ['$event'])
-  onResize() {
-    if (window.innerWidth <= 641) {
-      return true;
-    }
-    return false;
-  }
+
 }

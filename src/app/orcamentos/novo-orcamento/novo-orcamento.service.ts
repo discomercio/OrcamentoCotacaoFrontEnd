@@ -1,8 +1,11 @@
-import { Injectable } from '@angular/core';
+import { Injectable, HostListener } from '@angular/core';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { OpcoesOrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
+import { Parcelado } from 'src/app/dto/forma-pagto/parcelado';
+import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
+import { Constantes } from 'src/app/utilities/constantes';
 
 @Injectable({
   providedIn: 'root'
@@ -13,6 +16,7 @@ export class NovoOrcamentoService {
 
   public orcamentoCotacaoDto: OrcamentoCotacaoDto;
   public opcoesOrcamentoCotacaoDto: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
+  public constantes: Constantes = new Constantes();
 
   criarNovo() {
     this.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -42,8 +46,50 @@ export class NovoOrcamentoService {
 
   }
 
-  public calcularDesconto(valor:number, desconto:number){
+  public calcularDesconto(valor: number, desconto: number) {
     let valorDescontado = valor * (1 - desconto / 100);
-      return Number.parseFloat(valorDescontado.toFixed(2));
+    return Number.parseFloat(valorDescontado.toFixed(2));
+  }
+
+  public calcularParcelas(valor: number, parcelas: number) {
+    let parcelamento: number[] = new Array();
+
+    for (let i = 1; i <= parcelas; i++) {
+      let parcela: number = 0;
+      parcela = i;
+      let v:any = this.moedaUtils.formatarDecimal(valor / i);
+      parcela = v;
+      parcelamento.push(parcela);
+    }
+
+    return parcelamento;
+  }
+
+  desconto: number = 3;
+  atribuirOpcaoPagto(pagto: PagtoOpcao[]): PagtoOpcao[] {
+    
+    pagto.forEach(p => {
+      if (p.incluir) {
+        p.valores = new Array();
+        if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
+          for (let i = 0; i < p.qtdeParcelas; i++) {
+            p.valores.push(this.calcularDesconto(this.orcamentoCotacaoDto.VlTotalDestePedido, this.desconto));
+          }
+        }
+        if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
+          p.valores = this.calcularParcelas(this.orcamentoCotacaoDto.VlTotalDestePedido, p.qtdeParcelas);
+        }
+      }
+    });
+
+    return pagto;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    if (window.innerWidth <= 641) {
+      return true;
+    }
+    return false;
   }
 }
