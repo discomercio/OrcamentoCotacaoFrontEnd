@@ -6,14 +6,14 @@ import {AppMainComponent} from './app.main.component';
     selector: 'app-topbar',
     template: `
         <div class="topbar clearfix">
-            <div class="topbar-left">
+            <div class="topbar-left p-text-center">
                 <a routerLink="/">
-                    <img src="assets/layout/images/logo.png" class="topbar-logo" routerLink="/" />
+                    <img src="assets/layout/images/LogoUnis.png" class="topbar-logo" routerLink="/" />
                 </a>
             </div>
 
             <div class="topbar-right">
-                <a id="menu-button" href="#" (click)="appMain.onMenuButtonClick($event)"
+                <a id="menu-button" href="#" (click)="appMain.onMenuButtonClick($event)" class="p-shadow-10"
                    [ngClass]="{'menu-button-rotate': appMain.rotateMenuButton}">
                     <i class="pi pi-angle-left"></i>
                </a>

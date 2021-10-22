@@ -34,7 +34,7 @@ export class AppMenuComponent implements OnInit {
                         items: [
                             { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/novo-orcamento/cadastrar-cliente'] },
                             { label: 'Pendentes', icon: 'pi pi-exclamation-circle', routerLink: ['/orcamentos/listar-orcamentos/lista/pendente'] },
-                            { label: 'Lista de orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar-orcamentos/lista/todos'] },
+                            { label: 'Lista de orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar-orcamentos/lista/orcamentos'] },
                             { label: 'Lista de pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar-orcamentos/lista/pedido'] },
                             { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]

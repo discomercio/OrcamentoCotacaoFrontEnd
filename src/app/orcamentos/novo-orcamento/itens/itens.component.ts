@@ -44,10 +44,12 @@ export class ItensComponent implements OnInit {
   public constantes: Constantes = new Constantes();
 
   ngOnInit(): void {
-    // if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
-
+    if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
     this.inscreveProdutoComboDto();
     this.montarOpcoesPagto();
+    if(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto != undefined){
+      this.observacoesGerais= this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
+    }
   }
 
   produtoComboDto: ProdutoComboDto;
@@ -115,10 +117,10 @@ export class ItensComponent implements OnInit {
     }
 
     let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
-    const ref = this.dialogService.open(VisualizarOrcamentoComponent,{
-      width:largura,
+    const ref = this.dialogService.open(VisualizarOrcamentoComponent, {
+      width: largura,
       styleClass: 'dynamicDialog',
-      header:"Orçamentos"
+      header: "Orçamentos"
     })
   }
 
@@ -368,12 +370,18 @@ export class ItensComponent implements OnInit {
       return;
     }
 
+    this.novoOrcamentoService.orcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
     this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
+
     this.novoOrcamentoService.criarNovoOrcamentoItem();
 
     this.limparCampos();
+  }
+  incluirObsGerais() {
+    if (this.observacoesGerais) {
+      this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
+    }
   }
 
   limparCampos() {

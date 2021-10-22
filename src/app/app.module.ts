@@ -149,6 +149,7 @@ import { ProdutoService } from './service/produto/produto.service';
 import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
+import { ExportExcelService } from './service/export-files/export-excel.service';
 
 @NgModule({
     imports: [
@@ -296,7 +297,7 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
         {provide: LocationStrategy, useClass: HashLocationStrategy},
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ProdutoService
+        AppMenuComponent, ProdutoService, ExportExcelService
     ],
     bootstrap: [AppComponent]
 })

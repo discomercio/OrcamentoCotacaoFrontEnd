@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, DebugElement } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
-import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
+import { ListaDto, ListaDtoExport } from 'src/app/dto/orcamentos/lista-dto';
 import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
@@ -11,6 +11,15 @@ import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { PedidosService } from 'src/app/service/pedidos/pedidos.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
+import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { Parceiro } from 'src/app/dto/parceiros/parceiro';
+import { Lojas } from 'src/app/dto/lojas/lojas';
+import { LojasService } from 'src/app/service/lojas/lojas.service';
+import * as FileSaver from 'file-saver';
+import * as XLSX from 'xlsx';
+import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
+import { Usuarios } from 'src/app/dto/usuarios/usuarios';
+import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 
 @Component({
   selector: 'app-lista',
@@ -23,7 +32,10 @@ export class ListaComponent implements OnInit {
     public readonly orcamentoService: OrcamentosService,
     public readonly pedidoService: PedidosService,
     private fb: FormBuilder,
-    private mensagemService: MensagemService) {
+    private mensagemService: MensagemService,
+    private readonly usuarioService: UsuariosService,
+    private readonly lojaService: LojasService,
+    private readonly exportExcelService: ExportExcelService) {
   }
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -37,19 +49,21 @@ export class ListaComponent implements OnInit {
   lstDto: Array<ListaDto> = new Array();
   lstDtoFiltrada: Array<ListaDto> = new Array();
   moedaUtils: MoedaUtils = new MoedaUtils();
+  lstParceiro: Array<Parceiro>;
+  parceiroSelecionado: Parceiro;
+  lstParceiroFiltrado: Array<Parceiro>;
+  lstLoja: Array<Lojas>;
+  lojaSelecionada: Lojas;
+  lstLojaFiltrada: Array<Lojas>;
+  lstVendedores:Array<UsuarioXLoja>;
+  vendedorSelecionado:UsuarioXLoja;
+  lstVendedoresFiltrado:Array<UsuarioXLoja>;
+  nomeObra:string;
 
   ngOnInit(): void {
-    this.criarForm();
+    
     this.montarLista();
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
-  }
-
-  criarForm() {
-    this.form = this.fb.group({
-      filtro: [''],
-      dataInicio: [''],
-      dataFinal: ['']
-    });
   }
 
   montarLista() {
@@ -63,21 +77,24 @@ export class ListaComponent implements OnInit {
   }
 
   iniciarFiltro(param: any) {
-    this.param = param.filtro;
-    if (this.param == "todos" || "pendente") {
+    let parametro = param.filtro;
+    if (parametro == "orcamentos" || parametro == "pendente") {
       this.emPedidos = false;
       this.montarSelectFiltro();
-      this.setarFiltro(this.param);
       this.buscarOrcamentos();
+      this.setarFiltro(parametro);
       this.filtrar(false);
     }
-    if (this.param == "pedido") {
+    if (parametro == "pedido") {
       this.emPedidos = true;
       this.montarSelectFiltro();
-      this.setarFiltro("todos");
       this.buscarPedidos();
+      this.setarFiltro("todos");
       this.filtrar(false);
     }
+    this.buscarParceiros();
+    this.buscarLojas();
+    this.buscarVendedores();
   }
 
   setarFiltro(filtro: string) {
@@ -88,7 +105,6 @@ export class ListaComponent implements OnInit {
         this.filtro.push(m.value);
       }
     });
-    this.form.controls.filtro.setValue(this.filtro);
   }
 
   buscarOrcamentos() {
@@ -113,6 +129,47 @@ export class ListaComponent implements OnInit {
     }
   }
 
+  buscarParceiros() {
+    this.usuarioService.buscarParceiros().toPromise().then((r) => {
+      if (r != null) {
+        this.lstParceiro = r;
+      }
+    });
+  }
+
+  buscarLojas() {
+    this.lojaService.buscarTodasLojas().toPromise().then((r) => {
+      if (r != null) {
+        this.lstLoja = r;
+      }
+    });
+  }
+
+  buscarVendedores(){
+    this.usuarioService.buscarVendedores().toPromise().then((r) =>{
+      if(r != null){
+        this.lstVendedores = r;
+      }
+    });
+  }
+
+  filtrarParceiros(event: any) {
+    let query = event.query;
+    this.lstParceiroFiltrado = this.lstParceiro.filter(r => r.apelido.toLowerCase().indexOf(query.toLowerCase()) > -1
+      || r.razao_social_nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
+  }
+
+  filtrarLojas(event: any) {
+    let query = event.query;
+    this.lstLojaFiltrada = this.lstLoja.filter(r => r.loja.toLowerCase().indexOf(query.toLowerCase()) > -1
+      || r.nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
+  }
+
+  filtrarVendedores(event:any){
+    let query = event.query;
+    this.lstVendedoresFiltrado = this.lstVendedores.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase())> -1 && r.loja == "205");
+  }
+
   montarSelectFiltro() {
     if (this.emPedidos) {
       this.lstFiltro = [
@@ -127,13 +184,14 @@ export class ListaComponent implements OnInit {
     }
     if (!this.emPedidos) {
       this.lstFiltro = [
-        { label: "Todos", value: 'Todos' },
+        { label: "Expirado", value: "Expirado" },
         { label: "Virou pedido", value: "Virou pedido" },
         { label: "Encerrado (Cancelado)", value: "Encerrado (Cancelado)" },
-        { label: "Em edição", value: "Em edição" },
         { label: "Pendente de aprovação do cliente", value: "Pendente de aprovação do cliente" },
         { label: "Pendente de aprovação de desconto", value: "Pendente de aprovação de desconto" },
-        { label: "Desconto negado", value: "Desconto negado" }
+        { label: "Pendente de revisão de dados", value: "Pendente de revisão de dados" },
+        { label: "Desconto negado", value: "Desconto negado" },
+        { label: "Desconto aprovado", value: "Desconto aprovado" }
       ]
     }
 
@@ -146,5 +204,35 @@ export class ListaComponent implements OnInit {
 
   ngOnDestroy() {
     this.inscricao.unsubscribe();
+  }
+
+  exportXlsx() {
+    let lstExport = new Array<ListaDtoExport>();
+    lstExport = this.montarListaParaExport();
+    this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos");
+  }
+
+  exportCsv() {
+    let lstExport = new Array<ListaDtoExport>();
+    lstExport = this.montarListaParaExport();
+    this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos");
+  }
+  
+  montarListaParaExport(): ListaDtoExport[] {
+    let lstExport = new Array<ListaDtoExport>();
+
+    this.lstDtoFiltrada.forEach(l => {
+      let linha = new ListaDtoExport();
+
+      linha.Data = l.Data;
+      linha.Numero = l.Nome;
+      linha.Nome = l.Nome;
+      linha.Status = l.Status;
+      linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(l.Valor);
+
+      lstExport.push(linha);
+    });
+
+    return lstExport;
   }
 }

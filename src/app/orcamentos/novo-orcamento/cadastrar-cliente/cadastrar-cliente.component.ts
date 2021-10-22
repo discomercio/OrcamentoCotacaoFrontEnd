@@ -16,6 +16,7 @@ import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { DatePipe } from '@angular/common';
+import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -123,11 +124,16 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   iniciarOrcamento() {
+    let listaOpOrcamento = new Array<OrcamentoCotacaoDto>();
+    listaOpOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
+    
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
+
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
     this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
+    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = listaOpOrcamento;
     this.router.navigate(['novo-orcamento/itens']);
   }
 }

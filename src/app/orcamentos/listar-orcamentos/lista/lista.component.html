@@ -3,44 +3,93 @@
         <div class="card">
             <h4 *ngIf="emPedidos">Lista de Pedidos</h4>
             <h4 *ngIf="!emPedidos">Lista de Orçamentos</h4>
-            <form [formGroup]="form" class="p-col-12 p-px-0">
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
-                    <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-as-end">
-                        <label for="filtro">Status</label>
-                        <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
-                            placeholder="Selecione" formControlName="filtro"
-                            [selectedItemsLabel]="'{0} itens selecionados'" [showHeader]="false"
-                            emptyFilterMessage="Nenhum item encontrado" 
-                            pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
-                        </p-multiSelect>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-as-end">
-                        <label for="nomeObra">Nome do cliente / Número </label>
-                        <input id="nomeObra" type="text" pInputText placeholder="" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-5 p-sm-5 p-as-end">
-                        <label for="dataInicio">Data início</label>
-                        <input id="dataInicio" type="date" pInputText placeholder="" formControlName="dataInicio" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-5 p-sm-5 p-as-end">
-                        <label for="dataFinal">Data final</label>
-                        <input id="dataFinal" type="date" pInputText placeholder="" formControlName="dataFinal" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
-                        <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
-                            (click)="filtrar(true)"></button>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
+                <div class="p-col-12">
+                    <div class="p-grid">
+                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                            <label for="filtro">Status</label>
+                            <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
+                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                [(ngModel)]="filtro" emptyFilterMessage="Nenhum item encontrado"
+                                pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                            <label for="nomeObra">Nome do cliente / Número </label>
+                            <input id="nomeObra" type="text" pInputText placeholder="" [(ngModel)]="nomeObra"
+                                placeholder="Digite o nome cliente ou número" />
+                        </div>
+
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                            <label for="filtroVendedor">Vendedor</label>
+                            <p-autoComplete [(ngModel)]="vendedorSelecionado" [suggestions]="lstVendedoresFiltrado"
+                                (completeMethod)="filtrarVendedores($event)" field="usuario"
+                                placeholder="Digite o nome">
+                                <ng-template let-vendedor pTemplate="usuario">
+                                    <div>
+                                        <div>{{vendedor.usuario}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                            <label for="filtroParceiro">Parceiro</label>
+                            <p-autoComplete [(ngModel)]="parceiroSelecionado" [suggestions]="lstParceiroFiltrado"
+                                (completeMethod)="filtrarParceiros($event)" field="apelido" placeholder="Digite o nome">
+                                <ng-template let-parceiro pTemplate="apelido">
+                                    <div>
+                                        <div>{{parceiro.apelido}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                            <label for="filtroLoja">Lojas</label>
+                            <p-autoComplete [(ngModel)]="lojaSelecionada" [suggestions]="lstLojaFiltrada"
+                                (completeMethod)="filtrarLojas($event)" field="nome"
+                                placeholder="Digite código ou nome">
+                                <ng-template let-loja pTemplate="nome">
+                                    <div>
+                                        <div>{{loja.nome}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
+                            <label for="dataInicio">Data início</label>
+                            <input id="dataInicio" type="date" pInputText placeholder="" [(ngModel)]="dataInicio" />
+                        </div>
+                        <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-4 p-as-end">
+                            <label for="dataFinal">Data final</label>
+                            <input id="dataFinal" type="date" pInputText placeholder="" [(ngModel)]="dataFinal" />
+                        </div>
+                        <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
+                            <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
+                                (click)="filtrar(true)"></button>
+                        </div>
                     </div>
 
                 </div>
-            </form>
+
+
+
+            </div>
             <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
-                [responsive]="true" responsiveLayout="stack" breakpoint="680px" 
+                [responsive]="true" responsiveLayout="stack" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
                 [paginator]="true" [filterDelay]="0" (onRowSelect)="filtrar(true)"
                 [globalFilterFields]="['Data','Orcamento','Nome','Status', 'Valor']">
-                <ng-template pTemplate="header" let-columns >
+                <ng-template pTemplate="caption">
+                    <div class="p-d-flex p-jc-end">
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
+                            class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()"
+                            class="p-mr-2" label="Exportar para CSV" tooltipPosition="bottom"></button>
+                    </div>
+                </ng-template>
+                <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th  class="p-py-2 p-pl-6" pSortableColumn="{{col.field}}" *ngFor="let col of columns" >
+                        <th class="p-py-2 p-pl-6" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 {{col.header}}
                             </div>
