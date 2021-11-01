@@ -149,6 +149,7 @@ import { ProdutoService } from './service/produto/produto.service';
 import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
+import { ClienteComponent } from './cliente/cliente.component';
 
 @NgModule({
     imports: [
@@ -290,7 +291,8 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
         UsuarioListaComponent,
         ListaComponent,
         ListaProdutosComponent,
-        VisualizarProdutoComponent
+        VisualizarProdutoComponent,
+        ClienteComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
