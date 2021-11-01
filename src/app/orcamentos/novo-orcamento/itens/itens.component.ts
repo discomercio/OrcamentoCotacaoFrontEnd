@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, EmailValidator } from '@angular/forms';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
@@ -17,6 +17,11 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
 import { Constantes } from 'src/app/utilities/constantes';
 import { VisualizarOrcamentoComponent } from '../visualizar-orcamento/visualizar-orcamento.component';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
+import { arrayToHash } from '@fullcalendar/core/util/object';
+import { ValidacoesUtils } from 'src/app/utilities/validacao-formulario/validacoesUtils';
+import { AlertDialogComponent } from 'src/app/utilities/alert-dialog/alert-dialog.component';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-itens',
@@ -30,7 +35,8 @@ export class ItensComponent implements OnInit {
     private produtoService: ProdutoService,
     public dialogService: DialogService,
     public mensagemService: MensagemService,
-    public readonly router: Router) { }
+    public readonly router: Router,
+    private readonly alertaService: AlertaService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -47,8 +53,8 @@ export class ItensComponent implements OnInit {
     if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
     this.inscreveProdutoComboDto();
     this.montarOpcoesPagto();
-    if(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto != undefined){
-      this.observacoesGerais= this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
+    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto != undefined) {
+      this.observacoesGerais = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
     }
   }
 
@@ -399,6 +405,30 @@ export class ItensComponent implements OnInit {
 
   enviar() {
     debugger;
+    // validar se a forma de pagto esta preenchida
+    // validar os produtos e valores??
+    // precisa fazer a parte de desconto, analisar os arquivos do Edu para ver o percentual máximo
+    // precisa analisar melhor essa parte
+
+
+    let vet = [20, 3, 25, 12, 1];
+    let var1 = vet[0];
+
+    for (let i = 1; i < 5; i++) {
+      if (vet[i] > var1)
+        var1 = vet[i];
+    }
+
+    console.log(var1);
+
+    //precisamos criar um vetor (array unidimensional) para 
+    //armazenar 15 valores numéricos relativos aos salários de funcionários 
+    // de uma empresa.
+    //Qual a instrução para criar esse vetor?
+    
+    // O algoritmo  abaixo poussiu um erro. Como corrigir?
+
+    
   }
 
 }

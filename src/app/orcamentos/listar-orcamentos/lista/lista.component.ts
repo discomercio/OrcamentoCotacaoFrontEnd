@@ -89,7 +89,7 @@ export class ListaComponent implements OnInit {
       this.emPedidos = true;
       this.montarSelectFiltro();
       this.buscarPedidos();
-      this.setarFiltro("todos");
+      this.setarFiltro(parametro);
       this.filtrar(false);
     }
     this.buscarParceiros();
@@ -173,7 +173,6 @@ export class ListaComponent implements OnInit {
   montarSelectFiltro() {
     if (this.emPedidos) {
       this.lstFiltro = [
-        { label: "Todos", value: 'Todos' },
         { label: "Em espera", value: "Em espera" },
         { label: "A entregar", value: "A entregar" },
         { label: "Entregue", value: "Entregue" },

@@ -7,6 +7,7 @@ import { Table } from 'primeng/table';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { NovoOrcamentoService } from '../novo-orcamento.service';
 
 @Component({
   selector: 'app-select-prod-dialog',
@@ -17,7 +18,8 @@ export class SelectProdDialogComponent implements OnInit {
 
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-    public readonly mensagemService: MensagemService) { }
+    public readonly mensagemService: MensagemService,
+    private readonly novoOrcamentoService:NovoOrcamentoService) { }
 
   @ViewChild('dataTable') table: Table;
   displayModal: boolean = false;

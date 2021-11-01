@@ -124,9 +124,12 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   iniciarOrcamento() {
+    if (!this.validacaoFormGroup.validaForm(this.form))
+      return;
+
     let listaOpOrcamento = new Array<OrcamentoCotacaoDto>();
     listaOpOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
-    
+
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);

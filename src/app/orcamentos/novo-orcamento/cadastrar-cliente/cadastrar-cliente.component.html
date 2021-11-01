@@ -3,14 +3,14 @@
         <div class="card">
             <h4>Criar Orçamento</h4>
             <form [formGroup]="form">
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="nome">Nome do cliente</label>
                         <input id="nome" type="text" pInputText formControlName="Nome" />
                         <div *ngIf="validacaoFormGroup.verificaCampo(form,'Nome')">
                             <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
-                            <!-- <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">Quantidade de caracteres
-                                    excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small> -->
+                            <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
@@ -18,7 +18,7 @@
                         <input id="nomeObra" type="text" pInputText formControlName="NomeObra" />
                     </div>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="email">E-mail do cliente</label>
                         <input id="email" type="text" pInputText placeholder="" formControlName="Email" />
@@ -42,7 +42,7 @@
                             </div> -->
 
                     </div>
-                    <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup">
+                    <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup p-pt-0">
                         <p-checkbox name="concorda" value="1" formControlName="Concorda"></p-checkbox>
                         <label for="concorda">
                             Cliente concorda que a Unis pode enviar Whatsapp neste número
@@ -50,11 +50,11 @@
                     </div>
 
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
 
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="validade">Validade</label>
-                        <input id="validade" type="date" pInputText formControlName="Validade"/>
+                        <input id="validade" type="date" pInputText formControlName="Validade" />
                         <small class="p-error"
                             *ngIf="validacaoFormGroup.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
                     </div>
@@ -76,7 +76,7 @@
                     </div>
                 </div>
 
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="vendedor">Vendedor</label>
                         <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione"
@@ -93,6 +93,7 @@
                         <!-- <small class="p-error"
                                     *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
                     </div>
+                    <div></div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="vendedorParceiro">Vendedor do parceiro</label>
                         <p-dropdown id="vendedorParceiro" [options]="" placeholder="Selecione"
@@ -105,9 +106,9 @@
                 </div>
             </form>
             <div class="p-d-flex p-jc-center">
-                <button pButton pRipple label="Avançar" icon="pi pi-arrow-right"
-                    (click)="iniciarOrcamento()"></button>
+                <button pButton pRipple label="Avançar" icon="pi pi-arrow-right" (click)="iniciarOrcamento()"></button>
             </div>
+
         </div>
     </div>
 </div>
