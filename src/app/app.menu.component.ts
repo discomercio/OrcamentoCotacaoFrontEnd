@@ -23,6 +23,7 @@ export class AppMenuComponent implements OnInit {
         this.model = [
             {
                 items: [
+                    { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento'] },
                     {
                         label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
                         items: [

@@ -13,6 +13,7 @@ import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visual
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { CadastrarClienteComponent } from './orcamentos/novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
 import { AppComponent } from './app.component';
+import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 
 @NgModule({
     imports: [
@@ -32,7 +33,8 @@ import { AppComponent } from './app.component';
                             { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                             { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent }
                         ]
-                    }
+                    },
+                    {path:'orcamentos/novo-orcamento/aprovar-orcamento', component: AprovarOrcamentoComponent}
                 ]
 
             },

@@ -150,6 +150,7 @@ import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visual
 import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { ExportExcelService } from './service/export-files/export-excel.service';
+import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 
 @NgModule({
     imports: [
@@ -291,7 +292,8 @@ import { ExportExcelService } from './service/export-files/export-excel.service'
         UsuarioListaComponent,
         ListaComponent,
         ListaProdutosComponent,
-        VisualizarProdutoComponent
+        VisualizarProdutoComponent,
+        AprovarOrcamentoComponent
     ],
     providers: [
         {provide: LocationStrategy, useClass: HashLocationStrategy},
