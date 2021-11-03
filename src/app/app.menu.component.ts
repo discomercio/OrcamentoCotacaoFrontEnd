@@ -24,6 +24,9 @@ export class AppMenuComponent implements OnInit {
             {
                 items: [
                     { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento'] },
+                    { 
+                        label: 'Cliente', icon: 'fa fa-user', routerLink: ['/cliente'] 
+                    },
                     {
                         label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
                         items: [

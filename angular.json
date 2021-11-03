@@ -33,6 +33,8 @@
                         "scripts": [
                             "node_modules/prismjs/prism.js",
                             "node_modules/prismjs/components/prism-typescript.js"
+                          
+
                         ],
                         "allowedCommonJsDependencies": ["@fullcalendar/daygrid","@fullcalendar/timegrid","@fullcalendar/interaction","chart.js"]
                     },

@@ -1,3 +1,4 @@
+import { ClienteComponent } from './cliente/cliente.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
@@ -31,7 +32,8 @@ import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-o
                             { path: 'produtos/visualizar-produto/visualizar-produto/:fabricante/:produto', component: VisualizarProdutoComponent },
                             { path: 'downloads', component: DownloadsComponent },
                             { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
-                            { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent }
+                            { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent },
+                            { path: 'cliente', component: ClienteComponent }
                         ]
                     },
                     {path:'orcamentos/novo-orcamento/aprovar-orcamento', component: AprovarOrcamentoComponent}
