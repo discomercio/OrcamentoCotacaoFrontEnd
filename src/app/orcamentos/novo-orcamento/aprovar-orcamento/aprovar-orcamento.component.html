@@ -1,12 +1,195 @@
-<div class="cabecalho">Aqui vai o header</div>
+<div class="cabecalho p-d-flex p-jc-center">
+    <div class="p-text-center" style="width:235px; height:100%; background-color:#ffff">
+        <div class="p-col-12">
+            <a routerLink="/">
+                <img src="assets/layout/images/LogoUnis.png" style="width: 30%" routerLink="/" />
+            </a>
+        </div>
+    </div>
+</div>
 <div class="corpo">
     <div class="p-grid">
-        <div class="p-col-12 p-pb-0">
-            <div class="card">
+        <div class="p-col-12 p-lg-8 p-md-9 p-sm-9 p-pb-0 p-order-1">
+            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
                 <div class="p-col-12">
-                    <label for="nome">Nome do cliente</label>
-                    <input id="nome" type="text" pInputText />
+                    <h5>Orçamentos</h5>
+                    <div class="p-col-12 p-px-0 p-pt-2"
+                        *ngFor="let orcamento of opcoesOrcamento.ListaOrcamentoCotacaoDto; let i = index">
+                        <p-accordion>
+                            <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
+                                <ng-template pTemplate="header">
+                                    Opção {{i + 1}}
+                                    <div class="p-ml-auto p-p-0 p-text-right">
+                                        <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}</span>
+                                        <i class="pi pi-trash p-ml-6" style="color: red"
+                                            (click)="removerOpcao(index)"></i>
+                                    </div>
+                                </ng-template>
+                                <ng-template pTemplate="content">
+
+                                    <div class="p-col-12 p-px-0">
+                                        <div class="p-grid p-text-bold"
+                                            *ngFor="let produtos of orcamento.ListaProdutos; let indice = index">
+                                            <div class="p-col-4 p-lg-2 p-md-2 p-sm-2 p-p-2">
+                                                <img [src]="'assets/demo/images/produtos/cond_ve09_ecoTurbo_frio.jpg'"
+                                                    width="100%" />
+                                            </div>
+                                            <div class="p-col-8 p-lg-5 p-md-5 p-sm-5 p-as-center p-my-3">
+                                                <p class="p-pl-3"
+                                                    [innerHtml]="stringUtils.formatarDescricao(produtos.Fabricante, produtos.Fabricante_Nome, produtos.Produto, produtos.Descricao)">
+                                                </p>
+                                            </div>
+                                            <div class="p-col-12 p-lg-1 p-md-1 p-sm-1 p-as-center">
+                                                <div class="p-grid">
+                                                    <div class="p-col-4 p-pb-0" *ngIf="novoOrcamentoService.onResize()">
+                                                        <span class="p-text-bold">Quantidade:</span>
+                                                    </div>
+                                                    <div class="p-col-8 p-text-right p-text-bold">
+                                                        <span>{{produtos.Qtde}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-center">
+                                                <div class="p-grid">
+                                                    <div class="p-col-3 p-pb-0" *ngIf="novoOrcamentoService.onResize()">
+                                                        <span class="p-text-bold">Á
+                                                            vista:</span>
+                                                    </div>
+                                                    <div class="p-col-9 p-lg-12 p-md-12 p-sm-12 p-pb-0 p-text-right">
+                                                        <span class="p-text-light"
+                                                            style="text-decoration: line-through; font-size: smaller; color:darkgray">{{moedaUtils.formatarMoedaSemPrefixo(produtos.Preco_NF)}}</span>
+                                                    </div>
+                                                    <div class="p-col-12 p-py-0 p-text-right p-text-bold">
+                                                        <span>{{moedaUtils.formatarMoedaSemPrefixo(novoOrcamentoService.calcularDesconto(produtos.Preco_NF, 3))}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-center">
+                                                <div class="p-grid p-jc-lg-end p-jc-md-end p-jc-sm-end">
+                                                    <div class="p-col-4 p-pb-0" *ngIf="novoOrcamentoService.onResize()">
+                                                        <span class="p-text-bold">Parcelado:</span>
+                                                    </div>
+
+                                                    <div class="p-col-8 p-text-right p-text-bold" style="float:right">
+                                                        <span>{{moedaUtils.formatarMoedaSemPrefixo(produtos.Preco_NF)}}</span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <p-divider class="p-col-12 p-py-0"
+                                                *ngIf="orcamento.ListaProdutos.length > 0"></p-divider>
+                                        </div>
+                                    </div>
+                                    <!-- <p-divider></p-divider> -->
+                                    <div class="p-pb-3">
+                                        <p-accordion>
+                                            <p-accordionTab>
+                                                <ng-template pTemplate="header">
+                                                    Formas de pagamentos
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    <div class="p-grid p-jc-between">
+                                                        <div class=" p-text-lg-center p-text-md-center p-text-sm-center p-px-2"
+                                                            *ngFor="let fp of orcamento.FormaPagto; let y = index">
+                                                            <div
+                                                                class="p-d-inline-flex p-d-lg-inline p-d-md-inline p-d-sm-inline">
+                                                                <div class="p-as-lg-center p-m-1">
+                                                                    <p-radioButton [inputId]="y" [value]="y"
+                                                                        [(ngModel)]="opcaoPagto">
+                                                                    </p-radioButton>
+                                                                </div>
+                                                                <div class="p-p-2 p-m-1">
+                                                                    <div class="p-grid p-d-block">
+                                                                        <div class="p-py-1 p-col-12">
+                                                                            <span
+                                                                                class="p-text-bold">{{fp.descricao}}</span>
+                                                                        </div>
+                                                                        <div class="p-col-12 p-pt-0">
+
+                                                                            <div class="p-grid p-col-12 p-pt-0 p-jc-lg-center p-jc-md-center p-jc-sm-center"
+                                                                                *ngIf="fp.codigo==novoOrcamentoService.constantes.COD_PAGTO_AVISTA">
+                                                                                <span class="p-text-bold p-text-light"
+                                                                                    style="text-decoration: line-through;font-size: smaller">
+                                                                                    {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                                                </span>
+                                                                                <span class="p-text-bold"
+                                                                                    *ngIf="fp.codigo==novoOrcamentoService.constantes.COD_PAGTO_AVISTA">
+                                                                                    {{moedaUtils.formatarMoedaComPrefixo(fp.valores[y])}}
+                                                                                </span>
+                                                                            </div>
+                                                                            <div class="p-grid p-col-12 p-pt-0 p-jc-lg-center p-jc-md-center p-jc-sm-center"
+                                                                                *ngIf="fp.codigo==novoOrcamentoService.constantes.COD_PAGTO_PARCELADO">
+                                                                                <span class="p-text-bold">
+                                                                                    {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                                                </span>
+                                                                                <p-dropdown id="parceiro"
+                                                                                    [options]="parcelamento"
+                                                                                    [style]="{'text-align':'end'}"
+                                                                                    placeholder="Selecione"
+                                                                                    optionLabel="valor">
+                                                                                </p-dropdown>
+                                                                            </div>
+
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </ng-template>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </div>
+                                    <div>
+                                        <p-accordion>
+                                            <p-accordionTab>
+                                                <ng-template pTemplate="header">
+                                                    Observação
+                                                </ng-template>
+                                                <ng-template pTemplate="content">
+                                                    {{orcamento.Observacoes}}
+                                                </ng-template>
+                                            </p-accordionTab>
+                                        </p-accordion>
+                                    </div>
+
+                                </ng-template>
+                            </p-accordionTab>
+                        </p-accordion>
+                    </div>
+
                 </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-lg-4 p-md-3 p-sm-3 p-order-2">
+            <div class="card">
+                <h5>Observações e Condições</h5>
+                <div>
+                    <label for="textarea">Observações gerais</label>
+                    <textarea id="textarea" pInputTextarea [(ngModel)]="opcoesOrcamento.ObservacoesGerais"
+                        style="width: 100%; height:100%" autoResize="autoResize" disabled="true"></textarea>
+                </div>
+                <div class="p-pt-2">
+                    <p-accordion>
+                        <p-accordionTab>
+                            <ng-template pTemplate="header">
+                                Condições gerais
+                            </ng-template>
+                            <ng-template pTemplate="content">
+                                <div style="font-size:xx-small">
+                                    Aqui vai ter um texto mostrando as condições gerais do orçamento.
+                                    Precisamos mostrar isso com letras miúdas.
+                                    Isso não pode estar com letras grandes
+                                </div>
+                            </ng-template>
+                        </p-accordionTab>
+                    </p-accordion>
+                </div>
+            </div>
+        </div>
+        <div class="p-col-12 p-order-3">
+            <div class="card">
+
             </div>
         </div>
     </div>

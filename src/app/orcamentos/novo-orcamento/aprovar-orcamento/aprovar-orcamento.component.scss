@@ -8,3 +8,13 @@
 .corpo{
     padding: 15px 15px 15px 15px;
 }
+
+.card{
+    min-height: 0% !important;
+}
+
+@media screen and (max-width: 600px){
+    .img{
+        width: 30%;
+    }
+}

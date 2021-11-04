@@ -1,0 +1,500 @@
+[
+    {
+        "ClienteOrcamentoCotacaoDto": {
+            "Nome": "Teste Cadastro Loja",
+            "NomeObra": "Teste Cadastro Loja",
+            "Vendedor": {
+                "usuario": "ADAILTON S",
+                "loja": "01",
+                "bloqueado": 0
+            },
+            "Email": "gabriel@email.com",
+            "Parceiro": null,
+            "Telefone": "1125321634",
+            "Concorda": [
+                "1"
+            ],
+            "VendedorParceiro": null,
+            "Uf": {
+                "uf": "AC",
+                "descricao": "Acre"
+            },
+            "Tipo": {
+                "label": "PF",
+                "value": {
+                    "id": 1,
+                    "name": "PF"
+                }
+            }
+        },
+        "ListaOrcamentoCotacaoDto": [
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001089",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V22F 22 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 3200.03,
+                        "CustoFinancFornecPrecoListaBase": 3200.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 3200.03,
+                        "TotalItem": 3200.03,
+                        "TotalItemRA": 3200.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001091",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V09R 09 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 1706.23,
+                        "CustoFinancFornecPrecoListaBase": 1706.23,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 1706.23,
+                        "TotalItem": 1706.23,
+                        "TotalItemRA": 1706.23,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 4906.26,
+                "ValorTotalDestePedidoComRA": 4906.26,
+                "Observacoes": "Essa observação é apenas para visualizar",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            4091.03
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            4217.56,
+                            2108.78,
+                            1405.85,
+                            1054.39,
+                            843.51,
+                            702.93,
+                            602.51,
+                            527.2,
+                            468.62,
+                            421.76
+                        ]
+                    }
+                ]
+            },
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001092",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V12F 12 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 1842.03,
+                        "CustoFinancFornecPrecoListaBase": 1842.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 1842.03,
+                        "TotalItem": 1842.03,
+                        "TotalItemRA": 1842.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001093",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V12R 12 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 1900.23,
+                        "CustoFinancFornecPrecoListaBase": 1900.23,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 1900.23,
+                        "TotalItem": 1900.23,
+                        "TotalItemRA": 1900.23,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 3742.26,
+                "ValorTotalDestePedidoComRA": 3742.26,
+                "Observacoes": "Essa observação é apenas para visualizar 2",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            4091.03
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            4217.56,
+                            2108.78,
+                            1405.85,
+                            1054.39,
+                            843.51,
+                            702.93,
+                            602.51,
+                            527.2,
+                            468.62,
+                            421.76
+                        ]
+                    }
+                ]
+            },
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001110",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q09F 09 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 2036.03,
+                        "CustoFinancFornecPrecoListaBase": 2036.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 2036.03,
+                        "TotalItem": 2036.03,
+                        "TotalItemRA": 2036.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001111",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q09R 09 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 2181.53,
+                        "CustoFinancFornecPrecoListaBase": 2181.53,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 2181.53,
+                        "TotalItem": 2181.53,
+                        "TotalItemRA": 2181.53,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 4217.56,
+                "ValorTotalDestePedidoComRA": 4217.56,
+                "Observacoes": "Essa observação é apenas para visualizar 3",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            4091.03
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            4217.56,
+                            2108.78,
+                            1405.85,
+                            1054.39,
+                            843.51,
+                            702.93,
+                            602.51,
+                            527.2,
+                            468.62,
+                            421.76
+                        ]
+                    }
+                ]
+            }
+        ],
+        "Validade": "2021-11-10T14:20:25.000Z",
+        "ObservacoesGerais": "Essa é a observação geral do orçamento para mostrar que o campo pode ser automático e com um texto grande para mostrar ao usuário"
+    },
+    {
+        "ClienteOrcamentoCotacaoDto": {
+            "Nome": "Gabriel M Teodoro",
+            "NomeObra": "Gabriel M Teodoro",
+            "Vendedor": {
+                "usuario": "AGNALDO",
+                "loja": "202",
+                "bloqueado": 0
+            },
+            "Email": "gabriel.teodoro@itssolucoes.com.br",
+            "Parceiro": {
+                "vendedor": "AGNALDO",
+                "loja": "202",
+                "apelido": "ADRIANO NEUBARTH",
+                "tipo": "PF",
+                "razao_social_nome": "ADRIANO MARTINS NEUBARTH"
+            },
+            "Telefone": "1125321634",
+            "Concorda": [
+                "1"
+            ],
+            "VendedorParceiro": null,
+            "Uf": {
+                "uf": "SP",
+                "descricao": "São Paulo"
+            },
+            "Tipo": {
+                "label": "PF",
+                "value": {
+                    "id": 1,
+                    "name": "PF"
+                }
+            }
+        },
+        "ListaOrcamentoCotacaoDto": [
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001089",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V22F 22 Frio",
+                        "Qtde": 2,
+                        "Preco_NF": 3200.03,
+                        "CustoFinancFornecPrecoListaBase": 3200.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 3200.03,
+                        "TotalItem": 6400.06,
+                        "TotalItemRA": 6400.06,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001091",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux EcoTurbo V09R 09 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 1706.23,
+                        "CustoFinancFornecPrecoListaBase": 1706.23,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 1706.23,
+                        "TotalItem": 1706.23,
+                        "TotalItemRA": 1706.23,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 8106.29,
+                "ValorTotalDestePedidoComRA": 8106.29,
+                "Observacoes": "Essa observação é apenas para visualizar",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            9876.63
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            10182.09,
+                            5091.05,
+                            3394.03,
+                            2545.52,
+                            2036.42,
+                            1697.02,
+                            1454.58,
+                            1272.76,
+                            1131.34,
+                            1018.21
+                        ]
+                    }
+                ]
+            },
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001110",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q09F 09 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 2036.03,
+                        "CustoFinancFornecPrecoListaBase": 2036.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 2036.03,
+                        "TotalItem": 2036.03,
+                        "TotalItemRA": 2036.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001111",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q09R 09 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 2181.53,
+                        "CustoFinancFornecPrecoListaBase": 2181.53,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 2181.53,
+                        "TotalItem": 2181.53,
+                        "TotalItemRA": 2181.53,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001112",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q12F 12 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 2230.03,
+                        "CustoFinancFornecPrecoListaBase": 2230.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 2230.03,
+                        "TotalItem": 2230.03,
+                        "TotalItemRA": 2230.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 6447.59,
+                "ValorTotalDestePedidoComRA": 6447.59,
+                "Observacoes": "Essa observação é apenas para visualizar 2",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            9876.63
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            10182.09,
+                            5091.05,
+                            3394.03,
+                            2545.52,
+                            2036.42,
+                            1697.02,
+                            1454.58,
+                            1272.76,
+                            1131.34,
+                            1018.21
+                        ]
+                    }
+                ]
+            },
+            {
+                "ListaProdutos": [
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001114",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q18F 18 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 3103.03,
+                        "CustoFinancFornecPrecoListaBase": 3103.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 3103.03,
+                        "TotalItem": 3103.03,
+                        "TotalItemRA": 3103.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "001",
+                        "Produto": "001116",
+                        "Fabricante_Nome": "ELECTROLUX",
+                        "Descricao": "Ar Cond. Electrolux Inverter Q22F 24 Frio",
+                        "Qtde": 1,
+                        "Preco_NF": 3685.03,
+                        "CustoFinancFornecPrecoListaBase": 3685.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 3685.03,
+                        "TotalItem": 3685.03,
+                        "TotalItemRA": 3685.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    },
+                    {
+                        "Fabricante": "002",
+                        "Produto": "002234",
+                        "Fabricante_Nome": "LG",
+                        "Descricao": "Ar Cond. LG Dual Inverter Artcool S4W12JARPA 12 Quente",
+                        "Qtde": 1,
+                        "Preco_NF": 3394.03,
+                        "CustoFinancFornecPrecoListaBase": 3394.03,
+                        "Desc_Dado": 0,
+                        "Preco_Venda": 3394.03,
+                        "TotalItem": 3394.03,
+                        "TotalItemRA": 3394.03,
+                        "AlterouValorRa": false,
+                        "Alterou_Preco_Venda": false
+                    }
+                ],
+                "VlTotalDestePedido": 10182.09,
+                "ValorTotalDestePedidoComRA": 10182.09,
+                "Observacoes": "Essa observação é apenas para visualizar 3",
+                "FormaPagto": [
+                    {
+                        "codigo": 1,
+                        "descricao": "Á vista (3% desconto)",
+                        "incluir": true,
+                        "qtdeParcelas": 1,
+                        "valores": [
+                            9876.63
+                        ]
+                    },
+                    {
+                        "codigo": 2,
+                        "descricao": "Parcelado",
+                        "incluir": true,
+                        "qtdeParcelas": 10,
+                        "valores": [
+                            10182.09,
+                            5091.05,
+                            3394.03,
+                            2545.52,
+                            2036.42,
+                            1697.02,
+                            1454.58,
+                            1272.76,
+                            1131.34,
+                            1018.21
+                        ]
+                    }
+                ]
+            }
+        ],
+        "Validade": "2021-11-10T14:27:55.000Z",
+        "ObservacoesGerais": "Essa é a observação geral do orçamento"
+    }
+]

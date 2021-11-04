@@ -33,7 +33,7 @@ import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-o
                             { path: 'downloads', component: DownloadsComponent },
                             { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                             { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent },
-                            { path: 'cliente', component: ClienteComponent }
+                            { path: 'cliente/cliente', component: ClienteComponent }
                         ]
                     },
                     {path:'orcamentos/novo-orcamento/aprovar-orcamento', component: AprovarOrcamentoComponent}

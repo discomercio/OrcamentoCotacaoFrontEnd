@@ -405,29 +405,22 @@ export class ItensComponent implements OnInit {
 
   enviar() {
     debugger;
-    // validar se a forma de pagto esta preenchida
+    // validar se a forma de pagto esta preenchida em cada orçamento
     // validar os produtos e valores??
     // precisa fazer a parte de desconto, analisar os arquivos do Edu para ver o percentual máximo
     // precisa analisar melhor essa parte
+    /* 
+      se ultrapassar o percentual máximo de desconto, 
+      vamos mostrar uma mensagem com uma modal para que a pessoa clique no OK 
+      e mostrar o botão para solicitar o desconto superior
+     */
+  }
 
-
-    let vet = [20, 3, 25, 12, 1];
-    let var1 = vet[0];
-
-    for (let i = 1; i < 5; i++) {
-      if (vet[i] > var1)
-        var1 = vet[i];
-    }
-
-    console.log(var1);
-
-    //precisamos criar um vetor (array unidimensional) para 
-    //armazenar 15 valores numéricos relativos aos salários de funcionários 
-    // de uma empresa.
-    //Qual a instrução para criar esse vetor?
-    
-    // O algoritmo  abaixo poussiu um erro. Como corrigir?
-
+  salvarOrcamento(){
+    debugger;
+    //depois de validar o orçamento vamos salvar!
+    // fazer a chamada da validação aqui
+    let json = JSON.stringify(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto);
     
   }
 
