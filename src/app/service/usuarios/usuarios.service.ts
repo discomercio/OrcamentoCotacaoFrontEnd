@@ -13,7 +13,8 @@ export class UsuariosService {
   constructor(private http: HttpClient) { }
 
   buscarTodosUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>('assets/demo/data/banco/usuarios.json');
+    return this.http.get<Usuario[]>('https://localhost:5001/Usuario');
+    //return this.http.get<Usuario[]>('assets/demo/data/banco/usuarios.json');
   }
 
   buscarVendedores(): Observable<UsuarioXLoja[]> {
@@ -24,7 +25,8 @@ export class UsuariosService {
     return this.http.get<Parceiro[]>('assets/demo/data/banco/parceiro_x_usuario.json');
   }
 
-  cadastrarUsuario(usuario: Usuario) {
-    this.http.post('', usuario);
+  cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
+    debugger;
+    return this.http.post<Usuario>('https://localhost:5001/Usuario',usuario);
   }
 }

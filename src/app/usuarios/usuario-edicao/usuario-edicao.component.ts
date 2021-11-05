@@ -114,7 +114,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.usuario.ativo = f.ativo.value;
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
-    this.usuario.cpf_cnpj = f.cpf_cnpj.value;
+    //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
     this.usuario.telefone1 = f.ddd_telefone.value;
     this.usuario.telefone2 = f.dddCel_telefoneCel.value;
     
