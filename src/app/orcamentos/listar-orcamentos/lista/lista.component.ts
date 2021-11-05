@@ -18,7 +18,6 @@ import { LojasService } from 'src/app/service/lojas/lojas.service';
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
-import { Usuarios } from 'src/app/dto/usuarios/usuarios';
 import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 
 @Component({

@@ -4,8 +4,8 @@ import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Router } from '@angular/router';
 import { Table } from 'primeng/table';
-import { Usuarios } from 'src/app/dto/usuarios/usuarios';
 import { SelectItem } from 'primeng/api/selectitem';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -20,8 +20,8 @@ export class UsuarioListaComponent implements OnInit {
     private readonly router: Router) { }
 
   @ViewChild('dataTable') table: Table;
-  usuarios: Usuarios[] = new Array<Usuarios>();
-  usuarioSelecionado: Usuarios;
+  usuarios: Usuario[] = new Array<Usuario>();
+  usuarioSelecionado: Usuario;
   public form: FormGroup;
   cols: any[];
   perfil: SelectItem;

@@ -11,10 +11,15 @@
 
 .card{
     min-height: 0% !important;
+    border-radius: 2ch;
 }
 
 @media screen and (max-width: 600px){
     .img{
         width: 30%;
     }
+}
+
+::ng-deep .p-accordion-content{
+    padding-bottom: 0 !important;
 }

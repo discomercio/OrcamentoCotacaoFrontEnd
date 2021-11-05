@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
-import { Usuarios } from 'src/app/dto/usuarios/usuarios';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { CriptoService } from 'src/app/utilities/cripto/cripto.service';
@@ -31,7 +31,7 @@ export class UsuarioEdicaoComponent implements OnInit {
 
   public form: FormGroup;
   public apelido: string;
-  public usuario = new Usuarios();
+  public usuario = new Usuario();
   public mensagemErro: string = "*Campo obrigatório.";
   public novoUsuario: boolean = false;
   disabled: boolean = true;
@@ -61,7 +61,7 @@ export class UsuarioEdicaoComponent implements OnInit {
         if (this.apelido.toLowerCase() != "novo") {
           this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
             if (!!r) {
-              let usuarios: Usuarios[] = r;
+              let usuarios: Usuario[] = r;
               this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
               this.criarForm();
 
@@ -109,8 +109,17 @@ export class UsuarioEdicaoComponent implements OnInit {
   atualizar() {
     if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
-    console.log("passou");
-    //
+    let f = this.form.controls;
+    this.usuario.nome = f.nome.value;
+    this.usuario.ativo = f.ativo.value;
+    this.usuario.email = f.email.value;
+    this.usuario.senha = f.senha.value;
+    this.usuario.cpf_cnpj = f.cpf_cnpj.value;
+    this.usuario.telefone1 = f.ddd_telefone.value;
+    this.usuario.telefone2 = f.dddCel_telefoneCel.value;
+    
+    this.usuariosService.cadastrarUsuario(this.usuario);
+    
   }
 
   celular = false;
