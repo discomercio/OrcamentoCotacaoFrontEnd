@@ -22,6 +22,7 @@ import { arrayToHash } from '@fullcalendar/core/util/object';
 import { ValidacoesUtils } from 'src/app/utilities/validacao-formulario/validacoesUtils';
 import { AlertDialogComponent } from 'src/app/utilities/alert-dialog/alert-dialog.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
 
 @Component({
   selector: 'app-itens',
@@ -36,7 +37,8 @@ export class ItensComponent implements OnInit {
     public dialogService: DialogService,
     public mensagemService: MensagemService,
     public readonly router: Router,
-    private readonly alertaService: AlertaService) { }
+    private readonly alertaService: AlertaService,
+    private readonly orcamentoService: OrcamentosService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -416,12 +418,16 @@ export class ItensComponent implements OnInit {
      */
   }
 
-  salvarOrcamento(){
+  salvarOrcamento() {
     debugger;
     //depois de validar o orçamento vamos salvar!
     // fazer a chamada da validação aqui
-    let json = JSON.stringify(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto);
-    
+
+    this.orcamentoService.enviarOrcamento(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto).toPromise().then(r =>{
+      if(r == null){
+        this.alertaService.mostrarMensagem("Deu pau");
+      }
+    });
   }
 
 }

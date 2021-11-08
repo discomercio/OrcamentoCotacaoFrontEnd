@@ -26,6 +26,6 @@ export class ValidacaoFormularioComponent {
   }
   
   verificaCampo(formGroup: FormGroup, field: string) {
-    return !formGroup.get(field).valid && formGroup.get(field).dirty;
+    return !formGroup.get(field).valid && formGroup.get(field).dirty && !formGroup.get(field).disabled;
   }
 }

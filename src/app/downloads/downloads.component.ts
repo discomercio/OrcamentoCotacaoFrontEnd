@@ -128,5 +128,11 @@ export class DownloadsComponent implements OnInit {
       this.uploadedFiles.push(file);
     }
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
+
+    this.downloadsService.enviar('').toPromise().then(r => {
+      if (r == null) {
+        // erro
+      }
+    });
   }
 }

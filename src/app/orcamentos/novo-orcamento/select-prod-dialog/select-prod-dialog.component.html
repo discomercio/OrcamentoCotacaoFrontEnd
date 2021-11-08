@@ -13,9 +13,9 @@
             <ng-template pTemplate="body" let-p>
                 <ng-container *ngIf="p.visivel">
 
-                    <tr class="p-selectable-row" class="font-size" [pSelectableRow]="p">
+                    <tr class="p-selectable-row p-field-checkbox" class="font-size" [pSelectableRow]="p">
                         <td>
-                            <p-tableRadioButton [value]="p"></p-tableRadioButton>
+                            <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
                         </td>
                         <td>
                             <span class="p-column-title">Produto</span>

@@ -73,4 +73,8 @@ export class SelectProdDialogComponent implements OnInit {
 
     this.mensagemService.showErrorViaToast("Por favor, selecione um produto!");
   }
+
+  marcarLinha(e:Event){
+    e.stopImmediatePropagation();
+  }
 }

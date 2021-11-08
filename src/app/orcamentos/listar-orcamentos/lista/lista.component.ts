@@ -198,6 +198,8 @@ export class ListaComponent implements OnInit {
   filtrar(mostrarMensagem: boolean) {
     if (mostrarMensagem)
       this.mensagemService.showWarnViaToast("Estamos implementando!");
+
+    
   }
 
   ngOnDestroy() {
