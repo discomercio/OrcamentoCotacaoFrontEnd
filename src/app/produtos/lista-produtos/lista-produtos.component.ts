@@ -5,6 +5,7 @@ import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-lista-produtos',
@@ -15,7 +16,8 @@ export class ListaProdutosComponent implements OnInit {
 
   constructor(private readonly produtoService: ProdutoService,
     private fb: FormBuilder,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    private readonly alertaService: AlertaService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -58,13 +60,12 @@ export class ListaProdutosComponent implements OnInit {
         this.listaProdutoDto = r;
         this.carregando = false;
       }
-    })
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   visualizarProduto(event: HTMLElement) {
     let produto: string = event.getElementsByTagName('input')[0].value;
     let prod = this.listaProdutoDto.filter(f => f.Produto == produto)[0];
-    console.log(prod);
     this.router.navigate(["/produtos/visualizar-produto/visualizar-produto", prod.Fabricante, prod.Produto]);
   }
 }
