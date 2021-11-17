@@ -21,7 +21,7 @@ export class DownloadsComponent implements OnInit {
     private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,
     private readonly mensagemService: MensagemService,
-    public alert: AlertaService) {
+    private readonly alertaService: AlertaService) {
 
   }
 
@@ -133,6 +133,6 @@ export class DownloadsComponent implements OnInit {
       if (r == null) {
         // erro
       }
-    });
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 }

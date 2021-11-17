@@ -19,6 +19,8 @@ import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
 import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
 import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
+import { Filtro } from 'src/app/dto/orcamentos/filtro';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-lista',
@@ -34,7 +36,8 @@ export class ListaComponent implements OnInit {
     private mensagemService: MensagemService,
     private readonly usuarioService: UsuariosService,
     private readonly lojaService: LojasService,
-    private readonly exportExcelService: ExportExcelService) {
+    private readonly exportExcelService: ExportExcelService,
+    private readonly alertaService: AlertaService) {
   }
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -42,7 +45,8 @@ export class ListaComponent implements OnInit {
   param: string;
   selectedFiltros: SelectItem;
   lstFiltro: SelectItem[];
-  filtro: SelectItem[] = new Array<SelectItem>();
+
+  filtro: Filtro = new Filtro();
   emPedidos: boolean = false;
   cols: any[];
   lstDto: Array<ListaDto> = new Array();
@@ -54,13 +58,15 @@ export class ListaComponent implements OnInit {
   lstLoja: Array<Lojas>;
   lojaSelecionada: Lojas;
   lstLojaFiltrada: Array<Lojas>;
-  lstVendedores:Array<UsuarioXLoja>;
-  vendedorSelecionado:UsuarioXLoja;
-  lstVendedoresFiltrado:Array<UsuarioXLoja>;
-  nomeObra:string;
+  lstVendedores: Array<UsuarioXLoja>;
+  vendedorSelecionado: UsuarioXLoja;
+  lstVendedoresFiltrado: Array<UsuarioXLoja>;
+  nome_numero: string;
+  vendedorParceiroSelecionado: any;
+  lstVendedoresParceiroFiltrado: Array<any>;
 
   ngOnInit(): void {
-    
+
     this.montarLista();
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
   }
@@ -97,11 +103,11 @@ export class ListaComponent implements OnInit {
   }
 
   setarFiltro(filtro: string) {
-    this.filtro = new Array<SelectItem>();
+    this.filtro.Status = new Array<string>();
     this.lstFiltro.map((m) => {
       let map: string = m.value.toLowerCase();
       if (map.indexOf(filtro) > -1) {
-        this.filtro.push(m.value);
+        this.filtro.Status.push(m.value);
       }
     });
   }
@@ -113,7 +119,7 @@ export class ListaComponent implements OnInit {
           this.lstDto = r;
           this.lstDtoFiltrada = this.lstDto;
         }
-      });
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
@@ -124,7 +130,7 @@ export class ListaComponent implements OnInit {
           this.lstDto = r;
           this.lstDtoFiltrada = this.lstDto;
         }
-      });
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
@@ -133,7 +139,7 @@ export class ListaComponent implements OnInit {
       if (r != null) {
         this.lstParceiro = r;
       }
-    });
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
   buscarLojas() {
@@ -141,15 +147,19 @@ export class ListaComponent implements OnInit {
       if (r != null) {
         this.lstLoja = r;
       }
-    });
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarVendedores(){
-    this.usuarioService.buscarVendedores().toPromise().then((r) =>{
-      if(r != null){
+  buscarVendedores() {
+    this.usuarioService.buscarVendedores().toPromise().then((r) => {
+      if (r != null) {
         this.lstVendedores = r;
       }
-    });
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  buscarVendedoresParceiros() {
+    //TODO: fazer a busca de vendedores de parceiros
   }
 
   filtrarParceiros(event: any) {
@@ -158,15 +168,19 @@ export class ListaComponent implements OnInit {
       || r.razao_social_nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
   }
 
+  filtrarVendedoresParceiros(event: any) {
+
+  }
+
   filtrarLojas(event: any) {
     let query = event.query;
     this.lstLojaFiltrada = this.lstLoja.filter(r => r.loja.toLowerCase().indexOf(query.toLowerCase()) > -1
       || r.nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
   }
 
-  filtrarVendedores(event:any){
+  filtrarVendedores(event: any) {
     let query = event.query;
-    this.lstVendedoresFiltrado = this.lstVendedores.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase())> -1 && r.loja == "205");
+    this.lstVendedoresFiltrado = this.lstVendedores.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase()) > -1 && r.loja == "205");
   }
 
   montarSelectFiltro() {
@@ -198,8 +212,6 @@ export class ListaComponent implements OnInit {
   filtrar(mostrarMensagem: boolean) {
     if (mostrarMensagem)
       this.mensagemService.showWarnViaToast("Estamos implementando!");
-
-    
   }
 
   ngOnDestroy() {
@@ -217,7 +229,7 @@ export class ListaComponent implements OnInit {
     lstExport = this.montarListaParaExport();
     this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos");
   }
-  
+
   montarListaParaExport(): ListaDtoExport[] {
     let lstExport = new Array<ListaDtoExport>();
 

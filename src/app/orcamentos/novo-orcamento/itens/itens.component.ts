@@ -66,7 +66,7 @@ export class ItensComponent implements OnInit {
       if (r != null) {
         this.produtoComboDto = r;
       }
-    })
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   montarOpcoesPagto() {
@@ -118,7 +118,6 @@ export class ItensComponent implements OnInit {
   }
 
   visualizarOrcamento() {
-    //  [routerLink]="['/novo-orcamento/visualizar-orcamento']"
     if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
       this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
       return;
@@ -427,7 +426,7 @@ export class ItensComponent implements OnInit {
       if(r == null){
         this.alertaService.mostrarMensagem("Deu pau");
       }
-    });
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
 }

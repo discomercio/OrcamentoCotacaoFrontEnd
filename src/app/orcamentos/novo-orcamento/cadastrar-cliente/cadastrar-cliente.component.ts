@@ -56,7 +56,7 @@ export class CadastrarClienteComponent implements OnInit {
       if (r != null) {
         this.lstVendedores = r.filter((item, i, arr) => arr.findIndex((f) => f.usuario === item.usuario) === i);
       }
-    });
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
   buscarParceiros() {
@@ -67,7 +67,7 @@ export class CadastrarClienteComponent implements OnInit {
         if (r != null) {
           this.lstParceiro = r.filter(parca => parca.vendedor === vendedor);
         }
-      });
+      }).catch((r)=> this.alertaService.mostrarErroInternet(r));
     }
   }
 
@@ -76,7 +76,7 @@ export class CadastrarClienteComponent implements OnInit {
       if (r != null) {
         this.lstEstado = r;
       }
-    })
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
   lstTipo: SelectItem[];

@@ -10,19 +10,28 @@
                             <label for="filtro">Status</label>
                             <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
                                 placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
-                                [(ngModel)]="filtro" emptyFilterMessage="Nenhum item encontrado"
+                                [(ngModel)]="filtro.Status" emptyFilterMessage="Nenhum item encontrado"
                                 pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
                             </p-multiSelect>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="nomeObra">Nome do cliente / Número </label>
-                            <input id="nomeObra" type="text" pInputText placeholder="" [(ngModel)]="nomeObra"
+                            <!-- <p-autoComplete [(ngModel)]="vendedorSelecionado" [suggestions]="lstVendedoresFiltrado"
+                                (completeMethod)="filtrarVendedores($event)" field="usuario"
+                                placeholder="Digite o nome">
+                                <ng-template let-vendedor pTemplate="usuario">
+                                    <div>
+                                        <div>{{vendedor.usuario}}</div>
+                                    </div>
+                                </ng-template>
+                            </p-autoComplete> -->
+                            <input id="nome_numero" type="text" pInputText placeholder="" [(ngModel)]="filtro.Nome_numero"
                                 placeholder="Digite o nome cliente ou número" />
                         </div>
 
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedor">Vendedor</label>
-                            <p-autoComplete [(ngModel)]="vendedorSelecionado" [suggestions]="lstVendedoresFiltrado"
+                            <p-autoComplete [(ngModel)]="filtro.Vendedor" [suggestions]="lstVendedoresFiltrado"
                                 (completeMethod)="filtrarVendedores($event)" field="usuario"
                                 placeholder="Digite o nome">
                                 <ng-template let-vendedor pTemplate="usuario">
@@ -32,9 +41,9 @@
                                 </ng-template>
                             </p-autoComplete>
                         </div>
-                        <div class="p-field p-col-6 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Parceiro</label>
-                            <p-autoComplete [(ngModel)]="parceiroSelecionado" [suggestions]="lstParceiroFiltrado"
+                            <p-autoComplete [(ngModel)]="filtro.Parceiro" [suggestions]="lstParceiroFiltrado"
                                 (completeMethod)="filtrarParceiros($event)" field="apelido" placeholder="Digite o nome">
                                 <ng-template let-parceiro pTemplate="apelido">
                                     <div>
@@ -43,9 +52,20 @@
                                 </ng-template>
                             </p-autoComplete>
                         </div>
-                        <div class="p-field p-col-6 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                                <label for="filtroVendedorParceiro">Vendedor parceiro</label>
+                                <p-autoComplete [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
+                                    (completeMethod)="filtrarVendedoresParceiros($event)" field="apelido" placeholder="Digite o nome">
+                                    <ng-template let-vendedorParceiro pTemplate="apelido">
+                                        <div>
+                                            <div>{{vendedorParceiro.apelido}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                            </div>
+                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroLoja">Lojas</label>
-                            <p-autoComplete [(ngModel)]="lojaSelecionada" [suggestions]="lstLojaFiltrada"
+                            <p-autoComplete [(ngModel)]="filtro.Loja" [suggestions]="lstLojaFiltrada"
                                 (completeMethod)="filtrarLojas($event)" field="nome"
                                 placeholder="Digite código ou nome">
                                 <ng-template let-loja pTemplate="nome">
@@ -57,11 +77,11 @@
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
-                            <input id="dataInicio" type="date" pInputText placeholder="" [(ngModel)]="dataInicio" />
+                            <input id="dataInicio" type="date" pInputText placeholder="" [(ngModel)]="filtro.DtInicio" />
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-4 p-as-end">
                             <label for="dataFinal">Data final</label>
-                            <input id="dataFinal" type="date" pInputText placeholder="" [(ngModel)]="dataFinal" />
+                            <input id="dataFinal" type="date" pInputText placeholder="" [(ngModel)]="filtro.DtFim" />
                         </div>
                         <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
                             <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"

@@ -3,6 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { FormBuilder } from '@angular/forms';
 import { DetalhesProdutoDto } from 'src/app/dto/produtos/DetalhesProdutoDto';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-visualizar-produto',
@@ -13,7 +14,8 @@ export class VisualizarProdutoComponent implements OnInit {
 
   constructor(private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private readonly alertaService: AlertaService) { }
 
   produto: string;
   fabricante: string;
@@ -26,7 +28,7 @@ export class VisualizarProdutoComponent implements OnInit {
         this.detalhesProduto = r.filter(f => f.Fabricante == this.fabricante && f.Produto == this.produto)[0];
         console.log(this.detalhesProduto.Imagem);
       }
-    });
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
 }
