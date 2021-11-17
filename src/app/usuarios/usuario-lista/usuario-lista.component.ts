@@ -53,7 +53,7 @@ export class UsuarioListaComponent implements OnInit {
 
   editarUsuario() {
     if (!!this.usuarioSelecionado) {
-      this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.apelido]);
+      this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
     }
     else{
       this.router.navigate(['/usuarios/usuario-edicao', 'novo']);
