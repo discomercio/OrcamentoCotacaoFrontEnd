@@ -24,6 +24,7 @@ import { TooltipModule } from 'primeng/tooltip';
 import { VisualizarOrcamentoComponent } from './visualizar-orcamento/visualizar-orcamento.component';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { GalleriaModule } from 'primeng/galleria';
+import { CalendarModule } from 'primeng/calendar';
 
 @NgModule({
     imports:[
@@ -44,7 +45,8 @@ import { GalleriaModule } from 'primeng/galleria';
         AvatarModule,
         TooltipModule,
         RadioButtonModule,
-        GalleriaModule
+        GalleriaModule,
+        CalendarModule
     ],
     exports:[
 

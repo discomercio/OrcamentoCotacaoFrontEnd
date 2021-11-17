@@ -16,15 +16,6 @@
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="nomeObra">Nome do cliente / Número </label>
-                            <!-- <p-autoComplete [(ngModel)]="vendedorSelecionado" [suggestions]="lstVendedoresFiltrado"
-                                (completeMethod)="filtrarVendedores($event)" field="usuario"
-                                placeholder="Digite o nome">
-                                <ng-template let-vendedor pTemplate="usuario">
-                                    <div>
-                                        <div>{{vendedor.usuario}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-autoComplete> -->
                             <input id="nome_numero" type="text" pInputText placeholder="" [(ngModel)]="filtro.Nome_numero"
                                 placeholder="Digite o nome cliente ou número" />
                         </div>
@@ -77,11 +68,11 @@
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
-                            <input id="dataInicio" type="date" pInputText placeholder="" [(ngModel)]="filtro.DtInicio" />
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicio" [showIcon]="true"></p-calendar>
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-4 p-as-end">
                             <label for="dataFinal">Data final</label>
-                            <input id="dataFinal" type="date" pInputText placeholder="" [(ngModel)]="filtro.DtFim" />
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFim" [showIcon]="true"></p-calendar>
                         </div>
                         <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
                             <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"

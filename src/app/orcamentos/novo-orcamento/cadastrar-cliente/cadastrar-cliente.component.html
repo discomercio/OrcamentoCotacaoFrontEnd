@@ -54,7 +54,7 @@
 
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="validade">Validade</label>
-                        <input id="validade" type="date" pInputText formControlName="Validade" />
+                        <p-calendar dateFormat="dd/mm/yy" formControlName="Validade" [showIcon]="true"></p-calendar>
                         <small class="p-error"
                             *ngIf="validacaoFormGroup.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
                     </div>
