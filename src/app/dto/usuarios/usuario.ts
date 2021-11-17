@@ -1,21 +1,10 @@
 export class Usuario {
-    id: string = "";
-    responsavel: string = "";
-    papel: string = "";
+    id: number = 0;
     nome: string = "";
-    apelido: string = "";
-    ativo: string = "";
+    ativo: boolean = false;
     email: string = "";
-    perfil: string = "";
     senha: string = "";
-    tipo: string = "";
-    cpf_cnpj: string = "";
-    ie_rg: string = "";
-    ddd1: string = "";
     telefone1: string = "";
-    ddd2: string = "";
     telefone2: string = "";
-    ddd3: string = "";
-    telefone3: string = "";
-    logotipo: string = "";
+    parceiro: string = "";
 }

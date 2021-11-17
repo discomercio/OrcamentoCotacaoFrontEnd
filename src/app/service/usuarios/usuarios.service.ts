@@ -29,4 +29,9 @@ export class UsuariosService {
     debugger;
     return this.http.post<Usuario>('https://localhost:5001/Usuario',usuario);
   }
+
+  alterarUsuario(usuario: Usuario): Observable<Usuario> {
+    debugger;
+    return this.http.put<Usuario>('https://localhost:5001/Usuario',usuario);
+  }
 }

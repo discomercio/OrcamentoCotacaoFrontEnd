@@ -62,7 +62,7 @@ export class UsuarioEdicaoComponent implements OnInit {
           this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
             if (!!r) {
               let usuarios: Usuario[] = r;
-              this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
+              //this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
               this.criarForm();
 
               const datastamp = this.usuario.senha;
@@ -81,8 +81,8 @@ export class UsuarioEdicaoComponent implements OnInit {
       email: [this.usuario.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
       senha: [this.usuario.senha, [Validators.required, Validators.minLength(5), Validators.maxLength(15)]],
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(5)]],
-      ddd_telefone: [this.usuario.ddd1 + this.usuario.telefone1, [Validators.minLength(10), Validators.maxLength(11)]],
-      dddCel_telefoneCel: [this.usuario.ddd2 + this.usuario.telefone2, [Validators.minLength(10), Validators.maxLength(11)]],
+      ddd_telefone: [this.usuario.telefone1, [Validators.minLength(10), Validators.maxLength(11)]],
+      dddCel_telefoneCel: [this.usuario.telefone2, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required]
     },
       { validators: compararSenha() });
@@ -111,14 +111,32 @@ export class UsuarioEdicaoComponent implements OnInit {
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
-    this.usuario.ativo = f.ativo.value;
+    this.usuario.ativo = ( f.ativo.value =="true");
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
     //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
     this.usuario.telefone1 = f.ddd_telefone.value;
     this.usuario.telefone2 = f.dddCel_telefoneCel.value;
-    
-    this.usuariosService.cadastrarUsuario(this.usuario);
+
+    if(this.usuario.id){
+      this.usuariosService.alterarUsuario(this.usuario)
+      .toPromise()
+      .then((x) => {
+        alert("xx");
+      })
+      .catch(()=>{
+        alert("yy");
+      });
+    }else{
+    this.usuariosService.cadastrarUsuario(this.usuario)
+    .toPromise()
+    .then((x) => {
+      alert("x");
+    })
+    .catch(()=>{
+      alert("y");
+    });
+    }
     
   }
 
