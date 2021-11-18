@@ -56,7 +56,7 @@ export class ItensComponent implements OnInit {
     this.inscreveProdutoComboDto();
     this.montarOpcoesPagto();
     if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto != undefined) {
-      this.observacoesGerais = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
+      // this.observacoesGerais = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
     }
   }
 
@@ -118,10 +118,10 @@ export class ItensComponent implements OnInit {
   }
 
   visualizarOrcamento() {
-    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
-      this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
-      return;
-    }
+    // if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
+    //   this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
+    //   return;
+    // }
 
     let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
     const ref = this.dialogService.open(VisualizarOrcamentoComponent, {
@@ -149,7 +149,7 @@ export class ItensComponent implements OnInit {
 
     this.lstProdutos.push(prod);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
-    this.novoOrcamentoService.orcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
     this.novoOrcamentoService.totalPedido();
     this.novoOrcamentoService.totalPedidoRA();
   }
@@ -368,18 +368,18 @@ export class ItensComponent implements OnInit {
   }
 
   incluirOpcao() {
-    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
-      this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
-      return;
-    }
+    // if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
+    //   this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
+    //   return;
+    // }
     if (this.pagtoSelecionados.length <= 0) {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
 
-    this.novoOrcamentoService.orcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
-    this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
+    // this.novoOrcamentoService.orcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
+    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
 
     this.novoOrcamentoService.criarNovoOrcamentoItem();
 
@@ -387,7 +387,7 @@ export class ItensComponent implements OnInit {
   }
   incluirObsGerais() {
     if (this.observacoesGerais) {
-      this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
+      // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
     }
   }
 
@@ -397,7 +397,7 @@ export class ItensComponent implements OnInit {
   }
 
   removerOpcao(index: number) {
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
+    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
   }
 
   removerItem(index: number) {
@@ -422,11 +422,11 @@ export class ItensComponent implements OnInit {
     //depois de validar o orçamento vamos salvar!
     // fazer a chamada da validação aqui
 
-    this.orcamentoService.enviarOrcamento(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto).toPromise().then(r =>{
-      if(r == null){
-        this.alertaService.mostrarMensagem("Deu pau");
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    // this.orcamentoService.enviarOrcamento(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto).toPromise().then(r =>{
+    //   if(r == null){
+    //     this.alertaService.mostrarMensagem("Deu pau");
+    //   }
+    // }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
 }

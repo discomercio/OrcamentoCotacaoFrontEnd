@@ -1,9 +1,9 @@
-import { OrcamentoCotacaoDto } from './orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from './orcamento-cotacao-dto';
 import { ClienteOrcamentoCotacaoDto } from '../clientes/cliente-orcamento-cotacao-dto';
 
-export class OpcoesOrcamentoCotacaoDto {
+export class OrcamentoCotacaoDto {
     ClienteOrcamentoCotacaoDto:ClienteOrcamentoCotacaoDto;
-    ListaOrcamentoCotacaoDto: OrcamentoCotacaoDto[];
+    ListaOrcamentoCotacaoDto: OrcamentoOpcaoDto[];
     Validade:Date;
     ObservacoesGerais:string;
 }

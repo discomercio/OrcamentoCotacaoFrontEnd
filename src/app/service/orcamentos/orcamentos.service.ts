@@ -2,8 +2,9 @@ import { Injectable, DebugElement } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
 import { Observable } from 'rxjs';
-import { OpcoesOrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
+import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { environment } from 'src/environments/environment';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -17,11 +18,15 @@ export class OrcamentosService {
     return this.http.get<ListaDto[]>(environment.apiUrl + 'Orcamento');
   }
 
-  buscarOrcamento(): Observable<OpcoesOrcamentoCotacaoDto[]> {
-    return this.http.get<OpcoesOrcamentoCotacaoDto[]>('assets/demo/data/banco/orcamentos-salvos.json')
+  buscarOrcamento(): Observable<OrcamentoCotacaoDto[]> {
+    return this.http.get<OrcamentoCotacaoDto[]>('assets/demo/data/banco/orcamentos-salvos.json')
   }
 
-  enviarOrcamento(opcoesOrcamento:OpcoesOrcamentoCotacaoDto){
+  enviarOrcamento(opcoesOrcamento:OrcamentoCotacaoDto){
     return this.http.post<any[]>(environment.apiUrl + "Orcamento", opcoesOrcamento);
+  }
+
+  criarOrcamento(cliente:ClienteOrcamentoCotacaoDto){
+    return this.http.post<any[]>(environment.apiUrl + "Orcamento", cliente);
   }
 }

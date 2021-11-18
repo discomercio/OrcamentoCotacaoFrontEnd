@@ -1,11 +1,10 @@
 import { Component, OnInit, HostListener } from '@angular/core';
 import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
-import { OpcoesOrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -21,7 +20,7 @@ export class AprovarOrcamentoComponent implements OnInit {
     this.buscarOrcamento();
   }
 
-  opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
+  // opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
@@ -29,12 +28,12 @@ export class AprovarOrcamentoComponent implements OnInit {
   buscarOrcamento() {
     this.orcamentoService.buscarOrcamento().toPromise().then(r => {
       if (r != null) {
-        this.opcoesOrcamento = r[0];
+        // this.opcoesOrcamento = r[0];
       }
     });
   }
 
-  somarRA(orcamento: OrcamentoCotacaoDto): string {
+  somarRA(orcamento: OrcamentoOpcaoDto): string {
     let retorno: string;
     let total = orcamento.VlTotalDestePedido;
     let totalRa = orcamento.ValorTotalDestePedidoComRA;

@@ -1,11 +1,11 @@
 import { Injectable, HostListener } from '@angular/core';
-import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
-import { OpcoesOrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { Parcelado } from 'src/app/dto/forma-pagto/parcelado';
 import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
 import { Constantes } from 'src/app/utilities/constantes';
+import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -14,35 +14,35 @@ export class NovoOrcamentoService {
 
   constructor() { }
 
-  public orcamentoCotacaoDto: OrcamentoCotacaoDto;
-  public opcoesOrcamentoCotacaoDto: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
+  public orcamentoCotacaoDto: OrcamentoCotacaoDto = new OrcamentoCotacaoDto();
+  public opcoesOrcamentoCotacaoDto: OrcamentoOpcaoDto = new OrcamentoOpcaoDto();
   public constantes: Constantes = new Constantes();
 
   criarNovo() {
-    this.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
-    this.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = new Array<OrcamentoCotacaoDto>();
+    this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
+    this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto = new Array<OrcamentoOpcaoDto>();
   }
   criarNovoOrcamentoItem() {
-    this.orcamentoCotacaoDto = new OrcamentoCotacaoDto();
-    this.orcamentoCotacaoDto.ListaProdutos = new Array();
+    this.opcoesOrcamentoCotacaoDto = new OrcamentoOpcaoDto();
+    this.opcoesOrcamentoCotacaoDto.ListaProdutos = new Array();
 
   }
 
   setarDados(clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto) {
-    this.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
   }
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto != undefined)
-      return this.orcamentoCotacaoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
-        this.orcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
+      return this.opcoesOrcamentoCotacaoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
+        this.opcoesOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
 
   }
   public totalPedidoRA(): number {
     if (this.orcamentoCotacaoDto != undefined)
-      return this.orcamentoCotacaoDto.ValorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
-        this.orcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
+      return this.opcoesOrcamentoCotacaoDto.ValorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
+        this.opcoesOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
 
   }
 
@@ -73,11 +73,11 @@ export class NovoOrcamentoService {
         p.valores = new Array();
         if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
           for (let i = 0; i < p.qtdeParcelas; i++) {
-            p.valores.push(this.calcularDesconto(this.orcamentoCotacaoDto.VlTotalDestePedido, this.desconto));
+            p.valores.push(this.calcularDesconto(this.opcoesOrcamentoCotacaoDto.VlTotalDestePedido, this.desconto));
           }
         }
         if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
-          p.valores = this.calcularParcelas(this.orcamentoCotacaoDto.VlTotalDestePedido, p.qtdeParcelas);
+          p.valores = this.calcularParcelas(this.opcoesOrcamentoCotacaoDto.VlTotalDestePedido, p.qtdeParcelas);
         }
       }
     });

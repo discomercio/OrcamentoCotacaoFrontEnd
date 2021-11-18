@@ -13,10 +13,12 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { DatePipe } from '@angular/common';
-import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
+import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
+import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -32,7 +34,8 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly cepService: CepsService,
     public readonly router: Router,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    private datePipe: DatePipe) { }
+    private datePipe: DatePipe,
+    private readonly orcamentoService: OrcamentosService) { }
 
   public mascaraTelefone: string;
   public form: FormGroup;
@@ -56,7 +59,7 @@ export class CadastrarClienteComponent implements OnInit {
       if (r != null) {
         this.lstVendedores = r.filter((item, i, arr) => arr.findIndex((f) => f.usuario === item.usuario) === i);
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   buscarParceiros() {
@@ -67,7 +70,7 @@ export class CadastrarClienteComponent implements OnInit {
         if (r != null) {
           this.lstParceiro = r.filter(parca => parca.vendedor === vendedor);
         }
-      }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
@@ -76,7 +79,7 @@ export class CadastrarClienteComponent implements OnInit {
       if (r != null) {
         this.lstEstado = r;
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   lstTipo: SelectItem[];
@@ -88,10 +91,10 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   criarForm() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined)
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
 
-    let clienteOrcamentoCotacao = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
+    let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
       Nome: [clienteOrcamentoCotacao.Nome, [Validators.required]],
       NomeObra: [clienteOrcamentoCotacao.NomeObra],
@@ -111,33 +114,40 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   verificaDataValidade() {
-    if (!this.form.controls.Validade.value) {
-      let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-      this.form.controls.Validade.setValue(data);
-      this.form.controls.Validade.disable();
-    }
+    // if (!this.form.controls.Validade.value) {
+    //   let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+    //   this.form.controls.Validade.setValue(data);
+    //   this.form.controls.Validade.disable();
+    // }
 
-    let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade < validacaoData) {
-      this.form.controls.Validade.enable();
-    }
+    // let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+    // if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade < validacaoData) {
+    //   this.form.controls.Validade.enable();
+    // }
   }
 
   iniciarOrcamento() {
-    debugger;
     if (!this.validacaoFormGroup.validaForm(this.form))
       return;
 
-    let listaOpOrcamento = new Array<OrcamentoCotacaoDto>();
-    listaOpOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
+    let opcoesOrcamento = new Array<OrcamentoOpcaoDto>();
+    // opcoesOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
 
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
+   
+    this.orcamentoService.criarOrcamento(clienteOrcamentoCotacaoDto).toPromise().then((r) => {
+      if (r == null) {
+        this.alertaService.mostrarMensagem(r[0]);
+        return;
+      }
+      else { this.router.navigate(['novo-orcamento/itens']); }
+    }).catch((error) => { this.alertaService.mostrarErroInternet(error); return });
 
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
-    this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = listaOpOrcamento;
-    this.router.navigate(['novo-orcamento/itens']);
+    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
+    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = opcoesOrcamento;
+
   }
 }
