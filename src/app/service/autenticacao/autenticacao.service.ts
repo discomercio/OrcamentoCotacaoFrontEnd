@@ -5,7 +5,6 @@ import jtw_decode from 'jwt-decode'
 
 import { environment } from '../../../environments/environment'
 import { Observable } from 'rxjs';
-// import { Constantes } from 'src/app/dto/Constantes';
 import { Router } from '@angular/router';
 import { AppComponent } from 'src/app/app.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
@@ -18,9 +17,29 @@ export class AutenticacaoService {
 
   constructor(private readonly http: HttpClient, private readonly location: Location,
     private readonly alertaService: AlertaService,
-    private readonly mensagemService: MensagemService
+    private readonly mensagemService: MensagemService,
+    private readonly router: Router
     ) {
-    this.carregarLayout();
+  }
+
+  public lembrarSenhaParaAlterarSenha: boolean;
+  public senhaExpirada: boolean = false;
+  salvar: boolean = false;
+  
+  
+  public loja: string = null;
+  public unidade_negocio: string = null;
+  public _NomeUsuario: string = null;
+
+  private renovacaoPendnete: boolean = false;
+
+  get authNomeUsuario(): string {
+    if (this._NomeUsuario == null) {
+      const token = this.obterToken();
+      const user = jtw_decode(token) as any;
+      this._NomeUsuario = (user && user.nameid) ? user.nameid : "não logado";
+    }
+    return this._NomeUsuario;
   }
 
 
@@ -31,70 +50,25 @@ export class AutenticacaoService {
     });
   }
 
-  // constantes = new Constantes();
-  // public usuarioApelidoParaAlterarSenha: string;
-  public lembrarSenhaParaAlterarSenha: boolean;
-  public senhaExpirada: boolean = false;
-  salvar: boolean = false;
   public authLogin(usuario: string, senha: string, salvar: boolean, desligarFazendoLogin: () => void, router: Router, appComponent: AppComponent): void {
     this.lembrarSenhaParaAlterarSenha = salvar;
-    // this.usuarioApelidoParaAlterarSenha = usuario; = _NomeUsuario
-    var key = this.gerarChave();
-    senha = this.CodificaSenha(senha, key);
     this.salvar = salvar;
     this._NomeUsuario = null;
     let msg = "";
     debugger;
     this.http.post(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha },
       {
-        //estamos usando dessa forma, pois não estava aceitando uma "options" com mais de um parametro
         responseType: 'text',
         headers: new HttpHeaders({ 'Content-Type': 'application/json', 'responseType': 'text' })
       }).subscribe({
         next: (e) => {
-          /*
-            estamos atribuindo o nome do usuário para, caso o usuário esteja 
-            fazendo o primeiro acesso ele terá que alterar a senha 
-            Na validação da alteração de senha é feito a comparação da nova senha com o nome do usuário, 
-            pois a senha não pode ser o nome de usuário
-          */
-          //No caso de primeiro acesso retornamos o código "4"
           this._NomeUsuario = usuario;
-
-          //aqui vai as condições que irão verificar se o retorno é um erro
           if (e.toString().length == 1) {
-            // if (e.toString() == this.constantes.ERR_USUARIO_BLOQUEADO) {
-            //   msg = "ACESSO NEGADO";
-            //   desligarFazendoLogin();
-
-            //   _snackBar.open("Erro no login: " + msg, undefined, {
-            //     duration: environment.esperaErros
-            //   });
-            //   return;
-            // }
-            // if (e.toString() == this.constantes.ERR_IDENTIFICACAO_LOJA) {
-            //   msg = "OS DADOS INFORMADOS ESTÃO INCORRETOS.<BR>(Loja inválida)";
-            //   desligarFazendoLogin();
-
-            //   _snackBar.open("Erro no login: " + msg, undefined, {
-            //     duration: environment.esperaErros
-            //   });
-            //   return;
-            // }
-
-            // if (e.toString() == this.constantes.ERR_SENHA_EXPIRADA) {
-            //   this.senhaExpirada = true;
-            //   router.navigateByUrl('/alterarsenha');
-            //   return;
-            // }
 
           }
-
-          //nunca desligamos o fazendo login porque, quando fizer, já vai para outra página, então nao fazemos this.fazendoLogin = false;
+          
           this.setarToken(e);
-
-          //o carregarEstilo já navega para a home
-          // appComponent.carregarEstilo(true);
+          this.router.navigate(['']);
         }
         ,
         error: (e) => {
@@ -119,28 +93,12 @@ export class AutenticacaoService {
   }
 
   public authLogout(): void {
-    this.authLogoutSemLayout();
-    this.loja = null;
-    this.unidade_negocio = null;
-    this.carregarLayout();
-  }
-
-  public authLogoutSemLayout(): void {
-    this.http.get(environment.apiUrl + 'acesso/fazerLogout').subscribe(
-      e => {
-        //nao fazemos nada..
-      }
-    );
     sessionStorage.setItem('token', "");
     localStorage.setItem('token', "");
 
-    //remover a session dos parametros de busca que foram armazenados de Prepedido e Pedido
-    sessionStorage.removeItem('data_inicial_prepedido');
-    sessionStorage.removeItem('data_final_prepedido');
-    sessionStorage.removeItem('data_inicial_pedido');
-    sessionStorage.removeItem('data_final_pedido');
-    sessionStorage.removeItem('token');
     localStorage.removeItem('token');
+    this.loja = null;
+    this.unidade_negocio = null;
   }
 
   public setarToken(token: string): void {
@@ -152,8 +110,6 @@ export class AutenticacaoService {
       sessionStorage.setItem("token", token);
       localStorage.setItem('token', "");
     }
-
-    this.carregarLayout();
   }
 
   public gerarChave() {
@@ -262,18 +218,6 @@ export class AutenticacaoService {
 
     return true;
   }
-
-  public _NomeUsuario: string = null;
-  get authNomeUsuario(): string {
-    if (this._NomeUsuario == null) {
-      const token = this.obterToken();
-      const user = jtw_decode(token) as any;
-      this._NomeUsuario = (user && user.nameid) ? user.nameid : "não logado";
-    }
-    return this._NomeUsuario;
-  }
-
-  private renovacaoPendnete: boolean = false;
   public renovarTokenSeNecessario(): void {
     const token = this.obterToken();
     if (!token)
@@ -307,91 +251,4 @@ export class AutenticacaoService {
     //desligamos com timeou tpoque a solicitação da renovação do token também pode disparar outra renovação do token
     setTimeout(() => { this.renovacaoPendnete = false; }, 500);
   }
-
-
-  //Gabriel criar metodo para carregar o css
-  public arquivoLogo(): string {
-    return this._logo;
-  }
-  public arquivoEstilos(): string {
-    return this._estilo;
-  }
-  private _estilo: string = null;
-  private _logo: string = null;
-  public loja: string = null;
-  public unidade_negocio: string = null;
-
-  private carregarLayout(): void {
-    //tentamos obter a loja do token. se nao tiver, fica com null
-    if (this.authEstaLogado()) {
-      const token = this.obterToken();
-      const user = jtw_decode(token) as any;
-      this.loja = (user && user.family_name) ? user.family_name : null;
-      this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
-    }
-
-    //define o estilo e o logo baseado na loja
-    if (this.loja == null || this.unidade_negocio == null) {
-      this._estilo = "";
-      this._logo = "";
-      return;
-    }
-
-    if (this.unidade_negocio && this.unidade_negocio.toUpperCase().trim() == "BS") {
-      //bonshop
-      this._estilo = "assets/shopVendas.css";// -> é o Bonshop, mantivemos o nome para manter a compatibilidade durante a mudança
-      this._logo = "assets/bonshop.png";
-      this.CarregarIconBonshop();
-      return;
-    }
-
-    if (this.unidade_negocio && this.unidade_negocio.toUpperCase().trim() == "VRF") {
-      //unis
-      this._estilo = "assets/Unis.css";
-      this._logo = "assets/LogoUnis.png";
-      this.CarregarIconUnis();
-      return;
-    }
-
-    //nao deveria chegar aqui
-    this._estilo = "";
-    this._logo = "";
-  }
-  private CarregarIconUnis(): void {
-    const head = document.getElementsByTagName('head')[0];
-    let favicon = document.getElementById('favicon') as HTMLLinkElement;
-    favicon.href = 'assets/icones/ico-unis-16x16.ico';
-    head.appendChild(favicon);
-  }
-
-  private CarregarIconBonshop(): void {
-    const head = document.getElementsByTagName('head')[0];
-    let favicon = document.getElementById('favicon') as HTMLLinkElement;
-    favicon.href = 'assets/icones/ico-bonshop.ico';
-    head.appendChild(favicon);
-  }
-
-  public BuscarImgFundo(): string {
-    if (this.unidade_negocio && this.unidade_negocio.toUpperCase().trim() == "BS") {
-      //bonshop
-      return "url('/assets/background-bonshop.jpg')";
-    }
-
-    if (this.unidade_negocio && this.unidade_negocio.toUpperCase().trim() == "VRF") {
-      //unis
-      return "url('/assets/background-unis-filtro-branco80.jpg')";
-    }
-
-    //nunca deveria chegar aqui, fallback
-    return "url('/assets/background-bonshop.jpg')";
-  }
-  public buscarAlturaImg(): string {
-    return "calc(100vh - 53px)";
-  }
-
-  public buscarTamanhoImg(): string {
-    return "100%";
-  }
-
-
 }

@@ -41,7 +41,7 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
-          let resp: HttpResponse<any> = event;
+          /* let resp: HttpResponse<any> = event;
           let respOk = false;
           if (resp.headers.get('X-API-Version') == environment.versaoApi) {
             respOk = true;
@@ -50,7 +50,7 @@ export class TokenInterceptor implements HttpInterceptor {
             //forcamos o erro de versão
             (resp as any).status = 412;
             throw resp;
-          }
+          } */
         }
       }));
   }
