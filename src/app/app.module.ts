@@ -306,7 +306,7 @@ import { TokenInterceptor } from './service/autenticacao/token.interceptor';
             useClass: TokenInterceptor,
             multi: true
         },
-        { provide: LocationStrategy, useClass: HashLocationStrategy },
+        { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
         AppMenuComponent, ProdutoService, ExportExcelService
