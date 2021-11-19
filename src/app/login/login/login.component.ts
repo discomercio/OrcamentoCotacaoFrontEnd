@@ -23,8 +23,10 @@ export class LoginComponent implements OnInit {
 
   login() {
     let msg = "";
+    let usuario = this.email_usuario;
+    let senha = this.senha;
     // this.fazendoLogin = true;
-    this.autenticacaoService.authLogin(this.email_usuario.trim().toUpperCase(), this.senha.trim().toUpperCase(), this.lembrar,
+    this.autenticacaoService.authLogin(usuario, senha, this.lembrar,
       () => { this.desligarFazendoLoginFOrmulario(); },
       
       this.router, this.appComponent);

@@ -9,6 +9,7 @@ import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { AppComponent } from 'src/app/app.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 export class AutenticacaoService {
 
   constructor(private readonly http: HttpClient, private readonly location: Location,
-    private readonly alertaService: AlertaService) {
+    private readonly alertaService: AlertaService,
+    private readonly mensagemService: MensagemService
+    ) {
     this.carregarLayout();
   }
 
@@ -42,7 +45,7 @@ export class AutenticacaoService {
     this._NomeUsuario = null;
     let msg = "";
     debugger;
-    this.http.post(environment.apiUrl + 'Account/Login', { apelido: usuario, senha: senha },
+    this.http.post(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha },
       {
         //estamos usando dessa forma, pois não estava aceitando uma "options" com mais de um parametro
         responseType: 'text',
@@ -109,9 +112,7 @@ export class AutenticacaoService {
             msg = "erro interno no servidor de autenticação."
 
 
-          // _snackBar.open("Erro no login: " + msg, undefined, {
-          //   duration: environment.esperaErros
-          // });
+         this.mensagemService.showErrorViaToast(msg);
 
         },
       })
