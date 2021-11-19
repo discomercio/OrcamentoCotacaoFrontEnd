@@ -18,7 +18,7 @@ export class DashboardBankingComponent implements OnInit {
     constructor(private productService: ProductService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
+        // this.productService.getProducts().then(data => this.products = data);
 
         this.dropdownItem = [];
         this.dropdownItem.push({label: 'Select One', value: null});

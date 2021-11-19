@@ -16,10 +16,10 @@ export class ProductService {
     }
 
     getProducts() {
-        return this.http.get<any>('assets/demo/data/products.json')
-        .toPromise()
-        .then(res => res.data as Product[])
-        .then(data => data);
+        // return this.http.get<any>('assets/demo/data/products.json')
+        // .toPromise()
+        // .then(res => res.data as Product[])
+        // .then(data => data);
     }
 
     getProductsMixed() {

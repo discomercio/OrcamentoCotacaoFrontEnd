@@ -36,9 +36,9 @@ export class DashboardDemoComponent implements OnInit {
     constructor(private productService: ProductService, private eventService: EventService) { }
 
     ngOnInit() {
-        this.productService.getProducts().then(data => this.products = data);
+        // this.productService.getProducts().then(data => this.products = data);
 
-        this.eventService.getEvents().then(events => {this.events = events; });
+        // this.eventService.getEvents().then(events => {this.events = events; });
 
         this.cities = [];
         this.cities.push({label: 'New York', value: {id: 1, name: 'New York', code: 'NY'}});

@@ -12,18 +12,21 @@ import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.compo
 import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component';
 import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
-import { CadastrarClienteComponent } from './orcamentos/novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
 import { AppComponent } from './app.component';
 import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
+import { LoginComponent } from './login/login/login.component';
 
 @NgModule({
     imports: [
         RouterModule.forRoot([
+            
             {
                 path: '', component: AppComponent,
                 children: [
+                    { path: 'account/login', component: LoginComponent, },
                     {
                         path: '', component: AppMainComponent, children: [
+                            
                             { path: '', component: DashboardDemoComponent, },
                             { path: 'dashboards/generic', component: DashboardDemoComponent },
                             { path: 'orcamentos/novo-orcamento', component: NovoOrcamentoComponent },

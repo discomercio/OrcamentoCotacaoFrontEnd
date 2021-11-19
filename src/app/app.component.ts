@@ -30,6 +30,5 @@ export class AppComponent implements OnInit {
             dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
         });
         this.primengConfig.ripple = true;
-
     }
 }
