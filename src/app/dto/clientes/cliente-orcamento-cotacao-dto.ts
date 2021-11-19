@@ -1,4 +1,6 @@
 export class ClienteOrcamentoCotacaoDto {
+    Validade: Date | string;
+    ObservacoesGerais:  string;
     Nome: string;
     NomeObra: string;
     Vendedor: string;
@@ -6,11 +8,9 @@ export class ClienteOrcamentoCotacaoDto {
     Parceiro: string;
     Telefone: string;
     Concorda: boolean;
-    Validade: Date | string;
     VendedorParceiro: string;
     Uf: string;
     Tipo: string;
-
     public constructor(init?: Partial<ClienteOrcamentoCotacaoDto>) {
         Object.assign(this, init);
     }

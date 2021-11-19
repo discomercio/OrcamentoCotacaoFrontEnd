@@ -17,7 +17,7 @@ export class AprovarOrcamentoComponent implements OnInit {
     public readonly novoOrcamentoService: NovoOrcamentoService) { }
 
   ngOnInit(): void {
-    this.buscarOrcamento();
+    this.buscarOrcamento(1);
   }
 
   // opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
@@ -25,8 +25,8 @@ export class AprovarOrcamentoComponent implements OnInit {
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
 
-  buscarOrcamento() {
-    this.orcamentoService.buscarOrcamento().toPromise().then(r => {
+  buscarOrcamento(id: number) {
+    this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
         // this.opcoesOrcamento = r[0];
       }

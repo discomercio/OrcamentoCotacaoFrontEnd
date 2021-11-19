@@ -14,9 +14,6 @@ $gutter: .5rem; //for primeflex grid system
   background-color: white !important;
   background-image: none !important;
 }
-.card{
-    min-height: calc(100vh - 95px) !important;
-}
 
 @keyframes loading {
     100% {

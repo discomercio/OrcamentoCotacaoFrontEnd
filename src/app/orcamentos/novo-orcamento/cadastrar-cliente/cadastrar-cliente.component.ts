@@ -85,8 +85,8 @@ export class CadastrarClienteComponent implements OnInit {
   lstTipo: SelectItem[];
   selectTipo() {
     this.lstTipo = [
-      { label: "PF", value: { id: 1, name: "PF" } },
-      { label: "PJ", value: { id: 2, name: "PJ" } }
+      { label: "PF", value: "PF" },
+      { label: "PJ", value: "PJ" }
     ]
   }
 
@@ -96,6 +96,8 @@ export class CadastrarClienteComponent implements OnInit {
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
+      Validade: [clienteOrcamentoCotacao.Validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      ObservacoesGerais: [clienteOrcamentoCotacao.ObservacoesGerais],
       Nome: [clienteOrcamentoCotacao.Nome, [Validators.required]],
       NomeObra: [clienteOrcamentoCotacao.NomeObra],
       Vendedor: [clienteOrcamentoCotacao.Vendedor, [Validators.required]],
@@ -103,10 +105,9 @@ export class CadastrarClienteComponent implements OnInit {
       Parceiro: [clienteOrcamentoCotacao.Parceiro],
       Telefone: [clienteOrcamentoCotacao.Telefone],
       Concorda: [clienteOrcamentoCotacao.Concorda],
-      Validade: [clienteOrcamentoCotacao.Validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       VendedorParceiro: [clienteOrcamentoCotacao.VendedorParceiro],
       Uf: [clienteOrcamentoCotacao.Uf, [Validators.required]],
-      Tipo: [clienteOrcamentoCotacao.Tipo, [Validators.required]]
+      Tipo: [clienteOrcamentoCotacao.Tipo, [Validators.required]],
     });
 
     this.verificaDataValidade();
@@ -127,27 +128,53 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   iniciarOrcamento() {
-    if (!this.validacaoFormGroup.validaForm(this.form))
-      return;
 
-    let opcoesOrcamento = new Array<OrcamentoOpcaoDto>();
-    // opcoesOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
 
     this.novoOrcamentoService.criarNovo();
-    this.novoOrcamentoService.criarNovoOrcamentoItem();
-    let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
-   
-    this.orcamentoService.criarOrcamento(clienteOrcamentoCotacaoDto).toPromise().then((r) => {
-      if (r == null) {
-        this.alertaService.mostrarMensagem(r[0]);
-        return;
-      }
-      else { this.router.navigate(['novo-orcamento/itens']); }
-    }).catch((error) => { this.alertaService.mostrarErroInternet(error); return });
+    //this.novoOrcamentoService.criarNovoOrcamentoItem();
+
+    //let opcoesOrcamento = new Array<OrcamentoOpcaoDto>();
+    // opcoesOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
+
 
     // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
     // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
     // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = opcoesOrcamento;
 
+  }
+
+  salvarOrcamento() {
+    if (!this.validacaoFormGroup.validaForm(this.form))
+      return;
+
+      //let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
+      let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
+      clienteOrcamentoCotacaoDto.Validade = this.form.controls.Validade.value;
+      clienteOrcamentoCotacaoDto.ObservacoesGerais = this.form.controls.ObservacoesGerais.value;
+      clienteOrcamentoCotacaoDto.Nome = this.form.controls.Nome.value;
+      clienteOrcamentoCotacaoDto.NomeObra = this.form.controls.NomeObra.value;
+      clienteOrcamentoCotacaoDto.Vendedor = this.form.controls.Vendedor.value.usuario;
+      clienteOrcamentoCotacaoDto.Email = this.form.controls.Email.value;
+      clienteOrcamentoCotacaoDto.Parceiro = this.form.controls.Parceiro.value.apelido;
+      clienteOrcamentoCotacaoDto.Telefone = this.form.controls.Telefone.value;
+      clienteOrcamentoCotacaoDto.Concorda = this.form.controls.Concorda.value;
+      clienteOrcamentoCotacaoDto.VendedorParceiro = this.form.controls.VendedorParceiro.value;
+      clienteOrcamentoCotacaoDto.Uf = this.form.controls.Uf.value.uf;
+      clienteOrcamentoCotacaoDto.Tipo = this.form.controls.Tipo.value;
+
+    this.orcamentoService.criarOrcamento(clienteOrcamentoCotacaoDto).toPromise().then((r) => {
+      if (r == null) {
+        this.alertaService.mostrarMensagem(r[0]);
+        return;
+      }
+      else { 
+        //this.router.navigate(['novo-orcamento/itens']); 
+      }
+    }).catch((error) => {
+      this.alertaService.mostrarErroInternet(error); return 
+    });
+  }
+
+  salvaropcao() {
   }
 }

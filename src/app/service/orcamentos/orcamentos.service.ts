@@ -18,7 +18,7 @@ export class OrcamentosService {
     return this.http.get<ListaDto[]>(environment.apiUrl + 'Orcamento');
   }
 
-  buscarOrcamento(): Observable<OrcamentoCotacaoDto[]> {
+  buscarOrcamento(id: number): Observable<OrcamentoCotacaoDto[]> {
     return this.http.get<OrcamentoCotacaoDto[]>('assets/demo/data/banco/orcamentos-salvos.json')
   }
 
