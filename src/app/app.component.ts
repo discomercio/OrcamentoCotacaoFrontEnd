@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
+import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-root',
@@ -17,7 +19,9 @@ export class AppComponent implements OnInit {
 
     inputStyle = 'outlined';
 
-    constructor(private primengConfig: PrimeNGConfig) { }
+    constructor(private primengConfig: PrimeNGConfig,
+        private readonly autenticacaoService: AutenticacaoService,
+        private readonly router: Router) { }
 
     ngOnInit() {
         this.primengConfig.setTranslation({
@@ -26,9 +30,14 @@ export class AppComponent implements OnInit {
             monthNames: ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'],
             monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"],
             dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
-            dayNamesMin:["D", "S", "T", "Q", "Q", "S", "S"],
+            dayNamesMin: ["D", "S", "T", "Q", "Q", "S", "S"],
             dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
         });
         this.primengConfig.ripple = true;
+
+        if (!this.autenticacaoService.authEstaLogado()) {
+            this.router.navigate(['account/login']);
+        } 
+
     }
 }

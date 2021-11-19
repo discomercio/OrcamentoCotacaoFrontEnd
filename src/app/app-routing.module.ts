@@ -44,7 +44,8 @@ import { LoginComponent } from './login/login/login.component';
 
             },
             { path: 'dashboards/generic', component: DashboardDemoComponent },
-        ], { scrollPositionRestoration: 'enabled' })
+        ], { scrollPositionRestoration: 'enabled' },
+        )
     ],
     exports: [RouterModule]
 })

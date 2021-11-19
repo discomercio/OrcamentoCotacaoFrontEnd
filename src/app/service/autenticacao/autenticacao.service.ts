@@ -41,8 +41,8 @@ export class AutenticacaoService {
     this.salvar = salvar;
     this._NomeUsuario = null;
     let msg = "";
-
-    this.http.post(environment.apiUrl + 'acesso/fazerLogin', { apelido: usuario, senha: senha },
+    debugger;
+    this.http.post(environment.apiUrl + 'Account/Login', { apelido: usuario, senha: senha },
       {
         //estamos usando dessa forma, pois não estava aceitando uma "options" com mais de um parametro
         responseType: 'text',
@@ -57,7 +57,7 @@ export class AutenticacaoService {
           */
           //No caso de primeiro acesso retornamos o código "4"
           this._NomeUsuario = usuario;
-          
+
           //aqui vai as condições que irão verificar se o retorno é um erro
           if (e.toString().length == 1) {
             // if (e.toString() == this.constantes.ERR_USUARIO_BLOQUEADO) {
@@ -319,7 +319,7 @@ export class AutenticacaoService {
   private _logo: string = null;
   public loja: string = null;
   public unidade_negocio: string = null;
-  
+
   private carregarLayout(): void {
     //tentamos obter a loja do token. se nao tiver, fica com null
     if (this.authEstaLogado()) {
