@@ -17,6 +17,7 @@ export class NovoOrcamentoService {
   public orcamentoCotacaoDto: OrcamentoCotacaoDto = new OrcamentoCotacaoDto();
   public opcoesOrcamentoCotacaoDto: OrcamentoOpcaoDto = new OrcamentoOpcaoDto();
   public constantes: Constantes = new Constantes();
+  public paraTeste: boolean;
 
   criarNovo() {
     this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -34,13 +35,13 @@ export class NovoOrcamentoService {
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
-    if (this.orcamentoCotacaoDto != undefined)
+    if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length > 0)
       return this.opcoesOrcamentoCotacaoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
         this.opcoesOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
 
   }
   public totalPedidoRA(): number {
-    if (this.orcamentoCotacaoDto != undefined)
+    if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length > 0)
       return this.opcoesOrcamentoCotacaoDto.ValorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
         this.opcoesOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
 
@@ -57,7 +58,7 @@ export class NovoOrcamentoService {
     for (let i = 1; i <= parcelas; i++) {
       let parcela: number = 0;
       parcela = i;
-      let v:any = this.moedaUtils.formatarDecimal(valor / i);
+      let v: any = this.moedaUtils.formatarDecimal(valor / i);
       parcela = v;
       parcelamento.push(parcela);
     }
@@ -67,7 +68,7 @@ export class NovoOrcamentoService {
 
   desconto: number = 3;
   atribuirOpcaoPagto(pagto: PagtoOpcao[]): PagtoOpcao[] {
-    
+
     pagto.forEach(p => {
       if (p.incluir) {
         p.valores = new Array();

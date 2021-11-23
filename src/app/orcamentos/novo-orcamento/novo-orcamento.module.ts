@@ -25,6 +25,8 @@ import { VisualizarOrcamentoComponent } from './visualizar-orcamento/visualizar-
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { GalleriaModule } from 'primeng/galleria';
 import { CalendarModule } from 'primeng/calendar';
+import { TabViewModule } from 'primeng/tabview';
+import { TesteOrcamentoComponent } from './teste-orcamento/teste-orcamento.component';
 
 @NgModule({
     imports:[
@@ -46,7 +48,8 @@ import { CalendarModule } from 'primeng/calendar';
         TooltipModule,
         RadioButtonModule,
         GalleriaModule,
-        CalendarModule
+        CalendarModule,
+        TabViewModule
     ],
     exports:[
 
@@ -56,7 +59,8 @@ import { CalendarModule } from 'primeng/calendar';
         CadastrarClienteComponent,
         ItensComponent,
         SelectProdDialogComponent,
-        VisualizarOrcamentoComponent
+        VisualizarOrcamentoComponent,
+        TesteOrcamentoComponent
     ],
     providers:[DialogService, DatePipe]
 })
