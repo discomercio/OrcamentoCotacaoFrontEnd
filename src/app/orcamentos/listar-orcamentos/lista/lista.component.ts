@@ -164,8 +164,7 @@ export class ListaComponent implements OnInit {
 
   filtrarParceiros(event: any) {
     let query = event.query;
-    this.lstParceiroFiltrado = this.lstParceiro.filter(r => r.apelido.toLowerCase().indexOf(query.toLowerCase()) > -1
-      || r.razao_social_nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    this.lstParceiroFiltrado = this.lstParceiro;//.filter(r => r.nome.toLowerCase().indexOf(query.toLowerCase()) > -1|| r.nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
   }
 
   filtrarVendedoresParceiros(event: any) {
@@ -180,7 +179,7 @@ export class ListaComponent implements OnInit {
 
   filtrarVendedores(event: any) {
     let query = event.query;
-    this.lstVendedoresFiltrado = this.lstVendedores.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase()) > -1 && r.loja == "205");
+    this.lstVendedoresFiltrado = this.lstVendedores;//.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase()) > -1 && r.loja == "205");
   }
 
   montarSelectFiltro() {

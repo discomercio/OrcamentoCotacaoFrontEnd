@@ -19,14 +19,14 @@ export class OrcamentosService {
   }
 
   buscarOrcamento(id: number): Observable<OrcamentoCotacaoDto[]> {
-    return this.http.get<OrcamentoCotacaoDto[]>('assets/demo/data/banco/orcamentos-salvos.json')
+    return this.http.get<OrcamentoCotacaoDto[]>(environment.apiUrl + "Orcamento")
   }
 
   enviarOrcamento(opcoesOrcamento:OrcamentoCotacaoDto){
-    return this.http.post<any[]>(environment.apiUrl + "Orcamento", opcoesOrcamento);
+    return this.http.post<OrcamentoCotacaoDto>(environment.apiUrl + "Orcamento", opcoesOrcamento);
   }
 
   criarOrcamento(cliente:ClienteOrcamentoCotacaoDto){
-    return this.http.post<any[]>(environment.apiUrl + "Orcamento", cliente);
+    return this.http.post<ClienteOrcamentoCotacaoDto>(environment.apiUrl + "Orcamento", cliente);
   }
 }

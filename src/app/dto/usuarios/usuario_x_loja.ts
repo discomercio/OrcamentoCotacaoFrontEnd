@@ -1,5 +1,4 @@
 export class UsuarioXLoja{
-    usuario:string;
-    loja:string;
+    nome:string;
     bloqueado:boolean;
 }

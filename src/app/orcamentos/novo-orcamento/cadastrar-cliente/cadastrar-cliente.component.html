@@ -76,7 +76,7 @@
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="vendedor">Vendedor</label>
                         <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione"
-                            formControlName="Vendedor" optionLabel="usuario" (onChange)="buscarParceiros()">
+                            formControlName="Vendedor" optionLabel="nome" (onChange)="buscarParceiros()">
                         </p-dropdown>
                         <small class="p-error"
                             *ngIf="validacaoFormGroup.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
@@ -84,7 +84,7 @@
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="parceiro">Parceiro</label>
                         <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione"
-                            formControlName="Parceiro" optionLabel="apelido">
+                            formControlName="Parceiro" optionLabel="nome" (onChange)="buscarVendedoresDoParceiro()">
                         </p-dropdown>
                         <!-- <small class="p-error"
                                     *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
@@ -92,8 +92,8 @@
                     <div></div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="vendedorParceiro">Vendedor do parceiro</label>
-                        <p-dropdown id="vendedorParceiro" [options]="" placeholder="Selecione"
-                            formControlName="VendedorParceiro">
+                        <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
+                            formControlName="VendedorParceiro" optionLabel="nome">
                         </p-dropdown>
                         <!-- <small class="p-error"
                                         *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->

@@ -41,6 +41,7 @@ export class CadastrarClienteComponent implements OnInit {
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public lstVendedores: Array<UsuarioXLoja>;
+  public lstVendedoresParceiros: Array<Parceiro>;
   public lstParceiro: Array<Parceiro>;
   public lstEstado: Array<Estado>;
   public desabilitado: boolean = true;
@@ -57,7 +58,15 @@ export class CadastrarClienteComponent implements OnInit {
   buscarVendedores() {
     this.usuarioService.buscarVendedores().toPromise().then((r) => {
       if (r != null) {
-        this.lstVendedores = r.filter((item, i, arr) => arr.findIndex((f) => f.usuario === item.usuario) === i);
+        this.lstVendedores = r;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  buscarVendedoresDoParceiro() {
+    this.usuarioService.buscarVendedoresParceiros().toPromise().then((r) => {
+      if (r != null) {
+        this.lstVendedoresParceiros = r;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -68,7 +77,7 @@ export class CadastrarClienteComponent implements OnInit {
 
       this.usuarioService.buscarParceiros().toPromise().then((r) => {
         if (r != null) {
-          this.lstParceiro = r.filter(parca => parca.vendedor === vendedor);
+          this.lstParceiro = r;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
@@ -96,18 +105,18 @@ export class CadastrarClienteComponent implements OnInit {
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
-      Validade: [clienteOrcamentoCotacao.Validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
-      ObservacoesGerais: [clienteOrcamentoCotacao.ObservacoesGerais],
-      Nome: [clienteOrcamentoCotacao.Nome, [Validators.required]],
-      NomeObra: [clienteOrcamentoCotacao.NomeObra],
-      Vendedor: [clienteOrcamentoCotacao.Vendedor, [Validators.required]],
-      Email: [clienteOrcamentoCotacao.Email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
-      Parceiro: [clienteOrcamentoCotacao.Parceiro],
-      Telefone: [clienteOrcamentoCotacao.Telefone],
-      Concorda: [clienteOrcamentoCotacao.Concorda],
-      VendedorParceiro: [clienteOrcamentoCotacao.VendedorParceiro],
-      Uf: [clienteOrcamentoCotacao.Uf, [Validators.required]],
-      Tipo: [clienteOrcamentoCotacao.Tipo, [Validators.required]],
+      Validade: [clienteOrcamentoCotacao.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      ObservacoesGerais: [clienteOrcamentoCotacao.observacoesGerais],
+      Nome: [clienteOrcamentoCotacao.nome, [Validators.required]],
+      NomeObra: [clienteOrcamentoCotacao.nomeObra],
+      Vendedor: [clienteOrcamentoCotacao.vendedor, [Validators.required]],
+      Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
+      Parceiro: [clienteOrcamentoCotacao.parceiro],
+      Telefone: [clienteOrcamentoCotacao.telefone],
+      Concorda: [clienteOrcamentoCotacao.concorda],
+      VendedorParceiro: [clienteOrcamentoCotacao.vendedorParceiro],
+      Uf: [clienteOrcamentoCotacao.uf, [Validators.required]],
+      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required]],
     });
 
     this.verificaDataValidade();
@@ -149,26 +158,23 @@ export class CadastrarClienteComponent implements OnInit {
 
       //let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
       let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
-      clienteOrcamentoCotacaoDto.Validade = this.form.controls.Validade.value;
-      clienteOrcamentoCotacaoDto.ObservacoesGerais = this.form.controls.ObservacoesGerais.value;
-      clienteOrcamentoCotacaoDto.Nome = this.form.controls.Nome.value;
-      clienteOrcamentoCotacaoDto.NomeObra = this.form.controls.NomeObra.value;
-      clienteOrcamentoCotacaoDto.Vendedor = this.form.controls.Vendedor.value.usuario;
-      clienteOrcamentoCotacaoDto.Email = this.form.controls.Email.value;
-      clienteOrcamentoCotacaoDto.Parceiro = this.form.controls.Parceiro.value.apelido;
-      clienteOrcamentoCotacaoDto.Telefone = this.form.controls.Telefone.value;
-      clienteOrcamentoCotacaoDto.Concorda = this.form.controls.Concorda.value;
-      clienteOrcamentoCotacaoDto.VendedorParceiro = this.form.controls.VendedorParceiro.value;
-      clienteOrcamentoCotacaoDto.Uf = this.form.controls.Uf.value.uf;
-      clienteOrcamentoCotacaoDto.Tipo = this.form.controls.Tipo.value;
+      clienteOrcamentoCotacaoDto.validade = this.form.controls.Validade.value;
+      clienteOrcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
+      clienteOrcamentoCotacaoDto.nome = this.form.controls.Nome.value;
+      clienteOrcamentoCotacaoDto.nomeObra = this.form.controls.NomeObra.value;
+      clienteOrcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value.nome;
+      clienteOrcamentoCotacaoDto.email = this.form.controls.Email.value;
+      clienteOrcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value.nome;
+      clienteOrcamentoCotacaoDto.telefone = this.form.controls.Telefone.value;
+      clienteOrcamentoCotacaoDto.concorda = this.form.controls.Concorda.value;
+      clienteOrcamentoCotacaoDto.vendedorParceiro = this.form.controls.VendedorParceiro.value.nome;
+      clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value.uf;
+      clienteOrcamentoCotacaoDto.tipo = this.form.controls.Tipo.value;
 
     this.orcamentoService.criarOrcamento(clienteOrcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
         this.alertaService.mostrarMensagem(r[0]);
         return;
-      }
-      else { 
-        //this.router.navigate(['novo-orcamento/itens']); 
       }
     }).catch((error) => {
       this.alertaService.mostrarErroInternet(error); return 
