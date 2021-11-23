@@ -30,7 +30,7 @@ export class UsuarioListaComponent implements OnInit {
   ngOnInit(): void {
     this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
       if (r == null) {
-        debugger;
+        ;
         this.alertaService.mostrarErroInternet(r);
         return;
       }

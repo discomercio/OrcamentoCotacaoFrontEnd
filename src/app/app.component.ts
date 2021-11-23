@@ -35,7 +35,9 @@ export class AppComponent implements OnInit {
         });
         this.primengConfig.ripple = true;
 
-        if (!this.autenticacaoService.authEstaLogado()) {
+        let estalogado = this.autenticacaoService.authEstaLogado();
+        console.log('app: ' + estalogado);
+        if (!estalogado) {
             this.router.navigate(['account/login']);
         } 
 

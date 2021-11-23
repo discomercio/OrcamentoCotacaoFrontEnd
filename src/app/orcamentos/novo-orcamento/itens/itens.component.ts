@@ -405,7 +405,7 @@ export class ItensComponent implements OnInit {
   }
 
   enviar() {
-    debugger;
+    ;
     // validar se a forma de pagto esta preenchida em cada orçamento
     // validar os produtos e valores??
     // precisa fazer a parte de desconto, analisar os arquivos do Edu para ver o percentual máximo
@@ -418,7 +418,7 @@ export class ItensComponent implements OnInit {
   }
 
   salvarOrcamento() {
-    debugger;
+    ;
     //depois de validar o orçamento vamos salvar!
     // fazer a chamada da validação aqui
 

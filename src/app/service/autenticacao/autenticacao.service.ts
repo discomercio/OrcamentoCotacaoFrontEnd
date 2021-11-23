@@ -55,7 +55,7 @@ export class AutenticacaoService {
     this.salvar = salvar;
     this._NomeUsuario = null;
     let msg = "";
-    debugger;
+    ;
     this.http.post(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha },
       {
         responseType: 'text',
@@ -66,8 +66,9 @@ export class AutenticacaoService {
           if (e.toString().length == 1) {
 
           }
-          
-          this.setarToken(e);
+          var objToken = JSON.parse(e);
+          ;
+          this.setarToken(objToken.accessToken);
           this.router.navigate(['']);
         }
         ,
@@ -102,6 +103,7 @@ export class AutenticacaoService {
   }
 
   public setarToken(token: string): void {
+    ;
     if (this.salvar) {
       localStorage.setItem("token", token);
       sessionStorage.setItem('token', "");
@@ -194,32 +196,18 @@ export class AutenticacaoService {
 
   public authEstaLogado(): boolean {
     const token = this.obterToken();
+    console.log('token: ' + token);
 
     if (!token)
       return false;
     if (token.trim() == "")
       return false;
-    // if (token == this.constantes.ERR_USUARIO_BLOQUEADO)
-    //   return false;
-
-    const user = jtw_decode(token) as any;
-    if (!user)
-      return false;
-
-
-    //passamos a exigir a unidade_negocio; se não tiver, tem que fazer o login com o novo formato
-    if (!user.unidade_negocio)
-      return false;
-
-    //vamos ver se extá expirado  
-    const expira: Date = new Date(user.exp * 1000);
-    if (expira < new Date())
-      return false;
 
     return true;
   }
+  
   public renovarTokenSeNecessario(): void {
-    const token = this.obterToken();
+    /* const token = this.obterToken();
     if (!token)
       return;
     if (token.trim() == "")
@@ -231,7 +219,7 @@ export class AutenticacaoService {
     const milisegexpira: number = (expira as any) - (new Date() as any);
     var segexpira = milisegexpira / 1000;
     if (segexpira < environment.minutosRenovarTokenAntesExpirar * 60)
-      this.renovarToken();
+      this.renovarToken(); */
   }
   private renovarToken(): void {
     this.renovacaoPendnete = true;

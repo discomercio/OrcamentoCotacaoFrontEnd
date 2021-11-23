@@ -19,6 +19,7 @@ export class TokenInterceptor implements HttpInterceptor {
       this.autenticacaoService.renovarTokenSeNecessario();
     }, 100);
 
+    ;
     //header de versão
     let headers: { [name: string]: string | string[]; } = {
       'X-API-Version': environment.versaoApi
@@ -29,7 +30,6 @@ export class TokenInterceptor implements HttpInterceptor {
       
       headers = {
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
-        'X-API-Version': environment.versaoApi
       };
     }
     else{
