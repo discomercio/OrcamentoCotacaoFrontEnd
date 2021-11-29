@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, DebugElement } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
 import jtw_decode from 'jwt-decode'
@@ -19,27 +19,33 @@ export class AutenticacaoService {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly router: Router
-    ) {
+  ) {
   }
 
   public lembrarSenhaParaAlterarSenha: boolean;
   public senhaExpirada: boolean = false;
   salvar: boolean = false;
-  
-  
-  public loja: string = null;
+
+
+  public _usuarioLogado: string = null;
+  public _tipoUsuario: number = null;
+  public _parceiro: string = null;
+  public _vendedor:string = null;
+
   public unidade_negocio: string = null;
-  public _NomeUsuario: string = null;
 
   private renovacaoPendnete: boolean = false;
 
-  get authNomeUsuario(): string {
-    if (this._NomeUsuario == null) {
+  get authNomeUsuario(): number {
+    if (this._tipoUsuario == null) {
       const token = this.obterToken();
       const user = jtw_decode(token) as any;
-      this._NomeUsuario = (user && user.nameid) ? user.nameid : "não logado";
+      this._tipoUsuario = (user && user.TipoUsuario) ? Number.parseInt(user.TipoUsuario) : null;
+      this._usuarioLogado = (user && user.unique_name) ? user.unique_name : null;
+      this._parceiro = (user && user.Parceiro) ? user.Parceiro : null;
+      this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
     }
-    return this._NomeUsuario;
+    return this._tipoUsuario;
   }
 
 
@@ -53,22 +59,26 @@ export class AutenticacaoService {
   public authLogin(usuario: string, senha: string, salvar: boolean, desligarFazendoLogin: () => void, router: Router, appComponent: AppComponent): void {
     this.lembrarSenhaParaAlterarSenha = salvar;
     this.salvar = salvar;
-    this._NomeUsuario = null;
+    this._usuarioLogado = null;
     let msg = "";
-    ;
+
     this.http.post(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha },
       {
         responseType: 'text',
         headers: new HttpHeaders({ 'Content-Type': 'application/json', 'responseType': 'text' })
       }).subscribe({
         next: (e) => {
-          this._NomeUsuario = usuario;
+          this._usuarioLogado = usuario;
           if (e.toString().length == 1) {
 
           }
           var objToken = JSON.parse(e);
-          ;
+
           this.setarToken(objToken.accessToken);
+          this._usuarioLogado = objToken.usuario.nome;
+          this._tipoUsuario = objToken.usuario.tipoUsuario;
+          this._parceiro = objToken.usuario.parceiro;
+          this._vendedor = objToken.usuario.IdVendedor;
           this.router.navigate(['']);
         }
         ,
@@ -87,18 +97,20 @@ export class AutenticacaoService {
             msg = "erro interno no servidor de autenticação."
 
 
-         this.mensagemService.showErrorViaToast(msg);
+          this.mensagemService.showErrorViaToast(msg);
 
         },
       })
   }
+
+
 
   public authLogout(): void {
     sessionStorage.setItem('token', "");
     localStorage.setItem('token', "");
 
     localStorage.removeItem('token');
-    this.loja = null;
+    this._usuarioLogado = null;
     this.unidade_negocio = null;
   }
 
@@ -196,7 +208,6 @@ export class AutenticacaoService {
 
   public authEstaLogado(): boolean {
     const token = this.obterToken();
-    console.log('token: ' + token);
 
     if (!token)
       return false;
@@ -205,7 +216,7 @@ export class AutenticacaoService {
 
     return true;
   }
-  
+
   public renovarTokenSeNecessario(): void {
     /* const token = this.obterToken();
     if (!token)

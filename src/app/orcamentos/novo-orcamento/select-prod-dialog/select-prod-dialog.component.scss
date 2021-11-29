@@ -1,3 +1,7 @@
+::ng-deep .p-dialog{
+  max-height: 100% !important;
+}
+
 ::ng-deep .dynamicDialog .p-dialog-content{
     padding: 0;
     border-bottom-left-radius: 4px !important;

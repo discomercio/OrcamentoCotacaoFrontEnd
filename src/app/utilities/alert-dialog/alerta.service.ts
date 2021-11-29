@@ -2,13 +2,15 @@ import { Injectable } from '@angular/core';
 import { AlertDialogComponent } from './alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertaService {
 
-  constructor(public dialogService: DialogService) { }
+  constructor(public dialogService: DialogService,
+    private readonly router: Router) { }
 
 
   public mostrarMensagemComLargura(msg: string, largura: string, aposOk: () => void): void {
@@ -46,10 +48,21 @@ export class AlertaService {
         }
 
         AlertaService.mostrandoErroNaoAutorizado = true;
-        this.mostrarMensagemComLargura("Erro: Acesso não autorizado!", "250px", () => {
-          AlertaService.mostrandoErroNaoAutorizado = false;
-          sair.click();
+        let dialogRef = this.dialogService.open(AlertDialogComponent, {
+          width: "250px",
+          data: "Erro: Acesso não autorizado!",
+          styleClass: "dynamicDialog"
         });
+
+        dialogRef.onClose.subscribe(x => {
+          this.router.navigate(["account/login"]);
+        })
+
+        // this.mostrarMensagemComLargura("Erro: Acesso não autorizado!", "250px", () => {
+        //   AlertaService.mostrandoErroNaoAutorizado = false;
+
+        //   sair.click();
+        // });
 
         return;
       }
@@ -75,6 +88,17 @@ export class AlertaService {
       if (this.mostrarErro412(error))
         return;
 
+      if (error.status == 400) {
+        let mensagens: Array<string> = new Array();
+        for (let key in error.error.errors) {
+          let listaErros = error.error.errors[key]
+          for (let erro in listaErros) {
+            mensagens.push(listaErros[erro]);
+          }
+        }
+        this.mostrarMensagemComLargura("Erro ao salvar. <br>Lista de erros: <br>" + mensagens.join("<br>"), "250px", null);
+        return
+      }
 
       this.mostrarMensagemComLargura(
         "Erro inesperado! Favor entrar em contato com o suporte técnico (Código: " + error.status + ").",

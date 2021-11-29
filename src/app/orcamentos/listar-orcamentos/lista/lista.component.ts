@@ -21,6 +21,7 @@ import { ExportExcelService } from 'src/app/service/export-files/export-excel.se
 import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
 
 @Component({
   selector: 'app-lista',
@@ -58,9 +59,9 @@ export class ListaComponent implements OnInit {
   lstLoja: Array<Lojas>;
   lojaSelecionada: Lojas;
   lstLojaFiltrada: Array<Lojas>;
-  lstVendedores: Array<UsuarioXLoja>;
-  vendedorSelecionado: UsuarioXLoja;
-  lstVendedoresFiltrado: Array<UsuarioXLoja>;
+  lstVendedores: Array<Usuario>;
+  vendedorSelecionado: Usuario;
+  lstVendedoresFiltrado: Array<Usuario>;
   nome_numero: string;
   vendedorParceiroSelecionado: any;
   lstVendedoresParceiroFiltrado: Array<any>;
@@ -135,11 +136,13 @@ export class ListaComponent implements OnInit {
   }
 
   buscarParceiros() {
-    this.usuarioService.buscarParceiros().toPromise().then((r) => {
-      if (r != null) {
-        this.lstParceiro = r;
-      }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    
+
+    // this.usuarioService.buscarParceiros().toPromise().then((r) => {
+    //   if (r != null) {
+    //     this.lstParceiro = r;
+    //   }
+    // }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
   buscarLojas() {

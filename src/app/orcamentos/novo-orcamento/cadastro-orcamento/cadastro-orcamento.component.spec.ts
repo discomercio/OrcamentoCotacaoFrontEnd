@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TesteOrcamentoComponent } from './teste-orcamento.component';
+import { CadastroOrcamentoComponent } from './cadastro-orcamento.component';
 
-describe('TesteOrcamentoComponent', () => {
-  let component: TesteOrcamentoComponent;
-  let fixture: ComponentFixture<TesteOrcamentoComponent>;
+describe('CadastroOrcamentoComponent', () => {
+  let component: CadastroOrcamentoComponent;
+  let fixture: ComponentFixture<CadastroOrcamentoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ TesteOrcamentoComponent ]
+      declarations: [ CadastroOrcamentoComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(TesteOrcamentoComponent);
+    fixture = TestBed.createComponent(CadastroOrcamentoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

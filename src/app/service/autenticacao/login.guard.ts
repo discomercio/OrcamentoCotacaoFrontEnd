@@ -15,7 +15,6 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
 
         let estalogado = this.autenticacaoService.authEstaLogado();
-        console.log(estalogado);
         if (!estalogado) {
             this.router.navigate(['account/login'])
             return false;

@@ -16,7 +16,6 @@ export class ValidacaoFormularioComponent {
   validaForm(form: FormGroup): boolean {
     if (!form.valid) {
       Object.keys(form.controls).forEach(campo => {
-        console.log(campo);
         const controle = form.get(campo);
         controle.markAsDirty();
       });

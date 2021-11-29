@@ -17,7 +17,7 @@ export class NovoOrcamentoService {
   public orcamentoCotacaoDto: OrcamentoCotacaoDto = new OrcamentoCotacaoDto();
   public opcoesOrcamentoCotacaoDto: OrcamentoOpcaoDto = new OrcamentoOpcaoDto();
   public constantes: Constantes = new Constantes();
-  public paraTeste: boolean;
+  public mostrarOpcoes: boolean;
 
   criarNovo() {
     this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();

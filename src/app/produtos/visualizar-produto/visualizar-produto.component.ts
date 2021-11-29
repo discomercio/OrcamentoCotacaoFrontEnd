@@ -26,7 +26,6 @@ export class VisualizarProdutoComponent implements OnInit {
     this.produtoService.buscarProduto(this.produto).toPromise().then((r) => {
       if (r != null) {
         this.detalhesProduto = r.filter(f => f.Fabricante == this.fabricante && f.Produto == this.produto)[0];
-        console.log(this.detalhesProduto.Imagem);
       }
     }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }

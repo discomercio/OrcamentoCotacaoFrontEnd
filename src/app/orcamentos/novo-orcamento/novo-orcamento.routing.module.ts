@@ -6,7 +6,7 @@ import { AppMainComponent } from 'src/app/app.main.component';
 import { ItensComponent } from './itens/itens.component';
 import { SelectProdDialogComponent } from './select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from './visualizar-orcamento/visualizar-orcamento.component';
-import { TesteOrcamentoComponent } from './teste-orcamento/teste-orcamento.component';
+import { CadastroOrcamentoComponent } from './cadastro-orcamento/cadastro-orcamento.component';
 
 const novoOrcamentoRoutes: Routes = [
     {
@@ -17,7 +17,7 @@ const novoOrcamentoRoutes: Routes = [
                     { path: "itens", component: ItensComponent },
                     { path: "select-prod", component: SelectProdDialogComponent },
                     { path:"visualizar-orcamento", component: VisualizarOrcamentoComponent},
-                    { path:"teste-orcamento", component: TesteOrcamentoComponent},
+                    { path:"cadastro-orcamento", component: CadastroOrcamentoComponent},
                 ]
             }
         ]

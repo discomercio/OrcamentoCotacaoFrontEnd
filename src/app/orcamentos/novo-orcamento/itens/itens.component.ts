@@ -376,6 +376,7 @@ export class ItensComponent implements OnInit {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
+    debugger;
 
     // this.novoOrcamentoService.orcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
     // this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
