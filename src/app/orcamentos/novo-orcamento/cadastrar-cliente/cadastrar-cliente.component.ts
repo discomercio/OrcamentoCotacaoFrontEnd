@@ -154,7 +154,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.form = this.fb.group({
       Validade: [clienteOrcamentoCotacao.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [clienteOrcamentoCotacao.observacoesGerais],
-      Nome: [clienteOrcamentoCotacao.nome, [Validators.required]],
+      Nome: [clienteOrcamentoCotacao.nome, [Validators.required, Validators.maxLength(60)]],
       NomeObra: [clienteOrcamentoCotacao.nomeObra],
       Vendedor: [clienteOrcamentoCotacao.vendedor, [Validators.required]],
       Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
@@ -162,8 +162,8 @@ export class CadastrarClienteComponent implements OnInit {
       Telefone: [clienteOrcamentoCotacao.telefone],
       Concorda: clienteOrcamentoCotacao.concordaWhatsapp,
       VendedorParceiro: [clienteOrcamentoCotacao.vendedorParceiro],
-      Uf: [clienteOrcamentoCotacao.uf, [Validators.required]],
-      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required]],
+      Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
+      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
     });
 
     // this.verificarCamposCondicionais();
