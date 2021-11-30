@@ -7,7 +7,7 @@ export class ClienteOrcamentoCotacaoDto {
     email: string;
     parceiro: string;
     telefone: string;
-    concorda: boolean;
+    concordaWhatsapp: boolean;
     vendedorParceiro: string;
     uf: string;
     tipo: string;
