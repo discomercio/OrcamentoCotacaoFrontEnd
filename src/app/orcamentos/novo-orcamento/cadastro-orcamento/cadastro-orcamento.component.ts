@@ -13,17 +13,17 @@ export class CadastroOrcamentoComponent implements OnInit {
 
 
   labelCliente: string;
-labelOpcoesOrcamento:string;
+  labelOpcoesOrcamento: string;
 
   ngOnInit(): void {
-    if (!this.novoOrcamentoService.onResize()){
-      this.labelCliente = "Dados do cliente"; 
+    if (!this.novoOrcamentoService.onResize()) {
+      this.labelCliente = "Dados do cliente";
       this.labelOpcoesOrcamento = "Opções de orçamento";
-    }      
-      else{
-        this.labelCliente = ""; 
-        this.labelOpcoesOrcamento = "";
-      } 
+    }
+    else {
+      this.labelCliente = "";
+      this.labelOpcoesOrcamento = "";
+    }
   }
 
 }

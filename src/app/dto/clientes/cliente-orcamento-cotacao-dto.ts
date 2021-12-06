@@ -1,7 +1,8 @@
 export class ClienteOrcamentoCotacaoDto {
+    id:number;
     validade: Date | string;
-    observacoesGerais:  string;
-    nome: string;
+    observacoes:  string;
+    nomeCliente: string;
     nomeObra: string;
     vendedor: string;
     email: string;

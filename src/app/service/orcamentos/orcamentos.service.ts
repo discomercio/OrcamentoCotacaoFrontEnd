@@ -26,7 +26,11 @@ export class OrcamentosService {
     return this.http.post<OrcamentoCotacaoDto>(environment.apiUrl + "Orcamento", opcoesOrcamento);
   }
 
-  criarOrcamento(cliente:ClienteOrcamentoCotacaoDto){
+  criarOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{
     return this.http.post<ClienteOrcamentoCotacaoDto>(environment.apiUrl + "Orcamento", cliente);
+  }
+
+  atualizarClienteOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{
+    return this.http.put<ClienteOrcamentoCotacaoDto>(environment.apiUrl + "Orcamento", cliente);
   }
 }

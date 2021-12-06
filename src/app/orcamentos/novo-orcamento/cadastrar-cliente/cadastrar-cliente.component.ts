@@ -19,6 +19,7 @@ import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamen
 import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -36,7 +37,8 @@ export class CadastrarClienteComponent implements OnInit {
     public readonly novoOrcamentoService: NovoOrcamentoService,
     private datePipe: DatePipe,
     private readonly orcamentoService: OrcamentosService,
-    private readonly autenticacaoService: AutenticacaoService) { }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly mensagemService: MensagemService) { }
 
   public mascaraTelefone: string;
   public form: FormGroup;
@@ -49,7 +51,6 @@ export class CadastrarClienteComponent implements OnInit {
   public constantes: Constantes = new Constantes();
   tipoUsuario: number;
   checkedWhatsapp: boolean = false;
-
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -153,8 +154,8 @@ export class CadastrarClienteComponent implements OnInit {
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
       Validade: [clienteOrcamentoCotacao.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
-      ObservacoesGerais: [clienteOrcamentoCotacao.observacoesGerais],
-      Nome: [clienteOrcamentoCotacao.nome, [Validators.required, Validators.maxLength(60)]],
+      ObservacoesGerais: [clienteOrcamentoCotacao.observacoes],
+      Nome: [clienteOrcamentoCotacao.nomeCliente, [Validators.required, Validators.maxLength(60)]],
       NomeObra: [clienteOrcamentoCotacao.nomeObra],
       Vendedor: [clienteOrcamentoCotacao.vendedor, [Validators.required]],
       Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
@@ -181,7 +182,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (!this.form.controls.Validade.value) {
       let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       this.form.controls.Validade.setValue(data);
-      this.form.controls.Validade.disable();
+      // this.form.controls.Validade.disable();
     }
 
     let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -210,11 +211,11 @@ export class CadastrarClienteComponent implements OnInit {
     if (!this.validacaoFormGroup.validaForm(this.form))
       return;
 
-    //let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto(this.form.value);
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
+    clienteOrcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id;
     clienteOrcamentoCotacaoDto.validade = this.form.controls.Validade.value;
-    clienteOrcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
-    clienteOrcamentoCotacaoDto.nome = this.form.controls.Nome.value;
+    clienteOrcamentoCotacaoDto.observacoes = this.form.controls.ObservacoesGerais.value;
+    clienteOrcamentoCotacaoDto.nomeCliente = this.form.controls.Nome.value;
     clienteOrcamentoCotacaoDto.nomeObra = this.form.controls.NomeObra.value;
     clienteOrcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value.nome;
     clienteOrcamentoCotacaoDto.email = this.form.controls.Email.value;
@@ -225,19 +226,43 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value.uf;
     clienteOrcamentoCotacaoDto.tipo = this.form.controls.Tipo.value;
 
-    this.orcamentoService.criarOrcamento(clienteOrcamentoCotacaoDto).toPromise().then((r) => {
+    // debugger;
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id && this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id != 0) {
+      this.atualizarClienteOrcamento(clienteOrcamentoCotacaoDto);
+      return;
+    }
+
+    this.cadastrarClienteOrcamento(clienteOrcamentoCotacaoDto);
+  }
+
+  cadastrarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): void {
+    this.orcamentoService.criarOrcamento(cliente).toPromise().then((r) => {
       if (r == null) {
         this.alertaService.mostrarMensagem(r[0]);
-
         return;
       }
-      this.novoOrcamentoService.mostrarOpcoes = true;
-    }).catch((error) => {
 
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
+      this.novoOrcamentoService.mostrarOpcoes = true;
+      this.mensagemService.showSuccessViaToast("Cliente salvo com sucesso!");
+    }).catch((error) => {
       this.alertaService.mostrarErroInternet(error);
       return
     });
+  }
 
+  atualizarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): void {
+    this.orcamentoService.atualizarClienteOrcamento(cliente).toPromise().then((r) => {
+      if (r == null) {
+        this.alertaService.mostrarMensagem(r[0]);
+        return;
+      }
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
+      this.mensagemService.showSuccessViaToast("Cliente atualizado com sucesso!");
+    }).catch((error) => {
+      this.alertaService.mostrarErroInternet(error);
+      return;
+    });
   }
 
   concordouWhatsapp() {

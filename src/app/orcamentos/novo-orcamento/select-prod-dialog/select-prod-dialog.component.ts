@@ -19,7 +19,7 @@ export class SelectProdDialogComponent implements OnInit {
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     public readonly mensagemService: MensagemService,
-    private readonly novoOrcamentoService:NovoOrcamentoService) { }
+    private readonly novoOrcamentoService: NovoOrcamentoService) { }
 
   @ViewChild('dataTable') table: Table;
   displayModal: boolean = false;
@@ -30,6 +30,7 @@ export class SelectProdDialogComponent implements OnInit {
   selecionado: ProdutoTela;
   codigo: string;
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
+  
 
   ngOnInit(): void {
     this.displayModal = true;
@@ -66,7 +67,18 @@ export class SelectProdDialogComponent implements OnInit {
   }
 
   addProduto() {
-    if (this.selecionado) {      
+    if (this.selecionado) {
+      let qtdeItens: number = 0;
+      if (this.selecionado.Filhos.length > 0) {
+        qtdeItens = this.selecionado.Filhos.length;
+      }
+      else {
+        qtdeItens++;
+      }
+      if (this.novoOrcamentoService.qtdeProdutosOpcao + qtdeItens > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
+        this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
+        return;
+      }
       this.ref.close(this.selecionado);
       return;
     }
@@ -74,7 +86,7 @@ export class SelectProdDialogComponent implements OnInit {
     this.mensagemService.showErrorViaToast("Por favor, selecione um produto!");
   }
 
-  marcarLinha(e:Event){
+  marcarLinha(e: Event) {
     e.stopImmediatePropagation();
   }
 }

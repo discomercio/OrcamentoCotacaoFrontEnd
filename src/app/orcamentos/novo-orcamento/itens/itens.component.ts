@@ -52,21 +52,28 @@ export class ItensComponent implements OnInit {
   public constantes: Constantes = new Constantes();
 
   ngOnInit(): void {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
     this.inscreveProdutoComboDto();
     this.montarOpcoesPagto();
-    if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto != undefined) {
-      // this.observacoesGerais = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais;
-    }
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
+    console.log("itens iniciou");
+  }
+
+  ngAfterViewInit() {
+    setTimeout(() => {
+      document.getElementById("p-tabpanel-1-label").click();
+    }, 10);
   }
 
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
-    this.produtoService.buscarProdutosCompostosXSimples().toPromise().then((r) => {
-      if (r != null) {
-        this.produtoComboDto = r;
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    this.produtoService.buscarProdutosCompostosXSimples("1",
+      this.novoOrcamentoService.pageItens.toString(),
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id).toPromise().then((r) => {
+        // debugger;
+        if (r != null) {
+          this.produtoComboDto = r;
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   montarOpcoesPagto() {
@@ -148,8 +155,7 @@ export class ItensComponent implements OnInit {
     prod.Alterou_Preco_Venda = false;
 
     this.lstProdutos.push(prod);
-    this.novoOrcamentoService.criarNovoOrcamentoItem();
-    // this.novoOrcamentoService.orcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
     this.novoOrcamentoService.totalPedido();
     this.novoOrcamentoService.totalPedidoRA();
   }
@@ -368,22 +374,26 @@ export class ItensComponent implements OnInit {
   }
 
   incluirOpcao() {
-    // if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
-    //   this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
-    //   return;
-    // }
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
+      this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
+      return;
+    }
     if (this.pagtoSelecionados.length <= 0) {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
-    debugger;
+    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.ListaProdutos.length == 0) {
+      this.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
+      return;
+    }
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
+    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
 
-    // this.novoOrcamentoService.orcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
-    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.orcamentoCotacaoDto);
+    //vamos salvar a opção
+
 
     this.novoOrcamentoService.criarNovoOrcamentoItem();
-
     this.limparCampos();
   }
   incluirObsGerais() {
@@ -398,7 +408,7 @@ export class ItensComponent implements OnInit {
   }
 
   removerOpcao(index: number) {
-    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
+    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
   }
 
   removerItem(index: number) {
