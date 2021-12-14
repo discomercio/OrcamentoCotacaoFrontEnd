@@ -8,17 +8,17 @@ export class ProdutoTela {
      */
     constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto) {
         if (produtoCompostoDto != null) {
-            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoCompostoDto.PaiFabricante, produtoCompostoDto.PaiFabricanteNome, produtoCompostoDto.PaiProduto) + produtoCompostoDto.PaiDescricao);
-            produtoDto.Fabricante = produtoCompostoDto.PaiFabricante;
-            produtoDto.Fabricante_Nome = produtoCompostoDto.PaiFabricanteNome;
-            produtoDto.Produto = produtoCompostoDto.PaiProduto;
-            produtoDto.Preco_lista = produtoCompostoDto.Preco_total_Itens;
-            produtoDto.Descricao_html = produtoCompostoDto.PaiDescricao;
-            this.Filhos = produtoCompostoDto.Filhos;
+            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoCompostoDto.paiFabricante, produtoCompostoDto.paiFabricanteNome, produtoCompostoDto.paiProduto) + produtoCompostoDto.paiDescricao);
+            produtoDto.fabricante = produtoCompostoDto.paiFabricante;
+            produtoDto.fabricanteNome = produtoCompostoDto.paiFabricanteNome;
+            produtoDto.produto = produtoCompostoDto.paiProduto;
+            produtoDto.precoLista = produtoCompostoDto.paiPrecoTotal;
+            produtoDto.descricaoHtml = produtoCompostoDto.paiDescricao;
+            this.Filhos = produtoCompostoDto.filhos;
         }
 
         if (produtoCompostoDto == null) {
-            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.Fabricante, produtoDto.Fabricante_Nome, produtoDto.Produto) + produtoDto.Descricao_html);
+            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricanteNome, produtoDto.produto) + produtoDto.descricaoHtml);
             produtoDto = produtoDto;
             this.Filhos = new Array();
         }

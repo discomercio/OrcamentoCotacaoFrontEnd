@@ -69,7 +69,7 @@ export class ItensComponent implements OnInit {
     this.produtoService.buscarProdutosCompostosXSimples("1",
       this.novoOrcamentoService.pageItens.toString(),
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id).toPromise().then((r) => {
-        // debugger;
+        debugger;
         if (r != null) {
           this.produtoComboDto = r;
         }
@@ -112,7 +112,7 @@ export class ItensComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: ProdutoTela) => {
       if (resultado) {
-        let filtro = this.lstProdutos.filter(f => f.Produto == resultado.produtoDto.Produto);
+        let filtro = this.lstProdutos.filter(f => f.Produto == resultado.produtoDto.produto);
         if (filtro.length > 0) {
           filtro[0].Qtde++;
           this.digitouQte(filtro[0]);
@@ -140,17 +140,17 @@ export class ItensComponent implements OnInit {
 
   inserirProduto(produto: ProdutoTela): void {
     let prod: ProdutoOrcamentoDto = new ProdutoOrcamentoDto();
-    prod.Fabricante = produto.produtoDto.Fabricante;
-    prod.Produto = produto.produtoDto.Produto;
-    prod.Fabricante_Nome = produto.produtoDto.Fabricante_Nome;
-    prod.Descricao = produto.produtoDto.Descricao_html;
+    prod.Fabricante = produto.produtoDto.fabricante;
+    prod.Produto = produto.produtoDto.produto;
+    prod.Fabricante_Nome = produto.produtoDto.fabricanteNome;
+    prod.Descricao = produto.produtoDto.descricaoHtml;
     prod.Qtde = 1;
-    prod.Preco_NF = produto.produtoDto.Preco_lista;
-    prod.CustoFinancFornecPrecoListaBase = produto.produtoDto.Preco_lista;
+    prod.Preco_NF = produto.produtoDto.precoLista;
+    prod.CustoFinancFornecPrecoListaBase = produto.produtoDto.precoLista;
     prod.Desc_Dado = 0;
-    prod.Preco_Venda = produto.produtoDto.Preco_lista;
-    prod.TotalItem = produto.produtoDto.Preco_lista;
-    prod.TotalItemRA = produto.produtoDto.Preco_lista;
+    prod.Preco_Venda = produto.produtoDto.precoLista;
+    prod.TotalItem = produto.produtoDto.precoLista;
+    prod.TotalItemRA = produto.produtoDto.precoLista;
     prod.AlterouValorRa = false;
     prod.Alterou_Preco_Venda = false;
 
@@ -285,7 +285,7 @@ export class ItensComponent implements OnInit {
   }
 
   confirmaProdutoComposto(item: ProdutoOrcamentoDto): boolean {
-    let pc = this.produtoComboDto.ProdutoCompostoDto.filter(f => f.PaiProduto == item.Produto)[0];
+    let pc = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
     if (pc) {
       return true;
     }
@@ -298,19 +298,19 @@ export class ItensComponent implements OnInit {
     let retorno: boolean = false;
     if (item) {
       if (this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.ProdutoCompostoDto.filter(f => f.PaiProduto == item.Produto)[0];
-        produto.Filhos.forEach(i => {
-          if (i.Alertas) {
+        let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
+        produto.filhos.forEach(i => {
+          if (i.alertas) {
             retorno = true;
-            this.mensagemAlerta = i.Alertas;
+            this.mensagemAlerta = i.alertas;
           }
         });
       }
       if (!this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.ProdutoDto.filter(f => f.Produto == item.Produto)[0];
-        if (produto.Alertas) {
+        let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
+        if (produto.alertas) {
           retorno = true;
-          this.mensagemAlerta = produto.Alertas;
+          this.mensagemAlerta = produto.alertas;
         }
       }
     }
@@ -324,10 +324,10 @@ export class ItensComponent implements OnInit {
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.ProdutoCompostoDto.filter(f => f.PaiProduto == item.Produto)[0];
+      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
       let excede: boolean = false;
-      produto.Filhos.forEach(i => {
-        if (i.Estoque < item.Qtde) {
+      produto.filhos.forEach(i => {
+        if (i.estoque < item.Qtde) {
           excede = true;
           return;
         }
@@ -335,8 +335,8 @@ export class ItensComponent implements OnInit {
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.ProdutoDto.filter(f => f.Produto == item.Produto)[0];
-      if (produto.Estoque < item.Qtde) {
+      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
+      if (produto.estoque < item.Qtde) {
         return true;
       }
     }
@@ -349,10 +349,10 @@ export class ItensComponent implements OnInit {
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.ProdutoCompostoDto.filter(f => f.PaiProduto == item.Produto)[0];
+      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
       let excede: boolean = false;
-      produto.Filhos.forEach(i => {
-        if (i.Qtde_Max_Venda < item.Qtde) {
+      produto.filhos.forEach(i => {
+        if (i.qtdeMaxVenda < item.Qtde) {
           excede = true;
           return;
         }
@@ -360,8 +360,8 @@ export class ItensComponent implements OnInit {
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.ProdutoDto.filter(f => f.Produto == item.Produto)[0];
-      if (produto.Qtde_Max_Venda < item.Qtde) {
+      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
+      if (produto.qtdeMaxVenda < item.Qtde) {
         return true;
       }
     }

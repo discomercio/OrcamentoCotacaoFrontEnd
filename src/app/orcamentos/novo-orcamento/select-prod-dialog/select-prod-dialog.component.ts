@@ -41,17 +41,17 @@ export class SelectProdDialogComponent implements OnInit {
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
   transferirDados() {
-    this.selecProdInfoPassado.produtoComboDto.ProdutoCompostoDto.forEach(p => {
+    this.selecProdInfoPassado.produtoComboDto.produtosCompostos.forEach(p => {
       let produtoDto = new ProdutoDto();
-      produtoDto.Fabricante = p.PaiFabricante;
-      produtoDto.Fabricante_Nome = p.PaiFabricanteNome;
-      produtoDto.Produto = p.PaiProduto;
-      produtoDto.Preco_lista = p.Preco_total_Itens;
-      produtoDto.Descricao_html = p.PaiDescricao;
+      produtoDto.fabricante = p.paiFabricante;
+      produtoDto.fabricanteNome = p.paiFabricanteNome;
+      produtoDto.produto = p.paiProduto;
+      produtoDto.precoLista = p.paiPrecoTotal;
+      produtoDto.descricaoHtml = p.paiDescricao;
       this.prodsArray.push(new ProdutoTela(produtoDto, p));
     });
 
-    this.selecProdInfoPassado.produtoComboDto.ProdutoDto.forEach(p => {
+    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(p => {
       this.prodsArray.push(new ProdutoTela(p, null));
     })
   }

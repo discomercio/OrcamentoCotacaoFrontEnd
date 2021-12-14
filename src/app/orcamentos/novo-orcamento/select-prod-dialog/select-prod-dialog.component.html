@@ -19,13 +19,13 @@
                         </td>
                         <td>
                             <span class="p-column-title">Produto</span>
-                            {{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}
-                            <span [innerHTML]="p.produtoDto.Descricao_html"></span>
+                            {{ProdutoTelaFabrProd(p.produtoDto.fabricante, p.produtoDto.fabricanteNome, p.produtoDto.produto)}}
+                            <span [innerHTML]="p.produtoDto.descricaoHtml"></span>
                         </td>
                         <td>
                             <span class="p-column-title">VL Lista:</span>
                             <div class="p-text-right">
-                                {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.Preco_lista)}}
+                                {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.precoLista)}}
                             </div>
                         </td>
                     </tr>
@@ -33,19 +33,19 @@
                         <td></td>
                         <td class="p-pl-6">
                             <span class="p-column-title">Produto</span>
-                            {{ProdutoTelaFabrProd(f.Fabricante, f.Fabricante_Nome, f.Produto)}} -
-                            <span [innerHTML]="f.Descricao_html"></span>
+                            {{ProdutoTelaFabrProd(f.fabricante, f.fabricanteNome, f.produto)}} -
+                            <span [innerHTML]="f.descricaoHtml"></span>
                         </td>
                         <td class="p-pl-6">
-                            <span class="p-column-title" *ngIf="f.Alertas != null">Alerta:</span>
-                            <div *ngIf="!novoOrcamentoService.onResize() && f.Alertas != null" class="p-text-right">
+                            <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
+                            <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right">
                                 <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
-                                    pTooltip="{{f.Alertas}}"
+                                    pTooltip="{{f.alertas}}"
                                     [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
                                 </p-avatar>
                             </div>
-                            <div *ngIf="novoOrcamentoService.onResize() && f.Alertas != null" class="p-text-right" style="color:red">
-                                {{f.Alertas}}
+                            <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right" style="color:red">
+                                {{f.alertas}}
                             </div>
                         </td>
                     </tr>
