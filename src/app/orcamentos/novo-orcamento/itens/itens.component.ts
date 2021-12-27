@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { FormBuilder, FormGroup, EmailValidator } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
@@ -13,16 +13,12 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { ProdutoTela } from '../select-prod-dialog/produto-tela';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { Router } from '@angular/router';
-import { SelectItem } from 'primeng/api/selectitem';
 import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
 import { Constantes } from 'src/app/utilities/constantes';
 import { VisualizarOrcamentoComponent } from '../visualizar-orcamento/visualizar-orcamento.component';
-import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
-import { arrayToHash } from '@fullcalendar/core/util/object';
-import { ValidacoesUtils } from 'src/app/utilities/validacao-formulario/validacoesUtils';
-import { AlertDialogComponent } from 'src/app/utilities/alert-dialog/alert-dialog.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
-import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
+import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
+import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
 
 @Component({
   selector: 'app-itens',
@@ -38,7 +34,8 @@ export class ItensComponent implements OnInit {
     public mensagemService: MensagemService,
     public readonly router: Router,
     private readonly alertaService: AlertaService,
-    private readonly orcamentoService: OrcamentosService) { }
+    private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
+    private readonly formaPagtoService: FormaPagtoService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -53,9 +50,9 @@ export class ItensComponent implements OnInit {
 
   ngOnInit(): void {
     this.inscreveProdutoComboDto();
-    this.montarOpcoesPagto();
+    this.buscarQtdeMaxParcelaCartaoVisa();
+
     this.novoOrcamentoService.criarNovoOrcamentoItem();
-    console.log("itens iniciou");
   }
 
   ngAfterViewInit() {
@@ -63,17 +60,32 @@ export class ItensComponent implements OnInit {
       document.getElementById("p-tabpanel-1-label").click();
     }, 10);
   }
-
+  carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
     this.produtoService.buscarProdutosCompostosXSimples("1",
       this.novoOrcamentoService.pageItens.toString(),
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id).toPromise().then((r) => {
-        debugger;
+
         if (r != null) {
           this.produtoComboDto = r;
+          this.carregandoProds = false;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+  qtdeMaxParcelaCartaoVisa: number = 0;
+  buscarQtdeMaxParcelaCartaoVisa() {
+    this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
+      if (r == null) {
+        this.alertaService.mostrarMensagem("Erro ao buscar a quantidade máxima de parcelas.");
+        return;
+      }
+      this.qtdeMaxParcelaCartaoVisa = r;
+      this.montarOpcoesPagto();
+    }).catch((error) => {
+      this.alertaService.mostrarErroInternet(error);
+      return;
+    });
   }
 
   montarOpcoesPagto() {
@@ -90,16 +102,28 @@ export class ItensComponent implements OnInit {
     opcao2.codigo = this.constantes.COD_PAGTO_PARCELADO;
     opcao2.descricao = "Parcelado";
     opcao2.incluir = false;
-    opcao2.qtdeParcelas = 10;
+    opcao2.qtdeParcelas = this.qtdeMaxParcelaCartaoVisa;
     this.opcoesPagto.push(opcao2);
   }
-
+  clicouAddProd: boolean = true;
   adicionarProduto(): void {
+    this.clicouAddProd = true;
     this.mostrarProdutos(null);
+  }
+
+  verificarCargaProdutos(): boolean {
+    if (this.carregandoProds) {
+      //ainda não carregou, vamos esperar....
+      return false;
+    }
+    return true;
   }
 
   selecProdInfo = new SelecProdInfo();
   mostrarProdutos(linha: ProdutoOrcamentoDto): void {
+    if (!this.verificarCargaProdutos()) {
+      return;
+    }
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
     this.selecProdInfo.ClicouOk = false;
     let largura: string = this.novoOrcamentoService.onResize() ? "" : "65vw";
@@ -112,9 +136,9 @@ export class ItensComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: ProdutoTela) => {
       if (resultado) {
-        let filtro = this.lstProdutos.filter(f => f.Produto == resultado.produtoDto.produto);
+        let filtro = this.lstProdutos.filter(f => f.produto == resultado.produtoDto.produto);
         if (filtro.length > 0) {
-          filtro[0].Qtde++;
+          filtro[0].qtde++;
           this.digitouQte(filtro[0]);
           return;
         }
@@ -140,33 +164,36 @@ export class ItensComponent implements OnInit {
 
   inserirProduto(produto: ProdutoTela): void {
     let prod: ProdutoOrcamentoDto = new ProdutoOrcamentoDto();
-    prod.Fabricante = produto.produtoDto.fabricante;
-    prod.Produto = produto.produtoDto.produto;
-    prod.Fabricante_Nome = produto.produtoDto.fabricanteNome;
-    prod.Descricao = produto.produtoDto.descricaoHtml;
-    prod.Qtde = 1;
-    prod.Preco_NF = produto.produtoDto.precoLista;
-    prod.CustoFinancFornecPrecoListaBase = produto.produtoDto.precoLista;
-    prod.Desc_Dado = 0;
-    prod.Preco_Venda = produto.produtoDto.precoLista;
-    prod.TotalItem = produto.produtoDto.precoLista;
-    prod.TotalItemRA = produto.produtoDto.precoLista;
-    prod.AlterouValorRa = false;
-    prod.Alterou_Preco_Venda = false;
+    prod.fabricante = produto.produtoDto.fabricante;
+    prod.produto = produto.produtoDto.produto;
+    prod.fabricanteNome = produto.produtoDto.fabricanteNome;
+    prod.descricao = produto.produtoDto.descricaoHtml;
+    prod.qtde = 1;
+
+    let precoLista = Number.parseFloat(produto.produtoDto.precoLista.toFixed(2));
+    prod.precoNF = precoLista;
+    prod.precoLista = precoLista;
+    prod.descDado = 0;
+    prod.precoVenda = precoLista;
+    prod.totalItem = precoLista;
+    prod.totalItemRA = precoLista;
+    prod.alterouValorRa = false;
+    prod.alterouPrecoVenda = false;
+    prod.coeficienteDeCalculo = produto.Filhos.length == 0 ? parseFloat(produto.produtoDto.coeficienteDeCalculo.toFixed(2)) : produto.Filhos[0].coeficienteDeCalculo;
 
     this.lstProdutos.push(prod);
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.ListaProdutos = this.lstProdutos;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.lstProdutos;
     this.novoOrcamentoService.totalPedido();
     this.novoOrcamentoService.totalPedidoRA();
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
-    if (item.Qtde <= 0) item.Qtde = 1;
+    if (item.qtde <= 0) item.qtde = 1;
 
-    item.TotalItem = item.Preco_Venda * item.Qtde;
+    item.totalItem = item.precoVenda * item.qtde;
 
     // if(PermiteRAStatus)
-    item.TotalItemRA = item.Preco_NF * item.Qtde;
+    item.totalItemRA = item.precoNF * item.qtde;
   }
 
   digitouPreco_NF(e: Event, item: ProdutoOrcamentoDto): void {
@@ -174,11 +201,11 @@ export class ItensComponent implements OnInit {
     let v: any = valor.replace(/\D/g, '');
     v = Number.parseFloat((v / 100).toFixed(2) + '');
 
-    if (Number.parseFloat(item.CustoFinancFornecPrecoListaBase.toFixed(2)) === v) item.AlterouValorRa = false;
-    else item.AlterouValorRa = true;
+    if (Number.parseFloat(item.precoLista.toFixed(2)) === v) item.alterouValorRa = false;
+    else item.alterouValorRa = true;
 
-    item.Preco_NF = this.moedaUtils.formatarDecimal(v);
-    item.TotalItemRA = item.Preco_NF * item.Qtde;
+    item.precoNF = this.moedaUtils.formatarDecimal(v);
+    item.totalItemRA = item.precoNF * item.qtde;
 
     this.somarRA();
   }
@@ -188,7 +215,7 @@ export class ItensComponent implements OnInit {
     if (valor != "") {
       let v: any = valor.replace(/\D/g, '');
       v = Number.parseFloat((v / 100).toFixed(2) + '');
-      item.Preco_NF = this.moedaUtils.formatarDecimal(v);
+      item.precoNF = this.moedaUtils.formatarDecimal(v);
     }
   }
 
@@ -197,7 +224,7 @@ export class ItensComponent implements OnInit {
     let v: any = valor.replace(/,/g, '');
     if (!isNaN(v)) {
       v = (v / 100).toFixed(2) + '';
-      item.Desc_Dado = v;
+      item.descDado = v;
     }
   }
 
@@ -208,35 +235,35 @@ export class ItensComponent implements OnInit {
     v = (v / 100).toFixed(2) + '';
 
     //se o desconto for digitado estamos alterando o valor de venda e não devemos mais alterar esse valor
-    if (item.Desc_Dado == 0 || item.Desc_Dado.toString() == '') {
-      item.Alterou_Preco_Venda = false;
+    if (item.descDado == 0 || item.descDado.toString() == '') {
+      item.alterouPrecoVenda = false;
     } else {
-      item.Alterou_Preco_Venda = true;
+      item.alterouPrecoVenda = true;
     }
 
     this.digitouDescValor(item, v);
   }
 
   digitouDescValor(item: ProdutoOrcamentoDto, v: string): void {
-    if (item.Desc_Dado === Number.parseFloat(v)) {
-      if (item.Desc_Dado == 0) {
-        item.Desc_Dado = 0;
+    if (item.descDado === Number.parseFloat(v)) {
+      if (item.descDado == 0) {
+        item.descDado = 0;
       }
       return;
     }
 
-    item.Desc_Dado = Number.parseFloat(v);
+    item.descDado = Number.parseFloat(v);
 
-    if (item.Desc_Dado > 100) {
-      item.Desc_Dado = 100;
+    if (item.descDado > 100) {
+      item.descDado = 100;
     }
 
-    if (item.Desc_Dado) {
-      item.Preco_Venda = item.CustoFinancFornecPrecoListaBase * (1 - item.Desc_Dado / 100);
-      item.Preco_Venda = Number.parseFloat(item.Preco_Venda.toFixed(2));
+    if (item.descDado) {
+      item.precoVenda = item.precoLista * (1 - item.descDado / 100);
+      item.precoVenda = Number.parseFloat(item.precoVenda.toFixed(2));
     }
     else {
-      item.Preco_Venda = item.CustoFinancFornecPrecoListaBase;
+      item.precoVenda = item.precoLista;
     }
     this.digitouQte(item);
   }
@@ -246,7 +273,7 @@ export class ItensComponent implements OnInit {
     if (valor != "") {
       let v: any = valor.replace(/\D/g, '');
       v = Number.parseFloat((v / 100).toFixed(2) + '');
-      item.Preco_Venda = this.moedaUtils.formatarDecimal(v);
+      item.precoVenda = this.moedaUtils.formatarDecimal(v);
     }
   }
   digitouPreco_Venda(e: Event, item: ProdutoOrcamentoDto) {
@@ -254,17 +281,17 @@ export class ItensComponent implements OnInit {
     let v: any = valor.replace(/\D/g, '');
     v = (v / 100).toFixed(2) + '';
 
-    item.TotalItem = item.Qtde * item.CustoFinancFornecPrecoListaBase;
-    item.VlTotalItem = item.Qtde * item.CustoFinancFornecPrecoListaBase;
+    item.totalItem = item.qtde * item.precoLista;
+    item.totalItem = item.qtde * item.precoLista;
 
-    item.Desc_Dado = 100 * (item.CustoFinancFornecPrecoListaBase - v) / item.CustoFinancFornecPrecoListaBase;
+    item.descDado = 100 * (item.precoLista - v) / item.precoLista;
     //calcula o desconto
-    item.Desc_Dado = this.moedaUtils.formatarDecimal(item.Desc_Dado);
+    item.descDado = this.moedaUtils.formatarDecimal(item.descDado);
 
-    if (item.CustoFinancFornecPrecoListaBase == item.Preco_Venda) {
-      item.Alterou_Preco_Venda = false;
+    if (item.precoLista == item.precoVenda) {
+      item.alterouPrecoVenda = false;
     } else {
-      item.Alterou_Preco_Venda = true;
+      item.alterouPrecoVenda = true;
     }
 
     this.digitouQte(item);
@@ -285,7 +312,7 @@ export class ItensComponent implements OnInit {
   }
 
   confirmaProdutoComposto(item: ProdutoOrcamentoDto): boolean {
-    let pc = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
+    let pc = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
     if (pc) {
       return true;
     }
@@ -298,7 +325,7 @@ export class ItensComponent implements OnInit {
     let retorno: boolean = false;
     if (item) {
       if (this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
+        let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
         produto.filhos.forEach(i => {
           if (i.alertas) {
             retorno = true;
@@ -307,7 +334,7 @@ export class ItensComponent implements OnInit {
         });
       }
       if (!this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
+        let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
         if (produto.alertas) {
           retorno = true;
           this.mensagemAlerta = produto.alertas;
@@ -324,10 +351,10 @@ export class ItensComponent implements OnInit {
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
+      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
       produto.filhos.forEach(i => {
-        if (i.estoque < item.Qtde) {
+        if (i.estoque < item.qtde) {
           excede = true;
           return;
         }
@@ -335,8 +362,8 @@ export class ItensComponent implements OnInit {
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
-      if (produto.estoque < item.Qtde) {
+      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
+      if (produto.estoque < item.qtde) {
         return true;
       }
     }
@@ -349,10 +376,10 @@ export class ItensComponent implements OnInit {
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.Produto)[0];
+      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
       produto.filhos.forEach(i => {
-        if (i.qtdeMaxVenda < item.Qtde) {
+        if (i.qtdeMaxVenda < item.qtde) {
           excede = true;
           return;
         }
@@ -360,8 +387,8 @@ export class ItensComponent implements OnInit {
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.Produto)[0];
-      if (produto.qtdeMaxVenda < item.Qtde) {
+      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
+      if (produto.qtdeMaxVenda < item.qtde) {
         return true;
       }
     }
@@ -382,19 +409,28 @@ export class ItensComponent implements OnInit {
       this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
       return;
     }
-    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.ListaProdutos.length == 0) {
+    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
       this.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
       return;
     }
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.Observacoes = this.observacaoOpcao;
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.FormaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto);
-    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.observacoes = this.observacaoOpcao;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
 
-    //vamos salvar a opção
+    this.orcamentoOpcaoService.enviarOrcamentoOpcao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
+      if (r == null) {
+        this.alertaService.mostrarMensagem(r[0]);
+        return;
+      }
+      this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
+      this.novoOrcamentoService.criarNovoOrcamentoItem();
+      this.limparCampos();
+    }).catch((error) => {
+      this.alertaService.mostrarErroInternet(error);
+      return
+    });
 
-
-    this.novoOrcamentoService.criarNovoOrcamentoItem();
-    this.limparCampos();
+    
   }
   incluirObsGerais() {
     if (this.observacoesGerais) {

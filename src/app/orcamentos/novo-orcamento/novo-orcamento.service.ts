@@ -5,7 +5,7 @@ import { Parcelado } from 'src/app/dto/forma-pagto/parcelado';
 import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
 import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
-import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class NovoOrcamentoService {
   public mostrarOpcoes: boolean;
   public qtdeProdutosOpcao: number = 0;
   public limiteQtdeProdutoOpcao: number = 12;
-  public pageItens:number = 3;
+  public pageItens: number = 3;
 
   criarNovo() {
     this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -29,7 +29,7 @@ export class NovoOrcamentoService {
   }
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentoOpcaoDto();
-    this.opcaoOrcamentoCotacaoDto.ListaProdutos = new Array();
+    this.opcaoOrcamentoCotacaoDto.listaProdutos = new Array();
 
   }
 
@@ -40,16 +40,16 @@ export class NovoOrcamentoService {
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
-      !!this.opcaoOrcamentoCotacaoDto.ListaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
-        this.opcaoOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
+      !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
+      return this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido = this.moedaUtils.formatarDecimal(
+        this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItem), 0));
 
   }
   public totalPedidoRA(): number {
     if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
-      !!this.opcaoOrcamentoCotacaoDto.ListaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.ValorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
-        this.opcaoOrcamentoCotacaoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
+      !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
+      return this.opcaoOrcamentoCotacaoDto.valorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
+        this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItemRA), 0));
 
   }
 
@@ -73,18 +73,16 @@ export class NovoOrcamentoService {
   }
 
   desconto: number = 3;
-  atribuirOpcaoPagto(pagto: PagtoOpcao[]): PagtoOpcao[] {
+  atribuirOpcaoPagto(pagto: PagtoOpcao[], qtdeParcelas: number): PagtoOpcao[] {
 
     pagto.forEach(p => {
       if (p.incluir) {
         p.valores = new Array();
         if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
-          for (let i = 0; i < p.qtdeParcelas; i++) {
-            p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.VlTotalDestePedido, this.desconto));
-          }
+          p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido, this.desconto));
         }
         if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
-          p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.VlTotalDestePedido, p.qtdeParcelas);
+          p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido, qtdeParcelas);
         }
       }
     });

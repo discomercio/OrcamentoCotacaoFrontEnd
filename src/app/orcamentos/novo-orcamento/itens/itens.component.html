@@ -1,4 +1,4 @@
-<div class="p-grid">
+<div class="p-grid" [ngClass]="{'carregando': carregandoProds && clicouAddProd}">
     <div class="p-col-12 p-pb-0">
         <div class="card p-dialog">
             <h4>Produtos e Pagamentos</h4>
@@ -34,46 +34,46 @@
                             <tr class="p-selectable-row" class="font-size">
                                 <td>
                                     <span class="p-column-title">Produto</span>
-                                    <input type="hidden" value="{{p.Produto}}" [(ngModel)]="p.Produto" />
+                                    <input type="hidden" value="{{p.produto}}" [(ngModel)]="p.produto" />
                                     <p
-                                        [innerHtml]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto, p.Descricao)">
+                                        [innerHtml]="stringUtils.formatarDescricao(p.fabricante, p.fabricanteNome, p.produto, p.descricao)">
                                     </p>
                                 </td>
                                 <td>
                                     <span class="p-column-title">Qtde</span>
                                     <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
-                                        [value]="p.Qtde" [(ngModel)]="p.Qtde" (change)="digitouQte(p)" />
+                                        [value]="p.Qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
                                 </td>
                                 <td>
                                     <span class="p-column-title">Preço NF</span>
                                     <input class="p-text-right" id="precoNF" type="text" pInputText placeholder=""
-                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.Preco_NF)"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoNF)"
                                         (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
                                 </td>
                                 <td>
                                     <span class="p-column-title">VL Lista:</span>
                                     <div class="p-text-right">
-                                        {{moedaUtils.formatarMoedaSemPrefixo(p.CustoFinancFornecPrecoListaBase)}}
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.precoLista)}}
                                     </div>
                                 </td>
                                 <td>
                                     <span class="p-column-title">Desc%</span>
                                     <div class="p-d-flex p-ai-center ">
                                         <input class="p-text-right font-size" pInputText id="desconto" type="text"
-                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.Desc_Dado)"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
                                             (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
                                     </div>
                                 </td>
                                 <td>
                                     <span class="p-column-title">Vl Total</span>
                                     <input class="p-text-right" pInputText id="vlVenda" type="text"
-                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.Preco_Venda)"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)"
                                         (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)" />
                                 </td>
                                 <td>
                                     <span class="p-column-title">Vl Total:</span>
                                     <div class="p-text-right">
-                                        {{moedaUtils.formatarMoedaSemPrefixo(p.TotalItem)}}
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
                                     </div>
                                 </td>
                                 <td class="p-pr-3">
@@ -100,13 +100,13 @@
                                 <td class="p-text-right">RA {{somarRA()}}</td>
                                 <td></td>
                                 <td class="p-text-right">
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.ValorTotalDestePedidoComRA)}}
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.valorTotalDestePedidoComRA)}}
                                 </td>
                                 <td></td>
                                 <td></td>
                                 <td class="p-text-right">Total</td>
                                 <td class="p-text-right">
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.VlTotalDestePedido)}}
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotalDestePedido)}}
                                 </td>
                                 <td></td>
                             </tr>
@@ -160,12 +160,12 @@
                     <ng-template pTemplate="header">
                         Opção {{i + 1}}
                         <div class="p-ml-auto p-p-0 p-text-right">
-                            <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}</span>
+                            <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotalDestePedido)}}</span>
                             <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(index)"></i>
                         </div>
                     </ng-template>
                     <ng-template pTemplate="content">
-                        <p-table #dataTable [value]="orcamento.ListaProdutos" [responsive]="true"
+                        <p-table #dataTable [value]="orcamento.listaProdutos" [responsive]="true"
                             responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
                             styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                             <ng-template pTemplate="header">
@@ -183,46 +183,47 @@
                                 <tr class="p-selectable-row" class="font-size">
                                     <td>
                                         <span class="p-column-title">Produto</span>
-                                        <input type="hidden" value="{{p.Produto}}" [(ngModel)]="p.Produto" />
+                                        <input type="hidden" value="{{p.produto}}" [(ngModel)]="p.produto" />
+                                        <input type="hidden" value="{{p.coeficienteDeCalculo}}" [(ngModel)]="p.coeficienteDeCalculo" />
                                         <p
-                                            [innerHtml]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto, p.Descricao)">
+                                            [innerHtml]="stringUtils.formatarDescricao(p.fabricante, p.fabricanteNome, p.produto, p.descricao)">
                                         </p>
                                     </td>
                                     <td>
                                         <span class="p-column-title">Quantidade</span>
                                         <div class="p-text-right">
-                                            {{p.Qtde}}
+                                            {{p.qtde}}
                                         </div>
 
                                     </td>
                                     <td>
                                         <span class="p-column-title">Preço NF</span>
                                         <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(p.Preco_NF)}}
+                                            {{moedaUtils.formatarMoedaSemPrefixo(p.preco_NF)}}
                                         </div>
                                     </td>
                                     <td>
                                         <span class="p-column-title">VL Lista:</span>
                                         <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(p.CustoFinancFornecPrecoListaBase)}}
+                                            {{moedaUtils.formatarMoedaSemPrefixo(p.custoFinancFornecPrecoListaBase)}}
                                         </div>
                                     </td>
                                     <td>
                                         <span class="p-column-title">Desc%</span>
                                         <div class="p-text-right">
-                                            {{moedaUtils.formatarValorDuasCasaReturnZero(p.Desc_Dado)}}%
+                                            {{moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)}}%
                                         </div>
                                     </td>
                                     <td>
                                         <span class="p-column-title">Vl Total</span>
                                         <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(p.Preco_Venda)}}
+                                            {{moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)}}
                                         </div>
                                     </td>
                                     <td>
                                         <span class="p-column-title">Vl Total:</span>
                                         <div class="p-text-right">
-                                            {{moedaUtils.formatarMoedaSemPrefixo(p.TotalItem)}}
+                                            {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
                                         </div>
                                     </td>
 
@@ -244,13 +245,13 @@
                                     <td class="p-text-right">RA {{somarRA()}}</td>
                                     <td></td>
                                     <td class="p-text-right">
-                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.ValorTotalDestePedidoComRA)}}
+                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.valorTotalDestePedidoComRA)}}
                                     </td>
                                     <td></td>
                                     <td></td>
                                     <td class="p-text-right">Total</td>
                                     <td class="p-text-right">
-                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotalDestePedido)}}
                                     </td>
                                     <td></td>
                                 </tr>
@@ -267,7 +268,7 @@
                             </div>
                             <div class="p-grid p-col-12 p-lg-6 p-md-6 p-sm-6 p-mx-0 p-px-0">
                                 <span class="p-text-bold p-pr-1">Observações:</span>
-                                <span>{{orcamento.Observacoes}}</span>
+                                <span>{{orcamento.observacoes}}</span>
                             </div>
                         </div>
                     </ng-template>
@@ -275,10 +276,6 @@
             </p-accordion>
             <div class="p-field p-mb-0 p-mt-3">
                 <div class="p-grid">
-                    <!-- <div class="p-col-12 p-lg-8 p-md-8 p-sm-8">
-                        <textarea pInputTextarea placeholder="Observações gerais" [(ngModel)]="observacoesGerais"
-                            style="width: 100%; height:100%" (blur)="incluirObsGerais()"></textarea>
-                    </div> -->
                     <div class="p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <div class="p-grid">
                             <div class="p-col-12 p-py-0">

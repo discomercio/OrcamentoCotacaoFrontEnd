@@ -226,7 +226,6 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value.uf;
     clienteOrcamentoCotacaoDto.tipo = this.form.controls.Tipo.value;
 
-    // debugger;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id && this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id != 0) {
       this.atualizarClienteOrcamento(clienteOrcamentoCotacaoDto);
       return;
@@ -259,6 +258,8 @@ export class CadastrarClienteComponent implements OnInit {
       }
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
       this.mensagemService.showSuccessViaToast("Cliente atualizado com sucesso!");
+      document.getElementById("p-tabpanel-1-label").click();
+      
     }).catch((error) => {
       this.alertaService.mostrarErroInternet(error);
       return;

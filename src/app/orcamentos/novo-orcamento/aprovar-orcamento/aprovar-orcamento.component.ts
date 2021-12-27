@@ -4,7 +4,7 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -35,8 +35,8 @@ export class AprovarOrcamentoComponent implements OnInit {
 
   somarRA(orcamento: OrcamentoOpcaoDto): string {
     let retorno: string;
-    let total = orcamento.VlTotalDestePedido;
-    let totalRa = orcamento.ValorTotalDestePedidoComRA;
+    let total = orcamento.vlTotalDestePedido;
+    let totalRa = orcamento.valorTotalDestePedidoComRA;
     // vou formatar  aqui antes de passar para a tela
     let valor_ra = this.moedaUtils.formatarDecimal(totalRa - total);
     if (valor_ra > 0)

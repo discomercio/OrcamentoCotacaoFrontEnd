@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { environment } from 'src/environments/environment';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 
 @Injectable({
   providedIn: 'root'
