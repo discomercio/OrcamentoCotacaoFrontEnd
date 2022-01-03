@@ -7,7 +7,7 @@
                 <ng-template pTemplate="header">
                     Opção {{i + 1}}
                     <div class="p-ml-auto p-p-0 p-text-right">
-                        <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}</span>
+                        <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}</span>
                         <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(index)"></i>
                     </div>
                 </ng-template>
@@ -31,7 +31,7 @@
                                                     *ngIf="fp.codigo==novoOrcamentoService.constantes.COD_PAGTO_AVISTA">
                                                     <span class="p-text-bold p-text-light"
                                                         style="text-decoration: line-through;font-size: smaller">
-                                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}
                                                     </span>
                                                 </div>
 
@@ -41,7 +41,7 @@
                                                 </span>
                                                 <span class="p-text-bold"
                                                     *ngIf="fp.codigo==novoOrcamentoService.constantes.COD_PAGTO_PARCELADO">
-                                                    {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotalDestePedido)}}
+                                                    {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}
                                                 </span>
                                                 <p-dropdown id="parceiro" [options]="parcelamento"
                                                     [style]="{'text-align':'end'}"

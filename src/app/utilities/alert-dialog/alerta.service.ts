@@ -68,7 +68,6 @@ export class AlertaService {
       }
 
       if (error.status == 0) {
-        //erro 500
         this.mostrarMensagemComLargura(
           "Favor verificar sua conexão com a internet!",
           "250px", null);

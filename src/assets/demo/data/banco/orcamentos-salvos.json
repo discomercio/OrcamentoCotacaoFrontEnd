@@ -61,8 +61,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 4906.26,
-                "ValorTotalDestePedidoComRA": 4906.26,
+                "VlTotal": 4906.26,
+                "ValorTotalComRA": 4906.26,
                 "Observacoes": "Essa observação é apenas para visualizar",
                 "FormaPagto": [
                     {
@@ -127,8 +127,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 3742.26,
-                "ValorTotalDestePedidoComRA": 3742.26,
+                "VlTotal": 3742.26,
+                "ValorTotalComRA": 3742.26,
                 "Observacoes": "Essa observação é apenas para visualizar 2",
                 "FormaPagto": [
                     {
@@ -193,8 +193,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 4217.56,
-                "ValorTotalDestePedidoComRA": 4217.56,
+                "VlTotal": 4217.56,
+                "ValorTotalComRA": 4217.56,
                 "Observacoes": "Essa observação é apenas para visualizar 3",
                 "FormaPagto": [
                     {
@@ -298,8 +298,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 8106.29,
-                "ValorTotalDestePedidoComRA": 8106.29,
+                "VlTotal": 8106.29,
+                "ValorTotalComRA": 8106.29,
                 "Observacoes": "Essa observação é apenas para visualizar",
                 "FormaPagto": [
                     {
@@ -379,8 +379,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 6447.59,
-                "ValorTotalDestePedidoComRA": 6447.59,
+                "VlTotal": 6447.59,
+                "ValorTotalComRA": 6447.59,
                 "Observacoes": "Essa observação é apenas para visualizar 2",
                 "FormaPagto": [
                     {
@@ -460,8 +460,8 @@
                         "Alterou_Preco_Venda": false
                     }
                 ],
-                "VlTotalDestePedido": 10182.09,
-                "ValorTotalDestePedidoComRA": 10182.09,
+                "VlTotal": 10182.09,
+                "ValorTotalComRA": 10182.09,
                 "Observacoes": "Essa observação é apenas para visualizar 3",
                 "FormaPagto": [
                     {

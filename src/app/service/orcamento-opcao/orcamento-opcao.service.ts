@@ -14,4 +14,8 @@ export class OrcamentoOpcaoService {
   enviarOrcamentoOpcao(orcamentoOpcao:OrcamentoOpcaoDto):Observable<OrcamentoOpcaoDto>{
     return this.http.post<OrcamentoOpcaoDto>(environment.apiUrl + "OrcamentoOpcao", orcamentoOpcao);
   }
+
+  removerOrcamentoOpcao():Observable<any>{
+    return this.http.delete<OrcamentoOpcaoDto>(environment.apiUrl + "OrcamentoOpcao");
+  }
 }

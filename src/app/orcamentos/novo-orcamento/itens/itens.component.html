@@ -100,13 +100,13 @@
                                 <td class="p-text-right">RA {{somarRA()}}</td>
                                 <td></td>
                                 <td class="p-text-right">
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.valorTotalDestePedidoComRA)}}
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.ValorTotalComRA)}}
                                 </td>
                                 <td></td>
                                 <td></td>
                                 <td class="p-text-right">Total</td>
                                 <td class="p-text-right">
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotalDestePedido)}}
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.VlTotal)}}
                                 </td>
                                 <td></td>
                             </tr>
@@ -160,7 +160,7 @@
                     <ng-template pTemplate="header">
                         Opção {{i + 1}}
                         <div class="p-ml-auto p-p-0 p-text-right">
-                            <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotalDestePedido)}}</span>
+                            <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}</span>
                             <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(index)"></i>
                         </div>
                     </ng-template>
@@ -245,13 +245,13 @@
                                     <td class="p-text-right">RA {{somarRA()}}</td>
                                     <td></td>
                                     <td class="p-text-right">
-                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.valorTotalDestePedidoComRA)}}
+                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.ValorTotalComRA)}}
                                     </td>
                                     <td></td>
                                     <td></td>
                                     <td class="p-text-right">Total</td>
                                     <td class="p-text-right">
-                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotalDestePedido)}}
+                                        {{moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}
                                     </td>
                                     <td></td>
                                 </tr>
@@ -262,7 +262,7 @@
                             <div class="p-grid p-col-12 p-lg-6 p-md-6 p-sm-6 p-mx-0 p-px-0 ">
                                 <span class="p-text-bold">Formas de pagamento:</span>
                                 <ul class="p-mt-0">
-                                    <li *ngFor="let fp of orcamento.FormaPagto">{{fp.descricao}}</li>
+                                    <li *ngFor="let fp of orcamento.formaPagto">{{fp.descricao}}</li>
                                 </ul>
 
                             </div>

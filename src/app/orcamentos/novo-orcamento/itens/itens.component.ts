@@ -19,6 +19,7 @@ import { VisualizarOrcamentoComponent } from '../visualizar-orcamento/visualizar
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
 import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-itens',
@@ -425,9 +426,9 @@ export class ItensComponent implements OnInit {
       this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
       this.novoOrcamentoService.criarNovoOrcamentoItem();
       this.limparCampos();
-    }).catch((error) => {
-      this.alertaService.mostrarErroInternet(error);
-      return
+    }).catch((error:HttpErrorResponse) => {
+      this.mensagemService.showErrorViaToast(error.error.errors);
+      return;
     });
 
     
@@ -444,7 +445,18 @@ export class ItensComponent implements OnInit {
   }
 
   removerOpcao(index: number) {
-    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
+    debugger;
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id){
+      this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
+        if(r != null){
+
+          this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
+        }
+      }).catch((error:HttpErrorResponse) => {
+        this.mensagemService.showErrorViaToast(error.error.errors);
+        return;
+      });
+    }
   }
 
   removerItem(index: number) {

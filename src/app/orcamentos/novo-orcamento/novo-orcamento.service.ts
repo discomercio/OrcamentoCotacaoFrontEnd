@@ -41,14 +41,14 @@ export class NovoOrcamentoService {
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido = this.moedaUtils.formatarDecimal(
+      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils.formatarDecimal(
         this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItem), 0));
 
   }
   public totalPedidoRA(): number {
     if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.valorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
+      return this.opcaoOrcamentoCotacaoDto.ValorTotalComRA = this.moedaUtils.formatarDecimal(
         this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItemRA), 0));
 
   }
@@ -60,12 +60,10 @@ export class NovoOrcamentoService {
 
   public calcularParcelas(valor: number, parcelas: number) {
     let parcelamento: number[] = new Array();
-
     for (let i = 1; i <= parcelas; i++) {
       let parcela: number = 0;
-      parcela = i;
-      let v: any = this.moedaUtils.formatarDecimal(valor / i);
-      parcela = v;
+      // parcela = this.moedaUtils.formatarDecimal(valor / i);
+      parcela = Math.round(((valor / i) + 0.001 + Number.EPSILON) * 100) / 100;
       parcelamento.push(parcela);
     }
 
@@ -79,10 +77,10 @@ export class NovoOrcamentoService {
       if (p.incluir) {
         p.valores = new Array();
         if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
-          p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido, this.desconto));
+          p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.VlTotal, this.desconto));
         }
         if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
-          p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.vlTotalDestePedido, qtdeParcelas);
+          p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.VlTotal, qtdeParcelas);
         }
       }
     });

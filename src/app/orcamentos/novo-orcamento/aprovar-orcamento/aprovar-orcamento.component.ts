@@ -35,8 +35,8 @@ export class AprovarOrcamentoComponent implements OnInit {
 
   somarRA(orcamento: OrcamentoOpcaoDto): string {
     let retorno: string;
-    let total = orcamento.vlTotalDestePedido;
-    let totalRa = orcamento.valorTotalDestePedidoComRA;
+    let total = orcamento.VlTotal;
+    let totalRa = orcamento.ValorTotalComRA;
     // vou formatar  aqui antes de passar para a tela
     let valor_ra = this.moedaUtils.formatarDecimal(totalRa - total);
     if (valor_ra > 0)
