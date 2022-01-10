@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
@@ -20,13 +20,16 @@ import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
 import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { EventEmitter } from 'events';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 
 @Component({
   selector: 'app-itens',
   templateUrl: './itens.component.html',
   styleUrls: ['./itens.component.scss']
 })
-export class ItensComponent implements OnInit {
+export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     public readonly novoOrcamentoService: NovoOrcamentoService,
@@ -36,7 +39,10 @@ export class ItensComponent implements OnInit {
     public readonly router: Router,
     private readonly alertaService: AlertaService,
     private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
-    private readonly formaPagtoService: FormaPagtoService) { }
+    private readonly formaPagtoService: FormaPagtoService,
+    telaDesktopService: TelaDesktopService) {
+    super(telaDesktopService);
+  }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -48,6 +54,8 @@ export class ItensComponent implements OnInit {
   observacoesGerais: string;
   opcoesPagto: PagtoOpcao[];
   public constantes: Constantes = new Constantes();
+
+  dtOptions: any = {};
 
   ngOnInit(): void {
     this.inscreveProdutoComboDto();
@@ -181,9 +189,11 @@ export class ItensComponent implements OnInit {
     prod.alterouValorRa = false;
     prod.alterouPrecoVenda = false;
     prod.coeficienteDeCalculo = produto.Filhos.length == 0 ? parseFloat(produto.produtoDto.coeficienteDeCalculo.toFixed(2)) : produto.Filhos[0].coeficienteDeCalculo;
+    prod.mostrarCampos = this.telaDesktop ? true : false;
 
     this.lstProdutos.push(prod);
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.lstProdutos;
+
     this.novoOrcamentoService.totalPedido();
     this.novoOrcamentoService.totalPedidoRA();
   }
@@ -426,13 +436,12 @@ export class ItensComponent implements OnInit {
       this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
       this.novoOrcamentoService.criarNovoOrcamentoItem();
       this.limparCampos();
-    }).catch((error:HttpErrorResponse) => {
+    }).catch((error: HttpErrorResponse) => {
       this.mensagemService.showErrorViaToast(error.error.errors);
       return;
     });
-
-    
   }
+
   incluirObsGerais() {
     if (this.observacoesGerais) {
       // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
@@ -446,13 +455,13 @@ export class ItensComponent implements OnInit {
 
   removerOpcao(index: number) {
     debugger;
-    if(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id){
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id) {
       this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
-        if(r != null){
+        if (r != null) {
 
           this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
         }
-      }).catch((error:HttpErrorResponse) => {
+      }).catch((error: HttpErrorResponse) => {
         this.mensagemService.showErrorViaToast(error.error.errors);
         return;
       });
@@ -463,29 +472,43 @@ export class ItensComponent implements OnInit {
     this.lstProdutos.splice(index, 1);
   }
 
-  enviar() {
-    ;
-    // validar se a forma de pagto esta preenchida em cada orçamento
-    // validar os produtos e valores??
-    // precisa fazer a parte de desconto, analisar os arquivos do Edu para ver o percentual máximo
-    // precisa analisar melhor essa parte
-    /* 
-      se ultrapassar o percentual máximo de desconto, 
-      vamos mostrar uma mensagem com uma modal para que a pessoa clique no OK 
-      e mostrar o botão para solicitar o desconto superior
-     */
+  mostrando: boolean = false;
+  mostrarIrmaos(e: any, produto: ProdutoOrcamentoDto) {
+
+    if (this.telaDesktop) return;
+    
+    let n = e.srcElement.closest("td"), ret = [];
+
+    if (produto.mostrarCampos) {
+      n.children[0].children[0].classList.remove("pi-chevron-circle-up");
+      n.children[0].children[0].classList.add("pi-chevron-circle-down");
+    }
+    else {
+      n.children[0].children[0].classList.remove("pi-chevron-circle-down");
+      n.children[0].children[0].classList.add("pi-chevron-circle-up");
+    }
+
+    produto.mostrarCampos = produto.mostrarCampos ? false : true;
+
+    this.ajustaDisplayTable(n, produto);
+
   }
 
-  salvarOrcamento() {
-    ;
-    //depois de validar o orçamento vamos salvar!
-    // fazer a chamada da validação aqui
+  ajustaDisplayTable(n: any, produto: ProdutoOrcamentoDto) {
 
-    // this.orcamentoService.enviarOrcamento(this.novoOrcamentoService.opcoesOrcamentoCotacaoDto).toPromise().then(r =>{
-    //   if(r == null){
-    //     this.alertaService.mostrarMensagem("Deu pau");
-    //   }
-    // }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    while (n = <HTMLTableDataCellElement>n.nextElementSibling) {
+      if (!this.telaDesktop) {
+        if (!produto.mostrarCampos) {
+          n.classList.add("p-d-inline-flex");
+        }
+        else {
+          n.classList.remove("p-d-inline-flex");
+          n.style.display = "none";
+        }
+      }
+      else {
+        n.style.display = "table-cell";
+      }
+    }
   }
-
 }

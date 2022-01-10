@@ -60,7 +60,7 @@ export class AutenticacaoService {
     this.lembrarSenhaParaAlterarSenha = salvar;
     this.salvar = salvar;
     this._usuarioLogado = null;
-    let msg = "";
+    let msg:string[] = new Array();
 
     this.http.post(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha },
       {
@@ -86,16 +86,15 @@ export class AutenticacaoService {
           desligarFazendoLogin();
           if (this.alertaService.mostrarErro412(e))
             return;
-          msg = "" + ((e && e.message) ? e.message : e.toString());
+          msg.push("" + ((e && e.message) ? e.message : e.toString()));
           if (e && e.status === 400)
-            msg = "usuário e senha inválidos."
+            msg.push("usuário e senha inválidos.");
           if (e && e.status === 403)
-            msg = "loja do usuário não possui unidade_negocio. Entre em contato com o suporte."
+            msg.push("loja do usuário não possui unidade_negocio. Entre em contato com o suporte.");
           if (e && e.status === 0)
-            msg = "servidor de autenticação não disponível."
+            msg.push("servidor de autenticação não disponível.");
           if (e && e.status === 500)
-            msg = "erro interno no servidor de autenticação."
-
+            msg.push("erro interno no servidor de autenticação.");
 
           this.mensagemService.showErrorViaToast(msg);
 

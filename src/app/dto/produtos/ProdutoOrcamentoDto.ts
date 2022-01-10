@@ -13,7 +13,7 @@ export class ProdutoOrcamentoDto {
     totalItemRA: number | null;
     alterouValorRa: boolean | null;
     alterouPrecoVenda: boolean | null;
-
+    mostrarCampos:boolean = false;
     // VL_Lista: number;
     // Obs: string;
     // VlTotalItem: number | null;

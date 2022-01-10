@@ -8,18 +8,24 @@ import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 
 @Component({
   selector: 'app-select-prod-dialog',
   templateUrl: './select-prod-dialog.component.html',
   styleUrls: ['./select-prod-dialog.component.scss']
 })
-export class SelectProdDialogComponent implements OnInit {
+export class SelectProdDialogComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     public readonly mensagemService: MensagemService,
-    private readonly novoOrcamentoService: NovoOrcamentoService) { }
+    private readonly novoOrcamentoService: NovoOrcamentoService,
+    telaDesktopService: TelaDesktopService) { 
+      super(telaDesktopService)
+    }
 
   @ViewChild('dataTable') table: Table;
   displayModal: boolean = false;
@@ -30,7 +36,7 @@ export class SelectProdDialogComponent implements OnInit {
   selecionado: ProdutoTela;
   codigo: string;
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
-  
+  stringUtils = StringUtils;
 
   ngOnInit(): void {
     this.displayModal = true;
@@ -38,6 +44,7 @@ export class SelectProdDialogComponent implements OnInit {
     this.transferirDados();
 
     this.prodsTela = this.prodsArray;
+    this.novoOrcamentoService.pageItens = this.telaDesktop ? 3 : 6;
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
   transferirDados() {
@@ -82,8 +89,9 @@ export class SelectProdDialogComponent implements OnInit {
       this.ref.close(this.selecionado);
       return;
     }
-
-    this.mensagemService.showErrorViaToast("Por favor, selecione um produto!");
+    let msg: string[] = new Array();
+    msg.push("Por favor, selecione um produto!");
+    this.mensagemService.showErrorViaToast(msg);
   }
 
   marcarLinha(e: Event) {

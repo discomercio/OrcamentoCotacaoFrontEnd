@@ -9,45 +9,49 @@
         </div>
         <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
             [ngClass]="{'carregando': carregando}" autoLayout="true" [(selection)]="selecionado"
-            styleClass="p-datatable-customers p-datatable-sm" [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true">
+            styleClass="p-datatable-customers p-datatable-sm" [rows]="novoOrcamentoService.pageItens" [filterDelay]="0"
+            [paginator]="true">
             <ng-template pTemplate="body" let-p>
                 <ng-container *ngIf="p.visivel">
 
-                    <tr class="p-selectable-row p-field-checkbox" class="font-size" [pSelectableRow]="p">
-                        <td>
-                            <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
+                    <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
+                        [pSelectableRow]="p">
+                        <td class="p-d-inline-flex" style="width: 100%">
+                            <span>
+                                <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
+                            </span>
+                            <p class="p-ml-2"
+                                [innerHtml]="stringUtils.formatarDescricao(p.produtoDto.fabricante, p.produtoDto.fabricanteNome, p.produtoDto.produto, p.produtoDto.descricaoHtml)">
+                            </p>
                         </td>
-                        <td>
-                            <span class="p-column-title">Produto</span>
-                            {{ProdutoTelaFabrProd(p.produtoDto.fabricante, p.produtoDto.fabricanteNome, p.produtoDto.produto)}}
-                            <span [innerHTML]="p.produtoDto.descricaoHtml"></span>
-                        </td>
-                        <td>
-                            <span class="p-column-title">VL Lista:</span>
+                        <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                            <span class="p-column-title p-ml-4">VL Lista:</span>
                             <div class="p-text-right">
                                 {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.precoLista)}}
                             </div>
                         </td>
                     </tr>
                     <tr *ngFor="let f of p.Filhos">
-                        <td></td>
-                        <td class="p-pl-6">
-                            <span class="p-column-title">Produto</span>
-                            {{ProdutoTelaFabrProd(f.fabricante, f.fabricanteNome, f.produto)}} -
-                            <span [innerHTML]="f.descricaoHtml"></span>
-                        </td>
-                        <td class="p-pl-6">
-                            <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
-                            <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right">
-                                <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
-                                    pTooltip="{{f.alertas}}"
-                                    [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
-                                </p-avatar>
-                            </div>
-                            <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right" style="color:red">
-                                {{f.alertas}}
-                            </div>
-                        </td>
+                        <ng-container *ngIf="telaDesktop">
+                            <td class="p-pl-6">
+                                <span class="p-column-title">Produto</span>
+                                {{ProdutoTelaFabrProd(f.fabricante, f.fabricanteNome, f.produto)}} -
+                                <span [innerHTML]="f.descricaoHtml"></span>
+                            </td>
+                            <td class="p-pl-6">
+                                <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
+                                <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right">
+                                    <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
+                                        pTooltip="{{f.alertas}}"
+                                        [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
+                                    </p-avatar>
+                                </div>
+                                <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right"
+                                    style="color:red">
+                                    {{f.alertas}}
+                                </div>
+                            </td>
+                        </ng-container>
                     </tr>
                 </ng-container>
             </ng-template>

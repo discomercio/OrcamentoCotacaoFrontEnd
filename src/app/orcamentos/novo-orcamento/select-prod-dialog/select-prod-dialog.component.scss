@@ -34,7 +34,18 @@
     }
   }
 
-  
- 
- 
+  #linha_tabela{
+    @media only screen and (max-width: 641px) {
+      border-bottom: 3px solid #cecece !important;
+    }
+  }
+
+ ::ng-deep .p-datatable .p-datatable-tbody > tr>td{
+   border: none;
+ }
+ ::ng-deep .p-datatable .p-datatable-tbody > tr{
+   text-align: left;
+   border: 1px solid #dee2e6;
+   border-width: 1px 0 0 0;
+}
  

@@ -116,7 +116,11 @@ export class DownloadsComponent implements OnInit {
         const url = window.URL.createObjectURL(blob);
         fileSaver.saveAs(blob, this.selectedFiles2.data.name + ".json");
         this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
-      }), (error: any) => this.mensagemService.showErrorViaToast("Erro ao fazer o download.");
+      }), (error: any) => {
+        let msg: string[] = new Array();
+        msg.push("Erro ao fazer o download.");
+        this.mensagemService.showErrorViaToast(msg);
+      };
       return;
     }
 
@@ -133,6 +137,6 @@ export class DownloadsComponent implements OnInit {
       if (r == null) {
         // erro
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 }

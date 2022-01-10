@@ -1,0 +1,23 @@
+::ng-deep .layout-main{
+    @media only screen and (max-width: 641px) {
+      padding-left: 0% !important;
+      padding-right: 0% !important;
+    }
+  }
+  ::ng-deep .p-tabview .p-tabview-panels{
+    border-left: 1px solid #dee2e6 !important;
+    border-right: 1px solid #dee2e6 !important;
+    border-top-right-radius: 4px !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+::ng-deep .p-tabview .p-tabview-nav{
+    border-top-right-radius: 4px !important;
+    border-top-left-radius: 4px !important;
+}
+
+::ng-deep .card{
+    @media only screen and (max-width: 641px) {
+        padding: 4px !important;
+    }
+}

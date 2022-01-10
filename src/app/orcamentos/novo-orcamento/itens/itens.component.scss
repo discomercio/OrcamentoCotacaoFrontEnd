@@ -15,10 +15,29 @@
 
 ::ng-deep .p-datatable .p-datatable-tbody > tr{
     @media only screen and (max-width: 641px) {
-        border-bottom: 3px solid #cecece !important;
+        //border-bottom: 3px solid #cecece !important;
     }
 }
 
 .card{
     min-height: auto !important;
+}
+
+::ng-deep .p-accordion-content{
+    @media only screen and (max-width: 641px) {
+        padding: 1% !important;
+    }
+}
+
+::ng-deep .itens{
+    padding-left: 10px !important;
+    padding-right: 10px !important;
+}
+
+.icone{
+    font-size: 1.5rem;
+    align-self: center;
+    background-color: #007bff;
+    border-radius: 1rem;
+    color: #fff;
 }
