@@ -41,16 +41,16 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
-          /* let resp: HttpResponse<any> = event;
-          let respOk = false;
-          if (resp.headers.get('X-API-Version') == environment.versaoApi) {
-            respOk = true;
-          }
-          if (!respOk) {
-            //forcamos o erro de versão
-            (resp as any).status = 412;
-            throw resp;
-          } */
+          // let resp:HttpResponse<any> = event;
+          // debugger;
+          // if(resp.body.indexOf("token") != -1){
+          //   let token=JSON.parse(resp.body);
+          //   let expira = new Date(Date.parse(token["expiration"]));
+          //   if(expira < new Date()){
+
+          //   }
+          // }
+          
         }
       }));
   }

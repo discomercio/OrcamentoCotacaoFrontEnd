@@ -5,19 +5,24 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 
 @Component({
   selector: 'app-aprovar-orcamento',
   templateUrl: './aprovar-orcamento.component.html',
   styleUrls: ['./aprovar-orcamento.component.scss']
 })
-export class AprovarOrcamentoComponent implements OnInit {
+export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(private readonly orcamentoService: OrcamentosService,
-    public readonly novoOrcamentoService: NovoOrcamentoService) { }
+    public readonly novoOrcamentoService: NovoOrcamentoService,
+    telaDesktopService: TelaDesktopService) { 
+      super(telaDesktopService);
+    }
 
   ngOnInit(): void {
-    this.buscarOrcamento(1);
+    this.buscarOrcamento(1433);
   }
 
   // opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
@@ -26,8 +31,9 @@ export class AprovarOrcamentoComponent implements OnInit {
   constantes: Constantes = new Constantes();
 
   buscarOrcamento(id: number) {
-    this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
+    this.orcamentoService.buscarOrcamento(id.toString()).toPromise().then(r => {
       if (r != null) {
+        this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
         // this.opcoesOrcamento = r[0];
       }
     });

@@ -14,7 +14,7 @@
                 <div class="p-col-12">
                     <h5>Orçamentos</h5>
                     <div class="p-col-12 p-px-0 p-pt-2"
-                        *ngFor="let orcamento of opcoesOrcamento.ListaOrcamentoCotacaoDto; let i = index">
+                        *ngFor="let orcamento of opcoesOrcamento?.ListaOrcamentoCotacaoDto; let i = index">
                         <p-accordion>
                             <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
                                 <ng-template pTemplate="header">

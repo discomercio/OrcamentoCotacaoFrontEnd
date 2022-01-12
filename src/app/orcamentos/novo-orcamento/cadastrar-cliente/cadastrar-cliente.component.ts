@@ -182,7 +182,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (!this.form.controls.Validade.value) {
       let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       this.form.controls.Validade.setValue(data);
-      // this.form.controls.Validade.disable();
+      this.form.controls.Validade.disable();
     }
 
     let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);

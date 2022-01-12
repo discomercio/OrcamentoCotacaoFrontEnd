@@ -1,5 +1,5 @@
 import { Injectable, DebugElement } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
 import { Observable } from 'rxjs';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
@@ -19,8 +19,11 @@ export class OrcamentosService {
     return this.http.get<ListaDto[]>(environment.apiUrl + 'Orcamento');
   }
 
-  buscarOrcamento(id: number): Observable<OrcamentoCotacaoDto[]> {
-    return this.http.get<OrcamentoCotacaoDto[]>(environment.apiUrl + "Orcamento")
+  buscarOrcamento(id: string): Observable<ClienteOrcamentoCotacaoDto> {
+    
+    let param = new HttpParams();
+    param = param.append("id", id);
+    return this.http.get<ClienteOrcamentoCotacaoDto>(environment.apiUrl + "Orcamento/id", {params:param});
   }
 
   enviarOrcamento(opcoesOrcamento:OrcamentoCotacaoDto){
