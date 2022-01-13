@@ -31,8 +31,9 @@
                 </div>
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
-                <p-fileUpload class="p-col-12" name="demo[]" url="upload.php" (onUpload)="onUpload($event)"
-                    multiple="multiple" accept="*" maxFileSize="1000000">
+                <p-fileUpload class="p-col-12" name="arquivo" url="https://localhost:5001/v1/arquivo/upload" 
+                    (onBeforeUpload)="onUpload($event)"
+                    multiple="multiple" accept=".pdf" maxFileSize="52428800">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">
                             <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
