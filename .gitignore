@@ -7,6 +7,8 @@ node_modules
 sassdoc
 .sass-cache
 
+.vs/
+
 src/assets/theme/theme-*.css
 src/assets/layout/css/*.css
 
