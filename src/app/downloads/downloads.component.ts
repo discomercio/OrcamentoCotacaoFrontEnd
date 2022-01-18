@@ -1,3 +1,5 @@
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { concat } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
@@ -21,9 +23,8 @@ export class DownloadsComponent implements OnInit {
     private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,
     private readonly mensagemService: MensagemService,
-    private readonly alertaService: AlertaService) {
-
-  }
+    private readonly alertaService: AlertaService,
+    private readonly autenticacaoService: AutenticacaoService)  {  }
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
@@ -32,16 +33,23 @@ export class DownloadsComponent implements OnInit {
   public selectedFiles2: TreeNode;
   public cols: any[];
   public novaPasta: boolean;
+  public edicao: boolean;
   public ehArquivo: boolean = false;
+  public ehUpload: boolean = false;
+  public isAutorizado: boolean = this.autenticacaoService.authEstaLogado();
+  public urlUpload: string = this.downloadsService.urlUpload;
 
   ngOnInit(): void {
 
     this.form = this.fb.group({
       pasta: ['', [Validators.required]],
-      descricaoPasta: ['', [Validators.required]]
+      descricaoPasta: [''],
+      txtNome: ['', [Validators.required]],
+      txtDescricao: [''],
     });
 
     this.novaPasta = false;
+    this.edicao = false;
 
     this.downloadsService.buscarToTree().then(files => this.files2 = files);
     
@@ -49,8 +57,17 @@ export class DownloadsComponent implements OnInit {
       { field: 'name', header: 'Nome' },
       { field: 'size', header: 'Tamanho' },
       { field: 'descricao', header: 'Descrição' },
-      { field: 'key', header: 'Id' }
+      { field: 'key', header: 'Id', visible: 'none' }
     ];
+
+  }
+
+  sucesso(event, origem) {
+    if(origem == "arquivo") {
+      this.mensagemService.showWarnViaToast("Arquivo excluído!");
+    } else if(origem = "pasta") {
+      this.mensagemService.showWarnViaToast("Pasta excluída!");
+    }
   }
 
   public controlaBotoes() {
@@ -64,42 +81,171 @@ export class DownloadsComponent implements OnInit {
     }
   }
 
-  public ehUpload: boolean = false;
-  upload() {
-    console.log('upload');
-    if(!!this.selectedFiles2 == false){
-      this.mensagemService.showWarnViaToast("Selecione uma pasta!");
-      return;
-    }
-
-    //console.log(this.selectedFiles2.data.name + ` - ` + this.selectedFiles2.data.key);
-
-    if (this.ehUpload) {
-      this.ehUpload = false;
-      return;
-    }
-    this.ehUpload = true;
-    if (this.novaPasta)
-      this.criarPastaTable();
-
-    this.addArquivoTable('19dec002-0ed1-428e-9e65-2217863a5992', 'arquivo.pdf', '100kb', 'Manual em PDF');
-  }
-
-  criarPastaTable() {
-    console.log('criarPastaTable');
+  novaPastaClick() {
+    console.log('novaPastaClick');
 
     if(!!this.selectedFiles2 == false){
       this.mensagemService.showWarnViaToast("Selecione uma pasta!");
       return;
     }
 
-    if (this.novaPasta) {
-      this.novaPasta = false;
+    this.novaPasta = !this.novaPasta;
+    this.ehUpload = false;
+    this.edicao = false;
+  }
+
+  editarClick() {
+    if(!!this.selectedFiles2 == false){
+      this.mensagemService.showWarnViaToast("Selecione um arquivo ou pasta!");
       return;
     }
-    this.novaPasta = true;
-    if (this.ehUpload) this.upload();
+
+    this.form.controls.txtNome.value = this.selectedFiles2.data.name;
+    this.form.controls.txtDescricao.value = this.selectedFiles2.data.descricao;
+
+    this.edicao = !this.edicao;
+    this.novaPasta = false;
+    this.ehUpload = false;
   }
+
+  editarSalvarClick() {
+    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
+
+    this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then(r => {
+      if (r == null) {
+        // erro
+      }
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+
+    this.editarItem();
+    this.edicao = false;
+    this.form.reset();
+  }
+
+  downloadClick() {
+    if(!!this.selectedFiles2 == false){
+      this.mensagemService.showWarnViaToast("Selecione um arquivo!");
+      return;
+    }
+
+    if (!!this.selectedFiles2) {
+      this.downloadsService.download(this.selectedFiles2.data.key).subscribe((response: any) => {
+        let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
+        const url = window.URL.createObjectURL(blob);
+        fileSaver.saveAs(blob, this.selectedFiles2.data.name);
+        this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+        this.edicao = false;
+        this.novaPasta = false;
+        this.ehUpload = false;
+      }), (error: any) => this.mensagemService.showErrorViaToast("Erro ao fazer o download.");
+      return;
+    }
+  }
+
+  uploadClick() {
+    if(!!this.selectedFiles2 == false){
+      this.mensagemService.showWarnViaToast("Selecione uma pasta!");
+      return;
+    }
+
+    this.ehUpload = !this.ehUpload;
+    this.novaPasta = false;
+    this.edicao = false;
+  }
+
+  excluirClick() {
+    let request;
+
+    if(!!this.selectedFiles2 == false){
+      this.mensagemService.showWarnViaToast("Selecione uma pasta, ou arquivo!");
+      return;
+    }
+
+    if(this.selectedFiles2.hasOwnProperty('children') && this.selectedFiles2.children.length > 0) {
+      this.mensagemService.showWarnViaToast("Não é possivel excluir pastas que possuem arquivos!");
+      return;
+    }
+
+    request = this.downloadsService.excluir(this.selectedFiles2.data.key);
+
+    if (this.ehArquivo) {
+      request.subscribe((response) => {
+        this.sucesso(response, "arquivo");
+      }, error => {
+        //this.error(error);
+      });
+    } else {
+      request.subscribe((response) => {
+        this.sucesso(response, "pasta");
+      }, error => {
+        //this.error(error);
+      });
+    }
+  }
+
+  remove(){
+    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
+
+    if (this.selectedFiles2) {
+
+      //this.selectedFiles2.children.remove(novoArquivoTree);
+
+    // this.files2 = [...this.files2];
+    // this.ehArquivo = false;
+    // this.form.reset();
+
+    var key = this.selectedFiles2.data.key;
+
+    // console.log('key: ' + key);
+    // console.log('this.files2.length: ' + this.files2.length);
+
+    //this.files2.forEach(this.removeItem);
+
+    for (var i = 0; i <= this.files2[0].children.length -1; i++) {
+      console.log(this.files2[0].children[i].data.name);
+
+      for (var c = 0; c <= this.files2[0].children[i].children.length -1; c++) {
+        console.log(this.files2[0].children[i].children[c].data.name);
+  
+        if (this.files2[0].children[i].children[c].data.key == key) {
+          this.files2[0].children[i].children[c] = null;
+          //this.files2.model.update();
+        }
+       }
+     }
+  }
+}
+
+
+editarItem(){
+  //if (!this.validacaoFormGroup.validaForm(this.form)) return;
+
+  if (this.selectedFiles2) {
+  var key = this.selectedFiles2.data.key;
+
+  //1º Nivel
+  if (this.files2[0].data.key == key) {
+    this.files2[0].data.name = this.form.controls.txtNome.value;
+    this.files2[0].data.descricao = this.form.controls.txtDescricao.value;
+  }
+  //2º Nivel
+  for (var i = 0; i <= this.files2[0].children.length -1; i++) {
+    console.log(this.files2[0].children[i].data.name);
+    if (this.files2[0].children[i].data.key == key) {
+      this.files2[0].children[i].data.name = this.form.controls.txtNome.value;
+      this.files2[0].children[i].data.descricao = this.form.controls.txtDescricao.value;
+    }
+    //3º Nivel
+    for (var c = 0; c <= this.files2[0].children[i].children.length -1; c++) {
+      console.log(this.files2[0].children[i].children[c].data.name);
+      if (this.files2[0].children[i].children[c].data.key == key) {
+        this.files2[0].children[i].children[c].data.name = this.form.controls.txtNome.value;
+        this.files2[0].children[i].children[c].data.descricao = this.form.controls.txtDescricao.value;
+      }
+     }
+   }
+}
+}
 
   addPastaTable() {
     console.log('addPastaTable');
@@ -138,7 +284,7 @@ export class DownloadsComponent implements OnInit {
 
   addArquivoTable(idpai, nome, tamanho, descricao) {
     console.log('addArquivoTable');
-    if (!this.validacaoFormGroup.validaForm(this.form)) return;
+    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     let novoArquivoTree: TreeNode = {
       data: {
@@ -148,56 +294,66 @@ export class DownloadsComponent implements OnInit {
         "type": "File"
       },
       children: [],
-      parent: idpai
+      parent: null
     };
 
     novoArquivoTree.data.name = nome;
-    novoArquivoTree.data.size = tamanho;
+    novoArquivoTree.data.size = this.calculaTamanho(tamanho);
     novoArquivoTree.data.descricao = descricao;
-    
+
     if (this.selectedFiles2)
       this.selectedFiles2.children.push(novoArquivoTree);
     else
       this.files2.push(novoArquivoTree);
 
     this.files2 = [...this.files2];
-    this.novaPasta = false;
+    this.ehArquivo = false;
     this.form.reset();
   }
 
-  download() {
-    console.log('download:' + this.selectedFiles2.data.key);
-    if (!!this.selectedFiles2) {
-      this.downloadsService.download(this.selectedFiles2.data.key).subscribe((response: any) => {
-        let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
-        const url = window.URL.createObjectURL(blob);
-        fileSaver.saveAs(blob, this.selectedFiles2.data.name);
-        this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
-      }), (error: any) => this.mensagemService.showErrorViaToast("Erro ao fazer o download.");
-      return;
-    }
 
-    this.mensagemService.showWarnViaToast("Selecione um arquivo.");
-  }
 
-  onUpload(event) {
-    console.log('onUpload');
-    console.log('descricaoPasta: ' + this.form.controls.descricaoPasta.value);
+  onBeforeUpload(event) {
+    console.log('onBeforeUpload');
     event.formData.append('idPai', this.selectedFiles2.data.key);
     event.formData.append('descricao', this.form.controls.descricaoPasta.value);
 
-    this.addArquivoTable(this.selectedFiles2.data.key, 'arquivo.pdf', '100kb', 'Manual em PDF');
+    //console.log('fileUpload[0]: ' + fileUpload[0]);
+    //console.log('arquivo this.form.controls.arquivo.value);
+    //console.log('arquivo.value', this.form.controls.arquivo.value);
+  }
 
-    // for (let file of event.files) {
-    //   this.uploadedFiles.push(file);
-    // }
-    
+   onUpload(event, fileUpload){
+    this.ehUpload = false;
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
 
-    // this.downloadsService.enviar('arquivo.pdf').toPromise().then(r => {
-    //   if (r == null) {
-    //     // erro
-    //   }
-    // }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    //fileUpload.clear();
+
+    for (let file of event.files) {
+      this.addArquivoTable(this.selectedFiles2.data.key, file.name, file.size, '');
+      //this.uploadedFiles.push(file);
+    }
   }
+
+
+  //AUX
+  calculaTamanho(tamanhoBytes)
+  {
+      var sOut = "";
+      var saida = 0;
+
+      if ((tamanhoBytes / 1024) <= 1024)
+      {
+          saida = tamanhoBytes / 1024;
+          sOut = `${Math.round(saida)}kb`;
+      }
+      else
+      {
+          saida = tamanhoBytes / 1024 / 1024;
+          sOut = `${Math.round(saida)}mb`;
+      }
+
+      return sOut;
+  }
+
 }

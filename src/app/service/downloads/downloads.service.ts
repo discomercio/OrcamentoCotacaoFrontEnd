@@ -11,6 +11,8 @@ export class DownloadsService {
 
   constructor(private readonly http: HttpClient) { }
 
+  public urlUpload: string = `${environment.apiUrl}v1/arquivo/upload`;
+
   public buscarToTree():Promise<TreeNode[]>{
     return this.http.get<any>(`${environment.apiUrl}v1/arquivo/obterestrutura`)
       .toPromise()
@@ -18,8 +20,15 @@ export class DownloadsService {
   }
 
   public download(id: any):Observable<any>{
-    console.log('download service - ' + id);
     return this.http.get(`${environment.apiUrl}v1/arquivo/download/${id}`, {responseType: 'blob'});
+  }
+
+  public excluir(id: any):Observable<any>{
+    return this.http.post(`${environment.apiUrl}v1/arquivo/excluir/${id}`, id);
+  }
+
+  public editar(id:string, nome:string, descricao:string){
+    return this.http.put(`${environment.apiUrl}v1/arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
 
   // public enviar(arquivo:string){

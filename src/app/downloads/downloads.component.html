@@ -4,36 +4,48 @@
             <h4>Downloads</h4>
 
             <div class="p-field p-d-flex p-jc-end p-mt-5">
-                <button pButton pRipple label="Upload" icon="pi pi-upload" *ngIf="!ehArquivo" (click)="upload();"
-                    class="p-as-end p-mr-2"></button>
-                <button pButton pRipple label="Nova pasta" icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-minus'}}"
-                    *ngIf="!ehArquivo" class="p-as-end" (click)="criarPastaTable()"></button>
+                <button pButton pRipple label="Upload" icon="pi pi-upload" *ngIf="!ehArquivo && isAutorizado" class="p-as-end p-mr-2"
+                    (click)="uploadClick();"></button>
+                <button pButton pRipple label="Nova pasta" icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-minus'}}" *ngIf="!ehArquivo && isAutorizado" class="p-as-end" 
+                    (click)="novaPastaClick()"></button>
                 <button pButton pRipple label="Download" icon="pi pi-download" *ngIf="ehArquivo" class="p-as-end"
-                    (click)="download()"></button>
+                    (click)="downloadClick()"></button>&nbsp;
+                <button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="isAutorizado" class="p-as-end"
+                    (click)="editarClick()"></button>                  
             </div>
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid" *ngIf="this.novaPasta">
                     <div class="p-field p-col-5">
                         <input id="pasta" type="text" pInputText placeholder="Nome da pasta" formControlName="pasta" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'pasta')">{{mensagemErro}}</small>
+                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'pasta')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-5">
-                        <input id="descricaoPasta" type="text" pInputText placeholder="Descrição da pasta"
-                            formControlName="descricaoPasta" />
-                        <small class="p-error"
-                            *ngIf="validacaoFormGroup.verificaCampo(form,'descricaoPasta')">{{mensagemErro}}</small>
+                        <input id="descricaoPasta" type="text" pInputText placeholder="Descrição da pasta" formControlName="descricaoPasta" />
+                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'descricaoPasta')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-2">
-                        <button pButton pRipple label="Add Pasta" icon="pi pi-plus" (click)="addPastaTable()"
-                            class="p-as-end p-pl-3"></button>
+                        <button pButton pRipple label="Add Pasta" icon="pi pi-plus" (click)="addPastaTable()" class="p-as-end p-pl-3"></button>
                     </div>
                 </div>
+                <div class="p-fluid p-formgrid p-grid" *ngIf="this.edicao">
+                    <div class="p-field p-col-4">
+                        <input id="txtNome" type="text" pInputText value="{{this.selectedFiles2.data.name}}" formControlName="txtNome" />
+                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-5">
+                        <input id="txtDescricao" type="text" pInputText value={{this.selectedFiles2.data.descricao}} formControlName="txtDescricao" />
+                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-field p-col-3">
+                        <button pButton pRipple label="Excluir" icon="pi pi-trash" (click)="excluirClick()" class="p-as-end p-pl-3" style="width : 10em;"></button>&nbsp;
+                        <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="editarSalvarClick()" class="p-as-end p-pl-3" style="width : 10em;"></button>
+                    </div>
+                </div>                
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
-                <p-fileUpload class="p-col-12" name="arquivo" url="https://localhost:5001/v1/arquivo/upload" 
-                    (onBeforeUpload)="onUpload($event)"
-                    multiple="multiple" accept=".pdf" maxFileSize="52428800">
+                <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}" 
+                    (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
+                    fileLimit="1" accept=".pdf" maxFileSize="52428800">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">
                             <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
@@ -42,11 +54,10 @@
                 </p-fileUpload>
             </div>
 
-            <p-treeTable [value]="files2" [columns]="cols" selectionMode="single" [(selection)]="selectedFiles2"
-                dataKey="name">
+            <p-treeTable [value]="files2" [columns]="cols" selectionMode="single" [(selection)]="selectedFiles2" dataKey="key">
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th *ngFor="let col of columns">
+                        <th *ngFor="let col of columns" [ngStyle]="{'display': col.visible}">
                             {{col.header}}
                         </th>
                     </tr>
@@ -54,7 +65,8 @@
                 <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
                     <tr [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode" (click)="controlaBotoes()">
                         <td *ngFor="let col of columns; let i = index"
-                            [ngClass]="{'p-text-bold': col.field === 'name' && rowData.type == 'Folder', 'p-text-italic': rowData.type == 'Arquivo'}">
+                            [ngClass]="{'p-text-bold': col.field === 'name' && rowData.type == 'Folder', 'p-text-italic': rowData.type == 'Arquivo'}"
+                            [ngStyle]="{'display': col.visible}">
                             <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
                             <span *ngIf="i == 0 && rowData.type == 'Folder'" class="p-tree-node-icon"><i
                                     class="pi pi-folder"></i></span>
@@ -68,3 +80,5 @@
         </div>        
     </div>
 </div>
+
+
