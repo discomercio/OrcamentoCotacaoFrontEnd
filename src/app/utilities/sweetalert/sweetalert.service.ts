@@ -6,9 +6,6 @@ import { text } from '@fortawesome/fontawesome-svg-core';
 @Injectable({
     providedIn: 'root'
 })
-@Component({
-    selector: 'app-sweetalert'
-})
 export class SweetalertService {
     constructor() { }
 
@@ -22,6 +19,7 @@ export class SweetalertService {
     });
 
     setConfirm(titulo: string, texto: string) {
+        this.subject = new Subject<any>();
         let timerInterval;
         this.swalWithBootstrapButtons.fire({
             title: titulo,
@@ -48,10 +46,7 @@ export class SweetalertService {
                         clearInterval(timerInterval);
                       }
                 }).then(() => this.subject.next(true));
-            } else if (
-                /* Read more about handling dismissals below */
-                result.dismiss === Swal.DismissReason.cancel
-            ) {
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
                 Swal.fire({
                     title:'Cancelado!',
                     icon: 'error',
