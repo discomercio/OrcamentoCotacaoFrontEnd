@@ -61,9 +61,9 @@ export class NovoOrcamentoService {
   public calcularParcelas(valor: number, parcelas: number) {
     let parcelamento: number[] = new Array();
     for (let i = 1; i <= parcelas; i++) {
+      let val = (valor/i).toFixed(2);
       let parcela: number = 0;
-      // parcela = this.moedaUtils.formatarDecimal(valor / i);
-      parcela = Math.round(((valor / i) + 0.001 + Number.EPSILON) * 100) / 100;
+      parcela = Number.parseFloat(val);
       parcelamento.push(parcela);
     }
 

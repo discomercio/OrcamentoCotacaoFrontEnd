@@ -7,6 +7,8 @@ import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -17,12 +19,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   constructor(private readonly orcamentoService: OrcamentosService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    telaDesktopService: TelaDesktopService) { 
+    telaDesktopService: TelaDesktopService, 
+    private readonly alertaService: AlertaService,
+    private readonly orcamentoOpcaoService: OrcamentoOpcaoService) { 
       super(telaDesktopService);
     }
 
   ngOnInit(): void {
-    this.buscarOrcamento(1433);
+    this.buscarOrcamento(1453);
+    this.buscarOpcoesOrcamento(1453);
   }
 
   // opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
@@ -34,9 +39,16 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentoService.buscarOrcamento(id.toString()).toPromise().then(r => {
       if (r != null) {
         this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
-        // this.opcoesOrcamento = r[0];
       }
     });
+  }
+
+  buscarOpcoesOrcamento(id: number){
+    this.orcamentoOpcaoService.buscarOpcoesOrcamento(id.toString()).toPromise().then(r =>{
+      if(r != null){
+        this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto = r;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   somarRA(orcamento: OrcamentoOpcaoDto): string {
