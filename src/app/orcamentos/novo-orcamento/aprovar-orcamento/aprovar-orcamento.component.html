@@ -128,7 +128,7 @@
                             disabled="true"></textarea>
                     </div>
                     <div class="{{telaDesktop ?  'p-grid p-m-4' : 'p-col-12 p-px-0'}}">
-                        <button pButton pRipple label="Aprovar esta opção de orçamento"
+                        <button pButton pRipple label="Aprovar esta opção de orçamento" (click)="aprovar(orcamento)"
                             class="{{!telaDesktop ? 'p-text-bold font-size p-col-12 p-button-success' : 'p-text-bold p-col-12 p-button-success'}}" icon="pi pi-check"></button>
                     </div>
                 </div>

@@ -9,6 +9,8 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -21,7 +23,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     public readonly novoOrcamentoService: NovoOrcamentoService,
     telaDesktopService: TelaDesktopService, 
     private readonly alertaService: AlertaService,
-    private readonly orcamentoOpcaoService: OrcamentoOpcaoService) { 
+    private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
+    private readonly sweetalertService:SweetalertService) { 
       super(telaDesktopService);
     }
 
@@ -75,4 +78,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
+  aprovar(orcamento){
+    this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result =>{
+      console.log(result);
+
+    });
+  }
 }
