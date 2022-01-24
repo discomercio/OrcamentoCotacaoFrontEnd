@@ -75,10 +75,10 @@ export class AutenticacaoService {
           var objToken = JSON.parse(e);
 
           this.setarToken(objToken.accessToken);
-          this._usuarioLogado = objToken.usuario.nome;
-          this._tipoUsuario = objToken.usuario.tipoUsuario;
-          this._parceiro = objToken.usuario.parceiro;
-          this._vendedor = objToken.usuario.IdVendedor;
+          this._usuarioLogado = objToken.Usuario.nome;
+          this._tipoUsuario = objToken.Usuario.tipoUsuario;
+          this._parceiro = objToken.Usuario.parceiro;
+          this._vendedor = objToken.Usuario.IdVendedor;
           this.router.navigate(['']);
         }
         ,
