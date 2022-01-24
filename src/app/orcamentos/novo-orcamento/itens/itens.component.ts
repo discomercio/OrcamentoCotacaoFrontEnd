@@ -23,6 +23,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { EventEmitter } from 'events';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { AprovarOrcamentoComponent } from '../aprovar-orcamento/aprovar-orcamento.component';
 
 @Component({
   selector: 'app-itens',
@@ -164,7 +165,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     // }
 
     let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
-    const ref = this.dialogService.open(VisualizarOrcamentoComponent, {
+    const ref = this.dialogService.open(AprovarOrcamentoComponent, {
       width: largura,
       styleClass: 'dynamicDialog',
       header: "Orçamentos"
