@@ -154,6 +154,7 @@ import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-o
 import { ClienteComponent } from './cliente/cliente.component';
 import { LoginComponent } from './login/login/login.component';
 import { TokenInterceptor } from './service/autenticacao/token.interceptor';
+import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
 
 @NgModule({
     imports: [
@@ -299,7 +300,7 @@ import { TokenInterceptor } from './service/autenticacao/token.interceptor';
         AprovarOrcamentoComponent,
         ClienteComponent,
         LoginComponent
-    ],
+        ],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
@@ -309,7 +310,7 @@ import { TokenInterceptor } from './service/autenticacao/token.interceptor';
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ProdutoService, ExportExcelService
+        AppMenuComponent, ProdutoService, ExportExcelService, SweetalertService
     ],
     bootstrap: [AppComponent]
 })

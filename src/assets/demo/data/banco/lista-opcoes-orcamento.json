@@ -1,0 +1,256 @@
+[{
+    "id": 1453,
+    "IdOrcamentoCotacao_opcao": 1,
+    "listaProdutos": [
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        }
+    ],
+    "VlTotal": 3263.07,
+    "ValorTotalComRA": 3296.03,
+    "observacoes": "Apenas para mostrar na opção",
+    "formaPagto": [
+        {
+            "codigo": 1,
+            "descricao": "Á vista (3% desconto)",
+            "incluir": true,
+            "qtdeParcelas": 1,
+            "valores": [
+                3165.18
+            ]
+        },
+        {
+            "codigo": 2,
+            "descricao": "Parcelado",
+            "incluir": true,
+            "qtdeParcelas": 12,
+            "valores": [
+                3263.07,
+                1631.54,
+                1087.69,
+                815.77,
+                652.61,
+                543.85,
+                466.15,
+                407.88,
+                362.56,
+                326.31,
+                296.64,
+                271.92
+            ]
+        }
+    ]
+},
+{
+    "id": 1453,
+    "IdOrcamentoCotacao_opcao": 1,
+    "listaProdutos": [
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        },
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        }
+    ],
+    "VlTotal": 3263.07,
+    "ValorTotalComRA": 3296.03,
+    "observacoes": "Apenas para mostrar na opção",
+    "formaPagto": [
+        {
+            "codigo": 1,
+            "descricao": "Á vista (3% desconto)",
+            "incluir": true,
+            "qtdeParcelas": 1,
+            "valores": [
+                3165.18
+            ]
+        },
+        {
+            "codigo": 2,
+            "descricao": "Parcelado",
+            "incluir": true,
+            "qtdeParcelas": 12,
+            "valores": [
+                3263.07,
+                1631.54,
+                1087.69,
+                815.77,
+                652.61,
+                543.85,
+                466.15,
+                407.88,
+                362.56,
+                326.31,
+                296.64,
+                271.92
+            ]
+        }
+    ]
+},
+{
+    "id": 1453,
+    "IdOrcamentoCotacao_opcao": 1,
+    "listaProdutos": [
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        },
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        },
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        },
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        },
+        {
+            "id":1,
+            "IdOrcamentoCotacao_opcao":1453,
+            "fabricante": "001",
+            "fabricanteNome": "ELECTROLUX",
+            "produto": "001089",
+            "descricao": "Ar Cond. Electrolux EcoTurbo <b>V22F</b> 22 Frio",
+            "custoFinancFornecPrecoLista": 3200.03,
+            "coeficienteDeCalculo": 1.03,
+            "precoLista": 3296.03,
+            "precoNF": 3296.03,
+            "descDado": 1,
+            "precoVenda": 3263.07,
+            "qtde": 1,
+            "totalItem": 3263.07,
+            "totalItemRA": 3296.03
+        }
+    ],
+    "VlTotal": 3263.07,
+    "ValorTotalComRA": 3296.03,
+    "observacoes": "Apenas para mostrar na opção",
+    "formaPagto": [
+        {
+            "codigo": 1,
+            "descricao": "Á vista (3% desconto)",
+            "incluir": true,
+            "qtdeParcelas": 1,
+            "valores": [
+                3165.18
+            ]
+        },
+        {
+            "codigo": 2,
+            "descricao": "Parcelado",
+            "incluir": true,
+            "qtdeParcelas": 12,
+            "valores": [
+                3263.07,
+                1631.54,
+                1087.69,
+                815.77,
+                652.61,
+                543.85,
+                466.15,
+                407.88,
+                362.56,
+                326.31,
+                296.64,
+                271.92
+            ]
+        }
+    ]
+}]

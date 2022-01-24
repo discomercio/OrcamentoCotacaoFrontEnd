@@ -18,14 +18,15 @@ export class AppMenuComponent implements OnInit {
 
     public model: MenuItem[];
 
-
+    aprovando: boolean = false;
     ngOnInit() {
+
         this.model = [
             {
                 items: [
-                    { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento'] },
-                    { 
-                        label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente'] 
+                    { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
+                    {
+                        label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
                     },
                     {
                         label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],

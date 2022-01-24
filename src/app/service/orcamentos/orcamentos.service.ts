@@ -23,7 +23,7 @@ export class OrcamentosService {
     
     let param = new HttpParams();
     param = param.append("id", id);
-    return this.http.get<ClienteOrcamentoCotacaoDto>(environment.apiUrl + "Orcamento/id", {params:param});
+    return this.http.get<ClienteOrcamentoCotacaoDto>("assets/demo/data/banco/cliente.json");
   }
 
   enviarOrcamento(opcoesOrcamento:OrcamentoCotacaoDto){
