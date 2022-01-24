@@ -14,7 +14,7 @@ export class DownloadsService {
   public urlUpload: string = `${environment.apiUrl}v1/arquivo/upload`;
 
   public buscarToTree():Promise<TreeNode[]>{
-    return this.http.get<any>(`${environment.apiUrl}v1/arquivo/obterestrutura`)
+    return this.http.get<any>(`${environment.apiUrl}arquivo/ObterEstrutura`)
       .toPromise()
       .then(res => res.data as TreeNode[]);
   }
