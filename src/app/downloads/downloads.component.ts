@@ -52,7 +52,7 @@ export class DownloadsComponent implements OnInit {
     this.edicao = false;
 
     this.downloadsService.buscarToTree().then(files => this.files2 = files);
-    
+
     this.cols = [
       { field: 'name', header: 'Nome' },
       { field: 'size', header: 'Tamanho' },
@@ -137,7 +137,7 @@ export class DownloadsComponent implements OnInit {
         this.edicao = false;
         this.novaPasta = false;
         this.ehUpload = false;
-      }), (error: any) => this.mensagemService.showErrorViaToast("Erro ao fazer o download.");
+      }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
       return;
     }
   }
@@ -206,7 +206,7 @@ export class DownloadsComponent implements OnInit {
 
       for (var c = 0; c <= this.files2[0].children[i].children.length -1; c++) {
         console.log(this.files2[0].children[i].children[c].data.name);
-  
+
         if (this.files2[0].children[i].children[c].data.key == key) {
           this.files2[0].children[i].children[c] = null;
           //this.files2.model.update();
@@ -271,7 +271,7 @@ editarItem(){
     novaPastaTree.data.name = this.form.controls.pasta.value;
     novaPastaTree.data.size = "";
     novaPastaTree.data.descricao = this.form.controls.descricaoPasta.value;
-    
+
     if (this.selectedFiles2)
       this.selectedFiles2.children.push(novaPastaTree);
     else

@@ -11,7 +11,7 @@ export class DownloadsService {
 
   constructor(private readonly http: HttpClient) { }
 
-  public urlUpload: string = `${environment.apiUrl}v1/arquivo/upload`;
+  public urlUpload: string = `${environment.apiUrl}arquivo/upload`;
 
   public buscarToTree():Promise<TreeNode[]>{
     return this.http.get<any>(`${environment.apiUrl}arquivo/ObterEstrutura`)
@@ -20,15 +20,15 @@ export class DownloadsService {
   }
 
   public download(id: any):Observable<any>{
-    return this.http.get(`${environment.apiUrl}v1/arquivo/download/${id}`, {responseType: 'blob'});
+    return this.http.get(`${environment.apiUrl}arquivo/download/${id}`, {responseType: 'blob'});
   }
 
   public excluir(id: any):Observable<any>{
-    return this.http.post(`${environment.apiUrl}v1/arquivo/excluir/${id}`, id);
+    return this.http.post(`${environment.apiUrl}arquivo/excluir/${id}`, id);
   }
 
   public editar(id:string, nome:string, descricao:string){
-    return this.http.put(`${environment.apiUrl}v1/arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
+    return this.http.put(`${environment.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
 
   // public enviar(arquivo:string){
@@ -36,6 +36,6 @@ export class DownloadsService {
   // }
 
   public novaPasta(nome:string, idpai:string){
-    return this.http.post(`${environment.apiUrl}v1/arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
+    return this.http.post(`${environment.apiUrl}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
   }
 }
