@@ -144,9 +144,6 @@ import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.co
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NgxMaskModule } from 'ngx-mask';
 import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
-import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component'
-import { ProdutoService } from './service/produto/produto.service';
-import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { ExportExcelService } from './service/export-files/export-excel.service';
@@ -155,6 +152,11 @@ import { ClienteComponent } from './cliente/cliente.component';
 import { LoginComponent } from './login/login/login.component';
 import { TokenInterceptor } from './service/autenticacao/token.interceptor';
 import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
+
+import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
+import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
+import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
+import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
 
 @NgModule({
     imports: [
@@ -295,12 +297,14 @@ import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
         ListaComponent,
-        ListaProdutosComponent,
-        VisualizarProdutoComponent,
         AprovarOrcamentoComponent,
         ClienteComponent,
-        LoginComponent
-        ],
+        LoginComponent,
+        ProdutosCatalogoEditarComponent,
+        ProdutosCatalogoListarComponent,
+        ProdutosCatalogoVisualizarComponent,
+        ProdutosCatalogoCriarComponent
+    ],
     providers: [
         {
             provide: HTTP_INTERCEPTORS,
@@ -310,7 +314,7 @@ import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ProdutoService, ExportExcelService, SweetalertService
+        AppMenuComponent, ProdutoService, ExportExcelService
     ],
     bootstrap: [AppComponent]
 })
