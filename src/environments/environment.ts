@@ -9,6 +9,7 @@ export const environment = {
   esperaAvisos: 3000,
   esperaErros: 5000,
   apiUrl: 'https://localhost:5001/',
+  imgUrl: 'http://arquivos.arclube.des/img/',
   versaoApi: 'DEBUG',
   production: false
 };
