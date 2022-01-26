@@ -314,7 +314,7 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ProdutoService, ExportExcelService
+        AppMenuComponent, ExportExcelService
     ],
     bootstrap: [AppComponent]
 })
