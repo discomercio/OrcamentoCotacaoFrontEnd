@@ -54,7 +54,7 @@ export class CadastrarClienteComponent implements OnInit {
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
-    this.tipoUsuario = this.autenticacaoService.authNomeUsuario
+    // this.tipoUsuario = this.autenticacaoService.authUsuario;
     this.criarForm();
     this.setarCamposCondicionais();
 

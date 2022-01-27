@@ -3,24 +3,32 @@
     <div class="card login-panel p-fluid" style="height: 100%;">
         <div class="login-panel-content">
             <div class="p-grid">
-               
-                <div class="p-col-9" style="text-align:left;">
+
+                <div class="p-col-9" style="text-align:center;">
                     <h2 class="welcome-text">Bem vindo</h2>
                 </div>
                 <div class="p-col-12" style="text-align:left;">
                     <label class="login-label">E-mail/ Usuário</label>
                     <div class="login-input">
-                        <input type="text" [(ngModel)] = "email_usuario" placeholder="Usuário" pInputText/>
+                        <input type="text" [(ngModel)]="usuario" placeholder="Usuário" pInputText />
                     </div>
                 </div>
                 <div class="p-col-12" style="text-align:left;">
                     <label class="login-label">Senha</label>
                     <div class="login-input">
-                        <input type="password" [(ngModel)] = "senha" placeholder="Senha" pPassword p-password-info="Entre com a senha"/>
+                        <input type="password" [(ngModel)]="senha" placeholder="Senha" pPassword
+                            p-password-info="Entre com a senha" />
                     </div>
                 </div>
-                <div class="p-col-12 p-md-6 button-pane">
-                    <button pButton type="button" (click)="login()" label="Sign In"></button>
+                <div *ngIf="mostrarLoja" class="p-col-12" style="text-align:left;">
+                    <label class="login-label">Loja</label>
+                    <div class="login-input">
+                        <p-dropdown id="loja" [options]="lojasUsuario" placeholder="Selecione" [(ngModel)]="loja">
+                        </p-dropdown>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <button pButton type="button" (click)="login()" label="Entrar" style="width:auto"></button>
                 </div>
                 <!-- <div class="p-col-12 p-md-6 link-pane">
                     <button class="p-link">Forget Password?</button>

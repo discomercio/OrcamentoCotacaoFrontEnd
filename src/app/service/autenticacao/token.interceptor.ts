@@ -15,9 +15,9 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
-    setTimeout(() => {
-      this.autenticacaoService.renovarTokenSeNecessario();
-    }, 100);
+    // setTimeout(() => {
+    //   this.autenticacaoService.renovarTokenSeNecessario();
+    // }, 100);
 
     ;
     //header de versão
