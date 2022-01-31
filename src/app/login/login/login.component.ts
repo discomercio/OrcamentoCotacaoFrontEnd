@@ -34,9 +34,14 @@ export class LoginComponent implements OnInit {
       return;
     }
 
+    if(!this.loja && this.mostrarLoja){
+      this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
+      return;
+    }
     if (!!this.loja && this.mostrarLoja) {
-      this.autenticacaoService._lojaLogado = this.loja;
-      this.router.navigate(['']);
+        this.autenticacaoService._lojaLogado = this.loja;
+
+        this.router.navigate(['']);
       return;
     }
 
@@ -46,10 +51,11 @@ export class LoginComponent implements OnInit {
           this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
           return;
         }
-        
+
         if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
           this.mostrarLoja = true;
           this.montarSelectLoja();
+          this.autenticacaoService.setarToken(r.AccessToken);
           this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
           return;
         }
