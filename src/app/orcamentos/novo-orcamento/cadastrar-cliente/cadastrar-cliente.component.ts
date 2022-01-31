@@ -225,13 +225,17 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value.nome;
     clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value.uf;
     clienteOrcamentoCotacaoDto.tipo = this.form.controls.Tipo.value;
+    // clienteOrcamentoCotacaoDto.loja = this.loja
 
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id && this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id != 0) {
-      this.atualizarClienteOrcamento(clienteOrcamentoCotacaoDto);
-      return;
-    }
 
-    this.cadastrarClienteOrcamento(clienteOrcamentoCotacaoDto);
+    this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.novoOrcamentoService.mostrarOpcoes = true;
+    // if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id && this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id != 0) {
+    //   this.atualizarClienteOrcamento(clienteOrcamentoCotacaoDto);
+    //   return;
+    // }
+
+    // this.cadastrarClienteOrcamento(clienteOrcamentoCotacaoDto);
   }
 
   cadastrarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): void {

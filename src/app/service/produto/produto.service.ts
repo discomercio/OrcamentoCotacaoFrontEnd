@@ -11,11 +11,11 @@ export class ProdutoService {
 
   constructor(private http: HttpClient) { }
 
-  buscarProdutosCompostosXSimples(page: string, pageItens: string, idCliente): Observable<ProdutoComboDto> {
+  buscarProdutosCompostosXSimples(loja: string, uf: string, tipo: string): Observable<ProdutoComboDto> {
     let params = new HttpParams();
-    params = params.append("page", page);
-    params = params.append("pageItens", pageItens);
-    params = params.append("idCliente", idCliente);
-    return this.http.get<ProdutoComboDto>(environment.apiUrl + "Produto", { params: params });
+    params = params.append("loja", loja);
+    params = params.append("uf", uf);
+    params = params.append("tipo", tipo);
+    return this.http.get<ProdutoComboDto>(environment.apiUrl + "Produto/buscarProduto", { params: params });
   }
 }

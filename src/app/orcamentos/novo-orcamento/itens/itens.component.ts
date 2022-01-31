@@ -24,6 +24,7 @@ import { EventEmitter } from 'events';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { AprovarOrcamentoComponent } from '../aprovar-orcamento/aprovar-orcamento.component';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-itens',
@@ -73,15 +74,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
-    this.produtoService.buscarProdutosCompostosXSimples("1",
-      this.novoOrcamentoService.pageItens.toString(),
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id).toPromise().then((r) => {
-
-        if (r != null) {
-          this.produtoComboDto = r;
-          this.carregandoProds = false;
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    let cliente: ClienteOrcamentoCotacaoDto = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
+    this.produtoService.buscarProdutosCompostosXSimples("205", cliente.uf, cliente.tipo).toPromise().then((r) => {
+      debugger;
+      if (r != null) {
+        this.produtoComboDto = r;
+        this.carregandoProds = false;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
   qtdeMaxParcelaCartaoVisa: number = 0;
   buscarQtdeMaxParcelaCartaoVisa() {
@@ -477,7 +477,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   mostrarIrmaos(e: any, produto: ProdutoOrcamentoDto) {
 
     if (this.telaDesktop) return;
-    
+
     let n = e.srcElement.closest("td"), ret = [];
 
     if (produto.mostrarCampos) {
