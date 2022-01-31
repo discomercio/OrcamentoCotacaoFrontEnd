@@ -53,20 +53,17 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       } 
       
       let prod = new ProdutoCatalogo();
-      prod.id = this.form.controls.id.value;
-      prod.nome = this.form.controls.descricao.value;
-      prod.descricao = this.form.controls.descricao.value;
-      prod.ativo = "true";
+      prod.Id = this.form.controls.id.value;
+      prod.Nome = "";
+      prod.Descricao = this.form.controls.descricao.value;
+      prod.Ativo = "true";
       prod.campos = [];
       prod.imagens = [];
-
-      console.log(prod.id);
-      console.log(prod.descricao);
 
       this.produtoService.criarProduto(prod).toPromise().then((r) => {
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-          this.router.navigate([`//produtos-catalogo/editar/${prod.id}`]);
+          this.router.navigate([`//produtos-catalogo/editar/${prod.Id}`]);
         }
       }).catch((r)=> this.alertaService.mostrarErroInternet(r));
     }

@@ -28,26 +28,15 @@ export class ProdutosCatalogoListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregando = true;
-    this.criarForm();
     this.criarTabela();
     this.buscarTodosProdutos();
   }
 
-  criarForm() {
-    this.form = this.fb.group({
-      codigoFabricanteProduto: [''],
-      categoria: [''],
-      capacidade: [''],
-      ciclo: [''],
-      voltagem: ['']
-    });
-  }
-
   criarTabela() {
     this.cols = [
-      { field: "id", header: "Código", visible: true },
-      { field: "descricao", header: "Descrição", visible: true },
-      { field: "ativo", header: "Ativo", visible: true },
+      { field: "Id", header: "Código", visible: true },
+      { field: "Descricao", header: "Descrição", visible: true },
+      { field: "Ativo", header: "Ativo", visible: true },
       { field: "Acoes", header: "Ações", visible: true }
     ]
   }
