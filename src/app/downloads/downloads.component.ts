@@ -63,16 +63,6 @@ export class DownloadsComponent implements OnInit {
 
   }
 
-  sucesso(event, origem) {
-    if(origem == "arquivo") {
-      this.mensagemService.showWarnViaToast("Arquivo excluído!");
-      this.remove();
-    } else if(origem = "pasta") {
-      this.mensagemService.showWarnViaToast("Pasta excluída!");
-      this.remove();
-    }
-  }
-
   public controlaBotoes() {
     console.log('key: ' + this.selectedFiles2.data.key);
     if (!!this.selectedFiles2) {
@@ -85,7 +75,7 @@ export class DownloadsComponent implements OnInit {
   }
 
   novaPastaClick() {
-    console.log('novaPastaClick');
+    // console.log('novaPastaClick');
 
     if(!!this.selectedFiles2 == false){
       this.mensagemService.showWarnViaToast("Selecione uma pasta!");
@@ -115,7 +105,7 @@ export class DownloadsComponent implements OnInit {
     //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then((r) => {
-      console.log(r);
+      //console.log(r);
       //if (r != null) {
         this.mensagemService.showSuccessViaToast("Salvo com sucesso");
         this.editarItem();
@@ -138,14 +128,14 @@ export class DownloadsComponent implements OnInit {
     }
     //2º Nivel
     for (var i = 0; i <= this.files2[0].children.length -1; i++) {
-      console.log(this.files2[0].children[i].data.name);
+      //console.log(this.files2[0].children[i].data.name);
       if (this.files2[0].children[i].data.key == key) {
         this.files2[0].children[i].data.name = this.form.controls.txtNome.value;
         this.files2[0].children[i].data.descricao = this.form.controls.txtDescricao.value == null ? "" : this.form.controls.txtDescricao.value;
       }
       //3º Nivel
       for (var c = 0; c <= this.files2[0].children[i].children.length -1; c++) {
-        console.log(this.files2[0].children[i].children[c].data.name);
+        //console.log(this.files2[0].children[i].children[c].data.name);
         if (this.files2[0].children[i].children[c].data.key == key) {
           this.files2[0].children[i].children[c].data.name = this.form.controls.txtNome.value;
           this.files2[0].children[i].children[c].data.descricao = this.form.controls.txtDescricao.value == null ? "" : this.form.controls.txtDescricao.value;
@@ -215,10 +205,10 @@ export class DownloadsComponent implements OnInit {
       var key = this.selectedFiles2.data.key;
 
       for (var i = 0; i <= this.files2[0].children.length -1; i++) {
-        console.log(this.files2[0].children[i].data.name);
+        //console.log(this.files2[0].children[i].data.name);
 
         for (var c = 0; c <= this.files2[0].children[i].children.length -1; c++) {
-          console.log(this.files2[0].children[i].children[c].data.name);
+          //console.log(this.files2[0].children[i].children[c].data.name);
 
           if (this.files2[0].children[i].children[c].data.key == key) {
             this.files2[0].children[i].children.splice(c, 1);
@@ -298,7 +288,7 @@ export class DownloadsComponent implements OnInit {
 
 
   onBeforeUpload(event) {
-    console.log('onBeforeUpload');
+    //console.log('onBeforeUpload');
     event.formData.append('idPai', this.selectedFiles2.data.key);
     event.formData.append('descricao', this.form.controls.descricaoPasta.value);
   }
