@@ -74,7 +74,7 @@ export class AutenticacaoService {
           }
           var objToken = JSON.parse(e);
 
-          this.setarToken(objToken.accessToken);
+          this.setarToken(objToken.AccessToken);
           this._usuarioLogado = objToken.Usuario.nome;
           this._tipoUsuario = objToken.Usuario.tipoUsuario;
           this._parceiro = objToken.Usuario.parceiro;

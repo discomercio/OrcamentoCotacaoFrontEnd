@@ -1,12 +1,11 @@
-
-
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { CepsService } from 'src/app/service/ceps/ceps.service';
-import { Parceiro } from 'src/app/dto/parceiros/parceiro';
+import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
+import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { Estado } from 'src/app/dto/ceps/estado';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { SelectItem } from 'primeng/api';
@@ -20,6 +19,7 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -38,14 +38,16 @@ export class CadastrarClienteComponent implements OnInit {
     private datePipe: DatePipe,
     private readonly orcamentoService: OrcamentosService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly mensagemService: MensagemService) { }
+    private readonly mensagemService: MensagemService,
+    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
 
   public mascaraTelefone: string;
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public lstVendedores: Array<Usuario>;
-  public lstVendedoresParceiros: Array<Parceiro>;
-  public lstParceiro: Array<Parceiro>;
+  public lstVendedoresParceiros: Array<OrcamentistaIndicadorDto>;
+  public lstParceiro: Array<OrcamentistaIndicadorDto>;
   public lstEstado: Array<Estado>;
   public desabilitado: boolean = true;
   public constantes: Constantes = new Constantes();
@@ -113,7 +115,7 @@ export class CadastrarClienteComponent implements OnInit {
       parceiro = this.form.controls.Parceiro.value.nome;
     }
 
-    this.usuarioService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
+    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
         this.lstVendedoresParceiros = r;
       }
@@ -124,7 +126,7 @@ export class CadastrarClienteComponent implements OnInit {
     let vendedor: string;
     vendedor = this.form.controls.Vendedor.value.nome;
 
-    this.usuarioService.buscarParceirosPorVendedor(vendedor).toPromise().then((r) => {
+    this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor).toPromise().then((r) => {
       if (r != null) {
         this.lstParceiro = r;
       }
@@ -259,7 +261,7 @@ export class CadastrarClienteComponent implements OnInit {
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
       this.mensagemService.showSuccessViaToast("Cliente atualizado com sucesso!");
       document.getElementById("p-tabpanel-1-label").click();
-      
+
     }).catch((error) => {
       this.alertaService.mostrarErroInternet(error);
       return;

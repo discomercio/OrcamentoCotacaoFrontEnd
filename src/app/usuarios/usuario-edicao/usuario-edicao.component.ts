@@ -59,7 +59,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     if (this.apelido.toLowerCase() != "")
       if (!!this.apelido) {
         if (this.apelido.toLowerCase() != "novo") {
-          this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
+          this.usuariosService.buscarTodosUsuarios().then((r) => {
             if (!!r) {
               let usuarios: Usuario[] = r;
               //this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
@@ -137,7 +137,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       alert("y");
     });
     }
-    
+
   }
 
   celular = false;

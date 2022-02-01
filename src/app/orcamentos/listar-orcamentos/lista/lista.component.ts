@@ -12,7 +12,7 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { PedidosService } from 'src/app/service/pedidos/pedidos.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
-import { Parceiro } from 'src/app/dto/parceiros/parceiro';
+import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
 import { Lojas } from 'src/app/dto/lojas/lojas';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import * as FileSaver from 'file-saver';
@@ -53,9 +53,9 @@ export class ListaComponent implements OnInit {
   lstDto: Array<ListaDto> = new Array();
   lstDtoFiltrada: Array<ListaDto> = new Array();
   moedaUtils: MoedaUtils = new MoedaUtils();
-  lstParceiro: Array<Parceiro>;
-  parceiroSelecionado: Parceiro;
-  lstParceiroFiltrado: Array<Parceiro>;
+  lstParceiro: Array<OrcamentistaIndicadorDto>;
+  parceiroSelecionado: OrcamentistaIndicadorDto;
+  lstParceiroFiltrado: Array<OrcamentistaIndicadorDto>;
   lstLoja: Array<Lojas>;
   lojaSelecionada: Lojas;
   lstLojaFiltrada: Array<Lojas>;
@@ -136,7 +136,7 @@ export class ListaComponent implements OnInit {
   }
 
   buscarParceiros() {
-    
+
 
     // this.usuarioService.buscarParceiros().toPromise().then((r) => {
     //   if (r != null) {
