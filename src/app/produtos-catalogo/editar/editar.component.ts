@@ -44,7 +44,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       id: [''],
-      descricao: ['', [Validators.required]],
+      descricao: [''],
       ativo: [''],
     });
   }
@@ -53,8 +53,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.params.id;
     this.imgUrl = this.produtoService.imgUrl;
     this.urlUpload = this.produtoService.urlUpload;
-    this.form.controls.descricao.setValue(this.produto.descricao);
-    this.form.controls.ativo.setValue(this.produto.ativo);
   }
 
   buscarProdutoDetalhe() {
@@ -70,7 +68,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   ativoClick(e) {
-    this.produto.ativo = e.checked;
+    this.produto.Ativo = e.checked;
   }
 
   onBeforeUpload(event) {
@@ -85,10 +83,10 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
   
   excluirImagemClick(idImagem) {
-    this.produtoService.excluirImagem(this.produto.id, idImagem).toPromise().then((r) => {
+    this.produtoService.excluirImagem(this.produto.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
         for(var x = 0; x <= this.produto.imagens.length -1; x++) {
-          if(this.produto.imagens[x].id == idImagem) {
+          if(this.produto.imagens[x].Id == idImagem) {
             this.produto.imagens.splice(x, 1);
           }
         }
@@ -99,39 +97,37 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   atualizarProdutoClick() {
-    // if (!this.validacaoFormGroup.validaForm(this.form)){
-    //   this.mensagemService.showWarnViaToast("Campo [Descrição] é obrigatório!");
-    //   return;
-    // } 
-    
-    let tmp = new  ProdutoCatalogoCampo();
+    var txtDescricao = (<HTMLInputElement>document.getElementById("descricao"));
 
-    let prod = new ProdutoCatalogo();
-    prod.id = this.produto.id;
-    //prod.nome = "nome"; //this.produto.nome;
-    prod.descricao = this.produto.descricao;
-    prod.ativo = this.produto.ativo;
-    prod.campos = [];
+    if (txtDescricao.value == ""){
+      this.mensagemService.showWarnViaToast("Campo [Descrição] é obrigatório!");
+      return;
+    } 
 
     var input = document.getElementsByTagName("input");
     var inputList = Array.prototype.slice.call(input);
-
+    let tmp = new  ProdutoCatalogoCampo();
+    //prod.nome = this.form.controls.nome.value;
+    this.produto.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
+    this.produto.Ativo = this.form.controls.ativo.value;
+    this.produto.campos = [];
+    
     inputList.forEach(e => {
       tmp = new ProdutoCatalogoCampo();
 
       if(e.id.startsWith('item') && e.value != ""){
 
-        tmp.id = e.id.substring(4, e.id.length);
-        tmp.codigo = e.codigo;
-        tmp.chave = e.chave;
-        tmp.valor = e.value;
-        tmp.ordem = e.ordem;
+        tmp.Id = e.id.substring(4, e.id.length);
+        tmp.Codigo = e.codigo;
+        tmp.Chave = e.chave;
+        tmp.Valor = e.value;
+        tmp.Ordem = e.ordem;
 
-        prod.campos.push(JSON.parse(JSON.stringify(tmp)));
+        this.produto.campos.push(JSON.parse(JSON.stringify(tmp)));
       }
     });
 
-    this.produtoService.atualizarProduto(prod).toPromise().then((r) => {
+    this.produtoService.atualizarProduto(this.produto).toPromise().then((r) => {
       if (r != null) {
         this.mensagemService.showSuccessViaToast("Dados atualizados com sucesso!");
         this.router.navigate(["//produtos-catalogo/listar"]);

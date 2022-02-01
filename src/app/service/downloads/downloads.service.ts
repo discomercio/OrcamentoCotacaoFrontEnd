@@ -27,11 +27,12 @@ export class DownloadsService {
     return this.http.post(`${environment.apiUrl}arquivo/excluir/${id}`, id);
   }
 
-  public editar(id:string, nome:string, descricao:string){
-    return this.http.put(`${environment.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
+  public editar(id:string, nome:string, descricao:string):Observable<any>{
+    return this.http.put<any>(`${environment.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
 
   public novaPasta(nome:string, idpai:string){
     return this.http.post(`${environment.apiUrl}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
   }
 }
+

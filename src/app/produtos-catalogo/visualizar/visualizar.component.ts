@@ -65,7 +65,7 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     setarCampos() {
       this.imgUrl = this.produtoService.imgUrl;
       this.id = this.activatedRoute.snapshot.params.id;
-      this.form.controls.ativo.setValue(this.produto.ativo);
+      this.form.controls.ativo.setValue(this.produto.Ativo);
     }
 
     buscarProdutoDetalhe() {

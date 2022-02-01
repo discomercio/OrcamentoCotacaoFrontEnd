@@ -44,7 +44,7 @@
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
                 <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}" 
-                    (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
+                    (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event)"
                     fileLimit="1" accept=".pdf" maxFileSize="52428800">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">

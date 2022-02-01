@@ -73,12 +73,13 @@ export class AutenticacaoService {
 
           }
           var objToken = JSON.parse(e);
-
           this.setarToken(objToken.AccessToken);
-          this._usuarioLogado = objToken.Usuario.nome;
-          this._tipoUsuario = objToken.Usuario.tipoUsuario;
-          this._parceiro = objToken.Usuario.parceiro;
-          this._vendedor = objToken.Usuario.IdVendedor;
+          if (!!objToken.AccessToken) {let user = jtw_decode(objToken.AccessToken) as any;
+            this._usuarioLogado = user.unique_name;
+            this._parceiro = user.Parceiro;this._vendedor = user.Vendedor;
+            this.unidade_negocio = user.unidade_negocio;
+          }
+
           this.router.navigate(['']);
         }
         ,
