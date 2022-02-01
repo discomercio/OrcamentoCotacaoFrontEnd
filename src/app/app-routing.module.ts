@@ -9,17 +9,18 @@ import { AppMainComponent } from './app.main.component';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
 import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
-import { ListaProdutosComponent } from './produtos/lista-produtos/lista-produtos.component';
-import { VisualizarProdutoComponent } from './produtos/visualizar-produto/visualizar-produto.component';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { AppComponent } from './app.component';
 import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { LoginComponent } from './login/login/login.component';
 
+import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
+import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
+import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
+import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
 @NgModule({
     imports: [
         RouterModule.forRoot([
-            
             {
                 path: '', component: AppComponent,
                 children: [
@@ -31,9 +32,14 @@ import { LoginComponent } from './login/login/login.component';
                             { path: 'dashboards/generic', component: DashboardDemoComponent },
                             { path: 'orcamentos/novo-orcamento', component: NovoOrcamentoComponent },
                             { path: 'orcamentos/listar-orcamentos/lista/:filtro', component: ListaComponent },
-                            { path: 'produtos/lista-produtos/lista-produtos', component: ListaProdutosComponent },
-                            { path: 'produtos/visualizar-produto/visualizar-produto/:fabricante/:produto', component: VisualizarProdutoComponent },
+                            
+                            { path: 'produtos-catalogo/criar', component: ProdutosCatalogoCriarComponent },
+                            { path: 'produtos-catalogo/listar', component: ProdutosCatalogoListarComponent },
+                            { path: 'produtos-catalogo/visualizar/:id', component: ProdutosCatalogoVisualizarComponent },
+                            { path: 'produtos-catalogo/editar/:id', component: ProdutosCatalogoEditarComponent },
+
                             { path: 'downloads', component: DownloadsComponent },
+                            
                             { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                             { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent },
                             { path: 'cliente/cliente', component: ClienteComponent }
@@ -41,7 +47,6 @@ import { LoginComponent } from './login/login/login.component';
                     },
                     {path:'orcamentos/novo-orcamento/aprovar-orcamento', component: AprovarOrcamentoComponent}
                 ]
-
             },
             { path: 'dashboards/generic', component: DashboardDemoComponent },
         ], { scrollPositionRestoration: 'enabled' },

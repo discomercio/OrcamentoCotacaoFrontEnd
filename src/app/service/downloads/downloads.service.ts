@@ -31,10 +31,6 @@ export class DownloadsService {
     return this.http.put(`${environment.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
 
-  // public enviar(arquivo:string){
-  //   return this.http.post(`${environment.apiUrl}v1/arquivo/upload`, arquivo);
-  // }
-
   public novaPasta(nome:string, idpai:string){
     return this.http.post(`${environment.apiUrl}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
   }

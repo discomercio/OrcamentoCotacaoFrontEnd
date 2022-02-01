@@ -100,8 +100,8 @@ export class DownloadsComponent implements OnInit {
       return;
     }
 
-    this.form.controls.txtNome.value = this.selectedFiles2.data.name;
-    this.form.controls.txtDescricao.value = this.selectedFiles2.data.descricao;
+    this.form.controls.txtNome.setValue(this.selectedFiles2.data.name);
+    this.form.controls.txtDescricao.setValue(this.selectedFiles2.data.descricao);
 
     this.edicao = !this.edicao;
     this.novaPasta = false;
@@ -317,10 +317,6 @@ editarItem(){
     console.log('onBeforeUpload');
     event.formData.append('idPai', this.selectedFiles2.data.key);
     event.formData.append('descricao', this.form.controls.descricaoPasta.value);
-
-    //console.log('fileUpload[0]: ' + fileUpload[0]);
-    //console.log('arquivo this.form.controls.arquivo.value);
-    //console.log('arquivo.value', this.form.controls.arquivo.value);
   }
 
    onUpload(event, fileUpload){
