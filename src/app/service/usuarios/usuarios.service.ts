@@ -5,6 +5,7 @@ import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 import { Parceiro } from 'src/app/dto/parceiros/parceiro';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { environment } from 'src/environments/environment';
+import { stream } from 'xlsx';
 
 @Injectable({
   providedIn: 'root'
@@ -13,51 +14,39 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) { }
 
+  
   buscarTodosUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario');
-    //return this.http.get<Usuario[]>('assets/demo/data/banco/usuarios.json');
-  }
-  /* 
-    buscarVendedores(): Observable<UsuarioXLoja[]> {
-      return this.http.get<UsuarioXLoja[]>('assets/demo/data/banco/usuario_x_loja.json');
-    } */
-
-  buscarVendedores(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario/vendedores');
   }
 
-  /*  buscarParceiros(): Observable<Parceiro[]> {
-     return this.http.get<Parceiro[]>('assets/demo/data/banco/parceiro_x_usuario.json');
-   } */
+  buscarVendedores(loja: string): Observable<Usuario[]> {
+    let params = new HttpParams();
+    params = params.append('loja', loja);
+    return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario/vendedores', { params: params });
+  }
 
   buscarParceiros(): Observable<Parceiro[]> {
     return this.http.get<Parceiro[]>(environment.apiUrl + 'Usuario/parceiros');
   }
 
-  buscarParceirosPorVendedor(vendedor:string): Observable<Parceiro[]> {
+  buscarParceirosPorVendedor(vendedor: string): Observable<Parceiro[]> {
     let params = new HttpParams();
-    params = params.append('vendedor', vendedor);
-    return this.http.get<Parceiro[]>(environment.apiUrl + 'Usuario/parceiros-por-vendedor', { params: params });
+    params = params.append('vendedorId', vendedor);
+    return this.http.get<Parceiro[]>(environment.apiUrl + 'OrcamentistaEindicador/BuscarParceiros', { params: params });
   }
 
-  buscarVendedoresParceiros(parceiro:string): Observable<Parceiro[]> {
+  buscarVendedoresParceiros(parceiro: string): Observable<Parceiro[]> {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
 
     return this.http.get<Parceiro[]>(environment.apiUrl + 'Usuario/vendedores-parceiros', { params: params });
   }
 
-  // buscarVendedoresParceiros(): Observable<Parceiro[]> {
-  //   return this.http.get<Parceiro[]>(environment.apiUrl + 'Usuario/vendedores-parceiros');
-  // }
-
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
-    ;
     return this.http.post<Usuario>(environment.apiUrl + 'Usuario', usuario);
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {
-    ;
     return this.http.put<Usuario>(environment.apiUrl + 'Usuario', usuario);
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, HostListener, Input } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
@@ -10,9 +10,8 @@ import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { ActivatedRoute, Router, NavigationStart } from '@angular/router';
-import { Observable } from 'rxjs';
-import { filter } from 'rxjs/operators';
+import { ActivatedRoute } from '@angular/router';
+import { Location } from '@angular/common';
 
 
 @Component({
@@ -28,7 +27,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly alertaService: AlertaService,
     private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
     private readonly sweetalertService: SweetalertService,
-    private readonly activedRoute: ActivatedRoute) {
+    private readonly activedRoute: ActivatedRoute,
+    private location: Location) {
     super(telaDesktopService);
   }
 
@@ -100,5 +100,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
+  voltar(){
+      this.location.back();
+  }
 
 }

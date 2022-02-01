@@ -22,6 +22,7 @@ import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-lista',
@@ -38,7 +39,8 @@ export class ListaComponent implements OnInit {
     private readonly usuarioService: UsuariosService,
     private readonly lojaService: LojasService,
     private readonly exportExcelService: ExportExcelService,
-    private readonly alertaService: AlertaService) {
+    private readonly alertaService: AlertaService,
+    private readonly autenticacaoService: AutenticacaoService) {
   }
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -154,7 +156,8 @@ export class ListaComponent implements OnInit {
   }
 
   buscarVendedores() {
-    this.usuarioService.buscarVendedores().toPromise().then((r) => {
+    let loja = this.autenticacaoService._lojaLogado;
+    this.usuarioService.buscarVendedores(loja).toPromise().then((r) => {
       if (r != null) {
         this.lstVendedores = r;
       }

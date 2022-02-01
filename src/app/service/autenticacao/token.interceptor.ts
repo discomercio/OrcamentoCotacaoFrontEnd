@@ -24,15 +24,15 @@ export class TokenInterceptor implements HttpInterceptor {
     let headers: { [name: string]: string | string[]; } = {
       'X-API-Version': environment.versaoApi
     };
-    
+
     //adiciona o header de autenticação
     if (this.autenticacaoService.authEstaLogado()) {
-      
+
       headers = {
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
       };
     }
-    else{
+    else {
       this.router.navigate(['account/login']);
     }
 
@@ -50,7 +50,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
           //   }
           // }
-          
+
         }
       }));
   }

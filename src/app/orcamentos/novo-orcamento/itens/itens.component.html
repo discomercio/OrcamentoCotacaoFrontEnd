@@ -23,7 +23,7 @@
                     <tr class="font-size">
                         <th class="">Produto</th>
                         <th class="p-text-right">Qtde</th>
-                        <th class="p-text-right">Preço NF</th>
+                        <!-- <th class="p-text-right">Preço NF</th> -->
                         <th class="p-text-right">Vl Lista</th>
                         <th class="p-text-right">Desc%</th>
                         <th class="p-text-right">Vl Venda</th>
@@ -45,12 +45,12 @@
                             <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde" type="number" pInputText placeholder=""
                                 [value]="p.Qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
                         </td>
-                        <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                        <!-- <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                             <span class="p-column-title" [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Preço NF</span>
                             <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="precoNF" type="text" pInputText placeholder=""
                                 [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoNF)"
                                 (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
-                        </td>
+                        </td> -->
                         <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                             <span class="p-column-title">VL Lista:</span>
                             <div class="p-text-right">
@@ -99,7 +99,10 @@
                 </ng-template>
                 <ng-template pTemplate="footer" class="font-size">
                     <tr class="font-size">
-                        <td class="p-text-right">RA {{somarRA()}}</td>
+                        <td class="p-text-right">
+                            <!-- RA {{somarRA()}} -->
+
+                        </td>
                         <td></td>
                         <td class="p-text-right">
                             {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.orcamentoCotacaoDto?.ValorTotalComRA)}}
@@ -272,41 +275,34 @@
     </p-accordion>
     <div class="p-field p-mb-0 p-mt-3">
         <div class="p-grid">
-            <div class="p-col-12 p-lg-4 p-md-4 p-sm-4">
+            <div class="p-col-12">
                 <div class="p-grid">
-                    <div class="p-col-12 p-py-0">
+                    <div class="p-col-3 p-py-0">
                         <div class="p-as-end p-py-1">
-                            <button pButton pRipple label="Visualizar orçamento" icon="pi pi-eye" style="width:100%"
+                            <button pButton pRipple label="{{telaDesktop ? 'Visualizar orçamento' : ''}}" icon="pi pi-eye" style="width:100%"
                                 (click)="visualizarOrcamento()"></button>
                         </div>
                     </div>
-                    <div class="p-col-12 p-py-0">
+                    <div class="p-col-3 p-py-0">
                         <div class="p-as-end p-py-1">
-                            <button pButton pRipple label="Enviar orçamento" icon="pi pi-send" (click)="enviar()"
+                            <button pButton pRipple label="{{telaDesktop ? 'Enviar orçamento' : ''}}" icon="pi pi-send" (click)="enviar()"
                                 style="width:100%"></button>
                         </div>
                     </div>
-                    <div class="p-col-12 p-py-0">
+                    <div class="p-col-3 p-py-0">
                         <div class="p-as-end p-py-1">
-                            <button pButton pRipple label="Salvar orçamento" icon="pi pi-save"
+                            <button pButton pRipple label="{{telaDesktop ? 'Salvar orçamento' : ''}}" icon="pi pi-save"
                                 (click)="salvarOrcamento()" style="width:100%"></button>
                         </div>
                     </div>
-                    <div class="p-col-12 p-py-0">
+                    <div class="p-col-3 p-py-0">
                         <div class="p-as-end p-py-1">
-                            <button pButton pRipple label="Aprovar / Gerar pedido" icon="fa fa-list-alt" (click)="enviar()"
+                            <button pButton pRipple label="{{telaDesktop ? 'Aprovar / Gerar pedido' : ''}}" icon="fa fa-list-alt" (click)="enviar()"
                                 style="width:100%"></button>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="p-field p-d-lg-flex p-d-md-flex p-d-sm-flex p-jc-around p-mb-0 p-mt-3">
-
-        <div class="p-as-end p-order-2 p-order-lg-1 p-order-md-1 p-order-sm-1 p-py-1">
-            <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" style="width:100%"
-                [routerLink]="['/novo-orcamento/cadastrar-cliente']"></button>
         </div>
     </div>
 </div>

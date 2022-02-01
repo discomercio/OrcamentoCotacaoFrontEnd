@@ -34,14 +34,15 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-    if(!this.loja && this.mostrarLoja){
+    if (!this.loja && this.mostrarLoja) {
       this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
       return;
     }
     if (!!this.loja && this.mostrarLoja) {
-        this.autenticacaoService._lojaLogado = this.loja;
+      sessionStorage.setItem("lojaLogada", this.loja);
+      this.autenticacaoService._lojaLogado = this.loja;
 
-        this.router.navigate(['']);
+      this.router.navigate(['']);
       return;
     }
 
@@ -59,7 +60,7 @@ export class LoginComponent implements OnInit {
           this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
           return;
         }
-        
+
         this.autenticacaoService.setarToken(r.AccessToken);
         this.router.navigate(['']);
       }

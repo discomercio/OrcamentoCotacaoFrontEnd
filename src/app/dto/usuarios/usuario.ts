@@ -1,16 +1,17 @@
 export class Usuario {
     id: number = 0;
     nome: string = "";
-    idVendedor:string="";
+    idVendedor: string = "";
     email: string = "";
     senha: string = "";
-    idParceiro:string="";
-    telefone:string="";
+    idParceiro: string = "";
+    telefone: string = "";
     celular: string = "";
     ativo: boolean = false;
-    tipoUsuario: number;
-    usuarioCadastro:string = "";
-    dataCadastro:Date;
-    usuarioUltimaAlteracao:string = "";
-    dataUltimaAlteracao:Date;
+    permissoes: Array<string> = new Array();
+    usuarioCadastro: string = "";
+    dataCadastro: Date;
+    usuarioUltimaAlteracao: string = "";
+    dataUltimaAlteracao: Date;
+    loja: string;
 }

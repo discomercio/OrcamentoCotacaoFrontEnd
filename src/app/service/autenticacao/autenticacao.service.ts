@@ -40,17 +40,25 @@ export class AutenticacaoService {
   private renovacaoPendnete: boolean = false;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });      
+    return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
   }
 
-  readToken(token:string): boolean {
+  readToken(token: string): boolean {
     const user = jtw_decode(token) as any;
     this._lojasUsuarioLogado = this.getLojas(user.Lojas);
-    this._lojaLogado = (user && user.family_name && this._lojasUsuarioLogado.length< 2) ? user.family_name : null;
-    this._usuarioLogado = (user && user.unique_name) ? user.unique_name : null;
+
+    if (!this._lojaLogado) {
+      if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
+        this._lojaLogado = this._lojasUsuarioLogado[0];
+      }
+      else {
+        this._lojaLogado = sessionStorage.getItem("lojaLogada");
+      }
+    }
+    this._usuarioLogado = (user && user.nameid) ? user.nameid : null;
     this._parceiro = (user && user.Parceiro) ? user.Parceiro : null;
     this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
-    this._permissoes = (user && user.Permissoes) ? user.Permissoes : null;
+    this._permissoes = (user && user.Permissoes) ? this.getPermissoes(user.Permissoes) : null;
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
 
     return true;
@@ -59,6 +67,11 @@ export class AutenticacaoService {
   getLojas(lojas: string): Array<string> {
     let lojasResponse = lojas.split(",");
     return lojasResponse;
+  }
+
+  getPermissoes(permissoes: string): Array<string> {
+    let permissoesResponse = permissoes.split(",");
+    return permissoesResponse;
   }
 
   tratarErros(erro: any): void {
