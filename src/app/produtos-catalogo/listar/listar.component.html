@@ -4,57 +4,26 @@
             <h4>Lista de Produtos
                 &nbsp;<button pButton style="align-content: flex-end;" icon="fa fa-plus" (click)="criarClick()" pTooltip="Criar produto"></button>
             </h4>
-            <!-- <form [formGroup]="form" class="p-col-12 p-px-0">
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
-
-                    <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-as-end">
-                        <label for="fabricante">Código, Fabricante ou Produto</label>
-                        <input id="fabricante" type="text" pInputText placeholder="" formControlName="codigoFabricanteProduto"/>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
-                        <label for="filtro">Categoria</label>
-                        <p-dropdown [options]="" optionLabel="name" optionValue="code" formControlName="categoria"></p-dropdown>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
-                        <label for="capacidade">Capacidade</label>
-                        <p-dropdown [options]="" optionLabel="name" optionValue="code" formControlName="capacidade"></p-dropdown>
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
-                        <label for="ciclo">Ciclo</label>
-                        <p-dropdown [options]="" optionLabel="name" optionValue="code" formControlName="ciclo"></p-dropdown>
-
-                    </div>
-                    <div class="p-field p-col-12 p-lg-1 p-md-2 p-sm-2 p-as-end">
-                        <label for="voltagem">Voltagem</label>
-                        <p-dropdown [options]="" optionLabel="name" optionValue="code" formControlName="voltagem"></p-dropdown>
-                    </div>
-
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2 p-as-end">
-                        <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search" ></button>
-                    </div>
-
-                </div>
-            </form> -->
             <p-table #dt1 [value]="listaProdutoDto" [responsive]="true" responsiveLayout="stack" 
                 [ngClass]="{'carregando': carregando}" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0"
                >
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="id" class="p-lg-2">Código <p-sortIcon field="id"></p-sortIcon></th>
-                        <th pSortableColumn="descricao" class="p-py-2 p-lg-7" style="text-align: left">Descrição <p-sortIcon field="descricao"></p-sortIcon></th>
-                        <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon field="ativo"></p-sortIcon></th>
+                        <th pSortableColumn="id" class="p-lg-2">Código <p-sortIcon field="Id"></p-sortIcon></th>
+                        <th pSortableColumn="descricao" class="p-py-2 p-lg-7" style="text-align: left">Descrição <p-sortIcon field="Descricao"></p-sortIcon></th>
+                        <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon field="Ativo"></p-sortIcon></th>
                         <th class="p-py-2 p-lg-2" style="text-align: right">Ações</th>
                     </tr>
                     <tr>
                         <th>
-                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'id', 'contains')" [value]="dt1.filters['id']?.value" placeholder="Busca por código" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Id', 'contains')" [value]="dt1.filters['Id']?.value" placeholder="Busca por código" class="p-column-filter">
                         </th>                 
                          <th>
-                            <input pInputText type="text" class="p-lg-7" (input)="dt1.filter($event.target.value, 'descricao', 'contains')" [value]="dt1.filters['descricao']?.value" placeholder="Busca por descrição" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-7" (input)="dt1.filter($event.target.value, 'Descricao', 'contains')" [value]="dt1.filters['Descricao']?.value" placeholder="Busca por descrição" class="p-column-filter">
                         </th>
                         <th>
-                            <input pInputText type="text" class="p-lg-1" (input)="dt1.filter($event.target.value, 'ativo', 'contains')" [value]="dt1.filters['ativo']?.value" placeholder="Busca por status" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-1" (input)="dt1.filter($event.target.value, 'Ativo', 'contains')" [value]="dt1.filters['Ativo']?.value" placeholder="Busca por status" class="p-column-filter">
                         </th>
                         <th>
                             <div class="p-lg-1">&nbsp;</div>
@@ -63,12 +32,12 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td style="text-align: left">{{lista.id}}</td>
-                        <td style="text-align: left">{{lista.descricao}}</td>
-                        <td style="text-align: center">{{lista.ativo}}</td>
+                        <td style="text-align: left">{{lista.Id}}</td>
+                        <td style="text-align: left">{{lista.Descricao}}</td>
+                        <td style="text-align: center">{{lista.Ativo}}</td>
                         <td style="text-align: right">
-                            <button pButton style="align-content: flex-end;" icon="fa fa-eye" (click)="visualizarClick(this.lista.id)" pTooltip="Visualizar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="fa fa-edit" (click)="editarClick(this.lista.id)" pTooltip="Editar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-eye" (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-edit" (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
                             <!-- <button pButton style="align-content: flex-end;" icon="fa fa-trash" (click)="excluirClick(this.lista.id)" pTooltip="Desativar"></button> -->
                         </td>
                     </tr>

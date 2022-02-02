@@ -137,7 +137,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       alert("y");
     });
     }
-    
+
   }
 
   celular = false;

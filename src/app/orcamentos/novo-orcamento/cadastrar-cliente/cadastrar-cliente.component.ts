@@ -1,11 +1,12 @@
-
-
-import { Component, OnInit, Injectable } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { CepsService } from 'src/app/service/ceps/ceps.service';
+import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
+import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
+import { Estado } from 'src/app/dto/ceps/estado';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
@@ -14,6 +15,8 @@ import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamen
 import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -30,8 +33,9 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly cepService: CepsService,
     public readonly router: Router,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    private readonly autenticacaoService: AutenticacaoService) {
-  }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
 
   //uteis
   public mascaraTelefone: string;
@@ -85,6 +89,8 @@ export class CadastrarClienteComponent implements OnInit {
     this.form.controls.Parceiro.setValue("");
     this.form.controls.VendedorParceiro.setValue("");
 
+    this.tipoUsuario = this.constantes.GESTOR;
+    return;
     // if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS)
     if (this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)) {
       this.form.controls.Vendedor.setValue(this.usuario.nome);
@@ -147,7 +153,7 @@ export class CadastrarClienteComponent implements OnInit {
       parceiro = this.form.controls.Parceiro.value;
     }
 
-    this.usuarioService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
+    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
         this.lstVendedoresParceiros = this.montarListaParaSelectItem(r);
         this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.vendedorParceiro);
@@ -156,11 +162,10 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   buscarParceirosPorVendedor(): void {
-    debugger;
-    let vendedor: string;
-    vendedor = this.form.controls.Vendedor.value;
+    let vendedor: string = this.form.controls.Vendedor.value;
+    let loja:string = this.usuario.loja;
 
-    this.usuarioService.buscarParceirosPorVendedor(vendedor).toPromise().then((r) => {
+    this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise().then((r) => {
       if (r != null) {
         this.lstParceiro = this.montarListaParaSelectItem(r);
         this.form.controls.Parceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.parceiro);

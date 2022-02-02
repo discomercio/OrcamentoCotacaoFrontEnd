@@ -8,7 +8,7 @@ import { MenuService } from './service/menu/menu.service';
     <ul class="layout-menu layout-main-menu clearfix">
         <li app-menuitem *ngFor="let item of model; let i = index;" [item]="item" [index]="i" [root]="true"></li>
     </ul>
-    
+
     `
 })
 export class AppMenuComponent implements OnInit {
@@ -25,9 +25,9 @@ export class AppMenuComponent implements OnInit {
             {
                 items: [
                     { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
-                    {
-                        label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
-                    },
+                    // {
+                    //     label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
+                    // },
                     {
                         label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
                         items: [
