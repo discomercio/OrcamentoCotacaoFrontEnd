@@ -31,8 +31,8 @@ export class DownloadsService {
     return this.http.put<any>(`${environment.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
 
-  public novaPasta(nome:string, idpai:string){
-    return this.http.post(`${environment.apiUrl}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
+  public novaPasta(nome:string, idpai:string):Observable<any>{
+    return this.http.post<any>(`${environment.apiUrl}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
   }
 }
 
