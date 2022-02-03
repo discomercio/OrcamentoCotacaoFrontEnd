@@ -26,12 +26,12 @@
                     </div>
                 </ng-template>
             </p-carousel>
-            
-            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block" 
+
+            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
                 url="{{urlUpload}}" (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
                 ></p-fileUpload>
-            
-            <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}" 
+
+            <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
                 (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
                 fileLimit="1" accept="image/*" maxFileSize="52428800">
                 <ng-template pTemplate="content">
@@ -77,7 +77,7 @@
                                     <input id="item{{c.Id}}" type="text" value="{{c.Valor}}" class="p-field p-col-6" />
                                 </div>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
 
