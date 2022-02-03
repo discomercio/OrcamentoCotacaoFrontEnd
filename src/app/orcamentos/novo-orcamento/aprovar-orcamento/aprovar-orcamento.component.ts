@@ -1,5 +1,5 @@
 import { Component, OnInit, HostListener, Input } from '@angular/core';
-import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
+import { OrcamentosService } from 'src/app/orcamentos/orcamentos.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';

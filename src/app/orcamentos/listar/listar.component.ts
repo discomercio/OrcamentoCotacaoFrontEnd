@@ -1,9 +1,11 @@
+import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+
 import { Component, OnInit, ViewChild, DebugElement } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
 import { ListaDto, ListaDtoExport } from 'src/app/dto/orcamentos/lista-dto';
-import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
+import { OrcamentosService } from 'src/app/orcamentos/orcamentos.service';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { isDate } from 'util';
@@ -24,11 +26,11 @@ import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 
 @Component({
-  selector: 'app-lista',
-  templateUrl: './lista.component.html',
-  styleUrls: ['./lista.component.scss']
+  selector: 'app-listar',
+  templateUrl: './listar.component.html',
+  styleUrls: ['./listar.component.scss']
 })
-export class ListaComponent implements OnInit {
+export class OrcamentosListarComponent implements OnInit {
 
   constructor(private readonly activatedRoute: ActivatedRoute,
     public readonly orcamentoService: OrcamentosService,
@@ -65,14 +67,15 @@ export class ListaComponent implements OnInit {
   nome_numero: string;
   vendedorParceiroSelecionado: any;
   lstVendedoresParceiroFiltrado: Array<any>;
+  parametro: string;
 
   ngOnInit(): void {
 
-    this.montarLista();
+    this.criarTabela();
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
   }
 
-  montarLista() {
+  criarTabela() {
     this.cols = [
       { field: 'Data', header: 'Data' },
       { field: 'Numero', header: 'Número' },
@@ -83,27 +86,21 @@ export class ListaComponent implements OnInit {
   }
 
   iniciarFiltro(param: any) {
-    let parametro = param.filtro;
-    if (parametro == "orcamentos" || parametro == "pendente") {
+    this.parametro = param.filtro.toUpperCase();
+    if (this.parametro == "ORCAMENTOS" || this.parametro == "PENDENTES") {
       this.emPedidos = false;
-      this.montarSelectFiltro();
-      this.buscarOrcamentos();
-      this.setarFiltro(parametro);
-      this.filtrar(false);
-    }
-    if (parametro == "pedido") {
+    } else if (this.parametro == "PEDIDOS") {
       this.emPedidos = true;
-      this.montarSelectFiltro();
-      this.buscarPedidos();
-      this.setarFiltro(parametro);
-      this.filtrar(false);
     }
+    this.montarSelectFiltro();
+    this.buscarOrcamentosPedidos();
     this.buscarParceiros();
     this.buscarLojas();
     this.buscarVendedores();
   }
 
-  setarFiltro(filtro: string) {
+  setarFiltro() {
+    let filtro = this.param;
     this.filtro.Status = new Array<string>();
     this.lstFiltro.map((m) => {
       let map: string = m.value.toLowerCase();
@@ -113,31 +110,16 @@ export class ListaComponent implements OnInit {
     });
   }
 
-  buscarOrcamentos() {
-    if (!this.emPedidos) {
-      this.orcamentoService.buscarListaOrcamento().toPromise().then((r) => {
+  buscarOrcamentosPedidos() {
+      this.orcamentoService.buscarListaOrcamentoPedido(this.parametro).toPromise().then((r) => {
         if (r != null) {
           this.lstDto = r;
           this.lstDtoFiltrada = this.lstDto;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
-  }
-
-  buscarPedidos() {
-    if (this.emPedidos) {
-      this.pedidoService.buscarListaPedidos().toPromise().then((r) => {
-        if (r != null) {
-          this.lstDto = r;
-          this.lstDtoFiltrada = this.lstDto;
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
   }
 
   buscarParceiros() {
-
-
     // this.usuarioService.buscarParceiros().toPromise().then((r) => {
     //   if (r != null) {
     //     this.lstParceiro = r;
@@ -186,6 +168,8 @@ export class ListaComponent implements OnInit {
   }
 
   montarSelectFiltro() {
+    console.log(this.emPedidos);
+
     if (this.emPedidos) {
       this.lstFiltro = [
         { label: "Em espera", value: "Em espera" },
@@ -195,8 +179,7 @@ export class ListaComponent implements OnInit {
         { label: "Separar mercadoria", value: "Separar mercadoria" },
         { label: "Cancelado", value: "Cancelado" }
       ];
-    }
-    if (!this.emPedidos) {
+    } else {
       this.lstFiltro = [
         { label: "Expirado", value: "Expirado" },
         { label: "Virou pedido", value: "Virou pedido" },
@@ -208,7 +191,6 @@ export class ListaComponent implements OnInit {
         { label: "Desconto aprovado", value: "Desconto aprovado" }
       ]
     }
-
   }
 
   filtrar(mostrarMensagem: boolean) {
@@ -250,3 +232,4 @@ export class ListaComponent implements OnInit {
     return lstExport;
   }
 }
+

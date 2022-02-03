@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { DatePipe } from '@angular/common';
-import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
+import { OrcamentosService } from 'src/app/orcamentos/orcamentos.service';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';

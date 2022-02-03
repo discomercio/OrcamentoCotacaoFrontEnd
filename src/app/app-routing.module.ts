@@ -8,16 +8,18 @@ import { DownloadsComponent } from './downloads/downloads.component';
 import { AppMainComponent } from './app.main.component';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
-import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
-import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { AppComponent } from './app.component';
-import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { LoginComponent } from './login/login/login.component';
 
 import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
 import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+
+import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
+import { OrcamentosListarComponent } from './orcamentos/listar/listar.component';
+import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
+
 @NgModule({
     imports: [
         RouterModule.forRoot([
@@ -30,8 +32,6 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
                             
                             { path: '', component: DashboardDemoComponent, },
                             { path: 'dashboards/generic', component: DashboardDemoComponent },
-                            { path: 'orcamentos/novo-orcamento', component: NovoOrcamentoComponent },
-                            { path: 'orcamentos/listar-orcamentos/lista/:filtro', component: ListaComponent },
                             
                             { path: 'produtos-catalogo/criar', component: ProdutosCatalogoCriarComponent },
                             { path: 'produtos-catalogo/listar', component: ProdutosCatalogoListarComponent },
@@ -44,8 +44,7 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
                             { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent },
                             { path: 'cliente/cliente', component: ClienteComponent }
                         ]
-                    },
-                    {path:'orcamentos/novo-orcamento/aprovar-orcamento', component: AprovarOrcamentoComponent}
+                    }
                 ]
             },
             { path: 'dashboards/generic', component: DashboardDemoComponent },

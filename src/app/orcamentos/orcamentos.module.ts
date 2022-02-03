@@ -1,0 +1,73 @@
+import { MultiSelectModule } from 'primeng/multiselect';
+import { AutoCompleteModule } from 'primeng/autocomplete';
+import { NgModule } from '@angular/core';
+import { CommonModule, DatePipe } from '@angular/common';
+import { ReactiveFormsModule } from '@angular/forms';
+import { InputTextModule } from 'primeng/inputtext';
+import { DropdownModule } from 'primeng/dropdown';
+import { CheckboxModule } from 'primeng/checkbox';
+import { ButtonModule } from 'primeng/button';
+import { NgxMaskModule } from 'ngx-mask';
+import { DividerModule } from 'primeng/divider';
+import { DialogModule } from 'primeng/dialog';
+import { TableModule } from 'primeng/table';
+import { InputTextareaModule } from 'primeng/inputtextarea';
+import { PaginatorModule } from 'primeng/paginator';
+import { AccordionModule } from 'primeng/accordion';
+import { AvatarModule } from 'primeng/avatar';
+import { TooltipModule } from 'primeng/tooltip';
+import { RadioButtonModule } from 'primeng/radiobutton';
+import { GalleriaModule } from 'primeng/galleria';
+import { CalendarModule } from 'primeng/calendar';
+import { TabViewModule } from 'primeng/tabview';
+import { DialogService } from 'primeng/dynamicdialog';
+
+import { OrcamentosRoutingModule } from './orcamentos.routing.module';
+import { OrcamentosListarComponent } from './listar/listar.component';
+import { AprovarOrcamentoComponent } from './novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
+import { CadastrarClienteComponent } from './novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
+import { ItensComponent } from './novo-orcamento/itens/itens.component';
+import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
+import { VisualizarOrcamentoComponent } from './novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
+import { CadastroOrcamentoComponent } from './novo-orcamento/cadastro-orcamento/cadastro-orcamento.component';
+import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.component';
+
+
+@NgModule({
+  declarations: [
+    OrcamentosListarComponent,
+    AprovarOrcamentoComponent,
+    CadastrarClienteComponent,
+    ItensComponent,
+    SelectProdDialogComponent,
+    VisualizarOrcamentoComponent,
+    CadastroOrcamentoComponent,
+    NovoOrcamentoComponent
+  ],
+  imports: [
+    OrcamentosRoutingModule,
+    CommonModule,
+    ReactiveFormsModule,
+    InputTextModule,
+    DropdownModule,
+    CheckboxModule,
+    ButtonModule,
+    NgxMaskModule.forRoot(),
+    DividerModule,
+    DialogModule,
+    TableModule,
+    InputTextareaModule,
+    PaginatorModule,
+    AccordionModule,
+    AvatarModule,
+    TooltipModule,
+    RadioButtonModule,
+    GalleriaModule,
+    CalendarModule,
+    TabViewModule,
+    AutoCompleteModule,
+    MultiSelectModule
+  ],
+  providers:[DialogService, DatePipe]
+})
+export class OrcamentosModule { }

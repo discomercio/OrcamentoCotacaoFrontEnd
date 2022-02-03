@@ -133,31 +133,30 @@ import { CustomerService } from './demo/service/customerservice';
 import { PhotoService } from './demo/service/photoservice';
 import { ProductService } from './demo/service/productservice';
 import { IconService } from './demo/service/iconservice';
-import { DownloadsComponent } from './downloads/downloads.component';
 import { MessageService } from 'primeng/api';
 import { KeyFilterModule } from 'primeng/keyfilter';
 import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
+import { NgxMaskModule } from 'ngx-mask';
+import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { TokenInterceptor } from './service/autenticacao/token.interceptor';
+
+import { DownloadsComponent } from './downloads/downloads.component';
+
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
 import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
-import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { NgxMaskModule } from 'ngx-mask';
-import { ListaComponent } from './orcamentos/listar-orcamentos/lista/lista.component';
-import { NovoOrcamentoModule } from './orcamentos/novo-orcamento/novo-orcamento.module';
-import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
 import { ExportExcelService } from './service/export-files/export-excel.service';
-import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { ClienteComponent } from './cliente/cliente.component';
 import { LoginComponent } from './login/login/login.component';
-import { TokenInterceptor } from './service/autenticacao/token.interceptor';
-import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
 
 import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
 import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
 
+import { OrcamentosModule } from './orcamentos/orcamentos.module';
 @NgModule({
     imports: [
         BrowserModule,
@@ -250,7 +249,7 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         ReactiveFormsModule,
         FontAwesomeModule,
         NgxMaskModule.forRoot(),
-        NovoOrcamentoModule
+        OrcamentosModule
     ],
     declarations: [
         AppComponent,
@@ -292,18 +291,16 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        ValidacaoFormularioComponent,
+        // ValidacaoFormularioComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
-        ListaComponent,
-        AprovarOrcamentoComponent,
         ClienteComponent,
         LoginComponent,
         ProdutosCatalogoEditarComponent,
         ProdutosCatalogoListarComponent,
         ProdutosCatalogoVisualizarComponent,
-        ProdutosCatalogoCriarComponent
+        ProdutosCatalogoCriarComponent,
     ],
     providers: [
         {
@@ -314,7 +311,7 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ExportExcelService
+        AppMenuComponent, ExportExcelService, ValidacaoFormularioComponent
     ],
     bootstrap: [AppComponent]
 })

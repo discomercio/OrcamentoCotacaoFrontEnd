@@ -37,10 +37,10 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Orçamentos', icon: 'fa fa-calculator', routerLink: ['/orcamentos'],
                         items: [
-                            { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/novo-orcamento/cadastro-orcamento'] },
-                            { label: 'Pendentes', icon: 'pi pi-exclamation-circle', routerLink: ['/orcamentos/listar-orcamentos/lista/pendente'] },
-                            { label: 'Lista de orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar-orcamentos/lista/orcamentos'] },
-                            { label: 'Lista de pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar-orcamentos/lista/pedido'] },
+                            { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/orcamentos/cadastro-orcamento'] },
+                            { label: 'Pendentes', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos-pendentes'] },
+                            { label: 'Orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos'] },
+                            { label: 'Pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pedidos'] },
                             { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]
                     },
