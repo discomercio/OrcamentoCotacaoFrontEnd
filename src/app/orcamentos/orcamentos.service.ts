@@ -1,4 +1,4 @@
-import { Injectable, DebugElement } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
 import { Observable } from 'rxjs';
@@ -13,9 +13,12 @@ export class OrcamentosService {
 
   constructor(private http: HttpClient) { }
 
-  buscarListaOrcamentoPedido(origem:string): Observable<ListaDto[]> {
-    //incluir parametros para filtrar
+  buscarRegistros(origem:string): Observable<ListaDto[]> {
     return this.http.get<ListaDto[]>(`${environment.apiUrl}Orcamento?origem=${origem}`);
+  }
+
+  buscarStatus(origem:string): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}Orcamento/Status?origem=${origem}`);
   }
 
   buscarOrcamento(id: string): Observable<ClienteOrcamentoCotacaoDto> {

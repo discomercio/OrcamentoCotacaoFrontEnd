@@ -38,8 +38,8 @@ export class AppMenuComponent implements OnInit {
                         label: 'Orçamentos', icon: 'fa fa-calculator', routerLink: ['/orcamentos'],
                         items: [
                             { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/orcamentos/cadastro-orcamento'] },
-                            { label: 'Pendentes', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos-pendentes'] },
                             { label: 'Orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos'] },
+                            { label: 'Em Aprovação', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pendentes'] },
                             { label: 'Pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pedidos'] },
                             { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]

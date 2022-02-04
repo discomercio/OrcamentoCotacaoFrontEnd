@@ -7,7 +7,7 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { ListaDto, ListaDtoExport } from 'src/app/dto/orcamentos/lista-dto';
 import { OrcamentosService } from 'src/app/orcamentos/orcamentos.service';
 import { Table } from 'primeng/table';
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { isDate } from 'util';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -24,6 +24,8 @@ import { UsuarioXLoja } from 'src/app/dto/usuarios/usuario_x_loja';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { enumParametros } from '../enumParametros';
+import { OrcamentoCotacaoStatus } from '../models/OrcamentoCotacaoStatus';
 
 @Component({
   selector: 'app-listar',
@@ -42,13 +44,13 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly exportExcelService: ExportExcelService,
     private readonly alertaService: AlertaService) {
   }
+
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
   inscricao: Subscription;
   param: string;
   selectedFiltros: SelectItem;
   lstFiltro: SelectItem[];
-
   filtro: Filtro = new Filtro();
   emPedidos: boolean = false;
   cols: any[];
@@ -59,6 +61,8 @@ export class OrcamentosListarComponent implements OnInit {
   parceiroSelecionado: OrcamentistaIndicadorDto;
   lstParceiroFiltrado: Array<OrcamentistaIndicadorDto>;
   lstLoja: Array<Lojas>;
+  lstStatus: Array<OrcamentoCotacaoStatus>;
+  statusSelecionado: Array<OrcamentoCotacaoStatus>;
   lojaSelecionada: Lojas;
   lstLojaFiltrada: Array<Lojas>;
   lstVendedores: Array<Usuario>;
@@ -70,33 +74,53 @@ export class OrcamentosListarComponent implements OnInit {
   parametro: string;
 
   ngOnInit(): void {
-
-    this.criarTabela();
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
+    this.criarForm();
+    this.criarTabela();
+    this.buscarStatus();
+    this.buscarParceiros();
+    this.buscarVendedores();
+    this.buscarRegistros();
+  }
+
+  criarForm() {
+    this.form = this.fb.group({
+      status: [''],
+      cliente: [''],
+      vendedor: [''],
+      parceiro: [''],
+      vendedorParceiro: [''],
+      msgPendente: [''],
+      dtInicio: [''],
+      dtFim: [''],
+    });
   }
 
   criarTabela() {
-    this.cols = [
-      { field: 'Data', header: 'Data' },
-      { field: 'Numero', header: 'Número' },
-      { field: 'Nome', header: 'Nome' },
-      { field: 'Status', header: 'Status' },
-      { field: 'Valor', header: 'Valor' }
-    ];
+    this.activatedRoute.params.subscribe((param: any) => { 
+      this.parametro = param.filtro.toUpperCase();
+        this.cols = [
+          { field: 'NumOrcamento', header: 'Orçamento', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
+          { field: 'NumPedido', header: 'Pedido' },
+          { field: 'Cliente_Obra', header: 'Cliente / Obra' },
+          { field: 'Vendedor', header: 'Vendedor' },
+          { field: 'Parceiro', header: 'Parceiro' },
+          { field: 'ParceiroVendedor', header: 'Vendedor Parceiro' },
+          { field: 'Valor', header: 'Valor' },
+          { field: 'Status', header: 'Status' },
+          { field: 'VistoEm', header: 'Visto em:' },
+          { field: 'Pendente', header: 'Pendente' },
+          { field: "Editar", header: " ", visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') }
+        ];
+    });
   }
 
   iniciarFiltro(param: any) {
     this.parametro = param.filtro.toUpperCase();
-    if (this.parametro == "ORCAMENTOS" || this.parametro == "PENDENTES") {
-      this.emPedidos = false;
-    } else if (this.parametro == "PEDIDOS") {
-      this.emPedidos = true;
+
+    if(this.parametro == enumParametros.PENDENTES) {
+      //this.form.controls.status.setValue(7);
     }
-    this.montarSelectFiltro();
-    this.buscarOrcamentosPedidos();
-    this.buscarParceiros();
-    this.buscarLojas();
-    this.buscarVendedores();
   }
 
   setarFiltro() {
@@ -110,8 +134,37 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
-  buscarOrcamentosPedidos() {
-      this.orcamentoService.buscarListaOrcamentoPedido(this.parametro).toPromise().then((r) => {
+  buscarStatus() {
+    this.orcamentoService.buscarStatus(this.parametro).toPromise().then((r) => {
+      if (r != null) {
+        this.lstStatus = r;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    // if (this.parametro == enumParametros.ORCAMENTOS) {
+    //   this.lstFiltro = [
+    //     { label: "Em espera", value: "Em espera" },
+    //     { label: "A entregar", value: "A entregar" },
+    //     { label: "Entregue", value: "Entregue" },
+    //     { label: "Split possível", value: "Split possível" },
+    //     { label: "Separar mercadoria", value: "Separar mercadoria" },
+    //     { label: "Cancelado", value: "Cancelado" }
+    //   ];
+    // } else if (this.parametro == enumParametros.PEDIDOS) {
+    //   this.lstFiltro = [
+    //     { label: "Expirado", value: "Expirado" },
+    //     { label: "Virou pedido", value: "Virou pedido" },
+    //     { label: "Encerrado (Cancelado)", value: "Encerrado (Cancelado)" },
+    //     { label: "Pendente de aprovação do cliente", value: "Pendente de aprovação do cliente" },
+    //     { label: "Pendente de aprovação de desconto", value: "Pendente de aprovação de desconto" },
+    //     { label: "Pendente de revisão de dados", value: "Pendente de revisão de dados" },
+    //     { label: "Desconto negado", value: "Desconto negado" },
+    //     { label: "Desconto aprovado", value: "Desconto aprovado" }
+    //   ]
+    // }
+  }
+
+  buscarRegistros() {
+      this.orcamentoService.buscarRegistros(this.parametro).toPromise().then((r) => {
         if (r != null) {
           this.lstDto = r;
           this.lstDtoFiltrada = this.lstDto;
@@ -127,13 +180,13 @@ export class OrcamentosListarComponent implements OnInit {
     // }).catch((r)=> this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarLojas() {
-    this.lojaService.buscarTodasLojas().toPromise().then((r) => {
-      if (r != null) {
-        this.lstLoja = r;
-      }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
-  }
+  // buscarLojas() {
+  //   this.lojaService.buscarTodasLojas().toPromise().then((r) => {
+  //     if (r != null) {
+  //       this.lstLoja = r;
+  //     }
+  //   }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+  // }
 
   buscarVendedores() {
     this.usuarioService.buscarVendedores().toPromise().then((r) => {
@@ -157,40 +210,14 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   filtrarLojas(event: any) {
-    let query = event.query;
-    this.lstLojaFiltrada = this.lstLoja.filter(r => r.loja.toLowerCase().indexOf(query.toLowerCase()) > -1
-      || r.nome.toLowerCase().indexOf(query.toLowerCase()) > -1);
+    // let query = event.query;
+    // this.lstLojaFiltrada = this.lstLoja.filter(r => r.loja.indexOf(query) > -1 //.toLowerCase()
+    //   || r.nome.indexOf(query) > -1); //.toLowerCase()
   }
 
   filtrarVendedores(event: any) {
     let query = event.query;
     this.lstVendedoresFiltrado = this.lstVendedores;//.filter(r => r.usuario.toLowerCase().indexOf(query.toLowerCase()) > -1 && r.loja == "205");
-  }
-
-  montarSelectFiltro() {
-    console.log(this.emPedidos);
-
-    if (this.emPedidos) {
-      this.lstFiltro = [
-        { label: "Em espera", value: "Em espera" },
-        { label: "A entregar", value: "A entregar" },
-        { label: "Entregue", value: "Entregue" },
-        { label: "Split possível", value: "Split possível" },
-        { label: "Separar mercadoria", value: "Separar mercadoria" },
-        { label: "Cancelado", value: "Cancelado" }
-      ];
-    } else {
-      this.lstFiltro = [
-        { label: "Expirado", value: "Expirado" },
-        { label: "Virou pedido", value: "Virou pedido" },
-        { label: "Encerrado (Cancelado)", value: "Encerrado (Cancelado)" },
-        { label: "Pendente de aprovação do cliente", value: "Pendente de aprovação do cliente" },
-        { label: "Pendente de aprovação de desconto", value: "Pendente de aprovação de desconto" },
-        { label: "Pendente de revisão de dados", value: "Pendente de revisão de dados" },
-        { label: "Desconto negado", value: "Desconto negado" },
-        { label: "Desconto aprovado", value: "Desconto aprovado" }
-      ]
-    }
   }
 
   filtrar(mostrarMensagem: boolean) {
@@ -220,11 +247,11 @@ export class OrcamentosListarComponent implements OnInit {
     this.lstDtoFiltrada.forEach(l => {
       let linha = new ListaDtoExport();
 
-      linha.Data = l.Data;
-      linha.Numero = l.Nome;
-      linha.Nome = l.Nome;
-      linha.Status = l.Status;
-      linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(l.Valor);
+      // linha.Data = l.Data;
+      // linha.Numero = l.Nome;
+      // linha.Nome = l.Nome;
+      // linha.Status = l.Status;
+      // linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(l.Valor);
 
       lstExport.push(linha);
     });

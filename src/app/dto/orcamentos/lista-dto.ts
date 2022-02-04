@@ -1,9 +1,14 @@
 export class ListaDto {
-    Data: Date | string;
-    Numero: string;
-    Nome: string;
+    NumOrcamento: string;
+    NumPedido: string;
+    Cliente_Obra: string;
+    Vendedor: string;
+    Parceiro: string;
+    ParceiroVendedor: string;
+    Valor: string;
     Status: string;
-    Valor: number;
+    VistoEm: string;
+    Pendente: string;
 }
 
 export class ListaDtoExport {

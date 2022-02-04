@@ -1,4 +1,4 @@
 export class Lojas {
-    loja: string;
-    nome: string;
+    Loja: string;
+    Nome: string;
 }
