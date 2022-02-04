@@ -1,4 +1,4 @@
 export class OrcamentistaIndicadorDto {
-    nome: string;
+    Razao_Social_Nome: string;
 
 }

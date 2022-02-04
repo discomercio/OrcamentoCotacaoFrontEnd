@@ -20,6 +20,7 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
+import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -46,7 +47,7 @@ export class CadastrarClienteComponent implements OnInit {
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public lstVendedores: Array<Usuario>;
-  public lstVendedoresParceiros: Array<OrcamentistaIndicadorDto>;
+  public lstVendedoresParceiros: Array<OrcamentistaIndicadorVendedorDto>;
   public lstParceiro: Array<OrcamentistaIndicadorDto>;
   public lstEstado: Array<Estado>;
   public desabilitado: boolean = true;

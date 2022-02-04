@@ -12,12 +12,12 @@ export class OrcamentistaIndicadorService {
   constructor(private http: HttpClient) { }
 
   buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
-    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'Usuario/parceiros').toPromise();
+    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEIndicador/BuscarParceiros').toPromise();
   }
 
   buscarParceirosPorVendedor(vendedor:string): Observable<OrcamentistaIndicadorDto[]> {
     let params = new HttpParams();
     params = params.append('vendedor', vendedor);
-    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'Usuario/parceiros-por-vendedor', { params: params });
+    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEIndicador/parceiros-por-vendedor', { params: params });
   }
 }

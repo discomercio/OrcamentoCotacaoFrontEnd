@@ -1,6 +1,8 @@
 import {Component} from '@angular/core';
+import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
+import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
 
 @Component({
     selector: 'app-topbar',
@@ -87,6 +89,12 @@ import {AppMainComponent} from './app.main.component';
                                 <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
                                     <i class="pi pi-fw pi-image"></i>
                                     <span>Wallpaper</span>
+                                </a>
+                            </li>
+                            <li role="menuitem">
+                                <a href="#" (click)="logoffClick()">
+                                    <i class="pi pi-fw pi-image"></i>
+                                    <span>Logoff</span>
                                 </a>
                             </li>
                         </ul>
@@ -177,6 +185,19 @@ import {AppMainComponent} from './app.main.component';
 })
 export class AppTopBarComponent {
 
-    constructor(public app: AppComponent, public appMain: AppMainComponent) {}
+    constructor(public app: AppComponent, public appMain: AppMainComponent, private readonly autenticacaoService:  AutenticacaoService,
+        private readonly router: Router) {}
+
+    logoffClick() {
+        this.autenticacaoService.authLogout();
+        this.router.navigate(['/account/login'], { queryParams: {} });
+
+        // if (!!this.usuarioSelecionado) {
+        //   this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
+        // }
+        // else{
+        //   this.router.navigate(['/usuarios/usuario-edicao', 'novo']);
+        // }
+      }
 
 }
