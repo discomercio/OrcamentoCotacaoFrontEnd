@@ -3,10 +3,10 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { ProdutoCatalogo } from '../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoCampo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoCampo';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
   selector: 'app-editar-produto',
@@ -22,17 +22,16 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
-    ) { }
+    public readonly validacaoFormularioService: ValidacaoFormularioService) { }
 
-    public form: FormGroup;
-    public mensagemErro: string = "*Campo obrigatório.";
-    public produto: ProdutoCatalogo = new ProdutoCatalogo();
-    private id: string;
-    private imgUrl: string;
-    private urlUpload: string;
-    public uploadedFiles: any[] = [];
-    carregando: boolean = false;
+  public form: FormGroup;
+  public mensagemErro: string = "*Campo obrigatório.";
+  public produto: ProdutoCatalogo = new ProdutoCatalogo();
+  private id: string;
+  private imgUrl: string;
+  public urlUpload: string;
+  public uploadedFiles: any[] = [];
+  carregando: boolean = false;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -60,7 +59,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       if (r != null) {
         this.produto = r;
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   voltarClick(): void {
@@ -75,47 +74,47 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     console.log('onBeforeUpload');
     event.formData.append('idProdutoCalatogo', this.id);
   }
-   onUpload(event, fileUpload){
+  onUpload(event, fileUpload) {
     console.log('onUpload');
 
     this.ngOnInit();
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
   }
-  
+
   excluirImagemClick(idImagem) {
     this.produtoService.excluirImagem(this.produto.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
-        for(var x = 0; x <= this.produto.imagens.length -1; x++) {
-          if(this.produto.imagens[x].Id == idImagem) {
+        for (var x = 0; x <= this.produto.imagens.length - 1; x++) {
+          if (this.produto.imagens[x].Id == idImagem) {
             this.produto.imagens.splice(x, 1);
           }
         }
 
         this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   atualizarProdutoClick() {
     var txtDescricao = (<HTMLInputElement>document.getElementById("descricao"));
 
-    if (txtDescricao.value == ""){
+    if (txtDescricao.value == "") {
       this.mensagemService.showWarnViaToast("Campo [Descrição] é obrigatório!");
       return;
-    } 
+    }
 
     var input = document.getElementsByTagName("input");
     var inputList = Array.prototype.slice.call(input);
-    let tmp = new  ProdutoCatalogoCampo();
+    let tmp = new ProdutoCatalogoCampo();
     //prod.nome = this.form.controls.nome.value;
     this.produto.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
     this.produto.Ativo = this.form.controls.ativo.value;
     this.produto.campos = [];
-    
+
     inputList.forEach(e => {
       tmp = new ProdutoCatalogoCampo();
 
-      if(e.id.startsWith('item') && e.value != ""){
+      if (e.id.startsWith('item') && e.value != "") {
 
         tmp.Id = e.id.substring(4, e.id.length);
         tmp.Codigo = e.codigo;
@@ -132,7 +131,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.mensagemService.showSuccessViaToast("Dados atualizados com sucesso!");
         this.router.navigate(["//produtos-catalogo/listar"]);
       }
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
 }

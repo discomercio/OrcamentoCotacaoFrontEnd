@@ -136,7 +136,6 @@ import { IconService } from './demo/service/iconservice';
 import { DownloadsComponent } from './downloads/downloads.component';
 import { MessageService } from 'primeng/api';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
@@ -157,6 +156,7 @@ import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/list
 import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+import { ValidacaoFormularioService } from './utilities/validacao-formulario/validacao-formulario.service';
 
 @NgModule({
     imports: [
@@ -292,7 +292,6 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        ValidacaoFormularioComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
@@ -314,7 +313,7 @@ import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ExportExcelService
+        AppMenuComponent, ExportExcelService, ValidacaoFormularioService
     ],
     bootstrap: [AppComponent]
 })

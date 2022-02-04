@@ -40,6 +40,7 @@ export class LoginComponent implements OnInit {
     }
     if (!!this.loja && this.mostrarLoja) {
       sessionStorage.setItem("lojaLogada", this.loja);
+      localStorage.setItem("lojaLogada", this.loja);
       this.autenticacaoService._lojaLogado = this.loja;
 
       this.router.navigate(['']);

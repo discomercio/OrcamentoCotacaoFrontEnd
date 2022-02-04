@@ -1,15 +1,13 @@
-import { HttpResponse } from '@angular/common/http';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { concat } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { ValidacaoFormularioService } from '../utilities/validacao-formulario/validacao-formulario.service';
 
 
 @Component({
@@ -22,10 +20,10 @@ export class DownloadsComponent implements OnInit {
     private readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
-    private readonly autenticacaoService: AutenticacaoService)  {  }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly validacaoFormularioService:ValidacaoFormularioService)  {  }
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
@@ -102,7 +100,6 @@ export class DownloadsComponent implements OnInit {
   }
 
   editarSalvarClick() {
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then((r) => {
       //console.log(r);
@@ -116,7 +113,6 @@ export class DownloadsComponent implements OnInit {
   }
 
   editarItem() {
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
   
     if (this.selectedFiles2) {
     var key = this.selectedFiles2.data.key;
@@ -222,7 +218,7 @@ export class DownloadsComponent implements OnInit {
 
   addPastaTable() {
     //console.log('addPastaTable');
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
+    if(!this.validacaoFormularioService.validaForm(this.form)) return;
 
     this.downloadsService.novaPasta(this.form.controls.pasta.value, this.selectedFiles2.data.key).toPromise().then(r => {
       if (r != null) {
@@ -257,7 +253,6 @@ export class DownloadsComponent implements OnInit {
 
   addArquivoTable(id, nome, tamanho, descricao) {
     //console.log('addArquivoTable');
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     let novoArquivoTree: TreeNode = {
       data: {

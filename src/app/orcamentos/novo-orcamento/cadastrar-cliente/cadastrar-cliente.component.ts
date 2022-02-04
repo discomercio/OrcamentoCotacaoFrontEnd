@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { CepsService } from 'src/app/service/ceps/ceps.service';
@@ -17,6 +16,7 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -27,7 +27,7 @@ import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentis
 export class CadastrarClienteComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly usuarioService: UsuariosService,
     private readonly alertaService: AlertaService,
     private readonly cepService: CepsService,
@@ -242,8 +242,7 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   salvarOrcamento() {
-    debugger;
-    if (!this.validacaoFormGroup.validaForm(this.form))
+    if (!this.validacaoFormularioService.validaForm(this.form))
       return;
 
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();

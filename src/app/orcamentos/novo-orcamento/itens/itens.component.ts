@@ -74,12 +74,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
-    debugger;
     this.produtoService.buscarProdutosCompostosXSimples(
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.tipo,
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.loja,
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.uf, 
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.loja).toPromise().then((r) => {
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
 
+        debugger;
         if (r != null) {
           this.produtoComboDto = r;
           this.carregandoProds = false;
@@ -502,5 +502,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         n.style.display = "table-cell";
       }
     }
+  }
+
+  salvarOrcamento(){
+    this.mensagemService.showWarnViaToast("Estamos implementando!");
+    return;
+  }
+  enviar(){
+    this.mensagemService.showWarnViaToast("Estamos implementando!");
+    return;
   }
 }

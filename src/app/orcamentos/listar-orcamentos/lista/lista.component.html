@@ -11,7 +11,7 @@
                             <p-multiSelect [options]="lstFiltro" optionLabel="label" optionValue="value"
                                 placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
                                 [(ngModel)]="filtro.Status" emptyFilterMessage="Nenhum item encontrado"
-                                pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
+                                pTooltip="{{filtro.Status.length}} itens selecionados" tooltipPosition="top">
                             </p-multiSelect>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
@@ -45,7 +45,7 @@
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                                 <label for="filtroVendedorParceiro">Vendedor parceiro</label>
-                                <p-autoComplete [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
+                                <p-autoComplete [(ngModel)]="filtro.VendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
                                     (completeMethod)="filtrarVendedoresParceiros($event)" field="apelido" placeholder="Digite o nome">
                                     <ng-template let-vendedorParceiro pTemplate="apelido">
                                         <div>
@@ -85,7 +85,7 @@
 
 
             </div>
-            <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
+            <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada"
                 [responsive]="true" responsiveLayout="stack" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
                 [paginator]="true" [filterDelay]="0" (onRowSelect)="filtrar(true)"

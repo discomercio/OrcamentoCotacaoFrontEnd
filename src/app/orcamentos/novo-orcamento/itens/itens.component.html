@@ -17,7 +17,7 @@
         <div class="p-col-12 p-px-0">
             <div *ngIf="!telaDesktop" class="font-size p-text-right p-text-bold p-md-12 p-sm-12">Quantidade de itens: {{lstProdutos.length}}</div>
             <p-table #dataTable [value]="lstProdutos" [responsive]="true" responsiveLayout="stack"
-                [ngClass]="{'carregando': carregando}" autoLayout="true"
+                [ngClass]="{'carregando': carregandoProds}" autoLayout="true"
                 styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                 <ng-template pTemplate="header">
                     <tr class="font-size">

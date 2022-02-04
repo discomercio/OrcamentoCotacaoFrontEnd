@@ -5,7 +5,7 @@
             <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                 <label for="nome">Nome do cliente</label>
                 <input id="nome" type="text" pInputText formControlName="Nome" />
-                <div *ngIf="validacaoFormGroup.verificaCampo(form,'Nome')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'Nome')">
                     <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
                     <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
                         excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small>
@@ -20,7 +20,7 @@
             <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                 <label for="email">E-mail do cliente</label>
                 <input id="email" type="text" pInputText placeholder="" formControlName="Email" />
-                <div *ngIf="validacaoFormGroup.verificaCampo(form,'Email')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'Email')">
                     <small class="p-error" *ngIf="form.controls.Email.errors?.required">{{mensagemErro}}</small>
                     <small class="p-error" *ngIf="form.controls.Email.errors?.pattern">Endereço de e-mail
                         inválido!</small>
@@ -49,13 +49,13 @@
                 <label for="estado">Estado</label>
                 <p-dropdown id="uf" [options]="lstEstado" placeholder="Selecione" formControlName="Uf">
                 </p-dropdown>
-                <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'Uf')">{{mensagemErro}}</small>
+                <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'Uf')">{{mensagemErro}}</small>
             </div>
             <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="tipo">Tipo</label>
                 <p-dropdown id="tipo" [options]="lstTipo" placeholder="Selecione" formControlName="Tipo">
                 </p-dropdown>
-                <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
+                <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
             </div>
         
             <div *ngIf="tipoUsuario == constantes.GESTOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
@@ -64,7 +64,7 @@
                     (onChange)="buscarParceirosPorVendedor()">
                 </p-dropdown>
                 <small class="p-error"
-                    *ngIf="validacaoFormGroup.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
+                    *ngIf="validacaoFormularioService.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
             </div>
             <div *ngIf="tipoUsuario == constantes.GESTOR || tipoUsuario == constantes.VENDEDOR_UNIS"
                 class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
@@ -73,7 +73,7 @@
                     (onChange)="buscarVendedoresDoParceiro()">
                 </p-dropdown>
                 <!-- <small class="p-error"
-                                    *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
+                                    *ngIf="validacaoFormularioService.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
             </div>
             <div></div>
             <div *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
@@ -82,7 +82,7 @@
                     formControlName="VendedorParceiro">
                 </p-dropdown>
                 <!-- <small class="p-error"
-                                        *ngIf="validacaoFormGroup.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
+                                        *ngIf="validacaoFormularioService.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
             </div>
 
         </div>
@@ -92,7 +92,7 @@
                 <label for="validade">Validade</label>
                 <p-calendar dateFormat="dd/mm/yy" formControlName="Validade" [showIcon]="true"></p-calendar>
                 <small class="p-error"
-                    *ngIf="validacaoFormGroup.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
+                    *ngIf="validacaoFormularioService.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
             </div>
         </div>
 
