@@ -1,3 +1,4 @@
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
 import { OrcamentistaIndicadorVendedorService } from './../../service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
@@ -19,6 +20,7 @@ export class UsuarioListaComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly alertaService: AlertaService,
+    private readonly _autenticacaoService: AutenticacaoService,
     private readonly router: Router) { }
 
   @ViewChild('dataTable') table: Table;
@@ -30,7 +32,7 @@ export class UsuarioListaComponent implements OnInit {
   carregando: boolean = false;
 
   ngOnInit(): void {
-    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(null).toPromise().then((r) => {
+    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this._autenticacaoService.authUsuario.Parceiro).toPromise().then((r) => {
       if (r == null) {
         ;
         this.alertaService.mostrarErroInternet(r);

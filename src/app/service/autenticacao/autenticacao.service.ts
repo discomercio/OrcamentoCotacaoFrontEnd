@@ -1,3 +1,4 @@
+import { UsuarioLogado } from './../../dto/usuarios/usuarioLogado';
 import { Injectable, DebugElement } from '@angular/core';
 import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { Location } from '@angular/common';
@@ -31,10 +32,11 @@ export class AutenticacaoService {
   public _tipoUsuario: number = null;
   public _parceiro: string = null;
   public _vendedor:string = null;
+  public _UsuarioLogado: UsuarioLogado = null;
 
   public unidade_negocio: string = null;
 
-  private renovacaoPendnete: boolean = false;
+  private renovacaoPendente: boolean = false;
 
   get authNomeUsuario(): number {
     if (this._tipoUsuario == null) {
@@ -46,6 +48,19 @@ export class AutenticacaoService {
       this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
     }
     return this._tipoUsuario;
+  }
+
+  get authUsuario(): UsuarioLogado {
+      let user: UsuarioLogado;
+    if (this._tipoUsuario == null) {
+        const token = this.obterToken();
+        user = jtw_decode(token) as UsuarioLogado;
+        this._tipoUsuario = (user && user.TipoUsuario) ? Number.parseInt(user.TipoUsuario) : null;
+        this._usuarioLogado = (user && user.unique_name) ? user.unique_name : null;
+        this._parceiro = (user && user.Parceiro) ? user.Parceiro : null;
+        this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
+      }
+      return user;
   }
 
 
@@ -76,7 +91,8 @@ export class AutenticacaoService {
           this.setarToken(objToken.AccessToken);
           if (!!objToken.AccessToken) {let user = jtw_decode(objToken.AccessToken) as any;
             this._usuarioLogado = user.unique_name;
-            this._parceiro = user.Parceiro;this._vendedor = user.Vendedor;
+            this._parceiro = user.Parceiro;
+            this._vendedor = user.Vendedor;
             this.unidade_negocio = user.unidade_negocio;
           }
 
@@ -233,7 +249,7 @@ export class AutenticacaoService {
       this.renovarToken(); */
   }
   private renovarToken(): void {
-    this.renovacaoPendnete = true;
+    this.renovacaoPendente = true;
     this.http.get(environment.apiUrl + 'acesso/RenovarToken', { responseType: 'text' }).subscribe(
       {
         next: (e) => {
@@ -248,6 +264,6 @@ export class AutenticacaoService {
 
   private desligarRenovacaoPendente() {
     //desligamos com timeou tpoque a solicitação da renovação do token também pode disparar outra renovação do token
-    setTimeout(() => { this.renovacaoPendnete = false; }, 500);
+    setTimeout(() => { this.renovacaoPendente = false; }, 500);
   }
 }
