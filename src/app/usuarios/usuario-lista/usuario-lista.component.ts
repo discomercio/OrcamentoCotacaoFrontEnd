@@ -47,10 +47,10 @@ export class UsuarioListaComponent implements OnInit {
       perfil: ['', [Validators.required]]
     });
     this.cols = [
-        {field : 'Nome', header: 'Nome'},
-        {field : 'Email', header: 'E-mail'},
-        {field : 'Indicador', header: 'Responsável'},
-        {field : 'Ativo', header: 'Ativo'},
+        {field : 'nome', header: 'Nome'},
+        {field : 'email', header: 'E-mail'},
+        {field : 'indicador', header: 'Responsável'},
+        {field : 'ativo', header: 'Ativo'},
     //   { field: 'Responsavel', header: 'Responsável' },
     //   { field: 'Papel', header: 'Papel' },
     //   { field: 'Nome', header: 'Nome' },

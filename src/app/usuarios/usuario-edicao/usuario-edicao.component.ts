@@ -27,7 +27,8 @@ export class UsuarioEdicaoComponent implements OnInit {
     private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioComponent,
     private readonly criptoService: CriptoService,
-    private readonly lojasService: LojasService) { }
+    private readonly lojasService: LojasService
+    ) { }
 
   public form: FormGroup;
   public apelido: string;
