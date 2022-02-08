@@ -60,17 +60,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   dtOptions: any = {};
 
   ngOnInit(): void {
+    debugger;
+    if(!this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto){
+      this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
+      return;
+    }
     this.inscreveProdutoComboDto();
     this.buscarQtdeMaxParcelaCartaoVisa();
 
     this.novoOrcamentoService.criarNovoOrcamentoItem();
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      document.getElementById("p-tabpanel-1-label").click();
-    }, 10);
-  }
   carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
@@ -79,7 +79,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.uf, 
       this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
 
-        debugger;
         if (r != null) {
           this.produtoComboDto = r;
           this.carregandoProds = false;

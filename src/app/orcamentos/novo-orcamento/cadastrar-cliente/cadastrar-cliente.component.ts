@@ -262,7 +262,7 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.loja = this.usuario.loja;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
-    this.novoOrcamentoService.mostrarOpcoes = true;
+    this.router.navigate(["novo-orcamento/itens"]);
   }
 
   concordouWhatsapp(): void {
