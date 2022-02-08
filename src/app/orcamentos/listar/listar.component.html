@@ -10,7 +10,7 @@
                     <div class="p-grid">
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtro">Status</label>
-                            <p-multiSelect formControlName="status" [options]="lstStatus" optionValue="Id" optionLabel="Descricao" 
+                            <p-multiSelect formControlName="status" [options]="lstStatus" optionValue="Descricao" optionLabel="Descricao" 
                                 placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
                                 [(ngModel)]="statusSelecionado" emptyFilterMessage="Nenhum item encontrado"
                                 pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
@@ -18,9 +18,8 @@
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="nomeObra" *ngIf="parametro == 'ORCAMENTOS'">Nº Orçamento / Nome do cliente / Nome da obra</label>
-                            <label for="nomeObra" *ngIf="parametro != 'ORCAMENTOS'">Nº Orçamento / Nome do cliente / Nome da obra / Nº Pedido</label>
-                            <input formControlName="cliente" type="text" pInputText placeholder="" [(ngModel)]="filtro.Nome_numero"
-                                placeholder="Digite a busca" />
+                            <label for="nomeObra" *ngIf="parametro != 'ORCAMENTOS'">Nº Orçamento / Nº Pedido / Nome do cliente / Nome da obra</label>
+                            <input pInputText type="text" formControlName="cliente" placeholder="Digite a busca" (input)="dt1.filterGlobal($event.target.value, 'contains')">
                         </div>
 
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
@@ -58,15 +57,16 @@
                             </p-autoComplete>
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end" *ngIf="parametro == 'ORCAMENTOS'">
-                            <label for="filtroLoja">Pendente?</label>
-                            <p-autoComplete formControlName="msgPendente" [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
+                            <label for="filtroLoja">Mensagem Pendente</label>
+                            <p-dropdown formControlName="msgPendente" [options]="msgPendenteArray" [(ngModel)]="msgPendenteSelecionada" optionLabel="Value"></p-dropdown>
+                            <!-- <p-autoComplete formControlName="msgPendente" [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
                             (completeMethod)="filtrarVendedoresParceiros($event)" field="apelido" placeholder="Digite sim ou nao">
                             <ng-template let-vendedorParceiro pTemplate="apelido">
                                 <div>
                                     <div>{{vendedorParceiro.apelido}}</div>
                                 </div>
                             </ng-template>
-                        </p-autoComplete>   
+                        </p-autoComplete>    -->
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
@@ -87,11 +87,11 @@
 
 
             </div>
-            <p-table #dataTable [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
+            <p-table #dt1 [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
                 [responsive]="true" responsiveLayout="stack" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
                 [paginator]="true" [filterDelay]="0" (onRowSelect)="filtrar(true)"
-                [globalFilterFields]="['Data','Orcamento','Nome','Status', 'Valor']">
+                [globalFilterFields]="['NumOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-jc-end">
                         <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"

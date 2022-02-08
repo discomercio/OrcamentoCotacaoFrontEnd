@@ -26,6 +26,7 @@ import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { enumParametros } from '../enumParametros';
 import { OrcamentoCotacaoStatus } from '../models/OrcamentoCotacaoStatus';
+import { DropDownItem } from '../models/DropDownItem';
 
 @Component({
   selector: 'app-listar',
@@ -72,6 +73,8 @@ export class OrcamentosListarComponent implements OnInit {
   vendedorParceiroSelecionado: any;
   lstVendedoresParceiroFiltrado: Array<any>;
   parametro: string;
+  msgPendenteArray: Array<DropDownItem>;
+  msgPendenteSelecionada: string;
 
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
@@ -81,6 +84,11 @@ export class OrcamentosListarComponent implements OnInit {
     this.buscarParceiros();
     this.buscarVendedores();
     this.buscarRegistros();
+
+    this.msgPendenteArray = [
+      {Id: '1', Value: 'Sim'},
+      {Id: '0', Value: 'Não'},
+    ];
   }
 
   criarForm() {
@@ -93,6 +101,7 @@ export class OrcamentosListarComponent implements OnInit {
       msgPendente: [''],
       dtInicio: [''],
       dtFim: [''],
+      filtroStatus: ['']
     });
   }
 
@@ -221,8 +230,12 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   filtrar(mostrarMensagem: boolean) {
-    if (mostrarMensagem)
-      this.mensagemService.showWarnViaToast("Estamos implementando!");
+    console.log('filtrar: ' + this.lstDtoFiltrada.length);
+    console.log('statusSelecionado: ' + this.statusSelecionado);
+
+    this.lstDtoFiltrada = this.lstDto.filter(s => this.statusSelecionado.toString().includes(s.Status)); 
+    
+    console.log('filtrar: ' + this.lstDtoFiltrada.length);
   }
 
   ngOnDestroy() {
