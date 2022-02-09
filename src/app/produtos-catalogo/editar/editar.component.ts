@@ -22,7 +22,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    public readonly validacaoFormGroup: ValidacaoFormularioComponent,
     ) { }
 
     public form: FormGroup;
@@ -30,7 +30,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     public produto: ProdutoCatalogo = new ProdutoCatalogo();
     private id: string;
     private imgUrl: string;
-    private urlUpload: string;
+    public urlUpload: string;
     public uploadedFiles: any[] = [];
     carregando: boolean = false;
 
@@ -81,7 +81,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.ngOnInit();
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
   }
-  
+
   excluirImagemClick(idImagem) {
     this.produtoService.excluirImagem(this.produto.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
@@ -102,7 +102,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     if (txtDescricao.value == ""){
       this.mensagemService.showWarnViaToast("Campo [Descrição] é obrigatório!");
       return;
-    } 
+    }
 
     var input = document.getElementsByTagName("input");
     var inputList = Array.prototype.slice.call(input);
@@ -111,7 +111,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.produto.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
     this.produto.Ativo = this.form.controls.ativo.value;
     this.produto.campos = [];
-    
+
     inputList.forEach(e => {
       tmp = new ProdutoCatalogoCampo();
 

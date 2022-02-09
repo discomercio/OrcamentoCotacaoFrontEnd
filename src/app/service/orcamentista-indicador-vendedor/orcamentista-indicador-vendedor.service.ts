@@ -15,6 +15,6 @@ export class OrcamentistaIndicadorVendedorService {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
 
-    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(environment.apiUrl + 'Usuario/vendedores-parceiros', { params: params });
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params });
   }
 }

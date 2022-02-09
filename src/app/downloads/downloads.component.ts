@@ -117,10 +117,10 @@ export class DownloadsComponent implements OnInit {
 
   editarItem() {
     //if (!this.validacaoFormGroup.validaForm(this.form)) return;
-  
+
     if (this.selectedFiles2) {
     var key = this.selectedFiles2.data.key;
-  
+
     //1º Nivel
     if (this.files2[0].data.key == key) {
       this.files2[0].data.name = this.form.controls.txtNome.value;
@@ -237,17 +237,17 @@ export class DownloadsComponent implements OnInit {
           children: [],
           parent: null
         };
-    
-        novaPastaTree.data.key = r.id;
+
+        novaPastaTree.data.key = r["id"];
         novaPastaTree.data.name = this.form.controls.pasta.value;
         novaPastaTree.data.size = "";
         novaPastaTree.data.descricao = this.form.controls.descricaoPasta.value;
-    
+
         if (this.selectedFiles2)
           this.selectedFiles2.children.push(novaPastaTree);
         else
           this.files2.push(novaPastaTree);
-    
+
         this.files2 = [...this.files2];
         this.novaPasta = false;
         this.form.reset();
