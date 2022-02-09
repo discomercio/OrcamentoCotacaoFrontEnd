@@ -24,15 +24,7 @@
 
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedor">Vendedor</label>
-                            <p-autoComplete formControlName="vendedor" [(ngModel)]="filtro.Vendedor" [suggestions]="lstVendedoresFiltrado"
-                                (completeMethod)="filtrarVendedores($event)" field="usuario"
-                                placeholder="Digite o nome">
-                                <ng-template let-vendedor pTemplate="usuario">
-                                    <div>
-                                        <div>{{vendedor.usuario}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-autoComplete>
+                            <p-dropdown formControlName="vendedor" [options]="lstVendedores" optionValue="id" optionLabel="nome" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Parceiro</label>

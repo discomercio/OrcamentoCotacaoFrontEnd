@@ -21,8 +21,8 @@ export class UsuariosService {
       return this.http.get<UsuarioXLoja[]>('assets/demo/data/banco/usuario_x_loja.json');
     } */
 
-  buscarVendedores(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario/vendedores');
+  buscarVendedores(loja:string): Observable<Usuario[]> {
+    return this.http.get<Usuario[]>(`${environment.apiUrl}Usuario/vendedores?loja=${loja}`);
   }
 
   /*  buscarParceiros(): Observable<Parceiro[]> {

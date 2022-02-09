@@ -1,3 +1,4 @@
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 
 import { Component, OnInit, ViewChild, DebugElement } from '@angular/core';
@@ -36,14 +37,15 @@ import { DropDownItem } from '../models/DropDownItem';
 export class OrcamentosListarComponent implements OnInit {
 
   constructor(private readonly activatedRoute: ActivatedRoute,
-    public readonly orcamentoService: OrcamentosService,
-    public readonly pedidoService: PedidosService,
     private fb: FormBuilder,
-    private mensagemService: MensagemService,
+    private readonly orcamentoService: OrcamentosService,
+    public readonly pedidoService: PedidosService,
+    private readonly mensagemService: MensagemService,
     private readonly usuarioService: UsuariosService,
     private readonly lojaService: LojasService,
     private readonly exportExcelService: ExportExcelService,
-    private readonly alertaService: AlertaService) {
+    private readonly alertaService: AlertaService,
+    private readonly autenticacaoService: AutenticacaoService,) {
   }
 
   @ViewChild('dataTable') table: Table;
@@ -81,8 +83,8 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarForm();
     this.criarTabela();
     this.buscarStatus();
-    this.buscarParceiros();
     this.buscarVendedores();
+    this.buscarParceiros();
     this.buscarRegistros();
 
     this.msgPendenteArray = [
@@ -109,8 +111,8 @@ export class OrcamentosListarComponent implements OnInit {
     this.activatedRoute.params.subscribe((param: any) => { 
       this.parametro = param.filtro.toUpperCase();
         this.cols = [
-          { field: 'NumOrcamento', header: 'Orçamento', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
-          { field: 'NumPedido', header: 'Pedido' },
+          { field: 'NumOrcamento', header: 'Orçamento' },
+          { field: 'NumPedido', header: 'Pedido', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
           { field: 'Cliente_Obra', header: 'Cliente / Obra' },
           { field: 'Vendedor', header: 'Vendedor' },
           { field: 'Parceiro', header: 'Parceiro' },
@@ -198,7 +200,9 @@ export class OrcamentosListarComponent implements OnInit {
   // }
 
   buscarVendedores() {
-    this.usuarioService.buscarVendedores().toPromise().then((r) => {
+    //autenticacaoService.
+    this.usuarioService.buscarVendedores("200").toPromise().then((r) => {
+      console.log(r);
       if (r != null) {
         this.lstVendedores = r;
       }
