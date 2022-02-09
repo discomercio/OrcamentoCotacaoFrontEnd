@@ -15,18 +15,16 @@ export class ClienteComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  
-  
-exibirTipo : boolean = true;
 
-tipoPessoaSelPF()
-{
-  this.exibirTipo = true;
-}
 
-tipoPessoaSelPJ()
-{
-  this.exibirTipo = false;
-}
-  
+  exibirTipo: boolean = true;
+
+  tipoPessoaSelPF() {
+    this.exibirTipo = true;
+  }
+
+  tipoPessoaSelPJ() {
+    this.exibirTipo = false;
+  }
+  inserirCliente() { }
 }

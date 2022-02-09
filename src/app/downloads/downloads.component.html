@@ -17,11 +17,11 @@
                 <div class="p-fluid p-formgrid p-grid" *ngIf="this.novaPasta">
                     <div class="p-field p-col-5">
                         <input id="pasta" type="text" pInputText placeholder="Nome da pasta" formControlName="pasta" />
-                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'pasta')">{{mensagemErro}}</small>
+                        <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'pasta')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-5">
                         <input id="descricaoPasta" type="text" pInputText placeholder="Descrição da pasta" formControlName="descricaoPasta" />
-                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'descricaoPasta')">{{mensagemErro}}</small>
+                        <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricaoPasta')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-2">
                         <button pButton pRipple label="Add Pasta" icon="pi pi-plus" (click)="addPastaTable()" class="p-as-end p-pl-3"></button>
@@ -30,11 +30,11 @@
                 <div class="p-fluid p-formgrid p-grid" *ngIf="this.edicao">
                     <div class="p-field p-col-4">
                         <input id="txtNome" type="text" pInputText value="{{this.selectedFiles2.data.name}}" formControlName="txtNome" />
-                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
+                        <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-5">
                         <input id="txtDescricao" type="text" pInputText value={{this.selectedFiles2.data.descricao}} formControlName="txtDescricao" />
-                        <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
+                        <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
                     </div>
                     <div class="p-field p-col-3">
                         <button pButton pRipple label="Excluir" icon="pi pi-trash" (click)="excluirClick()" class="p-as-end p-pl-3" style="width : 10em;"></button>&nbsp;

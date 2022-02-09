@@ -5,11 +5,11 @@ import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { CriptoService } from 'src/app/utilities/cripto/cripto.service';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { Lojas } from 'src/app/dto/lojas/lojas';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
   selector: 'app-usuario-edicao',
@@ -25,7 +25,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     private readonly usuariosService: UsuariosService,
     private readonly alertaService: AlertaService,
     private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
     private readonly lojasService: LojasService
     ) { }
@@ -60,7 +60,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     if (this.apelido.toLowerCase() != "")
       if (!!this.apelido) {
         if (this.apelido.toLowerCase() != "novo") {
-          this.usuariosService.buscarTodosUsuarios().then((r) => {
+          this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
             if (!!r) {
               let usuarios: Usuario[] = r;
               //this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
@@ -108,7 +108,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   }
 
   atualizar() {
-    if (!this.validacaoFormGroup.validaForm(this.form)) return;
+    if (!this.validacaoFormularioService.validaForm(this.form)) return;
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;

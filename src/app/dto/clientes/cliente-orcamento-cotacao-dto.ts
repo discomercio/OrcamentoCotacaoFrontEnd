@@ -12,6 +12,7 @@ export class ClienteOrcamentoCotacaoDto {
     vendedorParceiro: string;
     uf: string;
     tipo: string;
+    loja:string;
     public constructor(init?: Partial<ClienteOrcamentoCotacaoDto>) {
         Object.assign(this, init);
     }

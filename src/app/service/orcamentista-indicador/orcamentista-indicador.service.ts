@@ -15,9 +15,10 @@ export class OrcamentistaIndicadorService {
     return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEIndicador/BuscarParceiros').toPromise();
   }
 
-  buscarParceirosPorVendedor(vendedor:string): Observable<OrcamentistaIndicadorDto[]> {
+  buscarParceirosPorVendedor(vendedor:string, loja: string): Observable<OrcamentistaIndicadorDto[]> {
     let params = new HttpParams();
-    params = params.append('vendedor', vendedor);
-    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEIndicador/parceiros-por-vendedor', { params: params });
+    params = params.append('vendedorId', vendedor);
+    params = params.append('loja', loja);
+    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEindicador/BuscarParceiros', { params: params });
   }
 }

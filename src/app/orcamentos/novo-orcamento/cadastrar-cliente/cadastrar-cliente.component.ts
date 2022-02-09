@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { CepsService } from 'src/app/service/ceps/ceps.service';
@@ -11,9 +10,6 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { DatePipe } from '@angular/common';
-import { OrcamentosService } from 'src/app/service/orcamentos/orcamentos.service';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
@@ -21,140 +17,199 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
   templateUrl: './cadastrar-cliente.component.html',
   styleUrls: ['./cadastrar-cliente.component.scss']
 })
+
 export class CadastrarClienteComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly usuarioService: UsuariosService,
     private readonly alertaService: AlertaService,
     private readonly cepService: CepsService,
     public readonly router: Router,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    private datePipe: DatePipe,
-    private readonly orcamentoService: OrcamentosService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly mensagemService: MensagemService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
 
+  //uteis
   public mascaraTelefone: string;
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
-  public lstVendedores: Array<Usuario>;
-  public lstVendedoresParceiros: Array<OrcamentistaIndicadorVendedorDto>;
-  public lstParceiro: Array<OrcamentistaIndicadorDto>;
-  public lstEstado: Array<Estado>;
-  public desabilitado: boolean = true;
   public constantes: Constantes = new Constantes();
-  tipoUsuario: number;
   checkedWhatsapp: boolean = false;
+  usuario = new Usuario();
+
+  //listas
+  public lstVendedores: SelectItem[] = [];
+  public lstVendedoresParceiros: SelectItem[] = [];;
+  public lstParceiro: SelectItem[] = [];
+  public lstEstado: SelectItem[] = [];
+  lojasUsuario: SelectItem[] = [];
+  lstTipo: SelectItem[];
+
+  //controle de campos
+  public desabilitado: boolean = true;
+
+  tipoUsuario: number;//usar o do Usuario
+
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
-    this.tipoUsuario = this.autenticacaoService.authNomeUsuario
     this.criarForm();
-    this.setarCamposCondicionais();
-
+    this.getDadosToken();
+    this.setarCamposDoForm();
+    this.carregarListas();
     this.buscarEstados();
-    this.selectTipo();
+    this.buscarTiposCliente();
     this.verificaDataValidade();
+
     this.novoOrcamentoService.mostrarOpcoes = false;
+  }
+
+  getDadosToken(): void {
+    this.usuario.nome = this.autenticacaoService.authUsuario;
+
+    if (this.usuario.nome) {
+      this.usuario.permissoes = this.autenticacaoService._permissoes;
+      this.usuario.idVendedor = this.autenticacaoService._vendedor;
+      this.usuario.idParceiro = this.autenticacaoService._parceiro;
+      this.usuario.loja = this.autenticacaoService._lojaLogado;
+    }
+
+  }
+
+  setarCamposDoForm(): void {
+    this.form.controls.Vendedor.setValue("");
+    this.form.controls.Parceiro.setValue("");
+    this.form.controls.VendedorParceiro.setValue("");
+
+    this.tipoUsuario = this.constantes.GESTOR;
+    return;
+    // if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS)
+    if (this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)) {
+      this.form.controls.Vendedor.setValue(this.usuario.nome);
+      this.tipoUsuario = this.constantes.VENDEDOR_UNIS;
+      return;
+    }
+    // if (this.tipoUsuario == this.constantes.PARCEIRO)
+      if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+        this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
+        this.form.controls.Parceiro.setValue(this.usuario.nome);
+        this.tipoUsuario = this.constantes.PARCEIRO;
+        return;
+      }
+    // if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR)
+      if (this.usuario.permissoes.length == 1 &&
+        this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
+        this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
+        this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
+        this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
+        this.tipoUsuario = this.constantes.PARCEIRO_VENDEDOR;
+        return;
+      }
+  }
+
+  carregarListas(): void {
+    if (this.usuario.permissoes.length == 0) {
+      //se tipoUsuario estiver vazia o que fazer?
+      this.alertaService.mostrarMensagem("temos que logar novamente!");
+      return;
+    }
 
     if (this.tipoUsuario == this.constantes.GESTOR) {
       this.buscarVendedores();
+      return;
     }
-  }
-
-  setarCamposCondicionais() {
-    let usuario = new Usuario();
-    usuario.nome = this.autenticacaoService._usuarioLogado;
-    usuario.idVendedor = this.autenticacaoService._vendedor;
-    usuario.idParceiro = this.autenticacaoService._parceiro;
-
-
-    this.form.controls.Vendedor.setValue(new Usuario());
-    this.form.controls.Parceiro.setValue(new Usuario());
-    this.form.controls.VendedorParceiro.setValue(new Usuario());
-
     if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      this.form.controls.Vendedor.value.nome = this.autenticacaoService._usuarioLogado;
+      this.usuario.idVendedor = this.usuario.nome;
       this.buscarParceirosPorVendedor();
+      return;
     }
-
     if (this.tipoUsuario == this.constantes.PARCEIRO) {
-      this.form.controls.Vendedor.value.nome = usuario.idVendedor;
-      this.form.controls.Parceiro.value.nome = this.autenticacaoService._usuarioLogado;
       this.buscarVendedoresDoParceiro();
-    }
-
-    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      this.form.controls.Vendedor.value.nome = usuario.idVendedor;
-      this.form.controls.Parceiro.value.nome = usuario.idParceiro;
-      this.form.controls.VendedorParceiro.value.nome = this.autenticacaoService._usuarioLogado;
+      return;
     }
   }
 
   buscarVendedores(): void {
-
-    this.usuarioService.buscarVendedores().toPromise().then((r) => {
+    this.usuarioService.buscarVendedores(this.usuario.loja).toPromise().then((r) => {
       if (r != null) {
-        this.lstVendedores = r;
+        this.lstVendedores = this.montarListaParaSelectItem(r);
+        this.form.controls.Vendedor.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.vendedor);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarVendedoresDoParceiro() {
+  buscarVendedoresDoParceiro(): void {
     let parceiro: string;
     parceiro = this.form.controls.Parceiro.value;
-    if (!!this.form.controls.Parceiro.value.nome) {
-      parceiro = this.form.controls.Parceiro.value.nome;
+    if (!!this.form.controls.Parceiro.value) {
+      parceiro = this.form.controls.Parceiro.value;
     }
 
     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
-        this.lstVendedoresParceiros = r;
+        this.lstVendedoresParceiros = this.montarListaParaSelectItem(r);
+        this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.vendedorParceiro);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarParceirosPorVendedor() {
-    let vendedor: string;
-    vendedor = this.form.controls.Vendedor.value.nome;
+  buscarParceirosPorVendedor(): void {
+    let vendedor: string = this.form.controls.Vendedor.value;
+    let loja:string = this.usuario.loja;
 
-    this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor).toPromise().then((r) => {
+    this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise().then((r) => {
       if (r != null) {
-        this.lstParceiro = r;
+        this.lstParceiro = this.montarListaParaSelectItem(r);
+        this.form.controls.Parceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.parceiro);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarEstados() {
+  montarListaParaSelectItem(lista: Array<any>): SelectItem[] {
+    let listaResponse: SelectItem[] = [];
+
+    lista.forEach(x => {
+      let item: SelectItem = { label: x.nome, value: x.nome };
+      listaResponse.push(item);
+    });
+
+    return listaResponse;
+  }
+
+  buscarEstados(): void {
     this.cepService.buscarEstados().toPromise().then((r) => {
       if (r != null) {
-        this.lstEstado = r;
+        r.forEach(x => {
+          let item: SelectItem = { label: x.uf, value: x.uf };
+          this.lstEstado.push(item);
+        });
+        this.form.controls.Uf.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.uf);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  lstTipo: SelectItem[];
-  selectTipo() {
+  buscarTiposCliente(): void {
     this.lstTipo = [
-      { label: "PF", value: "PF" },
-      { label: "PJ", value: "PJ" }
+      { label: this.constantes.ID_PF, value: this.constantes.ID_PF },
+      { label: this.constantes.ID_PJ, value: this.constantes.ID_PJ }
     ]
   }
 
-  criarForm() {
+  criarForm(): void {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto;
+
     this.form = this.fb.group({
       Validade: [clienteOrcamentoCotacao.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [clienteOrcamentoCotacao.observacoes],
@@ -167,51 +222,28 @@ export class CadastrarClienteComponent implements OnInit {
       Concorda: clienteOrcamentoCotacao.concordaWhatsapp,
       VendedorParceiro: [clienteOrcamentoCotacao.vendedorParceiro],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
-      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
+      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]]
     });
-
-    // this.verificarCamposCondicionais();
-    this.verificaDataValidade();
-
   }
 
-  verificarCamposCondicionais() {
-    if (this.tipoUsuario != this.constantes.GESTOR) {
-      this.form.controls.Vendedor.clearValidators();
-    }
-  }
-
-  verificaDataValidade() {
+  verificaDataValidade(): void {
     if (!this.form.controls.Validade.value) {
       let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
       this.form.controls.Validade.setValue(data);
       this.form.controls.Validade.disable();
+      return;
     }
 
     let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.Validade < validacaoData) {
+    let dataCliente: Date = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.validade);
+    if (dataCliente > validacaoData) {
+      this.form.controls.Validade.setValue(dataCliente);
       this.form.controls.Validade.enable();
     }
   }
 
-  iniciarOrcamento() {
-
-
-    this.novoOrcamentoService.criarNovo();
-    //this.novoOrcamentoService.criarNovoOrcamentoItem();
-
-    //let opcoesOrcamento = new Array<OrcamentoOpcaoDto>();
-    // opcoesOrcamento = this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto;
-
-
-    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
-    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.Validade = DataUtils.formata_formulario_date(this.form.controls.Validade.value);
-    // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto = opcoesOrcamento;
-
-  }
-
   salvarOrcamento() {
-    if (!this.validacaoFormGroup.validaForm(this.form))
+    if (!this.validacaoFormularioService.validaForm(this.form))
       return;
 
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -220,64 +252,26 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.observacoes = this.form.controls.ObservacoesGerais.value;
     clienteOrcamentoCotacaoDto.nomeCliente = this.form.controls.Nome.value;
     clienteOrcamentoCotacaoDto.nomeObra = this.form.controls.NomeObra.value;
-    clienteOrcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value.nome;
+    clienteOrcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     clienteOrcamentoCotacaoDto.email = this.form.controls.Email.value;
-    clienteOrcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value.nome;
+    clienteOrcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
     clienteOrcamentoCotacaoDto.telefone = this.form.controls.Telefone.value;
     clienteOrcamentoCotacaoDto.concordaWhatsapp = this.checkedWhatsapp;
-    clienteOrcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value.nome;
-    clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value.uf;
+    clienteOrcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value;
+    clienteOrcamentoCotacaoDto.uf = this.form.controls.Uf.value;
     clienteOrcamentoCotacaoDto.tipo = this.form.controls.Tipo.value;
+    clienteOrcamentoCotacaoDto.loja = this.usuario.loja;
 
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id && this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id != 0) {
-      this.atualizarClienteOrcamento(clienteOrcamentoCotacaoDto);
-      return;
-    }
-
-    this.cadastrarClienteOrcamento(clienteOrcamentoCotacaoDto);
+    this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.router.navigate(["novo-orcamento/itens"]);
   }
 
-  cadastrarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): void {
-    this.orcamentoService.criarOrcamento(cliente).toPromise().then((r) => {
-      if (r == null) {
-        this.alertaService.mostrarMensagem(r[0]);
-        return;
-      }
-
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
-      this.novoOrcamentoService.mostrarOpcoes = true;
-      this.mensagemService.showSuccessViaToast("Cliente salvo com sucesso!");
-    }).catch((error) => {
-      this.alertaService.mostrarErroInternet(error);
-      return
-    });
-  }
-
-  atualizarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): void {
-    this.orcamentoService.atualizarClienteOrcamento(cliente).toPromise().then((r) => {
-      if (r == null) {
-        this.alertaService.mostrarMensagem(r[0]);
-        return;
-      }
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
-      this.mensagemService.showSuccessViaToast("Cliente atualizado com sucesso!");
-      document.getElementById("p-tabpanel-1-label").click();
-
-    }).catch((error) => {
-      this.alertaService.mostrarErroInternet(error);
-      return;
-    });
-  }
-
-  concordouWhatsapp() {
+  concordouWhatsapp(): void {
     if (this.checkedWhatsapp) {
       this.checkedWhatsapp = false;
       return;
     }
 
     this.checkedWhatsapp = true;
-  }
-
-  salvaropcao() {
   }
 }

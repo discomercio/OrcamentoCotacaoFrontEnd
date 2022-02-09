@@ -22,7 +22,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public ref: DynamicDialogRef,
     public readonly mensagemService: MensagemService,
-    private readonly novoOrcamentoService: NovoOrcamentoService,
+    public readonly novoOrcamentoService: NovoOrcamentoService,
     telaDesktopService: TelaDesktopService) { 
       super(telaDesktopService)
     }

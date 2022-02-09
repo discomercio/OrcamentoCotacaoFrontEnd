@@ -42,12 +42,12 @@
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
                             <input id="id" type="text" pInputText placeholder="Código" formControlName="id" />
-                            <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'id')">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'id')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-text-bold">Descrição:</div>
                         <div class="p-field p-col-12">
                             <input id="descricao" type="text" pInputText placeholder="Descrição" formControlName="descricao" />
-                            <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
                         <!--
                         <div class="p-text-bold">Ativo: &nbsp;{{produto.ativo == true ? 'Sim': 'Não'}}</div>

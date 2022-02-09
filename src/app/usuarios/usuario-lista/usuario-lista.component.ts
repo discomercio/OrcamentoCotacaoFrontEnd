@@ -32,7 +32,7 @@ export class UsuarioListaComponent implements OnInit {
   carregando: boolean = false;
 
   ngOnInit(): void {
-    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this._autenticacaoService.authUsuario.Parceiro).toPromise().then((r) => {
+    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this._autenticacaoService._parceiro).toPromise().then((r) => {
       if (r == null) {
         ;
         this.alertaService.mostrarErroInternet(r);

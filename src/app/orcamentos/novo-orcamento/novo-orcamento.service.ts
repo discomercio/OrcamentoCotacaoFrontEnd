@@ -7,13 +7,14 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { Observable } from 'rxjs';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NovoOrcamentoService {
 
-  constructor() { }
+  constructor(telaDesktopService: TelaDesktopService) { }
 
   public orcamentoCotacaoDto: OrcamentoCotacaoDto = new OrcamentoCotacaoDto();
   public opcaoOrcamentoCotacaoDto: OrcamentoOpcaoDto = new OrcamentoOpcaoDto();
