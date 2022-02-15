@@ -1,7 +1,6 @@
-import { Component, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import Swal from 'sweetalert2';
 import { Observable, Subject } from 'rxjs';
-import { text } from '@fortawesome/fontawesome-svg-core';
 
 @Injectable({
     providedIn: 'root'

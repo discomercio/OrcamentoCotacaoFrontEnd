@@ -4,11 +4,12 @@ export class ListaDto {
     Cliente_Obra: string;
     Vendedor: string;
     Parceiro: string;
-    ParceiroVendedor: string;
+    VendedorParceiro: string;
     Valor: string;
     Status: string;
     VistoEm: string;
-    Pendente: string;
+    Mensagem: string;
+    DtCadastro: Date;
 }
 
 export class ListaDtoExport {

@@ -10,9 +10,9 @@
                     <div class="p-grid">
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtro">Status</label>
-                            <p-multiSelect formControlName="status" [options]="lstStatus" optionValue="Descricao" optionLabel="Descricao" 
-                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
-                                [(ngModel)]="statusSelecionado" emptyFilterMessage="Nenhum item encontrado"
+                            <p-multiSelect formControlName="status" [options]="cboStatus" 
+                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value" optionLabel="Value" 
+                                [(ngModel)]="filtro.Status" emptyFilterMessage="Nenhum item encontrado"
                                 pTooltip="{{filtro.length}} itens selecionados" tooltipPosition="top">
                             </p-multiSelect>
                         </div>
@@ -24,41 +24,19 @@
 
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedor">Vendedor</label>
-                            <p-dropdown formControlName="vendedor" [options]="lstVendedores" optionValue="id" optionLabel="nome" placeholder="Selecione"></p-dropdown>
+                            <p-dropdown formControlName="vendedor" [options]="cboVendedores" [(ngModel)]="filtro.Vendedor" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Parceiro</label>
-                            <p-autoComplete formControlName="parceiro" [(ngModel)]="filtro.Parceiro" [suggestions]="lstParceiroFiltrado"
-                                (completeMethod)="filtrarParceiros($event)" field="apelido" placeholder="Digite o nome">
-                                <ng-template let-parceiro pTemplate="apelido">
-                                    <div>
-                                        <div>{{parceiro.apelido}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-autoComplete>
+                            <p-dropdown formControlName="parceiro" [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" (onChange)="Parceiro_onChange($event)" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedorParceiro">Vendedor parceiro</label>
-                            <p-autoComplete formControlName="vendedorParceiro" [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
-                                (completeMethod)="filtrarVendedoresParceiros($event)" field="apelido" placeholder="Digite o nome">
-                                <ng-template let-vendedorParceiro pTemplate="apelido">
-                                    <div>
-                                        <div>{{vendedorParceiro.apelido}}</div>
-                                    </div>
-                                </ng-template>
-                            </p-autoComplete>
+                            <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros" [(ngModel)]="filtro.VendedorParceiro" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end" *ngIf="parametro == 'ORCAMENTOS'">
                             <label for="filtroLoja">Mensagem Pendente</label>
-                            <p-dropdown formControlName="msgPendente" [options]="msgPendenteArray" [(ngModel)]="msgPendenteSelecionada" optionLabel="Value"></p-dropdown>
-                            <!-- <p-autoComplete formControlName="msgPendente" [(ngModel)]="filtro.vendedorParceiro" [suggestions]="lstVendedoresParceiroFiltrado"
-                            (completeMethod)="filtrarVendedoresParceiros($event)" field="apelido" placeholder="Digite sim ou nao">
-                            <ng-template let-vendedorParceiro pTemplate="apelido">
-                                <div>
-                                    <div>{{vendedorParceiro.apelido}}</div>
-                                </div>
-                            </ng-template>
-                        </p-autoComplete>    -->
+                            <p-dropdown formControlName="msgPendente" [options]="cboMensagens" [(ngModel)]="filtro.Mensagem" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
@@ -70,7 +48,7 @@
                         </div>
                         <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
                             <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
-                                (click)="filtrar(true)"></button>
+                                (click)="Pesquisar_Click()"></button>
                         </div>
                     </div>
 

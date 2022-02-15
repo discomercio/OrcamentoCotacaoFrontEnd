@@ -24,6 +24,7 @@ import { EventEmitter } from 'events';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { AprovarOrcamentoComponent } from '../aprovar-orcamento/aprovar-orcamento.component';
+import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 
 @Component({
   selector: 'app-itens',
@@ -59,23 +60,24 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   dtOptions: any = {};
 
   ngOnInit(): void {
+    debugger;
+    if(!this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto){
+      this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
+      return;
+    }
     this.inscreveProdutoComboDto();
     this.buscarQtdeMaxParcelaCartaoVisa();
 
     this.novoOrcamentoService.criarNovoOrcamentoItem();
   }
 
-  ngAfterViewInit() {
-    setTimeout(() => {
-      document.getElementById("p-tabpanel-1-label").click();
-    }, 10);
-  }
   carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
-    this.produtoService.buscarProdutosCompostosXSimples("1",
-      this.novoOrcamentoService.pageItens.toString(),
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id).toPromise().then((r) => {
+    this.produtoService.buscarProdutosCompostosXSimples(
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.loja,
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.uf, 
+      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
 
         if (r != null) {
           this.produtoComboDto = r;
@@ -159,17 +161,18 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   visualizarOrcamento() {
-    // if (this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
-    //   this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
-    //   return;
-    // }
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
+      this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
+      return;
+    }
 
-    let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
-    const ref = this.dialogService.open(AprovarOrcamentoComponent, {
-      width: largura,
-      styleClass: 'dynamicDialog',
-      header: "Orçamentos"
-    })
+    this.router.navigate(["orcamentos/novo-orcamento/aprovar-orcamento", {aprovando: false }]);
+    // let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
+    // const ref = this.dialogService.open(AprovarOrcamentoComponent, {
+    //   width: largura,
+    //   styleClass: 'dynamicDialog',
+    //   header: "Orçamentos"
+    // })
   }
 
   inserirProduto(produto: ProdutoTela): void {
@@ -429,29 +432,16 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.observacoes = this.observacaoOpcao;
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
 
-    this.orcamentoOpcaoService.enviarOrcamentoOpcao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
-      if (r == null) {
-        this.alertaService.mostrarMensagem(r[0]);
-        return;
-      }
-      this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
-      this.novoOrcamentoService.criarNovoOrcamentoItem();
-      this.limparCampos();
-    }).catch((error: HttpErrorResponse) => {
-      this.mensagemService.showErrorViaToast(error.error.errors);
-      return;
-    });
-  }
+    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
+    this.limparCampos();
 
-  incluirObsGerais() {
-    if (this.observacoesGerais) {
-      // this.novoOrcamentoService.opcoesOrcamentoCotacaoDto.ObservacoesGerais = this.observacoesGerais;
-    }
   }
 
   limparCampos() {
     this.lstProdutos = new Array();
     this.pagtoSelecionados = new Array();
+    this.observacaoOpcao = null;
   }
 
   removerOpcao(index: number) {
@@ -477,7 +467,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   mostrarIrmaos(e: any, produto: ProdutoOrcamentoDto) {
 
     if (this.telaDesktop) return;
-    
+
     let n = e.srcElement.closest("td"), ret = [];
 
     if (produto.mostrarCampos) {
@@ -511,5 +501,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         n.style.display = "table-cell";
       }
     }
+  }
+
+  salvarOrcamento(){
+    this.mensagemService.showWarnViaToast("Estamos implementando!");
+    return;
+  }
+  enviar(){
+    this.mensagemService.showWarnViaToast("Estamos implementando!");
+    return;
   }
 }

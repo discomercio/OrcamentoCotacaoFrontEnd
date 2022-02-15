@@ -15,24 +15,24 @@ export class TokenInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
-    setTimeout(() => {
-      this.autenticacaoService.renovarTokenSeNecessario();
-    }, 100);
+    // setTimeout(() => {
+    //   this.autenticacaoService.renovarTokenSeNecessario();
+    // }, 100);
 
     ;
     //header de versão
     let headers: { [name: string]: string | string[]; } = {
       'X-API-Version': environment.versaoApi
     };
-    
+
     //adiciona o header de autenticação
     if (this.autenticacaoService.authEstaLogado()) {
-      
+
       headers = {
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
       };
     }
-    else{
+    else {
       this.router.navigate(['account/login']);
     }
 
@@ -50,7 +50,7 @@ export class TokenInterceptor implements HttpInterceptor {
 
           //   }
           // }
-          
+
         }
       }));
   }

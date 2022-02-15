@@ -1,11 +1,8 @@
 <div class="card">
     <h4>Informações do orçamento</h4>
     <p-tabView orientation="left">
-        <p-tabPanel [header]="labelCliente" leftIcon="pi pi-user">
-            <app-cadastrar-cliente></app-cadastrar-cliente>
-        </p-tabPanel>
-        <p-tabPanel *ngIf="novoOrcamentoService.mostrarOpcoes" [header]="labelOpcoesOrcamento" leftIcon="fa fa-shopping-bag">
-            <app-itens></app-itens>
-        </p-tabPanel>
+        <app-cadastrar-cliente></app-cadastrar-cliente>
+        <app-itens></app-itens>
+        
     </p-tabView>
 </div>

@@ -135,7 +135,6 @@ import { ProductService } from './demo/service/productservice';
 import { IconService } from './demo/service/iconservice';
 import { MessageService } from 'primeng/api';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { ValidacaoFormularioComponent } from './utilities/validacao-formulario/validacao-formulario.component';
 import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { NgxMaskModule } from 'ngx-mask';
@@ -155,6 +154,7 @@ import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/list
 import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+import { ValidacaoFormularioService } from './utilities/validacao-formulario/validacao-formulario.service';
 
 import { OrcamentosModule } from './orcamentos/orcamentos.module';
 @NgModule({
@@ -291,7 +291,6 @@ import { OrcamentosModule } from './orcamentos/orcamentos.module';
         TextComponent,
         WidgetsComponent,
         DownloadsComponent,
-        // ValidacaoFormularioComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
         UsuarioListaComponent,
@@ -311,7 +310,7 @@ import { OrcamentosModule } from './orcamentos/orcamentos.module';
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ExportExcelService, ValidacaoFormularioComponent
+        AppMenuComponent, ExportExcelService, ValidacaoFormularioService
     ],
     bootstrap: [AppComponent]
 })

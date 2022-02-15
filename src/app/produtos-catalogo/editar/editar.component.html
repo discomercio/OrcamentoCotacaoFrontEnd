@@ -10,7 +10,7 @@
     <div class="p-col-12">
         <div class="card">
             <!-- <h5 *ngIf="produto.imagens">Imagens</h5> -->
-            <p-carousel [value]="produto.imagens" [numVisible]="3" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+            <p-carousel [value]="produto.imagens" [numVisible]="3" [numScroll]="1" [circular]="false">
                 <ng-template let-imagem pTemplate="item">
                     <div class="product-item">
                         <div class="product-item-content">
@@ -58,9 +58,9 @@
                         <div class="p-text-bold">Descrição:</div>
                         <div class="p-field p-col-12">
                             <input id="descricao" name="descricao" type="text" pInputText placeholder="Descrição" formControlName="descricao" value="{{produto.Descricao}}"/>
-                            <small class="p-error" *ngIf="validacaoFormGroup.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
-                        <div class="p-text-bold">Ativo: &nbsp;{{produto.Ativo == true ? 'Sim': 'Não'}}</div>
+                        <div class="p-text-bold">Ativo: &nbsp;{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</div>
                         <div class="p-field p-col-12">
                             <p-inputSwitch id="ativo" formControlName="ativo" (onChange)="ativoClick($event)" [(ngModel)]="produto.Ativo"></p-inputSwitch>
                         </div>

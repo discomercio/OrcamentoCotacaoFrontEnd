@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { ProdutoCatalogo } from '../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -17,11 +17,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
     ) { }
 
     public form: FormGroup;
@@ -48,7 +47,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
 
     salvarClick() {
-      if (!this.validacaoFormGroup.validaForm(this.form)){
+      if (!this.validacaoFormularioService.validaForm(this.form)){
         return;
       } 
       
