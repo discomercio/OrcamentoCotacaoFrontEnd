@@ -1,13 +1,11 @@
-import { HttpResponse } from '@angular/common/http';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { concat } from 'rxjs/operators';
 import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
 import { Router, ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ValidacaoFormularioComponent } from 'src/app/utilities/validacao-formulario/validacao-formulario.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 
@@ -22,7 +20,7 @@ export class DownloadsComponent implements OnInit {
     private readonly router: Router,
     public readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
-    private readonly validacaoFormGroup: ValidacaoFormularioComponent,
+    private readonly validacaoFormGroup: ValidacaoFormularioService,
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService)  {  }
