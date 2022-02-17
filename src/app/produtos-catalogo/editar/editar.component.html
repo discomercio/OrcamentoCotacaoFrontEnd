@@ -30,17 +30,6 @@
             <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
                 url="{{urlUpload}}" (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
                 ></p-fileUpload>
-
-            <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
-                (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
-                fileLimit="1" accept="image/*" maxFileSize="52428800">
-                <ng-template pTemplate="content">
-                    <ul *ngIf="uploadedFiles.length">
-                        <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
-                    </ul>
-                </ng-template>
-            </p-fileUpload> -->
-
         </div>
     </div>
 </div>
@@ -53,7 +42,7 @@
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
-                            <input id="id" type="text" pInputText value="{{produto.Id}}" disabled="true"/>
+                            <input id="id" type="text" pInputText value="{{produto.Codigo}}" disabled="true"/>
                         </div>
                         <div class="p-text-bold">Descrição:</div>
                         <div class="p-field p-col-12">

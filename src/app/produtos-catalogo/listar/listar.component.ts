@@ -34,7 +34,7 @@ export class ProdutosCatalogoListarComponent implements OnInit {
 
   criarTabela() {
     this.cols = [
-      { field: "Id", header: "Código", visible: true },
+      { field: "Codigo", header: "Código", visible: true },
       { field: "Descricao", header: "Descrição", visible: true },
       { field: "Ativo", header: "Ativo", visible: true },
       { field: "Acoes", header: "Ações", visible: true }
