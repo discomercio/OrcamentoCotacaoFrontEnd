@@ -61,7 +61,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   ngOnInit(): void {
     debugger;
-    if(!this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto){
+    if(!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto){
       this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
       return;
     }
@@ -75,9 +75,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   produtoComboDto: ProdutoComboDto;
   inscreveProdutoComboDto(): void {
     this.produtoService.buscarProdutosCompostosXSimples(
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.loja,
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.uf, 
-      this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
+      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.loja,
+      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf, 
+      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
 
         if (r != null) {
           this.produtoComboDto = r;
@@ -161,7 +161,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   visualizarOrcamento() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length <= 0) {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length <= 0) {
       this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
       return;
     }
@@ -416,7 +416,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   incluirOpcao() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length == 3) {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
       this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
       return;
     }
@@ -428,11 +428,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       this.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
       return;
     }
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id;
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.observacoes = this.observacaoOpcao;
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
 
-    this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
 
@@ -446,11 +446,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   removerOpcao(index: number) {
     debugger;
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto.id) {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id) {
       this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
         if (r != null) {
 
-          this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.splice(index - 1, 1);
+          this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.splice(index - 1, 1);
         }
       }).catch((error: HttpErrorResponse) => {
         this.mensagemService.showErrorViaToast(error.error.errors);

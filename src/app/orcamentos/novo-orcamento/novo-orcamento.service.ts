@@ -25,8 +25,8 @@ export class NovoOrcamentoService {
   public pageItens: number = 3;
 
   criarNovo() {
-    this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
-    this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto = new Array<OrcamentoOpcaoDto>();
+    this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
+    this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentoOpcaoDto>();
   }
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentoOpcaoDto();
@@ -35,19 +35,19 @@ export class NovoOrcamentoService {
   }
 
   setarDados(clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto) {
-    this.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
   }
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
-    if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
+    if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
       return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils.formatarDecimal(
         this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItem), 0));
 
   }
   public totalPedidoRA(): number {
-    if (this.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto.length >= 0 &&
+      if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
       return this.opcaoOrcamentoCotacaoDto.ValorTotalComRA = this.moedaUtils.formatarDecimal(
         this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItemRA), 0));
