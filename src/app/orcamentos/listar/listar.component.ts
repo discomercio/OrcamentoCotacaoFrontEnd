@@ -57,7 +57,7 @@ export class OrcamentosListarComponent implements OnInit {
   lstVendedores: Array<Usuario>;
   lstParceiros: Array<OrcamentistaIndicadorDto>;
   lstVendedoresParceiros: Array<any>;
-  //lstMensagens: Array<string> = [{Id: '1', Value: 'Sim'},{Id: '0', Value: 'Não'}];
+  public linhaSelecionada: ListaDto;
 
   cboStatus: Array<DropDownItem> = [];
   cboVendedores: Array<DropDownItem> = [];
@@ -101,7 +101,7 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   criarTabela() {
-    this.activatedRoute.params.subscribe((param: any) => { 
+    this.activatedRoute.params.subscribe((param: any) => {
       this.parametro = param.filtro.toUpperCase();
         this.cols = [
           { field: 'NumOrcamento', header: 'Orçamento' },
@@ -147,7 +147,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.buscarVendedoresParceiros();
     this.buscarMensagens();
   }
-  
+
   buscarStatus() {
     this.cboStatus = [];
     this.lstDto.forEach(x => {
@@ -169,7 +169,7 @@ export class OrcamentosListarComponent implements OnInit {
       }
     });
   }
-  
+
   buscarParceiros() {
     this.cboParceiros = [];
     this.lstDto.forEach(x => {
@@ -178,7 +178,7 @@ export class OrcamentosListarComponent implements OnInit {
           this.cboParceiros.push({ Id:(this.idValuesTmp++).toString(), Value:x.Parceiro});
         }
       }
-    });    
+    });
   }
 
   buscarVendedoresParceiros() {
@@ -189,16 +189,16 @@ export class OrcamentosListarComponent implements OnInit {
           this.cboVendedoresParceiros.push({ Id:(this.idValuesTmp++).toString(), Value:x.VendedorParceiro});
         }
       }
-    });     
+    });
   }
-  
+
   buscarMensagens() {
     this.cboMensagens = [];
     this.lstDto.forEach(x => {
       if(!this.cboMensagens.find(f=> f.Value == x.Mensagem)) {
         this.cboMensagens.push({ Id:(this.idValuesTmp++).toString(), Value:x.Mensagem});
       }
-    });     
+    });
     this.buscarDatas();
   }
 
@@ -208,7 +208,7 @@ export class OrcamentosListarComponent implements OnInit {
       if(!this.cboDatas.find(f=> (new Date(f.Value)) >= this.filtro.DtInicio && (new Date(f.Value) <= this.filtro.DtFim))) {
         this.cboDatas.push({ Id:(this.idValuesTmp++).toString(), Value:x.DtCadastro.toString()});
       }
-    });  
+    });
   }
 
   Pesquisar_Click() {
@@ -219,12 +219,12 @@ export class OrcamentosListarComponent implements OnInit {
     let lstFiltroDatas: Array<ListaDto> = new Array();
     this.lstDtoFiltrada = new Array();
 
-    let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor); 
-    let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro); 
-    let lstFiltroParcVend = this.lstDto.filter(s => this.filtro.VendedorParceiro == s.VendedorParceiro); 
+    let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
+    let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
+    let lstFiltroParcVend = this.lstDto.filter(s => this.filtro.VendedorParceiro == s.VendedorParceiro);
     if(this.filtro.Status)   { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
-    if(this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) }; 
-    if(this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }; 
+    if(this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
+    if(this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); };
 
     console.log('Status:   ' + this.filtro.Status);
     console.log('Vendedor: ' + this.filtro.Vendedor);
@@ -235,11 +235,11 @@ export class OrcamentosListarComponent implements OnInit {
     console.log('Data Fim: ' + this.filtro.DtFim);
 
     if( (this.filtro.Status === undefined || this.filtro.Status == null)
-      && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null) 
+      && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null)
       && (this.filtro.Parceiro === undefined || this.filtro.Parceiro == null)
       && (this.filtro.VendedorParceiro === undefined || this.filtro.VendedorParceiro == null)
-      && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null) 
-      && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null) 
+      && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null)
+      && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null)
       && (this.filtro.DtFim === undefined || this.filtro.DtFim == null)
         ) {
       this.lstDtoFiltrada = this.lstDto;
