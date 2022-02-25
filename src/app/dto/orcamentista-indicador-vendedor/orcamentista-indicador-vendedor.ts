@@ -4,4 +4,5 @@ export class OrcamentistaIndicadorVendedorDto {
     indicador: string = "";
     ativo: boolean = false;
     email: string = "";
+
 }

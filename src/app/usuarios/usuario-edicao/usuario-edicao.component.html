@@ -78,16 +78,14 @@
 
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd_telefone">Telefone </label>
-                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd_telefone"
-                            formControlName="ddd_telefone" mask="{{mascaraTelefone}}" />
+                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd_telefone" formControlName="ddd_telefone" mask="{{mascaraTelefone}}" />
                         <small class="p-error" *ngIf="form.controls.ddd_telefone.errors?.minlength">O telefone deve
                             possuir no mínimo {{form.controls.ddd_telefone.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="dddCel_telefoneCel">celular</label>
-                        <input type="text" pInputText id="dddCel_telefoneCel" formControlName="dddCel_telefoneCel"
-                            mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
+                        <input type="text" pInputText id="dddCel_telefoneCel" formControlName="dddCel_telefoneCel" mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
                         <small class="p-error" *ngIf="form.controls.dddCel_telefoneCel.errors?.minlength">O telefone
                             deve
                             possuir no mínimo {{form.controls.dddCel_telefoneCel.errors.minlength.requiredLength}}
@@ -96,13 +94,13 @@
 
                     <div class="p-col-12 p-formgroup-inline">
                         <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" value="true" formControlName="ativo" id="ativo">
+                            <p-radioButton name="ativo" [value]="true" formControlName="ativo" inputId="ativoTrue">
                             </p-radioButton>
                             <label for="ativo">Ativo</label>
                         </div>
 
                         <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" value="false" formControlName="ativo" id="ativo">
+                            <p-radioButton name="ativo" [value]="false" formControlName="ativo" inputId="ativoFalse">
                             </p-radioButton>
                             <label for="ativo">Inativo</label>
                         </div>
@@ -116,8 +114,7 @@
             </form>
             <div class="p-field p-d-flex p-jc-around p-mb-0 p-mt-3">
 
-                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left"
-                    [routerLink]="['/usuarios/usuario-lista']"></button>
+                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" [routerLink]="['/usuarios/usuario-lista']"></button>
 
                 <button pButton pRipple label="Cadastrar" icon="pi pi-save" (click)="atualizar()"></button>
             </div>

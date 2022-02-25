@@ -21,7 +21,7 @@ import {AppMainComponent} from './app.main.component';
                 <span class="menuitem-badge" *ngIf="item.badge">{{item.badge}}</span>
             </a>
             <a (click)="itemClick($event)" (mouseenter)="onMouseEnter()" *ngIf="item.routerLink && !item.items"
-               [routerLink]="item.routerLink" routerLinkActive="active-menuitem-routerlink" [ngClass]="item.class" pRipple
+               [routerLink]="item.routerLink" [queryParams]="item.queryParams"  routerLinkActive="active-menuitem-routerlink" [ngClass]="item.class" pRipple
                [routerLinkActiveOptions]="{exact: true}" [attr.target]="item.target" [attr.tabindex]="0">
                 <i [ngClass]="item.icon" class="layout-menuitem-icon"></i>
                 <span>{{item.label}}</span>

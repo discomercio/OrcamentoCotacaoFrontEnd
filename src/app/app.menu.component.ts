@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
+import { Usuario } from './dto/usuarios/usuario';
+import { UsuarioTipo } from './dto/usuarios/UsuarioTipo';
 import { MenuService } from './service/menu/menu.service';
 
 @Component({
@@ -20,7 +22,7 @@ export class AppMenuComponent implements OnInit {
 
     aprovando: boolean = false;
     ngOnInit() {
-
+        const vendedorParceiro: UsuarioTipo = 'vendedor-parceiro';
         this.model = [
             {
                 items: [
@@ -49,7 +51,7 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Usuários', icon: 'pi pi-users', routerLink: ['/usuarios/usuario-lista'],
                         items: [
-                            { label: 'Vendedores do parceiro', icon: "pi pi-users", routerLink: ['/usuarios/usuario-lista'] }
+                            { label: 'Vendedores do parceiro', icon: "pi pi-users", routerLink: ['/usuarios/usuario-lista'], queryParams: {tipo: vendedorParceiro} }
                         ]
                     }
                 ],

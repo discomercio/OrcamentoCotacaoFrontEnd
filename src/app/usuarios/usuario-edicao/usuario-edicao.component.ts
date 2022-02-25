@@ -10,6 +10,9 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { Lojas } from 'src/app/dto/lojas/lojas';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
+import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-usuario-edicao',
@@ -23,7 +26,9 @@ export class UsuarioEdicaoComponent implements OnInit {
 
   constructor(private readonly activatedRoute: ActivatedRoute,
     private readonly usuariosService: UsuariosService,
+    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly alertaService: AlertaService,
+    private readonly autenticacaoService: AutenticacaoService,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
@@ -40,6 +45,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   public lojas = new Array<Lojas>();
   public lojasSelecionadas = new Array<Lojas>();
   public mascaraTelefone: string;
+  tipo: UsuarioTipo = 'todos';
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -52,6 +58,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       }
     });
 
+
     if (this.apelido == "novo") {
       this.novoUsuario = true;
       // this.disabled = false;
@@ -60,9 +67,9 @@ export class UsuarioEdicaoComponent implements OnInit {
     if (this.apelido.toLowerCase() != "")
       if (!!this.apelido) {
         if (this.apelido.toLowerCase() != "novo") {
-          this.usuariosService.buscarTodosUsuarios().toPromise().then((r) => {
+          this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
             if (!!r) {
-              let usuarios: Usuario[] = r;
+                this.usuario =r;
               //this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
               this.criarForm();
 
@@ -79,7 +86,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
-      email: [this.usuario.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
+      email: [this.usuario.email, [Validators.required, Validators.email, Validators.maxLength(60)]],
       senha: [this.usuario.senha, [Validators.required, Validators.minLength(5), Validators.maxLength(15)]],
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(5)]],
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
@@ -118,9 +125,10 @@ export class UsuarioEdicaoComponent implements OnInit {
     //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
     this.usuario.telefone = f.ddd_telefone.value;
     this.usuario.celular = f.dddCel_telefoneCel.value;
+    this.usuario.parceiro = this.autenticacaoService._parceiro;
 
     if(this.usuario.id){
-      this.usuariosService.alterarUsuario(this.usuario)
+      this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
       .toPromise()
       .then((x) => {
         alert("xx");
@@ -129,7 +137,7 @@ export class UsuarioEdicaoComponent implements OnInit {
         alert("yy");
       });
     }else{
-    this.usuariosService.cadastrarUsuario(this.usuario)
+    this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
     .toPromise()
     .then((x) => {
       alert("x");

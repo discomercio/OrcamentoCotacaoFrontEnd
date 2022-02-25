@@ -5,10 +5,12 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Table } from 'primeng/table';
 import { SelectItem } from 'primeng/api/selectitem';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
+import { mergeMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -20,7 +22,8 @@ export class UsuarioListaComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly alertaService: AlertaService,
-    private readonly _autenticacaoService: AutenticacaoService,
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly route: ActivatedRoute,
     private readonly router: Router) { }
 
   @ViewChild('dataTable') table: Table;
@@ -30,16 +33,26 @@ export class UsuarioListaComponent implements OnInit {
   cols: any[];
   perfil: SelectItem;
   carregando: boolean = false;
+  tipo: UsuarioTipo = 'todos';
 
   ngOnInit(): void {
-    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this._autenticacaoService._parceiro).toPromise().then((r) => {
-      if (r == null) {
-        ;
-        this.alertaService.mostrarErroInternet(r);
-        return;
-      }
-      this.usuarios = r;
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    this.route.queryParamMap.pipe(
+        mergeMap((params) => {
+
+            this.tipo = params.get('tipo') as UsuarioTipo || 'todos';
+            //if(this.tipo == 'vendedor-parceiro')
+            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this.autenticacaoService._parceiro)
+        })
+    ).subscribe( r=>{
+        if (r == null) {
+            this.alertaService.mostrarErroInternet('Nenhum usuário encontrado');
+            return;
+        }
+        this.usuarios = r;
+    },
+    (error)=>{
+        this.alertaService.mostrarErroInternet(error);
+    });
 
     this.form = this.fb.group({
       usuario: ['', [Validators.required]],
@@ -49,7 +62,7 @@ export class UsuarioListaComponent implements OnInit {
     this.cols = [
         {field : 'nome', header: 'Nome'},
         {field : 'email', header: 'E-mail'},
-        {field : 'indicador', header: 'Responsável'},
+        {field : 'vendedorResponsavel', header: 'Responsável'},
         {field : 'ativo', header: 'Ativo'},
     //   { field: 'Responsavel', header: 'Responsável' },
     //   { field: 'Papel', header: 'Papel' },
@@ -64,7 +77,7 @@ export class UsuarioListaComponent implements OnInit {
       this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
     }
     else{
-      this.router.navigate(['/usuarios/usuario-edicao', 'novo']);
+      this.router.navigate(['/usuarios/usuario-edicao', 'novo', { tipo: this.tipo }],);
     }
   }
 }

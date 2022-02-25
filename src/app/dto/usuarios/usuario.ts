@@ -5,6 +5,7 @@ export class Usuario {
     email: string = "";
     senha: string = "";
     idParceiro: string = "";
+    parceiro: string = "";
     telefone: string = "";
     celular: string = "";
     ativo: boolean = false;
@@ -14,4 +15,6 @@ export class Usuario {
     usuarioUltimaAlteracao: string = "";
     dataUltimaAlteracao: Date;
     loja: string;
+    vendedorResponsavel: string;
 }
+
