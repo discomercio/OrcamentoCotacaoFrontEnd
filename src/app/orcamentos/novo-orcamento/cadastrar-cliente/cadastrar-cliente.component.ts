@@ -102,21 +102,21 @@ export class CadastrarClienteComponent implements OnInit {
       return;
     }
     // if (this.tipoUsuario == this.constantes.PARCEIRO)
-      if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
-        this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
-        this.form.controls.Parceiro.setValue(this.usuario.nome);
-        this.tipoUsuario = this.constantes.PARCEIRO;
-        return;
-      }
+    if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+      this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
+      this.form.controls.Parceiro.setValue(this.usuario.nome);
+      this.tipoUsuario = this.constantes.PARCEIRO;
+      return;
+    }
     // if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR)
-      if (this.usuario.permissoes.length == 1 &&
-        this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
-        this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
-        this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
-        this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
-        this.tipoUsuario = this.constantes.PARCEIRO_VENDEDOR;
-        return;
-      }
+    if (this.usuario.permissoes.length == 1 &&
+      this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
+      this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
+      this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
+      this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
+      this.tipoUsuario = this.constantes.PARCEIRO_VENDEDOR;
+      return;
+    }
   }
 
   carregarListas(): void {
@@ -167,7 +167,7 @@ export class CadastrarClienteComponent implements OnInit {
 
   buscarParceirosPorVendedor(): void {
     let vendedor: string = this.form.controls.Vendedor.value;
-    let loja:string = this.usuario.loja;
+    let loja: string = this.usuario.loja;
 
     this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise().then((r) => {
       if (r != null) {
@@ -211,7 +211,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
 
-      let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto;
+    let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto;
 
     this.form = this.fb.group({
       Validade: [clienteOrcamentoCotacao.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
@@ -225,7 +225,9 @@ export class CadastrarClienteComponent implements OnInit {
       Concorda: clienteOrcamentoCotacao.concordaWhatsapp,
       VendedorParceiro: [clienteOrcamentoCotacao.vendedorParceiro],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
-      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]]
+      Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
+      EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
+      DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata]
     });
   }
 
@@ -246,7 +248,12 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   salvarOrcamento() {
+    debugger;
+    
     if (!this.validacaoFormularioService.validaForm(this.form))
+      return;
+
+      if (!this.ValidaDataEntrega())
       return;
 
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -266,7 +273,7 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.loja = this.usuario.loja;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
-    this.router.navigate(["novo-orcamento/itens"]);
+    this.router.navigate(["orcamentos/itens"]);
   }
 
   concordouWhatsapp(): void {
@@ -276,5 +283,18 @@ export class CadastrarClienteComponent implements OnInit {
     }
 
     this.checkedWhatsapp = true;
+  }
+
+  dataEntrega = true;
+  ValidaDataEntrega() {
+    if (this.form.controls.EntregaImediata.value && this.form.controls.DataEntregaImediata.value == null) {
+      this.form.controls.DataEntregaImediata.setErrors({ "status": "INVALID" });
+      this.form.controls.DataEntregaImediata.markAsDirty();
+      this.dataEntrega = false;
+      return false;
+    }
+    this.form.controls.DataEntregaImediata.setErrors(null);
+    this.dataEntrega = true;
+    return true;
   }
 }

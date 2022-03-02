@@ -62,7 +62,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   ngOnInit(): void {
     debugger;
     if(!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto){
-      this.router.navigate(["/novo-orcamento/cadastrar-cliente"]);
+      this.router.navigate(["orcamentos/cadastrar-cliente"]);
       return;
     }
     this.inscreveProdutoComboDto();

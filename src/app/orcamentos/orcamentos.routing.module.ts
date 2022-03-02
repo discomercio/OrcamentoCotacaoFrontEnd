@@ -8,7 +8,6 @@ import { CadastrarClienteComponent } from './novo-orcamento/cadastrar-cliente/ca
 import { ItensComponent } from './novo-orcamento/itens/itens.component';
 import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from './novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
-import { CadastroOrcamentoComponent } from './novo-orcamento/cadastro-orcamento/cadastro-orcamento.component';
 import { AprovarOrcamentoComponent } from './novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 
 const OrcamentoRoutingModule: Routes = [
@@ -21,7 +20,6 @@ const OrcamentoRoutingModule: Routes = [
                     { path: "itens", component: ItensComponent },
                     { path: "select-prod", component: SelectProdDialogComponent },
                     { path: "visualizar-orcamento", component: VisualizarOrcamentoComponent},
-                    { path: "cadastro-orcamento", component: CadastroOrcamentoComponent},
                     { path: "novo-orcamento", component: NovoOrcamentoComponent },
                     { path: "novo-orcamento/aprovar-orcamento", component: AprovarOrcamentoComponent }
                 ]

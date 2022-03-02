@@ -85,6 +85,7 @@
                 </p-dropdown>
                 <!-- <small class="p-error"
                                         *ngIf="validacaoFormularioService.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
+                
             </div>
 
         </div>
@@ -95,6 +96,17 @@
                 <p-calendar dateFormat="dd/mm/yy" formControlName="Validade" [showIcon]="true"></p-calendar>
                 <small class="p-error"
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Validade')">{{mensagemErro}}</small>
+            </div>
+            <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
+                <label class="p-d-block" for="entregaImediata">Entrega Imediata</label>
+                <p-inputSwitch id="entregaImediata" formControlName="EntregaImediata"></p-inputSwitch>
+            </div>
+            <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
+                <label for="dataEntregaImediata">Data Entrega</label>
+                <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true" [readonlyInput]="true"
+                [disabled]="!form.controls.EntregaImediata.value"></p-calendar>
+                <small class="p-error"
+                    *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
             </div>
         </div>
 
