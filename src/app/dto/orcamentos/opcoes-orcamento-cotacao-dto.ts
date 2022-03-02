@@ -2,8 +2,17 @@ import { OrcamentoOpcaoDto } from './orcamento-opcao-dto';
 import { ClienteOrcamentoCotacaoDto } from '../clientes/cliente-orcamento-cotacao-dto';
 
 export class OrcamentoCotacaoDto {
-    ClienteOrcamentoCotacaoDto:ClienteOrcamentoCotacaoDto;
-    ListaOrcamentoCotacaoDto: OrcamentoOpcaoDto[];
-    Validade:Date;
-    ObservacoesGerais:string;
+    id: number;
+    vendedor: string;
+    parceiro: string;
+    vendedorParceiro: string;
+    loja: string;
+    validade: Date;
+    qtdeRenovacao: number;
+    concordaWhatsapp: boolean;
+    observacoesGerais: string;
+    entregaImediata: boolean;
+    dataEntregaImediata: Date;
+    clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
+    listaOrcamentoCotacaoDto: OrcamentoOpcaoDto[];
 }

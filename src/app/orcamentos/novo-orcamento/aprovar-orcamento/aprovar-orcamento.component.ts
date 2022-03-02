@@ -53,7 +53,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id.toString()).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto.ClienteOrcamentoCotacaoDto = r;
+          this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = r;
       }
     });
   }
@@ -61,7 +61,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   buscarOpcoesOrcamento(id: number) {
     this.orcamentoOpcaoService.buscarOpcoesOrcamento(id.toString()).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto = r;
+        this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = r;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
