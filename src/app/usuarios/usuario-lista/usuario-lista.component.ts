@@ -63,7 +63,7 @@ export class UsuarioListaComponent implements OnInit {
         {field : 'nome', header: 'Nome'},
         {field : 'email', header: 'E-mail'},
         {field : 'vendedorResponsavel', header: 'Responsável'},
-        {field : 'ativo', header: 'Ativo'},
+        {field : 'ativoLabel', header: 'Ativo'},
     //   { field: 'Responsavel', header: 'Responsável' },
     //   { field: 'Papel', header: 'Papel' },
     //   { field: 'Nome', header: 'Nome' },

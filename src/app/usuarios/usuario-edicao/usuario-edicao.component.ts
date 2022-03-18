@@ -13,6 +13,7 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 
 @Component({
   selector: 'app-usuario-edicao',
@@ -29,6 +30,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
+    private readonly mensagemService: MensagemService,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
@@ -119,7 +121,7 @@ export class UsuarioEdicaoComponent implements OnInit {
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
-    this.usuario.ativo = ( f.ativo.value =="true");
+    this.usuario.ativo = f.ativo.value;
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
     //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
@@ -131,19 +133,19 @@ export class UsuarioEdicaoComponent implements OnInit {
       this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
       .toPromise()
       .then((x) => {
-        alert("xx");
+        this.mensagemService.showSuccessViaToast("Usuário alterado com sucesso");
       })
       .catch(()=>{
-        alert("yy");
+        this.mensagemService.showSuccessViaToast("Erro ao alterar os dados");
       });
     }else{
     this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
     .toPromise()
     .then((x) => {
-      alert("x");
+        this.mensagemService.showSuccessViaToast("Usuário adicionado com sucesso");
     })
     .catch(()=>{
-      alert("y");
+        this.mensagemService.showSuccessViaToast("Erro ao armazenar os dados");
     });
     }
 

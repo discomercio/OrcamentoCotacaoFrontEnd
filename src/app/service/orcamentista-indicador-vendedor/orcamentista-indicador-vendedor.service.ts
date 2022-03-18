@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
 import { Observable } from 'rxjs';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +18,8 @@ export class OrcamentistaIndicadorVendedorService {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
 
-    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params });
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
+    .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
   }
   buscarVendedoresParceirosPorId(id:string): Observable<Usuario> {
     return this.http.get<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
