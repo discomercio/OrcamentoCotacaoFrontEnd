@@ -1,37 +1,40 @@
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { ProdutoCompostoDto } from 'src/app/dto/produtos/produtoCompostoDto';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
 
 export class ProdutoTela {
     /**
      * Constroi a partir de um ProdutoDto
      */
-    constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto) {
-        if (produtoCompostoDto != null) {
-            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoCompostoDto.paiFabricante, produtoCompostoDto.paiFabricanteNome, produtoCompostoDto.paiProduto) + produtoCompostoDto.paiDescricao);
-            produtoDto.fabricante = produtoCompostoDto.paiFabricante;
-            produtoDto.fabricanteNome = produtoCompostoDto.paiFabricanteNome;
-            produtoDto.produto = produtoCompostoDto.paiProduto;
-            produtoDto.precoLista = produtoCompostoDto.paiPrecoTotal;
-            produtoDto.descricaoHtml = produtoCompostoDto.paiDescricao;
-            this.Filhos = produtoCompostoDto.filhos;
-        }
+    constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto[]) {
+        // if (produtoCompostoDto != null) {
+        //     this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoCompostoDto.paiFabricante, produtoCompostoDto.paiFabricanteNome, produtoCompostoDto.paiProduto) + produtoCompostoDto.paiDescricao);
+        //     produtoDto.fabricante = produtoCompostoDto.paiFabricante;
+        //     produtoDto.fabricante_Nome = produtoCompostoDto.paiFabricanteNome;
+        //     produtoDto.produto = produtoCompostoDto.paiProduto;
+        //     produtoDto.precoLista = produtoCompostoDto.paiPrecoTotal;
+        //     produtoDto.descricaoHtml = produtoCompostoDto.paiDescricao;
+        //     this.Filhos = produtoCompostoDto.filhos;
+        // }
 
-        if (produtoCompostoDto == null) {
-            this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricanteNome, produtoDto.produto) + produtoDto.descricaoHtml);
-            produtoDto = produtoDto;
-            this.Filhos = new Array();
-        }
-
-        // this.stringBusca = produtoDto !=undefined? ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.Fabricante, produtoDto.Fabricante_Nome, produtoDto.Produto) + StringUtils.TextoDeHtml(produtoDto.Descricao_html)): "";
-        // const filhosDiretos = produtoDto !=undefined? produtoCompostoDto.filter(el => el.PaiFabricante === produtoDto.Fabricante && el.PaiProduto === produtoDto.Produto):  new Array();
-        // if (filhosDiretos.length == 0) {
+        // if (produtoCompostoDto == null) {
+        //     this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) + produtoDto.descricaoHtml);
+        //     produtoDto = produtoDto;
         //     this.Filhos = new Array();
         // }
-        // else {
-        //     //somente pode ter uma entrada do pai no array
-        //     this.Filhos = filhosDiretos[0].Filhos;
-        // }
+        this.stringBusca = produtoDto !=undefined? ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) + StringUtils.TextoDeHtml(produtoDto.descricaoHtml)): "";
+        const filhosDiretos = produtoDto !=undefined? produtoCompostoDto.filter(el => el.paiFabricante === produtoDto.fabricante && el.paiProduto === produtoDto.produto):  new Array();
+        if (filhosDiretos.length == 0) {
+            this.Filhos = new Array();
+        }
+        else {
+            //somente pode ter uma entrada do pai no array
+            this.Filhos = filhosDiretos[0].filhos;
+            this.Filhos.forEach(p => {
+                this.stringBusca += "/" + p.produto;
+            });
+        }
     }
 
     //a busca é feita contra esta string
@@ -41,7 +44,7 @@ export class ProdutoTela {
     public visivel = true;
 
     //os filhos que esse cara tem
-    public Filhos: ProdutoDto[];
+    public Filhos: ProdutoFilhoDto[];
 
     //rotina para converter para o formato da busca: sem espaços em e minúsculas
     public static StringSimples(msg: string) {

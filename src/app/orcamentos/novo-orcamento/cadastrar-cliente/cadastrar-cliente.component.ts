@@ -66,7 +66,8 @@ export class CadastrarClienteComponent implements OnInit {
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
-    this.getDadosToken();
+    this.usuario = this.autenticacaoService.getUsuarioDadosToken();
+    this.tipoUsuario = this.autenticacaoService.tipoUsuario;
     this.setarCamposDoForm();
     this.carregarListas();
     this.buscarEstados();
@@ -76,45 +77,24 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.mostrarOpcoes = false;
   }
 
-  getDadosToken(): void {
-    this.usuario.nome = this.autenticacaoService.authUsuario;
-
-    if (this.usuario.nome) {
-      this.usuario.permissoes = this.autenticacaoService._permissoes;
-      this.usuario.idVendedor = this.autenticacaoService._vendedor;
-      this.usuario.idParceiro = this.autenticacaoService._parceiro;
-      this.usuario.loja = this.autenticacaoService._lojaLogado;
-    }
-
-  }
-
   setarCamposDoForm(): void {
     this.form.controls.Vendedor.setValue("");
     this.form.controls.Parceiro.setValue("");
     this.form.controls.VendedorParceiro.setValue("");
 
-    this.tipoUsuario = this.constantes.GESTOR;
-    return;
-    // if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS)
-    if (this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)) {
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.form.controls.Vendedor.setValue(this.usuario.nome);
-      this.tipoUsuario = this.constantes.VENDEDOR_UNIS;
       return;
     }
-    // if (this.tipoUsuario == this.constantes.PARCEIRO)
-    if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+    if (this.tipoUsuario == this.constantes.PARCEIRO) {
       this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
       this.form.controls.Parceiro.setValue(this.usuario.nome);
-      this.tipoUsuario = this.constantes.PARCEIRO;
       return;
     }
-    // if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR)
-    if (this.usuario.permissoes.length == 1 &&
-      this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
+    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
       this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
       this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
       this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
-      this.tipoUsuario = this.constantes.PARCEIRO_VENDEDOR;
       return;
     }
   }
@@ -248,12 +228,11 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   salvarOrcamento() {
-    debugger;
-    
+
     if (!this.validacaoFormularioService.validaForm(this.form))
       return;
 
-      if (!this.ValidaDataEntrega())
+    if (!this.ValidaDataEntrega())
       return;
 
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -273,6 +252,9 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacaoDto.loja = this.usuario.loja;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
+    this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
+
     this.router.navigate(["orcamentos/itens"]);
   }
 

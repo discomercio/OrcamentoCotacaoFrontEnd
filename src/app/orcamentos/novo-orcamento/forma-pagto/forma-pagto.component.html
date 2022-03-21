@@ -1,0 +1,181 @@
+<div class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-jc-between p-px-0">
+    <!-- <div class="p-col-12 p-lg-6 p-md-6 p-sm-12 p-px-0 p-py-1">
+        <textarea rows="4" cols="3" placeholder="Observações" pInputTextarea
+            [(ngModel)]="observacaoOpcao"></textarea>
+    </div> -->
+    <div class="p-col-12 p-lg-9 p-px-0 p-px-md-4 p-py-1">
+        <h6>Formas de pagamento</h6>
+        <div class="p-field-checkbox" *ngIf="formasPagtoAVista">
+            <div class="p-col-12 p-grid">
+                <p-checkbox name="{{formasPagtoAVista.idTipoPagamento}}" value="{{formasPagtoAVista.idTipoPagamento}}"
+                    inputId="{{formasPagtoAVista.idTipoPagamento}}"
+                    [(ngModel)]="formaPagtoCriacaoAvista.tipo_parcelamento">
+                </p-checkbox>
+                <label class="font-size p-mx-2 p-as-center"
+                    for="{{formasPagtoAVista.idTipoPagamento}}">{{formasPagtoAVista.tipoPagamentoDescricao}}</label>
+                <div class="p-col-5">
+                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="avista" [options]="formasPagtoAVista.meios"
+                        optionLabel="descricao" placeholder="Selecione" optionValue=""
+                        [(ngModel)]="formaPagtoCriacaoAvista.op_av_forma_pagto">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div class="p-field-checkbox">
+            <div class="p-col-12 p-grid">
+                <p-checkbox name="" value="2" inputId="2" [disabled]="true" binary="true" [(ngModel)]="checked">
+                </p-checkbox>
+                <label class="font-size p-mx-2 p-as-center" for="2">A Prazo</label>
+                <div class="p-col-5">
+                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo"
+                        optionLabel="tipoPagamentoDescricao" placeholder="Selecione" (onChange)="selectAprazo()"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.tipo_parcelamento" optionValue="idTipoPagamento">
+                    </p-dropdown>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO" class="p-grid p-col-12 p-ai-center" >
+            <label>Qtde de parcelas</label>
+            <div class="p-col-2">
+                <input id="qtdeParcelas" type="number" pInputText placeholder="" [min]="1" [max]="qtdeMaxParcelas"
+                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pc_qtde" (change)="calcularParcelas()" />
+            </div>
+            <p *ngIf="formaPagtoCriacaoAprazo.c_pc_valor">
+                <!-- X R$ 1.234,00 -->
+                X {{novoOrcamentoService.moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pc_valor)}}
+                <!-- formaPagtoCriacaoAprazo.c_pc_valor -->
+            </p>
+        </div>
+        <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA">
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-md-6 p-sm-6">
+                    <label>Meio pagamento entrada</label>
+                    <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8"  [options]="meiosEntrada"
+                        optionLabel="descricao" optionValue="idTipoParcela" placeholder="Selecione"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_entrada_forma_pagto" >
+                    </p-dropdown>
+                </div>
+                <div class="p-col-12 p-lg-6 p-md-6 p-sm-6">
+                    <label>Valor de entrada</label>
+                    <input id="valorEntrada" type="text" pInputText placeholder=""
+                        [(ngModel)]="formaPagtoCriacaoAprazo.o_pce_entrada_valor" />
+                </div>
+            </div>
+
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-md-6 p-sm-6">
+                    <label>Meio pagamento demais prestações</label>
+                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="meiosDemaisPrestacoes"
+                        optionLabel="descricao" optionValue="id" placeholder="Selecione"
+                        (onChange)="qtdeMaxParcelasEDiasComEntrada()"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto">
+                    </p-dropdown>
+                </div>
+                <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                    <label>Qtde de parcelas</label>
+                    <input id="qtdeParcelaEntrada" type="number" pInputText placeholder="" [min]="1"
+                        [max]="qtdeMaxParcelas" (change)="calcularParcelas()"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_qtde" />
+
+                </div>
+                <div class="p-as-center">
+                    <p> 
+                        X {{novoOrcamentoService.moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pce_prestacao_valor)}}
+                    </p>
+                </div>
+            </div>
+            <div class="p-grid p-ai-center p-col-12">
+                <label>Período entre parcelas</label>
+                <div class="p-col-2">
+                    <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder="" [min]="0" [max]="qtdeMaxDias"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo" />
+                </div>
+                <div class="p-as-center">
+                    <p>dias</p>
+                </div>
+            </div>
+
+        </div>
+        <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA">
+
+            <!-- 
+                primeira prestação
+                dropdown = op_pse_prim_prest_forma_pagto
+                input = c_pse_prim_prest_valor
+                input number = c_pse_prim_prest_apos
+            -->
+            <!-- 
+                demais prestações
+                dropdown = op_pse_demais_prest_forma_pagto
+                input number = c_pse_demais_prest_qtde
+                input = c_pse_demais_prest_valor
+                input number = c_pse_demais_prest_periodo
+            -->
+            <div class="p-grid">
+                <div class="p-col-12 p-lg-6 p-md-6 p-sm-6">
+                    <label>Meio pagamento</label>
+                    <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8" id="aprazo" [options]="meiosEntrada"
+                        optionLabel="descricao" placeholder="Selecione"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_entrada_forma_pagto" optionValue="idTipoPagamento">
+                    </p-dropdown>
+                </div>
+                <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                    <label>Qtde de parcelas</label>
+                    <input id="qtdeParcelaSemEntrada" type="number" pInputText placeholder="" [min]="0"
+                        [max]="qtdeMaxParcelas" (change)="calcularPrestacoes()"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_qtde" />
+
+                </div>
+                <div class="p-as-center">
+                    <p> X R$ 1.000,00
+                        <!-- formaPagtoCriacaoAprazo.c_pce_prestacao_valor -->
+                    </p>
+                </div>
+            </div>
+            <div class="p-grid p-ai-center p-col-12">
+                <label>Período entre parcelas</label>
+                <div class="p-col-2">
+                    <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder="" [min]="0" [max]="qtdeMaxDias"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo" />
+                </div>
+                <div class="p-as-center">
+                    <p>dias</p>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELA_UNICA" class="p-grid">
+            <div class="p-col-12 p-lg-4 p-md-4 p-sm-4">
+                <label>Meio de pagamento</label>
+                <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="meiosEntrada" optionLabel="descricao"
+                    optionValue="idTipoPagamento" [(ngModel)]="formaPagtoCriacaoAprazo.op_pu_forma_pagto"
+                    placeholder="Selecione">
+                </p-dropdown>
+            </div>
+            <div class="p-grid p-col-12 p-lg-8 p-md-8 p-sm-8 p-ai-center">
+                <label>vencendo após</label>
+                <div class="p-col-2">
+                    <input id="vencApos" type="number" pInputText placeholder="" [min]="1" [max]="qtdeMaxParcelas"
+                        [(ngModel)]="formaPagtoCriacaoAprazo.c_pu_vencto_apos" />
+                </div>
+                <label>
+                    <!-- formaPagtoCriacaoAprazo.c_pu_valor -->
+                    dias
+                </label>
+            </div>
+
+        </div>
+        <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA" class="p-grid p-col-12 p-ai-center">
+            <label>Qtde de parcelas</label>
+            <div class="p-col-2">
+                <input id="qtdeParcelas" type="number" pInputText placeholder="" [min]="1" [max]="qtdeMaxParcelas"
+                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pc_maquineta_qtde" />
+            </div>
+            <p>X R$ 1.234,00
+                <!-- formaPagtoCriacaoAprazo.c_pc_maquineta_valor -->
+            </p>
+        </div>
+    </div>
+    <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
+        <button pButton pRipple label="Adicionar Opção de Orçamento" (click)="incluirOpcao()"></button>
+    </div>
+</div>

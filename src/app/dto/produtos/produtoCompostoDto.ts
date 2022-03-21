@@ -1,4 +1,4 @@
-import { ProdutoDto } from './ProdutoDto';
+import { ProdutoFilhoDto } from './produto-filhoDto';
 
 export class ProdutoCompostoDto {
     paiFabricante: string;
@@ -6,5 +6,5 @@ export class ProdutoCompostoDto {
     paiProduto: string;
     paiDescricao:string;    
     paiPrecoTotal: number;
-    filhos: Array<ProdutoDto>;
+    filhos: Array<ProdutoFilhoDto>;
 }
