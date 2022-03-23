@@ -61,9 +61,9 @@ export class UsuarioListaComponent implements OnInit {
     });
     this.cols = [
         {field : 'nome', header: 'Nome'},
-        {field : 'email', header: 'E-mail'},
+        {field : 'email', header: 'E-mail', width: '300px'},
         {field : 'vendedorResponsavel', header: 'Responsável'},
-        {field : 'ativoLabel', header: 'Ativo'},
+        {field : 'ativoLabel', header: 'Ativo', width: '60px'},
     //   { field: 'Responsavel', header: 'Responsável' },
     //   { field: 'Papel', header: 'Papel' },
     //   { field: 'Nome', header: 'Nome' },

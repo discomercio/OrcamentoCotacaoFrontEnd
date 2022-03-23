@@ -5,18 +5,13 @@
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-jc-end p-mx-0 p-px-0">
                     <div class="p-field p-col-12 p-lg-2 p-sm-3 p-mb-1 p-px-1">
-                        <button pButton pRipple label="{{!!usuarioSelecionado ? 'Editar': 'Novo Usuário'}}"
-                            class="p-as-end" icon="{{!!usuarioSelecionado?'pi pi-user-edit': 'pi pi-plus'}}"
-                            (click)="editarUsuario()"></button>
+                        <button pButton pRipple label="{{!!usuarioSelecionado ? 'Editar': 'Novo Usuário'}}" class="p-as-end" icon="{{!!usuarioSelecionado?'pi pi-user-edit': 'pi pi-plus'}}" (click)="editarUsuario()"></button>
                     </div>
                 </div>
             </form>
 
-            <p-table #dataTable [columns]="cols" [value]="usuarios" [(selection)]="usuarioSelecionado"
-                [responsive]="true" responsiveLayout="stack" breakpoint="680px"
-                styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
-                [paginator]="true" [filterDelay]="0"
-                [globalFilterFields]="['nome','indicador','ativo','email']">
+            <p-table #dataTable [columns]="cols" [value]="usuarios" [(selection)]="usuarioSelecionado" [responsive]="true" responsiveLayout="stack" breakpoint="680px" styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10" [paginator]="true"
+                [filterDelay]="0" [globalFilterFields]="['nome','indicador','ativo','email']">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
                         Usuários
@@ -31,7 +26,7 @@
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th style="width: 45px"></th>
-                        <th class="p-py-2" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
+                        <th class="p-py-2" [ngStyle]="{width: col.width? col.width: 'auto'}" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 {{col.header}}
                             </div>
@@ -44,8 +39,7 @@
                             <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
                         </td>
                         <td *ngFor="let col of columns">
-                            <span class="p-column-title">{{col.header}}</span>
-                            {{rowData[col.field]}}
+                            <span class="p-column-title">{{col.header}}</span> {{rowData[col.field]}}
                         </td>
                     </tr>
                 </ng-template>

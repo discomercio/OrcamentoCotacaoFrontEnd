@@ -75,11 +75,24 @@ export class AlertaService {
         return;
       }
 
+      if (error.status == 422) {
+        if(error.error?.Message){
+            this.mostrarMensagemComLargura(
+                error.error.Message,
+                "250px", null);
+        }else{
+            this.mostrarMensagemComLargura(
+                "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+                "250px", null);
+        }
+
+        return;
+      }
       if (error.status == 500) {
         //erro 500
         this.mostrarMensagemComLargura(
-          "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-          "250px", null);
+            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+            "250px", null);
 
         return;
       }

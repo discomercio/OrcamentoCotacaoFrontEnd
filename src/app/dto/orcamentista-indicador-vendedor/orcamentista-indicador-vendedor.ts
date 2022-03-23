@@ -6,7 +6,7 @@ export class OrcamentistaIndicadorVendedorDto {
     static JSONtoConcret(x: OrcamentistaIndicadorVendedorDto): OrcamentistaIndicadorVendedorDto {
         const result = new OrcamentistaIndicadorVendedorDto();
         Object.assign(result, x);
-        x.ativoLabel = !!x.ativo? "sim": "não";
+        x.ativoLabel = !!x.ativo? "SIM": "NÃO";
         return x;
     }
     id: number = 0;
@@ -14,7 +14,7 @@ export class OrcamentistaIndicadorVendedorDto {
     indicador: string = "";
     ativo: boolean = false;
     email: string = "";
-    ativoLabel: string = "não";
+    ativoLabel: string = "NÂO";
 
 
 }

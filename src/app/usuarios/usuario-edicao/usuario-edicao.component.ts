@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MenuItem, SelectItem } from 'primeng/api';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
@@ -34,7 +34,8 @@ export class UsuarioEdicaoComponent implements OnInit {
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
-    private readonly lojasService: LojasService
+    private readonly lojasService: LojasService,
+    private readonly router: Router
     ) { }
 
   public form: FormGroup;
@@ -134,19 +135,22 @@ export class UsuarioEdicaoComponent implements OnInit {
       .toPromise()
       .then((x) => {
         this.mensagemService.showSuccessViaToast("Usuário alterado com sucesso");
+
+        this.router.navigate(['/usuarios/usuario-lista']);
       })
-      .catch(()=>{
-        this.mensagemService.showSuccessViaToast("Erro ao alterar os dados");
+      .catch((x) => {
+        this.alertaService.mostrarErroInternet(x);
       });
     }else{
-    this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
-    .toPromise()
-    .then((x) => {
-        this.mensagemService.showSuccessViaToast("Usuário adicionado com sucesso");
-    })
-    .catch(()=>{
-        this.mensagemService.showSuccessViaToast("Erro ao armazenar os dados");
-    });
+        this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
+        .toPromise()
+        .then((x) => {
+            this.mensagemService.showSuccessViaToast("Usuário adicionado com sucesso");
+            this.router.navigate(['/usuarios/usuario-lista']);
+        })
+        .catch((x) => {
+            this.alertaService.mostrarErroInternet(x);
+        });
     }
 
   }
