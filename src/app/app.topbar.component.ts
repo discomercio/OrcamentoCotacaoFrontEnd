@@ -99,6 +99,7 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                             </li>
                         </ul>
                     </li>
+<!--
                     <li #messages [ngClass]="{'active-top-menu':appMain.activeTopbarItem === messages}">
                         <a href="#" (click)="appMain.onTopbarItemClick($event,messages)">
                             <i class="topbar-icon animated swing pi pi-fw pi-envelope"></i>
@@ -137,38 +138,20 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li> -->
                     <li #notifications [ngClass]="{'active-top-menu':appMain.activeTopbarItem === notifications}">
                         <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
                             <i class="topbar-icon pi pi-fw pi-bell"></i>
-                            <span class="topbar-badge animated rubberBand">4</span>
+                            <span class="topbar-badge animated rubberBand">0</span>
                             <span class="topbar-item-name">Notifications</span>
                         </a>
                         <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                             <li role="menuitem">
-                                <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
+                                <a href="orcamentos/listar/orcamentos?msgPendentes=true">
                                     <i class="pi pi-fw pi-sliders-h"></i>
-                                    <span>Pending tasks</span>
+                                    <span>Mensagens não Lida</span>
                                 </a>
-                            </li>
-                            <li role="menuitem">
-                                <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                    <i class="pi pi-fw pi-calendar"></i>
-                                    <span>Meeting today at 3pm</span>
-                                </a>
-                            </li>
-                            <li role="menuitem">
-                                <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                    <i class="pi pi-fw pi-download"></i>
-                                    <span>Download documents</span>
-                                </a>
-                            </li>
-                            <li role="menuitem">
-                                <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                    <i class="pi pi-fw pi-bookmark"></i>
-                                    <span>Book flight</span>
-                                </a>
-                            </li>
+                            </li>                           
                         </ul>
                     </li>
                     <li #search class="search-item" [ngClass]="{'active-top-menu':appMain.activeTopbarItem === search}"
