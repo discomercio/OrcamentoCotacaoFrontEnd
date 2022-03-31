@@ -472,10 +472,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   removerOpcao(index: number) {
     debugger;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id) {
+      
       this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
         if (r != null) {
 
-          this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.splice(index - 1, 1);
+          
         }
       }).catch((error: HttpErrorResponse) => {
         this.mensagemService.showErrorViaToast(error.error.errors);
@@ -497,6 +498,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let produto = this.novoOrcamentoService.lstProdutosSelecionados.splice(index, 1)[0];
 
     this.removerProdutoDaListaControle(produto);
+
+    this.digitouQte(produto);
   }
 
   removerProdutoDaListaControle(produto: ProdutoOrcamentoDto) {
