@@ -8,6 +8,7 @@ export class Constantes {
 
     public COD_MEIO_PAGTO_ENTRADA = 3;
     public COD_MEIO_PAGTO_DEMAIS_PRESTACOES = 5;
+    public COD_MEIO_PAGTO_PRIM_PRESTACOES = 4;
 
     public COD_MEIO_TIPO_PAGTO_DINHEIRO = 1;
     public COD_MEIO_TIPO_PAGTO_DEPOSITO = 2;

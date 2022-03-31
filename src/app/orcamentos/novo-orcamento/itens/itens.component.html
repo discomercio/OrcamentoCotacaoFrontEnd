@@ -110,20 +110,20 @@
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">
                             <tr class="font-size">
-                                <td class="p-text-right">
+                                <!-- <td class="p-text-right">
                                     
 
                                 </td>
-                                <td></td>
-                                <td class="p-text-right">
+                                <td></td> -->
+                                <td class="p-text-right" colspan="3">
                                     Comissão:
-                                    {{moedaUtils.formatarValorDuasCasaReturnZero(percentualMaxComissao?.percMaxComissao)}} %
+                                    {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}} %
                                 </td>
+                                <!-- <td></td>
                                 <td></td>
-                                <td></td>
-                                <td class="p-text-right">Total</td>
-                                <td class="p-text-right">
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.VlTotal)}}
+                                <td class="p-text-right">Total</td> -->
+                                <td class="p-text-right" colspan="4">
+                                    Total {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.VlTotal)}}
                                 </td>
                                 <td></td>
                             </tr>

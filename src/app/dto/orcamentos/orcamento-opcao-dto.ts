@@ -8,4 +8,5 @@ export class OrcamentoOpcaoDto {
     VlTotal: number | null;    
     formaPagto:FormaPagtoCriacao[];
     observacoes:string;
+    percRT:number;
 }

@@ -47,15 +47,19 @@ export class NovoOrcamentoService {
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
-      !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils.formatarDecimal(
-        this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItem), 0));
-
+      !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
+      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils
+        .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+          .reduce((sum, current) => sum + this.moedaUtils
+            .formatarDecimal(current.totalItem), 0));
+    }
   }
 
-  public calcularDesconto(valor: number, desconto: number) {
-    let valorDescontado = valor * (1 - desconto / 100);
-    return Number.parseFloat(valorDescontado.toFixed(2));
+  public totalAVista(): number {
+    return this.moedaUtils
+      .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+        .reduce((sum, current) => sum + this.moedaUtils
+          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
   }
 
   desconto: number = 3;
@@ -85,7 +89,7 @@ export class NovoOrcamentoService {
   }
 
   calcularParcelas(qtdeParcelas: number) {
-    if (!qtdeParcelas && qtdeParcelas <= 0)
+    if (!qtdeParcelas || qtdeParcelas <= 0)
       return;
 
     this.qtdeParcelas = qtdeParcelas;
@@ -96,7 +100,7 @@ export class NovoOrcamentoService {
 
     this.coeficientes = coeficientes;
     this.qtdeParcelas = qtdeParcelas;
-    
+
     this.lstProdutosSelecionados.forEach(x => {
       let coeficiente = this.coeficientesParaCalculo.filter(c => c.Fabricante == x.fabricante)[0];
       x.precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * coeficiente.Coeficiente);
@@ -104,7 +108,7 @@ export class NovoOrcamentoService {
       x.descDado = x.alterouPrecoVenda ? (x.precoLista - x.precoVenda) * 100 / x.precoLista : x.descDado;
       x.precoNF = x.precoVenda;
       x.coeficienteDeCalculo = coeficiente.Coeficiente;
-      x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde): this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
+      x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
     });
 
     this.totalPedido();

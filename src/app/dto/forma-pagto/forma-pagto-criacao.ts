@@ -24,4 +24,5 @@ export class FormaPagtoCriacao{
     c_forma_pagto: string;//Descrição da forma de pagto
     descricao_meio_pagto: string;
     tipo_parcelamento: number;
+    observacao:string;
 }
