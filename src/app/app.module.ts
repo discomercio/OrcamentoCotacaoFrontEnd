@@ -154,6 +154,12 @@ import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/list
 import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+
+import { ProdutosCatalogoPropriedadesListarComponent } from './produtos-catalogo-propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from './produtos-catalogo-propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from './produtos-catalogo-propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from './produtos-catalogo-propriedades/criar/criar.component';
+
 import { ValidacaoFormularioService } from './utilities/validacao-formulario/validacao-formulario.service';
 
 import { OrcamentosModule } from './orcamentos/orcamentos.module';
@@ -300,6 +306,10 @@ import { OrcamentosModule } from './orcamentos/orcamentos.module';
         ProdutosCatalogoListarComponent,
         ProdutosCatalogoVisualizarComponent,
         ProdutosCatalogoCriarComponent,
+        ProdutosCatalogoPropriedadesEditarComponent,
+        ProdutosCatalogoPropriedadesListarComponent,
+        ProdutosCatalogoPropriedadesVisualizarComponent,
+        ProdutosCatalogoPropriedadesCriarComponent,
     ],
     providers: [
         {

@@ -1,0 +1,78 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <h4>Informações do Produto</h4>
+        </div>
+    </div>
+</div>
+
+<div class="p-grid p-d-lg-flex">
+    <div class="p-col-9">
+        <div class="card">
+            <!-- <h5>Carousel</h5> -->
+            <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0" style="min-height: 275px;">
+                <div class="p-text-bold">Código:<br></div>
+                <div class="p-field p-col-12">
+                    <span>{{produto.Codigo}}</span>
+                </div>
+                <div class="p-text-bold">Descrição:</div>
+                <div class="p-field p-col-12">
+                    <span>{{produto.Descricao}}</span>
+                </div>
+                <div class="p-text-bold">Ativo:</div>
+                <div class="p-field p-col-12">
+                    <span>{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</span>
+                </div>
+            </div>            
+        </div>
+    </div>
+    <div class="p-col-3">
+        <div class="card">
+            <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
+            <p-carousel [value]="produto.imagens" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+                <ng-template let-imagem pTemplate="item">
+                    <div class="product-item">
+                        <div class="product-item-content">
+                            <div class="p-mb-3">
+                                <img src="{{imgUrl}}{{imagem.Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
+                            </div>
+                            <div>
+                                <div class="car-buttons p-mt-5">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-carousel>
+        </div>
+    </div>
+</div>
+
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <form [formGroup]="form">
+                <div class="p-d-lg-flex p-d-md-flex">
+                    <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
+                        <div class="p-field p-col-12">
+                            <div style="float: left;" class="p-field p-col-6">
+                                <div class="p-text-bold">Itens:</div>
+                            </div>
+                            <div style="float: right;" class="p-field p-col-6">
+                                <div class="p-text-bold">Valor:</div>
+                            </div>
+                            <div *ngFor="let c of produto.campos; let i = index" [ngStyle]="{'display': c.Valor == null ? 'none' : ''}">
+                                <input class="p-field p-col-6" value="{{c.Chave}}" disabled="true" *ngIf="c.Valor != null"/>
+                                <input class="p-field p-col-6" value="{{c.Valor}}" disabled="true" *ngIf="c.Valor != null"/>
+                            </div>
+                        </div>  
+                    </div>
+                </div>
+
+                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>&nbsp;
+
+            </form>
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,45 @@
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <h4>
+                Lista de Propriedades
+                &nbsp;<button pButton style="align-content: flex-end;" icon="fa fa-plus" (click)="criarClick()" pTooltip="Criar propriedades"></button>
+            </h4>
+            <p-table #dt1 [value]="listaPropriedadesProdutoDto" [responsive]="true" responsiveLayout="stack" draggableRows="true"
+                     [ngClass]="{'carregando': carregando}" breakpoint="680px"
+                     styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0" draggableColumns="true">
+                <ng-template pTemplate="header">
+                    <tr>
+                        <th pSortableColumn="descricao" class="p-py-2 p-lg-7" style="text-align: left">Descrição <p-sortIcon field="Descricao"></p-sortIcon></th>
+                        <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon field="Ativo"></p-sortIcon></th>
+                        <th class="p-py-2 p-lg-2" style="text-align: right">Ações</th>
+                    </tr>
+                    <tr>
+                        <th>
+                            <input pInputText type="text" class="p-lg-7" (input)="dt1.filter($event.target.value, 'descricao', 'contains')" [value]="dt1.filters['descricao']?.value" placeholder="Busca por descrição" class="p-column-filter">
+                        </th>
+                        <th>
+                            <div class="p-lg-1">&nbsp;</div>
+                        </th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-lista>
+                    <tr class="p-selectable-row" dragdrop="true">                        
+                        <td style="text-align: left" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.descricao}}</td>
+                        <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.oculto == true ? 'Sim': 'Não'}}</td>
+                        <td style="text-align: right">
+                            <button pButton style="align-content: flex-end;" icon="fa fa-edit" (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
+                        </td>
+                    </tr>
+                </ng-template>
+
+            </p-table>
+        </div>
+    </div>
+</div>
+<style type="text/css">
+    .ui-panel {
+        margin: 15px;
+        width: 300px;
+    }
+</style>

@@ -44,7 +44,14 @@ export class AppMenuComponent implements OnInit {
                             { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]
                     },
-                    { label: 'Produtos', icon: 'fa fa-list-alt', routerLink: ['/produtos-catalogo/listar'] },
+                    {
+                        label: 'Catálogos', icon: 'fa fa-list-alt', routerLink: ['/produtos-catalogo/listar'],
+                        items: [
+                            { label: 'Produtos', icon: "fa fa-list-alt", routerLink: ['/produtos-catalogo/listar'] },
+                            { label: 'Propriedades', icon: "pi pi-cog", routerLink: ['/produtos-catalogo-propriedades/listar'] }
+                        ]
+
+                    },
                     { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads'] },
                     {
                         label: 'Usuários', icon: 'pi pi-users', routerLink: ['/usuarios/usuario-lista'],

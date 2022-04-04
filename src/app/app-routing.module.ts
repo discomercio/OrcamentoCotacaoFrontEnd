@@ -16,6 +16,12 @@ import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/edit
 import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
 
+// Propriedades do Catálogo
+import { ProdutosCatalogoPropriedadesListarComponent } from './produtos-catalogo-propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from './produtos-catalogo-propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from './produtos-catalogo-propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from './produtos-catalogo-propriedades/criar/criar.component';
+
 import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { OrcamentosListarComponent } from './orcamentos/listar/listar.component';
 import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
@@ -37,6 +43,12 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
                             { path: 'produtos-catalogo/listar', component: ProdutosCatalogoListarComponent },
                             { path: 'produtos-catalogo/visualizar/:id', component: ProdutosCatalogoVisualizarComponent },
                             { path: 'produtos-catalogo/editar/:id', component: ProdutosCatalogoEditarComponent },
+
+                            // Propriedades do Produto
+                            { path: 'produtos-catalogo-propriedades/criar', component: ProdutosCatalogoPropriedadesCriarComponent },
+                            { path: 'produtos-catalogo-propriedades/listar', component: ProdutosCatalogoPropriedadesListarComponent },
+                            { path: 'produtos-catalogo-propriedades/visualizar/:id', component: ProdutosCatalogoPropriedadesVisualizarComponent },
+                            { path: 'produtos-catalogo-propriedades/editar/:id', component: ProdutosCatalogoPropriedadesEditarComponent },
 
                             { path: 'downloads', component: DownloadsComponent },
                             
