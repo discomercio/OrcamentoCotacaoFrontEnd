@@ -66,20 +66,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  somarRA(orcamento: OrcamentoOpcaoDto): string {
-    let retorno: string;
-    let total = orcamento.VlTotal;
-    let totalRa = orcamento.ValorTotalComRA;
-    // vou formatar  aqui antes de passar para a tela
-    let valor_ra = this.moedaUtils.formatarDecimal(totalRa - total);
-    if (valor_ra > 0)
-      retorno = this.moedaUtils.formatarMoedaSemPrefixo(valor_ra);
-    else
-      retorno = this.moedaUtils.formatarValorDuasCasaReturnZero(valor_ra);
-
-    return retorno;
-  }
-
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {
     if (this.activeState.toString().indexOf("true") == -1) return;

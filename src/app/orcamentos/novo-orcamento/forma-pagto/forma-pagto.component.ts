@@ -80,7 +80,7 @@ export class FormaPagtoComponent implements OnInit {
             this.meioPrimPrest = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES);
             this.meiosDemaisPrestacoes = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES);
           }
-          if(e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA){
+          if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
             this.meioParcelaUnica = e.meios;
           }
           this.formasPagtoAPrazo.push(e);
@@ -115,7 +115,7 @@ export class FormaPagtoComponent implements OnInit {
   meiosEntrada: MeiosPagto[];
   meiosDemaisPrestacoes: MeiosPagto[];
   meioPrimPrest: MeiosPagto[];
-  meioParcelaUnica:MeiosPagto[];
+  meioParcelaUnica: MeiosPagto[];
   tipoAPrazo: number;
   qtdeMaxParcelas: number;
   qtdeMaxDias: number;
@@ -133,6 +133,15 @@ export class FormaPagtoComponent implements OnInit {
     this.qtdeMaxPeriodo = 0;
     this.qtdeMaxPeriodoPrimPrest = 0;
 
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
+    }
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
+    }
+
     this.setarSiglaPagto();
     this.calcularParcelas();
   }
@@ -145,7 +154,7 @@ export class FormaPagtoComponent implements OnInit {
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
       let meiosPagtoEntrada = this.formasPagtoAPrazo.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA)[0].meios;
-     
+
       if (this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto) {
         let meio = meiosPagtoEntrada
           .filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto &&
@@ -158,7 +167,6 @@ export class FormaPagtoComponent implements OnInit {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
       let meios = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA)[0].meios;
-        debugger;
 
       if (this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES &&
@@ -168,8 +176,8 @@ export class FormaPagtoComponent implements OnInit {
       if (this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto)[0];
-          this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
-          this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
+        this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
+        this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
       }
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
@@ -213,13 +221,14 @@ export class FormaPagtoComponent implements OnInit {
     this.qtdeMaxParcelas = meiopagto.qtdeMaxParcelas;
   }
 
-  totalAvista:number;
-  calcularValorAvista(){
-    if(this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento[0]){
+  totalAvista: number;
+  calcularValorAvista() {
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento[0]) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
+      this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
       return;
     }
-    else{
+    else {
       this.totalAvista = 0;
     }
   }
@@ -299,5 +308,66 @@ export class FormaPagtoComponent implements OnInit {
     let entrada = this.formaPagtoCriacaoAprazo.c_pse_prim_prest_valor ? this.formaPagtoCriacaoAprazo.c_pse_prim_prest_valor : 0;
     let valorParcela = (this.novoOrcamentoService.totalPedido() - entrada) / this.novoOrcamentoService.qtdeParcelas;
     this.setarValorParcela(valorParcela);
+  }
+
+  incluirOpcao() {
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
+      this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
+      return;
+    }
+    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
+      this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
+      return;
+    }
+    if (!this.formaPagtoCriacaoAprazo && this.formaPagtoCriacaoAprazo.tipo_parcelamento == 0) {
+      //vamos validar cada opção a prazo para saber se todos os campos estão preenchidos
+      this.novoOrcamentoService.mensagemService.showWarnViaToast("Forma de pagamento a prazo é obrigatória!");
+      return;
+    }
+
+
+    if (!this.formaPagtoCriacaoAvista.tipo_parcelamento || this.formaPagtoCriacaoAvista.tipo_parcelamento != 1) {
+
+    }
+    let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
+    lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
+
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1)
+      lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
+
+    this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
+
+
+    /**
+     * Validar
+     *  se o tipo de pagamento a prazo esta com todos os campos preenchidos e válidos
+     *  se a forma de pagamento a vista esta selecionada, verificar se os campos estão preenchidos
+     *  
+     */
+
+    /**
+     * Após inserir a opção devemos:
+     *  limpar a lista de produtos selecionados em todos os lugares
+     *  limpar a lista de controle de produtos de novoOrcamentoService
+     *  Limpar as formas de pagamentos e setar a que estava no carregamento da tela
+     *  setar a comissão do indicador
+     */
+
+
+
+
+    // this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
+
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
+    this.limparCampos();
+
+  }
+
+  limparCampos() {
+    this.novoOrcamentoService.lstProdutosSelecionados = new Array();
+    // this.pagtoSelecionados = new Array();
+    // this.observacaoOpcao = null;
   }
 }

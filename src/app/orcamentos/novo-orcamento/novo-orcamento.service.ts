@@ -9,6 +9,8 @@ import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
+import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,7 @@ export class NovoOrcamentoService {
   public coeficientes: Array<CoeficienteDto>;
   public siglaPagto: string;
   public qtdeParcelas: number;
+  public formaPagamentosVisualizacao: Array<string> = new Array<string>();
 
   criarNovo() {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -62,21 +65,22 @@ export class NovoOrcamentoService {
           .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
   }
 
-  desconto: number = 3;
-  atribuirOpcaoPagto() {
+  
+  atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
+    this.opcaoOrcamentoCotacaoDto.formaPagto = lstFormaPagto;
 
-    // pagto.forEach(p => {
-    //   if (p.incluir) {
-    //     p.valores = new Array();
-    //     if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
-    //       p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.VlTotal, this.desconto));
-    //     }
-    //     if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
-    //       p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.VlTotal, qtdeParcelas);
-    //     }
-    //   }
-    // });
-
+    //vamos montar o texto para mostrar a forma de pagamento
+    lstFormaPagto.forEach((fp) => {
+      let pagto = formaPagamento.filter(f => f.idTipoPagamento == fp.tipo_parcelamento)[0];
+      let texto: string;
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+        texto = pagto.tipoPagamentoDescricao + " " + this.moedaUtils.formatarMoedaComPrefixo(this.totalAVista());
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
+      }
+      this.formaPagamentosVisualizacao.push(texto);
+    })
   }
 
   atribuirCoeficienteParaProdutos(qtdeParcelas: number) {

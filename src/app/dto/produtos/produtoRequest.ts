@@ -4,5 +4,5 @@ export class ProdutoRequest {
     tipoCliente: string;
     tipoParcela: string;
     qtdeParcelas: number;
-    dataRefCoeficiente: Date;
+    dataRefCoeficiente: Date|string;
 }

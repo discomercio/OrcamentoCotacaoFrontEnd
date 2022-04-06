@@ -113,7 +113,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
     produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
     produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
-    produtoRequest.dataRefCoeficiente = new Date();
+    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0,10));
 
     this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
       if (r != null) {
@@ -213,7 +213,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     coeficienteRequest.lstFabricantes = new Array();
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
-    coeficienteRequest.dataRefCoeficiente = new Date();
+    coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0,10));
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
@@ -440,34 +440,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   }
 
-  incluirOpcao() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
-      this.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
-      return;
-    }
-    if (this.pagtoSelecionados.length <= 0) {
-      this.mensagemService.showWarnViaToast("Por favor, selecione as opções de pagamento!");
-      return;
-    }
-    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
-      this.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
-      return;
-    }
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id;
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.observacoes = this.observacaoOpcao;
-    // this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
+  
 
-    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
-    this.novoOrcamentoService.criarNovoOrcamentoItem();
-    this.limparCampos();
-
-  }
-
-  limparCampos() {
-    this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    this.pagtoSelecionados = new Array();
-    this.observacaoOpcao = null;
-  }
+  
 
   removerOpcao(index: number) {
     debugger;

@@ -1,6 +1,6 @@
-export class CoeficienteRequest{
+export class CoeficienteRequest {
     lstFabricantes: Array<string>;
-    tipoParcela:string;
-    qtdeParcelas:number;
-    dataRefCoeficiente:Date;
+    tipoParcela: string;
+    qtdeParcelas: number;
+    dataRefCoeficiente: Date | string;
 }
