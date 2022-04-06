@@ -32,6 +32,7 @@ import { VisualizarOrcamentoComponent } from './novo-orcamento/visualizar-orcame
 import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
+import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 
 
 @NgModule({
@@ -43,7 +44,8 @@ import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.co
     SelectProdDialogComponent,
     VisualizarOrcamentoComponent,
     NovoOrcamentoComponent,
-    FormaPagtoComponent
+    FormaPagtoComponent,
+    OpcoesComponent
   ],
   imports: [
     OrcamentosRoutingModule,

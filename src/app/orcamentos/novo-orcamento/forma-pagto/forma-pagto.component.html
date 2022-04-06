@@ -12,21 +12,21 @@
                         for="{{formasPagtoAVista.idTipoPagamento}}">{{formasPagtoAVista.tipoPagamentoDescricao}}</label>
                 </div>
 
-                <div class="p-col-5">
+                <div class="p-col-10 p-lg-5 p-md-5 p-sm-5">
                     <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="avista" [options]="formasPagtoAVista.meios"
                         optionLabel="descricao" placeholder="Selecione" optionValue="id"
                         [(ngModel)]="formaPagtoCriacaoAvista.op_av_forma_pagto">
                     </p-dropdown>
                 </div>
-                <div *ngIf="totalAvista > 0" class="p-my-5">
+                <div *ngIf="totalAvista > 0" class="p-my-lg-5 p-col-2">
                     {{novoOrcamentoService.moedaUtils.formatarMoedaComPrefixo(totalAvista)}}
                 </div>
             </div>
             <div class="p-col-12 p-grid p-ai-center">
-                <div class="p-xl-1">
+                <div *ngIf="telaDesktop" class="p-xl-1">
 
                 </div>
-                <div class="p-col-5">
+                <div class="p-col-10 p-lg-5 p-md-5 p-sm-5">
                     <label>Observação</label>
                     <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize"
                         [(ngModel)]="formaPagtoCriacaoAvista.observacao"></textarea>

@@ -7,6 +7,8 @@ import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.servi
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Constantes } from 'src/app/utilities/constantes';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ItensComponent } from '../itens/itens.component';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 
@@ -15,14 +17,17 @@ import { NovoOrcamentoService } from '../novo-orcamento.service';
   templateUrl: './forma-pagto.component.html',
   styleUrls: ['./forma-pagto.component.scss']
 })
-export class FormaPagtoComponent implements OnInit {
+export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
     private readonly formaPagtoService: FormaPagtoService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    public readonly itensComponent: ItensComponent
-  ) { }
+    public readonly itensComponent: ItensComponent,
+    telaDesktopService: TelaDesktopService
+  ) {
+    super(telaDesktopService);
+  }
 
   ngOnInit(): void {
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
@@ -225,7 +230,7 @@ export class FormaPagtoComponent implements OnInit {
   calcularValorAvista() {
     if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento[0]) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
-      this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
+      // this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
       return;
     }
     else {
@@ -366,8 +371,15 @@ export class FormaPagtoComponent implements OnInit {
   }
 
   limparCampos() {
+    this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
+    this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
+    this.meioDemaisPrestacoes = new Array<MeiosPagto>();    
+    this.totalAvista = 0;
+    this.setarTipoPagto();
+
+    this.novoOrcamentoService.controleProduto = new Array<string>();
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    // this.pagtoSelecionados = new Array();
-    // this.observacaoOpcao = null;
+    this.novoOrcamentoService.siglaPagto = "";
+    this.novoOrcamentoService.setarPercentualComissao();
   }
 }
