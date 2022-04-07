@@ -1,28 +1,37 @@
 import { Injectable, HostListener } from '@angular/core';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
-import { Parcelado } from 'src/app/dto/forma-pagto/parcelado';
-import { PagtoOpcao } from 'src/app/dto/forma-pagto/pagto-opcao';
 import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { Observable } from 'rxjs';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
+import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
+import { PercMaxDescEComissaoResponseViewModel } from 'src/app/service/lojas/percentual-comissao';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NovoOrcamentoService {
 
-  constructor(telaDesktopService: TelaDesktopService) { }
+  constructor(telaDesktopService: TelaDesktopService,
+    public mensagemService: MensagemService) { }
 
   public orcamentoCotacaoDto: OrcamentoCotacaoDto = new OrcamentoCotacaoDto();
   public opcaoOrcamentoCotacaoDto: OrcamentoOpcaoDto = new OrcamentoOpcaoDto();
   public constantes: Constantes = new Constantes();
   public mostrarOpcoes: boolean;
-  public qtdeProdutosOpcao: number = 0;
+  public controleProduto: Array<string> = new Array();
   public limiteQtdeProdutoOpcao: number = 12;
   public pageItens: number = 3;
+  public lstProdutosSelecionados: ProdutoOrcamentoDto[] = new Array();
+  public coeficientes: Array<CoeficienteDto>;
+  public siglaPagto: string;
+  public qtdeParcelas: number;
 
   criarNovo() {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -38,55 +47,162 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacaoDto;
   }
 
+  percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
+  setarPercentualComissao() {
+    this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
+  }
+
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
-      !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils.formatarDecimal(
-        this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItem), 0));
-
-  }
-  public totalPedidoRA(): number {
-      if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
-      !!this.opcaoOrcamentoCotacaoDto.listaProdutos)
-      return this.opcaoOrcamentoCotacaoDto.ValorTotalComRA = this.moedaUtils.formatarDecimal(
-        this.opcaoOrcamentoCotacaoDto.listaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.totalItemRA), 0));
-
-  }
-
-  public calcularDesconto(valor: number, desconto: number) {
-    let valorDescontado = valor * (1 - desconto / 100);
-    return Number.parseFloat(valorDescontado.toFixed(2));
-  }
-
-  public calcularParcelas(valor: number, parcelas: number) {
-    let parcelamento: number[] = new Array();
-    for (let i = 1; i <= parcelas; i++) {
-      let val = (valor/i).toFixed(2);
-      let parcela: number = 0;
-      parcela = Number.parseFloat(val);
-      parcelamento.push(parcela);
+      !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
+      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils
+        .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+          .reduce((sum, current) => sum + this.moedaUtils
+            .formatarDecimal(current.totalItem), 0));
     }
-
-    return parcelamento;
   }
 
-  desconto: number = 3;
-  atribuirOpcaoPagto(pagto: PagtoOpcao[], qtdeParcelas: number): PagtoOpcao[] {
+  public totalAVista(): number {
+    return this.moedaUtils
+      .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+        .reduce((sum, current) => sum + this.moedaUtils
+          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+  }
 
-    pagto.forEach(p => {
-      if (p.incluir) {
-        p.valores = new Array();
-        if (p.codigo == this.constantes.COD_PAGTO_AVISTA) {
-          p.valores.push(this.calcularDesconto(this.opcaoOrcamentoCotacaoDto.VlTotal, this.desconto));
-        }
-        if (p.codigo == this.constantes.COD_PAGTO_PARCELADO) {
-          p.valores = this.calcularParcelas(this.opcaoOrcamentoCotacaoDto.VlTotal, qtdeParcelas);
-        }
+
+  atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
+    this.opcaoOrcamentoCotacaoDto.formaPagto = lstFormaPagto;
+    this.formaPagamento = formaPagamento;
+    // //vamos montar o texto para mostrar a forma de pagamento
+    // lstFormaPagto.forEach((fp) => {
+    //   let pagto = formaPagamento.filter(f => f.idTipoPagamento == fp.tipo_parcelamento)[0];
+    //   let texto: string;
+    //   if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+    //     texto = pagto.tipoPagamentoDescricao + " " + this.moedaUtils.formatarMoedaComPrefixo(this.totalAVista());
+    //   }
+    //   if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+    //     texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
+    //   }
+    // })
+  }
+
+  formaPagamento: FormaPagto[];
+  formatarFormaPagamento(opcaoOrcamentoCotacaoDto: OrcamentoOpcaoDto, fPagto: FormaPagtoCriacao) {
+    let texto: string = "";
+
+    opcaoOrcamentoCotacaoDto.formaPagto.some((fp) => {
+
+      let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+        let valorTotalAvista = this.moedaUtils
+          .formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.listaProdutos
+            .reduce((sum, current) => sum + this.moedaUtils
+              .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
+        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+        let meioEntrada = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_entrada_forma_pagto)[0].descricao;
+        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_prestacao_forma_pagto)[0].descricao;
+        texto = pagto.tipoPagamentoDescricao + ":<br>Entrada: " + meioEntrada + " no valor de " +
+          this.moedaUtils.formatarMoedaComPrefixo(fPagto.o_pce_entrada_valor) +
+          " <br> Demais Prestações: " + meioPrestacao + " em " + fPagto.c_pce_prestacao_qtde + " X de "
+          + this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pce_prestacao_valor) + "<br> Período entre Parcelas: " +
+          fPagto.c_pce_prestacao_periodo + " dias";
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+        let meioPrimPrest = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_prim_prest_forma_pagto)[0].descricao;
+        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_demais_prest_forma_pagto)[0].descricao;
+        texto = pagto.tipoPagamentoDescricao + ":<br>1º Prestação: " + meioPrestacao + " no valor de " +
+          this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_prim_prest_valor) + " vencendo após " + fPagto.c_pse_prim_prest_apos + " dias" +
+          "<br>Demais Prestações: " + meioPrestacao + " em " + fPagto.c_pse_demais_prest_qtde + " X de " +
+          this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_demais_prest_valor) + "<br>Período entre Parcelas: " +
+          fPagto.c_pse_demais_prest_periodo + " dias";
+
+        return true;
+      }
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0].descricao;
+        texto = pagto.tipoPagamentoDescricao + " em " + meio + " no valor de " +
+          this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor) + " vencendo após " + fPagto.c_pu_vencto_apos + " dias ";
+        return true;
+      }
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_maquineta_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_maquineta_valor);
+        return true;
       }
     });
+    return texto;
+  }
+  teste: string = "texto com <br> quebra de linha";
+  atribuirCoeficienteParaProdutos(qtdeParcelas: number) {
+    
+    let coeficiente = this.coeficientes.filter(x => x.TipoParcela == this.siglaPagto && x.QtdeParcelas == qtdeParcelas);
+    this.lstProdutosSelecionados.forEach(x => {
+      let fabricanteCoef = coeficiente.filter(c => c.Fabricante == x.fabricante)[0];
+      x.coeficienteDeCalculo = fabricanteCoef.Coeficiente;
+    });
+  }
 
-    return pagto;
+  calcularParcelas(qtdeParcelas: number) {
+    if (!qtdeParcelas || qtdeParcelas <= 0)
+      return;
+
+    this.qtdeParcelas = qtdeParcelas;
+    this.recalcularProdutosComCoeficiente(qtdeParcelas, this.coeficientes);
+  }
+
+  recalcularProdutosComCoeficiente(qtdeParcelas: number, coeficientes: CoeficienteDto[]) {
+
+    this.coeficientes = coeficientes;
+    this.qtdeParcelas = qtdeParcelas;
+
+    this.lstProdutosSelecionados.forEach(x => {
+      let coeficiente = this.coeficientesParaCalculo.filter(c => c.Fabricante == x.fabricante)[0];
+      x.precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * coeficiente.Coeficiente);
+      x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
+      x.descDado = x.alterouPrecoVenda ? (x.precoLista - x.precoVenda) * 100 / x.precoLista : x.descDado;
+      x.precoNF = x.precoVenda;
+      x.coeficienteDeCalculo = coeficiente.Coeficiente;
+      x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
+    });
+
+    this.totalPedido();
+  }
+
+
+
+  get coeficientesParaCalculo(): Array<CoeficienteDto> {
+    let coeficientesParaCalculo: CoeficienteDto[] = new Array<CoeficienteDto>();
+    this.lstFabricantesDisctint.forEach(x => {
+      let filtro = this.coeficientes.filter(c => c.Fabricante == x && c.TipoParcela == this.siglaPagto && c.QtdeParcelas == this.qtdeParcelas)[0];
+      coeficientesParaCalculo.push(filtro);
+    });
+
+    return coeficientesParaCalculo;
+  }
+
+  get lstFabricantesDisctint(): Array<string> {
+    const distinct = (value, index, self) => {
+      return self.indexOf(value) === index;
+    }
+    let fornecedores: string[] = new Array();
+
+    this.lstProdutosSelecionados.forEach(element => {
+      fornecedores.push(element.fabricante);
+    });
+
+    return fornecedores.filter(distinct);
   }
 
   @HostListener('window:resize', ['$event'])

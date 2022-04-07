@@ -5,7 +5,6 @@ import { ListaDto, ListaDtoExport } from './../../dto/orcamentos/lista-dto';
 import { Filtro } from './../../dto/orcamentos/filtro';
 import { AlertaService } from './../../utilities/alert-dialog/alerta.service';
 import { ExportExcelService } from './../../service/export-files/export-excel.service';
-import { ParceiroService } from './../../service/parceiro/parceiro.service';
 import { UsuariosService } from './../../service/usuarios/usuarios.service';
 import { MensagemService } from './../../utilities/mensagem/mensagem.service';
 import { PedidosService } from './../../service/pedidos/pedidos.service';
@@ -36,7 +35,6 @@ export class OrcamentosListarComponent implements OnInit {
     public readonly pedidoService: PedidosService,
     private readonly mensagemService: MensagemService,
     private readonly usuarioService: UsuariosService,
-    private readonly parceiroService: ParceiroService,
     private readonly exportExcelService: ExportExcelService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,) {

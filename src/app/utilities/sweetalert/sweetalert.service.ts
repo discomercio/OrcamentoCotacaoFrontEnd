@@ -31,41 +31,53 @@ export class SweetalertService {
         }).then((result) => {
             if (result.isConfirmed) {
                 Swal.fire({
-                    title:'Confirmado!',
-                    text:'Iremos precessar sua solicitação!',
+                    title: 'Confirmado!',
+                    text: 'Iremos precessar sua solicitação!',
                     icon: 'success',
-                    timer:1000,
-                    showConfirmButton:false,
+                    timer: 1000,
+                    showConfirmButton: false,
                     didOpen: () => {
                         timerInterval = setInterval(() => {
                             this.swalWithBootstrapButtons.close();
                         }, 1000);
-                      },
-                      willClose: () => {
+                    },
+                    willClose: () => {
                         clearInterval(timerInterval);
-                      }
+                    }
                 }).then(() => this.subject.next(true));
             } else if (result.dismiss === Swal.DismissReason.cancel) {
                 Swal.fire({
-                    title:'Cancelado!',
+                    title: 'Cancelado!',
                     icon: 'error',
-                    timer:1000,
-                    showConfirmButton:false,
+                    timer: 1000,
+                    showConfirmButton: false,
                     didOpen: () => {
                         timerInterval = setInterval(() => {
                             this.swalWithBootstrapButtons.close();
                         }, 1000);
-                      },
-                      willClose: () => {
+                    },
+                    willClose: () => {
                         clearInterval(timerInterval);
-                      }
+                    }
                 }).then(() => this.subject.next(false));
             }
         });
     }
 
-    confirmarAprovacao(titulo: string, texto: string):Observable<any>{
+    private swalSucesso(mensagem: string) {
+        Swal.fire(
+            'Sucesso!',
+            mensagem,
+            'success'
+        );
+    }
+
+    confirmarAprovacao(titulo: string, texto: string): Observable<any> {
         this.setConfirm(titulo, texto);
         return this.subject.asObservable();
+    }
+
+    sucesso(mensagem: string): void {
+        this.swalSucesso(mensagem);
     }
 }

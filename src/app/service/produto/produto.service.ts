@@ -3,6 +3,9 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { environment } from 'src/environments/environment';
+import { ProdutoRequest } from 'src/app/dto/produtos/produtoRequest';
+import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
 
 @Injectable({
   providedIn: 'root'
@@ -11,11 +14,11 @@ export class ProdutoService {
 
   constructor(private http: HttpClient) { }
 
-  buscarProdutosCompostosXSimples(loja: string, uf: string, tipo: string): Observable<ProdutoComboDto> {
-    let params = new HttpParams();
-    params = params.append("loja", loja);
-    params = params.append("uf", uf);
-    params = params.append("tipo", tipo);
-    return this.http.get<ProdutoComboDto>(environment.apiUrl + "Produto/buscarProduto", { params: params });
+  buscarProdutosCompostosXSimples(produtoRequest: ProdutoRequest): Observable<ProdutoComboDto> {
+    return this.http.post<ProdutoComboDto>(environment.apiUrl + "Produto/buscarProdutos", produtoRequest);
+  }
+
+  buscarCoeficientes(coeficienteRequest:CoeficienteRequest):Observable<CoeficienteDto[]>{
+    return this.http.post<CoeficienteDto[]>(environment.apiUrl + "Produto/buscarCoeficientes", coeficienteRequest);
   }
 }

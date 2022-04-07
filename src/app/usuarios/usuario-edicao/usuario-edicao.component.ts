@@ -28,7 +28,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
     private readonly lojasService: LojasService
-    ) { }
+  ) { }
 
   public form: FormGroup;
   public apelido: string;
@@ -112,31 +112,31 @@ export class UsuarioEdicaoComponent implements OnInit {
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
-    this.usuario.ativo = ( f.ativo.value =="true");
+    this.usuario.ativo = (f.ativo.value == "true");
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
     //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
     this.usuario.telefone = f.ddd_telefone.value;
     this.usuario.celular = f.dddCel_telefoneCel.value;
 
-    if(this.usuario.id){
+    if (this.usuario.id) {
       this.usuariosService.alterarUsuario(this.usuario)
-      .toPromise()
-      .then((x) => {
-        alert("xx");
-      })
-      .catch(()=>{
-        alert("yy");
-      });
-    }else{
-    this.usuariosService.cadastrarUsuario(this.usuario)
-    .toPromise()
-    .then((x) => {
-      alert("x");
-    })
-    .catch(()=>{
-      alert("y");
-    });
+        .toPromise()
+        .then((x) => {
+          alert("xx");
+        })
+        .catch(() => {
+          alert("yy");
+        });
+    } else {
+      this.usuariosService.cadastrarUsuario(this.usuario)
+        .toPromise()
+        .then((x) => {
+          alert("x");
+        })
+        .catch(() => {
+          alert("y");
+        });
     }
 
   }

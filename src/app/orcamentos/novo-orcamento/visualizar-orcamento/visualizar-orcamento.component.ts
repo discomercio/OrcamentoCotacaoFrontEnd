@@ -1,7 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
-import { Parcelado } from 'src/app/dto/forma-pagto/parcelado';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
@@ -39,7 +38,6 @@ export class VisualizarOrcamentoComponent implements OnInit {
 
   // }
 
-  parcelamento: Parcelado[] = new Array();
 
   moedaUtils: MoedaUtils = new MoedaUtils();
   opcaoPagto: boolean;
