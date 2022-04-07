@@ -333,13 +333,17 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
 
     if (!this.formaPagtoCriacaoAvista.tipo_parcelamento || this.formaPagtoCriacaoAvista.tipo_parcelamento != 1) {
-
+        
     }
     let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
     lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
 
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1)
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1){
+      debugger;
+      let tipoPagto = this.formaPagtoCriacaoAvista.tipo_parcelamento[0];
+      this.formaPagtoCriacaoAvista.tipo_parcelamento = tipoPagto;
       lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
+    }
 
     this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
 

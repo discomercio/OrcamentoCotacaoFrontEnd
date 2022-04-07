@@ -31,6 +31,8 @@ import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/service/lojas/percentual-comissao';
 import { OpcoesComponent } from '../opcoes/opcoes.component';
+import { OrcamentosService } from '../../orcamentos.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-itens',
@@ -49,7 +51,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
     telaDesktopService: TelaDesktopService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly lojaService: LojasService) {
+    private readonly lojaService: LojasService,
+    private readonly orcamentosService: OrcamentosService,
+    private readonly sweetalertService: SweetalertService) {
     super(telaDesktopService);
   }
 
@@ -71,22 +75,21 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   selecProdInfo = new SelecProdInfo();
 
   ngOnInit(): void {
-    this.novoOrcamentoService.criarNovo();
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.concordaWhatsapp = false;
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.email = "gabriel.teodoro@itssolucoes.com.br";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id = undefined;
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.loja = "205";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente = "Gabriel Prada ";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeObra = null;
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.observacoes = null;
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.parceiro = "ZUPO STORE";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.telefone = null;
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo = "PJ";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf = "SP";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.validade = "Mon Mar 28 2022 16=30=52 GMT-0300 (Horário Padrão de Brasília) {}";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedor = "BARRETO";
-    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedorParceiro = undefined;
-
+    // this.novoOrcamentoService.criarNovo();
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.concordaWhatsapp = false;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.email = "gabriel.teodoro@itssolucoes.com.br";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id = undefined;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.loja = "205";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente = "Gabriel Prada ";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeObra = null;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.observacoes = null;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.parceiro = "ZUPO STORE";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.telefone = null;
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo = "PJ";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf = "SP";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.validade = "Mon Mar 28 2022 16=30=52 GMT-0300 (Horário Padrão de Brasília) {}";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedor = "BARRETO";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedorParceiro = undefined;
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       this.router.navigate(["orcamentos/cadastrar-cliente"]);
       return;
@@ -109,12 +112,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   inscreveProdutoComboDto(): void {
     let produtoRequest: ProdutoRequest = new ProdutoRequest();
-    produtoRequest.loja = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.loja;
+    produtoRequest.loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
     produtoRequest.uf = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
     produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
     produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
     produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
-    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0,10));
+    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
 
     this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
       if (r != null) {
@@ -181,9 +184,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         produtoOrcamento.alterouPrecoVenda = false;
         produtoOrcamento.mostrarCampos = this.telaDesktop ? true : false;
 
-        
+
         this.arrumarProdutosRepetidos(produtoOrcamento);
-        
+
         this.inserirProduto(produtoOrcamento);
         this.digitouQte(produtoOrcamento);
 
@@ -214,8 +217,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     coeficienteRequest.lstFabricantes = new Array();
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
-    coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0,10));
-    if(!this.novoOrcamentoService.coeficientes){
+    coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    if (!this.novoOrcamentoService.coeficientes) {
       this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
         if (r != null) {
           this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
@@ -224,7 +227,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         }
       }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
     }
-    
+
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
 
     this.novoOrcamentoService.totalPedido();
@@ -305,28 +308,28 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       item.precoVenda = item.precoLista;
     }
     this.digitouQte(item);
-    
+
   }
 
   calcularPercentualComissao() {
     let totalSemDesc = this.moedaUtils
       .formatarDecimal(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos
         .reduce((sum, current) => sum + this.moedaUtils
-          .formatarDecimal((current.precoLista ) * current.qtde), 0));
-      let totalComDesc = this.novoOrcamentoService.totalPedido();
-      let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
-      if(descMedio > (this.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao)){
-        let descontarComissao = this.moedaUtils.formatarDecimal(this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - descMedio);
-        
-        if(descontarComissao != 0){
-          let descMax =  this.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao;
-          this.moedaUtils.formatarDecimal(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
-        }
+          .formatarDecimal((current.precoLista) * current.qtde), 0));
+    let totalComDesc = this.novoOrcamentoService.totalPedido();
+    let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
+    if (descMedio > (this.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao)) {
+      let descontarComissao = this.moedaUtils.formatarDecimal(this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - descMedio);
+
+      if (descontarComissao != 0) {
+        let descMax = this.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao;
+        this.moedaUtils.formatarDecimal(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
       }
-      else{
-        this.moedaUtils.formatarDecimal(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.novoOrcamentoService.percentualMaxComissao.percMaxComissao);
-      }
-      
+    }
+    else {
+      this.moedaUtils.formatarDecimal(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.novoOrcamentoService.percentualMaxComissao.percMaxComissao);
+    }
+
   }
 
   formataPreco_Venda(e: Event, item: ProdutoOrcamentoDto): void {
@@ -442,18 +445,18 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   }
 
-  
 
-  
+
+
 
   removerOpcao(index: number) {
     debugger;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id) {
-      
+
       this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
         if (r != null) {
 
-          
+
         }
       }).catch((error: HttpErrorResponse) => {
         this.mensagemService.showErrorViaToast(error.error.errors);
@@ -555,7 +558,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   salvarOrcamento() {
-    this.mensagemService.showWarnViaToast("Estamos implementando!");
+debugger;
+    this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r)=>{
+      if(r != null){
+        this.sweetalertService.sucesso("Orçamento salvo!");
+      }
+    }).catch(e => this.alertaService.mostrarErroInternet(e));
+
     return;
   }
   enviar() {
