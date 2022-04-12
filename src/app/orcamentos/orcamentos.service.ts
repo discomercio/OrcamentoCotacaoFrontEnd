@@ -12,8 +12,8 @@ export class OrcamentosService {
 
   constructor(private http: HttpClient) {}
 
-  buscarRegistros(origem:string, lojaLogada:string): Observable<ListaDto[]> {
-    return this.http.get<ListaDto[]>(`${environment.apiUrl}Orcamento?origem=${origem}&lojaLogada=${lojaLogada}`);
+  buscarRegistros(filtro:any): Observable<ListaDto[]> {
+    return this.http.post<ListaDto[]>(`${environment.apiUrl}Orcamento`, filtro);
   }
 
   buscarStatus(origem:string): Observable<any> {
