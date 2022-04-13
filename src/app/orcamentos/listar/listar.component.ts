@@ -1,3 +1,4 @@
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MoedaUtils } from './../../utilities/formatarString/moeda-utils';
 import { Usuario } from './../../dto/usuarios/usuario';
 import { OrcamentistaIndicadorDto } from './../../dto/orcamentista-indicador/orcamentista-indicador';
@@ -71,11 +72,11 @@ export class OrcamentosListarComponent implements OnInit {
 
   nome_numero: string;
   moedaUtils: MoedaUtils = new MoedaUtils();
+  dataUtils: DataUtils = new DataUtils();
   parametro: string;
   lojaLogada: string = this.autenticacaoService._lojaLogado;
 
   ngOnInit(): void {
-      console.log('ngOnInit() ngOnInit() ngOnInit() ngOnInit()');
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
     this.criarTabela();
@@ -106,10 +107,10 @@ export class OrcamentosListarComponent implements OnInit {
           { field: 'Cliente_Obra', header: 'Cliente / Obra' },
           { field: 'Vendedor', header: 'Vendedor' },
           { field: 'Parceiro', header: 'Parceiro' },
-          { field: 'VendedorParceiro', header: 'Vendedor Parceiro' },
+        //   { field: 'VendedorParceiro', header: 'Vendedor Parceiro' },
           { field: 'Valor', header: 'Valor' },
           { field: 'Status', header: 'Status' },
-          { field: 'VistoEm', header: 'Visto em:' },
+        //   { field: 'VistoEm', header: 'Visto em:' },
           { field: 'Mensagem', header: 'Pendente' },
           { field: "Editar", header: " ", visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
           { field: "DtExpiracao", header: "Expiracao" },
@@ -129,7 +130,8 @@ export class OrcamentosListarComponent implements OnInit {
   buscarRegistros() {
       var filtroPost = new Filtro();
       filtroPost.Origem = this.parametro;
-      filtroPost.Status = this.form.controls.status.value;
+      filtroPost.Loja = this.autenticacaoService._lojaLogado;
+      filtroPost.Status = this.montaStatus(this.form.controls.status.value);
       filtroPost.Nome_numero = this.form.controls.cliente.value;
       filtroPost.Vendedor = this.form.controls.vendedor.value;
       filtroPost.Parceiro = this.form.controls.parceiro.value;
@@ -137,7 +139,6 @@ export class OrcamentosListarComponent implements OnInit {
       filtroPost.Mensagem = this.form.controls.msgPendente.value;
       filtroPost.DtInicio = this.form.controls.dtInicio.value;
       filtroPost.DtFim = this.form.controls.dtFim.value;
-      filtroPost.Loja = this.autenticacaoService._lojaLogado;
 
       this.orcamentoService.buscarRegistros(filtroPost).toPromise().then((r) => {
         if (r != null) {
@@ -145,6 +146,35 @@ export class OrcamentosListarComponent implements OnInit {
           this.lstDtoFiltrada = this.lstDto;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+      console.log('#####################################################');
+      console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
+      console.log('Origem:   ' + this.parametro);
+      console.log('Loja: ' + this.autenticacaoService._lojaLogado);
+      console.log('Status:   ' + filtroPost.Status);
+      console.log('Nome_numero: ' + filtroPost.Nome_numero);
+      console.log('Vendedor: ' + filtroPost.Vendedor);
+      console.log('Parceiro: ' + filtroPost.Parceiro);
+      console.log('VendParc: ' + filtroPost.VendedorParceiro);
+      console.log('Mensagem: ' + filtroPost.Mensagem);
+      console.log('Data Ini: ' + filtroPost.DtInicio);
+      console.log('Data Fim: ' + filtroPost.DtFim);
+      console.log('filtrar FIM: ' + this.lstDtoFiltrada.length);
+      console.log('#####################################################');
+  }
+
+  montaStatus(listaStatus) {
+    //   return "CAN";
+       return listaStatus;
+    //   var status = '';
+
+    //   if(listaStatus) {
+    //     listaStatus.map(function(val,index,array){
+    //         status += `'${val}',`;
+    //      });
+    //   }
+
+    //   return status;
   }
 
   popularCombos() {
@@ -217,16 +247,6 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   Pesquisar_Click() {
-    console.log('#####################################################');
-    console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
-    console.log('Status:   ' + this.filtro.Status);
-    console.log('Vendedor: ' + this.filtro.Vendedor);
-    console.log('Parceiro: ' + this.filtro.Parceiro);
-    console.log('VendParc: ' + this.filtro.VendedorParceiro);
-    console.log('Mensagem: ' + this.filtro.Mensagem);
-    console.log('Data Ini: ' + this.filtro.DtInicio);
-    console.log('Data Fim: ' + this.filtro.DtFim);
-    console.log('#####################################################');
     this.buscarRegistros();
   }
 

@@ -27,6 +27,13 @@ export class DataUtils {
         dt.setSeconds(aux.getSeconds());
 
         return dt;
+    }
 
+    public formata_data_DDMMYYY(data: any): any {
+        if (!data)
+            return;
+
+        let split = data.split('-');
+        return split[2].substring(0,2) + "-" + split[1] + "-" + split[0];
     }
 }

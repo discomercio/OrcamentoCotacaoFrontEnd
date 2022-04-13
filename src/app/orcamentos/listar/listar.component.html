@@ -82,7 +82,10 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="p-selectable-row" [pSelectableRow]="rowData">
                         <td *ngFor="let col of columns" class="p-pl-5" [ngStyle]="{'display': col.visible}">
-                            {{col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]): rowData[col.field]}}
+                            {{
+                                col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
+                                col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]): rowData[col.field]
+                            }}
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit" pTooltip="Editar" *ngIf="col.visible == ''"></button>&nbsp;
                         </td>
                     </tr>

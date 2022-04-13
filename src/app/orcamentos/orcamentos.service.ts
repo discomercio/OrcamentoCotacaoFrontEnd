@@ -13,7 +13,7 @@ export class OrcamentosService {
   constructor(private http: HttpClient) {}
 
   buscarRegistros(filtro:any): Observable<ListaDto[]> {
-    return this.http.post<ListaDto[]>(`${environment.apiUrl}Orcamento`, filtro);
+    return this.http.post<ListaDto[]>(`${environment.apiUrl}Orcamento/porfiltro`, filtro);
   }
 
   buscarStatus(origem:string): Observable<any> {
