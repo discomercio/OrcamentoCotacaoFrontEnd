@@ -11,7 +11,7 @@
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtro">Status</label>
                             <p-multiSelect formControlName="status" [options]="cboStatus"
-                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value" optionLabel="Value"
+                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Id" optionLabel="Value"
                                 [(ngModel)]="filtro.Status" emptyFilterMessage="Nenhum item encontrado"
                                 >
                             </p-multiSelect>
@@ -24,11 +24,11 @@
 
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedor">Vendedor</label>
-                            <p-dropdown formControlName="vendedor" [options]="cboVendedores" [(ngModel)]="filtro.Vendedor" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
+                            <p-dropdown formControlName="vendedor" [options]="cboVendedores" [(ngModel)]="filtro.Vendedor" (onChange)='cboVendedor_onChange($event)' [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Parceiro</label>
-                            <p-dropdown formControlName="parceiro" [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" (onChange)="Parceiro_onChange($event)" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
+                            <p-dropdown formControlName="parceiro" [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" (onChange)="cboParceiro_onChange($event)" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedorParceiro">Vendedor parceiro</label>
@@ -82,7 +82,10 @@
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="p-selectable-row" [pSelectableRow]="rowData">
                         <td *ngFor="let col of columns" class="p-pl-5" [ngStyle]="{'display': col.visible}">
-                            {{col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]): rowData[col.field]}}
+                            {{
+                                col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
+                                col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]): rowData[col.field]
+                            }}
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit" pTooltip="Editar" *ngIf="col.visible == ''"></button>&nbsp;
                         </td>
                     </tr>
