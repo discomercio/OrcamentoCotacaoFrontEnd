@@ -104,7 +104,7 @@
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>
                 <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true" [readonlyInput]="true"
-                [disabled]="!form.controls.EntregaImediata.value"></p-calendar>
+                [disabled]="form.controls.EntregaImediata.value"></p-calendar>
                 <small class="p-error"
                     *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
             </div>

@@ -450,7 +450,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   removerOpcao(index: number) {
-    debugger;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id) {
 
       this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
@@ -558,7 +557,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   salvarOrcamento() {
-debugger;
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r)=>{
       if(r != null){
         this.sweetalertService.sucesso("Orçamento salvo!");

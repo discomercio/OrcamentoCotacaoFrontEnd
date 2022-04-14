@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
+import { Usuario } from '../dto/usuarios/usuario';
+import { ValidadeOrcamento } from '../dto/config-orcamento/validade-orcamento';
 @Injectable({
   providedIn: 'root'
 })
@@ -36,5 +38,9 @@ export class OrcamentosService {
 
   atualizarClienteOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{
     return this.http.put<ClienteOrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, cliente);
+  }
+
+  buscarConfigValidade():Observable<ValidadeOrcamento>{
+    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
   }
 }

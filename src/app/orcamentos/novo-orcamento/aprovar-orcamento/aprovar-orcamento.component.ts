@@ -170,7 +170,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   aprovar(orcamento) {
-    debugger;
     if (!this.opcaoPagto) {
     }
     this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
@@ -180,7 +179,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   visualizarMensagem(idOrcamento) {
-    debugger;
       //return this.http.get<[]>(`${environment.apiUrl}produtocatalogo`);
   }
 

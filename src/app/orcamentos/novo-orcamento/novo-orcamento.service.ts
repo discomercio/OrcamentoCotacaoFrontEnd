@@ -12,6 +12,7 @@ import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/service/lojas/percentual-comissao';
+import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,7 @@ export class NovoOrcamentoService {
   public coeficientes: Array<CoeficienteDto>;
   public siglaPagto: string;
   public qtdeParcelas: number;
+  public configValidade:ValidadeOrcamento;
 
   criarNovo() {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();

@@ -39,7 +39,8 @@ export class CadastrarClienteComponent implements OnInit {
     public readonly novoOrcamentoService: NovoOrcamentoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
-    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
+    private readonly orcamentoService:OrcamentosService) { }
 
   //uteis
   public mascaraTelefone: string;
@@ -68,6 +69,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.criarForm();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.buscarConfigValidade();
     this.setarCamposDoForm();
     this.carregarListas();
     this.buscarEstados();
@@ -75,6 +77,16 @@ export class CadastrarClienteComponent implements OnInit {
     this.verificaDataValidade();
 
     this.novoOrcamentoService.mostrarOpcoes = false;
+  }
+
+  buscarConfigValidade() {
+    this.orcamentoService.buscarConfigValidade().toPromise().then((r)=>{
+      if(r != null){
+        this.novoOrcamentoService.configValidade = r;
+      }
+    }).catch((e)=> {
+      this.alertaService.mostrarErroInternet(e);
+    })
   }
 
   setarCamposDoForm(): void {
@@ -192,7 +204,6 @@ export class CadastrarClienteComponent implements OnInit {
       this.novoOrcamentoService.criarNovo();
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto;
-
     this.form = this.fb.group({
       Validade: [this.novoOrcamentoService.orcamentoCotacaoDto.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais],
@@ -206,7 +217,7 @@ export class CadastrarClienteComponent implements OnInit {
       VendedorParceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
-      EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
+      EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata ? this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata : true],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata]
     });
   }
@@ -269,7 +280,7 @@ export class CadastrarClienteComponent implements OnInit {
 
   dataEntrega = true;
   ValidaDataEntrega() {
-    if (this.form.controls.EntregaImediata.value && this.form.controls.DataEntregaImediata.value == null) {
+    if (!this.form.controls.EntregaImediata.value && this.form.controls.DataEntregaImediata.value == null) {
       this.form.controls.DataEntregaImediata.setErrors({ "status": "INVALID" });
       this.form.controls.DataEntregaImediata.markAsDirty();
       this.dataEntrega = false;
