@@ -11,20 +11,27 @@
                 <ng-template pTemplate="header">
                     <tr>
                         <th pSortableColumn="id" class="p-lg-2">Código <p-sortIcon field="Codigo"></p-sortIcon></th>
+                        <th pSortableColumn="id" class="p-lg-2">Fabricante <p-sortIcon field="Fabricante"></p-sortIcon></th>
+                        <th pSortableColumn="id" class="p-lg-2">Nome <p-sortIcon field="Nome"></p-sortIcon></th>
                         <th pSortableColumn="descricao" class="p-py-2 p-lg-7" style="text-align: left">Descrição <p-sortIcon field="Descricao"></p-sortIcon></th>
+                        <th pSortableColumn="imagem" class="p-lg-2">Imagem <p-sortIcon field="Imagem"></p-sortIcon></th>
                         <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon field="Ativo"></p-sortIcon></th>
                         <th class="p-py-2 p-lg-2" style="text-align: right">Ações</th>
                     </tr>
                     <tr>
                         <th>
                             <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Codigo', 'contains')" [value]="dt1.filters['Codigo']?.value" placeholder="Busca por código" class="p-column-filter">
-                        </th>                 
-                         <th>
-                            <input pInputText type="text" class="p-lg-7" (input)="dt1.filter($event.target.value, 'Descricao', 'contains')" [value]="dt1.filters['Descricao']?.value" placeholder="Busca por descrição" class="p-column-filter">
                         </th>
                         <th>
-                            <input pInputText type="text" class="p-lg-1" (input)="dt1.filter($event.target.value, 'Ativo', 'contains')" [value]="dt1.filters['Ativo']?.value" placeholder="Busca por status" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Fabricante', 'contains')" [value]="dt1.filters['Fabricante']?.value" placeholder="Busca por Fabricante" class="p-column-filter">
                         </th>
+                        <th>
+                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Nome', 'contains')" [value]="dt1.filters['Nome']?.value" placeholder="Busca por Nome" class="p-column-filter">
+                        </th>
+                        <th>
+                            <input pInputText type="text" class="p-lg-1" (input)="dt1.filter($event.target.value, 'Imagem', 'contains')" [value]="dt1.filters['Ativo']?.value" placeholder="Busca por descrição" class="p-column-filter">
+                        </th>
+
                         <th>
                             <div class="p-lg-1">&nbsp;</div>
                         </th>
@@ -33,7 +40,10 @@
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
                         <td style="text-align: left">{{lista.Codigo}}</td>
+                        <td style="text-align: left">{{lista.Fabricante}}</td>
+                        <td style="text-align: left">{{lista.Nome}}</td>
                         <td style="text-align: left">{{lista.Descricao}}</td>
+                        <td style="text-align: left">{{lista.Imagem}}</td>
                         <td style="text-align: center">{{lista.Ativo}}</td>
                         <td style="text-align: right">
                             <button pButton style="align-content: flex-end;" icon="fa fa-eye" (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
@@ -45,3 +55,4 @@
         </div>
     </div>
 </div>
+
