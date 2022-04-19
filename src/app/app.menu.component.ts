@@ -24,7 +24,7 @@ export class AppMenuComponent implements OnInit {
         this.model = [
             {
                 items: [
-                    { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
+                    // { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
                     // {
                     //     label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
                     // },
@@ -41,7 +41,7 @@ export class AppMenuComponent implements OnInit {
                             { label: 'Orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos'] },
                             { label: 'Em Aprovação', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pendentes'] },
                             { label: 'Pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pedidos'] },
-                            { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
+                            // { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]
                     },
                     {

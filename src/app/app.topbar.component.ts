@@ -67,6 +67,7 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                             <span class="topbar-item-name">Settings</span>
                         </a>
                         <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
+                            <!--
                             <li role="menuitem">
                                 <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
                                     <i class="pi pi-fw pi-palette"></i>
@@ -91,6 +92,7 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                                     <span>Wallpaper</span>
                                 </a>
                             </li>
+                            -->
                             <li role="menuitem">
                                 <a href="#" (click)="logoffClick()">
                                     <i class="pi pi-fw pi-image"></i>
@@ -151,7 +153,7 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                                     <i class="pi pi-fw pi-sliders-h"></i>
                                     <span>Mensagens não Lida</span>
                                 </a>
-                            </li>                           
+                            </li>
                         </ul>
                     </li>
                     <li #search class="search-item" [ngClass]="{'active-top-menu':appMain.activeTopbarItem === search}"
