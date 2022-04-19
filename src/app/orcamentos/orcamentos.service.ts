@@ -5,6 +5,8 @@ import { environment } from 'src/environments/environment';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
+import { Usuario } from '../dto/usuarios/usuario';
+import { ValidadeOrcamento } from '../dto/config-orcamento/validade-orcamento';
 @Injectable({
   providedIn: 'root'
 })
@@ -12,8 +14,8 @@ export class OrcamentosService {
 
   constructor(private http: HttpClient) {}
 
-  buscarRegistros(origem:string, lojaLogada:string): Observable<ListaDto[]> {
-    return this.http.get<ListaDto[]>(`${environment.apiUrl}Orcamento?origem=${origem}&lojaLogada=${lojaLogada}`);
+  buscarRegistros(filtro:any): Observable<ListaDto[]> {
+    return this.http.post<ListaDto[]>(`${environment.apiUrl}Orcamento/porfiltro`, filtro);
   }
 
   buscarStatus(origem:string): Observable<any> {
@@ -26,8 +28,8 @@ export class OrcamentosService {
     return this.http.get<ClienteOrcamentoCotacaoDto>("src/assets/demo/data/banco/cliente.json");
   }
 
-  enviarOrcamento(opcoesOrcamento:OrcamentoCotacaoDto){
-    return this.http.post<OrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, opcoesOrcamento);
+  enviarOrcamento(model:OrcamentoCotacaoDto){
+    return this.http.post<OrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, model);
   }
 
   criarOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{
@@ -36,5 +38,9 @@ export class OrcamentosService {
 
   atualizarClienteOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{
     return this.http.put<ClienteOrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, cliente);
+  }
+
+  buscarConfigValidade():Observable<ValidadeOrcamento>{
+    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
   }
 }

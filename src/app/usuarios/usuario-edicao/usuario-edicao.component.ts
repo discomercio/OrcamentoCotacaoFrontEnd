@@ -112,9 +112,6 @@ export class UsuarioEdicaoComponent implements OnInit {
       return;
     }
     this.disabled = true;
-
-
-
   }
 
   atualizar() {
@@ -122,7 +119,7 @@ export class UsuarioEdicaoComponent implements OnInit {
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
-    this.usuario.ativo = f.ativo.value;
+    this.usuario.ativo = (f.ativo.value == "true");
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
     //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
@@ -130,29 +127,25 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.usuario.celular = f.dddCel_telefoneCel.value;
     this.usuario.parceiro = this.autenticacaoService._parceiro;
 
-    if(this.usuario.id){
-      this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
-      .toPromise()
-      .then((x) => {
-        this.mensagemService.showSuccessViaToast("Usuário alterado com sucesso");
-
-        this.router.navigate(['/usuarios/usuario-lista']);
-      })
-      .catch((x) => {
-        this.alertaService.mostrarErroInternet(x);
-      });
-    }else{
-        this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
+    if (this.usuario.id) {
+      this.usuariosService.alterarUsuario(this.usuario)
         .toPromise()
         .then((x) => {
-            this.mensagemService.showSuccessViaToast("Usuário adicionado com sucesso");
-            this.router.navigate(['/usuarios/usuario-lista']);
+          alert("xx");
         })
-        .catch((x) => {
-            this.alertaService.mostrarErroInternet(x);
+        .catch(() => {
+          alert("yy");
+        });
+    } else {
+      this.usuariosService.cadastrarUsuario(this.usuario)
+        .toPromise()
+        .then((x) => {
+          alert("x");
+        })
+        .catch(() => {
+          alert("y");
         });
     }
-
   }
 
   celular = false;

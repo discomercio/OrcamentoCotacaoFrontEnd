@@ -26,7 +26,7 @@ export class AppMenuComponent implements OnInit {
         this.model = [
             {
                 items: [
-                    { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
+                    // { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
                     // {
                     //     label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
                     // },
@@ -39,14 +39,21 @@ export class AppMenuComponent implements OnInit {
                     {
                         label: 'Orçamentos', icon: 'fa fa-calculator', routerLink: ['/orcamentos'],
                         items: [
-                            { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/orcamentos/cadastro-orcamento'] },
+                            { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/orcamentos/cadastrar-cliente'] },
                             { label: 'Orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos'] },
                             { label: 'Em Aprovação', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pendentes'] },
                             { label: 'Pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pedidos'] },
-                            { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
+                            // { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
                         ]
                     },
-                    { label: 'Produtos', icon: 'fa fa-list-alt', routerLink: ['/produtos-catalogo/listar'] },
+                    {
+                        label: 'Catálogos', icon: 'fa fa-list-alt', routerLink: ['/produtos-catalogo/listar'],
+                        items: [
+                            { label: 'Produtos', icon: "fa fa-list-alt", routerLink: ['/produtos-catalogo/listar'] },
+                            { label: 'Propriedades', icon: "pi pi-cog", routerLink: ['/produtos-catalogo-propriedades/listar'] }
+                        ]
+
+                    },
                     { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads'] },
                     {
                         label: 'Usuários', icon: 'pi pi-users', routerLink: ['/usuarios/usuario-lista'],

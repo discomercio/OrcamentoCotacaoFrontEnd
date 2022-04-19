@@ -8,25 +8,23 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ClienteComponent implements OnInit {
 
-
-
   constructor() { }
 
-  ngOnInit(): void {
-  }
+    ngOnInit(): void {
+    }
 
-  
-  
-exibirTipo : boolean = true;
+    exibirTipo : boolean = true;
 
-tipoPessoaSelPF()
-{
-  this.exibirTipo = true;
-}
+    tipoPessoaSelPF()
+    {
+    this.exibirTipo = true;
+    }
 
-tipoPessoaSelPJ()
-{
-  this.exibirTipo = false;
-}
-  
+    tipoPessoaSelPJ()
+    {
+    this.exibirTipo = false;
+    }
+
+    inserirCliente() {
+    }
 }

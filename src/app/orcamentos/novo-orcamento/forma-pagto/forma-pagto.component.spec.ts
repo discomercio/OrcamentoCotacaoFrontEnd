@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CadastroOrcamentoComponent } from './cadastro-orcamento.component';
+import { FormaPagtoComponent } from './forma-pagto.component';
 
-describe('CadastroOrcamentoComponent', () => {
-  let component: CadastroOrcamentoComponent;
-  let fixture: ComponentFixture<CadastroOrcamentoComponent>;
+describe('FormaPagtoComponent', () => {
+  let component: FormaPagtoComponent;
+  let fixture: ComponentFixture<FormaPagtoComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ CadastroOrcamentoComponent ]
+      declarations: [ FormaPagtoComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CadastroOrcamentoComponent);
+    fixture = TestBed.createComponent(FormaPagtoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -11,6 +11,8 @@ import { AppComponent } from 'src/app/app.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { LoginResponse } from 'src/app/dto/login/login-response';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { Constantes } from 'src/app/utilities/constantes';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +41,8 @@ export class AutenticacaoService {
   public unidade_negocio: string = null;
 
   private renovacaoPendente: boolean = false;
+
+  public constantes: Constantes = new Constantes();
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
@@ -75,6 +79,24 @@ export class AutenticacaoService {
     return permissoesResponse;
   }
 
+  usuario:Usuario;
+  getUsuarioDadosToken(): Usuario {
+    if(this.readToken(this.obterToken())){
+      this.usuario = new Usuario();
+      if (this._usuarioLogado) {
+        this.usuario.nome = this._usuarioLogado;
+        this.usuario.permissoes = this._permissoes;
+        this.usuario.idVendedor = this._vendedor;
+        this.usuario.idParceiro = this._parceiro;
+        this.usuario.loja = this._lojaLogado;
+      }
+    }
+    
+    return this.usuario
+  }
+
+  
+
   tratarErros(erro: any): void {
     let msg: string[] = new Array();
 
@@ -94,6 +116,19 @@ export class AutenticacaoService {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
+  }
+
+  get tipoUsuario():number{
+    if (this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)) {
+      return this.constantes.VENDEDOR_UNIS;
+    }
+    if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+      return this.constantes.PARCEIRO;
+    }
+    if (this.usuario.permissoes.length == 1 &&
+      this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
+        return this.constantes.PARCEIRO_VENDEDOR;
+    }
   }
 
   get authUsuario(): string {

@@ -2,6 +2,13 @@ import { strict } from 'assert';
 import { concat } from 'rxjs/operators';
 
 export class DataUtils {
+    public static formataParaFormulario(data: Date): string {
+        if (typeof data.toISOString != "function")
+            data = new Date(data);
+        //queremos o formato yyy-mm-dd, é o que o input date precisa
+        //https://stackoverflow.com/questions/3552461/how-to-format-a-javascript-date
+        return data.toISOString().slice(0, 10);
+    }
     public static formata_dataString_para_formato_data(data:string){
         let split = data.split('/');
         let dia:string;
@@ -27,6 +34,13 @@ export class DataUtils {
         dt.setSeconds(aux.getSeconds());
 
         return dt;
+    }
 
+    public formata_data_DDMMYYY(data: any): any {
+        if (!data)
+            return;
+
+        let split = data.split('-');
+        return split[2].substring(0,2) + "-" + split[1] + "-" + split[0];
     }
 }

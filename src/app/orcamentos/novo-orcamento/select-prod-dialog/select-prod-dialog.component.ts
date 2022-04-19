@@ -23,9 +23,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     public ref: DynamicDialogRef,
     public readonly mensagemService: MensagemService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    telaDesktopService: TelaDesktopService) { 
-      super(telaDesktopService)
-    }
+    telaDesktopService: TelaDesktopService) {
+    super(telaDesktopService)
+  }
 
   @ViewChild('dataTable') table: Table;
   displayModal: boolean = false;
@@ -47,20 +47,21 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.pageItens = this.telaDesktop ? 3 : 6;
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
-  transferirDados() {
-    this.selecProdInfoPassado.produtoComboDto.produtosCompostos.forEach(p => {
-      let produtoDto = new ProdutoDto();
-      produtoDto.fabricante = p.paiFabricante;
-      produtoDto.fabricanteNome = p.paiFabricanteNome;
-      produtoDto.produto = p.paiProduto;
-      produtoDto.precoLista = p.paiPrecoTotal;
-      produtoDto.descricaoHtml = p.paiDescricao;
-      this.prodsArray.push(new ProdutoTela(produtoDto, p));
-    });
 
-    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(p => {
-      this.prodsArray.push(new ProdutoTela(p, null));
-    })
+  public limiteMaximo = 1000 * 1000;
+  transferirDados() {
+
+    const limite = this.limiteMaximo;
+    for (let copiar = 0; copiar < limite; copiar++) {
+      //acabou?
+      if (!(this.prodsArray.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
+        break;
+      //colocamos mais um
+      let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[this.prodsArray.length],
+        this.selecProdInfoPassado.produtoComboDto.produtosCompostos);
+
+      this.prodsArray.push(xy);
+    }
   }
 
 
@@ -74,15 +75,29 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   addProduto() {
+    // precisa guardar os codigos de produto para fazer um distinct,
+    // vamos guardar os produtos já separadamente?? se sim, criar no "novoOrcamentoService" pois assim,
+    // saberemos se estamos ultrapassando o limite
     if (this.selecionado) {
       let qtdeItens: number = 0;
       if (this.selecionado.Filhos.length > 0) {
-        qtdeItens = this.selecionado.Filhos.length;
+        this.selecionado.Filhos.forEach(x => {
+          let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
+          if (!produto) {
+            this.novoOrcamentoService.controleProduto.push(x.produto);
+            qtdeItens++; 
+          }
+        });
       }
       else {
-        qtdeItens++;
+        let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
+          if (!produto) {
+            this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
+            qtdeItens++; 
+          }
       }
-      if (this.novoOrcamentoService.qtdeProdutosOpcao + qtdeItens > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
+      if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
+        this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
         this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
         return;
       }
@@ -96,5 +111,10 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
   marcarLinha(e: Event) {
     e.stopImmediatePropagation();
+  }
+
+  produtoDescr(fabricante: string, produto: string) {
+    let p = this.selecProdInfoPassado.produtoComboDto.produtosSimples.filter(el => el.fabricante == fabricante && el.produto == produto)[0];
+    return p;
   }
 }

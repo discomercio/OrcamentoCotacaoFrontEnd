@@ -29,8 +29,10 @@ import { CadastrarClienteComponent } from './novo-orcamento/cadastrar-cliente/ca
 import { ItensComponent } from './novo-orcamento/itens/itens.component';
 import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from './novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
-import { CadastroOrcamentoComponent } from './novo-orcamento/cadastro-orcamento/cadastro-orcamento.component';
 import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.component';
+import { InputSwitchModule } from 'primeng/inputswitch';
+import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
+import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 
 
 @NgModule({
@@ -41,8 +43,9 @@ import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.componen
     ItensComponent,
     SelectProdDialogComponent,
     VisualizarOrcamentoComponent,
-    CadastroOrcamentoComponent,
-    NovoOrcamentoComponent
+    NovoOrcamentoComponent,
+    FormaPagtoComponent,
+    OpcoesComponent
   ],
   imports: [
     OrcamentosRoutingModule,
@@ -66,7 +69,8 @@ import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.componen
     CalendarModule,
     TabViewModule,
     AutoCompleteModule,
-    MultiSelectModule
+    MultiSelectModule,
+    InputSwitchModule
   ],
   providers:[DialogService, DatePipe]
 })
