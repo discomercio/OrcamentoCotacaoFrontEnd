@@ -13,7 +13,7 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) { }
 
-  
+
   buscarTodosUsuarios(): Observable<Usuario[]> {
     return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario');
   }
@@ -24,17 +24,11 @@ export class UsuariosService {
     return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario/vendedores', { params: params });
   }
 
-  /*  buscarParceiros(): Observable<Parceiro[]> {
-     return this.http.get<Parceiro[]>('assets/demo/data/banco/parceiro_x_usuario.json');
-   } */
-
-
-
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(environment.apiUrl + 'Usuario', usuario);
+    return this.http.post<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(environment.apiUrl + 'Usuario', usuario);
+    return this.http.put<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 }

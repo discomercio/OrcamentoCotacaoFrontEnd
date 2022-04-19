@@ -1,41 +1,31 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { MenuItem, SelectItem } from 'primeng/api';
-import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
-import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { CriptoService } from 'src/app/utilities/cripto/cripto.service';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
-import { Lojas } from 'src/app/dto/lojas/lojas';
-import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
-
 @Component({
   selector: 'app-usuario-edicao',
   templateUrl: './usuario-edicao.component.html',
   styleUrls: ['./usuario-edicao.component.scss']
 })
 
-
-
 export class UsuarioEdicaoComponent implements OnInit {
 
-  constructor(private readonly activatedRoute: ActivatedRoute,
-    private readonly usuariosService: UsuariosService,
+  constructor(
+    private router: Router,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
-    private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly mensagemService: MensagemService,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
-    private readonly lojasService: LojasService,
-    private readonly router: Router
     ) { }
 
   public form: FormGroup;
@@ -45,26 +35,16 @@ export class UsuarioEdicaoComponent implements OnInit {
   public novoUsuario: boolean = false;
   disabled: boolean = true;
   public formataTelefone = FormataTelefone;
-  public lojas = new Array<Lojas>();
-  public lojasSelecionadas = new Array<Lojas>();
   public mascaraTelefone: string;
   tipo: UsuarioTipo = 'todos';
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
-    this.criarForm();
     this.apelido = this.activatedRoute.snapshot.params.apelido;
-
-    this.lojasService.buscarTodasLojas().toPromise().then((r) => {
-      if (!!r) {
-        this.lojas = r;
-      }
-    });
-
+    this.criarForm();
 
     if (this.apelido == "novo") {
       this.novoUsuario = true;
-      // this.disabled = false;
     }
 
     if (this.apelido.toLowerCase() != "")
@@ -73,13 +53,12 @@ export class UsuarioEdicaoComponent implements OnInit {
           this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
             if (!!r) {
                 this.usuario =r;
-              //this.usuario = usuarios.filter(usuario => usuario.apelido == this.apelido)[0];
-              this.criarForm();
+                this.criarForm();
 
-              const datastamp = this.usuario.senha;
-              const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
-              this.form.controls.senha.setValue(senhaConvertida);
-              this.form.controls.confirmacao.setValue(senhaConvertida);
+                const datastamp = this.usuario.senha;
+                const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
+                this.form.controls.senha.setValue(senhaConvertida);
+                this.form.controls.confirmacao.setValue(senhaConvertida);
             }
           });
         }
@@ -119,31 +98,33 @@ export class UsuarioEdicaoComponent implements OnInit {
 
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
-    this.usuario.ativo = (f.ativo.value == "true");
+    this.usuario.ativo = (f.ativo.value == true);
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
-    //this.usuario.cpf_cnpj = f.cpf_cnpj.value;
     this.usuario.telefone = f.ddd_telefone.value;
     this.usuario.celular = f.dddCel_telefoneCel.value;
     this.usuario.parceiro = this.autenticacaoService._parceiro;
 
     if (this.usuario.id) {
-      this.usuariosService.alterarUsuario(this.usuario)
+        console.log(this.usuario);
+      this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
         .toPromise()
         .then((x) => {
-          alert("xx");
+            this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+            this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch(() => {
-          alert("yy");
+            this.mensagemService.showWarnViaToast("Problema ao atualizar");
         });
     } else {
-      this.usuariosService.cadastrarUsuario(this.usuario)
+      this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
         .toPromise()
         .then((x) => {
-          alert("x");
+            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
+            this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch(() => {
-          alert("y");
+            this.mensagemService.showWarnViaToast("Problema ao cadastrar");
         });
     }
   }
@@ -151,7 +132,6 @@ export class UsuarioEdicaoComponent implements OnInit {
   celular = false;
   celular2 = false;
   celular3 = false;
-
 }
 
 export function compararSenha(): ValidatorFn {
