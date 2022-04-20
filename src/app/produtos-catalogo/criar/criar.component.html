@@ -1,82 +1,93 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <h4>Criação de Produto</h4>
+            
+            <h4 style="color: #007BFF"><i class="fa fa-image"></i>&nbsp;Imagem</h4>
         </div>
     </div>
 </div>
 
-<!-- <div class="p-grid p-d-lg-flex">
+<div class="p-grid p-d-lg-flex">
     <div class="p-col-12">
         <div class="card">
-            <p-carousel [value]="produto.imagens" [numVisible]="3" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+            <!-- <h5 *ngIf="produto.imagens">Imagens</h5> -->
+            <p-carousel [value]="produto.imagens" [numVisible]="3" [numScroll]="1" [circular]="false">
                 <ng-template let-imagem pTemplate="item">
                     <div class="product-item">
                         <div class="product-item-content">
                             <div class="p-mb-3">
-                                <img src="{{imgUrl}}{{imagem.caminho}}"  class="product-image" />
+                                <img src="{{imgUrl}}{{imagem.Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;"/>
                             </div>
                             <div>
                                 <div class="car-buttons p-mt-5">
-                                    <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2" icon="pi pi-trash" (click)="excluirImagemClick(imagem.id)" pTooltip="Excluir imagem"></p-button>
+                                    <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2" icon="pi pi-trash" (click)="excluirImagemClick(imagem.Id)" pTooltip="Excluir imagem"></p-button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </ng-template>
             </p-carousel>
-            
-            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block" 
+
+            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
                 url="{{urlUpload}}" (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
                 ></p-fileUpload>
         </div>
     </div>
-</div> -->
+</div>
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
 
+            <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características do Produto</h4>
+        </div>
+    </div>
+</div>
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
             <form [formGroup]="form">
                 <div class="p-d-lg-flex p-d-md-flex">
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
+
+                        <div class="p-text-bold">Ativo: &nbsp;{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</div>
+                        <div class="p-field p-col-12">
+                            <p-inputSwitch id="ativo" formControlName="ativo" (onChange)="ativoClick($event)" [(ngModel)]="produto.Ativo"></p-inputSwitch>
+                        </div>
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
-                            <input id="id" type="text" pInputText placeholder="Código" formControlName="id" />
-                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'id')">{{mensagemErro}}</small>
+                            <input id="id" type="text" pInputText value="{{produto.Codigo}}" disabled="true" />
+                        </div>
+                        <div class="p-text-bold">Nome do Fabricante:</div>
+                        <div class="p-field p-col-12">
+                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Nome do Fabricante" formControlName="descricao" />
+                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                        </div>
+                        <div class="p-text-bold">Nome do Produto:</div>
+                        <div class="p-field p-col-12">
+                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Nome do Produto" formControlName="descricao" value="{{produto.Descricao}}" />
+                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-text-bold">Descrição:</div>
                         <div class="p-field p-col-12">
-                            <input id="descricao" type="text" pInputText placeholder="Descrição" formControlName="descricao" />
+                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Descrição completa" formControlName="descricao" value="{{produto.Descricao}}" />
                             <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
-                        <!--
-                        <div class="p-text-bold">Ativo: &nbsp;{{produto.ativo == true ? 'Sim': 'Não'}}</div>
-                        <div class="p-field p-col-12">
-                            <p-inputSwitch id="ativo" formControlName="ativo" (onChange)="ativoClick($event)" [(ngModel)]="produto.ativo"></p-inputSwitch>
-                        </div>
-                        <div class="p-field p-col-12">
-                            <div style="float: left;" class="p-field p-col-6">
-                                <div class="p-text-bold">Itens:</div>
-                            </div>
-                            <div style="float: right;" class="p-field p-col-6">
-                                <div class="p-text-bold">Valor:</div>
-                            </div>
-                            <div *ngFor="let c of produto.campos; let i = index">
-                                <div class="p-field p-col-12">
-                                    <input id="id" type="text" value="{{c.chave}}" class="p-field p-col-6" disabled="true" />
-                                    <input id="item{{c.id}}" type="text" value="{{c.valor}}" class="p-field p-col-6" />
-                                </div>
-                            </div>
-                        </div>  
-                        -->
                     </div>
-                </div> 
-
-                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>&nbsp;
-                <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
+                </div>
 
             </form>
 
         </div>
     </div>
 </div>
+
+<!-- PROPRIEDADES DO PRODUTO -->
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <h4 style="color: #007BFF"><i class="fa fa-gear" style="font-size:36px;"></i>&nbsp;Propriedades do Produto</h4>
+        </div>
+    </div>
+</div>
+<!-- PROPRIEDADES DO PRODUTO -->
+<div class="p-grid">
