@@ -1,3 +1,4 @@
+import { UsuarioMeusdadosComponent } from './usuarios/usuario-meusdados/usuario-meusdados.component';
 import { ClienteComponent } from './cliente/cliente.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
@@ -35,10 +36,10 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
                     { path: 'account/login', component: LoginComponent, },
                     {
                         path: '', component: AppMainComponent, children: [
-                            
+
                             { path: '', component: DashboardDemoComponent, },
                             { path: 'dashboards/generic', component: DashboardDemoComponent },
-                            
+
                             { path: 'produtos-catalogo/criar', component: ProdutosCatalogoCriarComponent },
                             { path: 'produtos-catalogo/listar', component: ProdutosCatalogoListarComponent },
                             { path: 'produtos-catalogo/visualizar/:id', component: ProdutosCatalogoVisualizarComponent },
@@ -51,9 +52,10 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
                             { path: 'produtos-catalogo-propriedades/editar/:id', component: ProdutosCatalogoPropriedadesEditarComponent },
 
                             { path: 'downloads', component: DownloadsComponent },
-                            
+
                             { path: 'usuarios/usuario-lista', component: UsuarioListaComponent },
                             { path: 'usuarios/usuario-edicao/:apelido', component: UsuarioEdicaoComponent },
+                            { path: 'usuarios/usuario-meusdados', component: UsuarioMeusdadosComponent },
                             { path: 'cliente/cliente', component: ClienteComponent }
                         ]
                     }

@@ -94,6 +94,12 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                             </li>
                             -->
                             <li role="menuitem">
+                            <a href="#" [routerLink]="['/usuarios/usuario-meusdados']">
+                                <i class="pi pi-fw pi-user"></i>
+                                <span>Meus dados</span>
+                            </a>
+                        </li>
+                            <li role="menuitem">
                                 <a href="#" (click)="logoffClick()">
                                     <i class="pi pi-fw pi-image"></i>
                                     <span>Logoff</span>

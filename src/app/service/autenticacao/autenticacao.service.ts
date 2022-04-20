@@ -91,11 +91,11 @@ export class AutenticacaoService {
         this.usuario.loja = this._lojaLogado;
       }
     }
-    
+
     return this.usuario
   }
 
-  
+
 
   tratarErros(erro: any): void {
     let msg: string[] = new Array();
@@ -119,14 +119,13 @@ export class AutenticacaoService {
   }
 
   get tipoUsuario():number{
-    if (this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)) {
+    if (this._permissoes.includes(this.constantes.AdministradorDoModulo)) {
       return this.constantes.VENDEDOR_UNIS;
     }
-    if (this.usuario.permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+    if (this._permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
       return this.constantes.PARCEIRO;
     }
-    if (this.usuario.permissoes.length == 1 &&
-      this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
+    if (this._permissoes.length == 1 && this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
         return this.constantes.PARCEIRO_VENDEDOR;
     }
   }

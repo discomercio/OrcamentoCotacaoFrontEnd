@@ -163,6 +163,7 @@ import { ProdutosCatalogoPropriedadesCriarComponent } from './produtos-catalogo-
 import { ValidacaoFormularioService } from './utilities/validacao-formulario/validacao-formulario.service';
 
 import { OrcamentosModule } from './orcamentos/orcamentos.module';
+import { UsuarioMeusdadosComponent } from './usuarios/usuario-meusdados/usuario-meusdados.component';
 @NgModule({
     imports: [
         BrowserModule,
@@ -310,6 +311,7 @@ import { OrcamentosModule } from './orcamentos/orcamentos.module';
         ProdutosCatalogoPropriedadesListarComponent,
         ProdutosCatalogoPropriedadesVisualizarComponent,
         ProdutosCatalogoPropriedadesCriarComponent,
+        UsuarioMeusdadosComponent,
     ],
     providers: [
         {

@@ -41,6 +41,6 @@ export class DataUtils {
             return;
 
         let split = data.split('-');
-        return split[2].substring(0,2) + "-" + split[1] + "-" + split[0];
+        return split[2].substring(0,2) + "/" + split[1] + "/" + split[0];
     }
 }
