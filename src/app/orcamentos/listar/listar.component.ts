@@ -246,54 +246,57 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
-  Pesquisar_Click() {
-    this.buscarRegistros();
-  }
+    Pesquisar_Click() {
+        this.buscarRegistros();
+    }
 
     cboVendedor_onChange(event) {
         console.log('cboVendedor_onChange');
-        this.buscarParceiros(event.value);
+        if(event.value) {
+            this.buscarParceiros(event.value);
+        }
     }
 
     cboParceiro_onChange(event) {
         console.log('cboParceiro_onChange');
-        this.buscarVendedoresParceiros(event.value);
-    //   // this.buscarVendedoresParceiros("");
+        if(event.value) {
+            this.buscarVendedoresParceiros(event.value);
+        }
     }
 
-  ngOnDestroy() {
-    this.inscricao.unsubscribe();
-  }
+    ngOnDestroy() {
+        this.inscricao.unsubscribe();
+    }
 
-  exportXlsx() {
-    let lstExport = new Array<ListaDtoExport>();
-    lstExport = this.montarListaParaExport();
-    this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos");
-  }
+    exportXlsx() {
+        let lstExport = new Array<ListaDtoExport>();
+        lstExport = this.montarListaParaExport();
+        this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos");
+    }
 
-  exportCsv() {
-    let lstExport = new Array<ListaDtoExport>();
-    lstExport = this.montarListaParaExport();
-    this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos");
-  }
+    exportCsv() {
+        let lstExport = new Array<ListaDtoExport>();
+        lstExport = this.montarListaParaExport();
+        this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos");
+    }
 
-  montarListaParaExport(): ListaDtoExport[] {
-    let lstExport = new Array<ListaDtoExport>();
+    montarListaParaExport(): ListaDtoExport[] {
+        let lstExport = new Array<ListaDtoExport>();
 
-    this.lstDtoFiltrada.forEach(l => {
-      let linha = new ListaDtoExport();
+        this.lstDtoFiltrada.forEach(l => {
+        let linha = new ListaDtoExport();
 
-      // linha.Data = l.Data;
-      // linha.Numero = l.Nome;
-      // linha.Nome = l.Nome;
-      // linha.Status = l.Status;
-      // linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(l.Valor);
+        // linha.Data = l.Data;
+        // linha.Numero = l.Nome;
+        // linha.Nome = l.Nome;
+        // linha.Status = l.Status;
+        // linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(l.Valor);
 
-      lstExport.push(linha);
-    });
+        lstExport.push(linha);
+        });
 
-    return lstExport;
-  }
+        return lstExport;
+    }
 
 
 }
