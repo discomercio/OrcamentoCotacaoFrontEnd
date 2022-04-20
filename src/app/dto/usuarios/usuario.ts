@@ -16,5 +16,7 @@ export class Usuario {
     dataUltimaAlteracao: Date;
     loja: string;
     vendedorResponsavel: string;
+    tipoUsuario: number;
+    unidadeNegocio: string;
 }
 
