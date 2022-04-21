@@ -20,7 +20,6 @@ export class UsuarioMeusdadosComponent implements OnInit {
 
         if(this.autenticacaoService._usuarioLogado) {
             console.log(this.usuario);
-            console.log(this.usuario.nome);
             this.usuario.nome = this.autenticacaoService._usuarioLogado;
             this.usuario.tipoUsuario = this.autenticacaoService.tipoUsuario;
             this.usuario.loja = this.autenticacaoService._lojaLogado;

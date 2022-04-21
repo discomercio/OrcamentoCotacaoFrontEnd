@@ -1,48 +1,41 @@
-import { UsuarioLogado } from './../../dto/usuarios/usuarioLogado';
-import { Injectable, DebugElement } from '@angular/core';
-import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Location } from '@angular/common';
 import jtw_decode from 'jwt-decode'
-
 import { environment } from '../../../environments/environment'
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { LoginResponse } from 'src/app/dto/login/login-response';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { Constantes } from 'src/app/utilities/constantes';
-
 @Injectable({
   providedIn: 'root'
 })
 export class AutenticacaoService {
 
-  constructor(private readonly http: HttpClient, private readonly location: Location,
+  constructor(private readonly http: HttpClient,
+    private readonly location: Location,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly router: Router
   ) {
   }
 
+  salvar: boolean = false;
+  usuario:Usuario;
   public lembrarSenhaParaAlterarSenha: boolean;
   public senhaExpirada: boolean = false;
-  salvar: boolean = false;
-
-
   public _usuarioLogado: string = null;
   public _lojasUsuarioLogado: Array<string> = null;
   public _permissoes: Array<string> = null;
   public _parceiro: string = null;
   public _vendedor: string = null;
   public _lojaLogado: string = null;
-
   public unidade_negocio: string = null;
-
-  private renovacaoPendente: boolean = false;
-
   public constantes: Constantes = new Constantes();
+  private renovacaoPendente: boolean = false;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
@@ -70,16 +63,13 @@ export class AutenticacaoService {
   }
 
   getLojas(lojas: string): Array<string> {
-    let lojasResponse = lojas.split(",");
-    return lojasResponse;
+    return lojas.split(",");
   }
 
   getPermissoes(permissoes: string): Array<string> {
-    let permissoesResponse = permissoes.split(",");
-    return permissoesResponse;
+    return permissoes.split(",");
   }
 
-  usuario:Usuario;
   getUsuarioDadosToken(): Usuario {
     if(this.readToken(this.obterToken())){
       this.usuario = new Usuario();
@@ -94,8 +84,6 @@ export class AutenticacaoService {
 
     return this.usuario
   }
-
-
 
   tratarErros(erro: any): void {
     let msg: string[] = new Array();
@@ -119,16 +107,18 @@ export class AutenticacaoService {
   }
 
   get tipoUsuario():number{
-    if (this._permissoes.includes(this.constantes.AdministradorDoModulo)) {
-      return this.constantes.VENDEDOR_UNIS;
+    if(this._permissoes) {
+        if (this._permissoes.includes(this.constantes.AdministradorDoModulo)) {
+            return this.constantes.VENDEDOR_UNIS;
+        }
+        if (this._permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
+            return this.constantes.PARCEIRO;
+        }
+        if (this._permissoes.length == 1 && this._permissoes.includes(this.constantes.AcessoAoModulo)) {
+            return this.constantes.PARCEIRO_VENDEDOR;
+        }
     }
-    if (this._permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
-      return this.constantes.PARCEIRO;
-    }
-    if (this._permissoes.length == 1 && this.usuario.permissoes.includes(this.constantes.AcessoAoModulo)) {
-        return this.constantes.PARCEIRO_VENDEDOR;
-    }
-  }
+}
 
   get authUsuario(): string {
     if (!this.readToken(this.obterToken())) return null;
