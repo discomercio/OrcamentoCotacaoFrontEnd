@@ -104,17 +104,15 @@ export class OrcamentosListarComponent implements OnInit {
         this.cols = [
           { field: 'NumeroOrcamento', header: 'Orçamento' },
           { field: 'NumPedido', header: 'Pedido', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
-          { field: 'Cliente_Obra', header: 'Cliente / Obra' },
+          { field: 'Cliente_Obra', header: 'Cliente' },
           { field: 'Vendedor', header: 'Vendedor' },
           { field: 'Parceiro', header: 'Parceiro' },
-        //   { field: 'VendedorParceiro', header: 'Vendedor Parceiro' },
           { field: 'Valor', header: 'Valor' },
           { field: 'Status', header: 'Status' },
-        //   { field: 'VistoEm', header: 'Visto em:' },
-          { field: 'Mensagem', header: 'Pendente' },
-          { field: "Editar", header: " ", visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
-          { field: "DtExpiracao", header: "Expiracao" },
-          { field: "DtCadastro", header: "Data" }
+          { field: 'Mensagem', header: 'Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
+          { field: 'DtExpiracao', header: 'Expiracao', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
+          { field: 'DtCadastro', header: 'Data' },
+          { field: 'Editar', header: " ", visible: 'none' },
         ];
     });
   }
