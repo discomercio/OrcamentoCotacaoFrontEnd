@@ -1,12 +1,16 @@
+import { Lojas } from './dto/lojas/lojas';
 import {Component} from '@angular/core';
 import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
 import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
+import { DropDownItem } from './orcamentos/models/DropDownItem';
+import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-topbar',
     template: `
+    <form [formGroup]="form">
         <div class="topbar clearfix">
             <div class="topbar-left p-text-center">
                 <a routerLink="/">
@@ -165,30 +169,68 @@ import { AutenticacaoService } from './service/autenticacao/autenticacao.service
                     <li #search class="search-item" [ngClass]="{'active-top-menu':appMain.activeTopbarItem === search}"
                         (click)="appMain.onTopbarItemClick($event,search)">
                         <div class="topbar-search">
-                            <input type="text" placeholder="Search" />
-                            <i class="pi pi-search"></i>
+                            <p-dropdown
+                            formControlName="cboLojas"
+                            [options]="lojas"
+                            emptyFilterMessage="Nenhum item encontrado"
+                            optionValue="Id" optionLabel="Value"
+                            (onChange)="cboLojas_onChange($event)"
+                            ></p-dropdown>
                         </div>
                     </li>
                 </ul>
             </div>
         </div>
+    </form>
     `
 })
 export class AppTopBarComponent {
 
-    constructor(public app: AppComponent, public appMain: AppMainComponent, private readonly autenticacaoService:  AutenticacaoService,
-        private readonly router: Router) {}
+
+    constructor(
+        public app: AppComponent,
+        public appMain: AppMainComponent,
+        private readonly autenticacaoService:  AutenticacaoService,
+        private readonly router: Router,
+        private fb: FormBuilder
+    ) {}
+
+    public form: FormGroup;
+    lojas: Array<DropDownItem> = [];
+
+    ngOnInit(): void {
+        this.criarForm();
+        this.populaComboLojas();
+    }
+
+    criarForm() {
+    this.form = this.fb.group({
+        cboLojas: [''],
+    });
+    }
 
     logoffClick() {
         this.autenticacaoService.authLogout();
         this.router.navigate(['/account/login'], { queryParams: {} });
-
-        // if (!!this.usuarioSelecionado) {
-        //   this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
-        // }
-        // else{
-        //   this.router.navigate(['/usuarios/usuario-edicao', 'novo']);
-        // }
       }
 
+      populaComboLojas() {
+          if(this.autenticacaoService._lojasUsuarioLogado) {
+            this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
+                this.lojas.push({ Id:x, Value:`Loja: ${x}`});
+            });
+
+          if(this.lojas.length > 0) {
+            var lojaSelecionada = sessionStorage.getItem("lojaLogada");
+            if(lojaSelecionada) {
+                this.form.controls.cboLojas.setValue(lojaSelecionada);
+            }
+          }
+        }
+      }
+
+      cboLojas_onChange($event) {
+        sessionStorage.setItem("lojaLogada", $event.value);
+        this.autenticacaoService._lojaLogado = $event.value;
+    }
 }
