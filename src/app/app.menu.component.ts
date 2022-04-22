@@ -57,7 +57,7 @@ export class AppMenuComponent implements OnInit {
                         }
                     }
                 }
-                if(this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR && x.items[i].label == eMenu.Usuarios){
+                if(this.tipoUsuario != this.constantes.PARCEIRO && x.items[i].label == eMenu.Usuarios){
                     x.items.splice(i, i);
                 }
             }
