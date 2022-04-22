@@ -382,7 +382,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     this.novoOrcamentoService.controleProduto = new Array<string>();
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    this.novoOrcamentoService.siglaPagto = "";
     this.novoOrcamentoService.setarPercentualComissao();
   }
 }

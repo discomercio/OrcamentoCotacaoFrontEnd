@@ -218,15 +218,15 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
-    if (!this.novoOrcamentoService.coeficientes) {
-      this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
-        if (r != null) {
-          this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
-          this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
-          this.formaPagto.calcularValorAvista();
-        }
-      }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
-    }
+debugger;
+    this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
+      if (r != null) {
+        this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
+        this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
+        this.formaPagto.calcularValorAvista();
+      }
+    }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
+
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
 
@@ -557,8 +557,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   salvarOrcamento() {
-    this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r)=>{
-      if(r != null){
+    this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
+      if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
