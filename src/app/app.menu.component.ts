@@ -2,7 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
 import { Usuario } from './dto/usuarios/usuario';
 import { UsuarioTipo } from './dto/usuarios/UsuarioTipo';
+import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
 import { MenuService } from './service/menu/menu.service';
+import { AlertaService } from './utilities/alert-dialog/alerta.service';
+import { Constantes } from './utilities/constantes';
+import { eMenu } from './utilities/enums/eMenu';
+import { ePermissao } from './utilities/enums/ePermissao';
 
 @Component({
     selector: 'app-menu',
@@ -14,55 +19,49 @@ import { MenuService } from './service/menu/menu.service';
     `
 })
 export class AppMenuComponent implements OnInit {
-    constructor(private readonly menuService: MenuService) {
-
+    constructor(private readonly menuService: MenuService,
+        private readonly autenticacaoService: AutenticacaoService,
+        private readonly alertaService: AlertaService) {
     }
 
-    public model: MenuItem[];
+    // public model: MenuItem[];
+    public model: Array<MenuItem> = new Array();
+    public constantes: Constantes = new Constantes();
+    usuario = new Usuario();
+    tipoUsuario: number;
 
-    aprovando: boolean = false;
     ngOnInit() {
-        const vendedorParceiro: UsuarioTipo = 'vendedor-parceiro';
-        this.model = [
-            {
-                items: [
-                    // { label: 'Aprovar orçamento', icon: 'fa fa-list-alt', routerLink: ['orcamentos/novo-orcamento/aprovar-orcamento', {aprovando: true }] },
-                    // {
-                    //     label: 'Cliente', icon: 'fa fa-user', routerLink: ['cliente/cliente']
-                    // },
-                    {
-                        label: 'Dashboards', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards'],
-                        items: [
-                            { label: 'Generic', icon: 'pi pi-fw pi-home', routerLink: ['/dashboards/generic'] }
-                        ]
-                    },
-                    {
-                        label: 'Orçamentos', icon: 'fa fa-calculator', routerLink: ['/orcamentos'],
-                        items: [
-                            { label: 'Novo', icon: 'pi pi-plus', routerLink: ['/orcamentos/cadastrar-cliente'] },
-                            { label: 'Orçamentos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/orcamentos'] },
-                            { label: 'Em Aprovação', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pendentes'] },
-                            { label: 'Pedidos', icon: 'fa fa-list-alt', routerLink: ['/orcamentos/listar/pedidos'] },
-                            // { label: 'Relatórios', icon: 'fa fa-clipboard', routerLink: ['/orcamentos/listar-orcamentos/lista/relatorios'] }
-                        ]
-                    },
-                    {
-                        label: 'Catálogos', icon: 'fa fa-list-alt', routerLink: ['/produtos-catalogo/listar'],
-                        items: [
-                            { label: 'Produtos', icon: "fa fa-list-alt", routerLink: ['/produtos-catalogo/listar'] },
-                            { label: 'Propriedades', icon: "pi pi-cog", routerLink: ['/produtos-catalogo-propriedades/listar'] }
-                        ]
-
-                    },
-                    { label: 'Downloads', icon: 'pi pi-download', routerLink: ['/downloads'] },
-                    {
-                        label: 'Usuários', icon: 'pi pi-users', routerLink: ['/usuarios/usuario-lista'],
-                        items: [
-                            { label: 'Vendedores do parceiro', icon: "pi pi-users", routerLink: ['/usuarios/usuario-lista'], queryParams: {tipo: vendedorParceiro} }
-                        ]
-                    }
-                ],
+        this.usuario = this.autenticacaoService.getUsuarioDadosToken();
+        this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+        this.menuService.buscar().toPromise().then((r) => {
+            if (r != null) {
+                this.model = r;
+                this.montarMenu();
             }
-        ];
+        }).catch(e => this.alertaService.mostrarMensagem("Ops! Tivemos problemas ao carregar o menu."));
+    }
+
+    montarMenu() {
+        if (this.usuario.permissoes.length == 0) {
+            this.alertaService.mostrarMensagem("Temos que logar novamente!");
+            return;
+        }
+        this.model.forEach((x) => {
+            for(let i = 0; i<x.items.length;i++){
+                if(!this.usuario.permissoes.includes(ePermissao.AdministradorDoModulo)){
+                    if(x.items[i].label == eMenu.Catalogos){
+                        for(let y = 0; y< x.items[i].items.length;y++){
+                            if(x.items[i].items[y].label == eMenu.Propriedades){
+                                x.items[i].items.splice(y, y);
+                            }
+                        }
+                    }
+                }
+                if(this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR && x.items[i].label == eMenu.Usuarios){
+                    x.items.splice(i, i);
+                }
+            }
+        });
+
     }
 }
