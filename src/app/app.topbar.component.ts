@@ -10,6 +10,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 @Component({
     selector: 'app-topbar',
     template: `
+    <style>
+        .hidden {display:none;}
+    </style>
     <form [formGroup]="form">
         <div class="topbar clearfix">
             <div class="topbar-left p-text-center">
@@ -170,11 +173,12 @@ import { FormBuilder, FormGroup } from '@angular/forms';
                         (click)="appMain.onTopbarItemClick($event,search)">
                         <div class="topbar-search">
                             <p-dropdown
-                            formControlName="cboLojas"
-                            [options]="lojas"
-                            emptyFilterMessage="Nenhum item encontrado"
-                            optionValue="Id" optionLabel="Value"
-                            (onChange)="cboLojas_onChange($event)"
+                                formControlName="cboLojas"
+                                [options]="lojas"
+                                emptyFilterMessage="Nenhum item encontrado"
+                                optionValue="Id" optionLabel="Value"
+                                (onChange)="cboLojas_onChange($event)"
+                                [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"
                             ></p-dropdown>
                         </div>
                     </li>
@@ -224,6 +228,9 @@ export class AppTopBarComponent {
             var lojaSelecionada = sessionStorage.getItem("lojaLogada");
             if(lojaSelecionada) {
                 this.form.controls.cboLojas.setValue(lojaSelecionada);
+            }
+            if(this.lojas.length == 1) {
+                this.form.controls.cboLojas.disable();
             }
           }
         }

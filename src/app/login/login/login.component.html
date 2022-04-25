@@ -15,8 +15,7 @@
                 <div class="p-col-12" style="text-align:left;">
                     <label class="login-label">Senha</label>
                     <div class="login-input">
-                        <input type="password" [(ngModel)]="senha" placeholder="Senha" pPassword
-                            p-password-info="Entre com a senha" />
+                        <input type="password" [(ngModel)]="senha" placeholder="Senha" pPassword p-password-info="Entre com a senha" [feedback]="false"/>
                     </div>
                 </div>
                 <div *ngIf="mostrarLoja" class="p-col-12" style="text-align:left;">
