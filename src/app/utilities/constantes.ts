@@ -33,4 +33,6 @@ export class Constantes {
     public AdministradorDoModulo = "100200";
     public ParceiroIndicadorUsuarioMaster = "100300";
     public SelecionarQualquerIndicadorDaLoja = "100400";
+
+    public SEM_INDICADOR = "*_SEM_INDICADOR_*";
 }

@@ -187,7 +187,6 @@ export class NovoOrcamentoService {
   get coeficientesParaCalculo(): Array<CoeficienteDto> {
     let coeficientesParaCalculo: CoeficienteDto[] = new Array<CoeficienteDto>();
     this.lstFabricantesDisctint.forEach(x => {
-      debugger;
       let filtro = this.coeficientes.filter(c => c.Fabricante == x && c.TipoParcela == this.siglaPagto && c.QtdeParcelas == this.qtdeParcelas)[0];
       coeficientesParaCalculo.push(filtro);
     });

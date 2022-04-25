@@ -131,16 +131,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.clicouAddProd = true;
     this.mostrarProdutos(null);
   }
-
+  mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
-    if (this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      this.lojaService.buscarPercentualComissao(this.usuario.loja).toPromise().then((r) => {
-        if (r != null) {
-          this.novoOrcamentoService.percentualMaxComissao = r;
-          this.novoOrcamentoService.setarPercentualComissao();
-        }
-      }).catch(e => this.alertaService.mostrarErroInternet(e));
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) {
+      return;
     }
+    this.lojaService.buscarPercentualComissao(this.usuario.loja).toPromise().then((r) => {
+      if (r != null) {
+        this.novoOrcamentoService.percentualMaxComissao = r;
+        this.novoOrcamentoService.setarPercentualComissao();
+      }
+    }).catch(e => this.alertaService.mostrarErroInternet(e));
   }
 
   verificarCargaProdutos(): boolean {
@@ -218,7 +219,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
-debugger;
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
@@ -241,7 +241,8 @@ debugger;
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    this.calcularPercentualComissao();
+    if (this.novoOrcamentoService.percentualMaxComissao)
+      this.calcularPercentualComissao();
   }
 
   digitouPreco_NF(e: Event, item: ProdutoOrcamentoDto): void {

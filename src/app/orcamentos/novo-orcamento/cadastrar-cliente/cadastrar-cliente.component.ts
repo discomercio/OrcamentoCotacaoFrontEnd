@@ -15,6 +15,7 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -34,7 +35,7 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
-    private readonly orcamentoService:OrcamentosService) { }
+    private readonly orcamentoService: OrcamentosService) { }
 
   //uteis
   public mascaraTelefone: string;
@@ -74,11 +75,11 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   buscarConfigValidade() {
-    this.orcamentoService.buscarConfigValidade().toPromise().then((r)=>{
-      if(r != null){
+    this.orcamentoService.buscarConfigValidade().toPromise().then((r) => {
+      if (r != null) {
         this.novoOrcamentoService.configValidade = r;
       }
-    }).catch((e)=> {
+    }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
     })
   }
@@ -119,6 +120,10 @@ export class CadastrarClienteComponent implements OnInit {
     if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.usuario.idVendedor = this.usuario.nome;
       this.buscarParceirosPorVendedor();
+      if(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro){
+        this.form.controls.Parceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
+        this.buscarVendedoresDoParceiro();
+      }
       return;
     }
     if (this.tipoUsuario == this.constantes.PARCEIRO) {
@@ -154,6 +159,15 @@ export class CadastrarClienteComponent implements OnInit {
   buscarParceirosPorVendedor(): void {
     let vendedor: string = this.form.controls.Vendedor.value;
     let loja: string = this.usuario.loja;
+
+    if (this.usuario.permissoes.includes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+      this.orcamentistaIndicadorService.buscarParceirosPorLoja(loja).toPromise().then((r) => {
+        if (r != null) {
+          this.lstParceiro = this.montarListaParaSelectItem(r);
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      return;
+    }
 
     this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise().then((r) => {
       if (r != null) {
@@ -239,6 +253,15 @@ export class CadastrarClienteComponent implements OnInit {
 
     if (!this.ValidaDataEntrega())
       return;
+
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+      if (this.form.controls.Parceiro.value == null || this.form.controls.Parceiro.value == "") {
+        this.form.controls.Parceiro.setErrors({ "status": "INVALID" });
+        this.form.controls.Parceiro.markAsDirty();
+        return;
+      }
+      else { this.form.controls.Parceiro.setErrors(null); }
+    }
 
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     clienteOrcamentoCotacaoDto.nomeCliente = this.form.controls.Nome.value;
