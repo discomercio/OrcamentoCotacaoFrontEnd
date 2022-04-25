@@ -39,10 +39,11 @@
                     <label><b>Permissões:</b>
                         <div *ngFor="let p of usuario.permissoes">
                             <label>{{p}} - </label>
-                            <label *ngIf="p == 100100">AcessoAoModulo</label>
-                            <label *ngIf="p == 100200">AdministradorDoModulo</label>
-                            <label *ngIf="p == 100300">ParceiroIndicadorUsuarioMaster</label>
-                            <label *ngIf="p == 100400">SelecionarQualquerIndicadorDaLoja</label>
+                            <label *ngIf="p == 100100">Acesso Ao Módulo</label>
+                            <label *ngIf="p == 100200">Administrador Do Módulo</label>
+                            <label *ngIf="p == 100300">Parceiro Indicador Usuário Master</label>
+                            <label *ngIf="p == 100400">Selecionar Qualquer Indicador Da Loja</label>
+                            <label *ngIf="p == 100500">Prorrogar Vencimento Do Orçamento</label>
                         </div>
                     </label>
                 </div>
