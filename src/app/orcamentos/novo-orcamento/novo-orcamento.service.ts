@@ -33,7 +33,7 @@ export class NovoOrcamentoService {
   public coeficientes: Array<CoeficienteDto>;
   public siglaPagto: string;
   public qtdeParcelas: number;
-  public configValidade:ValidadeOrcamento;
+  public configValidade: ValidadeOrcamento;
 
   criarNovo() {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
@@ -51,7 +51,8 @@ export class NovoOrcamentoService {
 
   percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
   setarPercentualComissao() {
-    this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
+    if (this.percentualMaxComissao)
+      this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
   }
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
@@ -148,7 +149,7 @@ export class NovoOrcamentoService {
   }
   teste: string = "texto com <br> quebra de linha";
   atribuirCoeficienteParaProdutos(qtdeParcelas: number) {
-    
+
     let coeficiente = this.coeficientes.filter(x => x.TipoParcela == this.siglaPagto && x.QtdeParcelas == qtdeParcelas);
     this.lstProdutosSelecionados.forEach(x => {
       let fabricanteCoef = coeficiente.filter(c => c.Fabricante == x.fabricante)[0];
