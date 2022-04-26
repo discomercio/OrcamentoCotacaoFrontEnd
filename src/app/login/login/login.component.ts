@@ -58,6 +58,7 @@ export class LoginComponent implements OnInit {
           this.mostrarLoja = true;
           this.montarSelectLoja();
           this.autenticacaoService.setarToken(r.AccessToken);
+          this.autenticou = true;
           this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
           return;
         }
