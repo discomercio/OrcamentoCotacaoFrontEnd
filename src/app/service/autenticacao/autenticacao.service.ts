@@ -89,8 +89,16 @@ export class AutenticacaoService {
     let msg: string[] = new Array();
 
     if (this.alertaService.mostrarErro412(erro)) return;
+
     msg.push("" + ((erro && erro.message) ? erro.message : erro.toString()));
-    if (erro && erro.status === 400) msg.push("usuário e senha inválidos.");
+
+    if (erro && erro.status === 400) {
+        if(erro && erro.error && erro.error.Message) {
+            msg.push(erro.error.Message);
+        } else {
+            msg.push("usuário ou senha inválidos.");
+        }
+    }
     if (erro && erro.status === 403) msg.push("loja do usuário não possui unidade_negocio. Entre em contato com o suporte.");
     if (erro && erro.status === 0) msg.push("servidor de autenticação não disponível.");
     if (erro && erro.status === 500) msg.push("erro interno no servidor de autenticação.");

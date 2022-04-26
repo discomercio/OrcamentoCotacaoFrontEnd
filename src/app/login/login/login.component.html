@@ -6,13 +6,13 @@
                 <div class="p-col-12" style="text-align:center;">
                     <h2 class="welcome-text">Bem vindo</h2>
                 </div>
-                <div class="p-col-12" style="text-align:left;">
+                <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
                     <label class="login-label">E-mail/ Usuário</label>
                     <div class="login-input">
                         <input type="text" [(ngModel)]="usuario" placeholder="Usuário" pInputText />
                     </div>
                 </div>
-                <div class="p-col-12" style="text-align:left;">
+                <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
                     <label class="login-label">Senha</label>
                     <div class="login-input">
                         <input type="password" [(ngModel)]="senha" placeholder="Senha" pPassword p-password-info="Entre com a senha" [feedback]="false"/>
