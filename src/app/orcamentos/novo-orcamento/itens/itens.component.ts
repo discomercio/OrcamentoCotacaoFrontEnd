@@ -75,21 +75,21 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   selecProdInfo = new SelecProdInfo();
 
   ngOnInit(): void {
-    // this.novoOrcamentoService.criarNovo();
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.concordaWhatsapp = false;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.email = "gabriel.teodoro@itssolucoes.com.br";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id = undefined;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.loja = "205";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente = "Gabriel Prada ";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeObra = null;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.observacoes = null;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.parceiro = "ZUPO STORE";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.telefone = null;
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo = "PJ";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf = "SP";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.validade = "Mon Mar 28 2022 16=30=52 GMT-0300 (Horário Padrão de Brasília) {}";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedor = "BARRETO";
-    // this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.vendedorParceiro = undefined;
+    this.novoOrcamentoService.criarNovo();
+    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = false;
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.email = "gabriel.teodoro@itssolucoes.com.br";
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.loja = "205";
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente = "Gabriel Prada ";
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeObra = null;
+    this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = null;
+    this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = "ZUPO STORE";
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.telefone = null;
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo = "PJ";
+    this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf = "SP";
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date("Mon Mar 28 2022 16=30=52 GMT-0300 (Horário Padrão de Brasília) {}");
+    this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = "BARRETO";
+    this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = undefined;
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       this.router.navigate(["orcamentos/cadastrar-cliente"]);
       return;
@@ -133,6 +133,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
   mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
+    
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) {
       return;
     }
