@@ -10,15 +10,14 @@ import { UsuariosService } from './../../service/usuarios/usuarios.service';
 import { PedidosService } from './../../service/pedidos/pedidos.service';
 import { OrcamentosService } from './../orcamentos.service';
 import { AutenticacaoService } from './../../service/autenticacao/autenticacao.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { enumParametros } from '../enumParametros';
 import { OrcamentoCotacaoStatus } from '../models/OrcamentoCotacaoStatus';
 import { DropDownItem } from '../models/DropDownItem';
-import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 
 @Component({
@@ -38,7 +37,6 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly exportExcelService: ExportExcelService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService
     ) {
         this.router.routeReuseStrategy.shouldReuseRoute = function() {
@@ -59,13 +57,11 @@ export class OrcamentosListarComponent implements OnInit {
   lstStatus: Array<OrcamentoCotacaoStatus>;
   lstVendedores: Array<Usuario>;
   lstParceiros: Array<OrcamentistaIndicadorDto>;
-  lstVendedoresParceiros: Array<any>;
   public linhaSelecionada: ListaDto;
 
   cboStatus: Array<DropDownItem> = [];
   cboVendedores: Array<DropDownItem> = [];
   cboParceiros: Array<DropDownItem> = [];
-  cboVendedoresParceiros: Array<DropDownItem> = [];
   cboMensagens: Array<DropDownItem> = [];
   cboDatas: Array<DropDownItem> = [];
   idValuesTmp = 0;
@@ -90,7 +86,6 @@ export class OrcamentosListarComponent implements OnInit {
       cliente: [''],
       vendedor: [''],
       parceiro: [''],
-      vendedorParceiro: [''],
       msgPendente: [''],
       dtInicio: [''],
       dtFim: [''],
@@ -133,7 +128,6 @@ export class OrcamentosListarComponent implements OnInit {
       filtroPost.Nome_numero = this.form.controls.cliente.value;
       filtroPost.Vendedor = this.form.controls.vendedor.value;
       filtroPost.Parceiro = this.form.controls.parceiro.value;
-      filtroPost.VendedorParceiro = this.form.controls.vendedorParceiro.value;
       filtroPost.Mensagem = this.form.controls.msgPendente.value;
       filtroPost.DtInicio = this.form.controls.dtInicio.value;
       filtroPost.DtFim = this.form.controls.dtFim.value;
@@ -153,7 +147,6 @@ export class OrcamentosListarComponent implements OnInit {
       console.log('Nome_numero: ' + filtroPost.Nome_numero);
       console.log('Vendedor: ' + filtroPost.Vendedor);
       console.log('Parceiro: ' + filtroPost.Parceiro);
-      console.log('VendParc: ' + filtroPost.VendedorParceiro);
       console.log('Mensagem: ' + filtroPost.Mensagem);
       console.log('Data Ini: ' + filtroPost.DtInicio);
       console.log('Data Fim: ' + filtroPost.DtFim);
@@ -214,16 +207,16 @@ export class OrcamentosListarComponent implements OnInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  buscarVendedoresParceiros(parceiro) {
-    this.cboVendedoresParceiros = [];
-    this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
-        if (r != null) {
-            r.forEach(x => {
-                this.cboVendedoresParceiros.push({ Id:x.nome, Value:x.nome});
-            });
-        }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
+//   buscarVendedoresParceiros(parceiro) {
+//     this.cboVendedoresParceiros = [];
+//     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
+//         if (r != null) {
+//             r.forEach(x => {
+//                 this.cboVendedoresParceiros.push({ Id:x.nome, Value:x.nome});
+//             });
+//         }
+//     }).catch((r) => this.alertaService.mostrarErroInternet(r));
+//   }
 
   buscarMensagens() {
     this.cboMensagens = [];
@@ -257,9 +250,9 @@ export class OrcamentosListarComponent implements OnInit {
 
     cboParceiro_onChange(event) {
         console.log('cboParceiro_onChange');
-        if(event.value) {
-            this.buscarVendedoresParceiros(event.value);
-        }
+        // if(event.value) {
+        //     this.buscarVendedoresParceiros(event.value);
+        // }
     }
 
     ngOnDestroy() {
@@ -295,7 +288,6 @@ export class OrcamentosListarComponent implements OnInit {
 
         return lstExport;
     }
-
 
 }
 

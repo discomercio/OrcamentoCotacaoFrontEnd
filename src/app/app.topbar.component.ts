@@ -219,21 +219,32 @@ export class AppTopBarComponent {
       }
 
       populaComboLojas() {
-          if(this.autenticacaoService._lojasUsuarioLogado) {
-            this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
-                this.lojas.push({ Id:x, Value:`Loja: ${x}`});
-            });
+          var lojaLogada = sessionStorage.getItem("lojaLogada");
+          var lojas = sessionStorage.getItem('lojas');
 
-          if(this.lojas.length > 0) {
-            var lojaSelecionada = sessionStorage.getItem("lojaLogada");
-            if(lojaSelecionada) {
-                this.form.controls.cboLojas.setValue(lojaSelecionada);
-            }
-            if(this.lojas.length == 1) {
-                this.form.controls.cboLojas.disable();
+          if(lojas) {
+            lojas.toString().split(',').forEach(x => {
+                this.lojas.push({ Id:x, Value:`Loja: ${x}`});
+            })
+          };
+
+          if(!lojas) {
+            if(this.autenticacaoService._lojasUsuarioLogado) {
+                this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
+                    this.lojas.push({ Id:x, Value:`Loja: ${x}`});
+                });
             }
           }
-        }
+
+          if(this.lojas.length > 0) {
+            if(lojaLogada) {
+                this.form.controls.cboLojas.setValue(lojaLogada);
+            }
+          }
+
+          if(this.lojas.length <= 1) {
+            this.form.controls.cboLojas.disable();
+          }
       }
 
       cboLojas_onChange($event) {

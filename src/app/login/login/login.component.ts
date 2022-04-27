@@ -45,7 +45,6 @@ export class LoginComponent implements OnInit {
       return;
     }
 
-
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
         if (!this.autenticacaoService.readToken(r.AccessToken)) {
@@ -63,6 +62,8 @@ export class LoginComponent implements OnInit {
         }
 
         this.autenticacaoService.setarToken(r.AccessToken);
+        // sessionStorage.setItem("lojaLogada", this.loja);
+        // sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
         this.router.navigate(['']);
       }
     }).catch((e) => {

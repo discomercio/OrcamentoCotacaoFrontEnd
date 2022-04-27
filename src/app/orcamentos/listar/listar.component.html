@@ -31,8 +31,7 @@
                             <p-dropdown formControlName="parceiro" [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" (onChange)="cboParceiro_onChange($event)" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label for="filtroVendedorParceiro">Vendedor parceiro</label>
-                            <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros" [(ngModel)]="filtro.VendedorParceiro" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
+                            &nbsp;
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end" *ngIf="parametro == 'ORCAMENTOS'">
                             <label for="filtroLoja">Mensagem Pendente</label>
@@ -72,8 +71,8 @@
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th class="p-py-2 p-pl-6" pSortableColumn="{{col.field}}" *ngFor="let col of columns" [ngStyle]="{'display': col.visible}">
-                            <div class="p-d-flex p-jc-between p-ai-center">
+                        <th pSortableColumn="{{col.field}}" *ngFor="let col of columns" [ngStyle]="{'display': col.visible}" style="text-align: center;">
+                            <div style="text-align: center;">
                                 {{col.header}}
                             </div>
                         </th>
@@ -81,7 +80,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="p-selectable-row" [pSelectableRow]="rowData">
-                        <td *ngFor="let col of columns" class="p-pl-5" [ngStyle]="{'display': col.visible}">
+                        <td *ngFor="let col of columns" class="p-py-2" [ngStyle]="{'display': col.visible}" style="text-align: center;">
                             {{
                                 col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
                                 col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
