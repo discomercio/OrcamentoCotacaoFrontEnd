@@ -11,15 +11,12 @@ export class UsuarioMeusdadosComponent implements OnInit {
 
     public usuario: Usuario;
 
-  constructor(
-    public readonly autenticacaoService: AutenticacaoService
-  ) { }
+  constructor(public readonly autenticacaoService: AutenticacaoService) { }
 
     ngOnInit(): void {
         this.usuario = new Usuario();
 
         if(this.autenticacaoService._usuarioLogado) {
-            console.log(this.usuario);
             this.usuario.nome = this.autenticacaoService._usuarioLogado;
             this.usuario.tipoUsuario = this.autenticacaoService.tipoUsuario;
             this.usuario.loja = this.autenticacaoService._lojaLogado;
@@ -29,5 +26,4 @@ export class UsuarioMeusdadosComponent implements OnInit {
             this.usuario.permissoes = this.autenticacaoService._permissoes;
         }
     }
-
 }

@@ -15,6 +15,7 @@ export class Usuario {
     usuarioUltimaAlteracao: string = "";
     dataUltimaAlteracao: Date;
     loja: string;
+    lojas: string[];
     vendedorResponsavel: string;
     tipoUsuario: number;
     unidadeNegocio: string;
