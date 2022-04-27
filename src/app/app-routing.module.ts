@@ -37,7 +37,8 @@ import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamen
                     {
                         path: '', component: AppMainComponent, children: [
 
-                            { path: '', component: DashboardDemoComponent, },
+                            // { path: '', component: DashboardDemoComponent, },
+                            { path: '', redirectTo: '/orcamentos/listar/orcamentos', pathMatch: 'full' },
                             { path: 'dashboards/generic', component: DashboardDemoComponent },
 
                             { path: 'produtos-catalogo/criar', component: ProdutosCatalogoCriarComponent },
