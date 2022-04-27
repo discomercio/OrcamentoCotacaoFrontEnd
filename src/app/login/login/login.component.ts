@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
-import { AppComponent } from 'src/app/app.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { SelectItem } from 'primeng/api';
 
@@ -14,7 +13,6 @@ export class LoginComponent implements OnInit {
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-    private readonly appComponent: AppComponent,
     private readonly mensagemService: MensagemService) { }
 
   ngOnInit(): void {
@@ -40,12 +38,13 @@ export class LoginComponent implements OnInit {
     }
     if (!!this.loja && this.mostrarLoja) {
       sessionStorage.setItem("lojaLogada", this.loja);
-      localStorage.setItem("lojaLogada", this.loja);
+      sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       this.autenticacaoService._lojaLogado = this.loja;
 
       this.router.navigate(['']);
       return;
     }
+
 
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
@@ -76,6 +75,7 @@ export class LoginComponent implements OnInit {
     this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
       let item: SelectItem = { label: x, value: x };
       this.lojasUsuario.push(item);
+      console.log(item);
     });
   }
   desligarFazendoLoginFOrmulario(): void {

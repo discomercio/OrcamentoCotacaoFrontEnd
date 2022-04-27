@@ -239,5 +239,6 @@ export class AppTopBarComponent {
       cboLojas_onChange($event) {
         sessionStorage.setItem("lojaLogada", $event.value);
         this.autenticacaoService._lojaLogado = $event.value;
+        window.location.reload();
     }
 }
