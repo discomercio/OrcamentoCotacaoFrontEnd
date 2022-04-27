@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
@@ -316,6 +317,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   incluirOpcao() {
+    //validar forma pagamento
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
@@ -330,15 +332,17 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Forma de pagamento a prazo é obrigatória!");
       return;
     }
-
+    if (!this.validarFormasPagto(this.formaPagtoCriacaoAprazo, this.formaPagtoCriacaoAvista)) {
+      return;
+    }
 
     if (!this.formaPagtoCriacaoAvista.tipo_parcelamento || this.formaPagtoCriacaoAvista.tipo_parcelamento != 1) {
-        
+
     }
     let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
     lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
 
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1){
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
       let tipoPagto = this.formaPagtoCriacaoAvista.tipo_parcelamento[0];
       this.formaPagtoCriacaoAvista.tipo_parcelamento = tipoPagto;
       lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
@@ -376,12 +380,94 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   limparCampos() {
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
     this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
-    this.meioDemaisPrestacoes = new Array<MeiosPagto>();    
+    this.meioDemaisPrestacoes = new Array<MeiosPagto>();
     this.totalAvista = 0;
     this.setarTipoPagto();
 
     this.novoOrcamentoService.controleProduto = new Array<string>();
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
     this.novoOrcamentoService.setarPercentualComissao();
+  }
+
+  validarFormasPagto(pagtoPrazo: FormaPagtoCriacao, pagtoAvista: FormaPagtoCriacao): boolean {
+    debugger;
+    if (pagtoAvista.observacao && !pagtoAvista.tipo_parcelamento) {
+      this.alertaService.mostrarMensagem("Para incluir uma observação para pagamento á vista, " +
+        "é necessário que seja selecionado a opção para pagamento á vista!");
+      return false;
+    }
+    if (pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+      debugger;
+      if (!pagtoAvista.op_av_forma_pagto) {
+        this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
+        return false;
+      }
+    }
+    if (pagtoPrazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+      debugger;
+      if (!pagtoPrazo.c_pc_qtde || pagtoPrazo.c_pc_qtde <= 0) {
+        this.alertaService.mostrarMensagem("É necessário informar a quantidade de parcelas no cartão de crédito!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pc_valor || pagtoPrazo.c_pc_valor <= 0) {
+        this.alertaService.mostrarMensagem("Os valores da parcelas no cartão de crédito está incorreta!");
+        return false;
+      }
+    }
+    if (pagtoPrazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+      debugger;
+      if (!pagtoPrazo.op_pce_entrada_forma_pagto) {
+        this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento da entrada!");
+        return false;
+      }
+      if (!pagtoPrazo.o_pce_entrada_valor || pagtoPrazo.o_pce_entrada_valor <= 0) {
+        this.alertaService.mostrarMensagem("Informe o valor da entrada!");
+        return false;
+      }
+      if (!pagtoPrazo.op_pce_prestacao_forma_pagto) {
+        this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento para demais prestações!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pce_prestacao_qtde || pagtoPrazo.c_pce_prestacao_qtde <= 0) {
+        this.alertaService.mostrarMensagem("Informe a quantidade de prestações!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pce_prestacao_valor || pagtoPrazo.c_pce_prestacao_valor <= 0) {
+        this.alertaService.mostrarMensagem("O valor das prestações para pagamento com entrada está incorreto!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pce_prestacao_periodo || pagtoPrazo.c_pce_prestacao_periodo <= 0) {
+        this.alertaService.mostrarMensagem("Informe o período de vencimento entre as prestações!");
+        return false;
+      }
+    }
+    if (pagtoPrazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+      debugger;
+      if (!pagtoPrazo.op_pu_forma_pagto) {
+        this.alertaService.mostrarMensagem("É necessário informar o meio de pagamento para pagamento com parcela única!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pu_valor || pagtoPrazo.c_pu_valor <= 0) {
+        this.alertaService.mostrarMensagem("O valor da parcela única está incorreto!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pu_vencto_apos) {
+        this.alertaService.mostrarMensagem("É necessário informar o dia do vencimento para parcela única!");
+        return false;
+      }
+    }
+    if (pagtoPrazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+      debugger;
+      if (!pagtoPrazo.c_pc_maquineta_qtde || pagtoPrazo.c_pc_maquineta_qtde <= 0) {
+        this.alertaService.mostrarMensagem("É necessário informar a quantidade de parcelas no cartão de maquineta!");
+        return false;
+      }
+      if (!pagtoPrazo.c_pc_maquineta_valor || pagtoPrazo.c_pc_maquineta_valor <= 0) {
+        this.alertaService.mostrarMensagem("Os valores da parcelas no cartão de crédito está incorreta!");
+        return false;
+      }
+    }
+
+    return true;
   }
 }

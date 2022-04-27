@@ -79,16 +79,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = false;
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.email = "gabriel.teodoro@itssolucoes.com.br";
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id = undefined;
-    this.novoOrcamentoService.orcamentoCotacaoDto.loja = "205";
+    this.novoOrcamentoService.orcamentoCotacaoDto.loja = "202";
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente = "Gabriel Prada ";
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeObra = null;
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = null;
-    this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = "ZUPO STORE";
+    // this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = "ZUPO STORE";
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.telefone = null;
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo = "PJ";
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf = "SP";
-    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date("Mon Mar 28 2022 16=30=52 GMT-0300 (Horário Padrão de Brasília) {}");
-    this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = "BARRETO";
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date();
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade.getDate();
+    this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = "ANDREZA";
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = undefined;
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       this.router.navigate(["orcamentos/cadastrar-cliente"]);
@@ -451,20 +452,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
 
-  removerOpcao(index: number) {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.id) {
-
-      this.orcamentoOpcaoService.removerOrcamentoOpcao().toPromise().then((r) => {
-        if (r != null) {
-
-
-        }
-      }).catch((error: HttpErrorResponse) => {
-        this.mensagemService.showErrorViaToast(error.error.errors);
-        return;
-      });
-    }
-  }
+  
 
   visualizarOrcamento() {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length <= 0) {
@@ -559,6 +547,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   salvarOrcamento() {
+    
+
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
@@ -571,4 +561,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.mensagemService.showWarnViaToast("Estamos implementando!");
     return;
   }
+
+
 }

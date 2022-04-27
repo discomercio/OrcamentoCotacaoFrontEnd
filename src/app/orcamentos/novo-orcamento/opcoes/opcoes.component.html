@@ -5,7 +5,7 @@
             Opção {{i + 1}}
             <div class="p-ml-auto p-p-0 p-text-right">
                 <span>{{novoOrcamentoService.moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}</span>
-                <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(index)"></i>
+                <i class="pi pi-trash p-ml-6" style="color: red" (click)="removerOpcao(i)"></i>
             </div>
         </ng-template>
         <ng-template pTemplate="content">
