@@ -1,6 +1,43 @@
-::ng-deep.p-xl-1{
-width: none;
+::ng-deep.p-xl-1 {
+    width: none;
 }
-.espaco{
+
+.espaco {
     min-width: 91px;
 }
+
+@media (min-width:870.40px) and (max-width: 1000px) {
+    .campo {
+        align-self: baseline;
+    }
+}
+@media (min-width:200px) and (max-width: 870.40px) {
+    .campo {
+        align-self: center;
+    }
+}
+@media (min-width:1025.60px) and (max-width: 1105.60px) {
+    .campo {
+        align-self: center;
+    }
+}
+@media (max-width:1424px){
+    .campo2{
+        align-self: center;
+    }
+}
+// @media only screen and (min-width:1104.40px)  {
+//     .campo {
+//         align-self: baseline;
+//     }
+// }
+// @media only screen and (max-width:1105.40px)  {
+//     .campo {
+//         align-self: center;
+//     }
+// }
+// @media only screen and (max-width:1025.60px)  {
+//     .campo {
+//         align-self: baseline;
+//     }
+// }
