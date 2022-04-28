@@ -1,11 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../dto/produtos-catalogo/ProdutoCatalogo';
+import { ProdutoCatalogoPropriedade } from '../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { ProdutoCatalogoFabricante } from '../../dto/produtos-catalogo/ProdutoCatalogoFabricante';
+import { ProdutoCatalogoPropriedadeOpcao } from '../../dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'app-criar-produto',
@@ -21,51 +25,170 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    ) { }
+  ) { }
 
-    public form: FormGroup;
-    public mensagemErro: string = "*Campo obrigatório.";
-    public produto: ProdutoCatalogo = new ProdutoCatalogo();
-    public uploadedFiles: any[] = [];
-    carregando: boolean = false;
+  public form: FormGroup;
+  public mensagemErro: string = "*Campo obrigatório.";
+  public produto: ProdutoCatalogo = new ProdutoCatalogo();
+  public uploadedFiles: any[] = [];
 
-    ngOnInit(): void {
-      this.carregando = true;
-      this.criarForm();
-    }
+  carregando: boolean = false;
+  propriedades: ProdutoCatalogoPropriedade[];
+  fabricantes: ProdutoCatalogoFabricante[];
+  opcoes: ProdutoCatalogoPropriedadeOpcao[];
+  lstOpcoes: SelectItem[][] = [];
+  lstFabricantes: SelectItem[] = [];
+  
+  // Campos de Propriedades dinâmicos da tela
+  lstPropriedades: any = [];
 
-    criarForm() {
-      this.form = this.fb.group({
-        id: ['', [Validators.required]],
-        descricao: ['', [Validators.required]],
-        ativo: [''],
-      });
-    }
+  // Campos de Propriedades dinâmicos da tela (Ativo ou Não)
+  lstPropriedadesAtivo: any = [];  
 
-    voltarClick(): void {
-      this.router.navigate(["//produtos-catalogo/listar"]);
-    }
+  ngOnInit(): void {
+    this.carregando = true;
+    this.criarForm();
+    this.buscarPropriedades();
+    this.buscarOpcoes();
+    this.buscarFabricantes();
+  }
+  criarForm() {
+    this.form = this.fb.group({
+      id: ['', [Validators.required]],
+      descricao: ['', [Validators.required]],
+      //nome_produto: ['', [Validators.required]],
+      ativo: [''],
+    });
+  }
 
-    salvarClick() {
-      if (!this.validacaoFormularioService.validaForm(this.form)){
-        return;
-      } 
-      
-      let prod = new ProdutoCatalogo();
-      prod.Id = this.form.controls.id.value;
-      prod.Nome = "";
-      prod.Descricao = this.form.controls.descricao.value;
-      prod.Ativo = "true";
-      prod.campos = [];
-      prod.imagens = [];
+  voltarClick(): void {
+    this.router.navigate(["//produtos-catalogo/listar"]);
+  }
+  buscarPropriedades() {
+    this.produtoService.buscarPropriedades().toPromise().then((r) => {
+      if (r != null) {
+        this.propriedades = r;
+        this.carregando = false;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+  buscarFabricantes() {
+    let lstFabricantes = [];
+    var indice = 0;
 
-      this.produtoService.criarProduto(prod).toPromise().then((r) => {
-        if (r != null) {
-          this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-          this.router.navigate([`//produtos-catalogo/editar/${prod.Id}`]);
+    this.produtoService.buscarFabricantes().toPromise().then((r) => {
+      if (r != null) {
+
+        while (indice < r.length) {
+          lstFabricantes.push({ label: r[indice]['Nome'], value: r[indice]['Fabricante'] })
+          indice++;
         }
-      }).catch((r)=> this.alertaService.mostrarErroInternet(r));
-    }
+
+        this.lstFabricantes = lstFabricantes;
+        this.fabricantes = r;
+        this.carregando = false;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+  buscarOpcoes(): void {
+
+    this.produtoService.buscarOpcoes().toPromise().then((r) => {
+
+      var x = 0;
+      var y = 0;
+
+      if (r != null) {
+        this.opcoes = r;
+        this.carregando = false;
+
+        let lstOpcoesPorId = [];
+        let listaId = [];
+
+        while (x < r.length) {
+
+          if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
+            listaId.push(r[x]['id_produto_catalogo_propriedade']);
+          }
+          x++;
+        }
+
+        x = 0;
+
+        while (x < listaId.length) {
+          var y = 0;
+
+          lstOpcoesPorId = [];
+
+          while (y < r.length) {
+            var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
+
+            if (indice == x) {
+              lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+            }
+            y++;
+          }
+          this.lstOpcoes[x] = lstOpcoesPorId;
+
+          x++;
+        }
+
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+  salvarClick() {
+
+    console.log(this.lstPropriedadesAtivo);
+    console.log(this.lstPropriedades);
+    
+    /*
+    if (!this.validacaoFormularioService.validaForm(this.form)){
+      return;
+    } */
+
+    let prod = new ProdutoCatalogo();
+
+    prod.Fabricante = this.form.controls.fabricante.value;
+    prod.Produto = this.form.controls.produto.value;
+    prod.Nome = this.form.controls.nome_produto.value;
+    prod.Descricao = this.form.controls.descricao.value;
+    prod.Ativo = "true";
+    prod.campos = [];
+    prod.imagens = [];
+
+    this.produtoService.criarProduto(prod).toPromise().then((r) => {
+      if (r != null) {
+        this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+        this.router.navigate([`//produtos-catalogo/editar/${prod.Id}`]);
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  onChange(idProdutoCatalogoPropriedade, idProdutoCatalogoPropriedadeOpcao, IdCfgTipoPropriedade) {
+
+    this.lstPropriedades.push(
+      {
+        idProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
+        idProdutoCatalogoPropriedadeOpcao: idProdutoCatalogoPropriedadeOpcao.value,
+        IdCfgTipoPropriedade: IdCfgTipoPropriedade,
+      });
+
+    // Verifico se já foi adicionado
+    /*
+    if (this.lstPropriedades.find((test) => test.idPropriedade === idPropriedade) === undefined) {
+      this.lstPropriedades.push({ idPropriedade: idPropriedade, idOpcao: idOpcao.value });
+    } */
+
+  }
+
+  onChangeAtivo(idProdutoCatalogoPropriedade, ativo) {
+
+    this.lstPropriedadesAtivo.push(
+      {
+        idProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
+        ativo: ativo.checked
+      });
+
+  }  
 
 }
 
