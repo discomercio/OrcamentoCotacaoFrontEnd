@@ -1,7 +1,7 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            
+
             <h4 style="color: #007BFF"><i class="fa fa-image"></i>&nbsp;Imagem</h4>
         </div>
     </div>
@@ -16,11 +16,14 @@
                     <div class="product-item">
                         <div class="product-item-content">
                             <div class="p-mb-3">
-                                <img src="{{imgUrl}}{{imagem.Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;"/>
+                                <img src="{{imgUrl}}{{imagem.Caminho}}" class="product-image"
+                                    style="max-width: 300px; max-height: 200px;" />
                             </div>
                             <div>
                                 <div class="car-buttons p-mt-5">
-                                    <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2" icon="pi pi-trash" (click)="excluirImagemClick(imagem.Id)" pTooltip="Excluir imagem"></p-button>
+                                    <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2"
+                                        icon="pi pi-trash" (click)="excluirImagemClick(imagem.Id)"
+                                        pTooltip="Excluir imagem"></p-button>
                                 </div>
                             </div>
                         </div>
@@ -28,9 +31,9 @@
                 </ng-template>
             </p-carousel>
 
-            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
-                url="{{urlUpload}}" (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
-                ></p-fileUpload>
+            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import"
+                chooseLabel="Upload" class="mr-2 inline-block" url="{{urlUpload}}"
+                (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"></p-fileUpload>
         </div>
     </div>
 </div>
@@ -38,7 +41,8 @@
     <div class="p-col-12">
         <div class="card">
 
-            <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características do Produto</h4>
+            <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características do
+                Produto</h4>
         </div>
     </div>
 </div>
@@ -46,34 +50,47 @@
     <div class="p-col-12">
         <div class="card">
             <form [formGroup]="form">
+                <p align="right"><button pButton type="button" label="Voltar" icon="fa fa-reply"
+                        (click)="voltarClick()"></button>&nbsp;
+                    <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
+                </p>
                 <div class="p-d-lg-flex p-d-md-flex">
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
 
-                        <div class="p-text-bold">Ativo: &nbsp;{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</div>
-                        <div class="p-field p-col-12">
-                            <p-inputSwitch id="ativo" formControlName="ativo" (onChange)="ativoClick($event)" [(ngModel)]="produto.Ativo"></p-inputSwitch>
+                        <div class="p-text-bold">Exibir no Catálogo: &nbsp;<p-inputSwitch id="ativo"
+                                formControlName="ativo" (onChange)="ativoClick($event)" [(ngModel)]="produto.Ativo">
+                            </p-inputSwitch><br><br>
                         </div>
+
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
-                            <input id="id" type="text" pInputText value="{{produto.Codigo}}" disabled="true" />
+                            <input id="id" type="text" pInputText value="{{produto.Codigo}}" maxlength="8" />
                         </div>
+
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field p-col-12">
-                            <input id="fabricante" name="fabricante" type="text" pInputText placeholder="Nome do Fabricante"/>
-                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <p-dropdown id="dpdFabricante" [options]="lstFabricantes" placeholder="Selecione">
+                            </p-dropdown>
                         </div>
                         <div class="p-text-bold">Nome do Produto:</div>
                         <div class="p-field p-col-12">
-                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Nome do Produto" formControlName="descricao" value="{{produto.Descricao}}" />
-                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <input id="descricao" name="nome_produto" type="text" pInputText
+                                placeholder="Nome do Produto" formControlName="nome_produto"
+                                value="{{produto.Descricao}}" />
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-text-bold">Descrição:</div>
                         <div class="p-field p-col-12">
-                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Descrição completa" formControlName="descricao" value="{{produto.Descricao}}" />
-                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <input id="descricao" name="descricao" type="text" pInputText
+                                placeholder="Descrição completa" formControlName="descricao"
+                                value="{{produto.Descricao}}" />
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
                     </div>
                 </div>
+
 
             </form>
 
@@ -85,9 +102,44 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <h4 style="color: #007BFF"><i class="fa fa-gear" style="font-size:36px;"></i>&nbsp;Propriedades do Produto</h4>
+            <h4 style="color: #007BFF"><i class="fa fa-gear" style="font-size:36px;"></i>&nbsp;Propriedades do Produto
+            </h4>
         </div>
     </div>
 </div>
-<!-- PROPRIEDADES DO PRODUTO -->
+
 <div class="p-grid">
+    <div class="p-col-12">
+        <div class="card">
+            <p-table #dt1 [value]="propriedades">
+                <ng-template pTemplate="body" let-lista>
+                    <div class="p-d-lg-flex p-d-md-flex">
+                        <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
+                            <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
+                            <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0">
+                                <div class="p-field p-col-6"> 
+                                    <input id="campo-{{lista.id}}" type="text" pInputText
+                                        placeholder="{{lista.descricao}}" value="" />
+                                    <br><br>
+                                    <p-inputSwitch id="campo-ativo-{{lista.id}}"></p-inputSwitch>
+
+                                </div>
+                            </div>
+                            <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 1">
+                                <div class="p-field p-col-6">
+                                    <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]"
+                                        placeholder="Selecione" (onChange)="onChange(lista.id,$event, lista.IdCfgTipoPropriedade)">
+                                        <br><br>
+                                    </p-dropdown>
+                                    <p-inputSwitch id="campo-ativo-{{lista.id}}" (onChange)="onChangeAtivo(lista.id,$event)"></p-inputSwitch>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </ng-template>
+            </p-table>
+        </div>
+    </div>
+</div>
+
+<!-- PROPRIEDADES DO PRODUTO -->

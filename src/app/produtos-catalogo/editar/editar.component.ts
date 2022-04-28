@@ -4,9 +4,13 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../dto/produtos-catalogo/ProdutoCatalogo';
+import { ProdutoCatalogoPropriedade } from '../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { ProdutoCatalogoPropriedadeOpcao } from '../../dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
+import { ProdutoCatalogoItem } from '../../dto/produtos-catalogo/ProdutoCatalogoItem';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoCampo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoCampo';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { SelectItem } from 'primeng/api';
 
 @Component({
   selector: 'app-editar-produto',
@@ -27,17 +31,25 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public produto: ProdutoCatalogo = new ProdutoCatalogo();
+  public propriedade: ProdutoCatalogoItem = new ProdutoCatalogoItem();
+  public propriedade_opcoes: ProdutoCatalogoItem = new ProdutoCatalogoItem();
   private id: string;
   private imgUrl: string;
   public urlUpload: string;
   public uploadedFiles: any[] = [];
   carregando: boolean = false;
 
+  propriedades: ProdutoCatalogoPropriedade[];
+  opcoes: ProdutoCatalogoPropriedadeOpcao[];
+  lstOpcoes: SelectItem[][] = [];
+
   ngOnInit(): void {
     this.carregando = true;
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
+    this.buscarPropriedades();
+    this.buscarOpcoes();
   }
 
   criarForm() {
@@ -58,6 +70,61 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
       if (r != null) {
         this.produto = r;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  buscarPropriedades() {
+    this.produtoService.buscarPropriedades().toPromise().then((r) => {
+      if (r != null) {
+        this.propriedades = r;
+        this.carregando = false;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  buscarOpcoes(): void {
+
+    this.produtoService.buscarOpcoes().toPromise().then((r) => {
+
+      var x = 0;
+      var y = 0;
+
+      if (r != null) {
+        this.opcoes = r;
+        this.carregando = false;
+
+        let lstOpcoesPorId = [];
+        let listaId = [];
+
+        while (x < r.length) {
+
+          if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
+            listaId.push(r[x]['id_produto_catalogo_propriedade']);
+          }
+          x++;
+        }
+
+        x = 0;
+
+        while (x < listaId.length) {
+          var y = 0;
+
+          lstOpcoesPorId = [];
+
+          while (y < r.length) {
+            var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
+
+            if (indice == x) {
+              lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+            }
+            y++;
+          }
+          this.lstOpcoes[x] = lstOpcoesPorId;
+
+          x++;
+        }
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
