@@ -4,7 +4,9 @@ import { ProdutoCatalogoImagem } from "./ProdutoCatalogoImagem";
 export class ProdutoCatalogo{
     Id:string;
     Codigo:string;
+    Produto: string;
     Nome:string;
+    Fabricante: string;
     Descricao:string;
     Ativo:string;
     campos: ProdutoCatalogoCampo[];
