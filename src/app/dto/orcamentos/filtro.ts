@@ -1,5 +1,3 @@
-import { DropDownItem } from "src/app/orcamentos/models/DropDownItem";
-
 export class Filtro {
     Origem: string;
     Status: string[];

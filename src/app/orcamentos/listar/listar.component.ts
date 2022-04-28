@@ -7,7 +7,6 @@ import { Filtro } from './../../dto/orcamentos/filtro';
 import { AlertaService } from './../../utilities/alert-dialog/alerta.service';
 import { ExportExcelService } from './../../service/export-files/export-excel.service';
 import { UsuariosService } from './../../service/usuarios/usuarios.service';
-import { PedidosService } from './../../service/pedidos/pedidos.service';
 import { OrcamentosService } from './../orcamentos.service';
 import { AutenticacaoService } from './../../service/autenticacao/autenticacao.service';
 import { Component, OnInit } from '@angular/core';
@@ -29,10 +28,9 @@ export class OrcamentosListarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
+    private readonly activatedRoute: ActivatedRoute,
     private readonly orcamentoService: OrcamentosService,
-    public readonly pedidoService: PedidosService,
     private readonly usuarioService: UsuariosService,
     private readonly exportExcelService: ExportExcelService,
     private readonly alertaService: AlertaService,
@@ -76,8 +74,15 @@ export class OrcamentosListarComponent implements OnInit {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
     this.criarTabela();
-    this.popularCombos();
     this.buscarRegistros();
+  }
+
+  iniciarFiltro(param: any) {
+    this.parametro = param.filtro.toUpperCase();
+
+    if(this.parametro == enumParametros.PENDENTES) {
+      //this.form.controls.status.setValue(7);
+    }
   }
 
   criarForm() {
@@ -104,7 +109,7 @@ export class OrcamentosListarComponent implements OnInit {
           { field: 'Parceiro', header: 'Parceiro' },
           { field: 'Valor', header: 'Valor' },
           { field: 'Status', header: 'Status' },
-          { field: 'Mensagem', header: 'Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
+          { field: 'Mensagem', header: 'Msg. Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
           { field: 'DtExpiracao', header: 'Expiracao', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
           { field: 'DtCadastro', header: 'Data' },
           { field: 'Editar', header: " ", visible: 'none' },
@@ -112,111 +117,59 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
-  iniciarFiltro(param: any) {
-    this.parametro = param.filtro.toUpperCase();
-
-    if(this.parametro == enumParametros.PENDENTES) {
-      //this.form.controls.status.setValue(7);
-    }
-  }
-
   buscarRegistros() {
-      var filtroPost = new Filtro();
-      filtroPost.Origem = this.parametro;
-      filtroPost.Loja = this.autenticacaoService._lojaLogado;
-      filtroPost.Status = this.montaStatus(this.form.controls.status.value);
-      filtroPost.Nome_numero = this.form.controls.cliente.value;
-      filtroPost.Vendedor = this.form.controls.vendedor.value;
-      filtroPost.Parceiro = this.form.controls.parceiro.value;
-      filtroPost.Mensagem = this.form.controls.msgPendente.value;
-      filtroPost.DtInicio = this.form.controls.dtInicio.value;
-      filtroPost.DtFim = this.form.controls.dtFim.value;
+    this.filtro.Origem = this.parametro;
+    this.filtro.Loja = this.autenticacaoService._lojaLogado;
 
-      this.orcamentoService.buscarRegistros(filtroPost).toPromise().then((r) => {
-        if (r != null) {
-          this.lstDto = r;
-          this.lstDtoFiltrada = this.lstDto;
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    this.orcamentoService.buscarRegistros(this.filtro).toPromise().then((r) => {
+      if (r != null) {
+        this.lstDto = r;
+        this.lstDtoFiltrada = this.lstDto;
 
-      console.log('#####################################################');
-      console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
-      console.log('Origem:   ' + this.parametro);
-      console.log('Loja: ' + this.autenticacaoService._lojaLogado);
-      console.log('Status:   ' + filtroPost.Status);
-      console.log('Nome_numero: ' + filtroPost.Nome_numero);
-      console.log('Vendedor: ' + filtroPost.Vendedor);
-      console.log('Parceiro: ' + filtroPost.Parceiro);
-      console.log('Mensagem: ' + filtroPost.Mensagem);
-      console.log('Data Ini: ' + filtroPost.DtInicio);
-      console.log('Data Fim: ' + filtroPost.DtFim);
-      console.log('filtrar FIM: ' + this.lstDtoFiltrada.length);
-      console.log('#####################################################');
-  }
+        this.popularTela();
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+}
 
-  montaStatus(listaStatus) {
-    //   return "CAN";
-       return listaStatus;
-    //   var status = '';
-
-    //   if(listaStatus) {
-    //     listaStatus.map(function(val,index,array){
-    //         status += `'${val}',`;
-    //      });
-    //   }
-
-    //   return status;
-  }
-
-  popularCombos() {
+  popularTela() {
     this.buscarStatus();
     this.buscarVendedores();
+    this.buscarParceiros();
     this.buscarMensagens();
   }
 
   buscarStatus() {
     this.cboStatus = [];
-    this.orcamentoService.buscarStatus(this.parametro).toPromise().then((r) => {
-        if (r != null) {
-            r.forEach(x => {
-                this.cboStatus.push({ Id:x.Id, Value:x.Value});
-            });
+    this.lstDto.forEach(x => {
+        if(!this.cboStatus.find(f=> f.Value == x.Status)) {
+          if(x.Status) {
+            this.cboStatus.push({ Id:(this.idValuesTmp++).toString(), Value:x.Status});
+          }
         }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      });
     }
 
   buscarVendedores() {
     this.cboVendedores = [];
-    this.usuarioService.buscarVendedores(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-        if (r != null) {
-            r.forEach(x => {
-                this.cboVendedores.push({ Id:x.nome, Value:x.nome});
-            });
+    this.lstDto.forEach(x => {
+        if(!this.cboVendedores.find(f=> f.Value == x.Vendedor)) {
+          if(x.Vendedor) {
+            this.cboVendedores.push({ Id:(this.idValuesTmp++).toString(), Value:x.Vendedor});
+          }
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      });
   }
 
-  buscarParceiros(vendedor) {
+  buscarParceiros() {
     this.cboParceiros = [];
-    this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-        if (r != null) {
-            r.forEach(x => {
-                this.cboParceiros.push({ Id:x.nome, Value:x.nome});
-        });
+    this.lstDto.forEach(x => {
+      if(!this.cboParceiros.find(f=> f.Value == x.Parceiro)) {
+        if(x.Parceiro) {
+          this.cboParceiros.push({ Id:(this.idValuesTmp++).toString(), Value:x.Parceiro});
+        }
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    });
   }
-
-//   buscarVendedoresParceiros(parceiro) {
-//     this.cboVendedoresParceiros = [];
-//     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
-//         if (r != null) {
-//             r.forEach(x => {
-//                 this.cboVendedoresParceiros.push({ Id:x.nome, Value:x.nome});
-//             });
-//         }
-//     }).catch((r) => this.alertaService.mostrarErroInternet(r));
-//   }
 
   buscarMensagens() {
     this.cboMensagens = [];
@@ -237,19 +190,74 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
-    Pesquisar_Click() {
-        this.buscarRegistros();
+  Pesquisar_Click() {
+    console.log('#####################################################');
+    console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
+    let lstFiltroStatus: Array<ListaDto> = new Array();
+    let lstFiltroMensagem: Array<ListaDto> = new Array();
+    let lstFiltroDatas: Array<ListaDto> = new Array();
+    this.lstDtoFiltrada = new Array();
+
+    let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
+    let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
+    if(this.filtro.Status)   { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
+    if(this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
+    if(this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); };
+
+    console.log('Status:   ' + this.filtro.Status);
+    console.log('Vendedor: ' + this.filtro.Vendedor);
+    console.log('Parceiro: ' + this.filtro.Parceiro);
+    console.log('Mensagem: ' + this.filtro.Mensagem);
+    console.log('Data Ini: ' + this.filtro.DtInicio);
+    console.log('Data Fim: ' + this.filtro.DtFim);
+
+    if( (this.filtro.Status === undefined || this.filtro.Status == null)
+      && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null)
+      && (this.filtro.Parceiro === undefined || this.filtro.Parceiro == null)
+      && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null)
+      && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null)
+      && (this.filtro.DtFim === undefined || this.filtro.DtFim == null)
+        ) {
+      this.lstDtoFiltrada = this.lstDto;
+    } else {
+      this.lstDtoFiltrada = this.lstDto;
+      if(lstFiltroStatus.length   > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x=> this.filtro.Status.includes(x.Status)); }
+      if(lstFiltroVendedor.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x=> this.filtro.Vendedor == x.Vendedor); }
+      if(lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x=> this.filtro.Parceiro == x.Parceiro); }
+      if(lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x=> this.filtro.Mensagem == x.Mensagem); }
+      if(lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
+    }
+
+    console.log('Status  .length: ' + lstFiltroStatus.length);
+    console.log('Vendedor.length: ' + lstFiltroVendedor.length);
+    console.log('Parceiro.length: ' + lstFiltroParceiro.length);
+    console.log('Mensagem.length: ' + lstFiltroMensagem.length);
+    console.log('Datas   .length: ' + lstFiltroDatas.length);
+    console.log('filtrar FIM: ' + this.lstDtoFiltrada.length);
+    console.log('#####################################################');
+
+    this.popularTela();
+  }
+
+    cboStatus_onChange(event) {
+        console.log('cboStatus_onChange');
+        this.Pesquisar_Click();
+        // if(event.value) {
+        //     this.buscarParceiros();
+        // }
     }
 
     cboVendedor_onChange(event) {
         console.log('cboVendedor_onChange');
-        if(event.value) {
-            this.buscarParceiros(event.value);
-        }
+        this.Pesquisar_Click();
+        // if(event.value) {
+        //     this.buscarParceiros();
+        // }
     }
 
     cboParceiro_onChange(event) {
         console.log('cboParceiro_onChange');
+        this.Pesquisar_Click();
         // if(event.value) {
         //     this.buscarVendedoresParceiros(event.value);
         // }

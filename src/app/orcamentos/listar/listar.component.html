@@ -11,8 +11,8 @@
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtro">Status</label>
                             <p-multiSelect formControlName="status" [options]="cboStatus"
-                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Id" optionLabel="Value"
-                                [(ngModel)]="filtro.Status" emptyFilterMessage="Nenhum item encontrado"
+                                placeholder="Selecione" emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value" optionLabel="Value"
+                                [(ngModel)]="filtro.Status" (onChange)='cboStatus_onChange($event)' emptyFilterMessage="Nenhum item encontrado"
                                 >
                             </p-multiSelect>
                         </div>
@@ -21,11 +21,11 @@
                             <label for="nomeObra" *ngIf="parametro != 'ORCAMENTOS'">Nº Orçamento / Nº Pedido / Nome do cliente / Nome da obra</label>
                             <input pInputText type="text" formControlName="cliente" placeholder="Digite a busca" (input)="dt1.filterGlobal($event.target.value, 'contains')">
                         </div>
-
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroVendedor">Vendedor</label>
                             <p-dropdown formControlName="vendedor" [options]="cboVendedores" [(ngModel)]="filtro.Vendedor" (onChange)='cboVendedor_onChange($event)' [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
+
                         <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Parceiro</label>
                             <p-dropdown formControlName="parceiro" [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" (onChange)="cboParceiro_onChange($event)" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
@@ -37,23 +37,22 @@
                             <label for="filtroLoja">Mensagem Pendente</label>
                             <p-dropdown formControlName="msgPendente" [options]="cboMensagens" [(ngModel)]="filtro.Mensagem" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
-                        <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5 p-as-end">
+
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
                             <p-calendar formControlName="dtInicio" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicio" [showIcon]="true"></p-calendar>
                         </div>
-                        <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-4 p-as-end">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-4 p-as-end">
                             <label for="dataFinal">Data final</label>
                             <p-calendar formControlName="dtFim" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFim" [showIcon]="true"></p-calendar>
                         </div>
-                        <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
+                        <!-- <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
                             <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
                                 (click)="Pesquisar_Click()"></button>
-                        </div>
+                        </div> -->
                     </div>
 
                 </div>
-
-
 
             </div>
             <p-table #dt1 [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
