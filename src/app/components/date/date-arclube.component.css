@@ -1,0 +1,15 @@
+.box-input {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 7px;
+}
+
+.box-input .title-input {
+  width: 100%;
+}
+
+.box-input .value-input {
+  width: 90%;
+}
+
+/*# sourceMappingURL=date-arclube.component.css.map */

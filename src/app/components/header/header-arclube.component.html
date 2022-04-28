@@ -1,0 +1,14 @@
+<div class="card p-grid ml-2 mr-2 mb-3">
+  <h2 class="title p-col-6 mt-2 mb-2">{{headerName}}</h2>
+
+  <div class="p-col-5"></div>
+    <button pButton pRipple 
+        type="button" 
+        [label]="btnName" 
+        class="p-element p-ripple p-button p-component p-button p-mr-2 p-mb-2 p-mt-3" 
+        icon="pi pi-plus" 
+        (click)="returnAction()"
+        *ngIf="createNew"
+        style="float: right;height: 35px;">
+    </button>
+</div>

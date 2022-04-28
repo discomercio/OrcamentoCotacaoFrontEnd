@@ -1,0 +1,13 @@
+<p-accordion [multiple]="true" >
+  <div *ngFor="let header of headers" >
+    <p-accordionTab [header]="header">
+      <ng-content (select)="'.content-menu'+header"></ng-content>
+    </p-accordionTab>
+  </div> 
+</p-accordion>
+
+<p-accordion >
+    <p-accordionTab [header]="header" [style]="{'background-color': 'white'}">
+      <ng-content select="'.content-menu'"></ng-content>
+    </p-accordionTab>
+</p-accordion>

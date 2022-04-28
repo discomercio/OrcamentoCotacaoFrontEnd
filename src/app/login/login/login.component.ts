@@ -1,8 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { SelectItem } from 'primeng/api';
+import { InputArClubeComponent } from 'src/app/components/input/input-arclube.component';
+import { DropdownArClubeComponent } from 'src/app/components/dropdown/dropdown-arclube.component';
+
+//Components
+
 
 @Component({
   selector: 'app-login',
@@ -10,6 +15,12 @@ import { SelectItem } from 'primeng/api';
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
+  
+  @ViewChild(InputArClubeComponent, {static: false})
+  input: InputArClubeComponent
+
+  @ViewChild(DropdownArClubeComponent, {static: false})
+  dropdown: DropdownArClubeComponent
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,

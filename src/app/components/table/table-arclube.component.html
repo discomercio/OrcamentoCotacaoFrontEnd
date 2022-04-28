@@ -1,0 +1,69 @@
+<div class="pr-4 pl-4 p-col-12" style="overflow: visible">
+  <!-- Header Buttons -->
+  <p-toolbar styleClass="mb-4" *ngIf="isNew">
+      <ng-template pTemplate="left">
+          <button pButton pRipple label="New" icon="pi pi-plus" class="p-button-success mr-2" (click)="newItem()" ></button>
+          <button pButton pRipple [label]="Delete" icon="pi pi-trash" class="p-button-danger" (click)="deleteItem()" [disabled]="isSelection"></button>
+      </ng-template>
+  </p-toolbar>
+
+  <!-- Table -->
+  <p-table  #table
+      [value]="items" 
+      [rows]="rows" 
+      [scrollable]="true"
+      responsiveLayout="scroll"
+      [rowHover]="true" 
+      dataKey="id"
+      [lazy]="true"
+      [totalRecords]="totalRecords"
+      currentPageReportTemplate="Mostrando {first} de {last} items no Total {{totalRecords}}" 
+      [rowsPerPageOptions]="[2, 4, 6]"
+      [paginator]="true"
+      [showCurrentPageReport]="true"
+      [showFirstLastIcon]="false"
+      (onPage)="getPage($event)"
+      styleClass="p-datatable-sm">
+      <ng-template pTemplate="caption">
+          <div class="flex align-items-center justify-content-between">
+            <h5 class="m-0">{{titleTable}}</h5>
+          </div>
+      </ng-template>
+      <!-- TABLE HEADER -->
+      <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 3rem" *ngIf="isSelection">
+                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th *ngFor="let header of headers" [style]="{width: header.width}">
+              <p-sortIcon (field)="header.name" *ngIf="header.isSortable"></p-sortIcon>
+              {{header.name}}
+            </th>
+            <th *ngIf="haveActions"></th>
+          </tr>
+      </ng-template>
+      <!-- TABLE BODY -->
+      <ng-template pTemplate="body" let-rowData let-item="items" >
+          <tr>
+            <td *ngFor="let header of headers" style="font-size: 12px;" [style]="{width: header.width}">
+              <!-- Edit Item e Remove Item-->
+              <button pButton pRipple [pTooltip]="tooltipEditLabel" class="p-button-text" [icon]="viewItem? 'pi pi-eye' : 'pi pi-pencil'" *ngIf="(header.field === 'actions')" (click)="editItem(rowData)"></button> 
+              <button pButton pRipple [pTooltip]="tooltipRemoveLabel" class="p-button-text" icon="pi pi-trash" *ngIf="(header.field === 'actions') && isDeleteItem" (click)="deleteItem(rowData)" style="color: red;"></button> 
+              <!-- Dados normais -->
+              <span *ngIf="(header.field !== 'actions' && header.field !== '_statusCustom' && header.field.substring(1,1) !== '*' && rowData.corLinha == '') ">{{rowData[header.field]}} </span>
+              <span *ngIf="(header.field !== 'actions' && header.field !== '_statusCustom' && header.field.substring(1,1) !== '*' && rowData.corLinha != '') " style="color: {{rowData.corLinha}};" >{{rowData[header.field]}} </span>
+              <!-- Status Custom -->
+              <i [pTooltip]="GetTooltipStatus(rowData[header.field])" *ngIf="header.field === '_statusCustom'" class="pi pi-circle-on" [style]="{color: getColorStatus(rowData[header.field])}"></i>
+              <!-- Botão de Aprovar -->
+              <button pButton pRipple class="p-button-text" icon="pi pi-thumbs-up" *ngIf="(header.field === 'actionsApproves' && rowData['status'] === 1)" pTooltip="Aprovar" style="color: green;" (click)="approve(rowData)"></button> 
+              <!-- Botão de Reprovar -->
+              <button pButton pRipple class="p-button-text" icon="pi pi-thumbs-down" *ngIf="(header.field === 'actionsApproves' && rowData['status'] === 1)" pTooltip="Reprovar" style="color: red;" (click)="repprove(rowData)"></button> 
+              <!-- Botão Aprovado -->
+              <button pButton pRipple class="p-button-text" icon="pi pi-check-circle" *ngIf="(header.field === 'actionsApproves' && rowData['status'] !== 1)" pTooltip="Aprovado" style="color: green;" [disabled]="true" ></button> 
+              <!-- Botão Visualizar -->
+              <button pButton pRipple class="p-button-text" icon="pi pi-eye" *ngIf="(header.field === 'viewItem')" pTooltip="Visualizar" style="color: green;" (click)="show(rowData)"></button> 
+            </td>
+          </tr>
+      </ng-template>
+  </p-table>
+</div>

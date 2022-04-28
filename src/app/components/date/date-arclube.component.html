@@ -1,0 +1,30 @@
+<div class="box-input" [style]="{width: widthContainer+'vh'}">
+  <div class="title-input">
+    <label for="dateRoot" [style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
+  </div>
+  <div class="value-input" >
+    <p-calendar name="dateRoot" *ngIf="!viewType"
+        [(ngModel)]="selectedItem" 
+        [maxDate]="maxDate" 
+        [readonlyInput]="true" 
+        inputId="min-max"
+        dateFormat="dd/mm/yy"
+        appendTo="body"
+        [style]="{'width': containerItem }"
+        (onSelect)="returnValue()"
+        [disabled]="disabled"
+        ></p-calendar>
+
+        <p-calendar name="dateRoot" *ngIf="viewType"
+          [(ngModel)]="selectedItem" 
+          [maxDate]="maxDate" 
+          [readonlyInput]="true" 
+          inputId="min-max2"
+          appendTo="body" 
+          [view]="viewType"
+          dateFormat="mm/yy"
+          [disabled]="disabled"
+          [style]="{'width': containerItem }"
+          (onSelect)="returnValue()"></p-calendar>
+  </div>
+</div>

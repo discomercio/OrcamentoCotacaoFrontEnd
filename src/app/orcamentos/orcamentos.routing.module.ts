@@ -1,4 +1,4 @@
-import { AppMainComponent } from 'src/app/app.main.component';
+import { AppMainComponent } from 'src/app/main/app.main.component';
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 

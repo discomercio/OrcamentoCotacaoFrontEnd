@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { MenuItem } from 'primeng/api/menuitem';
-import { Usuario } from './dto/usuarios/usuario';
-import { UsuarioTipo } from './dto/usuarios/UsuarioTipo';
-import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
-import { MenuService } from './service/menu/menu.service';
-import { AlertaService } from './utilities/alert-dialog/alerta.service';
-import { Constantes } from './utilities/constantes';
-import { eMenu } from './utilities/enums/eMenu';
-import { ePermissao } from './utilities/enums/ePermissao';
+import { Usuario } from './../dto/usuarios/usuario';
+import { UsuarioTipo } from './../dto/usuarios/UsuarioTipo';
+import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
+import { MenuService } from './../service/menu/menu.service';
+import { AlertaService } from './../utilities/alert-dialog/alerta.service';
+import { Constantes } from './../utilities/constantes';
+import { eMenu } from './../utilities/enums/eMenu';
+import { ePermissao } from './../utilities/enums/ePermissao';
 
 @Component({
     selector: 'app-menu',

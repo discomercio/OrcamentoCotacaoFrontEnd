@@ -1,0 +1,12 @@
+<div class="card-list">
+  <p-pickList [source]="sourceItems" [target]="targetItems" [sourceHeader]="sourceLabel" [targetHeader]="targetLabel"
+    [dragdrop]="true" 
+    [responsive]="true" 
+    [disabled]="disabled == 'true' ? '' : null" 
+    (onMoveToTarget)="onChange()" 
+    (onMoveToSource)="onChange()">
+    <ng-template let-sourceItem pTemplate="item">
+      <div>{{sourceItem[(fieldName)]}}</div>
+    </ng-template>
+  </p-pickList>
+</div>

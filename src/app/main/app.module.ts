@@ -95,77 +95,81 @@ import { AppMenuitemComponent } from './app.menuitem.component';
 import { AppTopBarComponent } from './app.topbar.component';
 import { AppFooterComponent } from './app.footer.component';
 import { AppProfileComponent } from './app.profile.component';
-import { DashboardDemoComponent } from './demo/view/dashboarddemo.component';
-import { DashboardBankingComponent } from './demo/view/dashboardbanking.component';
-import { FormLayoutDemoComponent } from './demo/view/formlayoutdemo.component';
-import { FloatLabelDemoComponent } from './demo/view/floatlabeldemo.component';
-import { InvalidStateDemoComponent } from './demo/view/invalidstatedemo.component';
-import { InputDemoComponent } from './demo/view/inputdemo.component';
-import { ButtonDemoComponent } from './demo/view/buttondemo.component';
-import { TableDemoComponent } from './demo/view/tabledemo.component';
-import { ListDemoComponent } from './demo/view/listdemo.component';
-import { TreeDemoComponent } from './demo/view/treedemo.component';
-import { PanelsDemoComponent } from './demo/view/panelsdemo.component';
-import { OverlaysDemoComponent } from './demo/view/overlaysdemo.component';
-import { MediaDemoComponent } from './demo/view/mediademo.component';
-import { MenusDemoComponent } from './demo/view/menusdemo.component';
-import { MessagesDemoComponent } from './demo/view/messagesdemo.component';
-import { MiscDemoComponent } from './demo/view/miscdemo.component';
-import { EmptyDemoComponent } from './demo/view/emptydemo.component';
-import { ChartsDemoComponent } from './demo/view/chartsdemo.component';
-import { FileDemoComponent } from './demo/view/filedemo.component';
-import { DocumentationComponent } from './demo/view/documentation.component';
-import { DisplayComponent } from './utilities/display.component';
-import { ElevationComponent } from './utilities/elevation.component';
-import { FlexboxComponent } from './utilities/flexbox.component';
-import { GridComponent } from './utilities/grid.component';
-import { IconsComponent } from './utilities/icons.component';
-import { SpacingComponent } from './utilities/spacing.component';
-import { TypographyComponent } from './utilities/typography.component';
-import { TextComponent } from './utilities/text.component';
-import { WidgetsComponent } from './utilities/widgets.component';
+import { DashboardDemoComponent } from './../demo/view/dashboarddemo.component';
+import { DashboardBankingComponent } from './../demo/view/dashboardbanking.component';
+import { FormLayoutDemoComponent } from './../demo/view/formlayoutdemo.component';
+import { FloatLabelDemoComponent } from './../demo/view/floatlabeldemo.component';
+import { InvalidStateDemoComponent } from './../demo/view/invalidstatedemo.component';
+import { InputDemoComponent } from './../demo/view/inputdemo.component';
+import { ButtonDemoComponent } from './../demo/view/buttondemo.component';
+import { TableDemoComponent } from './../demo/view/tabledemo.component';
+import { ListDemoComponent } from './../demo/view/listdemo.component';
+import { TreeDemoComponent } from './../demo/view/treedemo.component';
+import { PanelsDemoComponent } from './../demo/view/panelsdemo.component';
+import { OverlaysDemoComponent } from './../demo/view/overlaysdemo.component';
+import { MediaDemoComponent } from './../demo/view/mediademo.component';
+import { MenusDemoComponent } from './../demo/view/menusdemo.component';
+import { MessagesDemoComponent } from './../demo/view/messagesdemo.component';
+import { MiscDemoComponent } from './../demo/view/miscdemo.component';
+import { EmptyDemoComponent } from './../demo/view/emptydemo.component';
+import { ChartsDemoComponent } from './../demo/view/chartsdemo.component';
+import { FileDemoComponent } from './../demo/view/filedemo.component';
+import { DocumentationComponent } from './../demo/view/documentation.component';
+import { DisplayComponent } from './../utilities/display.component';
+import { ElevationComponent } from './../utilities/elevation.component';
+import { FlexboxComponent } from './../utilities/flexbox.component';
+import { GridComponent } from './../utilities/grid.component';
+import { IconsComponent } from './../utilities/icons.component';
+import { SpacingComponent } from './../utilities/spacing.component';
+import { TypographyComponent } from './../utilities/typography.component';
+import { TextComponent } from './../utilities/text.component';
+import { WidgetsComponent } from './../utilities/widgets.component';
 
-import { CountryService } from './demo/service/countryservice';
-import { EventService } from './demo/service/eventservice';
-import { NodeService } from './demo/service/nodeservice';
+import { CountryService } from './../demo/service/countryservice';
+import { EventService } from './../demo/service/eventservice';
+import { NodeService } from './../demo/service/nodeservice';
 import { MenuService } from './app.menu.service';
-import { CustomerService } from './demo/service/customerservice';
-import { PhotoService } from './demo/service/photoservice';
-import { ProductService } from './demo/service/productservice';
-import { IconService } from './demo/service/iconservice';
+import { CustomerService } from './../demo/service/customerservice';
+import { PhotoService } from './../demo/service/photoservice';
+import { ProductService } from './../demo/service/productservice';
+import { IconService } from './../demo/service/iconservice';
 import { MessageService } from 'primeng/api';
 import { KeyFilterModule } from 'primeng/keyfilter';
-import { AlertDialogComponent } from './utilities/alert-dialog/alert-dialog.component';
+import { AlertDialogComponent } from './../utilities/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { NgxMaskModule } from 'ngx-mask';
-import { SweetalertService } from './utilities/sweetalert/sweetalert.service';
+import { SweetalertService } from './../utilities/sweetalert/sweetalert.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
-import { TokenInterceptor } from './service/autenticacao/token.interceptor';
+import { TokenInterceptor } from './../service/autenticacao/token.interceptor';
 
-import { DownloadsComponent } from './downloads/downloads.component';
+import { DownloadsComponent } from './../downloads/downloads.component';
 
-import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
-import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
-import { ExportExcelService } from './service/export-files/export-excel.service';
-import { ClienteComponent } from './cliente/cliente.component';
-import { LoginComponent } from './login/login/login.component';
+import { UsuarioEdicaoComponent } from './../usuarios/usuario-edicao/usuario-edicao.component';
+import { UsuarioListaComponent } from './../usuarios/usuario-lista/usuario-lista.component';
+import { ExportExcelService } from './../service/export-files/export-excel.service';
+import { ClienteComponent } from './../cliente/cliente.component';
+import { LoginComponent } from './../login/login/login.component';
 
-import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
-import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
-import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
-import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+import { ProdutosCatalogoListarComponent } from './../produtos-catalogo/listar/listar.component';
+import { ProdutosCatalogoEditarComponent } from './../produtos-catalogo/editar/editar.component';
+import { ProdutosCatalogoVisualizarComponent } from './../produtos-catalogo/visualizar/visualizar.component';
+import { ProdutosCatalogoCriarComponent } from './../produtos-catalogo/criar/criar.component';
 
-import { ProdutosCatalogoPropriedadesListarComponent } from './produtos-catalogo-propriedades/listar/listar.component';
-import { ProdutosCatalogoPropriedadesEditarComponent } from './produtos-catalogo-propriedades/editar/editar.component';
-import { ProdutosCatalogoPropriedadesVisualizarComponent } from './produtos-catalogo-propriedades/visualizar/visualizar.component';
-import { ProdutosCatalogoPropriedadesCriarComponent } from './produtos-catalogo-propriedades/criar/criar.component';
+import { ProdutosCatalogoPropriedadesListarComponent } from './../produtos-catalogo-propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from './../produtos-catalogo-propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from './../produtos-catalogo-propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from './../produtos-catalogo-propriedades/criar/criar.component';
 
-import { ValidacaoFormularioService } from './utilities/validacao-formulario/validacao-formulario.service';
+import { ValidacaoFormularioService } from './../utilities/validacao-formulario/validacao-formulario.service';
 
-import { OrcamentosModule } from './orcamentos/orcamentos.module';
-import { UsuarioMeusdadosComponent } from './usuarios/usuario-meusdados/usuario-meusdados.component';
+import { OrcamentosModule } from './../orcamentos/orcamentos.module';
+import { UsuarioMeusdadosComponent } from './../usuarios/usuario-meusdados/usuario-meusdados.component';
+import { AppModuleComponents } from './app.module.component';
+
+
 @NgModule({
     imports: [
+        AppModuleComponents,
         BrowserModule,
         FormsModule,
         AppRoutingModule,
