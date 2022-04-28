@@ -1,31 +1,31 @@
-import { UsuarioMeusdadosComponent } from './usuarios/usuario-meusdados/usuario-meusdados.component';
-import { ClienteComponent } from './cliente/cliente.component';
+import { UsuarioMeusdadosComponent } from '../usuarios/usuario-meusdados/usuario-meusdados.component';
+import { ClienteComponent } from '../cliente/cliente.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
-import { DashboardDemoComponent } from './demo/view/dashboarddemo.component';
-import { DownloadsComponent } from './downloads/downloads.component';
+import { DashboardDemoComponent } from '../demo/view/dashboarddemo.component';
+import { DownloadsComponent } from '../downloads/downloads.component';
 
 import { AppMainComponent } from './app.main.component';
-import { UsuarioEdicaoComponent } from './usuarios/usuario-edicao/usuario-edicao.component';
-import { UsuarioListaComponent } from './usuarios/usuario-lista/usuario-lista.component';
+import { UsuarioEdicaoComponent } from '../usuarios/usuario-edicao/usuario-edicao.component';
+import { UsuarioListaComponent } from '../usuarios/usuario-lista/usuario-lista.component';
 import { AppComponent } from './app.component';
-import { LoginComponent } from './login/login/login.component';
+import { LoginComponent } from '../login/login/login.component';
 
-import { ProdutosCatalogoListarComponent } from './produtos-catalogo/listar/listar.component';
-import { ProdutosCatalogoEditarComponent } from './produtos-catalogo/editar/editar.component';
-import { ProdutosCatalogoVisualizarComponent } from './produtos-catalogo/visualizar/visualizar.component';
-import { ProdutosCatalogoCriarComponent } from './produtos-catalogo/criar/criar.component';
+import { ProdutosCatalogoListarComponent } from '../produtos-catalogo/listar/listar.component';
+import { ProdutosCatalogoEditarComponent } from '../produtos-catalogo/editar/editar.component';
+import { ProdutosCatalogoVisualizarComponent } from '../produtos-catalogo/visualizar/visualizar.component';
+import { ProdutosCatalogoCriarComponent } from '../produtos-catalogo/criar/criar.component';
 
 // Propriedades do Catálogo
-import { ProdutosCatalogoPropriedadesListarComponent } from './produtos-catalogo-propriedades/listar/listar.component';
-import { ProdutosCatalogoPropriedadesEditarComponent } from './produtos-catalogo-propriedades/editar/editar.component';
-import { ProdutosCatalogoPropriedadesVisualizarComponent } from './produtos-catalogo-propriedades/visualizar/visualizar.component';
-import { ProdutosCatalogoPropriedadesCriarComponent } from './produtos-catalogo-propriedades/criar/criar.component';
+import { ProdutosCatalogoPropriedadesListarComponent } from '../produtos-catalogo-propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from '../produtos-catalogo-propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from '../produtos-catalogo-propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from '../produtos-catalogo-propriedades/criar/criar.component';
 
-import { AprovarOrcamentoComponent } from './orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
-import { OrcamentosListarComponent } from './orcamentos/listar/listar.component';
-import { NovoOrcamentoComponent } from './orcamentos/novo-orcamento/novo-orcamento.component';
+import { AprovarOrcamentoComponent } from '../orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
+import { OrcamentosListarComponent } from '../orcamentos/listar/listar.component';
+import { NovoOrcamentoComponent } from '../orcamentos/novo-orcamento/novo-orcamento.component';
 
 @NgModule({
     imports: [

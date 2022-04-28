@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
+import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
 
 @Component({

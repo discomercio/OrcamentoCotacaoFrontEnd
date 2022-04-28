@@ -1,0 +1,22 @@
+<p-dialog 
+  [(visible)]="show" 
+   [modal]="overflow"
+   [draggable]="false"
+   [position]="positionModal"
+   [style]="{width: width+'px'}"
+   [resizable]="false"
+   (onHide)="close($event)"
+   [contentStyle]="{height: heightModal+'px', 'overflow-x': 'hidden'}"
+   [maximizable]="fullScreen"
+   class="modal">
+  <ng-template pTemplate="header">
+      <span class="headerName"><strong>{{titleHeader}}</strong></span>
+  </ng-template>
+  <ng-content selector=".content"></ng-content>
+  <ng-template pTemplate="footer">
+    <button pButton pRipple type="button" [label]="btnCloseName" class="p-button-text p-mr-2 p-mb-2" (click)="close()" *ngIf="!noSave"></button>&nbsp;
+    <button pButton pRipple type="button" [label]="btnSaveName" [disabled]="fetchingData" class="p-button p-mr-2 p-mb-2" (click)="save()" *ngIf="!noSave">
+      <p-progressSpinner [style]="{width: '20px', height: '20px', 'margin-right': '5px'}" strokeWidth="6" *ngIf="fetchingData"></p-progressSpinner>
+    </button>&nbsp;
+  </ng-template>
+</p-dialog>

@@ -1,0 +1,17 @@
+.box-input {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-bottom: 7px;
+  padding-top: 5px;
+}
+
+.box-input .title-input {
+  width: 100%;
+}
+
+.box-input .value-input {
+  width: 100%;
+}
+
+/*# sourceMappingURL=textarea-arclube.component.css.map */

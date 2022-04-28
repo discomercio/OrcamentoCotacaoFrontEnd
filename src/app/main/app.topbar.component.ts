@@ -1,10 +1,10 @@
-import { Lojas } from './dto/lojas/lojas';
+import { Lojas } from './../dto/lojas/lojas';
 import {Component} from '@angular/core';
 import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
-import { AutenticacaoService } from './service/autenticacao/autenticacao.service';
-import { DropDownItem } from './orcamentos/models/DropDownItem';
+import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
+import { DropDownItem } from './../orcamentos/models/DropDownItem';
 import { FormBuilder, FormGroup } from '@angular/forms';
 
 @Component({

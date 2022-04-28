@@ -1,0 +1,8 @@
+<div class="box-input" [style]="{width: widthContainer+'vh'}" >
+  <div class="title-input">
+    <label for="textAreaRoot"[style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
+  </div>
+  <div class="value-input" >
+    <textarea id="textAreaRoot" [rows]="rows" [cols]="columns" pInputTextarea ></textarea>
+  </div>
+</div>

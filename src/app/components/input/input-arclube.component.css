@@ -1,0 +1,11 @@
+.box-input {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 7px;
+}
+
+.p-inputtext {
+  width: 100%;
+}
+
+/*# sourceMappingURL=input-arclube.component.css.map */

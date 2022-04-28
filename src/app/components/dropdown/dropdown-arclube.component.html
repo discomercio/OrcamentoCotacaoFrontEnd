@@ -1,0 +1,21 @@
+<div class="flex flex-end p-flex-column" [style]="{width: widthContainer+'%'}">
+  <div class="title-input" style="padding: 5px 0 3px">
+    <label for="inputRoot" [style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
+  </div>
+  <div class="value-input" >
+    <p-dropdown
+        [disabled]="disabled"  
+        [autoDisplayFirst]="false" 
+        [options]="items" 
+        [(ngModel)]="selectedItem" 
+        [optionLabel]="optionsLabel" 
+        [optionValue]="optionsValue"
+        appendTo="body" 
+        (onChange)="returnValue()"
+        [style]="{'width': containerItem }"
+        class="ng-dirty"
+        [id]="Id"
+        [disabled]="disabled == 'true' ? '' : null" 
+        ></p-dropdown>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<div class="box-input" *ngIf="!isMultiple" [style]="{width: widthContainer+'vh'}">
+  <div class="title-input">
+    <label for="radioRoot" [style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
+  </div>
+  <div class="value-input" >
+    <p-radioButton name="radioRoot"  [value]="valueRadio" [(ngModel)]="valueSend" (ngModelChange)="returnValue()"  [attr.disabled]="disabled == 'true' ? '' : null"  ></p-radioButton>
+  </div>
+</div>
+
+<div *ngIf="isMultiple" [style]="{width: widthContainer+'vh'}">
+  <div class="box-input" *ngFor="let item of items" >
+    <div class="title-input">
+      <label for="radioRoot" [style]="getLabelStatus()">{{item.label+requiredLabel}}</label>
+    </div>
+    <div class="value-input" >
+      <p-radioButton name="radioRoot"  [value]="item.value" [(ngModel)]="valueSend" (ngModelChange)="returnValue()"   [attr.disabled]="disabled == 'true' ? '' : null"  ></p-radioButton>
+    </div>
+  </div>
+</div>
+
+

@@ -1,0 +1,16 @@
+.box-input {
+    display: flex;
+    align-items: flex-start;
+    // flex-direction: column;
+    // width: 35vh;
+    padding-bottom: 7px;
+    padding-top: 5px;
+}
+
+.box-input .title-input {
+    width: 65%;
+}
+
+.box-input .value-input {
+    width: 35%;
+}
