@@ -48,6 +48,9 @@ export class AppMenuComponent implements OnInit {
         }
         this.model.forEach((x) => {
             for(let i = 0; i<x.items.length;i++){
+                if(x.items[i].label== eMenu.Dashboards){
+                    x.items.splice(i, 1);
+                }
                 if(!this.usuario.permissoes.includes(ePermissao.AdministradorDoModulo)){
                     if(x.items[i].label == eMenu.Catalogos){
                         for(let y = 0; y< x.items[i].items.length;y++){

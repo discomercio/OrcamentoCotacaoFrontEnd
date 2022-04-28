@@ -263,6 +263,10 @@ export class CadastrarClienteComponent implements OnInit {
       else { this.form.controls.Parceiro.setErrors(null); }
     }
 
+    if(this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR){
+      this.form.controls.VendedorParceiro.setValue(null);
+    }
+
     let clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     clienteOrcamentoCotacaoDto.nomeCliente = this.form.controls.Nome.value;
     clienteOrcamentoCotacaoDto.nomeObra = this.form.controls.NomeObra.value;

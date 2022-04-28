@@ -1,4 +1,4 @@
-<div class="p-col-12 p-px-0">
+<div class="p-col-12 p-px-0" [ngClass]="{'desabilita': habilitar}">
     <div class="p-col-12 p-px-0 p-py-1">
         <h6>Formas de pagamento</h6>
         <div class="p-field-checkbox p-d-block" *ngIf="formasPagtoAVista">
@@ -35,7 +35,7 @@
         </div>
 
         <div class="p-field-checkbox p-d-block">
-            <div class="p-col-12 p-grid p-ai-center">
+            <div class="p-col-12 p-grid p-ai-center ">
                 <div class="p-text-nowrap p-xl-1 espaco p-pr-1">
                     <p-checkbox name="" value="2" inputId="2" [disabled]="true" binary="true" [(ngModel)]="checked">
                     </p-checkbox>
