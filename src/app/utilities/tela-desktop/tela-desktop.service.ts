@@ -14,7 +14,7 @@ export class TelaDesktopService {
   constructor(private breakpointObserver: BreakpointObserver,
     private readonly router: Router) {
     this.breakpointObserver
-      .observe([Breakpoints.Small, Breakpoints.XSmall, Breakpoints.HandsetPortrait])
+      .observe([Breakpoints.XSmall, Breakpoints.HandsetPortrait])
       .subscribe((state: BreakpointState) => {
         this.telaDesktop = !state.matches;
         this.telaAtual$.next(this.telaDesktop);
