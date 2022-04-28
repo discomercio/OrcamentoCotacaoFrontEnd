@@ -2,34 +2,54 @@
     <div class="p-col-12">
         <div class="card">
             <h4>Lista de Produtos
-                &nbsp;<button pButton style="align-content: flex-end;" icon="fa fa-plus" (click)="criarClick()" pTooltip="Criar produto"></button>
+                &nbsp;<button pButton style="align-content: flex-end;" icon="fa fa-plus" (click)="criarClick()"
+                    pTooltip="Criar produto"></button>
             </h4>
-            <p-table #dt1 [value]="listaProdutoDto" [responsive]="true" responsiveLayout="stack" 
+            <p-table #dt1 [value]="listaProdutoDto" [responsive]="true" responsiveLayout="stack"
                 [ngClass]="{'carregando': carregando}" breakpoint="680px"
-                styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0"
-               >
+                styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th pSortableColumn="id" class="p-lg-3">Código <p-sortIcon field="Codigo"></p-sortIcon></th>
-                        <th pSortableColumn="id" class="p-lg-4">Fabricante <p-sortIcon field="Fabricante"></p-sortIcon></th>
-                        <th pSortableColumn="id" class="p-lg-4">Nome <p-sortIcon field="Nome"></p-sortIcon></th>
-                        <th pSortableColumn="descricao" class="p-py-2 p-lg-4" style="text-align: left">Descrição <p-sortIcon field="Descricao"></p-sortIcon></th>
-                        <th pSortableColumn="imagem" class="p-lg-2">Imagem <p-sortIcon field="Imagem"></p-sortIcon></th>
-                        <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon field="Ativo"></p-sortIcon></th>
-                        <th class="p-py-2 p-lg-2" style="text-align: right">Ações</th>
+                        <th pSortableColumn="id" class="p-lg-3">Código <p-sortIcon field="Codigo"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="id" class="p-lg-4">Fabricante <p-sortIcon field="Fabricante"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="id" class="p-lg-4">Nome <p-sortIcon field="Nome"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="descricao" class="p-py-2 p-lg-4" style="text-align: left">Descrição
+                            <p-sortIcon field="Descricao"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="imagem" class="p-lg-2">Imagem <p-sortIcon field="Imagem"></p-sortIcon>
+                        </th>
+                        <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon
+                                field="Ativo"></p-sortIcon>
+                        </th>
+                        <th class="p-py-2 p-lg-3" style="text-align: center">Ações</th>
                     </tr>
                     <tr>
                         <th>
-                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Codigo', 'contains')" [value]="dt1.filters['Codigo']?.value" placeholder="Busca por código" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-2"
+                                (input)="dt1.filter($event.target.value, 'Codigo', 'contains')"
+                                [value]="dt1.filters['Codigo']?.value" placeholder="Busca por código"
+                                class="p-column-filter">
                         </th>
                         <th>
-                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Fabricante', 'contains')" [value]="dt1.filters['Fabricante']?.value" placeholder="Busca por Fabricante" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-2"
+                                (input)="dt1.filter($event.target.value, 'Fabricante', 'contains')"
+                                [value]="dt1.filters['Fabricante']?.value" placeholder="Busca por Fabricante"
+                                class="p-column-filter">
                         </th>
                         <th>
-                            <input pInputText type="text" class="p-lg-2" (input)="dt1.filter($event.target.value, 'Nome', 'contains')" [value]="dt1.filters['Nome']?.value" placeholder="Busca por Nome" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-2"
+                                (input)="dt1.filter($event.target.value, 'Nome', 'contains')"
+                                [value]="dt1.filters['Nome']?.value" placeholder="Busca por Nome"
+                                class="p-column-filter">
                         </th>
                         <th>
-                            <input pInputText type="text" class="p-lg-1" (input)="dt1.filter($event.target.value, 'Imagem', 'contains')" [value]="dt1.filters['Ativo']?.value" placeholder="Busca por descrição" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-1"
+                                (input)="dt1.filter($event.target.value, 'Imagem', 'contains')"
+                                [value]="dt1.filters['Ativo']?.value" placeholder="Busca por descrição"
+                                class="p-column-filter">
                         </th>
 
                         <th>
@@ -46,8 +66,12 @@
                         <td style="text-align: left">{{lista.Imagem}}</td>
                         <td style="text-align: center">{{lista.ativo == true ? 'Sim': 'Não'}}</td>
                         <td style="text-align: right">
-                            <button pButton style="align-content: flex-end;" icon="fa fa-eye" (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="fa fa-edit" (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-eye"
+                                (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-edit"
+                                (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-cut"
+                                (click)="copiarClick(this.lista.Id)" pTooltip="Copiar"></button>
                         </td>
                     </tr>
                 </ng-template>
@@ -55,4 +79,3 @@
         </div>
     </div>
 </div>
-

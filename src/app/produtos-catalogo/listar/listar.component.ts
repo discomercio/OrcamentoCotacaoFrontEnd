@@ -51,10 +51,15 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   }
 
   visualizarClick(id: any) {
-     this.router.navigate(["/produtos-catalogo/visualizar", id]);
+    this.router.navigate(["/produtos-catalogo/visualizar", id]);
   }
 
   editarClick(id: any) {
+    this.router.navigate(["/produtos-catalogo/editar", id]);
+  }
+
+  copiarClick(id: any) {
+
     this.router.navigate(["/produtos-catalogo/editar", id]);
   }
 
