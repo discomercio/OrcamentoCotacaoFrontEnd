@@ -166,7 +166,9 @@ export class NovoOrcamentoService {
   }
 
   recalcularProdutosComCoeficiente(qtdeParcelas: number, coeficientes: CoeficienteDto[]) {
-
+    if(!qtdeParcelas){
+      return;
+    }
     this.coeficientes = coeficientes;
     this.qtdeParcelas = qtdeParcelas;
 

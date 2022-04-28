@@ -26,18 +26,8 @@
         align-self: center;
     }
 }
-// @media only screen and (min-width:1104.40px)  {
-//     .campo {
-//         align-self: baseline;
-//     }
-// }
-// @media only screen and (max-width:1105.40px)  {
-//     .campo {
-//         align-self: center;
-//     }
-// }
-// @media only screen and (max-width:1025.60px)  {
-//     .campo {
-//         align-self: baseline;
-//     }
-// }
+
+.desabilita{
+    pointer-events: none;
+    opacity: 0.5;;
+}

@@ -75,7 +75,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   selecProdInfo = new SelecProdInfo();
 
   ngOnInit(): void {
-    
+
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       this.router.navigate(["orcamentos/cadastrar-cliente"]);
       return;
@@ -119,8 +119,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
   mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
-    
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) {
+      this.novoOrcamentoService.percentualMaxComissao = undefined;
       return;
     }
     this.lojaService.buscarPercentualComissao(this.usuario.loja).toPromise().then((r) => {
@@ -203,21 +203,25 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   inserirProduto(produto: ProdutoOrcamentoDto): void {
     let coeficienteRequest: CoeficienteRequest = new CoeficienteRequest();
     coeficienteRequest.lstFabricantes = new Array();
-
+    
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
-        this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
-        this.formaPagto.calcularValorAvista();
+        if (this.novoOrcamentoService.qtdeParcelas) {
+          this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
+          this.formaPagto.calcularValorAvista();
+        }
+
       }
     }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
 
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
-
+    
     this.novoOrcamentoService.totalPedido();
+    this.formaPagto.habilitar = false;
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
@@ -437,7 +441,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
 
-  
+
 
   visualizarOrcamento() {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length <= 0) {
@@ -532,7 +536,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   salvarOrcamento() {
-    
+
 
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
