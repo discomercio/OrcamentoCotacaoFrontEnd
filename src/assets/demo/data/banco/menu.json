@@ -58,11 +58,18 @@
                 "label": "Catálogos",
                 "icon": "fa fa-list-alt",
                 "routerLink": [
-                    "/produtos-catalogo/listar"
+                    "/produtos-catalogo"
                 ],
                 "items": [
                     {
-                        "label": "Produtos",
+                        "label": "Consultar",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/produtos-catalogo/consultar"
+                        ]
+                    },
+                    {
+                        "label": "Cadastrar/Editar",
                         "icon": "fa fa-list-alt",
                         "routerLink": [
                             "/produtos-catalogo/listar"

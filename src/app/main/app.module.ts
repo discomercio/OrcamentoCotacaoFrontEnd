@@ -88,6 +88,7 @@ import { OrcamentosModule } from '../views/orcamentos/orcamentos.module';
 import { UsuarioMeusdadosComponent } from '../views/usuarios/usuario-meusdados/usuario-meusdados.component';
 import { AppModuleComponents } from './app.module.component';
 import { AppModuleNgComponents } from './app.module.ngcomponent';
+import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/consultar/consultar.component';
 
 @NgModule({
     imports: [
@@ -161,6 +162,7 @@ import { AppModuleNgComponents } from './app.module.ngcomponent';
         ProdutosCatalogoPropriedadesVisualizarComponent,
         ProdutosCatalogoPropriedadesCriarComponent,
         UsuarioMeusdadosComponent,
+        ProdutosCatalogoConsultarComponent,
     ],
     providers: [
         {

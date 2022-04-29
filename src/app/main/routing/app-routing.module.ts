@@ -31,6 +31,7 @@ import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/it
 import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { LoginGuard } from 'src/app/service/autenticacao/login.guard';
+import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
 
 @NgModule({
     imports: [
@@ -57,6 +58,7 @@ import { LoginGuard } from 'src/app/service/autenticacao/login.guard';
 
                             // Produtos Catalogo
                             { path: 'produtos-catalogo', canActivate: [LoginGuard], children:[
+                                { path: 'consultar', canActivate: [LoginGuard], component: ProdutosCatalogoConsultarComponent },
                                 { path: 'criar', canActivate: [LoginGuard], component: ProdutosCatalogoCriarComponent },
                                 { path: 'listar', canActivate: [LoginGuard], component: ProdutosCatalogoListarComponent },
                                 { path: 'visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoVisualizarComponent },
