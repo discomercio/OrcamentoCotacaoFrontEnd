@@ -68,8 +68,8 @@
                         </div>
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field p-col-12">
-                            <input id="descricao" name="descricao" type="text" pInputText placeholder="ELECTROLUX"
-                                formControlName="descricao" value="ELECTROLUX" disabled="true" />
+                            <input id="descricao" name="descricao" type="text" pInputText placeholder="Fabricante"
+                                formControlName="descricao" value="{{produto.Fabricante}}" disabled="true" />
                             <small class="p-error"
                                 *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
