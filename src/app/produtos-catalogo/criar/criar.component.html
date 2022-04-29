@@ -64,12 +64,12 @@
 
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
-                            <input id="id" type="text" pInputText value="{{produto.Codigo}}" maxlength="8" />
+                            <input id="id" type="text" formControlName="produto"  pInputText value="{{produto.Codigo}}" maxlength="8" />
                         </div>
 
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field p-col-12">
-                            <p-dropdown id="dpdFabricante" [options]="lstFabricantes" placeholder="Selecione">
+                            <p-dropdown id="dpdFabricante" [options]="lstFabricantes" formControlName="fabricante" placeholder="Selecione">
                             </p-dropdown>
                         </div>
                         <div class="p-text-bold">Nome do Produto:</div>

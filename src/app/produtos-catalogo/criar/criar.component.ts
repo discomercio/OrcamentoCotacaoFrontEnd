@@ -56,7 +56,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.form = this.fb.group({
       id: ['', [Validators.required]],
       descricao: ['', [Validators.required]],
-      //nome_produto: ['', [Validators.required]],
+      nome_produto: ['', [Validators.required]],
+      produto: ['', [Validators.required]],
+      fabricante: ['', [Validators.required]],      
       ativo: [''],
     });
   }
@@ -146,7 +148,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     } */
 
     let prod = new ProdutoCatalogo();
-
+    
     prod.Fabricante = this.form.controls.fabricante.value;
     prod.Produto = this.form.controls.produto.value;
     prod.Nome = this.form.controls.nome_produto.value;
@@ -154,8 +156,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     prod.Ativo = "true";
     prod.campos = [];
     prod.imagens = [];
-
+    
     this.produtoService.criarProduto(prod).toPromise().then((r) => {
+      
       if (r != null) {
         this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
         this.router.navigate([`//produtos-catalogo/editar/${prod.Id}`]);
