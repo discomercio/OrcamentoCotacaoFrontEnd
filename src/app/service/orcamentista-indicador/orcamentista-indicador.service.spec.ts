@@ -1,4 +1,4 @@
-import { OrcamentistaIndicadorDto } from './../../dto/orcamentista-indicador/orcamentista-indicador';
+import { OrcamentistaIndicadorDto } from '../../models/orcamentista-indicador/orcamentista-indicador';
 import { TestBed } from '@angular/core/testing';
 import { OrcamentistaIndicadorService } from './orcamentista-indicador.service';
 

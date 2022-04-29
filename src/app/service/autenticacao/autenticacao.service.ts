@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import jtw_decode from 'jwt-decode'
 import { environment } from '../../../environments/environment'
 import { Observable } from 'rxjs';
-import { AlertaService } from 'src/app/utilities/alert-dialog/alerta.service';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { LoginResponse } from 'src/app/dto/login/login-response';
 import { Usuario } from 'src/app/dto/usuarios/usuario';

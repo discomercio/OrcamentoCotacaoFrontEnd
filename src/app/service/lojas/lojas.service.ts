@@ -3,7 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Lojas } from 'src/app/dto/lojas/lojas';
 import { environment } from 'src/environments/environment';
-import { PercMaxDescEComissaoResponseViewModel } from './percentual-comissao';
+import { PercMaxDescEComissaoResponseViewModel } from '../../dto/percentual-comissao';
 
 @Injectable({
   providedIn: 'root'

@@ -1,5 +1,5 @@
 <div class="flex flex-end p-flex-column" [style]="{width: widthContainer+'%'}">
-  <div class="title-input" style="padding: 5px 0 3px">
+  <div *ngIf="showLabel == true" class="title-input" style="padding: 5px 0 3px">
     <label for="inputRoot" [style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
   </div>
   <div class="value-input" >
