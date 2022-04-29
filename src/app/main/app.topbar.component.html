@@ -159,20 +159,13 @@
                 </li>
                 <li #search class="search-item" [ngClass]="{'active-top-menu':appMain.activeTopbarItem === search}"
                     (click)="appMain.onTopbarItemClick($event,search)">
-                    <!-- <p-dropdown
-                    [options]="lojas" 
-                    [optionLabel]="Value" 
-                    [optionValue]="Id"
-                    (onChange)="cboLojas_onChange($event)"
-                    class="ng-dirty"
-                    [id]="cboLojas"
-                    ></p-dropdown> -->
                     <dropdown-arclube
                     setId="cboLojas"
                     titleInput="Loja"
                     [inputItems]="lojas"
                     setOptionsName="Value"
                     setOptionsValueName="Id"
+                    [setReset]="lojaLogada"
                     (getItemSelected)="cboLojas_onChange($event)"
                     setShowLabel="false"                
                 ></dropdown-arclube>

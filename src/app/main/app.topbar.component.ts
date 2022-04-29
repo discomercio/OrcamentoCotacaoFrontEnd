@@ -21,7 +21,7 @@ export class AppTopBarComponent {
         private readonly router: Router,
         private fb: FormBuilder
     ) {}
-
+    public lojaLogada : any;
     public form: FormGroup;
     lojas: Array<DropDownItem> = [];
 
@@ -42,7 +42,7 @@ export class AppTopBarComponent {
       }
 
       populaComboLojas() {
-          var lojaLogada = sessionStorage.getItem("lojaLogada");
+          this.lojaLogada = sessionStorage.getItem("lojaLogada");
           var lojas = sessionStorage.getItem('lojas');
 
           if(lojas) {
@@ -60,8 +60,8 @@ export class AppTopBarComponent {
           }
 
           if(this.lojas.length > 0) {
-            if(lojaLogada) {
-                this.form.controls.cboLojas.setValue(lojaLogada);
+            if(this.lojaLogada) {
+                this.form.controls.cboLojas.setValue(this.lojaLogada);
             }
           }
 
