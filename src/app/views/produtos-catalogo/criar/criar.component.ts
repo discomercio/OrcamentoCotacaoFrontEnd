@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+
+
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
 import { ProdutoCatalogoFabricante } from '../../../dto/produtos-catalogo/ProdutoCatalogoFabricante';
@@ -10,6 +10,8 @@ import { ProdutoCatalogoPropriedadeOpcao } from '../../../dto/produtos-catalogo/
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectItem } from 'primeng/api';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 
 @Component({
   selector: 'app-criar-produto',
