@@ -38,6 +38,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
   lstOpcoes: SelectItem[][] = [];
   lstFabricantes: SelectItem[] = [];
+  urlUpload: string;
   
   // Campos de Propriedades dinâmicos da tela
   lstPropriedades: any = [];
@@ -137,6 +138,14 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
+
+  onBeforeUpload($event): void {
+  }
+  onUpload($event,id): void {
+  }
+  ativoClick($event): void {
+  }
+
   salvarClick() {
 
     console.log(this.lstPropriedadesAtivo);
