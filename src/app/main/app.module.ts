@@ -165,6 +165,7 @@ import { ValidacaoFormularioService } from './../utilities/validacao-formulario/
 import { OrcamentosModule } from './../orcamentos/orcamentos.module';
 import { UsuarioMeusdadosComponent } from './../usuarios/usuario-meusdados/usuario-meusdados.component';
 import { AppModuleComponents } from './app.module.component';
+import { Teste2Component } from '../view/teste2/teste2.component';
 
 
 @NgModule({
@@ -316,6 +317,7 @@ import { AppModuleComponents } from './app.module.component';
         ProdutosCatalogoPropriedadesVisualizarComponent,
         ProdutosCatalogoPropriedadesCriarComponent,
         UsuarioMeusdadosComponent,
+        Teste2Component,
     ],
     providers: [
         {
