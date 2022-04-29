@@ -18,6 +18,7 @@ export class DropdownArClubeComponent {
 	requiredField: boolean = false
 	requiredLabel: string = ''
 	disabled: any = false;
+	showLabel: boolean = true
 
 	constructor() { }
 
@@ -75,6 +76,10 @@ export class DropdownArClubeComponent {
 		this.requiredLabel =  value? '*' : ''
 	}
 
+	@Input()
+	set setShowLabel(value: boolean){
+		this.showLabel = value
+	}
 
 	returnValue() {
 		this.getItemSelected.emit(this.selectedItem)

@@ -3,9 +3,10 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { environment } from 'src/environments/environment';
-import { ProdutoRequest } from 'src/app/dto/produtos/produtoRequest';
-import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
 import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
+import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+
 
 @Injectable({
   providedIn: 'root'
