@@ -5,8 +5,7 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { SelectItem } from 'primeng/api';
 import { InputArClubeComponent } from 'src/app/components/input/input-arclube.component';
 import { DropdownArClubeComponent } from 'src/app/components/dropdown/dropdown-arclube.component';
-import { Toast } from 'src/app/utilities/toast';
-import { eToast } from 'src/app/utilities/enums/etoast';
+import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
 
 //Components
 
@@ -24,13 +23,15 @@ export class LoginComponent implements OnInit {
   @ViewChild(DropdownArClubeComponent, {static: false})
   dropdown: DropdownArClubeComponent
 
+  @ViewChild(ButtonArClubeComponent, {static: false})
+  button: ButtonArClubeComponent
+
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
      private readonly mensagemService: MensagemService,) { }
     //public toast: Toast
 
   ngOnInit(): void {
-    
   }
 
   senha: string;

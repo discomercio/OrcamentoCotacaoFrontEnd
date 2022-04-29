@@ -29,7 +29,9 @@ export class OrcamentosListarComponent implements OnInit {
 
   // @ViewChild(ButtonArClubeComponent, {static: false})
   // button: ButtonArClubeComponent
-
+  @ViewChild(ButtonArClubeComponent, {static: false})
+  button: ButtonArClubeComponent
+  
   constructor(
     private router: Router,
     private fb: FormBuilder,

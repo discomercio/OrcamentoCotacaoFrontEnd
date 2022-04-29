@@ -4,7 +4,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './routing/app-routing.module';
 
 
 
@@ -87,9 +87,7 @@ import { ValidacaoFormularioService } from './../utilities/validacao-formulario/
 import { OrcamentosModule } from '../views/orcamentos/orcamentos.module';
 import { UsuarioMeusdadosComponent } from '../views/usuarios/usuario-meusdados/usuario-meusdados.component';
 import { AppModuleComponents } from './app.module.component';
-
-//Alerts
-import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
+import { AppModuleNgComponents } from './app.module.ngcomponent';
 
 @NgModule({
     imports: [
@@ -101,12 +99,12 @@ import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
         BrowserAnimationsModule,
         AppCodeModule,
         KeyFilterModule,
-        NgxIziToastModule,
         FormsModule,
         ReactiveFormsModule,
         FontAwesomeModule,
         NgxMaskModule.forRoot(),
-        OrcamentosModule
+        OrcamentosModule,
+        AppModuleNgComponents
     ],
     declarations: [
         AppComponent,
@@ -173,8 +171,7 @@ import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ExportExcelService, ValidacaoFormularioService,
-        NgxIzitoastService
+        AppMenuComponent, ExportExcelService, ValidacaoFormularioService
     ],
     bootstrap: [AppComponent]
 })

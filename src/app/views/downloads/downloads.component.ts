@@ -173,6 +173,19 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     }
   }
 
+  downloadSelecionado(event){
+    this.downloadsService.download(event.key).subscribe((response: any) => {
+      let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      fileSaver.saveAs(blob, event.name);
+      this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+      this.edicao = false;
+      this.novaPasta = false;
+      this.ehUpload = false;
+    }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
+    return;
+  }
+
   downloadClick() {
     if (!!this.selectedFiles2 == false) {
       this.mensagemService.showWarnViaToast("Selecione um arquivo!");

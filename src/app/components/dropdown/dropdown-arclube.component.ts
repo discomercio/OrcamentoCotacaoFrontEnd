@@ -86,7 +86,7 @@ export class DropdownArClubeComponent {
 	}
 
 	getLabelStatus(){
-		return this.fieldValid? "color: black; opacity: 0.7px;" : "color: red"
+		return this.fieldValid? "color: white; opacity: 0.7px;" : "color: red"
  }
  
 	ngOnInit() { }

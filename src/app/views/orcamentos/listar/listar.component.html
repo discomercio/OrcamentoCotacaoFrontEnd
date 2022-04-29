@@ -62,7 +62,8 @@
                 [globalFilterFields]="['NumOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-jc-end">
-                        <button-arclube setType="button" setLabel="Filtrar" isDisabled="false" setBtnText="btnFiltrar" setIcon="pi pi-search" (returnValue)="btnFiltrar_Click($event)"></button-arclube>
+                        <!-- <button-arclube setType="button" setLabel="Filtrar" isDisabled="false" setBtnText="btnFiltrar" setIcon="pi pi-search" (returnValue)="btnFiltrar_Click($event)"></button-arclube> -->
+                        <button-arclube type="button" (click)="btnFiltrar_Click($event)" setLabel="Filtrar"></button-arclube>
                         <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
                             class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
                         <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()"

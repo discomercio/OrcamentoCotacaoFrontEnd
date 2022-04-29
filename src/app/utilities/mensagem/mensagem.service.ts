@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Component, Injectable } from '@angular/core';
 import { MessageService } from 'primeng/api';
 
 @Injectable({

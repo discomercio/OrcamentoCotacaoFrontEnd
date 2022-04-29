@@ -22,7 +22,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { TabViewModule } from 'primeng/tabview';
 import { DialogService } from 'primeng/dynamicdialog';
 
-import { OrcamentosRoutingModule } from './orcamentos.routing.module';
+// import { OrcamentosRoutingModule } from '../../main/routing/orcamentos.routing.module';
 import { OrcamentosListarComponent } from './listar/listar.component';
 import { AprovarOrcamentoComponent } from './novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { CadastrarClienteComponent } from './novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
@@ -48,7 +48,7 @@ import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
     OpcoesComponent
   ],
   imports: [
-    OrcamentosRoutingModule,
+    // OrcamentosRoutingModule,
     CommonModule,
     ReactiveFormsModule,
     InputTextModule,
