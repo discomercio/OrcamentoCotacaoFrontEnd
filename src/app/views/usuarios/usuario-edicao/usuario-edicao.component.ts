@@ -55,10 +55,10 @@ export class UsuarioEdicaoComponent implements OnInit {
                 this.usuario =r;
                 this.criarForm();
 
-                const datastamp = this.usuario.senha;
-                const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
-                this.form.controls.senha.setValue(senhaConvertida);
-                this.form.controls.confirmacao.setValue(senhaConvertida);
+                // const datastamp = this.usuario.senha;
+                // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
+                // this.form.controls.senha.setValue(senhaConvertida);
+                // this.form.controls.confirmacao.setValue(senhaConvertida);
             }
           });
         }
