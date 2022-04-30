@@ -93,10 +93,6 @@ export class OrcamentosListarComponent implements OnInit {
     this.filtro.DtFim = this.maxDate;
   }
 
-  btnFiltrar_Click(){
-    alert("Teste")
-  }
-
   criarForm() {
     this.form = this.fb.group({
       status: [''],
@@ -222,8 +218,8 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   Pesquisar_Click() {
-    console.log('#####################################################');
-    console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
+    // console.log('#####################################################');
+    // console.log('filtrar INI: ' + this.lstDtoFiltrada.length);
     let lstFiltroStatus: Array<ListaDto> = new Array();
     let lstFiltroMensagem: Array<ListaDto> = new Array();
     let lstFiltroDatas: Array<ListaDto> = new Array();
@@ -235,12 +231,12 @@ export class OrcamentosListarComponent implements OnInit {
     if(this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if(this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); };
 
-    console.log('Status:   ' + this.filtro.Status);
-    console.log('Vendedor: ' + this.filtro.Vendedor);
-    console.log('Parceiro: ' + this.filtro.Parceiro);
-    console.log('Mensagem: ' + this.filtro.Mensagem);
-    console.log('Data Ini: ' + this.filtro.DtInicio);
-    console.log('Data Fim: ' + this.filtro.DtFim);
+    // console.log('Status:   ' + this.filtro.Status);
+    // console.log('Vendedor: ' + this.filtro.Vendedor);
+    // console.log('Parceiro: ' + this.filtro.Parceiro);
+    // console.log('Mensagem: ' + this.filtro.Mensagem);
+    // console.log('Data Ini: ' + this.filtro.DtInicio);
+    // console.log('Data Fim: ' + this.filtro.DtFim);
 
     if( (this.filtro.Status === undefined || this.filtro.Status == null)
       && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null)
@@ -259,13 +255,13 @@ export class OrcamentosListarComponent implements OnInit {
       if(lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
     }
 
-    console.log('Status  .length: ' + lstFiltroStatus.length);
-    console.log('Vendedor.length: ' + lstFiltroVendedor.length);
-    console.log('Parceiro.length: ' + lstFiltroParceiro.length);
-    console.log('Mensagem.length: ' + lstFiltroMensagem.length);
-    console.log('Datas   .length: ' + lstFiltroDatas.length);
-    console.log('filtrar FIM: ' + this.lstDtoFiltrada.length);
-    console.log('#####################################################');
+    // console.log('Status  .length: ' + lstFiltroStatus.length);
+    // console.log('Vendedor.length: ' + lstFiltroVendedor.length);
+    // console.log('Parceiro.length: ' + lstFiltroParceiro.length);
+    // console.log('Mensagem.length: ' + lstFiltroMensagem.length);
+    // console.log('Datas   .length: ' + lstFiltroDatas.length);
+    // console.log('filtrar FIM: ' + this.lstDtoFiltrada.length);
+    // console.log('#####################################################');
 
     this.popularTela();
   }
@@ -287,7 +283,7 @@ export class OrcamentosListarComponent implements OnInit {
     }
 
     dtInicio_onBlur(event) {
-        console.log('dtInicio_onChange');
+        // console.log('dtInicio_onChange');
         var dtini = new Date(this.form.controls.dtInicio.value);
         var dtfim = new Date(this.form.controls.dtFim.value);
 
@@ -306,8 +302,12 @@ export class OrcamentosListarComponent implements OnInit {
         this.Pesquisar_Click();
     }
 
+    dtInicio_onSelect() {
+        this.Pesquisar_Click();
+    }
+
     dtFim_onBlur(event) {
-        console.log('dtInicio_onChange');
+        // console.log('dtInicio_onChange');
         var dtini = new Date(this.form.controls.dtInicio.value);
         var dtfim = new Date(this.form.controls.dtFim.value);
 
@@ -323,6 +323,10 @@ export class OrcamentosListarComponent implements OnInit {
             return;
         }
 
+        this.Pesquisar_Click();
+    }
+
+    dtFim_onSelect() {
         this.Pesquisar_Click();
     }
 
