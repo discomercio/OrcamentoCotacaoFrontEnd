@@ -15,7 +15,7 @@ export class ListaDto {
 export class ListaDtoExport {
     NumOrcamento: string;
     NumPedido: string;
-    Cliente_Obra: string;
+    Cliente: string;
     Vendedor: string;
     Parceiro: string;
     VendedorParceiro: string;

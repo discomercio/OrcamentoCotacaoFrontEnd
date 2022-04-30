@@ -271,23 +271,18 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
     cboStatus_onChange(event) {
-        console.log('cboStatus_onChange');
         this.Pesquisar_Click();
-        // if(event.value) {
-        //     this.buscarParceiros();
-        // }
     }
 
     cboVendedor_onChange(event) {
-        console.log('cboVendedor_onChange');
         this.Pesquisar_Click();
-        // if(event.value) {
-        //     this.buscarParceiros();
-        // }
     }
 
     cboParceiro_onChange(event) {
-        console.log('cboParceiro_onChange');
+        this.Pesquisar_Click();
+    }
+
+    cbMensagens_onChange(event) {
         this.Pesquisar_Click();
     }
 
@@ -351,16 +346,16 @@ export class OrcamentosListarComponent implements OnInit {
         let lstExport = new Array<ListaDtoExport>();
 
         this.lstDtoFiltrada.forEach(l => {
-            let linha = new ListaDtoExport();
 
+            let linha = new ListaDtoExport();
             linha.NumOrcamento = l.NumOrcamento;
             if(this.parametro != enumParametros.ORCAMENTOS) linha.NumPedido = l.NumPedido;
-            linha.Cliente_Obra = l.Cliente_Obra;
+            linha.Cliente = l.Cliente_Obra;
             linha.Vendedor = l.Vendedor;
             linha.Parceiro = l.Parceiro;
             if(this.parametro != enumParametros.ORCAMENTOS) linha.Valor = this.moedaUtils.formatarMoedaComPrefixo(Number(l.Valor));
             linha.Status = l.Status;
-            linha.DtCadastro = l.DtCadastro;
+            linha.DtCadastro = this.dataUtils.formata_data_DDMMYYY(l.DtCadastro);
 
             lstExport.push(linha);
         });
