@@ -32,6 +32,7 @@ import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamen
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { LoginGuard } from 'src/app/service/autenticacao/login.guard';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
+import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 
 @NgModule({
     imports: [
@@ -55,7 +56,10 @@ import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catal
 
                             // Dashboard
                             { path: 'dashboards/generic', canActivate: [LoginGuard], component: DashboardDemoComponent },
-
+                            
+                            { path: 'pedido', canActivate: [LoginGuard], children:[
+                                { path: 'novo-pedido', canActivate: [LoginGuard], component: NovoPedidoComponent },
+                            ]},
                             // Produtos Catalogo
                             { path: 'produtos-catalogo', canActivate: [LoginGuard], children:[
                                 { path: 'consultar', canActivate: [LoginGuard], component: ProdutosCatalogoConsultarComponent },
