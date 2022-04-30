@@ -77,6 +77,26 @@ export class SweetalertService {
         return this.subject.asObservable();
     }
 
+    confirmarExclusao(titulo: string, texto: string): Observable<any> {
+        this.subject = new Subject<any>();
+        this.swalWithBootstrapButtons.fire({
+            title: titulo,
+            text: texto,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Cancelar',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.subject.next(true);
+            } else {
+                this.subject.next(false);
+            }
+        });
+        return this.subject.asObservable();
+    }
+
     sucesso(mensagem: string): void {
         this.swalSucesso(mensagem);
     }
