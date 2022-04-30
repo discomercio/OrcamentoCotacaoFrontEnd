@@ -7,6 +7,6 @@ export const environment = {
     apiUrl: 'http://localhost:60877/', //LOC
     // apiUrl: 'http://its-appdev02:3100/', //DES
     // apiUrl: 'http://arclubeorcamentocotacaoapi.itssolucoes.com.br/', //HML
-    imgUrl: 'http://10.255.0.90/img/',
+    imgUrl: 'http://its-appdev02/img/',
     versaoApi: 'DEBUG'
 };
