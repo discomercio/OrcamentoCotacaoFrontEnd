@@ -7,6 +7,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
+import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,14 @@ export class ProdutoCatalogoService {
     /* Propriedades do Produto */
     buscarPropriedades(): Observable<ProdutoCatalogoPropriedade[]> {
         return this.http.get<ProdutoCatalogoPropriedade[]>(`${environment.apiUrl}produto/propriedades`);
+    }
+
+    buscarPropriedadesProdutosAtivos():Observable<ProdutoCatalogoItemProdutosAtivosDados[]>{
+      return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/listar-produtos-propriedades-ativos`);
+    }
+
+    buscarPropriedadesEOpcoesProdutosAtivos():Observable<any[]>{
+      return this.http.get<any[]>(`${environment.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`);
     }
 
     buscarOpcoes(): Observable<ProdutoCatalogoPropriedadeOpcao[]> {

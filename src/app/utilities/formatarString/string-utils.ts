@@ -4,10 +4,11 @@ export class StringUtils {
     }
 
     public static formatarDescricao(fabricante: string, fabricanteNome: string, produto: string, descricao_html: string) {
-        let descricao :string = "";
-        descricao += !!fabricante ? fabricante + "/" : "";
-        descricao += !!produto ? produto + " - " : "";
-        descricao += fabricanteNome + " - " + descricao_html;
+        let descricao: string = "";
+        descricao += !!fabricante ? fabricante : "";
+        descricao += !!produto ? "/" + produto : "";
+        descricao += !!fabricanteNome ? " - " + fabricanteNome : "";
+        descricao += !!descricao_html ? " - " + descricao_html : "";
         // return fabricante + "/" + produto + " - " + fabricanteNome + " - " + descricao_html;
         return descricao;
     }
