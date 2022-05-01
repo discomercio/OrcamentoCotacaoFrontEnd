@@ -12,4 +12,5 @@ export class NovoPedidoComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  itemPayment:any;
 }
