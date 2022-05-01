@@ -55,6 +55,22 @@
                 ]
             },
             {
+                "label": "Pedidos",
+                "icon": "fa fa-list-alt",
+                "routerLink": [
+                    "/pedido"
+                ],
+                "items": [
+                    {
+                        "label": "Novo",
+                        "icon": "pi pi-plus",
+                        "routerLink": [
+                            "/pedido/novo-pedido"
+                        ]
+                    }
+                ]
+            },
+            {
                 "label": "Catálogos",
                 "icon": "fa fa-list-alt",
                 "routerLink": [

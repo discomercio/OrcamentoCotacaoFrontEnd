@@ -35,16 +35,16 @@
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end" *ngIf="parametro == 'ORCAMENTOS'">
                             <label for="filtroLoja">Mensagem Pendente</label>
-                            <p-dropdown formControlName="msgPendente" [options]="cboMensagens" [(ngModel)]="filtro.Mensagem" [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
+                            <p-dropdown formControlName="msgPendente" [options]="cboMensagens" [(ngModel)]="filtro.Mensagem" (onChange)='cbMensagens_onChange($event)' [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione"></p-dropdown>
                         </div>
 
                         <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-5 p-as-end">
                             <label for="dataInicio">Data início</label>
-                            <p-calendar formControlName="dtInicio" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicio" [showIcon]="true"></p-calendar>
+                            <p-calendar formControlName="dtInicio" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicio" [showIcon]="true" (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtInicio_onSelect();"></p-calendar>
                         </div>
                         <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-4 p-as-end">
                             <label for="dataFinal">Data final</label>
-                            <p-calendar formControlName="dtFim" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFim" [showIcon]="true"></p-calendar>
+                            <p-calendar formControlName="dtFim" dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();"></p-calendar>
                         </div>
                         <!-- <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end">
                             <button pButton pRipple label="Pesquisar" class="p-as-end" icon="pi pi-search"
@@ -55,7 +55,7 @@
                 </div>
 
             </div>
-            <p-table #dt1 [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
+            <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
                 [responsive]="true" responsiveLayout="stack" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
                 [paginator]="true" [filterDelay]="0"
@@ -63,19 +63,26 @@
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-jc-end">
                         <!-- <button-arclube setType="button" setLabel="Filtrar" isDisabled="false" setBtnText="btnFiltrar" setIcon="pi pi-search" (returnValue)="btnFiltrar_Click($event)"></button-arclube> -->
-                        <button-arclube type="button" (click)="btnFiltrar_Click($event)" setLabel="Filtrar"></button-arclube>
-                        <!-- <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
-                            class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
-                        <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()"
-                            class="p-mr-2" label="Exportar para CSV" tooltipPosition="bottom"></button> -->
+                        <!-- <button-arclube type="button" (click)="exportXlsx()" setLabel="Filtrar"></button-arclube> -->
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()" class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
+                        <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()" class="p-mr-2" label="Exportar para CSV" tooltipPosition="bottom"></button>
                     </div>
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
                         <th pSortableColumn="{{col.field}}" *ngFor="let col of columns" [ngStyle]="{'display': col.visible}" style="text-align: center;">
-                            <div style="text-align: center;">
+                            <div style="text-align: center;" *ngIf="parametro == 'ORCAMENTOS'">
+                                {{
+                                    col.header == 'Cliente'? 'Cliente/Obra':
+                                    col.header
+                                }}
+                            </div>
+                            <div style="text-align: center;" *ngIf="parametro != 'ORCAMENTOS'">
                                 {{col.header}}
                             </div>
+                        </th>
+                        <th *ngIf="parametro == 'PENDENTES'">
+                            &nbsp;
                         </th>
                     </tr>
                 </ng-template>
@@ -88,7 +95,9 @@
                                 col.field == 'DtExpiracao'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                 rowData[col.field]
                             }}
-                            <!-- <button pButton style="align-content: flex-end;" icon="fa fa-edit" pTooltip="Editar" *ngIf="col.visible == ''"></button>&nbsp; -->
+                        </td>
+                        <td *ngIf="parametro == 'PENDENTES'">
+                            <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0'" style="color: red;" (click)="btnDelete_onClick(rowData['NumPedido'])"></i>
                         </td>
                     </tr>
                 </ng-template>

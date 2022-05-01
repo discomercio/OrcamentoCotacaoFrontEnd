@@ -90,6 +90,10 @@ import { AppModuleComponents } from './app.module.component';
 import { AppModuleNgComponents } from './app.module.ngcomponent';
 import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/consultar/consultar.component';
 
+//Alerts
+import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
+import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
+
 @NgModule({
     imports: [
         AppModuleComponents,
@@ -163,6 +167,7 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
         ProdutosCatalogoPropriedadesCriarComponent,
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
+        NovoPedidoComponent,
     ],
     providers: [
         {
