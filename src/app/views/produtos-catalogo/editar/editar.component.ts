@@ -50,9 +50,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.buscarProdutoDetalhe();
     this.buscarPropriedades();
     this.buscarOpcoes();
-
-    console.log(this.produto.imagens)
-    console.log(this.produto.imagens[0].Caminho)
   }
 
   criarForm() {

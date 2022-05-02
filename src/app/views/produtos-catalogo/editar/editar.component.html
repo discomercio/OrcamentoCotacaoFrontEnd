@@ -10,25 +10,24 @@
 <div class="p-grid p-d-lg-flex">
     <div class="p-col-12">
         <div class="card">
-            <!-- <h5 *ngIf="produto.imagens">Imagens</h5> -->
             <div class="p-mb-3"  class="p-ai-center p-d-flex p-justify-center p-mb-3">
                 <div class="product-item">
-                    <div class="product-item-content" *ngIf="produto.imagens !== undefined && produto.imagens.length > 0">
-                        <div class="p-mb-3">
+                    <div class="product-item-content" *ngIf="produto.imagens?.length > 0" >
+                        <div class="p-mb-12">
                             <img src="{{imgUrl}}{{produto.imagens[0].Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
                         </div>
-                        <div>
-                            <div class="car-buttons p-mt-5">
-                                <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2"
-                                    icon="pi pi-trash" (click)="excluirImagemClick(produto.imagens[0].Id)"
-                                    pTooltip="Excluir imagem"></p-button>
-                            </div>
+                        <div class="p-mb-12">
+                            <center>
+                                <p-button type="button" styleClass="p-button-help p-button-rounded"
+                                icon="pi pi-trash" (click)="excluirImagemClick(produto.imagens[0].Id)"
+                                pTooltip="Excluir imagem"></p-button>
+                            </center>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import"
+            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produto.imagens?.length == 0" accept="image/*" [maxFileSize]="52428800" label="Import"
                 chooseLabel="Upload" class="mr-2 inline-block" url="{{urlUpload}}"
                 (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"></p-fileUpload>
         </div>

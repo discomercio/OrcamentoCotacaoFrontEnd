@@ -23,15 +23,15 @@
                 <div class="p-field p-col-12">
                     <span>{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</span>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
     <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
         <div class="card">
             <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
-            <div  >
-                <div class="p-mb-3"  class="p-ai-center p-d-flex p-justify-center p-mb-3">
-                    <img src="{{imgUrl}}{{produto.imagens[0].Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
+            <div>
+                <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3">
+                    <img *ngIf="produto.imagens?.length > 0" src="{{imgUrl}}{{produto.imagens[0].Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
                 </div>
             </div>
         </div>
@@ -56,7 +56,7 @@
                                 <input class="p-field p-col-6" value="{{c.Chave}}" disabled="true" *ngIf="c.Valor != null"/>
                                 <input class="p-field p-col-6" value="{{c.Valor}}" disabled="true" *ngIf="c.Valor != null"/>
                             </div>
-                        </div>  
+                        </div>
                     </div>
                 </div>
 
