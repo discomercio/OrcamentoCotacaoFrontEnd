@@ -3,6 +3,7 @@ import { ProdutoCatalogoImagem } from "./ProdutoCatalogoImagem";
 
 export class ProdutoCatalogo{
     Id:string;
+    linhaBusca:string;
     Codigo:string;
     Produto: string;
     Nome:string;
