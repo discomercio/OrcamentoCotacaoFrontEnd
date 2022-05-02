@@ -61,7 +61,8 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     }
 
     voltarClick(): void {
-      this.router.navigate(["//produtos-catalogo/listar"]);
+      window.history.back();
+      // this.router.navigate(["//produtos-catalogo/listar"]);
     }
 
     produtoDados :ProdutoCatalogoItemProdutosAtivosDados[];

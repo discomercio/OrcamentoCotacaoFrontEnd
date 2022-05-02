@@ -11,14 +11,24 @@
         <div class="card p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex">
             <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-sm-6 p-mx-0 p-px-0"
                 *ngIf="produtoDados != undefined">
+                <div class="p-text-bold">Fabricante:</div>
+                <div class="p-field p-col-12">
+                    <span>{{produtoDados[0].fabricante}} - {{produtoDados[0].fabricanteNome}}</span>
+                </div>
                 <div class="p-text-bold">Código:<br></div>
                 <div class="p-field p-col-12">
-                    <span>{{produtoDados[0].produto}}</span>
+                    <span>{{produtoDados[0].produto}} - {{produtoDados[0].descricao}}</span>
                 </div>
                 <div class="p-text-bold">Descrição:</div>
-                <div class="p-field p-col-12">
-                    <span>{{produtoDados[0].descricao}}</span>
+                <div class="p-field p-col-12" [innerHTML]="produtoDados[0].descricao">
+                    <p ></p>
+                    <span [innerHTML]="produtoDados[0].descricao"></span>
                 </div>
+                <div class="p-text-bold">Descrição Completa:</div>
+                <div class="p-field p-col-12">
+                    <span [innerHTML]="produtoDados[0].descricaoCompleta"></span>
+                </div>
+                
             </div>
             <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
                 <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>

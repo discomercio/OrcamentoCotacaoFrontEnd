@@ -4,6 +4,7 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     fabricante: string;
     fabricanteNome: string;
     descricao: string;
+    descricaoCompleta: string;
     idPropriedade: number;
     nomePropriedade: string;
     valorPropriedade: string;
