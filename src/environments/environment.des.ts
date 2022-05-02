@@ -5,7 +5,7 @@ export const environment = {
     minutosRenovarTokenAntesExpirar: 60 * 24 * 4, //token emitido com 7 dias, renovamos 4 dais antes de vencer
     esperaAvisos: 3000,
     esperaErros: 5000,
-    apiUrl: 'http://arclubeorcamentocotacaoapi.itssolucoes.com.br/',
-    imgUrl: 'http://10.255.0.90/img/',
+    apiUrl: 'http://its-appdev02:3000/',
+    imgUrl: 'http://its-appdev02/img/',
     versaoApi: 'DEBUG'
 };

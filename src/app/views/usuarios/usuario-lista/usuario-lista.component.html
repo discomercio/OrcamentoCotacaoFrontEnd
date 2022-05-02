@@ -25,7 +25,6 @@
                 </ng-template>
                 <ng-template pTemplate="header" let-columns>
                     <tr>
-                        <th style="width: 45px"></th>
                         <th class="p-py-2" [ngStyle]="{width: col.width? col.width: 'auto'}" pSortableColumn="{{col.field}}" *ngFor="let col of columns">
                             <div class="p-d-flex p-jc-between p-ai-center">
                                 {{col.header}}
@@ -35,9 +34,6 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-rowData let-columns="columns">
                     <tr class="p-selectable-row" [pSelectableRow]="rowData">
-                        <td>
-                            <p-tableRadioButton [value]="rowData"></p-tableRadioButton>
-                        </td>
                         <td *ngFor="let col of columns">
                             <span class="p-column-title">{{col.header}}</span> {{rowData[col.field]}}
                         </td>
