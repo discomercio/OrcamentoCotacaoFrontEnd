@@ -80,16 +80,15 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       let filtro = proprieadades.filter(y => y.IdProdpriedade == x);
       let prop = { item: filtro[0].NomePropriedade, values: [] };
 
-      if (prop.item != "Incluir na calculadora VRF") {
-        let camposFiltro = { campo: prop.item, valor: "" };
-        this.armazenaFiltro.push(camposFiltro);
-        // prop.values[0].valor = "Selecione";
-        filtro.forEach(f => {
-          let v = { valor: f.ValorPropriedadeOpcao };
-          prop.values.push(v)
-        });
-        this.drops.push(prop)
-      }
+
+      let camposFiltro = { campo: prop.item, valor: "" };
+      this.armazenaFiltro.push(camposFiltro);
+      // prop.values[0].valor = "Selecione";
+      filtro.forEach(f => {
+        let v = { valor: f.ValorPropriedadeOpcao };
+        prop.values.push(v)
+      });
+      this.drops.push(prop)
     });
   }
 
@@ -182,7 +181,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       if (x.valor) {
         temFiltro = true;
         let produtos: ProdutoTabela[] = new Array<ProdutoTabela>();
-        
+
         produtos = this.produtosTabela.filter(f => f.linhaBusca.includes(x.valor));
         if (produtos.length > 0) {
           this.produtosTabela = new Array<ProdutoTabela>();
@@ -191,24 +190,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
         else {
           this.produtosTabela = new Array<ProdutoTabela>();
         }
-        // if(this.produtosTabela.length <= 0){
-        //   produtos = this.produtosTabelaApoio.filter(f => f.linhaBusca.includes(x.valor));
-        //   if (produtos.length > 0) {
-        //     produtos.forEach(p => this.produtosTabela.push(p));
-        //   }
-        // }
-        // else {
-        //   produtos = this.produtosTabela.filter(f => f.linhaBusca.includes(x.valor));
-        //   if (produtos.length > 0) {
-        //     this.produtosTabela = new Array<ProdutoTabela>();
-        //     produtos.forEach(p => this.produtosTabela.push(p));
-        //   }
-        //   else{
-        //     this.produtosTabela = new Array<ProdutoTabela>();
-        //   }
-        // }
-
-
       }
     });
 

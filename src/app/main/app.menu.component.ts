@@ -50,17 +50,28 @@ export class AppMenuComponent implements OnInit {
                 if(x.items[i].label== eMenu.Dashboards){
                     x.items.splice(i, 1);
                 }
+                
                 if(!this.usuario.permissoes.includes(ePermissao.AdministradorDoModulo)){
+
                     if(x.items[i].label == eMenu.Catalogos){
+
                         for(let y = 0; y< x.items[i].items.length;y++){
+
                             if(x.items[i].items[y].label == eMenu.Propriedades){
-                                x.items[i].items.splice(y, y);
+                                x.items[i].items.splice(y, 1);
+                                y--;
+                            }
+
+                            if(x.items[i].items[y].label == eMenu.CaradastrarEditar){
+                                x.items[i].items.splice(y, 1);
+                                y--;
                             }
                         }
                     }
                 }
                 if(this.tipoUsuario != this.constantes.PARCEIRO && x.items[i].label == eMenu.Usuarios){
-                    x.items.splice(i, i);
+                    x.items.splice(i, 1);
+                    i--;
                 }
             }
         });
