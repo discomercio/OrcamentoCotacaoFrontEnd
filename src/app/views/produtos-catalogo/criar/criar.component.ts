@@ -1,8 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-
-
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
 import { ProdutoCatalogoFabricante } from '../../../dto/produtos-catalogo/ProdutoCatalogoFabricante';
@@ -59,7 +57,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
   criarForm() {
     this.form = this.fb.group({
-      id: ['', [Validators.required]],
       descricao: ['', [Validators.required]],
       nome_produto: ['', [Validators.required]],
       produto: ['', [Validators.required]],
@@ -151,12 +148,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
 
   salvarClick() {      
-    
-    /*
-    if (!this.validacaoFormularioService.validaForm(this.form)){
+        
+    if (!this.validacaoFormularioService.validaForm(this.form)){      
       return;
-    } */
-
+    } 
     
     let prod = new ProdutoCatalogo();
 
@@ -168,7 +163,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     prod.campos = [];
     prod.imagens = [];
 
-    this.produtoService.criarProduto(prod).toPromise().then((r) => {}).catch((r) => this.alertaService.mostrarErroInternet(r));    
+    this.produtoService.criarProduto(prod).toPromise().then((r) => {
+      if (r != null) {}      
+    }).catch((r)=> this.alertaService.mostrarErroInternet(r));       
+    
     this.cadastrarItem();
     
   }
@@ -185,20 +183,19 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       produtoCatalogoItem.IdProdutoCatalogoPropriedade = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedade'];
       produtoCatalogoItem.IdProdutoCatalogoPropriedadeOpcao = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedadeOpcao'];
       produtoCatalogoItem.Valor = this.lstPropriedades[indice]['Valor'];        
-      produtoCatalogoItem.Oculto = this.lstPropriedades[indice]['Oculto'];
+      produtoCatalogoItem.Oculto = this.lstPropriedades[indice]['Oculto'];  
 
       this.produtoService.criarProdutoCatalogoItem(produtoCatalogoItem).toPromise().then((r) => {
-
         if (r != null) {
-                      
-          //this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-          this.router.navigate([`//produtos-catalogo/listar`]);
+          this.mensagemService.showSuccessViaToast("Produto catálogo criado com sucesso!");
+            this.router.navigate(["//produtos-catalogo/listar"]);
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+      }).catch((r)=> this.alertaService.mostrarErroInternet(r));      
 
       indice++;
 
     }
+
             
   }
 
