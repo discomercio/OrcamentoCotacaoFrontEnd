@@ -12,6 +12,8 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { SelectItem } from 'primeng/api';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { ProdutoCatalogoItem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoItem';
+import { exit } from 'process';
 
 @Component({
   selector: 'app-criar-produto',
@@ -41,12 +43,12 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lstOpcoes: SelectItem[][] = [];
   lstFabricantes: SelectItem[] = [];
   urlUpload: string;
-  
+
   // Campos de Propriedades dinâmicos da tela
   lstPropriedades: any = [];
 
   // Campos de Propriedades dinâmicos da tela (Ativo ou Não)
-  lstPropriedadesAtivo: any = [];  
+  lstPropriedadesAtivo: any = [];
 
   ngOnInit(): void {
     this.carregando = true;
@@ -61,7 +63,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       descricao: ['', [Validators.required]],
       nome_produto: ['', [Validators.required]],
       produto: ['', [Validators.required]],
-      fabricante: ['', [Validators.required]],      
+      fabricante: ['', [Validators.required]],
       ativo: [''],
     });
   }
@@ -143,23 +145,21 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
   onBeforeUpload($event): void {
   }
-  onUpload($event,id): void {
+  onUpload($event, id): void {
   }
   ativoClick($event): void {
   }
 
-  salvarClick() {
-
-    console.log(this.lstPropriedadesAtivo);
-    console.log(this.lstPropriedades);
+  salvarClick() {      
     
     /*
     if (!this.validacaoFormularioService.validaForm(this.form)){
       return;
     } */
 
-    let prod = new ProdutoCatalogo();
     
+    let prod = new ProdutoCatalogo();
+
     prod.Fabricante = this.form.controls.fabricante.value;
     prod.Produto = this.form.controls.produto.value;
     prod.Nome = this.form.controls.nome_produto.value;
@@ -167,42 +167,67 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     prod.Ativo = "true";
     prod.campos = [];
     prod.imagens = [];
+
+    this.produtoService.criarProduto(prod).toPromise().then((r) => {}).catch((r) => this.alertaService.mostrarErroInternet(r));    
+    this.cadastrarItem();
     
-    this.produtoService.criarProduto(prod).toPromise().then((r) => {
-      
-      if (r != null) {
-        this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-        this.router.navigate([`//produtos-catalogo/editar/${prod.Id}`]);
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  onChange(idProdutoCatalogoPropriedade, idProdutoCatalogoPropriedadeOpcao, IdCfgTipoPropriedade) {
+  cadastrarItem(){
 
-    this.lstPropriedades.push(
-      {
-        idProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
-        idProdutoCatalogoPropriedadeOpcao: idProdutoCatalogoPropriedadeOpcao.value,
-        IdCfgTipoPropriedade: IdCfgTipoPropriedade,
-      });
+    let produtoCatalogoItem =  new ProdutoCatalogoItem();
 
-    // Verifico se já foi adicionado
-    /*
-    if (this.lstPropriedades.find((test) => test.idPropriedade === idPropriedade) === undefined) {
-      this.lstPropriedades.push({ idPropriedade: idPropriedade, idOpcao: idOpcao.value });
-    } */
+    var indice = 0;
+    
+    while (indice< this.lstPropriedades.length){
+            
+      produtoCatalogoItem.IdProdutoCatalogo = this.lstPropriedades[indice]['IdProdutoCatalogo'];
+      produtoCatalogoItem.IdProdutoCatalogoPropriedade = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedade'];
+      produtoCatalogoItem.IdProdutoCatalogoPropriedadeOpcao = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedadeOpcao'];
+      produtoCatalogoItem.Valor = this.lstPropriedades[indice]['Valor'];        
+      produtoCatalogoItem.Oculto = this.lstPropriedades[indice]['Oculto'];
 
+      this.produtoService.criarProdutoCatalogoItem(produtoCatalogoItem).toPromise().then((r) => {
+
+        if (r != null) {
+                      
+          //this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+          this.router.navigate([`//produtos-catalogo/listar`]);
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+
+      indice++;
+
+    }
+            
   }
 
-  onChangeAtivo(idProdutoCatalogoPropriedade, ativo) {
+  onChange(idProdutoCatalogoPropriedade,
+    idProdutoCatalogoPropriedadeOpcao,
+    idCfgTipoPropriedade,
+    valor) {
+    
+    // Verifico se já foi adicionado    
+    if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
+      this.lstPropriedades.push(
+        {
+          IdProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
+          IdProdutoCatalogoPropriedadeOpcao: idProdutoCatalogoPropriedadeOpcao.value,
+          IdCfgTipoPropriedade: idCfgTipoPropriedade,
+          Valor: valor
+        });
+    } 
+  }
 
+  onChangeAtivo(idProdutoCatalogoPropriedade, oculto) {
+    
     this.lstPropriedadesAtivo.push(
       {
-        idProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
-        ativo: ativo.checked
+        IdProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
+        Oculto: oculto.checked
       });
-
-  }  
+  }
 
 }
+
 

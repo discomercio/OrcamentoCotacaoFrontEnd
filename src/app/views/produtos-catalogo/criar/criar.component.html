@@ -119,7 +119,7 @@
                             <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0">
                                 <div class="p-field p-col-6"> 
                                     <input id="campo-{{lista.id}}" type="text" pInputText
-                                        placeholder="{{lista.descricao}}" value="" />
+                                        placeholder="{{lista.descricao}}" value="" (blur)="onChange(lista.id, 0, lista.IdCfgTipoPropriedade, $event.target.value)" />
                                     <br><br>
                                     <p-inputSwitch id="campo-ativo-{{lista.id}}"></p-inputSwitch>
 
