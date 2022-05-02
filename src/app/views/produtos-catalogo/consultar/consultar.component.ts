@@ -1,5 +1,6 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { SelectItem } from 'primeng/api';
 import { Table } from 'primeng/table';
 import { stringify } from 'querystring';
@@ -20,7 +21,8 @@ import { ProdutoTela } from '../../orcamentos/novo-orcamento/select-prod-dialog/
 export class ProdutosCatalogoConsultarComponent implements OnInit {
 
   constructor(private readonly produtoService: ProdutoCatalogoService,
-    private readonly alertaService: AlertaService) { }
+    private readonly alertaService: AlertaService,
+    private readonly router: Router) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -35,6 +37,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     this.criarTabela();
     this.buscarPropriedadesProdutosAtivos();
     this.buscarPropriedadesEOpcoesProdutosAtivos();
+    
   }
 
   criarTabela() {
@@ -56,6 +59,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
         this.carregando = false;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+    
   }
 
   buscarPropriedadesEOpcoesProdutosAtivos() {
@@ -196,6 +201,10 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     if (!temFiltro && this.produtosTabela.length == 0) {
       this.produtosTabela = this.produtosTabelaApoio;
     }
+  }
+
+  visualizarClick(id: number) {
+    this.router.navigate(["/produtos-catalogo/visualizar", id]);
   }
 }
 

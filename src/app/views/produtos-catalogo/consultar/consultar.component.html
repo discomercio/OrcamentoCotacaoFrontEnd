@@ -37,8 +37,8 @@
                             <td style="text-align: center" class="p-py-2">{{lista.voltagem}}</td>
                             <td style="text-align: center" class="p-py-2">{{lista.capacidade}}</td>
                             <td style="text-align: center" class="p-py-2">
-                                <button pButton style="align-content: flex-end;" icon="fa fa-eye"
-                                    pTooltip="Visualizar"></button>
+                                <button pButton style="align-content: flex-end;" icon="fa fa-eye" 
+                                    (click)="visualizarClick(lista.id)" pTooltip="Visualizar"></button>
                             </td>
                         </tr>
                     </ng-template>

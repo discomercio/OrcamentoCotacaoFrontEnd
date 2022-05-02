@@ -2,45 +2,6 @@
     <div class="p-col-12">
         <div class="card">
 
-            <h4 style="color: #007BFF"><i class="fa fa-image"></i>&nbsp;Imagem</h4>
-        </div>
-    </div>
-</div>
-
-<div class="p-grid p-d-lg-flex">
-    <div class="p-col-12">
-        <div class="card">
-            <!-- <h5 *ngIf="produto.imagens">Imagens</h5> -->
-            <p-carousel [value]="produto.imagens" [numVisible]="3" [numScroll]="1" [circular]="false">
-                <ng-template let-imagem pTemplate="item">
-                    <div class="product-item">
-                        <div class="product-item-content">
-                            <div class="p-mb-3">
-                                <img src="{{imgUrl}}{{imagem.Caminho}}" class="product-image"
-                                    style="max-width: 300px; max-height: 200px;" />
-                            </div>
-                            <div>
-                                <div class="car-buttons p-mt-5">
-                                    <p-button type="button" styleClass="p-button-help p-button-rounded p-mr-2"
-                                        icon="pi pi-trash" (click)="excluirImagemClick(imagem.Id)"
-                                        pTooltip="Excluir imagem"></p-button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-carousel>
-
-            <p-fileUpload id="arquivo" name="arquivo" accept="image/*" [maxFileSize]="52428800" label="Import"
-                chooseLabel="Upload" class="mr-2 inline-block" url="{{urlUpload}}"
-                (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"></p-fileUpload>
-        </div>
-    </div>
-</div>
-<div class="p-grid">
-    <div class="p-col-12">
-        <div class="card">
-
             <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características do
                 Produto</h4>
         </div>
@@ -119,7 +80,7 @@
                             <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0">
                                 <div class="p-field p-col-6"> 
                                     <input id="campo-{{lista.id}}" type="text" pInputText
-                                        placeholder="{{lista.descricao}}" value="" />
+                                        placeholder="{{lista.descricao}}" value="" (blur)="onChange(lista.id, 0, lista.IdCfgTipoPropriedade, $event.target.value)" />
                                     <br><br>
                                     <p-inputSwitch id="campo-ativo-{{lista.id}}"></p-inputSwitch>
 
