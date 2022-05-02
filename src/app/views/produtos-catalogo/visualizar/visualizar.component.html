@@ -6,64 +6,53 @@
     </div>
 </div>
 
-<div class="p-grid p-d-lg-flex">
-    <div class="p-col-12 p-lg-7 p-md-7 psm-6">
-        <div class="card">
-            <h4>Produto remover</h4>
-            <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0" >
+<div class="p-grid">
+    <div class="p-col-12">
+        <div class="card p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex">
+            <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-sm-6 p-mx-0 p-px-0"
+                *ngIf="produtoDados != undefined">
                 <div class="p-text-bold">Código:<br></div>
                 <div class="p-field p-col-12">
-                    <span>{{produto.Codigo}}</span>
+                    <span>{{produtoDados[0].produto}}</span>
                 </div>
                 <div class="p-text-bold">Descrição:</div>
                 <div class="p-field p-col-12">
-                    <span>{{produto.Descricao}}</span>
+                    <span>{{produtoDados[0].descricao}}</span>
                 </div>
-                <div class="p-text-bold">Ativo:</div>
-                <div class="p-field p-col-12">
-                    <span>{{produto.Ativo == 'true' ? 'Sim': 'Não'}}</span>
-                </div>
-            </div>            
-        </div>
-    </div>
-    <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
-        <div class="card">
-            <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
-            <div  >
-                <div class="p-mb-3"  class="p-ai-center p-d-flex p-justify-center p-mb-3">
-                    <img src="{{imgUrl}}{{produto.imagens[0].Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
+            </div>
+            <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
+                <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
+                <div>
+                    <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3"
+                        *ngIf="produto.imagens?.length>0">
+                        <img sizes="(max-width: 320px) 280px,
+                        (max-width: 480px) 440px,
+                        800px" src="{{imgUrl}}{{produto.imagens[0].Caminho}}" class="product-image"
+                            style="max-width: 300px; max-height: 200px;" />
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <h4>Propriedades remover</h4>
-            <form [formGroup]="form">
-                <div class="p-d-lg-flex p-d-md-flex">
-                    <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
-                        <div class="p-field p-col-12">
-                            <div style="float: left;" class="p-field p-col-6">
-                                <div class="p-text-bold">Itens:</div>
-                            </div>
-                            <div style="float: right;" class="p-field p-col-6">
-                                <div class="p-text-bold">Valor:</div>
-                            </div>
-                            <div *ngFor="let c of produto.campos; let i = index" [ngStyle]="{'display': c.Valor == null ? 'none' : ''}">
-                                <input class="p-field p-col-6" value="{{c.Chave}}" disabled="true" *ngIf="c.Valor != null"/>
-                                <input class="p-field p-col-6" value="{{c.Valor}}" disabled="true" *ngIf="c.Valor != null"/>
-                            </div>
-                        </div>  
+            <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-field" *ngIf="produtoDados != undefined">
+                <div class=" p-col-12 p-d-inline-flex" *ngFor="let prop of produtoDados; let i=index">
+                    <div class="p-col-6">
+                        <div class="p-text-bold"><span>{{prop.nomePropriedade}}:</span></div>
+                    </div>
+                    <div class="p-col-6">
+                        <div><span>{{prop.valorPropriedade}}</span></div>
                     </div>
                 </div>
-
-                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>&nbsp;
-
-            </form>
-
+            </div>
+            <div class="p-col-12 p-text-center">
+                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>
+            </div>
         </div>
     </div>
 </div>

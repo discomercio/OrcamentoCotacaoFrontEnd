@@ -5,6 +5,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { Product } from 'src/app/demo/domain/product';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
+import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 
 @Component({
   selector: 'app-visualizar-produto',
@@ -29,29 +30,12 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     images: any[];
     carregando: boolean = false;
 
-    carouselResponsiveOptions: any[] = [
-        {
-            breakpoint: '1024px',
-            numVisible: 3,
-            numScroll: 3
-        },
-        {
-            breakpoint: '768px',
-            numVisible: 2,
-            numScroll: 2
-        },
-        {
-            breakpoint: '560px',
-            numVisible: 1,
-            numScroll: 1
-        }
-    ];
-
     ngOnInit(): void {
       this.carregando = true;
       this.criarForm();
       this.setarCampos();
       this.buscarProdutoDetalhe();
+      this.buscarProduto()
     }
 
     criarForm() {
@@ -80,5 +64,16 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
       this.router.navigate(["//produtos-catalogo/listar"]);
     }
 
+    produtoDados :ProdutoCatalogoItemProdutosAtivosDados[];
+
+    buscarProduto(){
+      this.produtoService.buscarPropriedadesProdutoAtivo(this.id).toPromise().then((r) => {
+      if (r != null) {
+        this.produtoDados = r;
+      }
+    }).catch((e) => {
+      console.log(e);
+    });
+    }
 }
 

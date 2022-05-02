@@ -60,7 +60,12 @@ export class ProdutoCatalogoService {
       return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/listar-produtos-propriedades-ativos`);
     }
 
+    buscarPropriedadesProdutoAtivo(idProduto:string):Observable<ProdutoCatalogoItemProdutosAtivosDados[]>{
+      return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/teste/${idProduto}`);
+    }
+
     buscarPropriedadesEOpcoesProdutosAtivos():Observable<any[]>{
+      
       return this.http.get<any[]>(`${environment.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`);
     }
 
