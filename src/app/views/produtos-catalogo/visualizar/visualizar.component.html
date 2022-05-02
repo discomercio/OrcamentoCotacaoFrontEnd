@@ -7,10 +7,10 @@
 </div>
 
 <div class="p-grid p-d-lg-flex">
-    <div class="p-col-9">
+    <div class="p-col-12 p-lg-7 p-md-7 psm-6">
         <div class="card">
-            <!-- <h5>Carousel</h5> -->
-            <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0" style="min-height: 275px;">
+            <h4>Produto remover</h4>
+            <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0" >
                 <div class="p-text-bold">Código:<br></div>
                 <div class="p-field p-col-12">
                     <span>{{produto.Codigo}}</span>
@@ -26,24 +26,14 @@
             </div>            
         </div>
     </div>
-    <div class="p-col-3">
+    <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
         <div class="card">
             <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
-            <p-carousel [value]="produto.imagens" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
-                <ng-template let-imagem pTemplate="item">
-                    <div class="product-item">
-                        <div class="product-item-content">
-                            <div class="p-mb-3">
-                                <img src="{{imgUrl}}{{imagem.Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
-                            </div>
-                            <div>
-                                <div class="car-buttons p-mt-5">
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </ng-template>
-            </p-carousel>
+            <div  >
+                <div class="p-mb-3"  class="p-ai-center p-d-flex p-justify-center p-mb-3">
+                    <img src="{{imgUrl}}{{produto.imagens[0].Caminho}}"  class="product-image" style="max-width: 300px; max-height: 200px;" />
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -51,6 +41,7 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
+            <h4>Propriedades remover</h4>
             <form [formGroup]="form">
                 <div class="p-d-lg-flex p-d-md-flex">
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">

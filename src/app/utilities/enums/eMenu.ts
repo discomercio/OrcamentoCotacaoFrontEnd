@@ -5,7 +5,7 @@ export enum eMenu {
     EmAprovacao = "Em Aprovação",
     Pedidos = "Pedidos",
     Catalogos = "Catálogos",
-    Produtos = "Produtos",
+    CaradastrarEditar = "Cadastrar/Editar",
     Propriedades = "Propriedades",
     Downloads = "Downloads",
     Usuarios = "Usuários",
