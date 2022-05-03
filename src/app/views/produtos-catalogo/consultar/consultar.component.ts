@@ -33,7 +33,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   stringUtils = StringUtils;
 
   ngOnInit(): void {
-    this.carregando = true;
+    
     this.criarTabela();
     this.buscarPropriedadesProdutosAtivos();
     this.buscarPropriedadesEOpcoesProdutosAtivos();

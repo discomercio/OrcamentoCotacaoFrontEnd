@@ -1,5 +1,6 @@
 export class ListaDto {
-    NumOrcamento: string;
+    linhaBusca:string;
+    NumeroOrcamento: string;
     NumPedido: string;
     Cliente_Obra: string;
     Vendedor: string;
@@ -13,7 +14,7 @@ export class ListaDto {
 }
 
 export class ListaDtoExport {
-    NumOrcamento: string;
+    NumeroOrcamento: string;
     NumPedido: string;
     Cliente: string;
     Vendedor: string;
