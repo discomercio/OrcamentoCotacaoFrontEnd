@@ -440,21 +440,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   }
 
-
-
-
-
-
-
-  visualizarOrcamento() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length <= 0) {
-      this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
-      return;
-    }
-
-    this.router.navigate(["orcamentos/novo-orcamento/aprovar-orcamento", { aprovando: false }]);
-  }
-
   removerItem(index: number) {
     let produto = this.novoOrcamentoService.lstProdutosSelecionados.splice(index, 1)[0];
 
@@ -540,19 +525,23 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   salvarOrcamento() {
 
-
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
+        this.visualizarOrcamento(r);
       }
-    }).catch(e => this.alertaService.mostrarErroInternet(e));
-
-    return;
+    }).catch((e) => {
+      debugger;
+      this.alertaService.mostrarErroInternet(e)
+    });
   }
+
+  visualizarOrcamento(id:number){
+    this.router.navigate(["orcamentos/visualizar-orcamento", id]);
+  }
+
   enviar() {
     this.mensagemService.showWarnViaToast("Estamos implementando!");
     return;
   }
-
-
 }

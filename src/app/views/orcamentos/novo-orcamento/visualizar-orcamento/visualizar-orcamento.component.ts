@@ -2,6 +2,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-visualizar-orcamento',
@@ -11,12 +12,14 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 export class VisualizarOrcamentoComponent implements OnInit {
 
   constructor(public readonly novoOrcamentoService: NovoOrcamentoService,
-    @Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
-    public ref: DynamicDialogRef) { }
+    private readonly activatedRoute: ActivatedRoute) { }
+
+idOrcamentoCotacao:number;
 
   ngOnInit(): void {
     //calcular o parcelamento
     // this.formatarParcelamento(this.novoOrcamentoService.orcamentoCotacaoDto.ListaOrcamentoCotacaoDto)
+    this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
   }
 
   // formatarParcelamento(orcamentoCotacao: OrcamentoCotacaoDto[]) {

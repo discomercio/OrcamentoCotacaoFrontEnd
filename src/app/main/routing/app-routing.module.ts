@@ -49,9 +49,9 @@ import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedid
                                 { path: "cadastrar-cliente", canActivate: [LoginGuard], component: CadastrarClienteComponent },
                                 { path: "itens", canActivate: [LoginGuard], component: ItensComponent },
                                 { path: "select-prod", canActivate: [LoginGuard], component: SelectProdDialogComponent },
-                                { path: "visualizar-orcamento", canActivate: [LoginGuard], component: VisualizarOrcamentoComponent},
+                                { path: "visualizar-orcamento/:id", canActivate: [LoginGuard], component: VisualizarOrcamentoComponent},
                                 { path: "novo-orcamento", canActivate: [LoginGuard], component: NovoOrcamentoComponent },
-                                { path: "novo-orcamento/aprovar-orcamento", canActivate: [LoginGuard], component: AprovarOrcamentoComponent },
+                                { path: "aprovar-orcamento/:id", canActivate: [LoginGuard], component: AprovarOrcamentoComponent },
                             ]},
 
                             // Dashboard
