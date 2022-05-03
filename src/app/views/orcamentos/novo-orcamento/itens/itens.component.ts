@@ -206,7 +206,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   inserirProduto(produto: ProdutoOrcamentoDto): void {
     let coeficienteRequest: CoeficienteRequest = new CoeficienteRequest();
     coeficienteRequest.lstFabricantes = new Array();
-    
+
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
@@ -222,7 +222,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
-    
+
     this.novoOrcamentoService.totalPedido();
     this.formaPagto.habilitar = false;
   }
@@ -528,7 +528,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
-        this.visualizarOrcamento(r);
+        this.novoOrcamentoService.criarNovo();
+        this.router.navigate(["orcamentos/listar", "orcamentos"]);
       }
     }).catch((e) => {
       debugger;
@@ -536,12 +537,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     });
   }
 
-  visualizarOrcamento(id:number){
-    this.router.navigate(["orcamentos/visualizar-orcamento", id]);
+  visualizarOrcamento(id: number) {
+    this.mensagemService.showWarnViaToast("Estamos implementando!");
+    // this.router.navigate(["orcamentos/visualizar-orcamento", id]);
   }
 
   enviar() {
-    this.mensagemService.showWarnViaToast("Estamos implementando!");
+
     return;
   }
 }
