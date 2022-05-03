@@ -113,8 +113,8 @@ export class UsuarioEdicaoComponent implements OnInit {
             this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
             this.router.navigate([`/usuarios/usuario-lista`]);
         })
-        .catch(() => {
-            this.mensagemService.showWarnViaToast("Problema ao atualizar");
+        .catch((e) => {
+            this.mensagemService.showWarnViaToast(e.error.Message);
         });
     } else {
       this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
@@ -123,8 +123,8 @@ export class UsuarioEdicaoComponent implements OnInit {
             this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
             this.router.navigate([`/usuarios/usuario-lista`]);
         })
-        .catch(() => {
-            this.mensagemService.showWarnViaToast("Problema ao cadastrar");
+        .catch((e) => {
+            this.mensagemService.showWarnViaToast(e.error.Message);
         });
     }
   }
