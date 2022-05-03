@@ -95,7 +95,7 @@
                         "label": "Propriedades",
                         "icon": "pi pi-cog",
                         "routerLink": [
-                            "/produtos-catalogo-propriedades/listar"
+                            "/produtos-catalogo/propriedades/listar"
                         ]
                     }
                 ]

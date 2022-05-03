@@ -77,10 +77,10 @@ import { ProdutosCatalogoEditarComponent } from '../views/produtos-catalogo/edit
 import { ProdutosCatalogoVisualizarComponent } from '../views/produtos-catalogo/visualizar/visualizar.component';
 import { ProdutosCatalogoCriarComponent } from '../views/produtos-catalogo/criar/criar.component';
 
-import { ProdutosCatalogoPropriedadesListarComponent } from './../views/produtos-catalogo-propriedades/listar/listar.component';
-import { ProdutosCatalogoPropriedadesEditarComponent } from './../views/produtos-catalogo-propriedades/editar/editar.component';
-import { ProdutosCatalogoPropriedadesVisualizarComponent } from './../views/produtos-catalogo-propriedades/visualizar/visualizar.component';
-import { ProdutosCatalogoPropriedadesCriarComponent } from './../views/produtos-catalogo-propriedades/criar/criar.component';
+import { ProdutosCatalogoPropriedadesListarComponent } from './../views/produtos-catalogo/propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from './../views/produtos-catalogo/propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from './../views/produtos-catalogo/propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from './../views/produtos-catalogo/propriedades/criar/criar.component';
 
 import { ValidacaoFormularioService } from './../utilities/validacao-formulario/validacao-formulario.service';
 

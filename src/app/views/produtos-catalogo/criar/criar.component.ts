@@ -191,13 +191,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
             this.router.navigate(["//produtos-catalogo/listar"]);
         }
       }).catch((r)=> this.alertaService.mostrarErroInternet(r));      
-
       indice++;
-
-    }
-
-            
-  }
+    }            
+  }  
 
   onChange(idProdutoCatalogoPropriedade,
     idProdutoCatalogoPropriedadeOpcao,
