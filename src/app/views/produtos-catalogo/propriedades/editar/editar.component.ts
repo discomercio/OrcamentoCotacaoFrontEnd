@@ -60,7 +60,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   }
 
   voltarClick(): void {
-    this.router.navigate(["//produtos-catalogo-propriedades/listar"]);
+    this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
   }
 
     ativoClick(e) {
@@ -78,7 +78,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
         this.produtoService.atualizarPropriedades(prod).toPromise().then((r) => {
             if (r != null) {
                 this.mensagemService.showSuccessViaToast("Propriedade atualizada com sucesso!");
-                this.router.navigate(["//produtos-catalogo-propriedades/listar"]);
+                this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
             }
         }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }

@@ -18,10 +18,10 @@ import { ProdutosCatalogoVisualizarComponent } from '../../views/produtos-catalo
 import { ProdutosCatalogoCriarComponent } from '../../views/produtos-catalogo/criar/criar.component';
 
 // Propriedades do Catálogo
-import { ProdutosCatalogoPropriedadesListarComponent } from '../../views/produtos-catalogo-propriedades/listar/listar.component';
-import { ProdutosCatalogoPropriedadesEditarComponent } from '../../views/produtos-catalogo-propriedades/editar/editar.component';
-import { ProdutosCatalogoPropriedadesVisualizarComponent } from '../../views/produtos-catalogo-propriedades/visualizar/visualizar.component';
-import { ProdutosCatalogoPropriedadesCriarComponent } from '../../views/produtos-catalogo-propriedades/criar/criar.component';
+import { ProdutosCatalogoPropriedadesListarComponent } from '../../views/produtos-catalogo/propriedades/listar/listar.component';
+import { ProdutosCatalogoPropriedadesEditarComponent } from '../../views/produtos-catalogo/propriedades/editar/editar.component';
+import { ProdutosCatalogoPropriedadesVisualizarComponent } from '../../views/produtos-catalogo/propriedades/visualizar/visualizar.component';
+import { ProdutosCatalogoPropriedadesCriarComponent } from '../../views/produtos-catalogo/propriedades/criar/criar.component';
 
 import { AprovarOrcamentoComponent } from '../../views/orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { OrcamentosListarComponent } from '../../views/orcamentos/listar/listar.component';
@@ -67,14 +67,10 @@ import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedid
                                 { path: 'listar', canActivate: [LoginGuard], component: ProdutosCatalogoListarComponent },
                                 { path: 'visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoVisualizarComponent },
                                 { path: 'editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoEditarComponent },
-                            ]},
-
-                            // Propriedades do Produto
-                            { path: 'produtos-catalogo-propriedades', canActivate: [LoginGuard], children:[
-                                { path: 'criar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
-                                { path: 'listar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesListarComponent },
-                                { path: 'visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
-                                { path: 'editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
+                                { path: 'propriedades/criar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
+                                { path: 'propriedades/listar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesListarComponent },
+                                { path: 'propriedades/visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
+                                { path: 'propriedades/editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesEditarComponent },                                
                             ]},
 
                             // Downloads
