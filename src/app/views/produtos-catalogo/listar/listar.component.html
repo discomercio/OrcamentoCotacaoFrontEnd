@@ -59,10 +59,10 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td style="text-align: left">{{lista.Produto}}</td>
+                        <td style="text-align: left">{{('000000' + lista.Produto).slice(-6)}}</td>
                         <td style="text-align: left">{{lista.Fabricante}}</td>
                         <td style="text-align: left">{{lista.Nome}}</td>
-                        <td style="text-align: left">{{lista.Descricao}}</td>
+                        <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
                         <td style="text-align: left">{{lista.Imagem}}</td>
                         <td style="text-align: center">{{lista.ativo == true ? 'Sim': 'Não'}}</td>
                         <td style="text-align: right">
@@ -70,7 +70,7 @@
                                 (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit"
                                 (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="fa fa-cut"
+                            <button pButton style="align-content: flex-end;" icon="fa fa-copy"
                                 (click)="copiarClick(this.lista.Id)" pTooltip="Copiar"></button>
                         </td>
                     </tr>

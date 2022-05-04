@@ -1,7 +1,7 @@
-export class ProdutoCatalogoItem{
-    IdProdutoCatalogo:string;
+export class ProdutoCatalogoOpcao{
     IdProdutoCatalogoPropriedade:string;
     IdProdutoCatalogoPropriedadeOpcao:string;
+    IdCfgTipoPropriedade:string;
     Valor:string;
-    Oculto: string;
+    Oculto:string;
 }

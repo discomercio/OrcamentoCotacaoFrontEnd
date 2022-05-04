@@ -1,4 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Subject } from 'rxjs';
+import { ProdutoCatalogoOpcao } from './../../../dto/produtos-catalogo/ProdutoCatalogoOpcao';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
@@ -11,7 +13,7 @@ import { SelectItem } from 'primeng/api';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogoItem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoItem';
-import { exit } from 'process';
+import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
 
 @Component({
   selector: 'app-criar-produto',
@@ -38,14 +40,11 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   propriedades: ProdutoCatalogoPropriedade[];
   fabricantes: ProdutoCatalogoFabricante[];
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
+  urlUpload: string;
+  imgUrl: string;
   lstOpcoes: SelectItem[][] = [];
   lstFabricantes: SelectItem[] = [];
-  urlUpload: string;
-
-  // Campos de Propriedades dinâmicos da tela
-  lstPropriedades: any = [];
-
-  // Campos de Propriedades dinâmicos da tela (Ativo ou Não)
+  lstPropriedades: ProdutoCatalogoOpcao[] = [];
   lstPropriedadesAtivo: any = [];
 
   ngOnInit(): void {
@@ -54,7 +53,11 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.buscarPropriedades();
     this.buscarOpcoes();
     this.buscarFabricantes();
+    this.produto.Ativo = 'true';
+    this.urlUpload = this.produtoService.urlUpload;
+    this.imgUrl = this.produtoService.imgUrl;
   }
+
   criarForm() {
     this.form = this.fb.group({
       descricao: ['', [Validators.required]],
@@ -68,6 +71,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   voltarClick(): void {
     this.router.navigate(["//produtos-catalogo/listar"]);
   }
+
   buscarPropriedades() {
     this.produtoService.buscarPropriedades().toPromise().then((r) => {
       if (r != null) {
@@ -76,6 +80,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
+
   buscarFabricantes() {
     let lstFabricantes = [];
     var indice = 0;
@@ -84,7 +89,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       if (r != null) {
 
         while (indice < r.length) {
-          lstFabricantes.push({ label: r[indice]['Nome'], value: r[indice]['Fabricante'] })
+          lstFabricantes.push({ label: r[indice]['Descricao'], value: r[indice]['Fabricante'] })
           indice++;
         }
 
@@ -94,6 +99,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
+
   buscarOpcoes(): void {
 
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
@@ -141,89 +147,111 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
 
   onBeforeUpload($event): void {
+    //  $event.formData.append('idProdutoCalatogo', this.id);
   }
+
   onUpload($event, id): void {
-  }
-  ativoClick($event): void {
-  }
+      var arquivo = $event.originalEvent.body.file;
 
-  salvarClick() {      
-        
-    if (!this.validacaoFormularioService.validaForm(this.form)){      
-      return;
-    } 
-    
-    let prod = new ProdutoCatalogo();
+     this.produto.imagens = [];
+     let img = new ProdutoCatalogoImagem();
+     img.IdProdutoCatalogo = "-1";
+     img.IdIipoImagem = "1";
+     img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
+     img.Ordem = "200";
 
-    prod.Fabricante = this.form.controls.fabricante.value;
-    prod.Produto = this.form.controls.produto.value;
-    prod.Nome = this.form.controls.nome_produto.value;
-    prod.Descricao = this.form.controls.descricao.value;
-    prod.Ativo = "true";
-    prod.campos = [];
-    prod.imagens = [];
+     this.produto.imagens.push(img);
 
-    this.produtoService.criarProduto(prod).toPromise().then((r) => {
-      if (r != null) {}      
-    }).catch((r)=> this.alertaService.mostrarErroInternet(r));       
-    
-    this.cadastrarItem();
-    
-  }
-
-  cadastrarItem(){
-
-    let produtoCatalogoItem =  new ProdutoCatalogoItem();
-
-    var indice = 0;
-    
-    while (indice< this.lstPropriedades.length){
-            
-      produtoCatalogoItem.IdProdutoCatalogo = this.lstPropriedades[indice]['IdProdutoCatalogo'];
-      produtoCatalogoItem.IdProdutoCatalogoPropriedade = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedade'];
-      produtoCatalogoItem.IdProdutoCatalogoPropriedadeOpcao = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedadeOpcao'];
-      produtoCatalogoItem.Valor = this.lstPropriedades[indice]['Valor'];        
-      produtoCatalogoItem.Oculto = this.lstPropriedades[indice]['Oculto'];  
-
-      this.produtoService.criarProdutoCatalogoItem(produtoCatalogoItem).toPromise().then((r) => {
-        if (r != null) {
-          this.mensagemService.showSuccessViaToast("Produto catálogo criado com sucesso!");
-            this.router.navigate(["//produtos-catalogo/listar"]);
-        }
-      }).catch((r)=> this.alertaService.mostrarErroInternet(r));      
-
-      indice++;
-
+     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
     }
 
-            
+  excluirImagemClick(idImagem) {
+    this.produto.imagens = null;
+
+    this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }
 
-  onChange(idProdutoCatalogoPropriedade,
-    idProdutoCatalogoPropriedadeOpcao,
-    idCfgTipoPropriedade,
-    valor) {
-    
-    // Verifico se já foi adicionado    
-    if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
-      this.lstPropriedades.push(
-        {
-          IdProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
-          IdProdutoCatalogoPropriedadeOpcao: idProdutoCatalogoPropriedadeOpcao.value,
-          IdCfgTipoPropriedade: idCfgTipoPropriedade,
-          Valor: valor
-        });
-    } 
+  obterIdOpcao(idProdutoCatalogoPropriedade, valorOpcaoSelecionado) {
+    var opcao = this.opcoes.filter(x => x.id_produto_catalogo_propriedade == idProdutoCatalogoPropriedade && x.valor == valorOpcaoSelecionado)[0];
+
+    if(opcao) {
+        return opcao.id;
+    }
+
+    return null;
   }
 
-  onChangeAtivo(idProdutoCatalogoPropriedade, oculto) {
-    
-    this.lstPropriedadesAtivo.push(
-      {
-        IdProdutoCatalogoPropriedade: idProdutoCatalogoPropriedade,
-        Oculto: oculto.checked
-      });
+  salvarClick() {
+    this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
+        if(r != null) {
+            this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
+            return;
+        } else {
+            let prod = new ProdutoCatalogo();
+            let campo = new ProdutoCatalogoItem();
+
+            prod.Fabricante = this.form.controls.fabricante.value;
+            prod.Produto = this.form.controls.produto.value;
+            prod.Nome = this.form.controls.nome_produto.value;
+            prod.Descricao = this.form.controls.descricao.value;
+            prod.Ativo = this.produto.Ativo;
+            prod.campos = [];
+            prod.imagens = this.produto.imagens == null ? []  : this.produto.imagens;
+
+            var listaInput = document.getElementsByTagName("input");
+            for(let i = 0; i < listaInput.length -1; i++) {
+                if(listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
+                    campo = new ProdutoCatalogoItem();
+                    campo.IdProdutoCatalogo = '-1';
+                    campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-','');
+                    campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
+                    campo.Valor = listaInput[i].value;
+                    campo.Oculto = document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked.toString();
+                    prod.campos.push(campo);
+
+                    // console.log(`INPUT    > id: ${listaInput[i].id} - valor: ${listaInput[i].value} - placeholder: ${listaInput[i].placeholder}`);
+                    // console.log(`CHECKBOX > id: ${listaInput[i].id.replace('txt','chk')} - valor: ${document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked}`);
+                    // console.log('');
+                }
+            }
+
+            var listaDrop = document.getElementsByTagName("p-dropdown");
+            for(let d = 0; d < listaDrop.length -1; d++) {
+                var listaOpt = listaDrop[d].getElementsByTagName("span");
+                for(let i = 0; i < listaOpt.length -1; i++) {
+                    if(listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
+                        campo = new ProdutoCatalogoItem();
+                        campo.IdProdutoCatalogo = '-1';
+                        campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-','');
+                        campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)}`;
+                        campo.Valor = '';
+                        campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked.toString();
+                        prod.campos.push(campo);
+
+                        // console.log(`DROPDOWN > id: ${listaDrop[d].id} - valor: ${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)} - ${listaOpt[i].innerText}`);
+                        // console.log(`CHECKBOX > id: ${listaDrop[d].id.replace('cbo','chk')} - valor: ${document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked}`);
+                        // console.log('');
+                    }
+                }
+            }
+
+            // console.log('****************************************');
+            // console.log(prod);
+
+            if (!this.validacaoFormularioService.validaForm(this.form)){
+              return;
+            }
+
+            this.produtoService.criarProduto(prod).toPromise().then((r) => {
+              if (r != null) {}
+            }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+
+            this.router.navigate(["//produtos-catalogo/listar"]);
+        }
+      }).catch();
+
   }
+
 
 }
 

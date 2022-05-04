@@ -23,6 +23,10 @@ export class ProdutoCatalogoService {
     return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo`);
   }
 
+  buscarPorCodigo(codigo): Observable<ProdutoCatalogo[]> {
+    return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo/codigo/${codigo}`);
+  }
+
   buscarProdutoDetalhe(id:string):Observable<ProdutoCatalogo>{
     return this.http.get<ProdutoCatalogo>(`${environment.apiUrl}produtocatalogo/${id}/detalhes`);
   }
@@ -33,20 +37,19 @@ export class ProdutoCatalogoService {
 
   buscarProdutoPropriedadesOpcoes(id:string):Observable<ProdutoCatalogoItem>{
     return this.http.get<ProdutoCatalogoItem>(`${environment.apiUrl}produto/opcoes/${id}`);
-  }  
+  }
 
   excluirProduto(id:string):Observable<boolean>{
     return this.http.delete<boolean>(`${environment.apiUrl}produtocatalogo/${id}`);
   }
 
-  criarProduto(produto:any):Observable<any>{           
+  criarProduto(produto:any):Observable<any>{
     return this.http.post<any>(`${environment.apiUrl}produtocatalogo`, produto);
   }
 
-  criarProdutoCatalogoItem(produtoCatalogoItem:any):Observable<any>{    
-
+  criarProdutoCatalogoItem(produtoCatalogoItem:any):Observable<any>{
     return this.http.post<any>(`${environment.apiUrl}produtocatalogo/item`, produtoCatalogoItem);
-  }  
+  }
 
   atualizarProduto(produto:any):Observable<any>{
     return this.http.put<any>(`${environment.apiUrl}produtocatalogo`, produto);
@@ -70,7 +73,7 @@ export class ProdutoCatalogoService {
     }
 
     buscarPropriedadesEOpcoesProdutosAtivos():Observable<any[]>{
-      
+
       return this.http.get<any[]>(`${environment.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`);
     }
 
@@ -81,7 +84,7 @@ export class ProdutoCatalogoService {
     /* Propriedades do Produto */
     buscarFabricantes(): Observable<ProdutoCatalogoFabricante[]> {
       return this.http.get<ProdutoCatalogoFabricante[]>(`${environment.apiUrl}produto/fabricantes`);
-  }  
+  }
 
     buscarPropriedadesPorId(id: string): Observable<ProdutoCatalogoPropriedade> {
         return this.http.get<ProdutoCatalogoPropriedade>(`${environment.apiUrl}produto/propriedades/${id}`);
@@ -94,5 +97,5 @@ export class ProdutoCatalogoService {
     atualizarPropriedades(produto: any): Observable<any> {
         return this.http.put<any>(`${environment.apiUrl}produto/propriedades`, produto);
     }
-  
+
 }
