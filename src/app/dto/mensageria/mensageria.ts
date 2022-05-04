@@ -1,7 +1,7 @@
-export class MensageriaDto {   
+export class MensageriaDto {
 
     Id: string;
-    IdOrcamentoCotacao: number;
+    IdOrcamentoCotacao: string;
     IdTipoUsuarioContextoRemetente: string;
     IdUsuarioRemetente: string;
     IdTipoUsuarioContextoDestinatario: string;

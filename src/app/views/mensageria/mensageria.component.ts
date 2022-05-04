@@ -10,34 +10,34 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
   styleUrls: ['./mensageria.component.scss']
 })
 export class MensageriaComponent implements OnInit {
-  
-  @Input('idOrcamentoCotacao')  
+
+  @Input('idOrcamentoCotacao')
   public idOrcamentoCotacao: number;
-  
+
   @Input('idUsuarioRemetente')
   public idUsuarioRemetente: string;
-  
+
   @Input('idUsuarioDestinatario')
   public idUsuarioDestinatario: string;
-  
+
   @Input('idTipoUsuarioContextoRemetente')
   public idTipoUsuarioContextoRemetente: string;
 
   @Input('idTipoUsuarioContextoDestinatario')
-  public idTipoUsuarioContextoDestinatario: string;  
+  public idTipoUsuarioContextoDestinatario: string;
 
-  listaMensagens: MensageriaDto[];  
-  
+  listaMensagens: MensageriaDto[];
+
   constructor(
     public readonly mensageriaService: MensageriaService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
   ) { }
-  
+
   @ViewChild("mensagem") mensagem: ElementRef;
 
   ngOnInit(): void {
-    this.obterListaMensagem(this.idOrcamentoCotacao);    
+    this.obterListaMensagem(this.idOrcamentoCotacao);
   }
 
   obterListaMensagem(idOrcamentoCotacao: number) {
@@ -53,7 +53,7 @@ export class MensageriaComponent implements OnInit {
   enviarMensagem() {
 
     let msg = new MensageriaDto();
-    msg.IdOrcamentoCotacao = this.idOrcamentoCotacao;
+    msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
     msg.Mensagem = this.mensagem.nativeElement.value;
     msg.IdTipoUsuarioContextoRemetente = this.idTipoUsuarioContextoRemetente;
     msg.IdTipoUsuarioContextoDestinatario = this.idTipoUsuarioContextoDestinatario;

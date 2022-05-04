@@ -37,7 +37,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
     this.carregando = true;
     this.criarForm();
     this.id = this.activatedRoute.snapshot.params.id;
-    this.buscarPropriedadesPorId();                  
+    this.buscarPropriedadesPorId();
   }
 
   criarForm() {
@@ -49,12 +49,12 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   }
 
     buscarPropriedadesPorId() {
-        
+
       this.produtoService.buscarPropriedadesPorId(this.id).toPromise().then((r) => {
           if (r != null) {
               this.produtoPropriedade = r;
               this.descricao.nativeElement.value = r[0]['descricao'];
-              this.boolAtivo = r[0]['oculto'];              
+              this.boolAtivo = r[0]['oculto'];
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -74,7 +74,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
         prod.usuario_cadastro = 'SISTEMA';
         prod.id = this.id;
         prod.oculto = this.boolAtivo;
-        
+
         this.produtoService.atualizarPropriedades(prod).toPromise().then((r) => {
             if (r != null) {
                 this.mensagemService.showSuccessViaToast("Propriedade atualizada com sucesso!");

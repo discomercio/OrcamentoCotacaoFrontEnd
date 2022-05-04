@@ -44,30 +44,19 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td class="p-text-center p-py-1 p-px-2">{{lista.Produto}}</td>
-                        <td class="p-text-center p-py-1 p-px-2">{{lista.Fabricante}}</td>
-                        <td class="p-text-left p-py-1 p-px-2">{{lista.Nome}}</td>
-                        <td class="p-text-left p-py-1 p-px-2" [innerHTML]="lista.Descricao">
-                        </td>
-                        <td class="p-text-center p-py-1 p-px-2">
-                            <span *ngIf="lista.imagens != null">Sim
-                            </span>
-                            <span *ngIf="lista.imagens == null">Não
-                            </span>
-                        </td>
-                        <td class="p-text-center p-py-1 p-px-2">{{lista.ativo == true ? 'Sim': 'Não'}}</td>
-                        <td class="p-d-flex p-d-lg-flex p-d-md-flex p-d-sm-inline p-justify-center p-py-1 p-px-2">
-                            <!-- <button pButton style="align-content: flex-end;" icon="fa fa-eye"
-                                (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp; -->
-                            <div class="p-p-1">
-                                <button pButton icon="fa fa-edit" (click)="editarClick(this.lista.Id)"
-                                    pTooltip="Editar"></button>
-                            </div>
-                            <div class="p-p-1">
-                                <button pButton icon="fa fa-cut" (click)="copiarClick(this.lista.Id)"
-                                    pTooltip="Copiar"></button>
-                            </div>
-
+                        <td style="text-align: left">{{('000000' + lista.Produto).slice(-6)}}</td>
+                        <td style="text-align: left">{{lista.Fabricante}}</td>
+                        <td style="text-align: left">{{lista.Nome}}</td>
+                        <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
+                        <td style="text-align: left">{{lista.Imagem}}</td>
+                        <td style="text-align: center">{{lista.ativo == true ? 'Sim': 'Não'}}</td>
+                        <td style="text-align: right">
+                            <button pButton style="align-content: flex-end;" icon="fa fa-eye"
+                                (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-edit"
+                                (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
+                            <button pButton style="align-content: flex-end;" icon="fa fa-copy"
+                                (click)="copiarClick(this.lista.Id)" pTooltip="Copiar"></button>
                         </td>
                     </tr>
                 </ng-template>

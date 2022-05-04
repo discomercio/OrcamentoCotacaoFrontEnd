@@ -1,5 +1,5 @@
-import { ProdutoCatalogoCampo } from "./ProdutoCatalogoCampo";
 import { ProdutoCatalogoImagem } from "./ProdutoCatalogoImagem";
+import { ProdutoCatalogoItem } from "./ProdutoCatalogoItem";
 
 export class ProdutoCatalogo{
     Id:string;
@@ -10,6 +10,6 @@ export class ProdutoCatalogo{
     Fabricante: string;
     Descricao:string;
     Ativo:string;
-    campos: ProdutoCatalogoCampo[];
+    campos: ProdutoCatalogoItem[];
     imagens: ProdutoCatalogoImagem[];
 }

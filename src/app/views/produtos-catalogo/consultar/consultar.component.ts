@@ -33,11 +33,11 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   stringUtils = StringUtils;
 
   ngOnInit(): void {
-    
+
     this.criarTabela();
     this.buscarPropriedadesProdutosAtivos();
     this.buscarPropriedadesEOpcoesProdutosAtivos();
-    
+
   }
 
   criarTabela() {
@@ -60,7 +60,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
 
-    
+
   }
 
   buscarPropriedadesEOpcoesProdutosAtivos() {
@@ -209,7 +209,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
 }
 
 export class ProdutoTabela {
-  id: number;
+  id: string;
   linhaBusca: string;
   produto: string;
   fabricante: string;

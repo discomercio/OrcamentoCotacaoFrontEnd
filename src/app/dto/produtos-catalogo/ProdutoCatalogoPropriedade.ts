@@ -1,5 +1,5 @@
 export class ProdutoCatalogoPropriedade{
-    id:number;
+    id:string;
     IdCfgTipoPropriedade:string;
     IdCfgTipoPermissaoEdicaoCadastro:string;
     IdCfgDataType:string;

@@ -23,7 +23,11 @@ export class ProdutoCatalogoService {
     return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo`);
   }
 
-  buscarProdutoDetalhe(id: number): Observable<ProdutoCatalogo> {
+  buscarPorCodigo(codigo): Observable<ProdutoCatalogo[]> {
+    return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo/codigo/${codigo}`);
+  }
+
+  buscarProdutoDetalhe(id: any): Observable<ProdutoCatalogo> {
     return this.http.get<ProdutoCatalogo>(`${environment.apiUrl}produtocatalogo/${id}/detalhes`);
   }
 
@@ -39,12 +43,11 @@ export class ProdutoCatalogoService {
     return this.http.delete<boolean>(`${environment.apiUrl}produtocatalogo/${id}`);
   }
 
-  criarProduto(produto: any): Observable<any> {
+  criarProduto(produto:any):Observable<any>{
     return this.http.post<any>(`${environment.apiUrl}produtocatalogo`, produto);
   }
 
-  criarProdutoCatalogoItem(produtoCatalogoItem: any): Observable<any> {
-
+  criarProdutoCatalogoItem(produtoCatalogoItem:any):Observable<any>{
     return this.http.post<any>(`${environment.apiUrl}produtocatalogo/item`, produtoCatalogoItem);
   }
 
@@ -69,19 +72,19 @@ export class ProdutoCatalogoService {
     return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/buscar-produtos-opcoes-ativos/${idProduto}&${propriedadeOculta}&${propriedadeOcultaItem}`);
   }
 
-  buscarPropriedadesEOpcoesProdutosAtivos(): Observable<any[]> {
+    buscarPropriedadesEOpcoesProdutosAtivos():Observable<any[]>{
 
-    return this.http.get<any[]>(`${environment.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`);
-  }
+      return this.http.get<any[]>(`${environment.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`);
+    }
 
-  buscarOpcoes(): Observable<ProdutoCatalogoPropriedadeOpcao[]> {
+    /* Propriedades do Produto */
+    buscarFabricantes(): Observable<ProdutoCatalogoFabricante[]> {
+      return this.http.get<ProdutoCatalogoFabricante[]>(`${environment.apiUrl}produto/fabricantes`);
+    }
+
+    buscarOpcoes(): Observable<ProdutoCatalogoPropriedadeOpcao[]> {
     return this.http.get<ProdutoCatalogoPropriedadeOpcao[]>(`${environment.apiUrl}produto/opcoes`);
-  }
-
-  /* Propriedades do Produto */
-  buscarFabricantes(): Observable<ProdutoCatalogoFabricante[]> {
-    return this.http.get<ProdutoCatalogoFabricante[]>(`${environment.apiUrl}produto/fabricantes`);
-  }
+   }
 
   buscarPropriedadesPorId(id: string): Observable<ProdutoCatalogoPropriedade> {
     return this.http.get<ProdutoCatalogoPropriedade>(`${environment.apiUrl}produto/propriedades/${id}`);
