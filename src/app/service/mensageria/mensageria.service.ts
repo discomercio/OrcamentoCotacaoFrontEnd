@@ -7,7 +7,7 @@ import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
-export class OrcamentoCotacaoMensagemService {
+export class MensageriaService {
 
   constructor(private http: HttpClient) { }
 
@@ -19,12 +19,10 @@ export class OrcamentoCotacaoMensagemService {
     }
 
     enviarMensagem(msg: any): Observable<any> {
-        //console.log(msg);
         return this.http.post<any>(`${environment.apiUrl}Orcamento/mensagem`, msg);
     }
 
     marcarComoLida(idOrcamentoCotacao: string, idUsuarioDestinatario: string): Observable<any> {
-        //console.log(msg);
         let params = new HttpParams();
         params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
         params = params.append("idUsuarioDestinatario", idUsuarioDestinatario);        
