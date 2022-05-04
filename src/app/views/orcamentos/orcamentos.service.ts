@@ -29,8 +29,8 @@ export class OrcamentosService {
     return this.http.get<ClienteOrcamentoCotacaoDto>("src/assets/demo/data/banco/cliente.json");
   }
 
-  enviarOrcamento(model:OrcamentoCotacaoResponse){
-    return this.http.post<OrcamentoCotacaoResponse>(`${environment.apiUrl}Orcamento`, model);
+  enviarOrcamento(model:OrcamentoCotacaoResponse):Observable<number>{
+    return this.http.post<number>(`${environment.apiUrl}Orcamento`, model);
   }
 
   criarOrcamento(cliente:ClienteOrcamentoCotacaoDto):Observable<ClienteOrcamentoCotacaoDto>{

@@ -206,7 +206,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   inserirProduto(produto: ProdutoOrcamentoDto): void {
     let coeficienteRequest: CoeficienteRequest = new CoeficienteRequest();
     coeficienteRequest.lstFabricantes = new Array();
-    
+
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     coeficienteRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
@@ -222,7 +222,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
-    
+
     this.novoOrcamentoService.totalPedido();
     this.formaPagto.habilitar = false;
   }
@@ -440,21 +440,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   }
 
-
-
-
-
-
-
-  visualizarOrcamento() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length <= 0) {
-      this.mensagemService.showWarnViaToast("Favor incluir opção de orçamento!");
-      return;
-    }
-
-    this.router.navigate(["orcamentos/novo-orcamento/aprovar-orcamento", { aprovando: false }]);
-  }
-
   removerItem(index: number) {
     let produto = this.novoOrcamentoService.lstProdutosSelecionados.splice(index, 1)[0];
 
@@ -540,19 +525,25 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   salvarOrcamento() {
 
-
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
+        this.novoOrcamentoService.criarNovo();
+        this.router.navigate(["orcamentos/listar", "orcamentos"]);
       }
-    }).catch(e => this.alertaService.mostrarErroInternet(e));
-
-    return;
+    }).catch((e) => {
+      debugger;
+      this.alertaService.mostrarErroInternet(e)
+    });
   }
-  enviar() {
+
+  visualizarOrcamento(id: number) {
     this.mensagemService.showWarnViaToast("Estamos implementando!");
-    return;
+    // this.router.navigate(["orcamentos/visualizar-orcamento", id]);
   }
 
+  enviar() {
 
+    return;
+  }
 }

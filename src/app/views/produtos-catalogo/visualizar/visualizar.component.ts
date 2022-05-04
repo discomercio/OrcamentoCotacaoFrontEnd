@@ -20,61 +20,62 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
-    ) { }
+  ) { }
 
-    public form: FormGroup;
-    public produto: ProdutoCatalogo = new ProdutoCatalogo();
-    private id: string;
-    private imgUrl: string;
-    products: Product[];
-    images: any[];
-    carregando: boolean = false;
+  public form: FormGroup;
+  public produto: ProdutoCatalogo = new ProdutoCatalogo();
+  private id: number;
+  private imgUrl: string;
+  products: Product[];
+  images: any[];
+  carregando: boolean = false;
 
-    ngOnInit(): void {
-      this.carregando = true;
-      this.criarForm();
-      this.setarCampos();
-      this.buscarProdutoDetalhe();
-      this.buscarProduto()
-    }
+  ngOnInit(): void {
+    this.carregando = true;
+    this.criarForm();
+    this.setarCampos();
+    this.buscarProdutoDetalhe();
+    this.buscarProduto()
+  }
 
-    criarForm() {
-      this.form = this.fb.group({
-        id: [''],
-        descricao: ['', [Validators.required]],
-        ativo: [''],
-      });
-    }
+  criarForm() {
+    this.form = this.fb.group({
+      id: [''],
+      descricao: ['', [Validators.required]],
+      ativo: ['']
+    });
+  }
 
-    setarCampos() {
-      this.imgUrl = this.produtoService.imgUrl;
-      this.id = this.activatedRoute.snapshot.params.id;
-      this.form.controls.ativo.setValue(this.produto.Ativo);
-    }
+  setarCampos() {
+    this.imgUrl = this.produtoService.imgUrl;
+    this.id = this.activatedRoute.snapshot.params.id;
+    console.log(this.id);
+    this.form.controls.ativo.setValue(this.produto.Ativo);
+  }
 
-    buscarProdutoDetalhe() {
-      this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
-        if (r != null) {
-          this.produto = r;
-        }
-      }).catch((r)=> this.alertaService.mostrarErroInternet(r));
-    }
+  buscarProdutoDetalhe() {
+    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
+      if (r != null) {
+        this.produto = r;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
 
-    voltarClick(): void {
-      window.history.back();
-      // this.router.navigate(["//produtos-catalogo/listar"]);
-    }
+  voltarClick(): void {
+    window.history.back();
+    // this.router.navigate(["//produtos-catalogo/listar"]);
+  }
 
-    produtoDados :ProdutoCatalogoItemProdutosAtivosDados[];
+  produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];
 
-    buscarProduto(){
-      this.produtoService.buscarPropriedadesProdutoAtivo(this.id).toPromise().then((r) => {
+  buscarProduto() {
+    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtoDados = r;
       }
     }).catch((e) => {
       console.log(e);
     });
-    }
+  }
 }
 
