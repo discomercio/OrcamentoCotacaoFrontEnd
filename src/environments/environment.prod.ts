@@ -5,6 +5,6 @@ export const environment = {
     esperaAvisos: 3000,
     esperaErros: 5000,
     apiUrl: 'http://arclubeorcamentocotacaoapi.itssolucoes.com.br/',
-    imgUrl: 'http://its-apphml/img/',
+    imgUrl: 'http://arclubeorcamentocotacaoarquivos.itssolucoes.com.br/img/',
     versaoApi: 'DEBUG',
 };
