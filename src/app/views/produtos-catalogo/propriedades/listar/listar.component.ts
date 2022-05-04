@@ -51,12 +51,12 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
   }
 
   editarClick(id: any) {
-      this.router.navigate(["/produtos-catalogo-propriedades/editar", id]);
+      this.router.navigate(["/produtos-catalogo/propriedades/editar", id]);
   }
 
 
   criarClick() {
-    this.router.navigate(["/produtos-catalogo-propriedades/criar"]);
+    this.router.navigate(["/produtos-catalogo/propriedades/criar"]);
   }
 
 }

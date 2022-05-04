@@ -42,7 +42,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     voltarClick(): void {
-      this.router.navigate(["//produtos-catalogo-propriedades/listar"]);
+      this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
     }
 
     salvarClick() {       
@@ -55,7 +55,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
-            this.router.navigate(["//produtos-catalogo-propriedades/listar"]);
+            this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
             //this.router.navigate([`//produtos-catalogo-propriedades/editar/${prod.Id}`]);
         }
       }).catch((r)=> this.alertaService.mostrarErroInternet(r));

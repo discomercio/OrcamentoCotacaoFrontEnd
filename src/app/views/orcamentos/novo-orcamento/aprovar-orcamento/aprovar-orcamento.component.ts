@@ -11,7 +11,6 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentoCotacaoMensagemService } from 'src/app/service/mensageria/mensageria.service';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
@@ -33,7 +32,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     
   constructor(private readonly orcamentoService: OrcamentosService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    public readonly orcamentoCotacaoMensagemService: OrcamentoCotacaoMensagemService,
     telaDesktopService: TelaDesktopService,
     private readonly alertaService: AlertaService,
     private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
@@ -45,32 +43,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     super(telaDesktopService);
     }
     public form: FormGroup;
-    listaMensagens: MensageriaDto[];    
     dataUtils: DataUtils = new DataUtils();
     
     vendedor: boolean;
     tipoUsuario: string;
-    idOrcamentoCotacao: string;
-    idUsuarioRemetente: string;
-    idUsuarioDestinatario: string;
 
     @ViewChild("mensagem") mensagem: ElementRef;
 
-    ngOnInit(): void {
-        
-        // FIXO - Pois no momento que foi constrúido a mensageria, as informações carregadas na tela eram mocking. 
-        this.vendedor = true;
-        this.idOrcamentoCotacao = "2";
-
-        if (this.vendedor) {            
-            this.idUsuarioRemetente = "50197";
-            this.idUsuarioDestinatario = "50025";
-        } else {            
-            this.idUsuarioRemetente = "50025";
-            this.idUsuarioDestinatario = "50197";
-        }
-
-        this.orcamentoCotacaoMensagemService.marcarComoLida(this.idOrcamentoCotacao, this.idUsuarioRemetente);
+    ngOnInit(): void {              
 
     this.activedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
@@ -78,11 +58,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
       this.buscarOrcamento(1453);
       this.buscarOpcoesOrcamento(1453);
-      this.obterListaMensagem(2);
-
     }
-
-
 
   @Input() desabiltarBotoes: boolean;
 
@@ -102,7 +78,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     formatarData(dateString) {
-
         if ('undefined' === typeof dateString || '' === dateString) {
             return null;
         }
@@ -117,39 +92,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
          return dataFinal;
     }
-
-    obterListaMensagem(idOrcamentoCotacao: number) {
-        
-        this.orcamentoCotacaoMensagemService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-            if (r != null) {
-                
-                this.listaMensagens = r;
-                console.log(this.listaMensagens);
-                
-            }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
-
-    enviarMensagem() {                
-
-        let msg = new MensageriaDto();        
-
-        msg.IdOrcamentoCotacao = this.idOrcamentoCotacao;
-        msg.Mensagem = this.mensagem.nativeElement.value;
-        msg.IdTipoUsuarioContextoRemetente = "1";        
-        msg.IdTipoUsuarioContextoDestinatario = "1";
-        msg.IdUsuarioRemetente = this.idUsuarioRemetente;
-        msg.IdUsuarioDestinatario = this.idUsuarioDestinatario;
-
-        this.orcamentoCotacaoMensagemService.enviarMensagem(msg).toPromise().then((r) => {
-            if (r != null) {
-                this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-                this.obterListaMensagem(2);
-                this.mensagem.nativeElement.value = '';
-            }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
-
 
   buscarOpcoesOrcamento(id: number) {
     this.orcamentoOpcaoService.buscarOpcoesOrcamento(id.toString()).toPromise().then(r => {
@@ -176,10 +118,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       console.log(result);
 
     });
-  }
-
-  visualizarMensagem(idOrcamento) {
-      //return this.http.get<[]>(`${environment.apiUrl}produtocatalogo`);
   }
 
   voltar(){
