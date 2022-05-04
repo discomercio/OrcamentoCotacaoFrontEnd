@@ -50,7 +50,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-    
+
     this.buscarOpcoes();
 
   }
@@ -91,7 +91,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     //   console.log(e);
     // });
     this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
-      
+
 
       this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
         if (r != null) {
@@ -125,22 +125,23 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
   montarListaProdutoParaTela() {
     this.propriedades.forEach(x => {
+
       let item = this.produto.filter(y => y.idPropriedade == x.id);
       if (item.length == 0) {
         let prod = new ProdutoCatalogoItemProdutosAtivosDados();
         prod.idPropriedade = x.id;
         prod.valorPropriedade = "";
-        prod.idValorPropriedade = 0;
+        prod.idValorPropriedadeOpcao = 0;
         prod.propriedadeOcultaItem = true;
         this.produtosParaTela.push(prod);
       }
-      else{
-          let prod = new ProdutoCatalogoItemProdutosAtivosDados();
-          prod.idPropriedade = item[0].id;
-          prod.valorPropriedade = item[0].valorPropriedade;
-          prod.idValorPropriedade = item[0].idValorPropriedade;
-          prod.propriedadeOcultaItem = item[0].propriedadeOcultaItem;
-          this.produtosParaTela.push(prod);
+      else {
+        let prod = new ProdutoCatalogoItemProdutosAtivosDados();
+        prod.idPropriedade = item[0].id;
+        prod.valorPropriedade = item[0].valorPropriedade;
+        prod.idValorPropriedadeOpcao = item[0].idValorPropriedadeOpcao;
+        prod.propriedadeOcultaItem = item[0].propriedadeOcultaItem;
+        this.produtosParaTela.push(prod);
       }
     });
   }
@@ -154,7 +155,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
-  testess: any;
+  
+
   buscarOpcoes(): void {
 
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
@@ -187,12 +189,13 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           while (y < r.length) {
             var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
 
-            if (indice == x) {
+            if (indice == listaId[x]) {
               lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
             }
             y++;
           }
-          this.lstOpcoes[x] = lstOpcoesPorId;
+
+          this.lstOpcoes[listaId[x]] = lstOpcoesPorId;
 
           x++;
         }
@@ -207,7 +210,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
-  onChangeAtivo(idPropriedade:number, index:number) {
+  onChangeAtivo(idPropriedade: number, index: number) {
     this.produtosParaTela[index].propriedadeOcultaItem = !this.produtosParaTela[index].propriedadeOcultaItem;
   }
 
@@ -215,6 +218,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     console.log('onBeforeUpload');
     event.formData.append('idProdutoCalatogo', this.id);
   }
+
   onUpload(event, fileUpload) {
     console.log('onUpload');
 
@@ -236,77 +240,60 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  lstPropriedadesAtivo: any = [];
-  lstPropriedades: any = [];
   atualizarProdutoClick() {
-debugger;
-    let produtoCatalogoItem = new ProdutoCatalogoItem();
 
-    var indice = 0;
+    let idProduto = this.produtoDetalhe.Id;
+    //Incluir os dados para t_PRODUTO_CATALOGO
+    /*
+        idProduto = produtoDetalhe.Id
+        produto = produtoDetalhe.Produto
+        fabricante(numero) = produtoDetalhe.Fabricante
+        nome = produtoDetalhe.Nome
+        descricao_completa = produtoDetalhe.Descricao
+        ativo = produtoDetalhe.Ativo
+        listaPropriedades = modelo
 
-    while (indice < this.lstPropriedades.length) {
+        *******************************************************************************************
+        PARA SALVAR NA t_PRODUTO_CATALOGO_ITEM
+        Dropar da t_PRODUTO_CATALOGO_ITEM todos registros com o ID_Produto
+        Inserir todos as propriedades onde contém VALOR ou ID_da_OPCAO
+        *******************************************************************************************
+    */
 
-      produtoCatalogoItem.IdProdutoCatalogo = this.lstPropriedades[indice]['IdProdutoCatalogo'];
-      produtoCatalogoItem.IdProdutoCatalogoPropriedade = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedade'];
-      produtoCatalogoItem.IdProdutoCatalogoPropriedadeOpcao = this.lstPropriedades[indice]['IdProdutoCatalogoPropriedadeOpcao'];
-      produtoCatalogoItem.Valor = this.lstPropriedades[indice]['Valor'];
-      produtoCatalogoItem.Oculto = this.lstPropriedades[indice]['Oculto'];
+    let modelo: ProdutoCatalogoItem[] = new Array();
+    this.produtosParaTela.forEach(x => {
 
-      this.produtoService.criarProdutoCatalogoItem(produtoCatalogoItem).toPromise().then((r) => {
-        if (r != null) {
-          this.mensagemService.showSuccessViaToast("Produto catálogo criado com sucesso!");
-          this.router.navigate(["//produtos-catalogo/listar"]);
+      if (x.valorPropriedade != null && x.valorPropriedade != "") {
+        let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
+        itemModelo.IdProdutoCatalogo = idProduto;
+        itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
+        itemModelo.Oculto = x.propriedadeOcultaItem ? "1" : "0";
+
+        if (x.idValorPropriedadeOpcao == 0) {
+          itemModelo.IdProdutoCatalogoPropriedadeOpcao = null;
+          itemModelo.Valor = x.valorPropriedade;
+        } else {
+          itemModelo.IdProdutoCatalogoPropriedadeOpcao = x.idValorPropriedadeOpcao.toString();
+          itemModelo.Valor = null;
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-      indice++;
-    }
 
-
-
-
-    var txtDescricao = (<HTMLInputElement>document.getElementById("descricao"));
-
-    if (txtDescricao.value == "") {
-      this.mensagemService.showWarnViaToast("Campo [Descrição] é obrigatório!");
-      return;
-    }
-
-    var input = document.getElementsByTagName("input");
-    var inputList = Array.prototype.slice.call(input);
-    let tmp = new ProdutoCatalogoCampo();
-    //prod.nome = this.form.controls.nome.value;
-    this.produtoDetalhe.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
-    this.produtoDetalhe.Ativo = this.form.controls.ativo.value;
-    this.produtoDetalhe.campos = [];
-
-    inputList.forEach(e => {
-      tmp = new ProdutoCatalogoCampo();
-
-      if (e.id.startsWith('item') && e.value != "") {
-
-        tmp.Id = e.id.substring(4, e.id.length);
-        tmp.Codigo = e.codigo;
-        tmp.Chave = e.chave;
-        tmp.Valor = e.value;
-        tmp.Ordem = e.ordem;
-
-        this.produtoDetalhe.campos.push(JSON.parse(JSON.stringify(tmp)));
+        modelo.push(itemModelo);
       }
     });
 
-    this.produtoService.atualizarProduto(this.produto).toPromise().then((r) => {
-      if (r != null) {
-        this.mensagemService.showSuccessViaToast("Dados atualizados com sucesso!");
-        this.router.navigate(["//produtos-catalogo/listar"]);
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+
+
+    //REDIRECIONAR PARA A TELA DE LISTAGEM
   }
 
+
+  lstPropriedades: any = [];
   onChange(idProdutoCatalogoPropriedade,
     idProdutoCatalogoPropriedadeOpcao,
     idCfgTipoPropriedade,
     valor) {
-    
+
     // Verifico se já foi adicionado    
     if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
       this.lstPropriedades.push(
@@ -316,7 +303,7 @@ debugger;
           IdCfgTipoPropriedade: idCfgTipoPropriedade,
           Valor: valor
         });
-    } 
+    }
   }
 }
 
