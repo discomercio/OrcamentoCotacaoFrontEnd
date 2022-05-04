@@ -94,6 +94,10 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
 import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
 
+//Components
+import { MensageriaComponent } from '../views/mensageria/mensageria.component';
+
+
 @NgModule({
     imports: [
         AppModuleComponents,
@@ -168,6 +172,7 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
+        MensageriaComponent,
     ],
     providers: [
         {
