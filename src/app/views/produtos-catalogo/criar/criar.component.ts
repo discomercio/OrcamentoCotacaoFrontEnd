@@ -102,7 +102,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
 
   buscarOpcoes(): void {
-
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
 
       var x = 0;
@@ -116,7 +115,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         let listaId = [];
 
         while (x < r.length) {
-
           if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
             listaId.push(r[x]['id_produto_catalogo_propriedade']);
           }
@@ -133,12 +131,13 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
           while (y < r.length) {
             var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
 
-            if (indice == x) {
+            if (indice == listaId[x]) {
               lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
             }
             y++;
           }
-          this.lstOpcoes[x] = lstOpcoesPorId;
+
+          this.lstOpcoes[listaId[x]] = lstOpcoesPorId;
 
           x++;
         }
