@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
 import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -10,22 +10,34 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
   styleUrls: ['./mensageria.component.scss']
 })
 export class MensageriaComponent implements OnInit {
+  
+  @Input('idOrcamentoCotacao')  
+  public idOrcamentoCotacao: number;
+  
+  @Input('idUsuarioRemetente')
+  public idUsuarioRemetente: string;
+  
+  @Input('idUsuarioDestinatario')
+  public idUsuarioDestinatario: string;
+  
+  @Input('idTipoUsuarioContextoRemetente')
+  public idTipoUsuarioContextoRemetente: string;
 
+  @Input('idTipoUsuarioContextoDestinatario')
+  public idTipoUsuarioContextoDestinatario: string;  
+
+  listaMensagens: MensageriaDto[];  
+  
   constructor(
     public readonly mensageriaService: MensageriaService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
   ) { }
-
-  public idOrcamentoCotacao: string;
-  public idUsuarioRemetente: string;
-  public idUsuarioDestinatario: string;
-  listaMensagens: MensageriaDto[];  
-
+  
   @ViewChild("mensagem") mensagem: ElementRef;
 
   ngOnInit(): void {
-    this.obterListaMensagem(2);    
+    this.obterListaMensagem(this.idOrcamentoCotacao);    
   }
 
   obterListaMensagem(idOrcamentoCotacao: number) {
@@ -43,15 +55,15 @@ export class MensageriaComponent implements OnInit {
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao;
     msg.Mensagem = this.mensagem.nativeElement.value;
-    msg.IdTipoUsuarioContextoRemetente = this.idUsuarioRemetente;
-    msg.IdTipoUsuarioContextoDestinatario = this.idUsuarioDestinatario;
+    msg.IdTipoUsuarioContextoRemetente = this.idTipoUsuarioContextoRemetente;
+    msg.IdTipoUsuarioContextoDestinatario = this.idTipoUsuarioContextoDestinatario;
     msg.IdUsuarioRemetente = this.idUsuarioRemetente;
     msg.IdUsuarioDestinatario = this.idUsuarioDestinatario;
 
     this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
       if (r != null) {
         this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-        this.obterListaMensagem(2);
+        this.obterListaMensagem(this.idOrcamentoCotacao);
         this.mensagem.nativeElement.value = '';
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
