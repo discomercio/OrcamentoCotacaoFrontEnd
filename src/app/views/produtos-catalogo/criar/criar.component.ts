@@ -17,7 +17,8 @@ import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCata
 
 @Component({
   selector: 'app-criar-produto',
-  templateUrl: './criar.component.html',
+  templateUrl:
+  './criar.component.html',
   styleUrls: ['./criar.component.scss']
 })
 export class ProdutosCatalogoCriarComponent implements OnInit {
