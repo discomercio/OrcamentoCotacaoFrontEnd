@@ -66,7 +66,7 @@ export class ProdutoCatalogoService {
     }
 
     buscarPropriedadesProdutoAtivo(idProduto:string):Observable<ProdutoCatalogoItemProdutosAtivosDados[]>{
-      return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/teste/${idProduto}`);
+      return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produto/buscar-produtos-opcoes-ativos/${idProduto}`);
     }
 
     buscarPropriedadesEOpcoesProdutosAtivos():Observable<any[]>{

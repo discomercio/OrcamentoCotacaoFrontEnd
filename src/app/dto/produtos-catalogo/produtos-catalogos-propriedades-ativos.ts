@@ -9,4 +9,5 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     nomePropriedade: string;
     valorPropriedade: string;
     ordem:number;
+    ativo:boolean;
 }

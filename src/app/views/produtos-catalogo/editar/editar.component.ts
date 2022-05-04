@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
@@ -11,6 +11,7 @@ import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produt
 import { ProdutoCatalogoCampo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoCampo';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectItem } from 'primeng/api';
+import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 
 @Component({
   selector: 'app-editar-produto',
@@ -30,7 +31,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
-  public produto: ProdutoCatalogo = new ProdutoCatalogo();
+  public produtoDetalhe: ProdutoCatalogo = new ProdutoCatalogo();
+  public produto: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>()
   public propriedade: ProdutoCatalogoItem = new ProdutoCatalogoItem();
   public propriedade_opcoes: ProdutoCatalogoItem = new ProdutoCatalogoItem();
   private id: string;
@@ -54,9 +56,12 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
   criarForm() {
     this.form = this.fb.group({
-      id: [''],
-      descricao: [''],
-      ativo: [''],
+      id: [this.produtoDetalhe.Id],
+      produto: [this.produtoDetalhe.Produto, [Validators.required]],
+      descricao: [this.produtoDetalhe.Descricao, [Validators.required]],
+      ativo: [this.produtoDetalhe.Ativo],
+      fabricante: [this.produtoDetalhe.Fabricante, [Validators.required]],
+      nome: [this.produtoDetalhe.Descricao, [Validators.required]]
     });
   }
 
@@ -67,9 +72,17 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   buscarProdutoDetalhe() {
-    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
+    this.produtoService.buscarPropriedadesProdutoAtivo(this.id).toPromise().then((r) => {
       if (r != null) {
         this.produto = r;
+      }
+    }).catch((e) => {
+      console.log(e);
+    });
+    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
+      if (r != null) {
+        this.produtoDetalhe = r;
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -91,6 +104,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       var y = 0;
 
       if (r != null) {
+        debugger;
         this.opcoes = r;
         this.carregando = false;
 
@@ -130,11 +144,15 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   voltarClick(): void {
+
+    if (this.validacaoFormularioService.validaForm(this.form)) {
+      debugger;
+    }
     this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
   ativoClick(e) {
-    this.produto.Ativo = e.checked;
+    this.produto[0].ativo = e.checked;
   }
 
   onBeforeUpload(event) {
@@ -149,11 +167,11 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    this.produtoService.excluirImagem(this.produto.Id, idImagem).toPromise().then((r) => {
+    this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
-        for (var x = 0; x <= this.produto.imagens.length - 1; x++) {
-          if (this.produto.imagens[x].Id == idImagem) {
-            this.produto.imagens.splice(x, 1);
+        for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
+          if (this.produtoDetalhe.imagens[x].Id == idImagem) {
+            this.produtoDetalhe.imagens.splice(x, 1);
           }
         }
 
@@ -174,9 +192,9 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     var inputList = Array.prototype.slice.call(input);
     let tmp = new ProdutoCatalogoCampo();
     //prod.nome = this.form.controls.nome.value;
-    this.produto.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
-    this.produto.Ativo = this.form.controls.ativo.value;
-    this.produto.campos = [];
+    this.produtoDetalhe.Descricao = txtDescricao.value; //this.form.controls.descricao.value;
+    this.produtoDetalhe.Ativo = this.form.controls.ativo.value;
+    this.produtoDetalhe.campos = [];
 
     inputList.forEach(e => {
       tmp = new ProdutoCatalogoCampo();
@@ -189,7 +207,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         tmp.Valor = e.value;
         tmp.Ordem = e.ordem;
 
-        this.produto.campos.push(JSON.parse(JSON.stringify(tmp)));
+        this.produtoDetalhe.campos.push(JSON.parse(JSON.stringify(tmp)));
       }
     });
 

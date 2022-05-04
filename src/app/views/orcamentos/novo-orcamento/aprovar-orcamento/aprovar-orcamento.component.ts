@@ -11,7 +11,6 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentoCotacaoMensagemService } from 'src/app/service/mensageria/mensageria.service';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
@@ -22,6 +21,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
+import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
 
 
 @Component({
@@ -33,13 +33,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   constructor(private readonly orcamentoService: OrcamentosService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
-    public readonly orcamentoCotacaoMensagemService: OrcamentoCotacaoMensagemService,
     telaDesktopService: TelaDesktopService,
     private readonly alertaService: AlertaService,
     private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
     private readonly sweetalertService: SweetalertService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly mensagemService: MensagemService,
+    private readonly orcamentoCotacaoMensagemService: MensageriaService,
     private fb: FormBuilder,
     private location: Location) {
     super(telaDesktopService);
@@ -83,8 +83,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.obterListaMensagem(2);
 
   }
-
-
 
   @Input() desabiltarBotoes: boolean;
 
@@ -180,12 +178,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
-  visualizarMensagem(idOrcamento) {
-    //return this.http.get<[]>(`${environment.apiUrl}produtocatalogo`);
-  }
-
-  voltar() {
-    this.location.back();
+  voltar(){
+      this.location.back();
   }
 
 }

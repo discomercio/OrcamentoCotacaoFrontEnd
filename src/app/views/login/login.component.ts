@@ -59,7 +59,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       this.autenticacaoService._lojaLogado = this.loja;
 
-      this.router.navigate(['']);
+      this.router.navigate(['orcamentos/listar/orcamentos']);
       return;
     }
 
