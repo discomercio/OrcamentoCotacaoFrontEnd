@@ -7,7 +7,9 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     descricaoCompleta: string;
     idPropriedade: number;
     nomePropriedade: string;
+    idValorPropriedade:number;
     valorPropriedade: string;
     ordem:number;
-    ativo:boolean;
+    propriedadeOculta:boolean;
+    propriedadeOcultaItem:boolean;
 }

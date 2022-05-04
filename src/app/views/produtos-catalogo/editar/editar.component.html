@@ -56,12 +56,15 @@
                 <div class="p-d-lg-flex p-d-md-flex">
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
 
-                        <div class="p-text-bold">Exibir no Catálogo: &nbsp;<p-inputSwitch id="ativo"
-                                formControlName="ativo" (onChange)="ativoClick($event)"
-                                [(ngModel)]="produtoDetalhe.Ativo">
-                            </p-inputSwitch><br><br>
-                        </div>
+                        
 
+                        <div class="p-text-bold">Exibir no Catálogo:</div>
+                        <div class="p-field">
+                            <p-inputSwitch id="ativo"
+                                formControlName="ativo"
+                                [(ngModel)]="produtoDetalhe.Ativo">
+                            </p-inputSwitch>
+                        </div>
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field">
                             <input id="fabricante" name="descricao" type="text" pInputText placeholder="Fabricante"
@@ -117,40 +120,31 @@
     <div class="p-col-12">
         <div class="card">
             <p-table #dt1 [value]="propriedades">
-                <ng-template pTemplate="body" let-lista>
+                <ng-template pTemplate="body" let-lista let-i="rowIndex">
                     <div class="p-d-lg-flex p-d-md-flex">
                         <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
-
-                            <div class="p-text-bold" *ngIf="lista.IdCfgTipoPropriedade == 1"
-                                id="lbl-propriedade-{{lista.id}}">
-                                <label for="tipo">{{lista.descricao}}:</label>
-                                <p-dropdown id="tipo" [options]="lstOpcoes" optionLabel="lstOpcoes[lista.label]" optionValue="lstOpcoes[lista.id]"  [(ngModel)]="produto[0].idPropriedade"
-                                    placeholder="Selecione">
-                                </p-dropdown>
-
-
-                            </div>
-
-
                             <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                             <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0">
                                 <div class="p-field p-col-6">
                                     <input id="campo-{{lista.id}}" type="text" pInputText
-                                        placeholder="{{lista.descricao}}" value="" />
+                                        placeholder="{{lista.descricao}}"
+                                        [(ngModel)]="produtosParaTela[i].valorPropriedade" />
                                     <br><br>
-                                    <p-inputSwitch id="campo-ativo-{{lista.id}}"></p-inputSwitch>
-
+                                    <p-inputSwitch id="campo-ativo-{{lista.id}}"
+                                        (onChange)="onChangeAtivo(lista.id,$event)"
+                                        [(ngModel)]="!produtosParaTela[i].propriedadeOcultaItem"></p-inputSwitch>
                                 </div>
                             </div>
                             <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 1">
                                 <div class="p-field p-col-6">
                                     <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]"
-                                        placeholder="Selecione"
-                                        (onChange)="onChange(lista.id,$event, lista.IdCfgTipoPropriedade)">
+                                        optionValue="label" placeholder="Selecione"
+                                        [(ngModel)]="produtosParaTela[i].valorPropriedade">
                                         <br><br>
                                     </p-dropdown>
                                     <p-inputSwitch id="campo-ativo-{{lista.id}}"
-                                        (onChange)="onChangeAtivo(lista.id,$event)"></p-inputSwitch>
+                                        (onChange)="onChangeAtivo(produtosParaTela[i].idPropriedade, i)"
+                                        [(ngModel)]="!produtosParaTela[i].propriedadeOcultaItem"></p-inputSwitch>
                                 </div>
                             </div>
                         </div>

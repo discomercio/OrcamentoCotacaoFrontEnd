@@ -72,7 +72,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
         let prod = new ProdutoCatalogoPropriedade();
         prod.descricao = this.form.controls.descricao.value;
         prod.usuario_cadastro = 'SISTEMA';
-        prod.Id = this.id;
+        prod.id = this.id;
         prod.oculto = this.boolAtivo;
         
         this.produtoService.atualizarPropriedades(prod).toPromise().then((r) => {

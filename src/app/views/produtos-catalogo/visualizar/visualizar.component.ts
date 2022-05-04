@@ -24,7 +24,7 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
 
   public form: FormGroup;
   public produto: ProdutoCatalogo = new ProdutoCatalogo();
-  private id: string;
+  private id: number;
   private imgUrl: string;
   products: Product[];
   images: any[];
@@ -69,7 +69,7 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];
 
   buscarProduto() {
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id).toPromise().then((r) => {
+    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtoDados = r;
       }
