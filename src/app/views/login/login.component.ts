@@ -84,7 +84,7 @@ export class LoginComponent implements OnInit {
         this.autenticacaoService.setarToken(r.AccessToken);
         // sessionStorage.setItem("lojaLogada", this.loja);
         // sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
-        this.router.navigate(['']);
+        this.router.navigate(['orcamentos/listar/orcamentos']);
       }
     }).catch((e) => {
       this.autenticacaoService.tratarErros(e);
