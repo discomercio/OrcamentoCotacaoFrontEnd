@@ -27,7 +27,7 @@ export class ProdutoCatalogoService {
     return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo/codigo/${codigo}`);
   }
 
-  buscarProdutoDetalhe(id: string): Observable<ProdutoCatalogo> {
+  buscarProdutoDetalhe(id: any): Observable<ProdutoCatalogo> {
     return this.http.get<ProdutoCatalogo>(`${environment.apiUrl}produtocatalogo/${id}/detalhes`);
   }
 
