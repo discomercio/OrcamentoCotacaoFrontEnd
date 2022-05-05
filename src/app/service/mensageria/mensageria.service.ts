@@ -15,18 +15,18 @@ export class MensageriaService {
     
     let params = new HttpParams();    
         params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
-        return this.http.get<MensageriaDto[]>(environment.apiUrl + "Orcamento/mensagem?IdOrcamentoCotacao=" + idOrcamentoCotacao);
+        return this.http.get<MensageriaDto[]>(environment.apiUrl + "Mensagem/?IdOrcamentoCotacao=" + idOrcamentoCotacao);
     }
 
     enviarMensagem(msg: any): Observable<any> {
-        return this.http.post<any>(`${environment.apiUrl}Orcamento/mensagem`, msg);
+        return this.http.post<any>(`${environment.apiUrl}Mensagem/`, msg);
     }
 
     marcarComoLida(idOrcamentoCotacao: string, idUsuarioDestinatario: string): Observable<any> {
         let params = new HttpParams();
         params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
         params = params.append("idUsuarioDestinatario", idUsuarioDestinatario);        
-        return this.http.put<any>(environment.apiUrl +"Orcamento/mensagem/lida", params);
+        return this.http.put<any>(environment.apiUrl +"Mensagem/lida", params);
     }
 
 }
