@@ -31,6 +31,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
     public boolAtivo: boolean;
     carregando: boolean = false;
     @ViewChild("descricao") descricao: ElementRef;
+    
     @ViewChild("ativo") ativo: ElementRef;
 
   ngOnInit(): void {
@@ -70,7 +71,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
     salvarClick() {
 
         let prod = new ProdutoCatalogoPropriedade();
-        prod.descricao = this.form.controls.descricao.value;
+        prod.descricao = this.descricao.nativeElement.value;
         prod.usuario_cadastro = 'SISTEMA';
         prod.id = this.id;
         prod.oculto = this.boolAtivo;
