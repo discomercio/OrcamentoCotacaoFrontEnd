@@ -49,6 +49,7 @@
                             "extractLicenses": true,
                             "vendorChunk": false,
                             "buildOptimizer": true,
+                            "outputPath": "dist/front-prd",
                             "fileReplacements": [
                                 {
                                     "replace": "src/environments/environment.ts",
@@ -64,7 +65,8 @@
                             ]
                         },
                         "des": {
-                          "fileReplacements": [
+                            "outputPath": "dist/front-des",
+                            "fileReplacements": [
                             {
                               "replace": "src/environments/environment.ts",
                               "with": "src/environments/environment.des.ts"
