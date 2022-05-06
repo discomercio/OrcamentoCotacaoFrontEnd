@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormBuilder, FormGroup, RequiredValidator, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
@@ -8,7 +8,6 @@ import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/Produ
 import { ProdutoCatalogoPropriedadeOpcao } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoCatalogoItem } from '../../../dto/produtos-catalogo/ProdutoCatalogoItem';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
-import { ProdutoCatalogoCampo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoCampo';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
@@ -52,7 +51,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.buscarProdutoDetalhe();
 
     this.buscarOpcoes();
-
   }
 
   criarForm() {
@@ -70,7 +68,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.id = this.activatedRoute.snapshot.params.id;
     this.imgUrl = this.produtoService.imgUrl;
     this.urlUpload = this.produtoService.urlUpload;
-
   }
 
   consolidarLista(produtoCat: ProdutoCatalogoItemProdutosAtivosDados[]) {
@@ -80,18 +77,9 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   buscarProdutosComFlag() { }
-  buscarProdutoDetalhe() {
-    // this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((r) => {
-    //   if (r != null) {
-    //     // this.produto = r;
-    //     this.consolidarLista(r);
-    //     // this.criarObjeto();
-    //   }
-    // }).catch((e) => {
-    //   console.log(e);
-    // });
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
 
+  buscarProdutoDetalhe() {
+    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
 
       this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
         if (r != null) {
@@ -110,7 +98,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
       if (r != null) {
         this.produtoDetalhe = r;
-
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -155,7 +142,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
-  
+
 
   buscarOpcoes(): void {
 
@@ -200,6 +187,16 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           x++;
         }
 
+
+    console.log(this.produtosParaTela.length);
+    console.log(this.propriedades.length);
+    console.log(this.produtoDetalhe.campos);
+    console.log(this.produtoDetalhe.imagens);
+
+    this.produtosParaTela.forEach(element => {
+        console.log(element.valorPropriedade);
+    });
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -242,32 +239,15 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
   atualizarProdutoClick() {
 
-    let idProduto = this.produtoDetalhe.Id;
-    //Incluir os dados para t_PRODUTO_CATALOGO
-    /*
-        idProduto = produtoDetalhe.Id
-        produto = produtoDetalhe.Produto
-        fabricante(numero) = produtoDetalhe.Fabricante
-        nome = produtoDetalhe.Nome
-        descricao_completa = produtoDetalhe.Descricao
-        ativo = produtoDetalhe.Ativo
-        listaPropriedades = modelo
+    let campos: ProdutoCatalogoItem[] = [];
 
-        *******************************************************************************************
-        PARA SALVAR NA t_PRODUTO_CATALOGO_ITEM
-        Dropar da t_PRODUTO_CATALOGO_ITEM todos registros com o ID_Produto
-        Inserir todos as propriedades onde contém VALOR ou ID_da_OPCAO
-        *******************************************************************************************
-    */
-
-    let modelo: ProdutoCatalogoItem[] = new Array();
     this.produtosParaTela.forEach(x => {
 
       if (x.valorPropriedade != null && x.valorPropriedade != "") {
         let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
-        itemModelo.IdProdutoCatalogo = idProduto;
+        itemModelo.IdProdutoCatalogo = this.produtoDetalhe.Id;
         itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
-        itemModelo.Oculto = x.propriedadeOcultaItem ? "1" : "0";
+        itemModelo.Oculto = x.propriedadeOcultaItem ? "true" : "false";
 
         if (x.idValorPropriedadeOpcao == 0) {
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = null;
@@ -277,14 +257,25 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           itemModelo.Valor = null;
         }
 
-        modelo.push(itemModelo);
+        campos.push(itemModelo);
       }
     });
 
+    let produto = new ProdutoCatalogo();
+    produto.Id = this.produtoDetalhe.Id;
+    produto.Nome = this.produtoDetalhe.Nome; //Descricao
+    produto.Descricao = this.produtoDetalhe.Descricao; //Descricao Completa
+    produto.Ativo = this.produtoDetalhe.Ativo;
+    produto.campos = campos;
+    produto.imagens = [this.produtoDetalhe.imagens[0]];
 
+    this.produtoService.atualizarProduto(produto).toPromise().then((r) => {
+        if (r != null) {
+            this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
 
-
-    //REDIRECIONAR PARA A TELA DE LISTAGEM
+    this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
 
@@ -294,7 +285,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     idCfgTipoPropriedade,
     valor) {
 
-    // Verifico se já foi adicionado    
+    // Verifico se já foi adicionado
     if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
       this.lstPropriedades.push(
         {
