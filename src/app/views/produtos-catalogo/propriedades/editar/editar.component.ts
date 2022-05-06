@@ -1,4 +1,4 @@
-import { Component, VERSION, OnInit, Input, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -31,7 +31,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
     public boolAtivo: boolean;
     carregando: boolean = false;
     @ViewChild("descricao") descricao: ElementRef;
-    
+
     @ViewChild("ativo") ativo: ElementRef;
 
   ngOnInit(): void {
@@ -50,12 +50,11 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   }
 
     buscarPropriedadesPorId() {
-
       this.produtoService.buscarPropriedadesPorId(this.id).toPromise().then((r) => {
           if (r != null) {
               this.produtoPropriedade = r;
               this.descricao.nativeElement.value = r[0]['descricao'];
-              this.boolAtivo = r[0]['oculto'];
+              this.boolAtivo = !r[0]['oculto'];
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -74,7 +73,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
         prod.descricao = this.descricao.nativeElement.value;
         prod.usuario_cadastro = 'SISTEMA';
         prod.id = this.id;
-        prod.oculto = this.boolAtivo;
+        prod.oculto = !this.boolAtivo;
 
         this.produtoService.atualizarPropriedades(prod).toPromise().then((r) => {
             if (r != null) {

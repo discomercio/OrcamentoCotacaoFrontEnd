@@ -24,9 +24,9 @@
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
-                    <tr class="p-selectable-row" dragdrop="true">                        
+                    <tr class="p-selectable-row" dragdrop="true">
                         <td style="text-align: left" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.descricao}}</td>
-                        <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.oculto == true ? 'Sim': 'Não'}}</td>
+                        <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.oculto == true ? 'Não': 'Sim'}}</td>
                         <td style="text-align: right">
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit" (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
                         </td>
