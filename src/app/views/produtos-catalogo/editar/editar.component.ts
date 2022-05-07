@@ -11,6 +11,7 @@ import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produt
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
+import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
 
 @Component({
   selector: 'app-editar-produto',
@@ -49,7 +50,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-
     this.buscarOpcoes();
   }
 
@@ -76,14 +76,12 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     });
   }
 
-  buscarProdutosComFlag() { }
-
   buscarProdutoDetalhe() {
     this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
 
       this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
         if (r != null) {
-          // this.produto = r;
+        //   this.produto = r;
           this.consolidarLista(r);
           this.consolidarLista(y);
           this.buscarPropriedades();
@@ -103,28 +101,25 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   propriedadesItem: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>();
-  criarObjeto() {
-    // this.propriedade.forEach(x => {
-    //   this.produto
-    // });
-  }
-
   produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
+
   montarListaProdutoParaTela() {
+
     this.propriedades.forEach(x => {
 
       let item = this.produto.filter(y => y.idPropriedade == x.id);
+
+      let prod = new ProdutoCatalogoItemProdutosAtivosDados();
+      prod.idPropriedade = x.id;
+      prod.idTipoCampo = x.IdCfgTipoPropriedade;
+
       if (item.length == 0) {
-        let prod = new ProdutoCatalogoItemProdutosAtivosDados();
-        prod.idPropriedade = x.id;
         prod.valorPropriedade = "";
         prod.idValorPropriedadeOpcao = 0;
         prod.propriedadeOcultaItem = true;
         this.produtosParaTela.push(prod);
       }
       else {
-        let prod = new ProdutoCatalogoItemProdutosAtivosDados();
-        prod.idPropriedade = item[0].id;
         prod.valorPropriedade = item[0].valorPropriedade;
         prod.idValorPropriedadeOpcao = item[0].idValorPropriedadeOpcao;
         prod.propriedadeOcultaItem = item[0].propriedadeOcultaItem;
@@ -142,7 +137,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
-
 
   buscarOpcoes(): void {
 
@@ -187,16 +181,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           x++;
         }
 
-
-    console.log(this.produtosParaTela.length);
-    console.log(this.propriedades.length);
-    console.log(this.produtoDetalhe.campos);
-    console.log(this.produtoDetalhe.imagens);
-
-    this.produtosParaTela.forEach(element => {
-        console.log(element.valorPropriedade);
-    });
-
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -217,9 +201,17 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   onUpload(event, fileUpload) {
-    console.log('onUpload');
+    var arquivo = event.originalEvent.body.file;
 
-    this.ngOnInit();
+    this.produtoDetalhe.imagens = [];
+    let img = new ProdutoCatalogoImagem();
+    img.IdProdutoCatalogo = this.id.toString();
+    img.IdIipoImagem = "1";
+    img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
+    img.Ordem = "200";
+
+    this.produtoDetalhe.imagens.push(img);
+
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
   }
 
@@ -232,30 +224,35 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           }
         }
 
+        this.produtoDetalhe.imagens = [];
+
         this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   atualizarProdutoClick() {
-
+console.clear();
     let campos: ProdutoCatalogoItem[] = [];
 
     this.produtosParaTela.forEach(x => {
-
-      if (x.valorPropriedade != null && x.valorPropriedade != "") {
+      if (
+          x.idTipoCampo == "0" && x.valorPropriedade != null && x.valorPropriedade != "" ||
+          x.idTipoCampo == "1" && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
+          ) {
         let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
         itemModelo.IdProdutoCatalogo = this.produtoDetalhe.Id;
         itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
         itemModelo.Oculto = x.propriedadeOcultaItem ? "true" : "false";
 
-        if (x.idValorPropriedadeOpcao == 0) {
+        if (x.idTipoCampo == "0") { //TextBox
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = null;
           itemModelo.Valor = x.valorPropriedade;
         } else {
-          itemModelo.IdProdutoCatalogoPropriedadeOpcao = x.idValorPropriedadeOpcao.toString();
+          itemModelo.IdProdutoCatalogoPropriedadeOpcao = x.idValorPropriedadeOpcao == 0 ? x.valorPropriedade : x.idValorPropriedadeOpcao.toString();
           itemModelo.Valor = null;
-        }
+          console.log(x);
+    }
 
         campos.push(itemModelo);
       }
@@ -267,7 +264,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     produto.Descricao = this.produtoDetalhe.Descricao; //Descricao Completa
     produto.Ativo = this.produtoDetalhe.Ativo;
     produto.campos = campos;
-    produto.imagens = [this.produtoDetalhe.imagens[0]];
+    produto.imagens = null;
 
     this.produtoService.atualizarProduto(produto).toPromise().then((r) => {
         if (r != null) {
@@ -278,14 +275,9 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
-
   lstPropriedades: any = [];
-  onChange(idProdutoCatalogoPropriedade,
-    idProdutoCatalogoPropriedadeOpcao,
-    idCfgTipoPropriedade,
-    valor) {
 
-    // Verifico se já foi adicionado
+  onChange(idProdutoCatalogoPropriedade, idProdutoCatalogoPropriedadeOpcao, idCfgTipoPropriedade, valor) {
     if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
       this.lstPropriedades.push(
         {

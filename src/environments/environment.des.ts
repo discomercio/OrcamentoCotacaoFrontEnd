@@ -6,6 +6,6 @@ export const environment = {
     esperaAvisos: 3000,
     esperaErros: 5000,
     apiUrl: 'http://its-appdev02:3100/',
-    imgUrl: 'http://its-appdev02/img/',
+    imgUrl: 'http://its-apphml/img/',
     versaoApi: 'DEBUG'
 };

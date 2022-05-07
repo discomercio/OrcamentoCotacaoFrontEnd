@@ -141,8 +141,8 @@
                                 </p-inputSwitch>
                             </div>
                             <div class="p-col-5" style="display: inline-block;vertical-align: middle;">
-                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="label" optionLabel="label"
-                                    placeholder="Selecione" [(ngModel)]="produtosParaTela[i].valorPropriedade" [showClear]="true">
+                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="value" optionLabel="label"
+                                    placeholder="Selecione" [(ngModel)]="produtosParaTela[i].idValorPropriedadeOpcao" [showClear]="true">
                                 </p-dropdown>
                             </div>
                         </div>
