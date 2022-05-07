@@ -80,6 +80,7 @@ export class CadastrarClienteComponent implements OnInit {
         this.novoOrcamentoService.configValidade = r;
       }
     }).catch((e) => {
+      console.log("erro");
       this.alertaService.mostrarErroInternet(e);
     })
   }
@@ -120,7 +121,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.usuario.idVendedor = this.usuario.nome;
       this.buscarParceirosPorVendedor();
-      if(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro){
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
         this.form.controls.Parceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         this.buscarVendedoresDoParceiro();
       }
@@ -143,10 +144,12 @@ export class CadastrarClienteComponent implements OnInit {
 
   buscarVendedoresDoParceiro(): void {
     let parceiro: string;
+
     parceiro = this.form.controls.Parceiro.value;
-    if (!!this.form.controls.Parceiro.value) {
-      parceiro = this.form.controls.Parceiro.value;
-    }
+    // if (!!this.form.controls.Parceiro.value) {
+      //   parceiro = this.form.controls.Parceiro.value;
+      // }
+      if(parceiro == null || parceiro == "" || parceiro == undefined) return;
 
     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
@@ -165,7 +168,9 @@ export class CadastrarClienteComponent implements OnInit {
         if (r != null) {
           this.lstParceiro = this.montarListaParaSelectItem(r);
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e)
+      });
       return;
     }
 
@@ -179,10 +184,11 @@ export class CadastrarClienteComponent implements OnInit {
 
   montarListaParaSelectItem(lista: Array<any>): SelectItem[] {
     let listaResponse: SelectItem[] = [];
-
     lista.forEach(x => {
-      let item: SelectItem = { label: x.nome, value: x.nome };
-      listaResponse.push(item);
+      if (x != null){
+        let item: SelectItem = { label: x.nome, value: x.nome };
+        listaResponse.push(item);
+      }
     });
 
     return listaResponse;
@@ -263,7 +269,7 @@ export class CadastrarClienteComponent implements OnInit {
       else { this.form.controls.Parceiro.setErrors(null); }
     }
 
-    if(this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR){
+    if (this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR) {
       this.form.controls.VendedorParceiro.setValue(null);
     }
 

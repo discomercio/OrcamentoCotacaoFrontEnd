@@ -113,7 +113,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.produtoComboDto = r;
         this.carregandoProds = false;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregandoProds = false;
+    });
   }
 
   adicionarProduto(): void {

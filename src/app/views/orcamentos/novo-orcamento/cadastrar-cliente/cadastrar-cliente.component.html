@@ -63,7 +63,7 @@
             <div *ngIf="tipoUsuario == constantes.GESTOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedor">Vendedor</label>
                 <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione" formControlName="Vendedor"
-                    (onChange)="buscarParceirosPorVendedor()">
+                    (onChange)="buscarParceirosPorVendedor()" [showClear]="true">
                 </p-dropdown>
                 <small class="p-error"
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Vendedor')">{{mensagemErro}}</small>
@@ -72,7 +72,7 @@
                 class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="parceiro">Parceiro</label>
                 <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione" formControlName="Parceiro"
-                    (onChange)="buscarVendedoresDoParceiro()">
+                    (onChange)="buscarVendedoresDoParceiro()" [showClear]="true">
                 </p-dropdown>
                 <small class="p-error"
                                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
@@ -80,7 +80,7 @@
             <div></div>
             <div *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedorParceiro">Vendedor do parceiro</label>
-                <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
+                <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione" [showClear]="true"
                     formControlName="VendedorParceiro">
                 </p-dropdown>
                 <!-- <small class="p-error"
