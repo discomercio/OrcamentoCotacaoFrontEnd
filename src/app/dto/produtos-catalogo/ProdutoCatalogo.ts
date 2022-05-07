@@ -9,7 +9,7 @@ export class ProdutoCatalogo{
     Nome:string;
     Fabricante: string;
     Descricao:string;
-    Ativo:string;
+    Ativo: boolean;
     campos: ProdutoCatalogoItem[];
     imagens: ProdutoCatalogoImagem[];
 }

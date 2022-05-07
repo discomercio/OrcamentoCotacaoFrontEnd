@@ -23,6 +23,10 @@ export class ProdutoCatalogoService {
     return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo`);
   }
 
+  buscarProdutosAtivos(): Observable<ProdutoCatalogo[]> {
+    return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo/ativos`);
+  }
+
   buscarPorCodigo(codigo): Observable<ProdutoCatalogo[]> {
     return this.http.get<ProdutoCatalogo[]>(`${environment.apiUrl}produtocatalogo/codigo/${codigo}`);
   }

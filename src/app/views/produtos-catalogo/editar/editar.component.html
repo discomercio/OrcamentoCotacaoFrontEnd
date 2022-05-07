@@ -39,8 +39,9 @@
     <div class="p-col-12">
         <div class="card">
 
-            <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características do
-                Produto</h4>
+            <h4 style="color: #007BFF">
+                <i class="fa fa-info-circle" style="font-size:36px"></i>
+                &nbsp;Características do Produto</h4>
         </div>
     </div>
 </div>
@@ -67,7 +68,7 @@
                         <div class="p-field">
                             <input id="fabricante" name="descricao" type="text" pInputText placeholder="Fabricante"
                                 formControlName="fabricante"
-                                value="{{produtoDetalhe.Fabricante}} - {{produto[0]?.fabricanteNome}}"
+                                value="{{produtoDetalhe.Fabricante}}"
                                 disabled="true" />
                         </div>
                         <small class="p-error"
@@ -82,7 +83,7 @@
                         <div class="p-field">
                             <label class="p-text-bold">Descrição:</label>
                             <input id="nome" name="nome" type="text" pInputText placeholder="Nome do Produto"
-                                formControlName="nome" value="{{produtoDetalhe.Nome}}" />
+                                formControlName="nome" [(ngModel)]="produtoDetalhe.Nome" />
                         </div>
                         <small class="p-error"
                             *ngIf="validacaoFormularioService.verificaCampo(form,'nome')">{{mensagemErro}}</small>
@@ -91,7 +92,7 @@
                             <label for="descricao" class="p-text-bold">Descrição Completa:</label>
                             <input id="descricao" name="descricao" type="text" pInputText
                                 placeholder="Descrição completa" formControlName="descricao"
-                                value="{{produtoDetalhe.Descricao}}" />
+                                [(ngModel)]="produtoDetalhe.Descricao" />
                         </div>
                         <small class="p-error"
                             *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
@@ -140,8 +141,8 @@
                                 </p-inputSwitch>
                             </div>
                             <div class="p-col-5" style="display: inline-block;vertical-align: middle;">
-                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="label" optionLabel="label"
-                                    placeholder="Selecione" [(ngModel)]="produtosParaTela[i].valorPropriedade" [showClear]="true">
+                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="value" optionLabel="label"
+                                    placeholder="Selecione" [(ngModel)]="produtosParaTela[i].idValorPropriedadeOpcao" [showClear]="true">
                                 </p-dropdown>
                             </div>
                         </div>

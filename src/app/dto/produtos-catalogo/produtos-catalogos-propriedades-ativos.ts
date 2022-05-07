@@ -12,4 +12,5 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     ordem:number;
     propriedadeOculta:boolean;
     propriedadeOcultaItem:boolean;
+    idTipoCampo: string;
 }

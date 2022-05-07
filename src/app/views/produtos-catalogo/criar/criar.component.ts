@@ -54,7 +54,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.buscarPropriedades();
     this.buscarOpcoes();
     this.buscarFabricantes();
-    this.produto.Ativo = 'true';
+    this.produto.Ativo = true
     this.urlUpload = this.produtoService.urlUpload;
     this.imgUrl = this.produtoService.imgUrl;
   }
