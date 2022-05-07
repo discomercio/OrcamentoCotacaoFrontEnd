@@ -147,9 +147,11 @@ export class CadastrarClienteComponent implements OnInit {
 
     parceiro = this.form.controls.Parceiro.value;
     // if (!!this.form.controls.Parceiro.value) {
-      //   parceiro = this.form.controls.Parceiro.value;
-      // }
-      if(parceiro == null || parceiro == "" || parceiro == undefined) return;
+    //   parceiro = this.form.controls.Parceiro.value;
+    // }
+    if (parceiro == null || parceiro == "" || parceiro == undefined) return;
+
+    if(parceiro == this.constantes.SEM_INDICADOR) return;
 
     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
@@ -160,6 +162,7 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   buscarParceirosPorVendedor(): void {
+
     let vendedor: string = this.form.controls.Vendedor.value;
     let loja: string = this.usuario.loja;
 
@@ -185,7 +188,7 @@ export class CadastrarClienteComponent implements OnInit {
   montarListaParaSelectItem(lista: Array<any>): SelectItem[] {
     let listaResponse: SelectItem[] = [];
     lista.forEach(x => {
-      if (x != null){
+      if (x != null) {
         let item: SelectItem = { label: x.nome, value: x.nome };
         listaResponse.push(item);
       }
