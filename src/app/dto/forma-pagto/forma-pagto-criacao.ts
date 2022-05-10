@@ -1,4 +1,6 @@
 export class FormaPagtoCriacao{
+    id:number;
+    idOpcao:number;
     qtde_Parcelas: number;//Todos usam essa qtde
     op_av_forma_pagto: string; //meio pagto
     op_pu_forma_pagto: string;
@@ -24,5 +26,5 @@ export class FormaPagtoCriacao{
     c_forma_pagto: string;//Descrição da forma de pagto
     descricao_meio_pagto: string;
     tipo_parcelamento: number;
-    observacao:string;
+    observacoesGerais:string;
 }

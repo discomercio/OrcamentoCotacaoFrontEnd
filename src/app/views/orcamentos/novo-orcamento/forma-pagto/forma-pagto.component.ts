@@ -397,7 +397,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   validarFormasPagto(pagtoPrazo: FormaPagtoCriacao, pagtoAvista: FormaPagtoCriacao): boolean {
-    if (pagtoAvista.observacao && !pagtoAvista.tipo_parcelamento) {
+    if (pagtoAvista.observacoesGerais && !pagtoAvista.tipo_parcelamento) {
       this.alertaService.mostrarMensagem("Para incluir uma observação para pagamento á vista, " +
         "é necessário que seja selecionado a opção para pagamento á vista!");
       return false;

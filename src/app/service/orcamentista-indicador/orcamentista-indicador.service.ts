@@ -23,4 +23,8 @@ export class OrcamentistaIndicadorService {
     params = params.append('loja', loja);
     return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEindicador/BuscarParceiros', { params: params });
   }
+
+  buscarParceiroPorApelido(apelido:string):Observable<OrcamentistaIndicadorDto>{
+      return this.http.get<OrcamentistaIndicadorDto>(`${environment.apiUrl}OrcamentistaEindicador/parceiro-por-apelido/${apelido}`);
+  }
 }
