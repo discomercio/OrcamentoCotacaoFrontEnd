@@ -15,7 +15,6 @@ import { Router } from '@angular/router';
 import { Constantes } from 'src/app/utilities/constantes';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
@@ -23,19 +22,17 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { FormaPagtoComponent } from '../forma-pagto/forma-pagto.component';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { getLocaleDateTimeFormat } from '@angular/common';
 import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
 
 import { LojasService } from 'src/app/service/lojas/lojas.service';
-import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
 import { OpcoesComponent } from '../opcoes/opcoes.component';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
-import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
 import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
 import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-itens',
@@ -56,7 +53,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     private readonly autenticacaoService: AutenticacaoService,
     private readonly lojaService: LojasService,
     private readonly orcamentosService: OrcamentosService,
-    private readonly sweetalertService: SweetalertService) {
+    private readonly sweetalertService: SweetalertService, 
+    private location: Location) {
     super(telaDesktopService);
   }
 
@@ -539,8 +537,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     });
   }
 
-  visualizarOrcamento(id: number) {
-    this.mensagemService.showWarnViaToast("Estamos implementando!");
+  voltar(id: number) {
+    this.location.back();
     // this.router.navigate(["orcamentos/visualizar-orcamento", id]);
   }
 
