@@ -2,10 +2,12 @@ import {Component, Input, Output, EventEmitter } from '@angular/core';
 import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
-import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
-import { DropDownItem } from '../views/orcamentos/models/DropDownItem';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { Lojas } from '../dto/lojas/lojas';
+import { OrcamentosService } from './../service/orcamento/orcamentos.service';
+import {AutenticacaoService } from './../service/autenticacao/autenticacao.service';
+import {DropDownItem} from '../views/orcamentos/models/DropDownItem';
+import {FormBuilder, FormGroup} from '@angular/forms';
+import { Filtro } from 'src/app/dto/orcamentos/filtro';
+import {Lojas} from '../dto/lojas/lojas';
 
 @Component({
     selector: 'app-topbar',
@@ -18,17 +20,52 @@ export class AppTopBarComponent {
         public app: AppComponent,
         public appMain: AppMainComponent,
         private readonly autenticacaoService:  AutenticacaoService,
+        private readonly orcamentoService: OrcamentosService,
         private readonly router: Router,
         private fb: FormBuilder
     ) {}
     public lojaLogada : any;
+    parametro: string;
+    qtdMensagem: number;
     public form: FormGroup;
     lojas: Array<DropDownItem> = [];
+    filtro: Filtro = new Filtro();
 
     ngOnInit(): void {
         this.criarForm();
         this.populaComboLojas();
+        this.buscarRegistros();
+        setInterval(() => {
+          this.buscarRegistros();
+        }, 60000);                
     }
+
+    carregando: boolean = false;
+    buscarRegistros() {
+      this.filtro.Origem = "ORCAMENTOS";
+      this.filtro.Loja = this.autenticacaoService._lojaLogado;
+      this.carregando = true;
+      this.orcamentoService.buscarRegistros(this.filtro).toPromise().then((r) => {
+        if (r != null) {
+
+          var indice = 0;
+          this.qtdMensagem = 0;
+
+          // Contabiliza quantidade de mensagens pendentes
+          while (indice< r.length){
+            if (r[indice]['Mensagem'] == "Sim"){
+              this.qtdMensagem++;
+            }
+            indice++;
+          }
+
+          this.carregando = false;
+        }
+      }).catch((r) => {
+        this.carregando = false;
+        //this.alertaService.mostrarErroInternet(r);
+      });
+    }    
 
     criarForm() {
     this.form = this.fb.group({
