@@ -22,6 +22,7 @@ import { Location } from '@angular/common';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
 import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
+import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 
 
 @Component({
@@ -52,12 +53,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   tipoUsuario: string;
   idUsuarioRemetente: string;
   idUsuarioDestinatario: string;
-
+  public mascaraTelefone: string;
+  formataTelefone = new FormataTelefone(); 
+  
   @ViewChild("mensagem") mensagem: ElementRef;
 
   idOrcamentoCotacao:number;
   ngOnInit(): void {
-
+    this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
     console.log(this.idOrcamentoCotacao);
     // FIXO - Pois no momento que foi constrúido a mensageria, as informações carregadas na tela eram mocking. 
@@ -78,8 +81,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
       console.log(this.desabiltarBotoes);
     });
-    this.buscarOrcamento(1453);
-    this.buscarOpcoesOrcamento(1453);
+    this.buscarOrcamento(this.idOrcamentoCotacao);
     this.obterListaMensagem(2);
 
   }
@@ -94,9 +96,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   buscarOrcamento(id: number) {
     this.novoOrcamentoService.criarNovo();
-    this.orcamentoService.buscarOrcamento(id.toString()).toPromise().then(r => {
+    this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = r;
+        this.novoOrcamentoService.orcamentoCotacaoDto = r;
       }
     });
   }
@@ -146,15 +148,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
         this.obterListaMensagem(2);
         this.mensagem.nativeElement.value = '';
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
-
-
-  buscarOpcoesOrcamento(id: number) {
-    this.orcamentoOpcaoService.buscarOpcoesOrcamento(id.toString()).toPromise().then(r => {
-      if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = r;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }

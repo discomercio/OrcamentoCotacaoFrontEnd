@@ -359,7 +359,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   confirmaProdutoComposto(item: ProdutoOrcamentoDto): boolean {
-    let pc = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
+    let pc = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
     if (pc) {
       return true;
     }
@@ -372,7 +372,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let retorno: boolean = false;
     if (item) {
       if (this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
+        let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
         // produto.filhos.forEach(i => {
         //   if (i.alertas) {
         //     retorno = true;
@@ -381,7 +381,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         // });
       }
       if (!this.confirmaProdutoComposto(item)) {
-        let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
+        let produto = this.produtoComboDto?.produtosSimples.filter(f => f.produto == item.produto)[0];
         if (produto.alertas) {
           retorno = true;
           this.mensagemAlerta = produto.alertas;
@@ -398,7 +398,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
+      let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
       // produto.filhos.forEach(i => {
       //   if (i.estoque < item.qtde) {
@@ -409,7 +409,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
+      let produto = this.produtoComboDto?.produtosSimples.filter(f => f.produto == item.produto)[0];
       if (produto.estoque < item.qtde) {
         return true;
       }
@@ -423,7 +423,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
 
     if (this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
+      let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
       // produto.filhos.forEach(i => {
       //   if (i.qtdeMaxVenda < item.qtde) {
@@ -434,7 +434,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
-      let produto = this.produtoComboDto.produtosSimples.filter(f => f.produto == item.produto)[0];
+      let produto = this.produtoComboDto?.produtosSimples.filter(f => f.produto == item.produto)[0];
       if (produto.qtdeMaxVenda < item.qtde) {
         return true;
       }
@@ -532,10 +532,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
         this.novoOrcamentoService.criarNovo();
-        this.router.navigate(["orcamentos/listar", "orcamentos"]);
+        this.router.navigate(["orcamentos/aprovar-orcamento", r]);
       }
     }).catch((e) => {
-      debugger;
       this.alertaService.mostrarErroInternet(e)
     });
   }

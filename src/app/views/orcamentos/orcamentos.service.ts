@@ -23,10 +23,8 @@ export class OrcamentosService {
     return this.http.get<any>(`${environment.apiUrl}Orcamento/Status?origem=${origem}`);
   }
 
-  buscarOrcamento(id: string): Observable<ClienteOrcamentoCotacaoDto> {
-    let param = new HttpParams();
-    param = param.append("id", id);
-    return this.http.get<ClienteOrcamentoCotacaoDto>("src/assets/demo/data/banco/cliente.json");
+  buscarOrcamento(id: number): Observable<OrcamentoCotacaoResponse> {
+    return this.http.get<OrcamentoCotacaoResponse>(`${environment.apiUrl}Orcamento?id=${id}`);
   }
 
   enviarOrcamento(model:OrcamentoCotacaoResponse):Observable<number>{

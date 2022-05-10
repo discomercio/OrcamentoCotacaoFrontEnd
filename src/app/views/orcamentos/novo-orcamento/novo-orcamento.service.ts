@@ -36,6 +36,7 @@ export class NovoOrcamentoService {
   public configValidade: ValidadeOrcamento;
 
   criarNovo() {
+    this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
   }
