@@ -48,15 +48,11 @@
                         <td style="text-align: left">{{lista.Fabricante}}</td>
                         <td style="text-align: left">{{lista.Nome}}</td>
                         <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
-                        <td style="text-align: left">{{lista.Imagem}}</td>
+                        <td style="text-align: left">{{lista.IdProdutoCatalogoImagem != null ? 'Sim' : 'Não'}}</td>
                         <td style="text-align: center">{{lista.Ativo == true ? 'Sim': 'Não'}}</td>
                         <td style="text-align: right">
-                            <button pButton style="align-content: flex-end;" icon="fa fa-eye"
-                                (click)="visualizarClick(this.lista.Id)" pTooltip="Visualizar"></button>&nbsp;
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit"
                                 (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="fa fa-copy"
-                                (click)="copiarClick(this.lista.Id)" pTooltip="Copiar"></button>
                         </td>
                     </tr>
                 </ng-template>
