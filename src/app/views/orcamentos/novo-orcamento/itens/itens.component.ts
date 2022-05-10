@@ -29,7 +29,7 @@ import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
 import { OpcoesComponent } from '../opcoes/opcoes.component';
-import { OrcamentosService } from '../../orcamentos.service';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';

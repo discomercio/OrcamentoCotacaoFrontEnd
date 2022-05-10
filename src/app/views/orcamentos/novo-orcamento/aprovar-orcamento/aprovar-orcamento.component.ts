@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Component, VERSION, OnInit, Input, ViewChild, ElementRef } from "@angular/core";
-import { OrcamentosService } from 'src/app/views/orcamentos/orcamentos.service';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';

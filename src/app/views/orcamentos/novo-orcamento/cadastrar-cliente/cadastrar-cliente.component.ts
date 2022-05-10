@@ -8,7 +8,7 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { SelectItem } from 'primeng/api';
 import { Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentosService } from 'src/app/views/orcamentos/orcamentos.service';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { Constantes } from 'src/app/utilities/constantes';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
