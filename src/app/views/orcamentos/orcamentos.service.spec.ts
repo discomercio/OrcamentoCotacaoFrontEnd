@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 
-import { OrcamentosService } from './orcamentos.service';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 describe('OrcamentosService', () => {
   let service: OrcamentosService;

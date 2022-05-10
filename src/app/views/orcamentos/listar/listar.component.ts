@@ -11,7 +11,7 @@ import { DropDownItem } from '../models/DropDownItem';
 import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
-import { OrcamentosService } from '../orcamentos.service';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
