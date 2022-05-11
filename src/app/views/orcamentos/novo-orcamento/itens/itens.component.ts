@@ -530,7 +530,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
         this.novoOrcamentoService.criarNovo();
-        this.router.navigate(["orcamentos/aprovar-orcamento", r]);
+        this.router.navigate(["orcamentos/listar/orcamentos"]);
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e)
