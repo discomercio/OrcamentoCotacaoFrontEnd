@@ -4,18 +4,19 @@
             <h4>Downloads</h4>
 
             <div class="p-field p-d-flex p-jc-end p-mt-5">
-                <div class="p-col-2"><button pButton pRipple label="Upload" icon="pi pi-upload" *ngIf="!ehArquivo && isAutorizado"
+                <button pButton pRipple label="{{!this.ehUpload ? 'Upload' : 'Cancelar'}}"
+                    icon="{{!this.ehUpload ? 'pi pi-upload': 'pi pi-times'}}" *ngIf="!ehArquivo && isAutorizado"
                     class="p-as-end p-mr-2" (click)="uploadClick();"
-                    [ngClass]="{'p-button-icon-only':!telaDesktop}"></button></div>
-                <div class="p-col-4"><button pButton pRipple label="Nova pasta" icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-minus'}}"
-                    *ngIf="!ehArquivo && isAutorizado" class="p-as-end" (click)="novaPastaClick()"
-                    [ngClass]="{'p-button-icon-only':!telaDesktop, 'altura':!telaDesktop}"></button></div>
-                <!-- <button pButton pRipple label="Baixar Arquivo" icon="pi pi-download" *ngIf="ehArquivo" class="p-as-end"
-                    (click)="downloadClick()" [ngClass]="{'p-button-icon-only':!telaDesktop, 'altura':!telaDesktop}"></button>&nbsp; -->
-                <div class="p-col-2"><button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="isAutorizado && !edicao" class="p-as-end"
-                    (click)="editarClick()" [ngClass]="{'p-button-icon-only':!telaDesktop}"></button></div>
-                    <div class="p-col-2"><button pButton pRipple label="Cancelar" icon="pi pi-times" *ngIf="isAutorizado && edicao" class="p-as-end p-button-outlined"
-                    (click)="editarClick()" [ngClass]="{'p-button-icon-only':!telaDesktop}"></button></div>
+                    [ngClass]="{'p-button-icon-only':!telaDesktop, 'p-button-outlined':this.ehUpload}"></button>
+                <button pButton pRipple label="{{!this.novaPasta ? 'Nova pasta': 'Cancelar'}}"
+                    icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}" *ngIf="!ehArquivo && isAutorizado"
+                    class="p-as-end" (click)="novaPastaClick()"
+                    [ngClass]="{'p-button-icon-only':!telaDesktop, 'altura':!telaDesktop, 'p-button-outlined':this.novaPasta}"></button>&nbsp;
+                <button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="isAutorizado && !edicao"
+                    class="p-as-end" (click)="editarClick()" [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" *ngIf="isAutorizado && edicao"
+                    class="p-as-end p-button-outlined" (click)="editarClick()"
+                    [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
             </div>
             <form [formGroup]="form">
                 <div class="p-col-12 p-d-inline-flex p-fluid p-grid p-ai-center" *ngIf="this.novaPasta">
@@ -79,43 +80,31 @@
             <p-treeTable [value]="files2" [columns]="cols" selectionMode="single" [(selection)]="selectedFiles2"
                 dataKey="key">
                 <ng-template pTemplate="header" let-columns>
-                    <tr>
-                        <th *ngFor="let col of columns" [ngStyle]="{'display': col.visible}">
+                    <tr *ngIf="telaDesktop">
+                        <th *ngFor="let col of columns" [ngStyle]="{'display': col.visible}"
+                            [ngClass]="{'p-col-5': col.field == 'name', 'p-col-2': col.field == 'size', 'p-col-3': col.field == 'descricao', 'p-col-2 p-text-center': col.field == 'acoes'}">
                             {{col.header}}
                         </th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-rowNode let-rowData="rowData" let-columns="columns">
-                    <a *ngIf="rowData.type == 'File'" (click)="downloadSelecionado(rowData)">                        
-                        <tr [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode" (click)="controlaBotoes(rowData)">
-                            <td *ngFor="let col of columns; let i = index"
-                                [ngClass]="{'p-text-bold': col.field === 'name' && rowData.type == 'Folder', 'p-text-italic': rowData.type == 'File'}"
-                                [ngStyle]="{'display': col.visible}" style="cursor: pointer;color: blue;text-decoration: underline;">
-                                <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
-                                <span *ngIf="i == 0 && rowData.type == 'Folder'" class="p-tree-node-icon"><i
-                                        class="pi pi-folder"></i></span>
-                                <span *ngIf="i == 0 && rowData.type == 'File'" class="p-tree-node-icon">
-                                <i class="pi pi-file"></i>
-                                </span>
-                                
-                                    {{rowData[col.field]}}
-
-                            </td>
-                        </tr>
-                    </a>
-                    <tr *ngIf="rowData.type != 'File'" [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode" (click)="controlaBotoes(rowData)">
+                    <tr [ttRow]="rowNode" [ttRow]="rowNode" [ttSelectableRow]="rowNode"
+                        (click)="controlaBotoes(rowData)">
                         <td *ngFor="let col of columns; let i = index"
                             [ngClass]="{'p-text-bold': col.field === 'name' && rowData.type == 'Folder', 'p-text-italic': rowData.type == 'File'}"
                             [ngStyle]="{'display': col.visible}">
                             <p-treeTableToggler [rowNode]="rowNode" *ngIf="i == 0"></p-treeTableToggler>
                             <span *ngIf="i == 0 && rowData.type == 'Folder'" class="p-tree-node-icon"><i
-                                    class="pi pi-folder"></i></span>
-                            <span *ngIf="i == 0 && rowData.type == 'File'" class="p-tree-node-icon">
-                            <i class="pi pi-file"></i>
-                            </span>
-                            
-                                {{rowData[col.field]}}
-
+                                    class="pi pi-folder"></i>&nbsp;</span>
+                            <span *ngIf="i == 0 && rowData.type == 'File'" class="p-tree-node-icon"><i
+                                    class="pi pi-file"></i>&nbsp;</span>
+                            {{rowData[col.field]}}
+                            <div *ngIf="rowData.type == 'File' && col.field == 'acoes'" class="p-text-center">
+                                <button pButton pRipple label="Download" icon="pi pi-download"
+                                     class="p-as-end p-mr-2"
+                                    (click)="downloadSelecionado(rowData)"
+                                    [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
+                            </div>
                         </td>
                     </tr>
                 </ng-template>

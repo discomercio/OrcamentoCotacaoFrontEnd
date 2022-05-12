@@ -71,13 +71,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       { field: 'name', header: 'Nome' },
       { field: 'size', header: 'Tamanho' },
       { field: 'descricao', header: 'Descrição' },
-      { field: 'key', header: 'Id', visible: 'none' }
+      { field: 'key', header: 'Id', visible: 'none' },
+      { field: 'acoes', header: 'Ações' }
     ];
   }
 
-  public controlaBotoes(rowData:any) {
-    
-    if(!this.selectedFiles2){
+  public controlaBotoes(rowData: any) {
+
+    if (!this.selectedFiles2) {
       this.edicao = false;
     }
 
@@ -102,7 +103,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   novaPastaClick() {
-    // console.log('novaPastaClick');
 
     if (!!this.selectedFiles2 == false) {
       this.mensagemService.showWarnViaToast("Selecione uma pasta raiz onde queira criar a nova pasta!");
@@ -129,21 +129,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   editarSalvarClick() {
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
-
     this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then((r) => {
-      //console.log(r);
-      //if (r != null) {
       this.mensagemService.showSuccessViaToast("Salvo com sucesso");
       this.editarItem();
       this.edicao = false;
-      //this.form.reset();
-      //}
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   editarItem() {
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     if (this.selectedFiles2) {
       var key = this.selectedFiles2.data.key;
@@ -155,14 +148,12 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       }
       //2º Nivel
       for (var i = 0; i <= this.files2[0].children.length - 1; i++) {
-        //console.log(this.files2[0].children[i].data.name);
         if (this.files2[0].children[i].data.key == key) {
           this.files2[0].children[i].data.name = this.form.controls.txtNome.value;
           this.files2[0].children[i].data.descricao = this.form.controls.txtDescricao.value == null ? "" : this.form.controls.txtDescricao.value;
         }
         //3º Nivel
         for (var c = 0; c <= this.files2[0].children[i].children.length - 1; c++) {
-          //console.log(this.files2[0].children[i].children[c].data.name);
           if (this.files2[0].children[i].children[c].data.key == key) {
             this.files2[0].children[i].children[c].data.name = this.form.controls.txtNome.value;
             this.files2[0].children[i].children[c].data.descricao = this.form.controls.txtDescricao.value == null ? "" : this.form.controls.txtDescricao.value;
@@ -171,19 +162,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       }
       this.files2 = [...this.files2];
     }
-  }
-
-  downloadSelecionado(event){
-    this.downloadsService.download(event.key).subscribe((response: any) => {
-      let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
-      const url = window.URL.createObjectURL(blob);
-      fileSaver.saveAs(blob, event.name);
-      this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
-      this.edicao = false;
-      this.novaPasta = false;
-      this.ehUpload = false;
-    }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
-    return;
   }
 
   downloadClick() {
@@ -224,16 +202,12 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       return;
     }
     this.sweetalertService.confirmarAprovacao("Tem certeza que deseja excluir?", "").subscribe(result => {
-      if(!result) return;
+      if (!result) return;
       else this.concluirExclusao();
     });
-    
-
-
-    
   }
 
-  concluirExclusao(){
+  concluirExclusao() {
     if (this.selectedFiles2.hasOwnProperty('children') && this.selectedFiles2.children.length > 0) {
       this.mensagemService.showWarnViaToast("Não é possivel excluir pastas que possuem arquivos!");
       return;
@@ -258,24 +232,19 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       var key = this.selectedFiles2.data.key;
 
       for (var i = 0; i <= this.files2[0].children.length - 1; i++) {
-        //console.log(this.files2[0].children[i].data.name);
-
         for (var c = 0; c <= this.files2[0].children[i].children.length - 1; c++) {
-          //console.log(this.files2[0].children[i].children[c].data.name);
-
           if (this.files2[0].children[i].children[c].data.key == key) {
             this.files2[0].children[i].children.splice(c, 1);
           }
         }
       }
-
-      this.files2 = [...this.files2];
     }
+    this.edicao = false;
+    this.files2 = [...this.files2];
+    this.buscarPastas();
   }
 
   addPastaTable() {
-    //console.log('addPastaTable');
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
 
     this.downloadsService.novaPasta(this.form.controls.pasta.value, this.selectedFiles2.data.key).toPromise().then(r => {
       if (r != null) {
@@ -309,9 +278,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   addArquivoTable(id, nome, tamanho, descricao) {
-    //console.log('addArquivoTable');
-    //if (!this.validacaoFormGroup.validaForm(this.form)) return;
-
     let novoArquivoTree: TreeNode = {
       data: {
         "name": "",
@@ -341,7 +307,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
 
   onBeforeUpload(event) {
-    //console.log('onBeforeUpload');
     event.formData.append('idPai', this.selectedFiles2.data.key);
     event.formData.append('descricao', this.form.controls.descricaoPasta.value);
   }
@@ -373,6 +338,19 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     }
 
     return sOut;
+  }
+
+  downloadSelecionado(event) {
+    this.downloadsService.download(event.key).subscribe((response: any) => {
+      let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+      fileSaver.saveAs(blob, event.name);
+      this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+      this.edicao = false;
+      this.novaPasta = false;
+      this.ehUpload = false;
+    }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
+    return;
   }
 
 }
