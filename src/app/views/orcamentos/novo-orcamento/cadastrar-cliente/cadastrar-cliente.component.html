@@ -33,6 +33,14 @@
                 <label for="telefone">Telefone</label>
                 <input id="telefone" type="text" pInputText placeholder="" mask="{{mascaraTelefone}}"
                     placeholder="(00) 0000-0000" formControlName="Telefone" />
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'Telefone')">
+                    <small class="p-error" *ngIf="form.controls.Telefone.errors?.required">
+                        {{mensagemErro}}
+                    </small>
+                    <small class="p-error" *ngIf="form.controls.Telefone.errors?.minlength">
+                        Telefone inválido!
+                    </small>
+                </div>
             </div>
             <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup p-pt-0">
                 <p-checkbox name="concorda" value="checkedWhatsapp" [binary]="false" inputId="concorda"
@@ -75,17 +83,18 @@
                     (onChange)="buscarVendedoresDoParceiro()" [showClear]="true">
                 </p-dropdown>
                 <small class="p-error"
-                                    *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
+                    *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
             </div>
             <div></div>
-            <div *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+            <div *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0"
+                class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedorParceiro">Vendedor do parceiro</label>
-                <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione" [showClear]="true"
-                    formControlName="VendedorParceiro">
+                <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
+                    [showClear]="true" formControlName="VendedorParceiro">
                 </p-dropdown>
                 <!-- <small class="p-error"
                                         *ngIf="validacaoFormularioService.verificaCampo(form,'perfil')">{{mensagemErro}}</small> -->
-                
+
             </div>
 
         </div>
@@ -103,10 +112,9 @@
             </div>
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>
-                <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true" [readonlyInput]="true"
-                [disabled]="form.controls.EntregaImediata.value"></p-calendar>
-                <small class="p-error"
-                    *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
+                <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true"
+                    [readonlyInput]="true" [disabled]="form.controls.EntregaImediata.value"></p-calendar>
+                <small class="p-error" *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
             </div>
         </div>
 
