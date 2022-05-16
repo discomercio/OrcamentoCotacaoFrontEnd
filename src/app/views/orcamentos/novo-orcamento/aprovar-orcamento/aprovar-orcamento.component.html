@@ -223,13 +223,15 @@
                 </div>
             </div>
         </div>
-
+        
         <div *ngIf="desabiltarBotoes" class="p-col-12">
             <button pButton pRipple label="Voltar" icon="pi pi-arrow-right" (click)="voltar()"></button>
         </div>
 
     </div>
 </div>
+<app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
+</app-mensageria>
 <style>
     .form-rounded {
         border-radius: 1rem;

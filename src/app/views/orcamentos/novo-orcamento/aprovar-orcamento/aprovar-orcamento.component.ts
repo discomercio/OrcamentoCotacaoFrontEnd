@@ -1,6 +1,6 @@
 
 import { environment } from 'src/environments/environment';
-import { Injectable } from '@angular/core';
+import { AfterViewInit, Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -29,6 +29,8 @@ import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { MensageriaComponent } from 'src/app/views/mensageria/mensageria.component';
 
 
 @Component({
@@ -36,21 +38,19 @@ import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indic
   templateUrl: './aprovar-orcamento.component.html',
   styleUrls: ['./aprovar-orcamento.component.scss']
 })
-export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit {
+export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
 
   constructor(private readonly orcamentoService: OrcamentosService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
     telaDesktopService: TelaDesktopService,
     private readonly alertaService: AlertaService,
-    private readonly orcamentoOpcaoService: OrcamentoOpcaoService,
     private readonly sweetalertService: SweetalertService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly mensagemService: MensagemService,
-    private readonly orcamentoCotacaoMensagemService: MensageriaService,
     private fb: FormBuilder,
     private location: Location,
     private readonly formaPagtoService: FormaPagtoService,
-    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) {
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
+    private readonly autenticacaoService: AutenticacaoService) {
     super(telaDesktopService);
   }
   public form: FormGroup;
@@ -58,22 +58,27 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   dataUtils: DataUtils = new DataUtils();
 
   vendedor: boolean;
-  tipoUsuario: string;
   idUsuarioRemetente: string;
   idUsuarioDestinatario: string;
   public mascaraTelefone: string;
   formataTelefone = new FormataTelefone();
+  usuarioLogado: Usuario;
 
-  @ViewChild("mensagem") mensagem: ElementRef;
+  @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
 
   idOrcamentoCotacao: number;
   ngOnInit(): void {
     this.formataTelefone = FormataTelefone.mascaraTelefoneTexto;
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
-    
-    // FIXO - Pois no momento que foi constrúido a mensageria, as informações carregadas na tela eram mocking. 
-    this.vendedor = true;
-    // this.idOrcamentoCotacao = "2";
+
+    if (this.autenticacaoService._usuarioLogado) {
+      this.vendedor = true;
+      // debugger;
+      // console.log(this.mensagem);
+      // this.mensagem.idOrcamentoCotacao = this.idOrcamentoCotacao;
+    }
+
+
 
     if (this.vendedor) {
       this.idUsuarioRemetente = "50197";
@@ -83,18 +88,27 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.idUsuarioDestinatario = "50197";
     }
 
-    this.orcamentoCotacaoMensagemService.marcarComoLida(this.idOrcamentoCotacao.toString(), this.idUsuarioRemetente);
-
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
-      console.log(this.desabiltarBotoes);
     });
+    
     this.buscarOrcamento(this.idOrcamentoCotacao);
-    this.obterListaMensagem(2);
     this.buscarFormasPagto();
+  }
 
-    
-    
+  ngAfterViewInit() {
+    // debugger;
+    // this.usuario.nome = this.autenticacaoService._usuarioLogado;
+    // this.usuario.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    // this.usuario.loja = this.autenticacaoService._lojaLogado;
+    // this.usuario.idVendedor = this.autenticacaoService._vendedor;
+    // this.usuario.idParceiro = this.autenticacaoService._parceiro;
+    // this.usuario.unidadeNegocio = this.autenticacaoService.unidade_negocio;
+    // this.usuario.permissoes = this.autenticacaoService._permissoes;
+    //vamos setar os campos de remetente
+    this.mensagemComponente.idOrcamentoCotacao = this.idOrcamentoCotacao;
+    this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
+
   }
 
   @Input() desabiltarBotoes: boolean;
@@ -110,21 +124,20 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
-        console.log(this.novoOrcamentoService.orcamentoCotacaoDto);
-        if(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro){
+        if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
       }
     });
   }
 
-razaoSocialParceiro:string;
-  buscarParceiro(apelido){
- this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) =>{
-   if(r != null){
-     this.razaoSocialParceiro = r.razaoSocial;
-   }
- })
+  razaoSocialParceiro: string;
+  buscarParceiro(apelido) {
+    this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) => {
+      if (r != null) {
+        this.razaoSocialParceiro = r.razaoSocial;
+      }
+    })
   }
 
   formaPagamento: FormaPagto[] = new Array();
@@ -135,7 +148,7 @@ razaoSocialParceiro:string;
       comIndicacao = 1;
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
-    orcamento.listaOrcamentoCotacaoDto.forEach(opcao=>{
+    orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
       opcao.formaPagto.forEach(p => {
         formaPagtoOrcamento.push(p);
       })
@@ -151,36 +164,9 @@ razaoSocialParceiro:string;
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
   }
 
-  obterListaMensagem(idOrcamentoCotacao: number) {
 
-    this.orcamentoCotacaoMensagemService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-      if (r != null) {
 
-        this.listaMensagens = r;
 
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
-
-  enviarMensagem() {
-
-    let msg = new MensageriaDto();
-
-    msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
-    msg.Mensagem = this.mensagem.nativeElement.value;
-    msg.IdTipoUsuarioContextoRemetente = "1";
-    msg.IdTipoUsuarioContextoDestinatario = "1";
-    msg.IdUsuarioRemetente = this.idUsuarioRemetente;
-    msg.IdUsuarioDestinatario = this.idUsuarioDestinatario;
-
-    this.orcamentoCotacaoMensagemService.enviarMensagem(msg).toPromise().then((r) => {
-      if (r != null) {
-        this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-        this.obterListaMensagem(2);
-        this.mensagem.nativeElement.value = '';
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
 
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {
@@ -201,7 +187,7 @@ razaoSocialParceiro:string;
   }
 
   voltar() {
-    this.novoOrcamentoService.orcamentoCotacaoDto=new OrcamentoCotacaoResponse();
+    this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.location.back();
   }
 

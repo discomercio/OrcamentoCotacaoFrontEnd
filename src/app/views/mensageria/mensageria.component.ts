@@ -37,7 +37,6 @@ export class MensageriaComponent implements OnInit {
   @ViewChild("mensagem") mensagem: ElementRef;
 
   ngOnInit(): void {
-    this.obterListaMensagem(this.idOrcamentoCotacao);
   }
 
   obterListaMensagem(idOrcamentoCotacao: number) {

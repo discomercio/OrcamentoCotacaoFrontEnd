@@ -41,7 +41,6 @@ import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedid
                 path: '', component: AppComponent,
                 children: [
                     { path: 'account/login', component: LoginComponent, },
-                    { path: 'orcamentos/aprovar-orcamento/:id', component: AprovarOrcamentoComponent },
                     { path: '', component: AppMainComponent, canActivate: [LoginGuard], children: [
 
                             // Orçamentos
