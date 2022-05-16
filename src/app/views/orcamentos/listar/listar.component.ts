@@ -80,6 +80,8 @@ export class OrcamentosListarComponent implements OnInit {
   minDate = new Date(this.d.setDate(this.d.getDate() - this.qtdDiasDtIni));
   maxDate = new Date();
 
+  first: number = 0;
+
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
@@ -169,11 +171,15 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
   popularTela() {
+    this.setarPaginacao();
     this.buscarStatus();
     this.buscarVendedores();
     this.buscarParceiros();
     this.buscarMensagens();
   }
+  setarPaginacao() {
+    this.first = 0;
+}
 
   buscarStatus() {
     this.cboStatus = [];

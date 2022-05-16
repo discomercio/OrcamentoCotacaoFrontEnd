@@ -75,7 +75,7 @@
 
                 </div>
                 <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
-                    [responsive]="true" responsiveLayout="stack" breakpoint="680px"
+                    [responsive]="true" responsiveLayout="stack" breakpoint="680px" [(first)]="first"
                     styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
                     [paginator]="true" [filterDelay]="0"
                     [globalFilterFields]="['NumeroOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
