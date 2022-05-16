@@ -229,7 +229,7 @@ export class CadastrarClienteComponent implements OnInit {
       Vendedor: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedor, [Validators.required]],
       Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
       Parceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.parceiro],
-      Telefone: [clienteOrcamentoCotacao.telefone],
+      Telefone: [clienteOrcamentoCotacao.telefone, [Validators.required, Validators.maxLength(11), Validators.minLength(7)]],
       Concorda: this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp,
       VendedorParceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
