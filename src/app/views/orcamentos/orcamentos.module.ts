@@ -34,6 +34,7 @@ import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 import { MensageriaComponent } from '../mensageria/mensageria.component';
+import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 
 
 @NgModule({
@@ -47,7 +48,8 @@ import { MensageriaComponent } from '../mensageria/mensageria.component';
     NovoOrcamentoComponent,
     FormaPagtoComponent,
     OpcoesComponent,
-    MensageriaComponent
+    MensageriaComponent,
+    AprovacaoOrcamentoClienteComponent
   ],
   imports: [
     // OrcamentosRoutingModule,
