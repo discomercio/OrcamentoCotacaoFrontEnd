@@ -71,42 +71,22 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.formataTelefone = FormataTelefone.mascaraTelefoneTexto;
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
 
-    if (this.autenticacaoService._usuarioLogado) {
-      this.vendedor = true;
-      // debugger;
-      // console.log(this.mensagem);
-      // this.mensagem.idOrcamentoCotacao = this.idOrcamentoCotacao;
-    }
 
 
 
-    if (this.vendedor) {
-      this.idUsuarioRemetente = "50197";
-      this.idUsuarioDestinatario = "50025";
-    } else {
-      this.idUsuarioRemetente = "50025";
-      this.idUsuarioDestinatario = "50197";
-    }
+
+
 
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
-    
+
     this.buscarOrcamento(this.idOrcamentoCotacao);
     this.buscarFormasPagto();
+    this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
   }
 
   ngAfterViewInit() {
-    // debugger;
-    // this.usuario.nome = this.autenticacaoService._usuarioLogado;
-    // this.usuario.tipoUsuario = this.autenticacaoService.tipoUsuario;
-    // this.usuario.loja = this.autenticacaoService._lojaLogado;
-    // this.usuario.idVendedor = this.autenticacaoService._vendedor;
-    // this.usuario.idParceiro = this.autenticacaoService._parceiro;
-    // this.usuario.unidadeNegocio = this.autenticacaoService.unidade_negocio;
-    // this.usuario.permissoes = this.autenticacaoService._permissoes;
-    //vamos setar os campos de remetente
-    this.mensagemComponente.idOrcamentoCotacao = this.idOrcamentoCotacao;
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
 
   }
@@ -118,6 +98,22 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
   opcaoPagto: number;
+
+  buscarDadosParaMensageria(id: number) {
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
+        if (r != null) {
+          this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
+          this.mensagemComponente.idUsuarioRemetente = r.idUsuarioRemetente.toString();
+          this.mensagemComponente.idTipoUsuarioContextoRemetente = r.idTipoUsuarioContextoRemetente.toString();
+          this.mensagemComponente.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();
+          this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.idTipoUsuarioContextoDestinatario.toString();
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+  }
 
   buscarOrcamento(id: number) {
     this.novoOrcamentoService.criarNovo();
