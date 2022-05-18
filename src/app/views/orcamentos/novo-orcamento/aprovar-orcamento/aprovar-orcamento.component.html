@@ -199,7 +199,7 @@
         </div>
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-2">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
-                <div class="p-p-2">
+                <div class="p-p-2" *ngIf="novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais">
                     <label for="textarea">Observações gerais</label>
                     <textarea id="textarea" pInputTextarea
                         [(ngModel)]="novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais"
