@@ -537,7 +537,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     });
   }
 
-  voltar(id: number) {
+  voltar() {
     this.location.back();
     // this.router.navigate(["orcamentos/visualizar-orcamento", id]);
   }
