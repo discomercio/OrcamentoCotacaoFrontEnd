@@ -1,5 +1,5 @@
 export class ListaDto {
-    linhaBusca:string;
+    linhaBusca: string;
     NumeroOrcamento: string;
     NumPedido: string;
     Cliente_Obra: string;
@@ -11,6 +11,7 @@ export class ListaDto {
     VistoEm: string;
     Mensagem: string;
     DtCadastro: Date;
+    DtExpiracao: Date;
 }
 
 export class ListaDtoExport {

@@ -47,7 +47,7 @@ export class CadastrarClienteComponent implements OnInit {
 
   //listas
   public lstVendedores: SelectItem[] = [];
-  public lstVendedoresParceiros: SelectItem[] = [];;
+  public lstVendedoresParceiros: SelectItem[] = [];
   public lstParceiro: SelectItem[] = [];
   public lstEstado: SelectItem[] = [];
   lojasUsuario: SelectItem[] = [];
