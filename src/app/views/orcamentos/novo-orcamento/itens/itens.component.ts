@@ -78,7 +78,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   ngOnInit(): void {
 
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
-      this.router.navigate(["orcamentos/cadastrar-cliente"]);
+      this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
       return;
     }
 
@@ -538,8 +538,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   voltar() {
-    this.location.back();
-    // this.router.navigate(["orcamentos/visualizar-orcamento", id]);
+    
+    this.router.navigate(["orcamentos/cadastrar-cliente", "editar"]);
   }
 
   enviar() {

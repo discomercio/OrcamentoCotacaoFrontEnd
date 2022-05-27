@@ -50,7 +50,7 @@ import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/apr
                             {
                                 path: 'orcamentos', canActivate: [LoginGuard], children: [
                                     { path: "listar/:filtro", canActivate: [LoginGuard], component: OrcamentosListarComponent },
-                                    { path: "cadastrar-cliente", canActivate: [LoginGuard], component: CadastrarClienteComponent },
+                                    { path: "cadastrar-cliente/:filtro", canActivate: [LoginGuard], component: CadastrarClienteComponent },
                                     { path: "itens", canActivate: [LoginGuard], component: ItensComponent },
                                     { path: "select-prod", canActivate: [LoginGuard], component: SelectProdDialogComponent },
                                     { path: "visualizar-orcamento/:id", canActivate: [LoginGuard], component: VisualizarOrcamentoComponent },
@@ -75,7 +75,7 @@ import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/apr
                                     { path: 'listar', canActivate: [LoginGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
+                                    { path: 'propriedades/criar/', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
                                     { path: 'propriedades/listar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
                                     { path: 'propriedades/editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesEditarComponent },

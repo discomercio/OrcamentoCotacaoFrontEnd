@@ -28,7 +28,7 @@
                         "label": "Novo",
                         "icon": "pi pi-plus",
                         "routerLink": [
-                            "/orcamentos/cadastrar-cliente"
+                            "/orcamentos/cadastrar-cliente/novo"
                         ]
                     },
                     {

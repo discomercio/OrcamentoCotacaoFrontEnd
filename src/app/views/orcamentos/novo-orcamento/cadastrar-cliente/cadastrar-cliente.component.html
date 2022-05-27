@@ -43,9 +43,7 @@
                 </div>
             </div>
             <div class="p-field-checkbox p-col-12 p-lg-3 p-md-3 p-sm-3 p-inputgroup p-pt-0">
-                <p-checkbox name="concorda" value="checkedWhatsapp" [binary]="false" inputId="concorda"
-                    (onChange)="concordouWhatsapp()">
-                </p-checkbox>
+                <p-checkbox inputId="concorda" formControlName="Concorda" [binary]="true"></p-checkbox>
                 <label for="concorda">
                     Cliente concorda que a Unis pode enviar Whatsapp neste número
                 </label>
@@ -108,7 +106,7 @@
             </div>
             <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
                 <label class="p-d-block" for="entregaImediata">Entrega Imediata</label>
-                <p-inputSwitch id="entregaImediata" formControlName="EntregaImediata"></p-inputSwitch>
+                <p-inputSwitch id="entregaImediata" formControlName="EntregaImediata" (onChange)="entregaImediataOnChange()"></p-inputSwitch>
             </div>
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>

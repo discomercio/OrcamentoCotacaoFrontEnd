@@ -6,7 +6,7 @@ import { CepsService } from 'src/app/service/ceps/ceps.service';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { SelectItem } from 'primeng/api';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
@@ -35,14 +35,14 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
-    private readonly orcamentoService: OrcamentosService) { }
+    private readonly orcamentoService: OrcamentosService,
+    private readonly activatedRoute: ActivatedRoute) { }
 
   //uteis
   public mascaraTelefone: string;
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public constantes: Constantes = new Constantes();
-  checkedWhatsapp: boolean = false;
   usuario = new Usuario();
 
   //listas
@@ -60,6 +60,7 @@ export class CadastrarClienteComponent implements OnInit {
 
 
   ngOnInit(): void {
+    this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
@@ -72,6 +73,16 @@ export class CadastrarClienteComponent implements OnInit {
     this.verificaDataValidade();
 
     this.novoOrcamentoService.mostrarOpcoes = false;
+  }
+
+  verificarParam(param: any) {
+    if (param.filtro == "editar") return;
+    if (param.filtro == "novo") {
+      this.novoOrcamentoService.criarNovo();
+    }
+    if (param.filtro == "clone") {
+      //vamos criar montar os dados de cliente apena?
+    }
   }
 
   buscarConfigValidade() {
@@ -151,7 +162,7 @@ export class CadastrarClienteComponent implements OnInit {
     // }
     if (parceiro == null || parceiro == "" || parceiro == undefined) return;
 
-    if(parceiro == this.constantes.SEM_INDICADOR) return;
+    if (parceiro == this.constantes.SEM_INDICADOR) return;
 
     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
@@ -230,11 +241,11 @@ export class CadastrarClienteComponent implements OnInit {
       Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
       Parceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.parceiro],
       Telefone: [clienteOrcamentoCotacao.telefone, [Validators.required, Validators.maxLength(11), Validators.minLength(7)]],
-      Concorda: this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp,
       VendedorParceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro],
+      Concorda:[this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
-      EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata ? this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata : true],
+      EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata]
     });
   }
@@ -290,22 +301,13 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.checkedWhatsapp;
+    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
 
     this.router.navigate(["orcamentos/itens"]);
-  }
-
-  concordouWhatsapp(): void {
-    if (this.checkedWhatsapp) {
-      this.checkedWhatsapp = false;
-      return;
-    }
-
-    this.checkedWhatsapp = true;
   }
 
   dataEntrega = true;
@@ -319,5 +321,10 @@ export class CadastrarClienteComponent implements OnInit {
     this.form.controls.DataEntregaImediata.setErrors(null);
     this.dataEntrega = true;
     return true;
+  }
+
+  entregaImediataOnChange() {
+    let entrega = this.form.controls.EntregaImediata.value;
+    if (entrega) this.form.controls.DataEntregaImediata.setValue(null);
   }
 }
