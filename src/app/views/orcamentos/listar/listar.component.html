@@ -76,7 +76,7 @@
                                         [maxDate]="maxDate" (onSelect)="dtFim_onSelect();"></p-calendar>
                                 </div>
                             </div>
-                            <div
+                            <div *ngIf="parametro == 'ORCAMENTOS'"
                                 class="p-field p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
                                 <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                                     <label>Expirados</label>
@@ -105,7 +105,7 @@
                         </div>
                     </div>
                 </div>
-                <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [(selection)]="linhaSelecionada"
+                <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada"
                     [responsive]="true" responsiveLayout="stack" breakpoint="680px" [(first)]="first"
                     styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true"
                     [filterDelay]="0"
