@@ -15,4 +15,5 @@ export class OrcamentoCotacaoResponse {
     dataEntregaImediata: Date;
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
+    cadastradoPor:string;
 }

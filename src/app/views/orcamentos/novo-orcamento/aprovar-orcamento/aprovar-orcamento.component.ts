@@ -61,22 +61,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   idUsuarioRemetente: string;
   idUsuarioDestinatario: string;
   public mascaraTelefone: string;
-  formataTelefone = new FormataTelefone();
+  formataTelefone: FormataTelefone;
   usuarioLogado: Usuario;
 
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
 
   idOrcamentoCotacao: number;
   ngOnInit(): void {
-    this.formataTelefone = FormataTelefone.mascaraTelefoneTexto;
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
-
-
-
-
-
-
-
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
@@ -84,10 +76,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarOrcamento(this.idOrcamentoCotacao);
     this.buscarFormasPagto();
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+
   }
 
   ngAfterViewInit() {
-    this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
+    // this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
 
   }
 
@@ -120,6 +113,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        debugger;
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }

@@ -28,7 +28,7 @@
                             <div>
                                 <span class="p-text-bold">Telefone:</span>
                                 <span>
-                                    {{novoOrcamentoService.orcamentoCotacaoDto?.clienteOrcamentoCotacaoDto.telefone}}
+                                    {{stringUtils.formataTextoTelefone(novoOrcamentoService.orcamentoCotacaoDto?.clienteOrcamentoCotacaoDto.telefone)}}
                                 </span>
                             </div>
                             <div>
@@ -58,6 +58,11 @@
                                 <span class="p-text-bold">Vendedor Parceiro:</span>
                                 <span>
                                     {{novoOrcamentoService.orcamentoCotacaoDto?.vendedorParceiro}}</span>
+                            </div>
+                            <div>
+                                <span class="p-text-bold">Cadastrado Por:</span>
+                                <span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto?.cadastradoPor}}</span>
                             </div>
                         </div>
                     </div>

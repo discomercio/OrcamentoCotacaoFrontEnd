@@ -18,4 +18,20 @@ export class StringUtils {
             return "";
         return html.replace(/<[^>]*>?/gm, '');
     }
+
+    public static formataTextoTelefone(tel: string): string {
+        if (tel != undefined) {
+            let ddd: string = "(" + tel.slice(0, 2) + ")"
+            if (tel.length == 11) {
+                let inicio = " " + tel.substring(2, 7);
+                let fim = "-" + tel.substring(7);
+                return ddd + inicio + fim;
+            }
+            else {
+                let inicio = " " + tel.substring(2, 6);
+                let fim = "-" + tel.substring(6);
+                return ddd + inicio + fim;
+            }
+        }
+    }
 }
