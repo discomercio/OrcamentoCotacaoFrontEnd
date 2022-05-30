@@ -37,12 +37,30 @@ export class PublicoOrcamentoComponent implements OnInit {
       //TODO: BUSCAR ENVIRONMENT
       var usr = "PEDREIRA";
       var pwd = "XEROCRIX";
+      
         this.autenticacaoService.authLogin2(usr, pwd).toPromise().then((r) => {
         if (r != null) {
-          console.log(r);
-          this.carregando = false;
+          
+          if (!this.autenticacaoService.readToken(r.AccessToken)) {
+            //this.toast.showToast(eToast.error,"Ops! Tivemos um problema!")
+            return;
+          }
+  
+          if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
+            this.autenticacaoService.setarToken(r.AccessToken);
+            // this.autenticou = true;
+            return;
+          }
+  
+          this.autenticacaoService.setarToken(r.AccessToken);
+          // sessionStorage.setItem("lojaLogada", this.loja);
+          // sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
+          // this.router.navigate(['orcamentos/listar/orcamentos']);
+
+          //this.buscarOrcamentoPorGuid(this.guid);
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+          //this.carregando = false;
+        }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
@@ -52,7 +70,7 @@ export class PublicoOrcamentoComponent implements OnInit {
         this.orcamentosService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
           console.log(r);
-          this.carregando = false;
+          //this.carregando = false;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
