@@ -1,24 +1,26 @@
-/*import { Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, Router, CanActivateChild } from '@angular/router';
 import { Observable } from 'rxjs';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
-import { AutenticacaoService } from './autenticacao.service';
 
 @Injectable({ providedIn: 'root' })
-export class LoginGuard implements CanActivate, CanActivateChild {
+export class AuthGuard implements CanActivate {
     constructor(
         private autenticacaoService: AutenticacaoService,
-        private router: Router) { }
+        private router: Router
+        ) { }
 
     canActivate(
         route: ActivatedRouteSnapshot,
-        state: RouterStateSnapshot): boolean | Observable<boolean> | Promise<boolean> {
+        state: RouterStateSnapshot): 
+        boolean | Observable<boolean> | Promise<boolean> {
 
-        let estalogado = this.autenticacaoService.authEstaLogado();
-        if (!estalogado) {
+        if (!this.autenticacaoService.authEstaLogado()) {
             this.router.navigate(['account/login'])
             return false;
         }
+
         return true;
     }
 
@@ -29,4 +31,4 @@ export class LoginGuard implements CanActivate, CanActivateChild {
         return this.canActivate(childRoute, state);
     }
 
-}*/
+} 
