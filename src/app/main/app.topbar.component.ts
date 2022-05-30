@@ -34,10 +34,12 @@ export class AppTopBarComponent {
     ngOnInit(): void {
         this.criarForm();
         this.populaComboLojas();
-        this.buscarRegistros();
+        //this.buscarRegistros();
+        
+        /*
         setInterval(() => {
           this.buscarRegistros();
-        }, 60000);                
+        }, 60000);*/                
     }
 
     carregando: boolean = false;
