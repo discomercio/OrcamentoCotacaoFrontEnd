@@ -3,5 +3,5 @@ export class ProdutoCatalogoItem{
     IdProdutoCatalogoPropriedade:string;
     IdProdutoCatalogoPropriedadeOpcao:string;
     Valor:string;
-    Oculto: string;
+    Oculto: string|boolean;
 }

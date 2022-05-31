@@ -301,7 +301,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value == null? 0: this.form.controls.Concorda.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;

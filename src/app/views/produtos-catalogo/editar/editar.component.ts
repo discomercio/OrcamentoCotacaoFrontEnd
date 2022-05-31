@@ -269,10 +269,11 @@ console.clear();
     this.produtoService.atualizarProduto(produto).toPromise().then((r) => {
         if (r != null) {
             this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+            this.router.navigate(["//produtos-catalogo/listar"]);
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
 
-    this.router.navigate(["//produtos-catalogo/listar"]);
+   
   }
 
   lstPropriedades: any = [];

@@ -221,9 +221,8 @@ export class OrcamentosListarComponent implements OnInit {
     this.filtro.Origem = this.parametro;
     this.filtro.Loja = this.autenticacaoService._lojaLogado;
     this.carregando = true;
-
     this.orcamentoService.buscarRegistros(this.filtro).toPromise().then((r) => {
-      if (r != null) {
+      if (r != null && r.length > 0) {
         this.lstDto = r;
         this.montarLinhaBusca();
         this.lstDtoFiltrada = this.lstDto;
