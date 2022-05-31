@@ -77,6 +77,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.produtoService.buscarPropriedades().toPromise().then((r) => {
       if (r != null) {
         this.propriedades = r;
+       
         this.carregando = false;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
@@ -146,10 +147,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  onBeforeUpload($event): void {
-    //  $event.formData.append('idProdutoCalatogo', this.id);
-  }
-
   onUpload($event, id): void {
       var arquivo = $event.originalEvent.body.file;
 
@@ -206,12 +203,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
                     campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-','');
                     campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
                     campo.Valor = listaInput[i].value;
-                    campo.Oculto = document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked.toString();
+                    debugger;
+                    campo.Oculto = document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
                     prod.campos.push(campo);
-
-                    // console.log(`INPUT    > id: ${listaInput[i].id} - valor: ${listaInput[i].value} - placeholder: ${listaInput[i].placeholder}`);
-                    // console.log(`CHECKBOX > id: ${listaInput[i].id.replace('txt','chk')} - valor: ${document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked}`);
-                    // console.log('');
                 }
             }
 
@@ -225,12 +219,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
                         campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-','');
                         campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)}`;
                         campo.Valor = '';
-                        campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked.toString();
+                        debugger;
+                        campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
                         prod.campos.push(campo);
-
-                        // console.log(`DROPDOWN > id: ${listaDrop[d].id} - valor: ${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)} - ${listaOpt[i].innerText}`);
-                        // console.log(`CHECKBOX > id: ${listaDrop[d].id.replace('cbo','chk')} - valor: ${document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked}`);
-                        // console.log('');
                     }
                 }
             }
@@ -243,10 +234,13 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
             }
 
             this.produtoService.criarProduto(prod).toPromise().then((r) => {
-              if (r != null) {}
+              if (r != null) {
+                this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+                this.router.navigate(["//produtos-catalogo/listar"]);
+              }
             }).catch((r)=> this.alertaService.mostrarErroInternet(r));
 
-            this.router.navigate(["//produtos-catalogo/listar"]);
+            
         }
       }).catch();
 
