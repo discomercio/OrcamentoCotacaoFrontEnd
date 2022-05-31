@@ -194,16 +194,15 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
             prod.Ativo = this.produto.Ativo;
             prod.campos = [];
             prod.imagens = this.produto.imagens == null ? []  : this.produto.imagens;
-
             var listaInput = document.getElementsByTagName("input");
-            for(let i = 0; i < listaInput.length -1; i++) {
+
+            for(let i = 0; i < listaInput.length; i++) {
                 if(listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
                     campo = new ProdutoCatalogoItem();
                     campo.IdProdutoCatalogo = '-1';
                     campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-','');
                     campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
                     campo.Valor = listaInput[i].value;
-                    debugger;
                     campo.Oculto = document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
                     prod.campos.push(campo);
                 }
@@ -219,15 +218,11 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
                         campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-','');
                         campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)}`;
                         campo.Valor = '';
-                        debugger;
                         campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
                         prod.campos.push(campo);
                     }
                 }
             }
-
-            // console.log('****************************************');
-            // console.log(prod);
 
             if (!this.validacaoFormularioService.validaForm(this.form)){
               return;
