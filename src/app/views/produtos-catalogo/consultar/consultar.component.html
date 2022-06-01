@@ -17,7 +17,7 @@
                     [rows]="10" [paginator]="true" [filterDelay]="0">
                     <ng-template pTemplate="header">
                         <tr class="font-size">
-                            <th class="p-text-left p-lg-1 p-py-0">Produto</th>
+                            <th class="p-text-center p-lg-1 p-py-0">Produto</th>
                             <th class="p-text-left p-py-0">Fabricante</th>
                             <th class="p-text-left p-lg-3 p-py-0">Descrição</th>
                             <th class="p-text-left p-py-0">Linha de Produto</th>
@@ -29,14 +29,14 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-lista>
                         <tr class="p-selectable-row">
-                            <td style="text-align: left" class="p-py-2">{{lista.produto}}</td>
-                            <td style="text-align: left" class="p-py-2">{{lista.fabricante}}</td>
-                            <td style="text-align: left" class="p-py-2">{{lista.descricao}}</td>
-                            <td style="text-align: left" class="p-py-2">{{lista.linhaProduto}}</td>
-                            <td style="text-align: center" class="p-py-2">{{lista.tipoUnidade}}</td>
-                            <td style="text-align: center" class="p-py-2">{{lista.voltagem}}</td>
-                            <td style="text-align: center" class="p-py-2">{{lista.capacidade}}</td>
-                            <td style="text-align: center" class="p-py-2">
+                            <td class="p-py-2 p-text-center">{{lista.produto}}</td>
+                            <td class="p-py-2 p-text-left">{{lista.fabricante}}</td>
+                            <td class="p-py-2 p-text-left">{{lista.descricao}}</td>
+                            <td class="p-py-2 p-text-left">{{lista.linhaProduto}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.tipoUnidade}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.voltagem}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.capacidade}}</td>
+                            <td class="p-py-2 p-text-center">
                                 <button pButton style="align-content: flex-end;" icon="fa fa-eye" 
                                     (click)="visualizarClick(lista.id)" pTooltip="Visualizar"></button>
                             </td>
