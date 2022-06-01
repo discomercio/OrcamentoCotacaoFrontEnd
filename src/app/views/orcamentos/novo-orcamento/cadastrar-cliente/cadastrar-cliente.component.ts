@@ -157,10 +157,15 @@ export class CadastrarClienteComponent implements OnInit {
     let parceiro: string;
 
     parceiro = this.form.controls.Parceiro.value;
-    // if (!!this.form.controls.Parceiro.value) {
-    //   parceiro = this.form.controls.Parceiro.value;
-    // }
-    if (parceiro == null || parceiro == "" || parceiro == undefined) return;
+
+    this.form.controls.VendedorParceiro.setValue(null);
+    this.lstVendedoresParceiros = [];
+
+    if (parceiro == null || parceiro == "" || parceiro == undefined) {
+      this.form.controls.Parceiro.setValue(null);
+
+      return;
+    }
 
     if (parceiro == this.constantes.SEM_INDICADOR) return;
 
@@ -242,7 +247,7 @@ export class CadastrarClienteComponent implements OnInit {
       Parceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.parceiro],
       Telefone: [clienteOrcamentoCotacao.telefone, [Validators.required, Validators.maxLength(11), Validators.minLength(7)]],
       VendedorParceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro],
-      Concorda:[this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp],
+      Concorda: [this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp],
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
@@ -301,7 +306,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value == null? 0: this.form.controls.Concorda.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value == null ? 0 : this.form.controls.Concorda.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
