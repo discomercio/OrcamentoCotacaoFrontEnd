@@ -176,6 +176,7 @@ export class OrcamentosListarComponent implements OnInit {
         }
       }
     });
+    this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
   criarTabela() {
@@ -278,6 +279,8 @@ export class OrcamentosListarComponent implements OnInit {
           this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.Parceiro });
       });
     }
+
+    this.cboParceiros = this.cboParceiros.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
   filtrar_cboVendedoresParceiro() {
@@ -291,6 +294,7 @@ export class OrcamentosListarComponent implements OnInit {
             this.cboVendedoresParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.VendedorParceiro });
         }
       });
+      this.cboVendedoresParceiros = this.cboVendedoresParceiros.sort((a, b) => (a.Value < b.Value ? -1 : 1));
     }
     if (this.cboVendedoresParceiros && this.cboVendedoresParceiros.length == 0) this.cboVendedoresParceiros = null;
   }
