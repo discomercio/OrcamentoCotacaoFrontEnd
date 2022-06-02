@@ -34,6 +34,7 @@ import { LoginGuard } from 'src/app/service/autenticacao/login.guard';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
 import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
+import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 
 @NgModule({
     imports: [
@@ -95,7 +96,8 @@ import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/apr
                             },
 
                             // Clientes
-                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [LoginGuard] }
+                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [LoginGuard] },
+                            { path: 'calculadora-vrf', canActivate: [LoginGuard], component: CalculadoraVrfComponent }
                         ]
                     }
                 ]

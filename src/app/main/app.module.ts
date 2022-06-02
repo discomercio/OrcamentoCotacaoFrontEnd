@@ -93,6 +93,7 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
 //Alerts
 import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
+import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
 
 @NgModule({
     imports: [
@@ -168,6 +169,7 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
+        CalculadoraVrfComponent,
     ],
     providers: [
         {

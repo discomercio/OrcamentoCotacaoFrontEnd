@@ -36,7 +36,6 @@ import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 import { MensageriaComponent } from '../mensageria/mensageria.component';
 import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 
-
 @NgModule({
   declarations: [
     OrcamentosListarComponent,

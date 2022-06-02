@@ -122,6 +122,12 @@
                         ]
                     }
                 ]
+            },{
+                "label": "Calculadora VRF",
+                "icon": "fa fa-calculator",
+                "routerLink": [
+                    "/calculadora-vrf"
+                ]
             }
         ]
     }
