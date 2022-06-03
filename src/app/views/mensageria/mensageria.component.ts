@@ -1,15 +1,16 @@
-import { Component, OnInit, ViewChild, ElementRef, Input } from '@angular/core';
+import { Component, AfterContentInit, ViewChild, ElementRef, Input, AfterViewInit } from '@angular/core';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
 import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
 
 @Component({
   selector: 'app-mensageria',
   templateUrl: './mensageria.component.html',
   styleUrls: ['./mensageria.component.scss']
 })
-export class MensageriaComponent implements OnInit {
+export class MensageriaComponent implements AfterViewInit {
 
   @Input('idOrcamentoCotacao')
   public idOrcamentoCotacao: number;
@@ -26,6 +27,9 @@ export class MensageriaComponent implements OnInit {
   @Input('idTipoUsuarioContextoDestinatario')
   public idTipoUsuarioContextoDestinatario: string;
 
+  @Input('donoOrcamento')
+  public donoOrcamento: boolean;  
+
   listaMensagens: MensageriaDto[];
 
   constructor(
@@ -36,20 +40,24 @@ export class MensageriaComponent implements OnInit {
 
   @ViewChild("mensagem") mensagem: ElementRef;
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {    
+    this.obterListaMensagem(this.idOrcamentoCotacao);
+    this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
   }
 
-  obterListaMensagem(idOrcamentoCotacao: number) {
-
+  obterListaMensagem(idOrcamentoCotacao: number) {    
     this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-      if (r != null) {
+      if (r != null) {      
         this.listaMensagens = r;
-        console.log(this.listaMensagens);
+        this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   enviarMensagem() {
+    
+    this.validar();
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
@@ -66,6 +74,30 @@ export class MensageriaComponent implements OnInit {
         this.mensagem.nativeElement.value = '';
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+
+  marcarPendenciaTratada() {
+      
+    this.mensageriaService.marcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
+      if (r != null) {
+        this.mensagemService.showSuccessViaToast("Mensagens marcadas como tratadas!");
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }  
+
+  marcarMensagemComoLida(idOrcamentoCotacao: number) {   
+    
+    if (this.donoOrcamento){         
+      this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+    }
+  }    
+
+  validar(){    
+
+    if (this.mensagem.nativeElement.value == ""){      
+      throw this.mensagemService.showWarnViaToast("Ops...você não informou nenhuma mensagem!");
+    } 
   }
 
   formatarData(dateString) {

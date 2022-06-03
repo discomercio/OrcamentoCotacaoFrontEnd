@@ -22,11 +22,12 @@ export class MensageriaService {
         return this.http.post<any>(`${environment.apiUrl}Mensagem/`, msg);
     }
 
-    marcarComoLida(idOrcamentoCotacao: string, idUsuarioDestinatario: string): Observable<any> {
-        let params = new HttpParams();
-        params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
-        params = params.append("idUsuarioDestinatario", idUsuarioDestinatario);        
-        return this.http.put<any>(environment.apiUrl +"Mensagem/lida", params);
-    }
+    marcarMensagemComoLida(idOrcamentoCotacao: string): Observable<any> {      
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/lida?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }        
+    
+    marcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/pendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }    
 
 }

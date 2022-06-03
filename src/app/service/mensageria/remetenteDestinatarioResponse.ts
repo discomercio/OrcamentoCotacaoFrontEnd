@@ -4,4 +4,5 @@ export class RemetenteDestinatarioResponse {
     idTipoUsuarioContextoRemetente: number;
     idUsuarioDestinatario: number;
     idTipoUsuarioContextoDestinatario: number;
+    donoOrcamento: boolean;
 }
