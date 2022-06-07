@@ -14,8 +14,8 @@
             <h4>
                 <i class="fa fa-envelope-o"></i>&nbsp;Mensagens   
 
-                <button *ngIf="donoOrcamento === true" style="float:right;" pButton pRipple label="Marcar Pendência Trada" icon="pi pi-bookmark" title="Marcar Pendência Tratada"
-                (click)="marcarPendenciaTratada()" class="p-element p-ripple p-button-rounded p-button-secondary p-button p-component p-button-icon-only" value="Marcar Pendência Trada"></button> 
+                <button *ngIf="donoOrcamento === true" style="float:right;" pButton pRipple label="Marcar/Desmarcar Pendência Tratada" icon="pi pi-bookmark" title="Marcar/Desmarcar Pendência Tratada"
+                (click)="marcarPendenciaTratada()" class="p-element p-ripple p-button-rounded p-button-secondary p-button p-component p-button-icon-only" value="Marcar/Desmarcar Pendência Tratada"></button> 
             </h4>
             <ul>
                 <p-table #dt1 [value]="listaMensagens" [responsive]="true" responsiveLayout="stack" [scrollable]="true"
