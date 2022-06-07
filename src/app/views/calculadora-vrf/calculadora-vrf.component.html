@@ -4,90 +4,96 @@
             <h4>Calculadora VRF</h4>
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-
+                    <h5>Dados do cliente</h5>
                     <div class="p-grid">
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Fabricante</label>
-                            <p-dropdown [options]="lstFabricantes" formControlName="fabricante" placeholder="Selecione"
-                                optionLabel="label" optionValue="value"></p-dropdown>
+                            <label>Nome do Cliente</label>
+                            <input pInputText type="text" formControlName="nomeCliente">
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Voltagem</label>
-                            <p-dropdown [options]="lstVoltagens" formControlName="voltagem" placeholder="Selecione"
-                                optionLabel="label" optionValue="value"></p-dropdown>
+                            <label>Nome da Obra</label>
+                            <input pInputText type="text" formControlName="nomeObra">
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                            <label>Observações / Previsão de instalação</label>
+                            <input pInputText type="text" formControlName="obs">
+                        </div>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <h5>Seleção de evaporadoras</h5>
+                    <div class="p-grid p-col-12 p-px-0">
+                        <div class="p-col-7 p-d-inline-flex p-px-0">
+                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                                <label>Fabricante</label>
+                                <p-dropdown [options]="lstFabricantes" formControlName="fabricante"
+                                    placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
+                            </div>
+                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                                <label>Voltagem</label>
+                                <p-dropdown [options]="lstVoltagens" formControlName="voltagem" placeholder="Selecione"
+                                    optionLabel="label" optionValue="value"></p-dropdown>
+                            </div>
+                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                                <label>Tipo de descarga</label>
+                                <p-dropdown [options]="lstDescargas" formControlName="descarga" placeholder="Selecione"
+                                    optionLabel="label" optionValue="value"></p-dropdown>
+                            </div>
+                        </div>
+                        <div class="p-col-5 p-d-inline-flex p-jc-end p-px-0">
+                            <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-px-0 p-sm-6">
+                                <button pButton type="button" icon="fa fa-plus" label="Evaporadora" (click)="adicionarEvaporadoras()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <p>Lista de evaporadoras selecionadas</p>
+                    <div class="p-col-12 p-px-0 p-my-2">
+                        <p-table #dt1 [value]="produtosTabela" [responsive]="true" responsiveLayout="stack"
+                            [ngClass]="{'carregando': carregando}"
+                            styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [filterDelay]="0">
+                            <ng-template pTemplate="header">
+                                <tr class="font-size">
+                                    <th class="p-text-left p-lg-6 p-py-0">Produto Codigo+Nome</th>
+                                    <th class="p-text-center p-py-0">Capacidade</th>
+                                    <th class="p-text-right p-lg-3 p-py-0">Quantidade editável </th>
+                                    <th class="p-text-center p-py-0">Excluir</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-lista>
+                                <tr class="p-selectable-row">
+                                    <td class="p-py-2 p-text-center"></td>
+                                    <td class="p-py-2 p-text-left"></td>
+                                    <td class="p-py-2 p-text-left"></td>
+                                    <td class="p-py-2 p-text-left"></td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                    </div>
+
+                    <div class="p-col-12 p-px-0">
+                        <button pButton type="button" label="Calcular Condensadoras"></button>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-grid p-col-12 p-px-0">
+                        <div class="p-field p-col-12 p-lg-2 p-md-4 p-sm-4 p-as-end">
                             <label>Simultaneidade máxima</label>
                             <p-dropdown [options]="lstSimultaneidades" formControlName="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
                         </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Tipo de descarga</label>
-                            <p-dropdown [options]="lstDescargas" formControlName="descarga" placeholder="Selecione"
-                                optionLabel="label" optionValue="value"></p-dropdown>
+                        <div class="p-field p-col-12 p-lg-2 p-md-4 p-sm-4 p-as-end">
+                            <label>Quantidade de condensadoras</label>
+                            <p-dropdown [options]="lstQtdeCondensadoras" formControlName="condensadora"
+                                placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
                         </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Qtd Max de Condensadoras</label>
-                            <input pInputText type="text">
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">Botão Adicionar Evaporadora</div>
                     </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+
                 </div>
             </form>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <p>Lista de evaporadoras selecionadas</p>
-                <div class="p-col-12 p-px-0 p-my-2">
-                    <p-table #dt1 [value]="produtosTabela" [responsive]="true" responsiveLayout="stack"
-                        [ngClass]="{'carregando': carregando}" styleClass="p-datatable-customers p-datatable-striped"
-                        [rows]="10" [filterDelay]="0">
-                        <ng-template pTemplate="header">
-                            <tr class="font-size">
-                                <th class="p-text-left p-lg-6 p-py-0">Produto Codigo+Nome</th>
-                                <th class="p-text-center p-py-0">Capacidade</th>
-                                <th class="p-text-right p-lg-3 p-py-0">Quantidade editável </th>
-                                <th class="p-text-center p-py-0">Excluir</th>
-                            </tr>
-                        </ng-template>
-                        <ng-template pTemplate="body" let-lista>
-                            <tr class="p-selectable-row">
-                                <td class="p-py-2 p-text-center"></td>
-                                <td class="p-py-2 p-text-left"></td>
-                                <td class="p-py-2 p-text-left"></td>
-                                <td class="p-py-2 p-text-left"></td>
-                                <td class="p-py-2 p-text-center"></td>
-                                <td class="p-py-2 p-text-center"></td>
-                                <td class="p-py-2 p-text-center"></td>
-                                <td class="p-py-2 p-text-center">
-                                    <button pButton style="align-content: flex-end;" icon="fa fa-eye"></button>
-                                </td>
-                            </tr>
-                        </ng-template>
-                    </p-table>
-                </div>
-
-                <div class="p-col-12 p-px-0">
-                    <button pButton type="button" label="Calcular Condensadoras"></button>
-                </div>
-
-            </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <p>Acordeon com as 3 opções, abrir um e fechar outro <br />
-                    Incluir os dados de cliente dentro de acordeon sempre aberto</p>
-                <div class="p-grid">
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                        <label>Nome do Cliente</label>
-                        <input pInputText type="text">
-                    </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                        <label>Nome da Obra</label>
-                        <input pInputText type="text">
-                    </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                        <label>Observações / Previsão de instalação</label>
-                        <input pInputText type="text">
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

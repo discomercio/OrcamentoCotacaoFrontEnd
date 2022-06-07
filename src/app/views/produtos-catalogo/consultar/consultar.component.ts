@@ -8,6 +8,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
+import { ProdutoTabela } from 'src/app/dto/produtos-catalogo/ProdutoTabela';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { callbackify } from 'util';
@@ -209,15 +210,4 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   }
 }
 
-export class ProdutoTabela {
-  id: string;
-  linhaBusca: string;
-  produto: string;
-  fabricante: string;
-  descricao: string;
-  linhaProduto: string;
-  tipoUnidade: string;
-  voltagem: string;
-  capacidade: string;
 
-}

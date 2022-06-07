@@ -35,6 +35,7 @@ import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catal
 import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
+import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 
 @NgModule({
     imports: [
@@ -97,7 +98,11 @@ import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculado
 
                             // Clientes
                             { path: 'cliente/cliente', component: ClienteComponent, canActivate: [LoginGuard] },
-                            { path: 'calculadora-vrf', canActivate: [LoginGuard], component: CalculadoraVrfComponent }
+                            {
+                                path: 'calculadora-vrf', canActivate: [LoginGuard], component: CalculadoraVrfComponent, children: [
+                                    { path: "select-evap-dialog", canActivate: [LoginGuard], component: SelectEvapDialogComponent },
+                                ]
+                            }
                         ]
                     }
                 ]
