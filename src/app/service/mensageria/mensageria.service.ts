@@ -18,6 +18,13 @@ export class MensageriaService {
         return this.http.get<MensageriaDto[]>(environment.apiUrl + "Mensagem/?IdOrcamentoCotacao=" + idOrcamentoCotacao);
     }
 
+    obterListaMensagemPendente(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
+    
+      let params = new HttpParams();    
+          params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
+          return this.http.get<MensageriaDto[]>(environment.apiUrl + "Mensagem/pendente?IdOrcamentoCotacao=" + idOrcamentoCotacao);
+      }    
+
     enviarMensagem(msg: any): Observable<any> {
         return this.http.post<any>(`${environment.apiUrl}Mensagem/`, msg);
     }
@@ -27,7 +34,11 @@ export class MensageriaService {
     }        
     
     marcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
-      return this.http.put<any>(`${environment.apiUrl}Mensagem/pendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/marcarpendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
     }    
+
+    desmarcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/desmarcarpendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }      
 
 }

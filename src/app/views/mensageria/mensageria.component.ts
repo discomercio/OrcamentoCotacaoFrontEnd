@@ -77,12 +77,25 @@ export class MensageriaComponent implements AfterViewInit {
   }
 
   marcarPendenciaTratada() {
-      
-    this.mensageriaService.marcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
+
+    this.mensageriaService.obterListaMensagem(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
+
       if (r != null) {
-        this.mensagemService.showSuccessViaToast("Mensagens marcadas como tratadas!");
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+        if (r[0]['PendenciaTratada'] == true){
+          this.mensageriaService.desmarcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
+            if (r != null) {
+              this.mensagemService.showSuccessViaToast("Mensagens marcadas como não tratadas!");
+            }
+          }).catch((r) => this.alertaService.mostrarErroInternet(r));  
+        }else{
+          this.mensageriaService.marcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
+            if (r != null) {
+              this.mensagemService.showSuccessViaToast("Mensagens marcadas como tratadas!");
+            }
+          }).catch((r) => this.alertaService.mostrarErroInternet(r));                
+        }
+      }      
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));        
   }  
 
   marcarMensagemComoLida(idOrcamentoCotacao: number) {   
