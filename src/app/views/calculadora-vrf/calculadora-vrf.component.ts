@@ -184,7 +184,7 @@ export class CalculadoraVrfComponent implements OnInit {
   adicionarEvaporadoras(){
     const ref = this.dialogService.open(SelectEvapDialogComponent,
       {
-        width: "auto",
+        width: "80%",
         styleClass: 'dynamicDialog',
         data: this.evaporadoras
       });

@@ -19,19 +19,19 @@ export class SelectEvapDialogComponent implements OnInit {
     public readonly mensagemService: MensagemService,
     telaDesktopService: TelaDesktopService) {
   }
-
+  
+  @ViewChild('dataTable') table: Table;
   stringUtils = StringUtils;
   evaporadorasPassadas: ProdutoTabela[];
   evaporadoras: ProdutoTabela[];
-  displayModal:boolean;
 
   ngOnInit(): void {
-    this.displayModal = true;
     this.evaporadorasPassadas = this.option.data;
-    this.evaporadoras = this.evaporadorasPassadas;
-    console.log(this.evaporadoras);
+    this.criarTabela();
   }
 
- 
+ criarTabela(){
+  this.evaporadoras = this.evaporadorasPassadas;
+ }
 
 }

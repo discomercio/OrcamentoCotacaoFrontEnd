@@ -94,6 +94,8 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
 import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
 import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
+import { TableModule } from 'primeng/table';
+import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 
 @NgModule({
     imports: [
@@ -170,6 +172,7 @@ import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vr
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
         CalculadoraVrfComponent,
+        SelectEvapDialogComponent
     ],
     providers: [
         {
