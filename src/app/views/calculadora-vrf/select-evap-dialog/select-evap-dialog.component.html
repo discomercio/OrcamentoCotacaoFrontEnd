@@ -7,7 +7,7 @@
         </div>
     </div>
     <p-table #dt1 [value]="evaporadoras" [responsive]="true" responsiveLayout="stack"
-        styleClass="p-datatable-customers p-datatable-striped" [rows]="10"
+        styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [(selection)]="evaporadoraSelecionada"
         [paginator]="true" [filterDelay]="0">
         <ng-template pTemplate="header" let-p>
             <tr>
@@ -33,5 +33,5 @@
     </p-table>
 </div>
 <div class="footer">
-    <!-- <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button> -->
+    <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button>
 </div>

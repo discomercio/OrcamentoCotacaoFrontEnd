@@ -5,12 +5,14 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
+import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 import { ProdutoTabela } from 'src/app/dto/produtos-catalogo/ProdutoTabela';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { eDescarga } from 'src/app/utilities/enums/eDescarga';
 import { eSimultaneidade } from 'src/app/utilities/enums/eSimultaneidade';
 import { eVoltagem } from 'src/app/utilities/enums/eVoltagens';
+import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dialog.component';
@@ -40,17 +42,20 @@ export class CalculadoraVrfComponent implements OnInit {
   lstQtdeCondensadoras: SelectItem[] = [];
   carregando: boolean = false;
   produtosPropriedadesAtivos: ProdutoCatalogoItemProdutosAtivosDados[];
-  evaporadoras= new Array<ProdutoTabela>();
+  evaporadoras = new Array<ProdutoTabela>();
   condensadoras: ProdutoCatalogoItemProdutosAtivosDados[];
   produtosDados: ProdutoCatalogoItemProdutosAtivosDados[];
+  evaporadorasSelecionadas = new Array<ProdutoTabela>();
+  totalKcalEvaporadoras: number;
+  lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
+  stringUtils = StringUtils;
 
   ngOnInit(): void {
     this.criarForm();
     this.buscarProduto();
     this.buscarFabricantes();
+    this.buscarOpcoes();
     this.buscarSimultaneidades();
-    this.buscarVoltagens();
-    this.buscarDescargas();
     this.buscarQtdeMaxCondensadoras();
 
   }
@@ -133,7 +138,15 @@ export class CalculadoraVrfComponent implements OnInit {
     });
   }
 
-
+  buscarOpcoes() {
+    this.produtoService.buscarOpcoes().toPromise().then((r) => {
+      if (r != null) {
+        this.lstOpcoes = r;
+        this.buscarVoltagens();
+        this.buscarDescargas();
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
 
   buscarFabricantes() {
     let lstFabricantes = [];
@@ -166,13 +179,23 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarVoltagens() {
-    this.lstVoltagens.push({ title: eVoltagem.DuzentoEVinte, value: eVoltagem.DuzentoEVinte, label: eVoltagem.DuzentoEVinte },
-      { title: eVoltagem.TrezentosEOitenta, value: eVoltagem.TrezentosEOitenta, label: eVoltagem.TrezentosEOitenta });
+    let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
+
+    voltagens.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstVoltagens.push(opcao);
+    });
   }
 
   buscarDescargas() {
-    this.lstDescargas.push({ title: eDescarga.Vertical, value: eDescarga.Vertical, label: eDescarga.Vertical },
-      { title: eDescarga.Horizontal, value: eDescarga.Horizontal, label: eDescarga.Horizontal });
+    let descargas = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 3);
+
+    descargas.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstDescargas.push(opcao); 
+    })
+    // this.lstDescargas.push({ title: eDescarga.Vertical, value: eDescarga.Vertical, label: eDescarga.Vertical },
+    //   { title: eDescarga.Horizontal, value: eDescarga.Horizontal, label: eDescarga.Horizontal });
   }
 
   buscarQtdeMaxCondensadoras() {
@@ -181,12 +204,51 @@ export class CalculadoraVrfComponent implements OnInit {
       { title: "3", value: 3, label: "3" });
   }
 
-  adicionarEvaporadoras(){
+  adicionarEvaporadoras() {
     const ref = this.dialogService.open(SelectEvapDialogComponent,
       {
         width: "80%",
         styleClass: 'dynamicDialog',
         data: this.evaporadoras
       });
+
+    ref.onClose.subscribe((resultado: ProdutoTabela) => {
+      if (resultado) {
+        this.arrumarProdutosRepetidos(resultado);
+        this.digitouQte(resultado);
+      }
+    });
+  }
+
+  removerItem(index: number) {
+    // let produto = this.novoOrcamentoService.lstProdutosSelecionados.splice(index, 1)[0];
+
+    // this.removerProdutoDaListaControle(produto);
+
+    // this.digitouQte(produto);
+  }
+
+  digitouQte(produto: ProdutoTabela) {
+    if (produto.qtde <= 0) produto.qtde = 1;
+
+
+    this.totalKcalEvaporadoras = this.evaporadorasSelecionadas.reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+  }
+  arrumarProdutosRepetidos(produto: ProdutoTabela) {
+    let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto);
+
+    if (repetidos.length >= 1) {
+      this.evaporadorasSelecionadas.forEach(x => {
+        const index = this.evaporadorasSelecionadas.findIndex(f => f.produto == produto.produto);
+        if (x.produto == produto.produto) {
+          x.qtde++;
+          this.digitouQte(x);
+          return;
+        }
+      });
+    }
+    else {
+      this.evaporadorasSelecionadas.push(produto);
+    }
   }
 }

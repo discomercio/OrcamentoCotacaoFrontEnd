@@ -1,29 +1,35 @@
 <div class="p-grid">
     <div class="p-col-12 p-pb-0">
-        <div class="card itens">
-            <h4>Calculadora VRF</h4>
-            <form [formGroup]="form">
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <h5>Dados do cliente</h5>
-                    <div class="p-grid">
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Nome do Cliente</label>
-                            <input pInputText type="text" formControlName="nomeCliente">
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Nome da Obra</label>
-                            <input pInputText type="text" formControlName="nomeObra">
-                        </div>
-                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
-                            <label>Observações / Previsão de instalação</label>
-                            <input pInputText type="text" formControlName="obs">
-                        </div>
+        <div class="card">
+            <h4 class="p-my-0">Calculadora VRF</h4>
+        </div>
+
+        <div class="card">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <h5>Dados do cliente</h5>
+                <div class="p-grid">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                        <label>Nome do cliente</label>
+                        <input pInputText type="text">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                        <label>Nome da obra</label>
+                        <input pInputText type="text">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                        <label>Observações / Previsão de instalação</label>
+                        <input pInputText type="text">
                     </div>
                 </div>
+            </div>
+        </div>
+        <div class="card">
+            <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
                     <h5>Seleção de evaporadoras</h5>
                     <div class="p-grid p-col-12 p-px-0">
-                        <div class="p-col-7 p-d-inline-flex p-px-0">
+                        <div
+                            class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-7">
                             <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
                                 <label>Fabricante</label>
                                 <p-dropdown [options]="lstFabricantes" formControlName="fabricante"
@@ -40,60 +46,100 @@
                                     optionLabel="label" optionValue="value"></p-dropdown>
                             </div>
                         </div>
-                        <div class="p-col-5 p-d-inline-flex p-jc-end p-px-0">
+                        <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-end p-jc-lg-end 
+                                p-jc-md-end p-jc-sm-end p-lg-5 p-md-5 p-sm-5">
                             <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-px-0 p-sm-6">
-                                <button pButton type="button" icon="fa fa-plus" label="Evaporadora" (click)="adicionarEvaporadoras()"></button>
+                                <button pButton type="button" icon="fa fa-plus" label="Evaporadora"
+                                    (click)="adicionarEvaporadoras()"></button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <p>Lista de evaporadoras selecionadas</p>
-                    <div class="p-col-12 p-px-0 p-my-2">
-                        <p-table #dt1 [value]="produtosTabela" [responsive]="true" responsiveLayout="stack"
-                            [ngClass]="{'carregando': carregando}"
-                            styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [filterDelay]="0">
-                            <ng-template pTemplate="header">
-                                <tr class="font-size">
-                                    <th class="p-text-left p-lg-6 p-py-0">Produto Codigo+Nome</th>
-                                    <th class="p-text-center p-py-0">Capacidade</th>
-                                    <th class="p-text-right p-lg-3 p-py-0">Quantidade editável </th>
-                                    <th class="p-text-center p-py-0">KCal/h</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-lista>
-                                <tr class="p-selectable-row">
-                                    <td class="p-py-2 p-text-center"></td>
-                                    <td class="p-py-2 p-text-left"></td>
-                                    <td class="p-py-2 p-text-left"></td>
-                                    <td class="p-py-2 p-text-left"></td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-
-                    <div class="p-col-12 p-px-0">
-                        <button pButton type="button" label="Calcular Condensadoras"></button>
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-grid p-col-12 p-px-0">
-                        <div class="p-field p-col-12 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                            <label>Simultaneidade máxima</label>
-                            <p-dropdown [options]="lstSimultaneidades" formControlName="simultaneidade"
-                                placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                            <label>Quantidade de condensadoras</label>
-                            <p-dropdown [options]="lstQtdeCondensadoras" formControlName="condensadora"
-                                placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
-                        </div>
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-
-                </div>
             </form>
+            <div *ngIf="evaporadorasSelecionadas.length > 0" class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-col-12 p-px-0 p-my-2">
+                    <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="true" responsiveLayout="stack"
+                        [ngClass]="{'carregando': carregando}" styleClass="p-datatable-customers p-datatable-striped"
+                        [rows]="10" [filterDelay]="0">
+                        <ng-template pTemplate="header" let-p>
+                            <tr>
+                                <th class="p-text-left p-col-6 p-py-0">Produto</th>
+                                <th class="p-text-center p-py-0">Qtde</th>
+                                <th class="p-text-center p-py-0">Voltagem</th>
+                                <th class="p-text-center p-py-0">Kcal/h</th>
+                                <th class="p-text-center p-py-0">Ações</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-p>
+                            <tr class="" [pSelectableRow]="p">
+                                <td class="p-text-left p-d-inline-flex p-pl-2">
+                                    <p class="p-ml-2"
+                                        [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
+                                    </p>
+                                </td>
+                                <td class="p-py-0">
+                                    <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
+                                        [value]="p.qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
+                                </td>
+                                <td class="p-text-center p-py-0">{{p.voltagem}}</td>
+                                <td class="p-text-center p-py-0">{{p.kcal}}</td>
+                                <td class="p-text-center p-py-0">
+                                    <div class="p-text-center">
+                                        <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="footer" class="font-size">
+                            <tr class="font-size">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td class="p-text-center">
+                                    Total
+                                    {{totalKcalEvaporadoras}}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                </div>
+            </div>
         </div>
+
+        <div class="card">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <h5>Condensadoras</h5>
+                <div class="p-grid p-col-12 p-px-0">
+                    <div
+                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-6">
+                        <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-7">
+                            <label>Simultaneidade máxima</label>
+                            <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
+                                placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
+                        </div>
+                        <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-7">
+                            <label>Quantidade de condensadoras</label>
+                            <p-dropdown [options]="lstQtdeCondensadoras" [(ngModel)]="condensadora"
+                                placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
+                        </div>
+                    </div>
+                    <div
+                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-end p-lg-5 p-md-5 p-sm-6">
+                        <div class="p-as-end p-col-12 p-field p-lg-7 p-md-8 p-px-0 p-sm-10">
+                            <button pButton type="button" icon="fa fa-calculator"
+                                label="Calcular Condensadoras"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+
+            </div>
+        </div>
+
+
+
     </div>
 </div>

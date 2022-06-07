@@ -10,4 +10,5 @@ export class ProdutoTabela {
     capacidade: string;
     kcal:string;
     descarga:string;
+    qtde:number = 0;
   }

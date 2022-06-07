@@ -24,14 +24,21 @@ export class SelectEvapDialogComponent implements OnInit {
   stringUtils = StringUtils;
   evaporadorasPassadas: ProdutoTabela[];
   evaporadoras: ProdutoTabela[];
+  evaporadoraSelecionada:ProdutoTabela;
 
   ngOnInit(): void {
     this.evaporadorasPassadas = this.option.data;
-    this.criarTabela();
+    this.evaporadoras = this.evaporadorasPassadas;
   }
 
- criarTabela(){
-  this.evaporadoras = this.evaporadorasPassadas;
- }
+  addProduto(){
+    if (this.evaporadoraSelecionada){
+      this.ref.close(this.evaporadoraSelecionada);
+    }
+    return;
+  }
 
+  marcarLinha(e: Event) {
+    e.stopImmediatePropagation();
+  }
 }
