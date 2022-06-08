@@ -29,26 +29,39 @@
                     <h5>Seleção de evaporadoras</h5>
                     <div class="p-grid p-col-12 p-px-0">
                         <div
-                            class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-7">
-                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                            class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 
+                            p-px-0 p-sm-7" style="height: 9vw;">
+                            <div class="p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
                                 <label>Fabricante</label>
                                 <p-dropdown [options]="lstFabricantes" formControlName="fabricante"
                                     placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
+                                <div *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">
+                                    <small class="p-error"
+                                        *ngIf="form.controls.fabricante.errors?.required">{{mensagemErro}}</small>
+                                </div>
                             </div>
-                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                            <div class="p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
                                 <label>Voltagem</label>
                                 <p-dropdown [options]="lstVoltagens" formControlName="voltagem" placeholder="Selecione"
-                                    optionLabel="label" optionValue="value"></p-dropdown>
+                                    optionLabel="label" optionValue="label"></p-dropdown>
+                                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'voltagem')">
+                                        <small class="p-error"
+                                            *ngIf="form.controls.voltagem.errors?.required">{{mensagemErro}}</small>
+                                    </div>
                             </div>
-                            <div class="p-as-end p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
+                            <div class="p-col-12 p-field p-lg-4 p-md-5 p-sm-5">
                                 <label>Tipo de descarga</label>
                                 <p-dropdown [options]="lstDescargas" formControlName="descarga" placeholder="Selecione"
-                                    optionLabel="label" optionValue="value"></p-dropdown>
+                                    optionLabel="label" optionValue="label"></p-dropdown>
+                                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'descarga')">
+                                        <small class="p-error"
+                                            *ngIf="form.controls.descarga.errors?.required">{{mensagemErro}}</small>
+                                    </div>
                             </div>
                         </div>
                         <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-end p-jc-lg-end 
                                 p-jc-md-end p-jc-sm-end p-lg-5 p-md-5 p-sm-5">
-                            <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-px-0 p-sm-6">
+                            <div class="p-as-center p-col-12 p-field p-lg-6 p-md-6 p-px-0 p-sm-6">
                                 <button pButton type="button" icon="fa fa-plus" label="Evaporadora"
                                     (click)="adicionarEvaporadoras()"></button>
                             </div>
@@ -114,7 +127,7 @@
                     <div
                         class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-6">
                         <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-7">
-                            <label>Simultaneidade máxima</label>
+                            <label>Simultaneidade máxima %</label>
                             <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
                         </div>

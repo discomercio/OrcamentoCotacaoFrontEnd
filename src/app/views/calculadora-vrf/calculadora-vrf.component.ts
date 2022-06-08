@@ -49,6 +49,7 @@ export class CalculadoraVrfComponent implements OnInit {
   totalKcalEvaporadoras: number;
   lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
   stringUtils = StringUtils;
+  mensagemErro: string = "*Campo obrigatório.";
 
   ngOnInit(): void {
     this.criarForm();
@@ -63,13 +64,8 @@ export class CalculadoraVrfComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       fabricante: ['', [Validators.required]],
-      simultaneidade: ['', [Validators.required]],
       voltagem: ['', [Validators.required]],
       descarga: ['', [Validators.required]],
-      condensadora: ['', [Validators.required]],
-      nomeCliente: ['', [Validators.required]],
-      nomeObra: ['', [Validators.required]],
-      obs: ['']
     });
   }
 
@@ -78,14 +74,14 @@ export class CalculadoraVrfComponent implements OnInit {
     this.produtoService.listarProdutosPropriedadesAtivos(false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtosDados = r;
-        this.filtrarEvaporadoras();
+        this.buscarEvaporadoras();
       }
     }).catch((e) => {
       console.log(e);
     });
   }
 
-  filtrarEvaporadoras() {
+  buscarEvaporadoras() {
     //buscar produtos que são vrf
     let produtosVrf = this.produtosDados.filter(x => Number.parseInt(x.idPropriedade) == 1 && x.idValorPropriedadeOpcao == 12);
 
@@ -149,19 +145,12 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarFabricantes() {
-    let lstFabricantes = [];
-    var indice = 0;
-
     this.produtoService.buscarFabricantes().toPromise().then((r) => {
       if (r != null) {
-        while (indice < r.length) {
-          lstFabricantes.push({ title: r[indice]['Descricao'], value: r[indice]['Fabricante'], label: r[indice]['Nome'] })
-          indice++;
-        }
-
-        this.lstFabricantes = lstFabricantes;
-        this.fabricantes = r;
-        this.carregando = false;
+        r.forEach(x => {
+          let fabricante: SelectItem = { title: x.Nome, value: x.Fabricante, label: x.Nome };
+          this.lstFabricantes.push(fabricante);
+        });
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -192,10 +181,8 @@ export class CalculadoraVrfComponent implements OnInit {
 
     descargas.forEach(x => {
       let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstDescargas.push(opcao); 
-    })
-    // this.lstDescargas.push({ title: eDescarga.Vertical, value: eDescarga.Vertical, label: eDescarga.Vertical },
-    //   { title: eDescarga.Horizontal, value: eDescarga.Horizontal, label: eDescarga.Horizontal });
+      this.lstDescargas.push(opcao);
+    });
   }
 
   buscarQtdeMaxCondensadoras() {
@@ -204,12 +191,25 @@ export class CalculadoraVrfComponent implements OnInit {
       { title: "3", value: 3, label: "3" });
   }
 
+  filtrarEvaporadoras(): ProdutoTabela[] {
+    let fabricante = this.form.controls.fabricante.value;
+    let descarga = this.form.controls.descarga.value;
+    let voltagem = this.form.controls.voltagem.value;
+
+    return this.evaporadoras.filter(x => x.fabricante == fabricante && x.descarga == descarga && x.voltagem == voltagem);
+  }
+
   adicionarEvaporadoras() {
+
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      return;
+    }
+
     const ref = this.dialogService.open(SelectEvapDialogComponent,
       {
         width: "80%",
         styleClass: 'dynamicDialog',
-        data: this.evaporadoras
+        data: this.filtrarEvaporadoras()
       });
 
     ref.onClose.subscribe((resultado: ProdutoTabela) => {
