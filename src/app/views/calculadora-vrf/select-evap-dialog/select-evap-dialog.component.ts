@@ -8,7 +8,6 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
-import * as internal from 'stream';
 
 @Component({
   selector: 'app-select-evap-dialog',

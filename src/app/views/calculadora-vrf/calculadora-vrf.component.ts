@@ -34,6 +34,7 @@ export class CalculadoraVrfComponent implements OnInit {
   ) { }
 
   form: FormGroup;
+  form2:FormGroup;
   fabricantes: ProdutoCatalogoFabricante[];
   lstSimultaneidades: SelectItem[] = [];
   lstFabricantes: SelectItem[] = [];
@@ -67,18 +68,23 @@ export class CalculadoraVrfComponent implements OnInit {
     this.form = this.fb.group({
       fabricante: ['', [Validators.required]]
     });
-  }
 
+    this.form2 = this.fb.group({
+      voltagem: ['', [Validators.required]],
+      descarga: ['', [Validators.required]],
+      simultaneidade: ['', [Validators.required]],
+      condensadora: ['', [Validators.required]]
+    })
+  }
 
   buscarProduto() {
     this.produtoService.listarProdutosPropriedadesAtivos(false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtosDados = r;
         this.filtrarProdutosVrf();
-
       }
     }).catch((e) => {
-      console.log(e);
+
     });
   }
 
@@ -137,8 +143,6 @@ export class CalculadoraVrfComponent implements OnInit {
         }
       }
     });
-
-    console.log(this.condensadoras);
   }
 
   buscarEvaporadoras() {
@@ -299,6 +303,12 @@ export class CalculadoraVrfComponent implements OnInit {
     }
     else {
       this.evaporadorasSelecionadas.push(produto);
+    }
+  }
+
+  calcularCondensadoras(){
+    if (!this.validacaoFormularioService.validaForm(this.form2)) {
+      return;
     }
   }
 }
