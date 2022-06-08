@@ -57,7 +57,6 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
       if (r != null) {
         this.produto = r;
-        debugger;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }

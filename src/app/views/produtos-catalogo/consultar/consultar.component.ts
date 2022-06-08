@@ -55,7 +55,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   buscarPropriedadesProdutosAtivos() {
     this.produtoService.buscarPropriedadesProdutosAtivos().toPromise().then((r) => {
       if (r != null) {
-        debugger;
         this.produtosPropriedadesAtivos = r;
         this.criarColunas();
         this.carregando = false;
