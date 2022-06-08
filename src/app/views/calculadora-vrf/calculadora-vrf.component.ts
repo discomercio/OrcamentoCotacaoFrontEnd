@@ -38,9 +38,11 @@ export class CalculadoraVrfComponent implements OnInit {
   lstSimultaneidades: SelectItem[] = [];
   lstFabricantes: SelectItem[] = [];
 
-  lstDescargas: SelectItem[] = [];
   lstQtdeCondensadoras: SelectItem[] = [];
   lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
+  lstVoltagens: SelectItem[] = [];
+  lstDescargas: SelectItem[] = [];
+
   carregando: boolean = false;
   produtosPropriedadesAtivos: ProdutoCatalogoItemProdutosAtivosDados[];
   evaporadoras = new Array<ProdutoTabela>();
@@ -56,11 +58,9 @@ export class CalculadoraVrfComponent implements OnInit {
   ngOnInit(): void {
     this.criarForm();
     this.buscarProduto();
-
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
-
   }
 
   criarForm() {
@@ -181,6 +181,8 @@ export class CalculadoraVrfComponent implements OnInit {
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
       if (r != null) {
         this.lstOpcoes = r;
+        this.buscarVoltagens();
+        this.buscarDescargas();
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -220,7 +222,23 @@ export class CalculadoraVrfComponent implements OnInit {
       { title: eSimultaneidade.CentoEVinteECinco, value: eSimultaneidade.CentoEVinteECinco, label: eSimultaneidade.CentoEVinteECinco });
   }
 
+  buscarVoltagens() {
+    let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
 
+    voltagens.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstVoltagens.push(opcao);
+    });
+  }
+
+  buscarDescargas() {
+    let descargas = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 3);
+
+    descargas.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstDescargas.push(opcao);
+    });
+  }
 
   buscarQtdeMaxCondensadoras() {
     this.lstQtdeCondensadoras.push({ title: "1", value: 1, label: "1" },

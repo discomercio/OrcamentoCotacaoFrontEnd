@@ -39,7 +39,6 @@
                                         *ngIf="form.controls.fabricante.errors?.required">{{mensagemErro}}</small>
                                 </div>
                             </div>
-
                         </div>
                         <div
                             class="p-as-center p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex 
@@ -95,7 +94,7 @@
                                 <td></td>
                                 <td class="p-text-right">Total</td>
                                 <td class="p-text-center">
-                                    
+
                                     {{totalKcalEvaporadoras}}
                                 </td>
                                 <td></td>
@@ -109,23 +108,37 @@
         <div class="card">
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
                 <h5>Condensadoras</h5>
-                <div class="p-grid p-col-12 p-px-0">
-                    <div
-                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-6">
-                        <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-7">
-                            <label>Simultaneidade máxima %</label>
+                <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-px-0">
+
+                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-9 p-md-9 
+                            p-pr-md-2 p-px-0 p-sm-12">
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-lg-0 p-pl-md-0 p-pr-sm-1 p-px-0 p-sm-3">
+                            <label>Voltagem</label>
+                            <p-dropdown [options]="lstVoltagens" placeholder="Selecione" optionLabel="label"
+                                optionValue="label" [(ngModel)]="voltagem" [showClear]="true">
+                            </p-dropdown>
+                        </div>
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3">
+                            <label>Tipo de descarga</label>
+                            <p-dropdown [options]="lstDescargas" placeholder="Selecione" optionLabel="label"
+                                optionValue="label" [(ngModel)]="descarga" [showClear]="true">
+                            </p-dropdown>
+                        </div>
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3">
+                            <label style="word-break: break-word; white-space: break-spaces;">Simultaneidade máxima
+                                %</label>
                             <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
                         </div>
-                        <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-7">
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-sm-1 p-px-0 p-sm-3">
                             <label>Quantidade de condensadoras</label>
                             <p-dropdown [options]="lstQtdeCondensadoras" [(ngModel)]="condensadora"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"></p-dropdown>
                         </div>
                     </div>
-                    <div
-                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-end p-lg-5 p-md-5 p-sm-6">
-                        <div class="p-as-end p-col-12 p-field p-lg-7 p-md-8 p-px-0 p-sm-10">
+                    <div class="p-as-end p-as-lg-center p-as-md-center p-col-12 p-lg-3 p-md-3 p-mt-lg-4 p-mt-md-0 p-mt-sm-3 
+                            p-pt-lg-0 p-pt-md-4 p-px-0 p-mt-xl-0">
+                        <div class="p-col-12 p-pr-lg-0 p-px-0">
                             <button pButton type="button" icon="fa fa-calculator"
                                 label="Calcular Condensadoras"></button>
                         </div>
@@ -134,7 +147,7 @@
             </div>
 
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                
+
             </div>
         </div>
 
