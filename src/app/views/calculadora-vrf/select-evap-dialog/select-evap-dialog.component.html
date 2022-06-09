@@ -4,19 +4,19 @@
                 p-formgrid p-grid p-lg-7 p-mx-0 p-px-0 p-py-0 p-xl-7">
             <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Linha de produto</label>
-                <p-dropdown [options]="lstLinhaProdutos" placeholder="Selecione" optionLabel="label" optionValue="label"
+                <p-dropdown [options]="lstLinhaProdutos" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="linhaProduto" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>
             <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Tipo de descarga</label>
-                <p-dropdown [options]="lstDescargas" placeholder="Selecione" optionLabel="label" optionValue="label"
+                <p-dropdown [options]="lstDescargas" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="descarga" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>
             <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Voltagem</label>
-                <p-dropdown [options]="lstVoltagens" placeholder="Selecione" optionLabel="label" optionValue="label"
+                <p-dropdown [options]="lstVoltagens" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="voltagem" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>
@@ -25,13 +25,13 @@
                 p-lg-5 p-mx-0 p-px-0 p-py-0 p-xl-5">
             <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-6 p-xl-6">
                 <label>Ciclo</label>
-                <p-dropdown [options]="lstCiclos" placeholder="Selecione" optionLabel="label" optionValue="label"
+                <p-dropdown [options]="lstCiclos" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="ciclo" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>
             <div class="p-as-end p-col-12 p-field p-lg-6 p-md-6 p-sm-6 p-xl-6">
                 <label>Capacidade (BTU/h):</label>
-                <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="label"
+                <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="btu" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>

@@ -112,11 +112,12 @@ export class SelectEvapDialogComponent implements OnInit {
 
     let evaporadorasFiltradas: ProdutoTabela[] = this.evaporadorasPassadas;
 
-    if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.indexOf(this.linhaProduto) > -1);
-    if (this.descarga) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.indexOf(this.descarga) > -1);
-    if (this.voltagem) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.indexOf(this.voltagem) > -1);
-    if (this.ciclo) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.indexOf(this.ciclo) > -1);
-    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.indexOf(this.btu) > -1);
+
+    if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.linhaProduto + "|"));
+    if (this.descarga) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.descarga+ "|"));
+    if (this.voltagem) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.voltagem+ "|"));
+    if (this.ciclo) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.ciclo+ "|"));
+    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.btu+ "|"));
 
     this.evaporadoras = evaporadorasFiltradas;
   }
