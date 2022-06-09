@@ -50,7 +50,6 @@ export class MensageriaComponent implements AfterViewInit {
       if (r != null) {      
         this.listaMensagens = r;
         //this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
-
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }

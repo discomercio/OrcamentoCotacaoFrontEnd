@@ -1,9 +1,10 @@
+import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { HashLocationStrategy, LocationStrategy, PathLocationStrategy } from '@angular/common';
+import { LocationStrategy, PathLocationStrategy } from '@angular/common';
 import { AppRoutingModule } from './routing/app-routing.module';
 
 
@@ -17,36 +18,6 @@ import { AppMenuitemComponent } from './app.menuitem.component';
 import { AppTopBarComponent } from './app.topbar.component';
 import { AppFooterComponent } from './app.footer.component';
 import { AppProfileComponent } from './app.profile.component';
-// import { DashboardDemoComponent } from './../demo/view/dashboarddemo.component';
-// import { DashboardBankingComponent } from './../demo/view/dashboardbanking.component';
-// import { FormLayoutDemoComponent } from './../demo/view/formlayoutdemo.component';
-// import { FloatLabelDemoComponent } from './../demo/view/floatlabeldemo.component';
-// import { InvalidStateDemoComponent } from './../demo/view/invalidstatedemo.component';
-// import { InputDemoComponent } from './../demo/view/inputdemo.component';
-// import { ButtonDemoComponent } from './../demo/view/buttondemo.component';
-// import { TableDemoComponent } from './../demo/view/tabledemo.component';
-// import { ListDemoComponent } from './../demo/view/listdemo.component';
-// import { TreeDemoComponent } from './../demo/view/treedemo.component';
-// import { PanelsDemoComponent } from './../demo/view/panelsdemo.component';
-// import { OverlaysDemoComponent } from './../demo/view/overlaysdemo.component';
-// import { MediaDemoComponent } from './../demo/view/mediademo.component';
-// import { MenusDemoComponent } from './../demo/view/menusdemo.component';
-// import { MessagesDemoComponent } from './../demo/view/messagesdemo.component';
-// import { MiscDemoComponent } from './../demo/view/miscdemo.component';
-// import { EmptyDemoComponent } from './../demo/view/emptydemo.component';
-// import { ChartsDemoComponent } from './../demo/view/chartsdemo.component';
-// import { FileDemoComponent } from './../demo/view/filedemo.component';
-// import { DocumentationComponent } from './../demo/view/documentation.component';
-// import { DisplayComponent } from './../utilities/display.component';
-// import { ElevationComponent } from './../utilities/elevation.component';
-// import { FlexboxComponent } from './../utilities/flexbox.component';
-// import { GridComponent } from './../utilities/grid.component';
-// import { IconsComponent } from './../utilities/icons.component';
-// import { SpacingComponent } from './../utilities/spacing.component';
-// import { TypographyComponent } from './../utilities/typography.component';
-// import { TextComponent } from './../utilities/text.component';
-// import { WidgetsComponent } from './../utilities/widgets.component';
-
 import { CountryService } from './../demo/service/countryservice';
 import { EventService } from './../demo/service/eventservice';
 import { NodeService } from './../demo/service/nodeservice';
@@ -60,7 +31,6 @@ import { KeyFilterModule } from 'primeng/keyfilter';
 import { AlertDialogComponent } from '../components/alert-dialog/alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { NgxMaskModule } from 'ngx-mask';
-import { SweetalertService } from './../utilities/sweetalert/sweetalert.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { TokenInterceptor } from './../service/autenticacao/token.interceptor';
 
@@ -91,8 +61,11 @@ import { AppModuleNgComponents } from './app.module.ngcomponent';
 import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/consultar/consultar.component';
 
 //Alerts
-import { NgxIziToastModule, NgxIzitoastService } from 'ngx-izitoast';
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
+import { AuthGuard } from './guards/auth.guard';
+import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
+import { MensageriaComponent } from '../views/mensageria/mensageria.component';
+import { PublicoHeaderComponent } from '../views/publico/header/header.component';
 
 @NgModule({
     imports: [
@@ -120,37 +93,6 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
         AppFooterComponent,
         AppProfileComponent,
         AppConfigComponent,
-        // DashboardDemoComponent,
-        // DashboardBankingComponent,
-        // FormLayoutDemoComponent,
-        // FloatLabelDemoComponent,
-        // InvalidStateDemoComponent,
-        // InputDemoComponent,
-        // ButtonDemoComponent,
-        // TableDemoComponent,
-        // ListDemoComponent,
-        // TreeDemoComponent,
-        // PanelsDemoComponent,
-        // OverlaysDemoComponent,
-        // MediaDemoComponent,
-        // MenusDemoComponent,
-        // MessagesDemoComponent,
-        // MessagesDemoComponent,
-        // MiscDemoComponent,
-        // ChartsDemoComponent,
-        // EmptyDemoComponent,
-        // FileDemoComponent,
-        // DocumentationComponent,
-        // DisplayComponent,
-        // ElevationComponent,
-        // FlexboxComponent,
-        // GridComponent,
-        // IconsComponent,
-        // SpacingComponent,
-        // TypographyComponent,
-        // TextComponent,
-        // WidgetsComponent,
-        
         DownloadsComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
@@ -168,6 +110,9 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
+        PublicoOrcamentoComponent,
+        MensageriaComponent,
+        PublicoHeaderComponent
     ],
     providers: [
         {
@@ -178,7 +123,9 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
         { provide: LocationStrategy, useClass: PathLocationStrategy },
         CountryService, CustomerService, EventService, IconService, NodeService,
         PhotoService, ProductService, MenuService, MessageService, DialogService,
-        AppMenuComponent, ExportExcelService, ValidacaoFormularioService
+        AppMenuComponent, ExportExcelService, ValidacaoFormularioService,
+        AutenticacaoService,
+        AuthGuard
     ],
     bootstrap: [AppComponent]
 })

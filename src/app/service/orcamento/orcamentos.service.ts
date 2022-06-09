@@ -1,11 +1,11 @@
+import { OrcamentoCotacaoDto } from './../../dto/orcamentos/opcoes-orcamento-cotacao-dto';
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
-import { Usuario } from '../../dto/usuarios/usuario';
 import { ValidadeOrcamento } from '../../dto/config-orcamento/validade-orcamento';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { RemetenteDestinatarioResponse } from '../mensageria/remetenteDestinatarioResponse';

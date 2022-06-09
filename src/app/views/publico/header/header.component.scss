@@ -1,0 +1,66 @@
+
+
+.topo-div {
+    background-color: #146fd7;
+}
+
+.topo-logo-div {
+    background-color: rgb(255, 255, 255);
+    margin: auto;
+    width: 150px;
+    padding: 10px;
+}
+
+.topo-logo-img {
+    width: 70px;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+
+.corpo{
+    padding: 15px 15px 15px 15px;
+}
+
+.card{
+    min-height: 0% !important;
+    // border-radius: 2ch !important;
+}
+
+@media screen and (max-width: 600px){
+    .img{
+        width: 30%;
+    }
+}
+
+::ng-deep .p-accordion-content{
+    padding: 0 !important;
+}
+
+.font-size > td > input,
+.font-size {
+    font-size: smaller !important; 
+}
+
+::ng-deep .p-divider.p-divider-horizontal{
+    margin: 0% !important;
+}
+
+::ng-deep .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link{
+    background: #146fd7;
+    color: #fff;
+}
+::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link{
+    background: #146fd7;
+    color: #fff;
+}
+::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link 
+{
+    background: #146fd7;
+    color: #fff;
+}
+
+::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link{
+    background: #146fd7;
+    color: #fff;
+}
