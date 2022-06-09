@@ -63,6 +63,9 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
 //Alerts
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
 import { AuthGuard } from './guards/auth.guard';
+import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
+import { MensageriaComponent } from '../views/mensageria/mensageria.component';
+import { PublicoHeaderComponent } from '../views/publico/header/header.component';
 
 @NgModule({
     imports: [
@@ -107,6 +110,9 @@ import { AuthGuard } from './guards/auth.guard';
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
+        PublicoOrcamentoComponent,
+        MensageriaComponent,
+        PublicoHeaderComponent
     ],
     providers: [
         {

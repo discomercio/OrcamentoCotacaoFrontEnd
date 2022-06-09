@@ -28,10 +28,6 @@ export class OrcamentosService {
     return this.http.get<OrcamentoCotacaoResponse>(`${environment.apiUrl}Orcamento?id=${id}`);
   }
 
-  buscarOrcamentoPorGuid(guid: string) {
-    return this.http.get<OrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento/porguid/${guid}`);
-  }
-
   enviarOrcamento(model:OrcamentoCotacaoResponse):Observable<number>{
     return this.http.post<number>(`${environment.apiUrl}Orcamento`, model);
   }

@@ -44,7 +44,7 @@ export class MensageriaComponent implements OnInit {
     this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
       if (r != null) {
         this.listaMensagens = r;
-        console.log(this.listaMensagens);
+        // console.log(this.listaMensagens);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
