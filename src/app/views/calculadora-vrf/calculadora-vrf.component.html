@@ -35,7 +35,7 @@
                                 <p-dropdown [options]="lstFabricantes" formControlName="fabricante"
                                     [(ngModel)]="fabricante" placeholder="Selecione" optionLabel="label"
                                     optionValue="value"></p-dropdown>
-                                <div *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">
+                                <div  *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">
                                     <small class="p-error"
                                         *ngIf="form.controls.fabricante.errors?.required">{{mensagemErro}}</small>
                                 </div>
@@ -113,45 +113,45 @@
                     <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-9 p-md-9 
                                 p-pr-md-2 p-px-0 p-sm-12">
                         <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-lg-0 p-pl-md-0 p-pr-sm-1
-                                    p-px-0 p-sm-3 p-my-0">
+                                    p-px-0 p-sm-3 p-my-0 p-field">
                             <label>Voltagem</label>
                             <p-dropdown [options]="lstVoltagens" placeholder="Selecione" optionLabel="label"
                                 optionValue="value" [(ngModel)]="voltagem" [showClear]="true"
                                 formControlName="voltagem">
                             </p-dropdown>
-                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'voltagem')">
+                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'voltagem')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.voltagem.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0">
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0  p-field">
                             <label>Tipo de descarga</label>
                             <p-dropdown [options]="lstDescargas" placeholder="Selecione" optionLabel="label"
                                 optionValue="value" [(ngModel)]="descarga" [showClear]="true"
                                 formControlName="descarga">
                             </p-dropdown>
-                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'descarga')">
+                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'descarga')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.descarga.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0">
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0 p-field">
                             <label style="word-break: break-word; white-space: break-spaces;">Simultaneidade máxima
                                 %</label>
                             <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"
-                                formControlName="simultaneidade"></p-dropdown>
-                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'simultaneidade')">
+                                formControlName="simultaneidade" [showClear]="true"></p-dropdown>
+                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'simultaneidade')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.simultaneidade.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-sm-1 p-px-0 p-sm-3 p-my-0">
+                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-sm-1 p-px-0 p-sm-3 p-my-0 p-field">
                             <label>Quantidade de condensadoras</label>
                             <p-dropdown [options]="lstQtdeCondensadoras" [(ngModel)]="qtdeCondensadora"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"
-                                formControlName="qtdeCondensadora"></p-dropdown>
-                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'qtdeCondensadora')">
+                                formControlName="qtdeCondensadora" [showClear]="true"></p-dropdown>
+                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'qtdeCondensadora')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.qtdeCondensadora.errors?.required">{{mensagemErro}}</small>
                             </div>
