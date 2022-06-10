@@ -33,7 +33,9 @@ export class TokenInterceptor implements HttpInterceptor {
       };
     }
     else {
-      this.router.navigate(['account/login']);
+      if(!this.router.url.startsWith('/publico/')) {
+        this.router.navigate(['account/login']);
+      }
     }
 
     req = req.clone({ setHeaders: headers });

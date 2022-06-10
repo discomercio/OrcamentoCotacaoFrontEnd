@@ -73,6 +73,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
 
+    //this.idOrcamentoCotacao = 258;
+
     this.buscarOrcamento(this.idOrcamentoCotacao);
     this.buscarFormasPagto();
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
@@ -80,8 +82,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   ngAfterViewInit() {
-    // this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
-
+    this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
+    this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
   }
 
   @Input() desabiltarBotoes: boolean;
@@ -93,13 +95,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   opcaoPagto: number;
 
   buscarDadosParaMensageria(id: number) {
+    
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
+
           this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.idUsuarioRemetente.toString();
           this.mensagemComponente.idTipoUsuarioContextoRemetente = r.idTipoUsuarioContextoRemetente.toString();
+          this.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();          
           this.mensagemComponente.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();
+          this.mensagemComponente.donoOrcamento = r.donoOrcamento;
           this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.idTipoUsuarioContextoDestinatario.toString();
         }
       }).catch((e) => {
@@ -112,7 +118,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        this.novoOrcamentoService.orcamentoCotacaoDto = r;        
+        debugger;
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }

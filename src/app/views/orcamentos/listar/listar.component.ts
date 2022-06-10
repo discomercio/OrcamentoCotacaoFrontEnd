@@ -332,6 +332,7 @@ export class OrcamentosListarComponent implements OnInit {
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
+
     if (this.filtro.DtInicioExpiracao && this.filtro.DtFimExpiracao) {
       let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
       let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
@@ -359,10 +360,17 @@ export class OrcamentosListarComponent implements OnInit {
       if (this.filtro.VendedorParceiro != null) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.VendedorParceiro == x.VendedorParceiro); }
       if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
       if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
-      if (this.filtro.Expirado) {
+      if (this.filtro.Expirado != undefined) {
         let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-        this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-          new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
+        if (this.filtro.Expirado == true) {
+          this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
+            new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
+        }
+        
+        if (this.filtro.Expirado == false) {
+          this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
+            new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
+        }
       }
       if (lstFiltraDataExpiracao.length > 0) {
         let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
@@ -518,7 +526,7 @@ export class OrcamentosListarComponent implements OnInit {
     return lstExport;
   }
 
-  orcamento_OnClick(id){
+  orcamento_OnClick(id) {
     this.router.navigate(["orcamentos/aprovar-orcamento", id]);
   }
 }

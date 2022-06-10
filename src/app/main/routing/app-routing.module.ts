@@ -30,12 +30,11 @@ import { CadastrarClienteComponent } from 'src/app/views/orcamentos/novo-orcamen
 import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/itens.component';
 import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
-import { LoginGuard } from 'src/app/service/autenticacao/login.guard';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
 import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
-import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
-import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
+import { AuthGuard } from '../guards/auth.guard';
+import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 
 @NgModule({
     imports: [
@@ -45,64 +44,60 @@ import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-
                 children: [
                     { path: 'account/login', component: LoginComponent, },
                     { path: 'orcamentos/aprovacao-orcamento-cliente', component: AprovacaoOrcamentoClienteComponent },
+                    { path: 'publico/orcamento/:guid', component: PublicoOrcamentoComponent },
                     {
-                        path: '', component: AppMainComponent, canActivate: [LoginGuard], children: [
+                        path: '', component: AppMainComponent, canActivate: [AuthGuard], children: [
 
                             // Orçamentos
                             {
-                                path: 'orcamentos', canActivate: [LoginGuard], children: [
-                                    { path: "listar/:filtro", canActivate: [LoginGuard], component: OrcamentosListarComponent },
-                                    { path: "cadastrar-cliente/:filtro", canActivate: [LoginGuard], component: CadastrarClienteComponent },
-                                    { path: "itens", canActivate: [LoginGuard], component: ItensComponent },
-                                    { path: "select-prod", canActivate: [LoginGuard], component: SelectProdDialogComponent },
-                                    { path: "visualizar-orcamento/:id", canActivate: [LoginGuard], component: VisualizarOrcamentoComponent },
-                                    { path: "novo-orcamento", canActivate: [LoginGuard], component: NovoOrcamentoComponent },
-                                    { path: "aprovar-orcamento/:id", canActivate: [LoginGuard], component: AprovarOrcamentoComponent },
+                                path: 'orcamentos', canActivate: [AuthGuard], children: [
+                                    { path: "listar/:filtro", canActivate: [AuthGuard], component: OrcamentosListarComponent },
+                                    { path: "cadastrar-cliente/:filtro", canActivate: [AuthGuard], component: CadastrarClienteComponent },
+                                    { path: "itens", canActivate: [AuthGuard], component: ItensComponent },
+                                    { path: "select-prod", canActivate: [AuthGuard], component: SelectProdDialogComponent },
+                                    { path: "visualizar-orcamento/:id", canActivate: [AuthGuard], component: VisualizarOrcamentoComponent },
+                                    { path: "novo-orcamento", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
+                                    { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                 ]
                             },
 
                             // Dashboard
-                            { path: 'dashboards/generic', canActivate: [LoginGuard], component: DashboardDemoComponent },
+                            { path: 'dashboards/generic', canActivate: [AuthGuard], component: DashboardDemoComponent },
 
                             {
-                                path: 'pedido', canActivate: [LoginGuard], children: [
-                                    { path: 'novo-pedido', canActivate: [LoginGuard], component: NovoPedidoComponent },
+                                path: 'pedido', canActivate: [AuthGuard], children: [
+                                    { path: 'novo-pedido', canActivate: [AuthGuard], component: NovoPedidoComponent },
                                 ]
                             },
                             // Produtos Catalogo
                             {
-                                path: 'produtos-catalogo', canActivate: [LoginGuard], children: [
-                                    { path: 'consultar', canActivate: [LoginGuard], component: ProdutosCatalogoConsultarComponent },
-                                    { path: 'criar', canActivate: [LoginGuard], component: ProdutosCatalogoCriarComponent },
-                                    { path: 'listar', canActivate: [LoginGuard], component: ProdutosCatalogoListarComponent },
-                                    { path: 'visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoVisualizarComponent },
-                                    { path: 'editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar/', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
-                                    { path: 'propriedades/listar', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesListarComponent },
-                                    { path: 'propriedades/visualizar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
-                                    { path: 'propriedades/editar/:id', canActivate: [LoginGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
+                                path: 'produtos-catalogo', canActivate: [AuthGuard], children: [
+                                    { path: 'consultar', canActivate: [AuthGuard], component: ProdutosCatalogoConsultarComponent },
+                                    { path: 'criar', canActivate: [AuthGuard], component: ProdutosCatalogoCriarComponent },
+                                    { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
+                                    { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
+                                    { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
+                                    { path: 'propriedades/criar/', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
+                                    { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
+                                    { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
+                                    { path: 'propriedades/editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
                                 ]
                             },
 
                             // Downloads
-                            { path: 'downloads', component: DownloadsComponent, canActivate: [LoginGuard] },
+                            { path: 'downloads', component: DownloadsComponent, canActivate: [AuthGuard] },
 
                             // Usuarios
                             {
-                                path: 'usuarios', canActivate: [LoginGuard], children: [
-                                    { path: 'usuario-lista', component: UsuarioListaComponent, canActivate: [LoginGuard] },
-                                    { path: 'usuario-edicao/:apelido', component: UsuarioEdicaoComponent, canActivate: [LoginGuard] },
-                                    { path: 'usuario-meusdados', component: UsuarioMeusdadosComponent, canActivate: [LoginGuard] },
+                                path: 'usuarios', canActivate: [AuthGuard], children: [
+                                    { path: 'usuario-lista', component: UsuarioListaComponent, canActivate: [AuthGuard] },
+                                    { path: 'usuario-edicao/:apelido', component: UsuarioEdicaoComponent, canActivate: [AuthGuard] },
+                                    { path: 'usuario-meusdados', component: UsuarioMeusdadosComponent, canActivate: [AuthGuard] },
                                 ]
                             },
 
                             // Clientes
-                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [LoginGuard] },
-                            {
-                                path: 'calculadora-vrf', canActivate: [LoginGuard], component: CalculadoraVrfComponent, children: [
-                                    { path: "select-evap-dialog", canActivate: [LoginGuard], component: SelectEvapDialogComponent },
-                                ]
-                            }
+                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [AuthGuard] }
                         ]
                     }
                 ]

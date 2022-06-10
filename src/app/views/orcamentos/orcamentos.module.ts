@@ -1,3 +1,4 @@
+import { SharedModule } from './../../main/shared.module';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NgModule } from '@angular/core';
@@ -33,7 +34,6 @@ import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.componen
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
-import { MensageriaComponent } from '../mensageria/mensageria.component';
 import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 
 @NgModule({
@@ -47,13 +47,10 @@ import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-client
     NovoOrcamentoComponent,
     FormaPagtoComponent,
     OpcoesComponent,
-    MensageriaComponent,
-    AprovacaoOrcamentoClienteComponent
+    AprovacaoOrcamentoClienteComponent,
   ],
   imports: [
-    // OrcamentosRoutingModule,
-    CommonModule,
-    ReactiveFormsModule,
+    SharedModule,
     InputTextModule,
     DropdownModule,
     CheckboxModule,
@@ -64,7 +61,6 @@ import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-client
     TableModule,
     InputTextareaModule,
     PaginatorModule,
-    AccordionModule,
     AvatarModule,
     TooltipModule,
     RadioButtonModule,
@@ -73,7 +69,7 @@ import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-client
     TabViewModule,
     AutoCompleteModule,
     MultiSelectModule,
-    InputSwitchModule
+    InputSwitchModule,
   ],
   providers:[DialogService, DatePipe]
 })

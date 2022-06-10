@@ -18,15 +18,31 @@ export class MensageriaService {
         return this.http.get<MensageriaDto[]>(environment.apiUrl + "Mensagem/?IdOrcamentoCotacao=" + idOrcamentoCotacao);
     }
 
+    obterListaMensagemPendente(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
+    
+      let params = new HttpParams();    
+          params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
+          return this.http.get<MensageriaDto[]>(environment.apiUrl + "Mensagem/pendente?IdOrcamentoCotacao=" + idOrcamentoCotacao);
+      }    
+
+    obterQuantidadeMensagemPendente() {
+      return this.http.get<number[]>(environment.apiUrl + "Mensagem/pendente/quantidade");
+    }          
+
     enviarMensagem(msg: any): Observable<any> {
         return this.http.post<any>(`${environment.apiUrl}Mensagem/`, msg);
     }
 
-    marcarComoLida(idOrcamentoCotacao: string, idUsuarioDestinatario: string): Observable<any> {
-        let params = new HttpParams();
-        params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
-        params = params.append("idUsuarioDestinatario", idUsuarioDestinatario);        
-        return this.http.put<any>(environment.apiUrl +"Mensagem/lida", params);
-    }
+    marcarMensagemComoLida(idOrcamentoCotacao: string): Observable<any> {      
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/marcar/lida?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }        
+    
+    marcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/marcar/pendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }    
+
+    desmarcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
+      return this.http.put<any>(`${environment.apiUrl}Mensagem/desmarcar/pendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }      
 
 }
