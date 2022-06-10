@@ -269,7 +269,6 @@ export class OrcamentosListarComponent implements OnInit {
 
 
   filtrar_cboParceiros() {
-    this.filtro.Parceiro = null;
     this.cboParceiros = [];
     let lstFiltrada = this.lstDto.filter(x => x.Vendedor == this.filtro.Vendedor);
 
