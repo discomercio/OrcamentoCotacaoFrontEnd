@@ -35,6 +35,8 @@ import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedid
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
+import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
+import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 
 @NgModule({
     imports: [
@@ -97,7 +99,13 @@ import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcam
                             },
 
                             // Clientes
-                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [AuthGuard] }
+                            { path: 'cliente/cliente', component: ClienteComponent, canActivate: [AuthGuard] },
+                            {
+                                path: 'calculadora-vrf', canActivate: [AuthGuard], component: CalculadoraVrfComponent, children: [
+                                    { path: "select-evap-dialog", canActivate: [AuthGuard], component: SelectEvapDialogComponent },
+                                ]
+                            }
+
                         ]
                     }
                 ]

@@ -62,7 +62,7 @@
                                 <th class="p-text-left p-col-6 p-py-0">Produto</th>
                                 <th class="p-text-right p-py-0">Qtde</th>
                                 <th class="p-text-center p-py-0">Voltagem</th>
-                                <th class="p-text-center p-py-0">Kcal/h</th>
+                                <th class="p-text-center p-py-0">Capacidade(Kcal/h)</th>
                                 <th class="p-text-center p-py-0">Total Kcal/h</th>
                                 <th class="p-text-center p-py-0">Ações</th>
                             </tr>
@@ -186,7 +186,7 @@
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Kcal/h</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
                                     </tr>
                                 </ng-template>
@@ -231,7 +231,7 @@
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Kcal/h</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
                                     </tr>
                                 </ng-template>
@@ -270,13 +270,13 @@
                             </div>
                         </ng-template>
                         <ng-template pTemplate="content" *ngIf="combinacaoCom3aparelhos.length > 0">
-                            <p-table #dataTable [value]="combinacaoCom3aparelhos" [responsive]="true"
+                            <p-table id="dataTable3" [value]="combinacaoCom3aparelhos" [responsive]="true"
                                 responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
                                 styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Kcal/h</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
                                     </tr>
                                 </ng-template>

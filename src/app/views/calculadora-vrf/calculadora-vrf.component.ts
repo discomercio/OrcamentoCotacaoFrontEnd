@@ -16,8 +16,9 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dialog.component';
-import * as FileSaver from 'file-saver';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import jsPDF from 'jspdf';
+import autoTable, { RowInput } from 'jspdf-autotable'
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -80,6 +81,66 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
+  }
+
+  export() {
+    let doc = new jsPDF();
+
+    const head = [['ID', 'Country', 'Index', 'Capital']]
+    const data = [
+      [1, 'Gabriel', 7.632, 'Helsinki'],
+      [2, 'Norway', 7.594, 'Oslo'],
+      [3, 'Denmark', 7.555, 'Copenhagen'],
+      [4, 'Iceland', 7.495, 'Reykjavík'],
+      [5, 'Switzerland', 7.487, 'Bern'],
+      [9, 'Sweden', 7.314, 'Stockholm'],
+      [73, 'Belarus', 5.483, 'Minsk'],
+    ]
+
+    autoTable(doc, {
+      html: "dataTable3",
+      didDrawCell: (data) => { },
+    });
+    autoTable(doc, {
+        head: head,
+        body: data,
+        didDrawCell: (data) => { },
+    });
+    // doc.save('table.pdf');
+    doc.output('dataurlnewwindow');
+  }
+  montarDadosParaPDF(produto:ProdutoTabela[]){
+    let retorno= [];
+    produto.forEach(x =>{
+      let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
+      retorno.push(dado);
+    });
+    debugger;
+    return retorno;
+  }
+  exportPdf() {
+    let doc = new jsPDF();
+
+    const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']]
+    let data = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
+    autoTable(doc, {
+      head: head,
+      body: data,
+      didDrawCell: (data) => { },
+    });
+    data = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
+    autoTable(doc, {
+      head: head,
+      body: data,
+      didDrawCell: (data) => { },
+    });
+    data = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
+    autoTable(doc, {
+      head: head,
+      body: data,
+      didDrawCell: (data) => { },
+    });
+    doc.output('dataurlnewwindow');
   }
 
   criarForm() {
@@ -387,6 +448,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   calcularCondensadoras() {
+    // this.calculado = false;
     if (!this.validacaoFormularioService.validaForm(this.form2)) {
       return;
     }
@@ -417,7 +479,7 @@ export class CalculadoraVrfComponent implements OnInit {
     let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
     this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
     this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
-
+debugger
     let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
     this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
     this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
@@ -544,13 +606,5 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.unificarEquipamentosIguais(ret);
   }
 
-  exportPdf() {
-    //   FileSaver.then(jsPDF => {
-    //     import("jspdf-autotable").then(x => {
-    //         const doc = new jsPDF.default(0,0);
-    //         doc.autoTable(this.exportColumns, this.products);
-    //         doc.save('products.pdf');
-    //     })
-    // })
-  }
+
 }

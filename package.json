@@ -35,6 +35,8 @@
         "font-awesome": "^4.7.0",
         "http-parser-js": "^0.5.5",
         "izitoast": "^1.4.0",
+        "jspdf": "^2.5.1",
+        "jspdf-autotable": "^3.5.25",
         "jwt-decode": "^3.1.2",
         "ngx-izitoast": "^1.0.1",
         "ngx-mask": "^12.0.0",

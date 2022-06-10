@@ -57,6 +57,8 @@ import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.com
 import { AuthGuard } from './guards/auth.guard';
 import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
 import { PublicoHeaderComponent } from '../views/publico/header/header.component';
+import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
+import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 
 @NgModule({
     imports: [
@@ -91,7 +93,9 @@ import { PublicoHeaderComponent } from '../views/publico/header/header.component
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
         PublicoOrcamentoComponent,
-        PublicoHeaderComponent
+        PublicoHeaderComponent,
+        CalculadoraVrfComponent,
+        SelectEvapDialogComponent
     ],
     providers: [
         {
