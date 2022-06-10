@@ -366,6 +366,7 @@ export class OrcamentosListarComponent implements OnInit {
           this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
             new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
         }
+        
         if (this.filtro.Expirado == false) {
           this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
             new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
