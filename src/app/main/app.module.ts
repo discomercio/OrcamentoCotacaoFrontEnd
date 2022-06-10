@@ -1,23 +1,17 @@
+import { SharedModule } from './shared.module';
 import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { NgModule } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-import { AppRoutingModule } from './routing/app-routing.module';
 
 
 
 import { AppCodeModule } from './app.code.component';
 import { AppComponent } from './app.component';
-import { AppMainComponent } from './app.main.component';
-import { AppConfigComponent } from './app.config.component';
 import { AppMenuComponent } from './app.menu.component';
-import { AppMenuitemComponent } from './app.menuitem.component';
-import { AppTopBarComponent } from './app.topbar.component';
-import { AppFooterComponent } from './app.footer.component';
-import { AppProfileComponent } from './app.profile.component';
 import { CountryService } from './../demo/service/countryservice';
 import { EventService } from './../demo/service/eventservice';
 import { NodeService } from './../demo/service/nodeservice';
@@ -56,43 +50,29 @@ import { ValidacaoFormularioService } from './../utilities/validacao-formulario/
 
 import { OrcamentosModule } from '../views/orcamentos/orcamentos.module';
 import { UsuarioMeusdadosComponent } from '../views/usuarios/usuario-meusdados/usuario-meusdados.component';
-import { AppModuleComponents } from './app.module.component';
-import { AppModuleNgComponents } from './app.module.ngcomponent';
 import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/consultar/consultar.component';
 
 //Alerts
 import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
 import { AuthGuard } from './guards/auth.guard';
 import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
-import { MensageriaComponent } from '../views/mensageria/mensageria.component';
 import { PublicoHeaderComponent } from '../views/publico/header/header.component';
 
 @NgModule({
     imports: [
-        AppModuleComponents,
+        SharedModule,
+        
         BrowserModule,
-        FormsModule,
-        AppRoutingModule,
         HttpClientModule,
         BrowserAnimationsModule,
         AppCodeModule,
         KeyFilterModule,
         FormsModule,
-        ReactiveFormsModule,
         FontAwesomeModule,
         NgxMaskModule.forRoot(),
         OrcamentosModule,
-        AppModuleNgComponents
     ],
     declarations: [
-        AppComponent,
-        AppMainComponent,
-        AppMenuComponent,
-        AppMenuitemComponent,
-        AppTopBarComponent,
-        AppFooterComponent,
-        AppProfileComponent,
-        AppConfigComponent,
         DownloadsComponent,
         AlertDialogComponent,
         UsuarioEdicaoComponent,
@@ -111,7 +91,6 @@ import { PublicoHeaderComponent } from '../views/publico/header/header.component
         ProdutosCatalogoConsultarComponent,
         NovoPedidoComponent,
         PublicoOrcamentoComponent,
-        MensageriaComponent,
         PublicoHeaderComponent
     ],
     providers: [
