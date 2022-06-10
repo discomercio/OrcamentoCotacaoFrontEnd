@@ -42,17 +42,18 @@ export class MensageriaComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {    
     this.obterListaMensagem(this.idOrcamentoCotacao);
-    this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
+    //this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
   }
 
-  obterListaMensagem(idOrcamentoCotacao: number) {    
-    this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-      if (r != null) {      
-        this.listaMensagens = r;
-        this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
-
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  obterListaMensagem(idOrcamentoCotacao: number) { 
+    if(idOrcamentoCotacao) {
+      this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+        if (r != null) {      
+          this.listaMensagens = r;
+          //this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }
   }
 
   enviarMensagem() {

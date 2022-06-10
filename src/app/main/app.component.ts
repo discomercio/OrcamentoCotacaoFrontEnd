@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
-import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,8 +18,8 @@ export class AppComponent implements OnInit {
 
     inputStyle = 'outlined';
 
-    constructor(private primengConfig: PrimeNGConfig,
-        private readonly autenticacaoService: AutenticacaoService,
+    constructor(
+        private primengConfig: PrimeNGConfig,
         private readonly router: Router) { }
 
     ngOnInit() {
@@ -34,11 +33,5 @@ export class AppComponent implements OnInit {
             dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
         });
         this.primengConfig.ripple = true;
-
-        let estalogado = this.autenticacaoService.authEstaLogado();
-        if (!estalogado) {
-            this.router.navigate(['account/login']);
-        } 
-
     }
 }
