@@ -17,6 +17,7 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dialog.component';
 import * as FileSaver from 'file-saver';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -32,6 +33,7 @@ export class CalculadoraVrfComponent implements OnInit {
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     public dialogService: DialogService,
+    private readonly sweetalertService: SweetalertService
   ) { }
 
   form: FormGroup;
@@ -55,8 +57,11 @@ export class CalculadoraVrfComponent implements OnInit {
   condensadorasSelecionadas = new Array<ProdutoTabela>();
   condensadorasFiltradas: ProdutoTabela[] = [];
   combinacaoCom3aparelhos: ProdutoTabela[] = [];
+  simultaneidadeCalculada3aparelhos: number;
   combinacaoCom2aparelhos: ProdutoTabela[] = [];
+  simultaneidadeCalculada2aparelhos: number;
   combinacaoCom1aparelhos: ProdutoTabela[] = [];
+  simultaneidadeCalculada1aparelho: number;
 
   totalKcalEvaporadoras: number;
   simultaneidade: number;
@@ -64,6 +69,7 @@ export class CalculadoraVrfComponent implements OnInit {
   voltagem: number;
   descarga: number;
   fabricante: string;
+  fabricanteSelecionado: string;
 
   stringUtils = StringUtils;
   mensagemErro: string = "*Campo obrigatório.";
@@ -78,7 +84,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   criarForm() {
     this.form = this.fb.group({
-      fabricante: ['', [Validators.required]]
+      fabricanteSelecionado: ['', [Validators.required]]
     });
 
     this.form2 = this.fb.group({
@@ -127,8 +133,11 @@ export class CalculadoraVrfComponent implements OnInit {
         let voltagem: boolean = false;
         let descarga: boolean = false;
         let kcal: boolean = false;
+        let ciclo: boolean = false;
 
         lista.forEach(l => {
+
+          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
           //voltagem
           if (Number.parseInt(l.idPropriedade) == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
@@ -147,9 +156,13 @@ export class CalculadoraVrfComponent implements OnInit {
             produtoTabela.kcal = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
           }
+          if (Number.parseInt(l.idPropriedade) == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            ciclo = true;
+            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+          }
         });
 
-        if (voltagem && descarga && kcal) {
+        if (voltagem && descarga && kcal && ciclo) {
           this.condensadoras.push(produtoTabela);
         }
       }
@@ -259,7 +272,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   filtrarEvaporadoras(): ProdutoTabela[] {
-    let fabricante = this.form.controls.fabricante.value;
+    let fabricante = this.form.controls.fabricanteSelecionado.value;
 
     return this.evaporadoras.filter(x => x.fabricante == fabricante);
   }
@@ -281,6 +294,7 @@ export class CalculadoraVrfComponent implements OnInit {
       if (resultado) {
         this.arrumarProdutosRepetidos(resultado);
         this.digitouQte(resultado);
+
       }
     });
   }
@@ -318,13 +332,51 @@ export class CalculadoraVrfComponent implements OnInit {
   filtrarCondensadoras() {
 
     this.condensadorasFiltradas = this.condensadoras;
-    if(this.evaporadorasSelecionadas.findIndex(x => x.linhaBusca.includes("302")) > -1){
+    if (this.evaporadorasSelecionadas.findIndex(x => x.linhaBusca.includes("302")) > -1) {
       this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes("302"));
     }
 
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.fabricante == this.fabricante);
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.fabricante == this.fabricanteSelecionado);
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.voltagem.toString()));
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.descarga.toString()));
+  }
+
+  limparFiltros() {
+    if (this.evaporadorasSelecionadas.length > 0) {
+      this.sweetalertService.confirmarSemMostrar("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
+        debugger;
+        if (!result) {
+          this.fabricanteSelecionado = this.fabricante;
+          return;
+        }
+        this.limparEvaporadorasSelecionadas();
+        this.limparCombinacoesCondensadoras();
+        this.limparFiltrosCondensadoras();
+        this.fabricante = this.fabricanteSelecionado;
+      });
+    }
+  }
+
+  limparEvaporadorasSelecionadas() {
+    this.evaporadorasSelecionadas = new Array<ProdutoTabela>();
+  }
+  limparCombinacoesCondensadoras() {
+    this.combinacaoCom1aparelhos = new Array<ProdutoTabela>();
+    this.simultaneidadeCalculada1aparelho = 0;
+    this.combinacaoCom2aparelhos = new Array<ProdutoTabela>();
+    this.simultaneidadeCalculada2aparelhos = 0;
+    this.combinacaoCom3aparelhos = new Array<ProdutoTabela>();
+    this.simultaneidadeCalculada3aparelhos = 0;
+
+    this.calculado = false;
+
+  }
+
+  limparFiltrosCondensadoras() {
+    this.voltagem = 0;
+    this.descarga = 0;
+    this.simultaneidade = 0;
+    this.qtdeCondensadora = 0;
   }
 
   calcularCondensadoras() {
@@ -336,7 +388,9 @@ export class CalculadoraVrfComponent implements OnInit {
       this.mensagemService.showWarnViaToast("Por favor, selecione evaporadoras antes de calcular condensadoras!");
       return;
     }
-    this.condensadorasFiltradas = this.condensadoras;
+
+    this.limparCombinacoesCondensadoras();
+
     let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
 
@@ -350,15 +404,15 @@ export class CalculadoraVrfComponent implements OnInit {
     });
 
     let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    let SimultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
+    this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
     this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
 
     let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    let SimultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
+    this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
     this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
 
     let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    let SimultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
+    this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
     this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
 
     this.calculado = true;

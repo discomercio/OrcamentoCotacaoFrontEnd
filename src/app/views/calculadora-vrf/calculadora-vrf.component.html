@@ -32,12 +32,12 @@
                                 p-md-7 p-px-0 p-sm-7">
                             <div class="p-col-12 p-field p-lg-6 p-md-6 p-sm-6">
                                 <label>Fabricante</label>
-                                <p-dropdown [options]="lstFabricantes" formControlName="fabricante"
-                                    [(ngModel)]="fabricante" placeholder="Selecione" optionLabel="label"
-                                    optionValue="value"></p-dropdown>
-                                <div  *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">
+                                <p-dropdown [options]="lstFabricantes" formControlName="fabricanteSelecionado"
+                                    [(ngModel)]="fabricanteSelecionado" placeholder="Selecione" optionLabel="label"
+                                    optionValue="value" (onChange)="limparFiltros()"></p-dropdown>
+                                <div  *ngIf="validacaoFormularioService.verificaCampo(form,'fabricanteSelecionado')">
                                     <small class="p-error"
-                                        *ngIf="form.controls.fabricante.errors?.required">{{mensagemErro}}</small>
+                                        *ngIf="form.controls.fabricanteSelecionado.errors?.required">{{mensagemErro}}</small>
                                 </div>
                             </div>
                         </div>
@@ -170,8 +170,8 @@
                     <p-accordionTab>
                         <ng-template pTemplate="header">
                             Opção com 1 condensadora
-                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="SimultaneidadeCalculada1aparelho > 0">
-                                Simultaneidade: {{SimultaneidadeCalculada1aparelho}}
+                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="simultaneidadeCalculada1aparelho > 0">
+                                Simultaneidade: {{simultaneidadeCalculada1aparelho}}
                             </div>
                         </ng-template>
                         <ng-template pTemplate="content" *ngIf="combinacaoCom1aparelhos.length == 0">
@@ -215,8 +215,8 @@
                     <p-accordionTab>
                         <ng-template pTemplate="header">
                             Opção com 2 condensadoras
-                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="SimultaneidadeCalculada2aparelho > 0">
-                                Simultaneidade: {{SimultaneidadeCalculada2aparelho}}
+                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="simultaneidadeCalculada2aparelhos > 0">
+                                Simultaneidade: {{simultaneidadeCalculada2aparelhos}}
                             </div>
                         </ng-template>
                         <ng-template pTemplate="content" *ngIf="combinacaoCom2aparelhos.length == 0">
@@ -260,8 +260,8 @@
                     <p-accordionTab>
                         <ng-template pTemplate="header">
                             Opção com 3 condensadoras
-                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="SimultaneidadeCalculada3aparelho > 0">
-                                Simultaneidade: {{SimultaneidadeCalculada3aparelho}}
+                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="simultaneidadeCalculada3aparelhos > 0">
+                                Simultaneidade: {{simultaneidadeCalculada3aparelhos}}
                             </div>
                         </ng-template>
                         <ng-template pTemplate="content" *ngIf="combinacaoCom3aparelhos.length == 0">

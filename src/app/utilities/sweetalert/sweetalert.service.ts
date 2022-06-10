@@ -100,4 +100,27 @@ export class SweetalertService {
     sucesso(mensagem: string): void {
         this.swalSucesso(mensagem);
     }
+
+    confirmarSemMostrar(titulo: string, texto: string): Observable<any> {
+        this.setSemConfirm(titulo, texto);
+        return this.subject.asObservable();
+    }
+    setSemConfirm(titulo: string, texto: string) {
+        this.subject = new Subject<any>();
+        this.swalWithBootstrapButtons.fire({
+            title: titulo,
+            text: texto,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, confirme para mim!',
+            cancelButtonText: 'Não, cancele!',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.subject.next(true);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                this.subject.next(false);
+            }
+        });
+    }
 }
