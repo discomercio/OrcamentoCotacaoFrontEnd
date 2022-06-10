@@ -294,7 +294,8 @@ export class CalculadoraVrfComponent implements OnInit {
       if (resultado) {
         this.arrumarProdutosRepetidos(resultado);
         this.digitouQte(resultado);
-
+        this.limparCombinacoesCondensadoras();
+        // this.limparFiltrosCondensadoras();
       }
     });
   }
@@ -307,8 +308,12 @@ export class CalculadoraVrfComponent implements OnInit {
   digitouQte(produto: ProdutoTabela) {
     if (produto.qtde <= 0) produto.qtde = 1;
 
+    this.totalKcalEvaporadoras = this.evaporadorasSelecionadas
+      .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
 
-    this.totalKcalEvaporadoras = this.evaporadorasSelecionadas.reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+    if (this.calculado) {
+      this.calcularCondensadoras();
+    }
   }
 
   arrumarProdutosRepetidos(produto: ProdutoTabela) {
@@ -344,7 +349,6 @@ export class CalculadoraVrfComponent implements OnInit {
   limparFiltros() {
     if (this.evaporadorasSelecionadas.length > 0) {
       this.sweetalertService.confirmarSemMostrar("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
-        debugger;
         if (!result) {
           this.fabricanteSelecionado = this.fabricante;
           return;
@@ -354,12 +358,16 @@ export class CalculadoraVrfComponent implements OnInit {
         this.limparFiltrosCondensadoras();
         this.fabricante = this.fabricanteSelecionado;
       });
+      return;
     }
+
+    this.fabricante = this.fabricanteSelecionado;
   }
 
   limparEvaporadorasSelecionadas() {
     this.evaporadorasSelecionadas = new Array<ProdutoTabela>();
   }
+
   limparCombinacoesCondensadoras() {
     this.combinacaoCom1aparelhos = new Array<ProdutoTabela>();
     this.simultaneidadeCalculada1aparelho = 0;
@@ -369,7 +377,6 @@ export class CalculadoraVrfComponent implements OnInit {
     this.simultaneidadeCalculada3aparelhos = 0;
 
     this.calculado = false;
-
   }
 
   limparFiltrosCondensadoras() {
