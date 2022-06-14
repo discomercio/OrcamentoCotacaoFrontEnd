@@ -43,21 +43,20 @@
                             <span>
                                 {{dataUtils.formata_data_DDMMYYY(orcamento?.validade)}}</span>
                         </div>
-                        <div *ngIf="!orcamento?.parceiro">
-                            <span class="p-text-bold">Vendedor:</span>
-                            <span>
-                                {{orcamento?.vendedor}}</span>
-                        </div>
-                        <div *ngIf="orcamento?.parceiro">
-                            <span class="p-text-bold">Parceiro:</span>
-                            <span>
-                                {{razaoSocialParceiro}}</span>
-                        </div>
+
                         <div *ngIf="orcamento?.vendedorParceiro">
-                            <span class="p-text-bold">Vendedor Parceiro:</span>
-                            <span>
-                                {{orcamento?.vendedorParceiro}}</span>
+                            <span class="p-text-bold">Vendedor Parceiro: </span>
+                            <span>{{orcamento?.vendedorParceiro}}</span>
                         </div>
+                        <div *ngIf="!orcamento?.vendedorParceiro && orcamento?.parceiro">
+                            <span class="p-text-bold">Parceiro: </span>
+                            <span>{{orcamento?.parceiro}}</span>
+                        </div>
+                        <div *ngIf="!orcamento?.vendedorParceiro && !orcamento?.parceiro && orcamento?.vendedor">
+                            <span class="p-text-bold">Vendedor: </span>
+                            <span>{{orcamento?.vendedor}}</span>
+                        </div>
+
                         <div>
                             <span class="p-text-bold">Cadastrado Por:</span>
                             <span>
