@@ -27,4 +27,12 @@ export class MoedaUtils {
             return "0,00";
         return this.formatter.format(nro);
     }
+
+    public formatarParaFloatUmaCasaReturnZero(nro: number) {
+        
+        if (!!!nro)
+            return "0.00";
+        return this.formatter1casa.format(nro).replace(",", ".");
+    }
+
 }

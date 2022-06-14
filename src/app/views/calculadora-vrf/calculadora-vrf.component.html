@@ -35,7 +35,7 @@
                                 <p-dropdown [options]="lstFabricantes" formControlName="fabricanteSelecionado"
                                     [(ngModel)]="fabricanteSelecionado" placeholder="Selecione" optionLabel="label"
                                     optionValue="value" (onChange)="limparFiltros()"></p-dropdown>
-                                <div  *ngIf="validacaoFormularioService.verificaCampo(form,'fabricanteSelecionado')">
+                                <div *ngIf="validacaoFormularioService.verificaCampo(form,'fabricanteSelecionado')">
                                     <small class="p-error"
                                         *ngIf="form.controls.fabricanteSelecionado.errors?.required">{{mensagemErro}}</small>
                                 </div>
@@ -59,12 +59,11 @@
                         [rows]="10" [filterDelay]="0">
                         <ng-template pTemplate="header" let-p>
                             <tr>
-                                <th class="p-text-left p-col-6 p-py-0">Produto</th>
-                                <th class="p-text-right p-py-0">Qtde</th>
-                                <th class="p-text-center p-py-0">Voltagem</th>
-                                <th class="p-text-center p-py-0">Capacidade(Kcal/h)</th>
-                                <th class="p-text-center p-py-0">Total Kcal/h</th>
-                                <th class="p-text-center p-py-0">Ações</th>
+                                <th class="p-text-left p-col-5 p-py-0">Produto</th>
+                                <th class="p-text-right p-py-0 p-col-1">Qtde</th>
+                                <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
+                                <th class="p-text-center p-py-0 p-col-2">Total Kcal/h</th>
+                                <th class="p-text-right p-py-0 p-col-1">Ações</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-p let-index="rowIndex">
@@ -78,10 +77,10 @@
                                     <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
                                         [value]="p.qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
                                 </td>
-                                <td class="p-text-center p-py-0">{{p.voltagem}}</td>
                                 <td class="p-text-center p-py-0">{{p.kcal}}</td>
-                                <td class="p-text-center p-py-0">{{p.kcal * p.qtde}}</td>
-                                <td class="p-text-center p-py-0">
+                                <td class="p-text-center p-py-0">{{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal
+                                    * p.qtde)}}</td>
+                                <td class="p-text-right p-py-0">
                                     <div class="p-text-center">
                                         <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
                                     </div>
@@ -90,13 +89,9 @@
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">
                             <tr class="font-size">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td class="p-text-right">Total</td>
+                                <td colspan="3" class="p-text-right">Total</td>
                                 <td class="p-text-center">
-
-                                    {{totalKcalEvaporadoras}}
+                                    {{moedaUtils.formatarParaFloatUmaCasaReturnZero(totalKcalEvaporadoras)}}
                                 </td>
                                 <td></td>
                             </tr>
@@ -119,7 +114,7 @@
                                 optionValue="value" [(ngModel)]="voltagem" [showClear]="true"
                                 formControlName="voltagem">
                             </p-dropdown>
-                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'voltagem')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'voltagem')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.voltagem.errors?.required">{{mensagemErro}}</small>
                             </div>
@@ -130,7 +125,7 @@
                                 optionValue="value" [(ngModel)]="descarga" [showClear]="true"
                                 formControlName="descarga">
                             </p-dropdown>
-                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'descarga')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'descarga')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.descarga.errors?.required">{{mensagemErro}}</small>
                             </div>
@@ -141,7 +136,7 @@
                             <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"
                                 formControlName="simultaneidade" [showClear]="true"></p-dropdown>
-                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'simultaneidade')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'simultaneidade')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.simultaneidade.errors?.required">{{mensagemErro}}</small>
                             </div>
@@ -151,7 +146,7 @@
                             <p-dropdown [options]="lstQtdeCondensadoras" [(ngModel)]="qtdeCondensadora"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"
                                 formControlName="qtdeCondensadora" [showClear]="true"></p-dropdown>
-                            <div  *ngIf="validacaoFormularioService.verificaCampo(form2,'qtdeCondensadora')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'qtdeCondensadora')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.qtdeCondensadora.errors?.required">{{mensagemErro}}</small>
                             </div>
@@ -186,8 +181,8 @@
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-p>
@@ -198,10 +193,19 @@
                                             </p>
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.kcal}}
+                                            {{p.qtde}}
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.qtde}}
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal)}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer" class="font-size">
+                                    <tr class="font-size">
+                                        <td></td>
+                                        <td class="p-text-right">Total</td>
+                                        <td class="p-text-center">
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(somarTotalCondensadoras(combinacaoCom1aparelhos))}}
                                         </td>
                                     </tr>
                                 </ng-template>
@@ -210,7 +214,7 @@
                     </p-accordionTab>
                 </p-accordion>
             </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado  && qtdeCondensadora > 1">
                 <p-accordion class="p-col-12 p-pb-0 p-px-0">
                     <p-accordionTab>
                         <ng-template pTemplate="header">
@@ -231,8 +235,8 @@
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-p>
@@ -243,10 +247,19 @@
                                             </p>
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.kcal}}
+                                            {{p.qtde}}
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.qtde}}
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal)}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer" class="font-size">
+                                    <tr class="font-size">
+                                        <td></td>
+                                        <td class="p-text-right">Total</td>
+                                        <td class="p-text-center">
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(somarTotalCondensadoras(combinacaoCom2aparelhos))}}
                                         </td>
                                     </tr>
                                 </ng-template>
@@ -255,12 +268,12 @@
                     </p-accordionTab>
                 </p-accordion>
             </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado && qtdeCondensadora == 3">
                 <p-accordion class="p-col-12 p-pb-0 p-px-0">
                     <p-accordionTab>
                         <ng-template pTemplate="header">
                             Opção com 3 condensadoras
-                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="simultaneidadeCalculada3aparelhos > 0">
+                            <div class="p-ml-auto p-p-0 p-text-right" *ngIf="simultaneidadeCalculada3aparelhos > 0 ">
                                 Simultaneidade: {{simultaneidadeCalculada3aparelhos}}
                             </div>
                         </ng-template>
@@ -276,8 +289,8 @@
                                 <ng-template pTemplate="header">
                                     <tr class="font-size">
                                         <th class="">Produto</th>
-                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                         <th class="p-text-center">Qtde</th>
+                                        <th class="p-text-center">Capacidade(Kcal/h)</th>
                                     </tr>
                                 </ng-template>
                                 <ng-template pTemplate="body" let-p>
@@ -288,10 +301,19 @@
                                             </p>
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.kcal}}
+                                            {{p.qtde}}
                                         </td>
                                         <td class="p-text-center">
-                                            {{p.qtde}}
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal)}}
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                                <ng-template pTemplate="footer" class="font-size">
+                                    <tr class="font-size">
+                                        <td></td>
+                                        <td class="p-text-right">Total</td>
+                                        <td class="p-text-center">
+                                            {{moedaUtils.formatarParaFloatUmaCasaReturnZero(somarTotalCondensadoras(combinacaoCom3aparelhos))}}
                                         </td>
                                     </tr>
                                 </ng-template>

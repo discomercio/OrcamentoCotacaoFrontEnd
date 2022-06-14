@@ -19,6 +19,7 @@ import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dial
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import jsPDF from 'jspdf';
 import autoTable, { RowInput } from 'jspdf-autotable'
+import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -73,6 +74,7 @@ export class CalculadoraVrfComponent implements OnInit {
   fabricanteSelecionado: string;
 
   stringUtils = StringUtils;
+  moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
   ngOnInit(): void {
@@ -81,6 +83,9 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
+    // Validar e mostrar opções de condensadoras conforme a quantidade selecionada
+    // incluir mais campos na tabela que são utilizados nos filtros 
+    //criar view child para o pdf
   }
 
   export() {
@@ -367,6 +372,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   digitouQte(produto: ProdutoTabela) {
+    this.limparCombinacoesCondensadoras();
     if (produto.qtde <= 0) produto.qtde = 1;
 
     this.totalKcalEvaporadoras = this.evaporadorasSelecionadas
@@ -479,12 +485,13 @@ export class CalculadoraVrfComponent implements OnInit {
     let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
     this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
     this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
-debugger
+
     let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
     this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
     this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
 
     this.calculado = true;
+    console.log("qtde condensadoras:{0}", this.qtdeCondensadora);
   }
   calculado: boolean = false;
 
@@ -606,5 +613,8 @@ debugger
     return this.unificarEquipamentosIguais(ret);
   }
 
-
+somarTotalCondensadoras(lstCondensadora:ProdutoTabela[]){
+  return lstCondensadora
+      .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+}
 }
