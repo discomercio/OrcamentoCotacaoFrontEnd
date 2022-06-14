@@ -59,6 +59,7 @@ import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.
 import { PublicoHeaderComponent } from '../views/publico/header/header.component';
 import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
+import { PdfCalculadoraVrfComponent } from '../views/calculadora-vrf/pdf-calculadora-vrf/pdf-calculadora-vrf.component';
 
 @NgModule({
     imports: [
@@ -95,7 +96,8 @@ import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-
         PublicoOrcamentoComponent,
         PublicoHeaderComponent,
         CalculadoraVrfComponent,
-        SelectEvapDialogComponent
+        SelectEvapDialogComponent,
+        PdfCalculadoraVrfComponent
     ],
     providers: [
         {

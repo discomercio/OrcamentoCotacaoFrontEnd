@@ -10,15 +10,23 @@
                 <div class="p-grid">
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Nome do cliente</label>
-                        <input pInputText type="text">
+                        <input pInputText type="text" [(ngModel)]="nomeCliente">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Nome da obra</label>
-                        <input pInputText type="text">
+                        <input pInputText type="text" [(ngModel)]="nomeObra">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                        <label>Telefone</label>
+                        <input pInputText type="text" [(ngModel)]="telefone">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                        <label>E-mail</label>
+                        <input pInputText type="text" [(ngModel)]="email">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Observações / Previsão de instalação</label>
-                        <input pInputText type="text">
+                        <textarea pInputTextarea [(ngModel)]="observacao"></textarea>
                     </div>
                 </div>
             </div>
@@ -326,4 +334,7 @@
             </div>
         </div>
     </div>
+</div>
+<div>
+<app-pdf-calculadora-vrf #pdf ></app-pdf-calculadora-vrf>
 </div>

@@ -20,6 +20,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import jsPDF from 'jspdf';
 import autoTable, { RowInput } from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
+import { PdfCalculadoraVrfComponent } from './pdf-calculadora-vrf/pdf-calculadora-vrf.component';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -77,6 +78,14 @@ export class CalculadoraVrfComponent implements OnInit {
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
+  nomeCliente: string;
+  nomeObra: string;
+  telefone: string;
+  email: string;
+  observacao: string;
+
+
+
   ngOnInit(): void {
     this.criarForm();
     this.buscarProduto();
@@ -87,65 +96,50 @@ export class CalculadoraVrfComponent implements OnInit {
     // incluir mais campos na tabela que são utilizados nos filtros 
     //criar view child para o pdf
   }
+  @ViewChild("pdf", { static: false }) pdfVrf: PdfCalculadoraVrfComponent;
 
-  export() {
-    let doc = new jsPDF();
-
-    const head = [['ID', 'Country', 'Index', 'Capital']]
-    const data = [
-      [1, 'Gabriel', 7.632, 'Helsinki'],
-      [2, 'Norway', 7.594, 'Oslo'],
-      [3, 'Denmark', 7.555, 'Copenhagen'],
-      [4, 'Iceland', 7.495, 'Reykjavík'],
-      [5, 'Switzerland', 7.487, 'Bern'],
-      [9, 'Sweden', 7.314, 'Stockholm'],
-      [73, 'Belarus', 5.483, 'Minsk'],
-    ]
-
-    autoTable(doc, {
-      html: "dataTable3",
-      didDrawCell: (data) => { },
-    });
-    autoTable(doc, {
-        head: head,
-        body: data,
-        didDrawCell: (data) => { },
-    });
-    // doc.save('table.pdf');
-    doc.output('dataurlnewwindow');
-  }
-  montarDadosParaPDF(produto:ProdutoTabela[]){
-    let retorno= [];
-    produto.forEach(x =>{
+  montarDadosParaPDF(produto: ProdutoTabela[]) {
+    let retorno = [];
+    produto.forEach(x => {
       let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
       retorno.push(dado);
     });
-    debugger;
     return retorno;
   }
-  exportPdf() {
-    let doc = new jsPDF();
 
-    const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']]
-    let data = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
-    autoTable(doc, {
-      head: head,
-      body: data,
-      didDrawCell: (data) => { },
-    });
-    data = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
-    autoTable(doc, {
-      head: head,
-      body: data,
-      didDrawCell: (data) => { },
-    });
-    data = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
-    autoTable(doc, {
-      head: head,
-      body: data,
-      didDrawCell: (data) => { },
-    });
-    doc.output('dataurlnewwindow');
+  exportPdf() {
+    //ajustar para fazer a chamada de forma correta
+    this.pdfVrf.calculado = this.calculado;
+    this.pdfVrf.evaporadorasSelecionadas = this.evaporadorasSelecionadas;
+    this.pdfVrf.combinacaoCom1aparelhos = this.combinacaoCom1aparelhos;
+    this.pdfVrf.simultaneidadeCalculada1aparelho = this.simultaneidadeCalculada1aparelho;
+    this.pdfVrf.combinacaoCom2aparelhos = this.combinacaoCom2aparelhos;
+    this.pdfVrf.simultaneidadeCalculada2aparelhos = this.simultaneidadeCalculada2aparelhos;
+    this.pdfVrf.combinacaoCom3aparelhos = this.combinacaoCom3aparelhos;
+    this.pdfVrf.simultaneidadeCalculada3aparelhos = this.simultaneidadeCalculada3aparelhos;
+
+    this.pdfVrf.export();
+    // const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']]
+    // let data = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
+    // autoTable(doc, {
+    //   head: head,
+    //   body: data,
+    //   didDrawCell: (data) => { },
+    // });
+    // data = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
+    // autoTable(doc, {
+    //   head: head,
+    //   body: data,
+    //   didDrawCell: (data) => { },
+    // });
+    // data = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
+    // autoTable(doc, {
+    //   head: head,
+    //   body: data,
+    //   didDrawCell: (data) => { },
+    // });
+
+
   }
 
   criarForm() {
@@ -613,8 +607,8 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.unificarEquipamentosIguais(ret);
   }
 
-somarTotalCondensadoras(lstCondensadora:ProdutoTabela[]){
-  return lstCondensadora
+  somarTotalCondensadoras(lstCondensadora: ProdutoTabela[]) {
+    return lstCondensadora
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
-}
+  }
 }
