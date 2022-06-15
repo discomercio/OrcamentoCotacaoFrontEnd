@@ -59,6 +59,8 @@ export class MensageriaComponent implements AfterViewInit {
   enviarMensagem() {
     
     this.validar();
+    
+    this.marcarMensagemComoLida(this.idOrcamentoCotacao); 
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
