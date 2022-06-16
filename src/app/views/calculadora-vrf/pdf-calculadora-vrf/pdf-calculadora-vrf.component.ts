@@ -36,10 +36,13 @@ export class PdfCalculadoraVrfComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
   export() {
-    let doc = new jsPDF('p', 'pt', 'a4');
+    let doc = new jsPDF('l', 'pt', 'a4');
     let pdf = document.getElementById("pdf");
+    // doc.internal.scaleFactor = 0.8; NÃO FICA LEGAL
     doc.html(pdf, {
+      html2canvas:{letterRendering:true, backgroundColor:"#00000"},
       callback: (doc) => {
+        
         doc.output('dataurlnewwindow');
       }
     });

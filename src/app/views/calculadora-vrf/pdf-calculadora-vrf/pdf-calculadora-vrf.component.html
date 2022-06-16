@@ -43,7 +43,6 @@
                                     <th class="p-text-right p-py-0 p-col-1">Qtde</th>
                                     <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
                                     <th class="p-text-center p-py-0 p-col-2">Total Kcal/h</th>
-                                    <th class="p-text-right p-py-0 p-col-1">Ações</th>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="body" let-p let-index="rowIndex">
@@ -54,18 +53,12 @@
                                         </p>
                                     </td>
                                     <td class="p-py-0">
-                                        <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
-                                            [value]="p.qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
+                                        {{p.qtde}}
                                     </td>
-                                    <td class="p-text-center p-py-0">{{p.kcal}}</td>
+                                    <td class="p-text-center p-py-0">{{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal)}}</td>
                                     <td class="p-text-center p-py-0">
                                         {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal
                                         * p.qtde)}}</td>
-                                    <td class="p-text-right p-py-0">
-                                        <div class="p-text-center">
-                                            <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
-                                        </div>
-                                    </td>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="footer" class="font-size">

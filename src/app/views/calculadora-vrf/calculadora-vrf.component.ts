@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, SelectMultipleControlValueAccessor, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -18,9 +18,11 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dialog.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 import autoTable, { RowInput } from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { PdfCalculadoraVrfComponent } from './pdf-calculadora-vrf/pdf-calculadora-vrf.component';
+import { style } from '@angular/animations';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -78,11 +80,11 @@ export class CalculadoraVrfComponent implements OnInit {
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
-  nomeCliente: string;
-  nomeObra: string;
-  telefone: string;
-  email: string;
-  observacao: string;
+  nomeCliente: string = "Gabriel Prada Teodoro";
+  nomeObra: string = "Casa do cliente";
+  telefone: string = "11981603313";
+  email: string = "gabriel.teodoro@itssolucoes.com.br";
+  observacao: string = "Apenas para teste";
 
 
 
@@ -101,44 +103,186 @@ export class CalculadoraVrfComponent implements OnInit {
   montarDadosParaPDF(produto: ProdutoTabela[]) {
     let retorno = [];
     produto.forEach(x => {
-      let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
-      retorno.push(dado);
+      if (x.totalKcal == undefined) {
+        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
+        retorno.push(dado);
+      }
+      if (x.totalKcal > 0) {
+        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal, x.totalKcal]
+        retorno.push(dado);
+      }
     });
     return retorno;
   }
 
+  evapsFake = new Array<ProdutoTabela>();
+  ev = [{
+    "fabricante": "002",
+    "produto": "002627",
+    "descricao": "Evap HW ARNU15GSBL2 LIBERO Q/F - LG",
+    "kcal": "25.0",
+    "qtde": 3
+  }];
+  
+  produtoFake = new Array<ProdutoTabela>();
+  fake = [
+    {
+      "fabricante": "002",
+      "produto": "002610",
+      "descricao": "Cond VPRO 12HP ARUN120BLS4 Q/F 220v - LG",
+      "kcal": "45.0",
+      "qtde": 3
+    },
+    {
+      "fabricante": "002",
+      "produto": "002610",
+      "descricao": "Cond VPRO 12HP ARUN120BLS4 Q/F 220v - LGCond VPRO 12HP ARUN120BLS4 Q/F 220v - LGCond VPRO 12HP ARUN120BLS4 Q/F 220v - LG",
+      "kcal": "45.0",
+      "qtde": 3
+    },
+    {
+      "fabricante": "002",
+      "produto": "002610",
+      "descricao": "Cond VPRO 12HP ARUN120BLS4 Q/F 220v - LG",
+      "kcal": "45.0",
+      "qtde": 3
+    },
+  ];
+
+
   exportPdf() {
-    //ajustar para fazer a chamada de forma correta
-    this.pdfVrf.calculado = this.calculado;
-    this.pdfVrf.evaporadorasSelecionadas = this.evaporadorasSelecionadas;
-    this.pdfVrf.combinacaoCom1aparelhos = this.combinacaoCom1aparelhos;
-    this.pdfVrf.simultaneidadeCalculada1aparelho = this.simultaneidadeCalculada1aparelho;
-    this.pdfVrf.combinacaoCom2aparelhos = this.combinacaoCom2aparelhos;
-    this.pdfVrf.simultaneidadeCalculada2aparelhos = this.simultaneidadeCalculada2aparelhos;
-    this.pdfVrf.combinacaoCom3aparelhos = this.combinacaoCom3aparelhos;
-    this.pdfVrf.simultaneidadeCalculada3aparelhos = this.simultaneidadeCalculada3aparelhos;
 
-    this.pdfVrf.export();
-    // const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']]
-    // let data = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
-    // autoTable(doc, {
-    //   head: head,
-    //   body: data,
-    //   didDrawCell: (data) => { },
-    // });
-    // data = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
-    // autoTable(doc, {
-    //   head: head,
-    //   body: data,
-    //   didDrawCell: (data) => { },
-    // });
-    // data = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
-    // autoTable(doc, {
-    //   head: head,
-    //   body: data,
-    //   didDrawCell: (data) => { },
-    // });
+    let img = new Image();
+    img.src = 'assets/layout/images/LogoUnis.png';
 
+    let doc = new jsPDF();
+    
+
+    //CRIAR NA RAÇA
+    //logo: assets/layout/images/LogoUnis.png
+    doc.addImage(img, 'png', 14, 10, 15, 10);
+    doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
+
+    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome:", 14, 37);
+    doc.setFontSize(11).text(this.nomeCliente, 26, 37, {
+      maxWidth: 54,
+      align: 'left'
+    });
+
+    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", 80, 37);
+    doc.setFontSize(11).text(this.nomeObra, 108, 37, {
+      maxWidth: 45,
+      align: 'left'
+    });
+
+    doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", 153, 37);
+    doc.setFontSize(11).text(this.stringUtils.formataTextoTelefone(this.telefone), 170, 37, {
+      maxWidth: 30,
+      align: 'left'
+    });
+
+    doc.setFont('helvetica', 'normal').setFontSize(11).text("E-mail:", 14, 44);
+    doc.setFontSize(11).text(this.email, 27, 44, {
+      maxWidth: 75,
+      align: 'left'
+    });
+
+    doc.setFont('helvetica', 'normal').setFontSize(11).text("Observações:", 108, 44);
+    doc.setFontSize(11).text(this.observacao, 133, 44, {
+      maxWidth: 66,
+      align: 'left'
+    });
+
+    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(Kcal/h)', 'Total (Kcal/h)']];
+    this.ev.forEach(x => {
+      let p = new ProdutoTabela();
+      p.fabricante = x.fabricante;
+      p.produto = x.produto;
+      p.descricao = x.descricao;
+      p.kcal = x.kcal;
+      p.qtde = x.qtde;
+      p.totalKcal = Number.parseFloat(x.kcal) * x.qtde;
+
+      this.evapsFake.push(p);
+    });
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
+    autoTable(doc, {
+      head: columnsEvaps,
+      body: this.montarDadosParaPDF(this.evapsFake),
+      styles: { halign: 'center' },
+      startY: 61,
+      didParseCell: (data) => {
+        debugger;
+        if (data.column.dataKey == 0) {
+          data.cell.styles.halign = "left";
+        }
+      }
+    });
+
+    this.fake.forEach(x => {
+      let p = new ProdutoTabela();
+      p.fabricante = x.fabricante;
+      p.produto = x.produto;
+      p.descricao = x.descricao;
+      p.kcal = x.kcal;
+      p.qtde = x.qtde;
+      this.produtoFake.push(p);
+    });
+
+
+    const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']];
+    
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 Condensadora", 14, 120);
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 120, {align:'left'});
+    doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(100) + " %", 182, 120, {align:'left', maxWidth:19});
+    let produtos = this.montarDadosParaPDF(this.produtoFake);
+    let data = produtos.splice(1, 1);
+    autoTable(doc, {
+      head: head,
+      body: data,
+      styles: { halign: 'center' },
+      startY: 122,
+      didParseCell: (data) => {
+        if (data.column.dataKey == 0) {
+          data.cell.styles.halign = "left";
+        }
+      }
+    });
+
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 Condensadora", 14, 155);
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 155, {align:'left'});
+    doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(100) + " %", 182, 155, {align:'left', maxWidth:19});
+    produtos = this.montarDadosParaPDF(this.produtoFake);
+    data = produtos.splice(1, 2);
+    autoTable(doc, {
+      head: head,
+      body: data,
+      styles: { halign: 'center' },
+      startY: 157,
+      didParseCell: (data) => {
+        if (data.column.dataKey == 0) {
+          data.cell.styles.halign = "left";
+        }
+      }
+    });
+
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 3 Condensadora", 14, 198);
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 198, {align:'left'});
+    doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(90.5) + " %", 182, 198, {align:'left', maxWidth:19});
+    produtos = this.montarDadosParaPDF(this.produtoFake);
+    autoTable(doc, {
+      head: head,
+      body: produtos,
+      styles: { halign: 'center' },
+      startY: 200,
+      didParseCell: (data) => {
+        if (data.column.dataKey == 0) {
+          data.cell.styles.halign = "left";
+        }
+      }
+    });
+
+    doc.save('calculo_vrf');
 
   }
 

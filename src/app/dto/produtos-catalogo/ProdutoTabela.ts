@@ -11,4 +11,5 @@ export class ProdutoTabela {
     kcal:string;
     descarga:string;
     qtde:number = 0;
+    totalKcal:number;
   }
