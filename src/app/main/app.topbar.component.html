@@ -167,18 +167,9 @@
                     setOptionsValueName="Id"
                     [setReset]="lojaLogada"
                     (getItemSelected)="cboLojas_onChange($event)"
-                    setShowLabel="false"                
+                    setShowLabel="false"      
+                    [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"          
                 ></dropdown-arclube>
-                    <!-- <div class="topbar-search">
-                        <p-dropdown
-                            formControlName="cboLojas"
-                            [options]="lojas"
-                            emptyFilterMessage="Nenhum item encontrado"
-                            optionValue="Id" optionLabel="Value"
-                            (onChange)="cboLojas_onChange($event)"
-                            [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"
-                        ></p-dropdown>
-                    </div> -->
                 </li>
             </ul>
         </div>
