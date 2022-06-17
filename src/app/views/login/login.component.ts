@@ -93,10 +93,10 @@ export class LoginComponent implements OnInit {
   }
 
   montarSelectLoja() {
+    this.lojasUsuario= [];
     this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
       let item: SelectItem = { label: x, value: x };
       this.lojasUsuario.push(item);
-      console.log(item);
     });
   }
   desligarFazendoLoginFOrmulario(): void {
