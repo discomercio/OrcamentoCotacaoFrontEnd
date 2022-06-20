@@ -69,9 +69,10 @@
                             <tr>
                                 <th class="p-text-left p-col-4 p-py-0">Produto</th>
                                 <th class="p-text-right p-py-0 p-col-2">Qtde</th>
+                                <th class="p-text-center p-py-0 p-col-2">Capacidade (BTU/h)</th>
                                 <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
                                 <th class="p-text-center p-py-0 p-col-2">Total (Kcal/h)</th>
-                                <th class="p-text-right p-py-0 p-col-1">Ações</th>
+                                <th class="p-text-center p-py-0 p-col-1">Ações</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-p let-index="rowIndex">
@@ -85,6 +86,7 @@
                                     <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
                                         [value]="p.qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
                                 </td>
+                                <td class="p-text-center p-py-0">{{p.btu}}</td>
                                 <td class="p-text-center p-py-0">
                                     {{p.kcal}}</td>
                                 <td class="p-text-center p-py-0">
@@ -98,7 +100,7 @@
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">
                             <tr class="font-size">
-                                <td colspan="3" class="p-text-right">Total</td>
+                                <td colspan="4" class="p-text-right p-py-0">Total</td>
                                 <td class="p-text-center">
                                     {{moedaUtils.formatarParaFloatUmaCasaReturnZero(totalKcalEvaporadoras)}}
                                 </td>

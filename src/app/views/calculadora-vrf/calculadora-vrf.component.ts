@@ -95,6 +95,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   montarDadosParaPDF(produto: ProdutoTabela[]) {
     let retorno = [];
+
     produto.forEach(x => {
       if (x.totalKcal == undefined) {
         let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
@@ -147,7 +148,7 @@ export class CalculadoraVrfComponent implements OnInit {
       align: 'left'
     });
 
-    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(Kcal/h)', 'Total (Kcal/h)']];
+    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(Kcal/h)']];
 
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
     autoTable(doc, {
