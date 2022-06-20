@@ -30,14 +30,12 @@ export class SelectEvapDialogComponent implements OnInit {
   lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
   lstVoltagens: SelectItem[] = [];
   lstDescargas: SelectItem[] = [];
-  lstCiclos: SelectItem[] = [];
   lstBtus: SelectItem[] = [];
   lstLinhaProdutos: SelectItem[] = [];
 
   linhaProduto: string;
   descarga: string;
   voltagem: string;
-  ciclo: string;
   btu: string;
 
   ngOnInit(): void {
@@ -45,9 +43,6 @@ export class SelectEvapDialogComponent implements OnInit {
     this.lstOpcoes = this.option.data.opcoes;
     this.evaporadoras = this.evaporadorasPassadas;
     this.buscarLinhaProdutos();
-    this.buscarVoltagens();
-    this.buscarDescargas();
-    this.buscarCiclos();
     this.buscarBtus();
   }
 
@@ -56,33 +51,6 @@ export class SelectEvapDialogComponent implements OnInit {
       this.ref.close(this.evaporadoraSelecionada);
     }
     return;
-  }
-
-  buscarVoltagens() {
-    let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
-
-    voltagens.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstVoltagens.push(opcao);
-    });
-  }
-
-  buscarDescargas() {
-    let descargas = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 3);
-
-    descargas.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstDescargas.push(opcao);
-    });
-  }
-
-  buscarCiclos() {
-    let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
-
-    ciclos.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstCiclos.push(opcao);
-    });
   }
 
   buscarBtus() {
@@ -105,18 +73,11 @@ export class SelectEvapDialogComponent implements OnInit {
 
   filtrarEvaporadoras() {
     this.linhaProduto;
-    this.descarga;
-    this.voltagem;
-    this.ciclo;
     this.btu;
 
     let evaporadorasFiltradas: ProdutoTabela[] = this.evaporadorasPassadas;
 
-
     if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.linhaProduto + "|"));
-    if (this.descarga) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.descarga+ "|"));
-    if (this.voltagem) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.voltagem+ "|"));
-    if (this.ciclo) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.ciclo+ "|"));
     if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.btu+ "|"));
 
     this.evaporadoras = evaporadorasFiltradas;

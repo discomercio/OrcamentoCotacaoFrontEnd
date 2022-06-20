@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -223,10 +223,10 @@ export class CalculadoraVrfComponent implements OnInit {
 
     doc.setFont('helvetica', 'bold').setFontSize(8).text("ATENÇÃO:", 14, 280);
     let rodape = "O CALCULO É REALIZADO ATRAVÉS DA SIMULTANEIDADE APROXIMADA DE ACORDO COM O MANUAL TÉCNICO DO " +
-    "FABRICANTE. PARA MAIS INFORMAÇÕES , ENTRE EM CONTATO COM NOSSA EQUIPE COMERCIAL: SP - (11) 4858-2434";
-    doc.setFont('helvetica', 'normal').setFontSize(8).text(rodape, 30, 280, {maxWidth:174});
+      "FABRICANTE. PARA MAIS INFORMAÇÕES , ENTRE EM CONTATO COM NOSSA EQUIPE COMERCIAL: SP - (11) 4858-2434";
+    doc.setFont('helvetica', 'normal').setFontSize(8).text(rodape, 30, 280, { maxWidth: 174 });
 
-    doc.setProperties({title:"calculo_vrf"});
+    doc.setProperties({ title: "calculo_vrf" });
     doc.output('dataurlnewwindow');
     doc.save('calculo_vrf');
   }
@@ -240,7 +240,8 @@ export class CalculadoraVrfComponent implements OnInit {
       voltagem: ['', [Validators.required]],
       descarga: ['', [Validators.required]],
       simultaneidade: ['', [Validators.required]],
-      qtdeCondensadora: ['', [Validators.required]]
+      qtdeCondensadora: ['', [Validators.required]],
+      ciclo:['', [Validators.required]]
     })
   }
 
@@ -342,6 +343,9 @@ export class CalculadoraVrfComponent implements OnInit {
             if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
               produtoTabela.kcal = l.valorPropriedade;
             }
+            if(Number.parseInt(l.idPropriedade) == 5){
+              produtoTabela.btu = l.valorPropriedade;
+            }
 
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
           });
@@ -357,6 +361,7 @@ export class CalculadoraVrfComponent implements OnInit {
         this.lstOpcoes = r;
         this.buscarVoltagens();
         this.buscarDescargas();
+        this.buscarCiclos();
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -447,6 +452,8 @@ export class CalculadoraVrfComponent implements OnInit {
         this.limparCombinacoesCondensadoras();
       }
     });
+
+    
   }
 
   removerItem(index: number) {
@@ -468,9 +475,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   digitouQte(produto: ProdutoTabela) {
     this.limparCombinacoesCondensadoras();
-    // debugger;
     if (produto.qtde == undefined || produto.qtde <= 0) produto.qtde = 1;
-    // if (produto.qtde <= 0) produto.qtde = 1;
 
     this.totalKcalEvaporadoras = this.evaporadorasSelecionadas
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
@@ -498,6 +503,16 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
+  lstCiclos: SelectItem[] = [];
+  ciclo: string;
+  buscarCiclos() {
+    let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
+
+    ciclos.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstCiclos.push(opcao);
+    });
+  }
   filtrarCondensadoras() {
 
     this.condensadorasFiltradas = new Array();
@@ -507,6 +522,7 @@ export class CalculadoraVrfComponent implements OnInit {
     }
 
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.fabricante == this.fabricanteSelecionado);
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.ciclo + "|"));
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.voltagem.toString()));
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.descarga.toString()));
   }

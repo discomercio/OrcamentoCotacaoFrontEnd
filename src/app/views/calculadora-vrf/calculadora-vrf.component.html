@@ -38,7 +38,7 @@
                     <div class="p-grid p-col-12 p-px-0">
                         <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 
                                 p-md-7 p-px-0 p-sm-7">
-                            <div class="p-col-12 p-field p-lg-6 p-md-6 p-sm-6">
+                            <div class="p-col-12 p-field p-lg-6 p-md-6">
                                 <label>Fabricante</label>
                                 <p-dropdown [options]="lstFabricantes" formControlName="fabricanteSelecionado"
                                     [(ngModel)]="fabricanteSelecionado" placeholder="Selecione" optionLabel="label"
@@ -52,7 +52,7 @@
                         <div
                             class="p-as-center p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex 
                                 p-jc-end p-jc-md-end p-jc-sm-end p-lg-5 p-md-5 p-pt-lg-3 p-pt-md-3 p-pt-sm-3 p-pt-xl-3 p-sm-5">
-                            <div class="p-as-center p-col-12 p-field p-lg-6 p-mb-sm-0 p-md-6 p-px-0 p-sm-6">
+                            <div class="p-as-center p-col-12 p-field p-lg-6 p-mb-sm-0 p-md-6 p-px-0">
                                 <button pButton type="button" icon="fa fa-plus" label="Evaporadora"
                                     (click)="adicionarEvaporadoras()"></button>
                             </div>
@@ -67,10 +67,10 @@
                         [rows]="10" [filterDelay]="0">
                         <ng-template pTemplate="header" let-p>
                             <tr>
-                                <th class="p-text-left p-col-5 p-py-0">Produto</th>
-                                <th class="p-text-right p-py-0 p-col-1">Qtde</th>
+                                <th class="p-text-left p-col-4 p-py-0">Produto</th>
+                                <th class="p-text-right p-py-0 p-col-2">Qtde</th>
                                 <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
-                                <th class="p-text-center p-py-0 p-col-2">Total Kcal/h</th>
+                                <th class="p-text-center p-py-0 p-col-2">Total (Kcal/h)</th>
                                 <th class="p-text-right p-py-0 p-col-1">Ações</th>
                             </tr>
                         </ng-template>
@@ -85,9 +85,10 @@
                                     <input class="p-text-right" id="qtde" type="number" pInputText placeholder=""
                                         [value]="p.qtde" [(ngModel)]="p.qtde" (change)="digitouQte(p)" />
                                 </td>
-                                <td class="p-text-center p-py-0">{{p.kcal}}</td>
-                                <td class="p-text-center p-py-0">{{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal
-                                    * p.qtde)}}</td>
+                                <td class="p-text-center p-py-0">
+                                    {{p.kcal}}</td>
+                                <td class="p-text-center p-py-0">
+                                    {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p.kcal * p.qtde)}}</td>
                                 <td class="p-text-right p-py-0">
                                     <div class="p-text-center">
                                         <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
@@ -109,65 +110,76 @@
             </div>
         </div>
 
-        <div class="card">
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <h5>Condensadoras</h5>
-                <form [formGroup]="form2" class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-px-0">
-                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-9 p-md-9 
-                                p-pr-md-2 p-px-0 p-sm-12">
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-lg-0 p-pl-md-0 p-pr-sm-1
-                                    p-px-0 p-sm-3 p-my-0 p-field">
+        <div class="card" *ngIf="evaporadorasSelecionadas.length > 0">
+            <form [formGroup]="form2">
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <h5 class="p-col-12 p-px-0">Condensadoras</h5>
+                    <div class="p-grid p-col-12 p-px-0">
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-2 p-sm-4">
                             <label>Voltagem</label>
                             <p-dropdown [options]="lstVoltagens" placeholder="Selecione" optionLabel="label"
-                                optionValue="value" [(ngModel)]="voltagem" [showClear]="true"
-                                formControlName="voltagem" (onChange)="limparCombinacoesCondensadoras()">
+                                optionValue="value" [(ngModel)]="voltagem" [showClear]="true" formControlName="voltagem"
+                                (onChange)="limparCombinacoesCondensadoras()">
                             </p-dropdown>
                             <div *ngIf="validacaoFormularioService.verificaCampo(form2,'voltagem')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.voltagem.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0  p-field">
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-3 p-sm-4">
                             <label>Tipo de descarga</label>
                             <p-dropdown [options]="lstDescargas" placeholder="Selecione" optionLabel="label"
-                                optionValue="value" [(ngModel)]="descarga" [showClear]="true"
-                                formControlName="descarga" (onChange)="limparCombinacoesCondensadoras();filtrarQtdeCondensadora()">
+                                optionValue="value" [(ngModel)]="descarga" [showClear]="true" formControlName="descarga"
+                                (onChange)="limparCombinacoesCondensadoras();filtrarQtdeCondensadora()">
                             </p-dropdown>
                             <div *ngIf="validacaoFormularioService.verificaCampo(form2,'descarga')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.descarga.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-px-0 p-px-sm-1 p-sm-3 p-my-0 p-field">
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-2 p-sm-4">
                             <label style="word-break: break-word; white-space: break-spaces;">Simultaneidade máxima
                                 %</label>
                             <p-dropdown [options]="lstSimultaneidades" [(ngModel)]="simultaneidade"
                                 placeholder="Selecione" optionLabel="label" optionValue="value"
-                                formControlName="simultaneidade" [showClear]="true" (onChange)="limparCombinacoesCondensadoras()"></p-dropdown>
+                                formControlName="simultaneidade" [showClear]="true"
+                                (onChange)="limparCombinacoesCondensadoras()"></p-dropdown>
                             <div *ngIf="validacaoFormularioService.verificaCampo(form2,'simultaneidade')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.simultaneidade.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-12 p-lg-3 p-mb-3 p-md-3 p-pl-sm-1 p-px-0 p-sm-3 p-my-0 p-field">
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-3 p-sm-4">
+                            <label>Ciclo</label>
+                            <p-dropdown [options]="lstCiclos" placeholder="Selecione" optionLabel="label"
+                                optionValue="value" [(ngModel)]="ciclo" [showClear]="true" formControlName="ciclo"
+                                (onChange)="limparCombinacoesCondensadoras()">
+                            </p-dropdown>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form2,'ciclo')">
+                                <small class="p-error"
+                                    *ngIf="form2.controls.ciclo.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-2 p-sm-4">
                             <label>Quantidade de condensadoras</label>
                             <p-dropdown [options]="lstQtdeCondensadoras" [(ngModel)]="qtdeCondensadora"
                                 placeholder="Selecione" optionLabel="label" optionValue="value" [disabled]="desabilita"
-                                formControlName="qtdeCondensadora" [showClear]="true" (onChange)="limparCombinacoesCondensadoras()"></p-dropdown>
+                                formControlName="qtdeCondensadora" [showClear]="true"
+                                (onChange)="limparCombinacoesCondensadoras()"></p-dropdown>
                             <div *ngIf="validacaoFormularioService.verificaCampo(form2,'qtdeCondensadora')">
                                 <small class="p-error"
                                     *ngIf="form2.controls.qtdeCondensadora.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                    </div>
-                    <div class="p-as-end p-col-12 p-lg-3 p-md-3 p-mt-sm-3 p-px-0 p-mt-3">
-                        <div class="p-col-12 p-pr-lg-0 p-px-0">
-                            <button pButton type="button" icon="fa fa-calculator" (click)="calcularCondensadoras()"
-                                label="Calcular Condensadoras"></button>
+                        <div class="p-as-end p-col-12 p-field p-lg-2 p-md-12 p-px-0 p-px-md-0 p-px-sm-0 p-sm-4">
+                            <div class="p-col-12 p-pr-lg-0">
+                                <button pButton type="button" icon="fa fa-calculator" (click)="calcularCondensadoras()"
+                                    label="Calcular"></button>
+                            </div>
                         </div>
                     </div>
-                </form>
-            </div>
+                </div>
+            </form>
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado">
                 <p-accordion class="p-col-12 p-pb-0 p-px-0">
                     <p-accordionTab>
@@ -222,7 +234,8 @@
                     </p-accordionTab>
                 </p-accordion>
             </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado  && qtdeCondensadora > 1 && descarga != 52">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"
+                *ngIf="calculado  && qtdeCondensadora > 1 && descarga != 52">
                 <p-accordion class="p-col-12 p-pb-0 p-px-0" [activeIndex]="calculado">
                     <p-accordionTab>
                         <ng-template pTemplate="header">
@@ -276,7 +289,8 @@
                     </p-accordionTab>
                 </p-accordion>
             </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado && qtdeCondensadora == 3 && descarga != 52">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"
+                *ngIf="calculado && qtdeCondensadora == 3 && descarga != 52">
                 <p-accordion class="p-col-12 p-pb-0 p-px-0" [activeIndex]="calculado">
                     <p-accordionTab>
                         <ng-template pTemplate="header">
@@ -328,11 +342,10 @@
                             </p-table>
                         </ng-template>
                     </p-accordionTab>
-                </p-accordion>                
+                </p-accordion>
             </div>
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado">
-                <button pButton type="button" icon="fa fa-print" (click)="exportPdf()"
-                                label="Baixar PDF"></button>
+                <button pButton type="button" icon="fa fa-print" (click)="exportPdf()" label="Baixar PDF"></button>
             </div>
         </div>
     </div>

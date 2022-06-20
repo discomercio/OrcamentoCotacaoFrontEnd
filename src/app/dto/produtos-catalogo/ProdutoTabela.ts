@@ -10,6 +10,7 @@ export class ProdutoTabela {
   capacidade: string;
   kcal: string;
   descarga: string;
+  btu:string;
   qtde: number;
   totalKcal: number;
 }
