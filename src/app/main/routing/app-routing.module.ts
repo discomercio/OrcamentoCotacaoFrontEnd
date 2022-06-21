@@ -37,7 +37,6 @@ import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
-import { PdfCalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/pdf-calculadora-vrf/pdf-calculadora-vrf.component';
 
 @NgModule({
     imports: [
@@ -103,8 +102,7 @@ import { PdfCalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/pdf-ca
                             { path: 'cliente/cliente', component: ClienteComponent, canActivate: [AuthGuard] },
                             {
                                 path: 'calculadora-vrf', canActivate: [AuthGuard], component: CalculadoraVrfComponent, children: [
-                                    { path: "select-evap-dialog", canActivate: [AuthGuard], component: SelectEvapDialogComponent },
-                                    { path: "pdf-calculadora-vrf", canActivate: [AuthGuard], component: PdfCalculadoraVrfComponent }
+                                    { path: "select-evap-dialog", canActivate: [AuthGuard], component: SelectEvapDialogComponent }
                                 ]
                             }
 
