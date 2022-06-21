@@ -35,7 +35,7 @@ export class CalculadoraVrfComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     public dialogService: DialogService,
     private readonly sweetalertService: SweetalertService,
-    private readonly autenticacaoService:AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService
   ) { }
 
   form: FormGroup;
@@ -100,7 +100,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     produto.forEach(x => {
       if (x.totalKcal == undefined) {
-        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal ]
+        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal]
         retorno.push(dado);
       }
       if (x.totalKcal > 0) {
@@ -114,11 +114,13 @@ export class CalculadoraVrfComponent implements OnInit {
   exportPdf() {
     //Buscar a imagem conforme a unidade de negocio
     let img = new Image();
-    // let im = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;;
 
     let doc = new jsPDF();
-    doc.addImage(img, 'png', 14, 10, 15, 10);
+
+    if (img.src.includes('Unis')) doc.addImage(img, 'png', 14, 10, 15, 10);
+    else doc.addImage(img, 'png', 14, 10, 17, 10);
+
     doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome:", 14, 37);
@@ -151,7 +153,7 @@ export class CalculadoraVrfComponent implements OnInit {
       align: 'left'
     });
 
-    let columnsEvaps = [['Produto', 'Qtde',  'Capacidade(BTU/h)', 'Capacidade(Kcal/h)', 'Total(Kcal/h)']];
+    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(BTU/h)', 'Capacidade(Kcal/h)', 'Total(Kcal/h)']];
 
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
     autoTable(doc, {
@@ -166,9 +168,9 @@ export class CalculadoraVrfComponent implements OnInit {
       }
     });
 
-    const head = [['Produto', 'Quantidade', 'Capacidade(Kcal/h)' ]];
+    const head = [['Produto', 'Quantidade', 'Capacidade(Kcal/h)']];
 
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 Condensadora", 14, 120);
+    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 condensadora", 14, 120);
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 120, { align: 'left' });
     doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada1aparelho) + " %", 182, 120, { align: 'left', maxWidth: 19 });
     let produtos = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
@@ -181,24 +183,27 @@ export class CalculadoraVrfComponent implements OnInit {
       body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
       styles: { halign: 'center' },
       startY: 122,
+      foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom1aparelhos))]],
       didParseCell: (data) => {
         if (data.column.dataKey == 0) {
           data.cell.styles.halign = "left";
         }
       }
     });
+    
 
     if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 Condensadora", 14, 155);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 155, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada2aparelhos) + " %", 182, 155, { align: 'left', maxWidth: 19 });
+      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 condensadoras", 14, 165);
+      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 165, { align: 'left' });
+      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada2aparelhos) + " %", 182, 165, { align: 'left', maxWidth: 19 });
       produtos = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
       data = produtos.splice(1, 2);
       autoTable(doc, {
         head: head,
         body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
         styles: { halign: 'center' },
-        startY: 157,
+        startY: 167,
+        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom2aparelhos))]],
         didParseCell: (data) => {
           if (data.column.dataKey == 0) {
             data.cell.styles.halign = "left";
@@ -208,15 +213,16 @@ export class CalculadoraVrfComponent implements OnInit {
     }
 
     if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 3 Condensadora", 14, 198);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 198, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada3aparelhos) + " %", 182, 198, { align: 'left', maxWidth: 19 });
+      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 3 condensadoras", 14, 210);
+      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 210, { align: 'left' });
+      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada3aparelhos) + " %", 182, 210, { align: 'left', maxWidth: 19 });
       produtos = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
       autoTable(doc, {
         head: head,
         body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
         styles: { halign: 'center' },
-        startY: 200,
+        startY: 212,
+        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom3aparelhos))]],
         didParseCell: (data) => {
           if (data.column.dataKey == 0) {
             data.cell.styles.halign = "left";
@@ -231,8 +237,9 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.setFont('helvetica', 'normal').setFontSize(8).text(rodape, 30, 280, { maxWidth: 174 });
 
     doc.setProperties({ title: "calculo_vrf" });
-    doc.output('dataurlnewwindow');
     doc.save('calculo_vrf');
+    let x: string = doc.output('bloburl').toString();
+    window.open(x);
   }
 
   criarForm() {
@@ -489,7 +496,7 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  totalEvaporadora(produto: ProdutoTabela){
+  totalEvaporadora(produto: ProdutoTabela) {
     produto.totalKcal = this.moedaUtils.formatarParaFloatUmaCasaReturnZero(produto.qtde * Number.parseFloat(produto.kcal));
     return produto.totalKcal;
   }
