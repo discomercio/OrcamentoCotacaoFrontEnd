@@ -67,7 +67,7 @@ export class AutenticacaoService {
   buscarEstilo(loja) {
     this.lojaService.buscarLojaEstilo(loja).toPromise().then((r) => {
       if (!!r) {
-        this._lojaEstilo.imagemLogotipo = r.imagemLogotipo;
+        this._lojaEstilo.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
         this._lojaEstilo.corCabecalho = r.corCabecalho + " !important";
         this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
       }
