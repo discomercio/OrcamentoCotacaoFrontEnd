@@ -76,11 +76,11 @@ export class CalculadoraVrfComponent implements OnInit {
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
-  nomeCliente: string = "Gabriel Prada Teodoro";
-  nomeObra: string = "Casa do cliente";
-  telefone: string = "11981603313";
-  email: string = "gabriel.teodoro@itssolucoes.com.br";
-  observacao: string = "Apenas para teste";
+  nomeCliente: string;
+  nomeObra: string;
+  telefone: string;
+  email: string;
+  observacao: string;
 
   mascaraTelefone: string;
 
@@ -98,11 +98,11 @@ export class CalculadoraVrfComponent implements OnInit {
 
     produto.forEach(x => {
       if (x.totalKcal == undefined) {
-        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.kcal, x.qtde]
+        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal ]
         retorno.push(dado);
       }
       if (x.totalKcal > 0) {
-        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal, x.totalKcal]
+        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.btu, x.kcal, x.totalKcal]
         retorno.push(dado);
       }
     });
@@ -119,36 +119,36 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome:", 14, 37);
-    doc.setFontSize(11).text(this.nomeCliente, 26, 37, {
+    doc.setFontSize(11).text(this.nomeCliente != undefined ? this.nomeCliente : '', 26, 37, {
       maxWidth: 54,
       align: 'left'
     });
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", 80, 37);
-    doc.setFontSize(11).text(this.nomeObra, 108, 37, {
+    doc.setFontSize(11).text(this.nomeObra != undefined ? this.nomeObra : '', 108, 37, {
       maxWidth: 45,
       align: 'left'
     });
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", 153, 37);
-    doc.setFontSize(11).text(this.stringUtils.formataTextoTelefone(this.telefone), 170, 37, {
+    doc.setFontSize(11).text(this.telefone != undefined ? this.stringUtils.formataTextoTelefone(this.telefone) : '', 170, 37, {
       maxWidth: 30,
       align: 'left'
     });
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("E-mail:", 14, 44);
-    doc.setFontSize(11).text(this.email, 27, 44, {
+    doc.setFontSize(11).text(this.email != undefined ? this.email : '', 27, 44, {
       maxWidth: 75,
       align: 'left'
     });
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("Observações:", 108, 44);
-    doc.setFontSize(11).text(this.observacao, 133, 44, {
+    doc.setFontSize(11).text(this.observacao != undefined ? this.observacao : '', 133, 44, {
       maxWidth: 66,
       align: 'left'
     });
 
-    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(Kcal/h)']];
+    let columnsEvaps = [['Produto', 'Qtde',  'Capacidade(BTU/h)', 'Capacidade(Kcal/h)', 'Total(Kcal/h)']];
 
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
     autoTable(doc, {
@@ -163,7 +163,7 @@ export class CalculadoraVrfComponent implements OnInit {
       }
     });
 
-    const head = [['Produto', 'Capacidade(Kcal/h)', 'Quantidade']];
+    const head = [['Produto', 'Quantidade', 'Capacidade(Kcal/h)' ]];
 
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 Condensadora", 14, 120);
     doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 120, { align: 'left' });
@@ -242,7 +242,7 @@ export class CalculadoraVrfComponent implements OnInit {
       descarga: ['', [Validators.required]],
       simultaneidade: ['', [Validators.required]],
       qtdeCondensadora: ['', [Validators.required]],
-      ciclo:['', [Validators.required]]
+      ciclo: ['', [Validators.required]]
     })
   }
 
@@ -344,7 +344,7 @@ export class CalculadoraVrfComponent implements OnInit {
             if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
               produtoTabela.kcal = l.valorPropriedade;
             }
-            if(Number.parseInt(l.idPropriedade) == 5){
+            if (Number.parseInt(l.idPropriedade) == 5) {
               produtoTabela.btu = l.valorPropriedade;
             }
 
@@ -454,7 +454,7 @@ export class CalculadoraVrfComponent implements OnInit {
       }
     });
 
-    
+
   }
 
   removerItem(index: number) {
@@ -484,6 +484,11 @@ export class CalculadoraVrfComponent implements OnInit {
     if (this.calculado) {
       this.calcularCondensadoras();
     }
+  }
+
+  totalEvaporadora(produto: ProdutoTabela){
+    produto.totalKcal = this.moedaUtils.formatarParaFloatUmaCasaReturnZero(produto.qtde * Number.parseFloat(produto.kcal));
+    return produto.totalKcal;
   }
 
   arrumarProdutosRepetidos(produto: ProdutoTabela) {

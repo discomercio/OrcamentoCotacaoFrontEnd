@@ -12,5 +12,5 @@ export class ProdutoTabela {
   descarga: string;
   btu:string;
   qtde: number;
-  totalKcal: number;
+  totalKcal: number|string;
 }
