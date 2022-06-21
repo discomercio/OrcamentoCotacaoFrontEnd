@@ -538,8 +538,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   voltar() {
-    
-    
+    this.novoOrcamentoService.lstProdutosSelecionados = new Array();
     this.router.navigate(["orcamentos/cadastrar-cliente", "editar"]);
   }
 

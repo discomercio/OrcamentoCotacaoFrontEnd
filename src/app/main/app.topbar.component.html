@@ -5,11 +5,14 @@
     <div class="topbar clearfix">
         <div class="topbar-left p-text-center">
             <a routerLink="/">
-                <img src="assets/layout/images/LogoUnis.png" class="topbar-logo" routerLink="/" />
+                <img src="{{autenticacaoService._lojaEstilo.imagemLogotipo}}" class="topbar-logo" routerLink="/" />
             </a>
         </div>
 
-        <div class="topbar-right">
+        <div class="topbar-right" 
+            [style.backgroundColor]="autenticacaoService._lojaEstilo.corCabecalho"
+            [style.backgroundImage]="'none !important'"
+            >
             <a id="menu-button" href="#" (click)="appMain.onMenuButtonClick($event)" class="p-shadow-10"
                [ngClass]="{'menu-button-rotate': appMain.rotateMenuButton}">
                 <i class="pi pi-angle-left"></i>
@@ -167,18 +170,9 @@
                     setOptionsValueName="Id"
                     [setReset]="lojaLogada"
                     (getItemSelected)="cboLojas_onChange($event)"
-                    setShowLabel="false"                
+                    setShowLabel="false"      
+                    [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"          
                 ></dropdown-arclube>
-                    <!-- <div class="topbar-search">
-                        <p-dropdown
-                            formControlName="cboLojas"
-                            [options]="lojas"
-                            emptyFilterMessage="Nenhum item encontrado"
-                            optionValue="Id" optionLabel="Value"
-                            (onChange)="cboLojas_onChange($event)"
-                            [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"
-                        ></p-dropdown>
-                    </div> -->
                 </li>
             </ul>
         </div>

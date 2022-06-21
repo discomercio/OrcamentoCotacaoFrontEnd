@@ -57,8 +57,9 @@ export class MensageriaComponent implements AfterViewInit {
   }
 
   enviarMensagem() {
-    
     this.validar();
+    
+    this.marcarMensagemComoLida(this.idOrcamentoCotacao); 
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
@@ -100,10 +101,20 @@ export class MensageriaComponent implements AfterViewInit {
   }  
 
   marcarMensagemComoLida(idOrcamentoCotacao: number) {   
-    
+    var url = window.location.href;
+
+    var acessoExterno = url.includes("publico/orcamento");
+
     if (this.donoOrcamento){         
       this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
       }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+    }else{
+
+      if (acessoExterno){
+        this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+        }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+      }
+
     }
   }    
 

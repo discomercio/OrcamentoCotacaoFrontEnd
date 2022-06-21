@@ -18,6 +18,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -33,7 +34,8 @@ export class CalculadoraVrfComponent implements OnInit {
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     public dialogService: DialogService,
-    private readonly sweetalertService: SweetalertService
+    private readonly sweetalertService: SweetalertService,
+    private readonly autenticacaoService:AutenticacaoService
   ) { }
 
   form: FormGroup;
@@ -112,7 +114,8 @@ export class CalculadoraVrfComponent implements OnInit {
   exportPdf() {
     //Buscar a imagem conforme a unidade de negocio
     let img = new Image();
-    img.src = 'assets/layout/images/LogoUnis.png';
+    // let im = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+    img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;;
 
     let doc = new jsPDF();
     doc.addImage(img, 'png', 14, 10, 15, 10);

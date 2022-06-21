@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Lojas } from 'src/app/dto/lojas/lojas';
 import { environment } from 'src/environments/environment';
 import { PercMaxDescEComissaoResponseViewModel } from '../../dto/percentual-comissao';
+import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
 
 @Injectable({
   providedIn: 'root'
@@ -20,5 +21,9 @@ export class LojasService {
     let params = new HttpParams();
     params = params.append('loja', loja);
     return this.http.get<PercMaxDescEComissaoResponseViewModel>(environment.apiUrl + "Loja/buscarPercMaxPorLoja", { params: params });
+  }
+
+  public buscarLojaEstilo(loja: string): Observable<lojaEstilo> {
+    return this.http.get<lojaEstilo>(`${environment.apiUrl}loja/${loja}/estilo`);
   }
 }
