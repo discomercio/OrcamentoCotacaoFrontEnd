@@ -82,7 +82,7 @@ export class MensageriaComponent implements AfterViewInit {
 
     this.mensageriaService.obterListaMensagem(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
 
-      if (r != null) {
+      if (r != null && r.length>0) {
         if (r[0]['PendenciaTratada'] == true){
           this.mensageriaService.desmarcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
             if (r != null) {
@@ -96,6 +96,8 @@ export class MensageriaComponent implements AfterViewInit {
             }
           }).catch((r) => this.alertaService.mostrarErroInternet(r));                
         }
+      }else{
+        this.mensagemService.showWarnViaToast("Não há mensagens para marcar como tratadas!");
       }      
     }).catch((r) => this.alertaService.mostrarErroInternet(r));        
   }  
