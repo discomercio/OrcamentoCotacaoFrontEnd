@@ -1,3 +1,4 @@
+import { lojaEstilo } from './../../dto/lojas/lojaEstilo';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import jtw_decode from 'jwt-decode'
@@ -9,6 +10,7 @@ import { LoginResponse } from 'src/app/dto/login/login-response';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { Constantes } from 'src/app/utilities/constantes';
 import { SelectItem } from 'primeng/api';
+import { LojasService } from '../lojas/lojas.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,6 +19,7 @@ export class AutenticacaoService {
   constructor(private readonly http: HttpClient,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
+    private readonly lojaService: LojasService,
   ) {
   }
 
@@ -32,6 +35,8 @@ export class AutenticacaoService {
   public unidade_negocio: string = null;
   public constantes: Constantes = new Constantes();
   public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null );
+  public _lojaEstilo: lojaEstilo = new lojaEstilo();
+  favIcon: HTMLLinkElement = document.querySelector('#favIcon');
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
@@ -54,7 +59,19 @@ export class AutenticacaoService {
         }
     }
 
+    this.buscarEstilo(this._lojaLogado); 
+
     return true;
+  }
+
+  buscarEstilo(loja) {
+    this.lojaService.buscarLojaEstilo(loja).toPromise().then((r) => {
+      if (!!r) {
+        this._lojaEstilo.imagemLogotipo = r.imagemLogotipo;
+        this._lojaEstilo.corCabecalho = r.corCabecalho + " !important";
+        this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+      }
+    });
   }
 
   montaListaLojas() {
