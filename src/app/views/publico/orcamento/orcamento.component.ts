@@ -89,21 +89,21 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     opcao.formaPagto.some((fp) => {
 
-      let pagto = orcamento.listaFormasPagto.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
+      let pagto = orcamento.listaFormasPagto.filter(f => f?.idTipoPagamento == fPagto?.tipo_parcelamento)[0];
 
       if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
         let valorTotalAvista = this.moedaUtils
-          .formatarMoedaComPrefixo(opcao.listaProdutos
+          .formatarMoedaComPrefixo(opcao?.listaProdutos
             .reduce((sum, current) => sum + this.moedaUtils
-              .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
-        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0]?.descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
-        
+              .formatarDecimal((current?.precoListaBase * (1 - current?.descDado / 100)) * current?.qtde), 0));
+        let meio = pagto?.meios?.filter(m => m?.id.toString() == fPagto?.op_av_forma_pagto)[0]?.descricao;
+        texto = pagto?.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
+
         return true;
       }
 
       if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
+        texto = pagto?.tipoPagamentoDescricao + " em " + fp?.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp?.c_pc_valor);
         
         return true;
       }
@@ -140,7 +140,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }
 
       if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_maquineta_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_maquineta_valor);
+
+        texto = pagto?.tipoPagamentoDescricao + " em " + fp?.c_pc_maquineta_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp?.c_pc_maquineta_valor);
         return true;
       }
 
