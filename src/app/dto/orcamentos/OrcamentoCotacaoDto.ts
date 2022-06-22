@@ -16,6 +16,10 @@ export class OrcamentoCotacaoDto {
     observacoesGerais: string;
     entregaImediata: boolean;
     dataEntregaImediata: Date;
+    usuarioCadastro: string;
+    uf: string;
+    telefone: string;
+    email: string;
 
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];

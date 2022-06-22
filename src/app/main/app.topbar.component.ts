@@ -1,14 +1,12 @@
-import {Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component } from '@angular/core';
 import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
-import { OrcamentosService } from './../service/orcamento/orcamentos.service';
 import {AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import {MensageriaService } from './../service/mensageria/mensageria.service';
 import {DropDownItem} from '../views/orcamentos/models/DropDownItem';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
-import {Lojas} from '../dto/lojas/lojas';
 
 @Component({
     selector: 'app-topbar',
@@ -20,8 +18,7 @@ export class AppTopBarComponent {
     constructor(
         public app: AppComponent,
         public appMain: AppMainComponent,
-        private readonly autenticacaoService:  AutenticacaoService,
-        private readonly orcamentoService: OrcamentosService,
+        public readonly autenticacaoService:  AutenticacaoService,
         private readonly mensageriaService: MensageriaService,
         private readonly router: Router,
         private fb: FormBuilder
@@ -32,6 +29,8 @@ export class AppTopBarComponent {
     public form: FormGroup;
     lojas: Array<DropDownItem> = [];
     filtro: Filtro = new Filtro();
+    imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+    corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
 
     ngOnInit(): void {
         this.criarForm();
