@@ -40,7 +40,7 @@ export class AppTopBarComponent {
                         
         setInterval(() => {
           this.obterQuantidadeMensagemPendente();
-        }, 60000);                
+        }, 5000);                
     }
 
     carregando: boolean = false;
