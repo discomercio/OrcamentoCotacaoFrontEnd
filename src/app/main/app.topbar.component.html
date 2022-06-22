@@ -151,6 +151,7 @@
                         <span class="topbar-badge animated rubberBand">{{qtdMensagem}}</span>
                         <span class="topbar-item-name">Notifications</span>
                     </a>
+                    
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}" *ngIf="qtdMensagem>0">
                         <li role="menuitem">
                             <a href="orcamentos/listar/orcamentos?msgPendentes=true">

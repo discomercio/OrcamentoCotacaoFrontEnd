@@ -25,7 +25,7 @@ export class AppTopBarComponent {
     ) {}
     public lojaLogada : any;
     parametro: string;
-    qtdMensagem: number[];
+    qtdMensagem: any;
     public form: FormGroup;
     lojas: Array<DropDownItem> = [];
     filtro: Filtro = new Filtro();
@@ -45,7 +45,7 @@ export class AppTopBarComponent {
     carregando: boolean = false;
     obterQuantidadeMensagemPendente() {
       this.mensageriaService.obterQuantidadeMensagemPendente().toPromise().then((r) => {
-        if (r != null) {      
+        if (r != null) {               
           this.qtdMensagem = r;
         }
       })
