@@ -79,7 +79,7 @@ import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-
                                     { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar/', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
+                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
                                     { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
                                     { path: 'propriedades/editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
