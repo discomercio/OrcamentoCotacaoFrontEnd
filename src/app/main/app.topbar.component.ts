@@ -7,6 +7,7 @@ import {MensageriaService } from './../service/mensageria/mensageria.service';
 import {DropDownItem} from '../views/orcamentos/models/DropDownItem';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
+import { LojasService } from 'src/app/service/lojas/lojas.service';
 
 @Component({
     selector: 'app-topbar',
@@ -21,7 +22,10 @@ export class AppTopBarComponent {
         public readonly autenticacaoService:  AutenticacaoService,
         private readonly mensageriaService: MensageriaService,
         private readonly router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private readonly lojaService: LojasService
+        
+        
     ) {}
     public lojaLogada : any;
     parametro: string;
@@ -31,6 +35,7 @@ export class AppTopBarComponent {
     filtro: Filtro = new Filtro();
     imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
+    favIcon: HTMLLinkElement = document.querySelector('#favIcon');
 
     ngOnInit(): void {
         this.criarForm();
@@ -39,7 +44,9 @@ export class AppTopBarComponent {
                         
         setInterval(() => {
           this.obterQuantidadeMensagemPendente();
-        }, 5000);                
+        }, 5000);   
+        
+        this.buscarEstilo(this.lojaLogada);
     }
 
     carregando: boolean = false;
@@ -50,6 +57,18 @@ export class AppTopBarComponent {
         }
       })
     } 
+
+    buscarEstilo(loja) {
+      this.lojaService.buscarLojaEstilo(loja).toPromise().then((r) => {
+        if (!!r) {        
+          
+          this.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
+          
+          this.corCabecalho = r.corCabecalho + " !important";
+          this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+        }
+      });
+    }    
 
     criarForm() {
     this.form = this.fb.group({
