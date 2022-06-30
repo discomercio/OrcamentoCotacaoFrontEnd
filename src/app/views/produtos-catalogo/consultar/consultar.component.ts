@@ -80,10 +80,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
 
     this.cboTipoUnidade = [];
     this.registros.forEach(x => {
-      console.log(x.tipoUnidade);
       if (!this.cboTipoUnidade.find(f => f.Value == x.tipoUnidade)) {
         if (x.tipoUnidade) {
-          console.log(x.tipoUnidade);
           this.cboTipoUnidade.push({ Id: x.tipoUnidade, Value: x.tipoUnidade });
         }
       }
