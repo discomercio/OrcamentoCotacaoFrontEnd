@@ -6,8 +6,9 @@ import { ProdutoOrcamentoDto } from '../produtos/ProdutoOrcamentoDto';
 
 
 export class OrcamentosOpcaoResponse {
+    id:number;
     listaProdutos: ProdutoOrcamentoDto[];
-    VlTotal: number | null;    
+    vlTotal: number | null;    
     formaPagto:FormaPagtoCriacao[];
     percRT:number;
 }

@@ -75,6 +75,11 @@
                                     <div class="p-ml-auto p-p-0 p-text-right">
                                         <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotal)}}</span>
                                     </div>
+                                    <div *ngIf="editar" class="p-ml-auto p-p-0 p-text-right">
+                                        <button style="color: #fff;" pButton type="button" label="Editar"
+                                            (click)="editarOpcao(orcamento)"
+                                            class="p-button-text p-p-0"></button>
+                                    </div>
                                 </ng-template>
                                 <ng-template pTemplate="content">
                                     <div class="p-col-12 p-p-0">

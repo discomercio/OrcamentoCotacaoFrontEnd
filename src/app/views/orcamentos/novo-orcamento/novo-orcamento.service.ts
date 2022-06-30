@@ -37,8 +37,10 @@ export class NovoOrcamentoService {
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
+    this.orcamentoCotacaoDto.entregaImediata = true;
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
+    this.lstProdutosSelecionados = new Array();
   }
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
@@ -60,7 +62,7 @@ export class NovoOrcamentoService {
   public totalPedido(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      return this.opcaoOrcamentoCotacaoDto.VlTotal = this.moedaUtils
+      return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
         .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
           .reduce((sum, current) => sum + this.moedaUtils
             .formatarDecimal(current.totalItem), 0));
@@ -68,10 +70,12 @@ export class NovoOrcamentoService {
   }
 
   public totalAVista(): number {
-    return this.moedaUtils
+    let totalVista = this.moedaUtils
       .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
         .reduce((sum, current) => sum + this.moedaUtils
           .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+
+    return totalVista;
   }
 
 
@@ -167,14 +171,15 @@ export class NovoOrcamentoService {
   }
 
   recalcularProdutosComCoeficiente(qtdeParcelas: number, coeficientes: CoeficienteDto[]) {
-    if(!qtdeParcelas){
+    if (!qtdeParcelas) {
       return;
     }
     this.coeficientes = coeficientes;
+    
     this.qtdeParcelas = qtdeParcelas;
 
     this.lstProdutosSelecionados.forEach(x => {
-      let coeficiente = this.coeficientesParaCalculo.filter(c => c.Fabricante == x.fabricante)[0];
+      let coeficiente = this.coeficientes?.filter(c => c.Fabricante == x.fabricante && c.QtdeParcelas == qtdeParcelas && c.TipoParcela == this.siglaPagto)[0];
       x.precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * coeficiente.Coeficiente);
       x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
       x.descDado = x.alterouPrecoVenda ? (x.precoLista - x.precoVenda) * 100 / x.precoLista : x.descDado;
@@ -182,16 +187,39 @@ export class NovoOrcamentoService {
       x.coeficienteDeCalculo = coeficiente.Coeficiente;
       x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
     });
-
-    this.totalPedido();
+    
+    this.calcularPercentualComissao();
+    
   }
 
+  calcularPercentualComissao() {
+    let totalSemDesc = this.moedaUtils
+      .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+        .reduce((sum, current) => sum + this.moedaUtils
+          .formatarDecimal((current.precoLista) * current.qtde), 0));
 
+    let totalComDesc = this.totalPedido();
+
+    let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
+
+    if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
+      let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
+
+      if (descontarComissao != 0) {
+        let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
+        this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
+      }
+    }
+    else {
+      this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);
+    }
+
+  }
 
   get coeficientesParaCalculo(): Array<CoeficienteDto> {
     let coeficientesParaCalculo: CoeficienteDto[] = new Array<CoeficienteDto>();
     this.lstFabricantesDisctint.forEach(x => {
-      let filtro = this.coeficientes.filter(c => c.Fabricante == x && c.TipoParcela == this.siglaPagto && c.QtdeParcelas == this.qtdeParcelas)[0];
+      let filtro = this.coeficientes?.filter(c => c.Fabricante == x && c.TipoParcela == this.siglaPagto && c.QtdeParcelas == this.qtdeParcelas)[0];
       coeficientesParaCalculo.push(filtro);
     });
 

@@ -12,7 +12,7 @@ export class MoedaUtils {
     }
 
     public formatarMoedaSemPrefixo(nro: number) {
-        if (!!!nro){
+        if (!!!nro) {
             return "";
         }
         return this.formatter.format(nro);
@@ -29,10 +29,14 @@ export class MoedaUtils {
     }
 
     public formatarParaFloatUmaCasaReturnZero(nro: number) {
-        
+
         if (!!!nro)
             return "0.00";
         return this.formatter1casa.format(nro).replace(",", ".");
     }
 
+    naoArredondar(num, precisao) {
+        let casas = Math.pow(10, precisao);
+        return Math.floor(num * casas) / casas;
+    }
 }

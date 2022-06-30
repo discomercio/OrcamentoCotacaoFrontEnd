@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
@@ -26,8 +26,9 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     private readonly formaPagtoService: FormaPagtoService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
     public readonly itensComponent: ItensComponent,
-    public readonly mensagemService:MensagemService,
-    telaDesktopService: TelaDesktopService
+    public readonly mensagemService: MensagemService,
+    telaDesktopService: TelaDesktopService,
+    public cdref: ChangeDetectorRef
   ) {
     super(telaDesktopService);
   }
@@ -36,17 +37,23 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
   }
   checked: boolean = true;
+  checkedAvista: boolean = false;
   tipoUsuario: number;
   public constantes: Constantes = new Constantes();
   formaPagamento: FormaPagto[] = new Array();
+  editando: boolean = false;
 
-
-  buscarFormasPagto() {
+  buscarFormasPagto(param: string) {
     let comIndicacao: number = 0;
-    if (this.tipoUsuario == this.constantes.PARCEIRO ||
-      this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR)
+    let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
+    let apelido: string = this.autenticacaoService.usuario.nome;
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
       comIndicacao = 1;
-
+      tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
+      apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
+    }
+    
     let qtdeMaxParcelaCartaoVisa: number = 0;
     if (this.tipoUsuario == this.constantes.GESTOR ||
       this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
@@ -57,14 +64,18 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         }
       });
     }
+    // aqui esta errado, precisa verificar se tem parceiro atribuido para passar o tipo de usuário
+    // então precisamos adicionar no param o tipo de usuário por aqui e não pegar o que esta no token
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
-      return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo, comIndicacao)
+      return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
+        comIndicacao, tipoUsuario, apelido)
         .toPromise()
         .then((r) => {
           if (r != null) {
             this.formaPagamento = r;
             this.montarFormasPagto();
-            this.setarTipoPagto();
+            if (param != undefined)
+              this.setarTipoPagto();
           }
         }).catch((e) => this.alertaService.mostrarErroInternet(e));
     }
@@ -131,10 +142,10 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   qtdeMaxDias: number;
   qtdeMaxPeriodo: number;
   qtdeMaxPeriodoPrimPrest: number;
-  habilitar:boolean = true;
+  habilitar: boolean = true;
 
   selectAprazo() {
-    
+
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
@@ -235,7 +246,9 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   totalAvista: number;
   calcularValorAvista() {
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento[0]) {
+    if (!this.checkedAvista) return;
+    this.formaPagtoCriacaoAvista.tipo_parcelamento = 1;
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
       // this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
       return;
@@ -246,7 +259,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   calcularParcelas() {
-
     if (this.novoOrcamentoService.lstProdutosSelecionados.length <= 0) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
@@ -330,7 +342,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
     if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
-      
+
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
       return;
     }
@@ -343,40 +355,14 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    if (!this.formaPagtoCriacaoAvista.tipo_parcelamento || this.formaPagtoCriacaoAvista.tipo_parcelamento != 1) {
-
-    }
     let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
     lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
 
     if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
-      let tipoPagto = this.formaPagtoCriacaoAvista.tipo_parcelamento[0];
-      this.formaPagtoCriacaoAvista.tipo_parcelamento = tipoPagto;
       lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
     }
 
     this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
-
-
-    /**
-     * Validar
-     *  se o tipo de pagamento a prazo esta com todos os campos preenchidos e válidos
-     *  se a forma de pagamento a vista esta selecionada, verificar se os campos estão preenchidos
-     *  
-     */
-
-    /**
-     * Após inserir a opção devemos:
-     *  limpar a lista de produtos selecionados em todos os lugares
-     *  limpar a lista de controle de produtos de novoOrcamentoService
-     *  Limpar as formas de pagamentos e setar a que estava no carregamento da tela
-     *  setar a comissão do indicador
-     */
-
-
-
-
-    // this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();

@@ -11,9 +11,10 @@ export class OrcamentoCotacaoResponse {
     qtdeRenovacao: number;
     concordaWhatsapp: boolean;
     observacoesGerais: string;
-    entregaImediata: boolean = true;
+    entregaImediata: boolean;
     dataEntregaImediata: Date;
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
     cadastradoPor:string;
+    dataCadastro:string;
 }

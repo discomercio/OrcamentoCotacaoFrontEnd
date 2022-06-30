@@ -16,6 +16,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -76,9 +77,11 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   verificarParam(param: any) {
+    debugger;
     if (param.filtro == "editar") return;
     if (param.filtro == "novo") {
       this.novoOrcamentoService.criarNovo();
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
     }
     if (param.filtro == "clone") {
       //vamos criar montar os dados de cliente apena?
@@ -312,7 +315,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
 
-    this.router.navigate(["orcamentos/itens"]);
+    this.router.navigate(["orcamentos/itens", "novo"]);
   }
 
   dataEntrega = true;
