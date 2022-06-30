@@ -105,4 +105,8 @@ export class ProdutoCatalogoService {
   listarProdutosPropriedadesAtivos(propriedadeOculta: boolean, propriedadeOcultaItem: boolean): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
     return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(`${environment.apiUrl}produtocatalogo/listar-produtos-propriedades/${propriedadeOculta}&${propriedadeOcultaItem}`);
   }
+
+  buscarProdutosAtivosLista(): Observable<any> {
+    return this.http.get<any>(`${environment.apiUrl}produto/listar-produtos-ativos`);
+  }
 }

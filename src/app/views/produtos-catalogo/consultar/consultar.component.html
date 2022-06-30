@@ -1,18 +1,85 @@
 <div class="p-grid" [ngClass]="{'carregando': carregando}">
     <div class="p-col-12 p-pb-0">
         <div class="card itens">
-            <h4>Consulta de Catálogo de Produtos</h4>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-4" *ngFor="let prop of drops; let i=index">
-                    <label>{{prop.item}}</label>
-                    <p-dropdown id="campo-{{prop.item}}" [options]="prop.values" placeholder="Selecione" [showClear]="true"
-                          (onChange)="filtrar($event, prop.item)" optionLabel="valor" optionValue="valor">
+            <form [formGroup]="form">
 
-                    </p-dropdown>
+            <h4>Consulta de Catálogo de Produtos</h4>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
+                <div class="p-col-12">
+                    <div class="p-grid">
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Incluir na calculadora VRF</label>
+                            <p-dropdown formControlName="CalculadoraVRF" [options]="cboCalculadoraVRF" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Tipo da Unidade</label>
+                            <p-dropdown formControlName="TipoUnidade" [options]="cboTipoUnidade" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" 
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Descarga Condensadora</label>
+                            <p-dropdown formControlName="DescargaCondensadora" [options]="cboDescargaCondensadora" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" 
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Voltagem</label>
+                            <p-dropdown formControlName="Voltagem" [options]="cboVoltagem" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                    </div>
+
+                    <div class="p-grid">
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Capacidade (BTU/h)</label>
+                            <p-dropdown formControlName="CapacidadeBTU" [options]="cboCapacidadeBTU" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Ciclo</label>
+                            <p-dropdown formControlName="Ciclo" [options]="cboCiclo" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
+                            <label for="filtro">Linha de Produto</label>
+                            <p-dropdown formControlName="LinhaProduto" [options]="cboLinhaProduto" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
+                                optionValue="Id" optionLabel="Value" [showClear]="true"
+                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
+                                >
+                            </p-dropdown>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <p-table #dt1 [value]="produtosTabela" [responsive]="true" responsiveLayout="stack"
+                <p-table #dt1 [value]="registrosFiltrados" [responsive]="true" responsiveLayout="stack"
                     [ngClass]="{'carregando': carregando}" styleClass="p-datatable-customers p-datatable-striped"
                     [rows]="10" [paginator]="true" [filterDelay]="0">
                     <ng-template pTemplate="header">
@@ -35,7 +102,7 @@
                             <td class="p-py-2 p-text-left">{{lista.linhaProduto}}</td>
                             <td class="p-py-2 p-text-center">{{lista.tipoUnidade}}</td>
                             <td class="p-py-2 p-text-center">{{lista.voltagem}}</td>
-                            <td class="p-py-2 p-text-center">{{lista.capacidade}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.capacidadeBTU}}</td>
                             <td class="p-py-2 p-text-center">
                                 <button pButton style="align-content: flex-end;" icon="fa fa-eye" 
                                     (click)="visualizarClick(lista.id)" pTooltip="Visualizar"></button>
@@ -44,6 +111,8 @@
                     </ng-template>
                 </p-table>
             </div>
+
+            </form>
         </div>
     </div>
 </div>

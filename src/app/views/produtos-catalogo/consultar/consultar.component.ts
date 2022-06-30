@@ -1,18 +1,13 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { FormGroup } from '@angular/forms';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { SelectItem } from 'primeng/api';
 import { Table } from 'primeng/table';
-import { stringify } from 'querystring';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { ProdutoAtivoDto } from 'src/app/dto/produtos-catalogo/ProdutoAtivoDto';
 import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
-import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade';
-import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
-import { ProdutoTabela } from 'src/app/dto/produtos-catalogo/ProdutoTabela';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-import { callbackify } from 'util';
-import { ProdutoTela } from '../../orcamentos/novo-orcamento/select-prod-dialog/produto-tela';
+import { DropDownItem } from '../../orcamentos/models/DropDownItem';
 
 @Component({
   selector: 'app-consultar',
@@ -23,190 +18,148 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
 
   constructor(private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    private fb: FormBuilder
+    ) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
   listaProdutoDto: ProdutoCatalogo[];
-  produtosPropriedadesAtivos: ProdutoCatalogoItemProdutosAtivosDados[];
+  registros: ProdutoAtivoDto[];
+  registrosFiltrados: ProdutoAtivoDto[];
   cols: any[];
   carregando: boolean = false;
   stringUtils = StringUtils;
 
+  cboCalculadoraVRF: Array<DropDownItem> = [];
+  cboTipoUnidade: Array<DropDownItem> = [];
+  cboDescargaCondensadora: Array<DropDownItem> = [];
+  cboVoltagem: Array<DropDownItem> = [];
+  cboCapacidadeBTU: Array<DropDownItem> = [];
+  cboCiclo: Array<DropDownItem> = [];
+  cboLinhaProduto: Array<DropDownItem> = [];
+
   ngOnInit(): void {
-
-    this.criarTabela();
-    this.buscarPropriedadesProdutosAtivos();
-    this.buscarPropriedadesEOpcoesProdutosAtivos();
-
+    this.criarForm();
+    this.buscarRegistros();
   }
 
-  criarTabela() {
-    this.cols = [
-      { field: "codigo", header: "Código", visible: true },
-      { field: "Fabricante", header: "Fabricante", visible: true },
-      { field: "Descricao", header: "Descrição", visible: true },
-      { field: "IdPropriedade", header: "IdPropriedade", visible: false },
-      { field: "Propriedade", header: "Propriedade", visible: true },
-      { field: "Valor", header: "Valor", visible: true },
-    ]
+  criarForm() {
+    this.form = this.fb.group({
+      CalculadoraVRF: [''],
+      TipoUnidade: [''],
+      DescargaCondensadora: [''],
+      Voltagem: [''],
+      CapacidadeBTU: [''],
+      Ciclo: [''],
+      LinhaProduto: ['']
+    });
   }
 
-  buscarPropriedadesProdutosAtivos() {
-    this.produtoService.buscarPropriedadesProdutosAtivos().toPromise().then((r) => {
+  buscarRegistros() {
+    this.produtoService.buscarProdutosAtivosLista().toPromise().then((r) => {
       if (r != null) {
-        this.produtosPropriedadesAtivos = r;
-        this.criarColunas();
+        this.registros = r;
+        this.registrosFiltrados = r;
         this.carregando = false;
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
 
-
-  }
-
-  buscarPropriedadesEOpcoesProdutosAtivos() {
-    this.produtoService.buscarPropriedadesEOpcoesProdutosAtivos().toPromise().then((r) => {
-      if (r != null) {
-        this.montarFiltrosDropDowns(r)
+        this.popularCombos();
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  armazenaFiltro: any[] = [];
-  drops: any[] = new Array<any>();
-  montarFiltrosDropDowns(proprieadades: any[]) {
-    let p = new Array<any>();
-    p = proprieadades;
-
-    let map = proprieadades.map(x => x.IdProdpriedade);
-    let filtrado: any[] = map.filter(this.distinct);
-
-    filtrado.forEach(x => {
-
-      let filtro = proprieadades.filter(y => y.IdProdpriedade == x);
-      let prop = { item: filtro[0].NomePropriedade, values: [] };
-
-
-      let camposFiltro = { campo: prop.item, valor: "" };
-      this.armazenaFiltro.push(camposFiltro);
-      // prop.values[0].valor = "Selecione";
-      filtro.forEach(f => {
-        let v = { valor: f.ValorPropriedadeOpcao };
-        prop.values.push(v)
-      });
-      this.drops.push(prop)
-    });
-  }
-
-  private distinct = (value, index, self) => {
-    return self.indexOf(value) === index;
-  }
-
-  produtosTabela = new Array<ProdutoTabela>();
-  produtosTabelaApoio = new Array<ProdutoTabela>();
-  criarColunas() {
-
-    let filtrado = this.produtosPropriedadesAtivos.map(x => x.produto);
-    let r: string[] = filtrado.filter(this.distinct);
-
-    r.forEach(x => {
-      let pp = this.produtosPropriedadesAtivos.filter(y => y.produto == x);
-      let existe = this.produtosTabela.filter(f => f.produto == x);
-      if (existe.length == 0) {
-        if (pp && pp.length > 0) {
-          let produtoTela = new ProdutoTabela();
-          produtoTela.produto = pp[0].produto;
-          produtoTela.fabricante = pp[0].fabricante + " - " + pp[0].fabricanteNome;
-          produtoTela.descricao = pp[0].descricao;
-          produtoTela.id = pp[0].id;
-          produtoTela.linhaBusca = produtoTela.produto + "/" + pp[0].fabricante + "/" + pp[0].fabricanteNome + "/" + produtoTela.descricao + "/";
-
-          pp.forEach(e => {
-            let item: ProdutoCatalogoItemProdutosAtivosDados = new ProdutoCatalogoItemProdutosAtivosDados();
-            if (!produtoTela.linhaProduto) {
-              item = this.produtosPropriedadesAtivos.filter(x => x.produto == e.produto && x.nomePropriedade == "Linha de Produto")[0];
-              if (item) {
-                produtoTela.linhaProduto = item.valorPropriedade;
-                produtoTela.linhaBusca += produtoTela.linhaProduto + "/";
-              }
-            }
-
-            if (!produtoTela.tipoUnidade) {
-              item = this.produtosPropriedadesAtivos.filter(x => x.produto == e.produto && x.nomePropriedade == "Tipo da Unidade")[0];
-              if (item) {
-                produtoTela.tipoUnidade = item.valorPropriedade;
-                produtoTela.linhaBusca += produtoTela.tipoUnidade + "/";
-              }
-            }
-
-            if (!produtoTela.voltagem) {
-              item = this.produtosPropriedadesAtivos.filter(x => x.produto == e.produto && x.nomePropriedade == "Voltagem")[0];
-              if (item) {
-                produtoTela.voltagem = item.valorPropriedade;
-                produtoTela.linhaBusca += produtoTela.voltagem + "/";
-              }
-            }
-
-            if (!produtoTela.capacidade) {
-              item = this.produtosPropriedadesAtivos.filter(x => x.produto == e.produto && x.nomePropriedade == "Capacidade (BTU/h)")[0];
-              if (item) {
-                produtoTela.capacidade = item.valorPropriedade;
-                produtoTela.linhaBusca += produtoTela.capacidade + "/";
-              }
-            }
-            produtoTela.linhaBusca += e.valorPropriedade + "/";
-          });
-          this.produtosTabela.push(produtoTela);
-        }
-      }
-    });
-    this.produtosTabelaApoio = this.produtosTabela;
-  }
-
-  filtrar(e: HTMLInputElement, tipo: string) {
-
-    this.setarFiltros(tipo, e.value);
-    this.filtrarProdutos();
-  }
-
-  setarFiltros(tipo: string, valor: string) {
-    this.armazenaFiltro.forEach(x => {
-      if (x.campo == tipo) {
-        x.valor = !valor ? "" : valor;
-      }
-    });
-  }
-
-  filtrarProdutos() {
-    let temFiltro: boolean = false;
-    this.produtosTabela = new Array<ProdutoTabela>();
-    this.produtosTabela = this.produtosTabelaApoio;
-    let filter = this.armazenaFiltro.filter(x => x.valor != "");
-
-    filter.forEach(x => {
-      if (x.valor) {
-        temFiltro = true;
-        let produtos: ProdutoTabela[] = new Array<ProdutoTabela>();
-
-        produtos = this.produtosTabela.filter(f => f.linhaBusca.includes(x.valor));
-        if (produtos.length > 0) {
-          this.produtosTabela = new Array<ProdutoTabela>();
-          produtos.forEach(p => this.produtosTabela.push(p));
-        }
-        else {
-          this.produtosTabela = new Array<ProdutoTabela>();
+  popularCombos() {
+    this.cboCalculadoraVRF = [];
+    this.registros.forEach(x => {
+      if (!this.cboCalculadoraVRF.find(f => f.Value == x.calculadoraVRF)) {
+        if (x.calculadoraVRF) {
+          this.cboCalculadoraVRF.push({ Id: x.calculadoraVRF, Value: x.calculadoraVRF });
         }
       }
     });
 
-    if (!temFiltro && this.produtosTabela.length == 0) {
-      this.produtosTabela = this.produtosTabelaApoio;
-    }
+    this.cboTipoUnidade = [];
+    this.registros.forEach(x => {
+      console.log(x.tipoUnidade);
+      if (!this.cboTipoUnidade.find(f => f.Value == x.tipoUnidade)) {
+        if (x.tipoUnidade) {
+          console.log(x.tipoUnidade);
+          this.cboTipoUnidade.push({ Id: x.tipoUnidade, Value: x.tipoUnidade });
+        }
+      }
+    });
+
+    this.cboDescargaCondensadora = [];
+    this.registros.forEach(x => {
+      if (!this.cboDescargaCondensadora.find(f => f.Value == x.descargaCondensadora)) {
+        if (x.descargaCondensadora) {
+          this.cboDescargaCondensadora.push({ Id: x.descargaCondensadora, Value: x.descargaCondensadora });
+        }
+      }
+    });
+
+    this.cboVoltagem = [];
+    this.registros.forEach(x => {
+      if (!this.cboVoltagem.find(f => f.Value == x.voltagem)) {
+        if (x.voltagem) {
+          this.cboVoltagem.push({ Id: x.voltagem, Value: x.voltagem });
+        }
+      }
+    });
+
+    this.cboCapacidadeBTU = [];
+    this.registros.forEach(x => {
+      if (!this.cboCapacidadeBTU.find(f => f.Value == x.capacidadeBTU)) {
+        if (x.capacidadeBTU) {
+          this.cboCapacidadeBTU.push({ Id: x.capacidadeBTU, Value: x.capacidadeBTU });
+        }
+      }
+    });
+
+    this.cboCiclo = [];
+    this.registros.forEach(x => {
+      if (!this.cboCiclo.find(f => f.Value == x.ciclo)) {
+        if (x.ciclo) {
+          this.cboCiclo.push({ Id: x.ciclo, Value: x.ciclo });
+        }
+      }
+    });
+
+    this.cboLinhaProduto = [];
+    this.registros.forEach(x => {
+      if (!this.cboLinhaProduto.find(f => f.Value == x.linhaProduto)) {
+        if (x.linhaProduto) {
+          this.cboLinhaProduto.push({ Id: x.linhaProduto, Value: x.linhaProduto });
+        }
+      }
+    });
+
+  }
+
+  FiltrarRegistros() {
+    let vlCalculadoraVRF = this.form.controls.CalculadoraVRF.value;
+    let vlTipoUnidade = this.form.controls.TipoUnidade.value;
+    let vlDescargaCondensadora = this.form.controls.DescargaCondensadora.value;
+    let vlVoltagem = this.form.controls.Voltagem.value;
+    let vlCapacidadeBTU = this.form.controls.CapacidadeBTU.value;
+    let vlCiclo = this.form.controls.Ciclo.value;
+    let vlLinhaProduto = this.form.controls.LinhaProduto.value;
+
+    this.registrosFiltrados = this.registros;
+
+    if (vlCalculadoraVRF) { this.registrosFiltrados = this.registros.filter(x => x.calculadoraVRF == vlCalculadoraVRF); };
+    if (vlTipoUnidade) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.tipoUnidade == vlTipoUnidade); }
+    if (vlDescargaCondensadora) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.descargaCondensadora == vlDescargaCondensadora); }
+    if (vlVoltagem) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.voltagem == vlVoltagem); }
+    if (vlCapacidadeBTU) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.capacidadeBTU == vlCapacidadeBTU); }
+    if (vlCiclo) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.ciclo == vlCiclo); }
+    if (vlLinhaProduto) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.linhaProduto == vlLinhaProduto); }
   }
 
   visualizarClick(id: number) {
     this.router.navigate(["/produtos-catalogo/visualizar", id]);
   }
+
 }
 
 
