@@ -46,7 +46,7 @@ export class AppTopBarComponent {
           this.obterQuantidadeMensagemPendente();
         }, 5000);   
         
-        this.buscarEstilo(this.lojaLogada);
+        this.buscarEstilo();
     }
 
     carregando: boolean = false;
@@ -58,8 +58,16 @@ export class AppTopBarComponent {
       })
     } 
 
-    buscarEstilo(loja) {
-      this.lojaService.buscarLojaEstilo(loja).toPromise().then((r) => {
+    buscarEstilo() {
+      let lojaTmp:string;
+
+      if(this.lojaLogada) { 
+        lojaTmp = this.lojaLogada; //varias lojas
+      } else {
+        lojaTmp = this.autenticacaoService._lojaLogado; //somente 1 loja
+      }
+
+      this.lojaService.buscarLojaEstilo(lojaTmp).toPromise().then((r) => {
         if (!!r) {        
           
           this.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
