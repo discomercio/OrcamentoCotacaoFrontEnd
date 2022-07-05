@@ -165,11 +165,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   prorrogar() {
-    // this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+    this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+      if (!result) return;
       
-    var orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
-
-      this.orcamentoService.prorrogarOrcamento(orcamento.id).toPromise().then((r) => {
+      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
           if(r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
@@ -179,6 +178,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
+    });
   }
 
   voltar() {
