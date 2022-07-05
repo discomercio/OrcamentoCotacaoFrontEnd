@@ -9,6 +9,7 @@ import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
 import { ValidadeOrcamento } from '../../dto/config-orcamento/validade-orcamento';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { RemetenteDestinatarioResponse } from '../mensageria/remetenteDestinatarioResponse';
+import { MensagemDto } from 'src/app/dto/MensagemDto';
 @Injectable({
   providedIn: 'root'
 })
@@ -46,5 +47,9 @@ export class OrcamentosService {
 
   buscarDadosParaMensageria(idOrcamentoCotacao:number, usuarioIterno:boolean):Observable<RemetenteDestinatarioResponse>{
     return this.http.get<RemetenteDestinatarioResponse>(`${environment.apiUrl}Orcamento/buscarDadosParaMensageria?idOrcamento=${idOrcamentoCotacao}&usuarioInterno=${usuarioIterno}`);
+  }
+
+  prorrogarOrcamento(id:number):Observable<MensagemDto>{
+    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar`, id);
   }
 }

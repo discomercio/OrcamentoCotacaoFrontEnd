@@ -16,4 +16,5 @@ export class OrcamentoCotacaoResponse {
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
     cadastradoPor:string;
+    status: number;
 }

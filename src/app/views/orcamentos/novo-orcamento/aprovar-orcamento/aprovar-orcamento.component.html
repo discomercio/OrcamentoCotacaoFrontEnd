@@ -5,7 +5,10 @@
                 <div class="p-col-12">
                     <div class="p-col-12 p-d-inline-flex p-jc-between">
                         <h5>Orçamento Nº {{novoOrcamentoService.orcamentoCotacaoDto.id}}</h5>
-                        <button pButton pRipple label="Voltar" (click)="voltar()" icon="pi pi-arrow-left"></button>
+                        <div style="float: right;">
+                            <button pButton pRipple label="Prorrogar" (click)="prorrogar()" class="p-button-success" ></button>&nbsp;
+                            <button pButton pRipple label="Voltar" (click)="voltar()" icon="pi pi-arrow-left"></button>
+                        </div>
                     </div>
 
                     <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0"

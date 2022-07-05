@@ -1,0 +1,23 @@
+{ 
+    "artificialDelayMilliseconds": 300, 
+    "keepExistingTerminalsOpen": false, 
+    "runOnStartup": true, 
+    "terminals": [ 
+      { 
+        "splitTerminals": [ 
+          { 
+            "name": "npm start", 
+            "commands": ["npm start"] 
+          }
+        ] 
+      },
+      { 
+        "splitTerminals": [ 
+          { 
+            "name": "ng build --configuration des", 
+            "commands": ["ng build --configuration des"] 
+          }
+        ] 
+      }      
+    ] 
+  }
