@@ -201,6 +201,10 @@ export class NovoOrcamentoService {
     let totalComDesc = this.totalPedido();
 
     let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
+    /*No caso de vendedor interno sem parceiro
+    
+    */
+
 
     if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
       let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);

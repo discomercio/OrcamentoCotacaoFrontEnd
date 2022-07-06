@@ -11,4 +11,5 @@ export class OrcamentosOpcaoResponse {
     vlTotal: number | null;    
     formaPagto:FormaPagtoCriacao[];
     percRT:number;
+    loja:string;
 }

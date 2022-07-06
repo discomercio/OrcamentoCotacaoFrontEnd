@@ -2,6 +2,7 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
@@ -53,14 +54,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
 
     this.buscarProdutos();
-    // this.buscarFormaPagto();
     this.buscarPercentualPorAlcada();
 
   }
 
   buscarProdutos() {
-    
-    this.opcaoOrcamento.listaProdutos.forEach(x => {if(x.descDado > 0) x.alterouPrecoVenda = true;});
+
+    this.opcaoOrcamento.listaProdutos.forEach(x => { if (x.descDado > 0) x.alterouPrecoVenda = true; });
     this.itens.novoOrcamentoService.lstProdutosSelecionados = this.opcaoOrcamento.listaProdutos;
   }
 
@@ -105,11 +105,57 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pagtoPrazo = this.opcaoOrcamento.formaPagto.filter(x => x.tipo_parcelamento != this.itens.constantes.COD_FORMA_PAGTO_A_VISTA);
       if (pagtoPrazo.length > 0) {
         this.itens.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
-        console.log(this.itens.formaPagto.formasPagtoAPrazo);
+        this.setarQtdeParcelas();
+
+        this.itens.novoOrcamentoService.qtdeParcelas;
         this.itens.formaPagto.cdref.detectChanges();
         this.itens.cdref.detectChanges();
         this.itens.formaPagto.setarSiglaPagto();
       }
-    }, 500);
+    }, 700);
+  }
+
+  setarQtdeParcelas() {
+    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde;
+      return;
+    }
+    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde;
+      return;
+    }
+    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde;
+      return;
+    }
+    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+      this.itens.novoOrcamentoService.qtdeParcelas = 0;
+      return;
+    }
+    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde;
+      return;
+    }
+  }
+
+  salvarOpcao() {
+    if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
+      return;
+    }
+    //precisa saber se algum produto fez uso do pencentual de desconto por alçada
+    //
+    this.itens.formaPagto.atribuirFormasPagto();
+
+    debugger;
+
+    this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
+    this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r)=>{
+      if(r == null){
+      }
+      debugger;
+
+    });
+    //levantar o que precisa ser feito para enviar via post
+
   }
 }

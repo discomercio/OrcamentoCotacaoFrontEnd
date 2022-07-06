@@ -1,4 +1,7 @@
 export class ProdutoOrcamentoDto {
+    id:number;
+    idItemUnificado:number;
+    idOpcaoPagto:number;
     fabricante: string;
     fabricanteNome: string;
     produto: string;

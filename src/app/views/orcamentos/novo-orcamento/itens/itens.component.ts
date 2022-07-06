@@ -53,7 +53,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     telaDesktopService: TelaDesktopService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly lojaService: LojasService,
-    private readonly orcamentosService: OrcamentosService,
+    public readonly orcamentosService: OrcamentosService,
     private readonly sweetalertService: SweetalertService,
     private readonly activatedRoute: ActivatedRoute,
     private location: Location,
@@ -276,8 +276,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
           }
         }
         if (this.editando) {
-
-          console.log(r);
           this.novoOrcamentoService.coeficientes = r;
         }
       }
@@ -352,6 +350,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
 
     if (item.descDado) {
+      item.precoVenda = item.precoLista * (1 - item.descDado / 100);
       item.precoVenda = Number.parseFloat(item.precoVenda.toFixed(2));
     }
     else {

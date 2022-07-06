@@ -355,19 +355,28 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
-    lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
-
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
-      lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
-    }
-
-    this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
+    this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
 
+  }
+
+  atribuirFormasPagto(){
+    let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
+    lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
+
+    if (this.checkedAvista && this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
+      lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
+    }
+    if(!this.checkedAvista){
+      lstFormaPagtoCriacao.forEach((e, i)=>{
+        if(e.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) lstFormaPagtoCriacao.splice(i, 1);
+      });
+    }
+
+    this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
   }
 
   limparCampos() {
@@ -457,4 +466,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     return true;
   }
+
+  
 }
