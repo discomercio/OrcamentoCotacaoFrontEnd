@@ -1,4 +1,4 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpEvent } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpEvent, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -9,28 +9,19 @@ import { Router } from '@angular/router';
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
-  constructor(private readonly autenticacaoService: AutenticacaoService, private router: Router) {
-
-  }
+  constructor(private readonly autenticacaoService: AutenticacaoService, private router: Router) {  }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
-    // setTimeout(() => {
-    //   this.autenticacaoService.renovarTokenSeNecessario();
-    // }, 100);
-
     ;
-    //header de versão
-    let headers: { [name: string]: string | string[]; } = {
-      'X-API-Version': environment.versaoApi
-    };
 
-    //adiciona o header de autenticação
+    var headers = new HttpHeaders();
+
     if (this.autenticacaoService.authEstaLogado()) {
-
-      headers = {
+      headers = new HttpHeaders({
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
-      };
+        'X-API-Version': environment.versaoApi
+      });
     }
     else {
       if(!this.router.url.startsWith('/publico/')) {
@@ -38,24 +29,12 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     }
 
-    req = req.clone({ setHeaders: headers });
+    req = req.clone({headers});
 
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
-          // let resp:HttpResponse<any> = event;
-          // debugger;
-          // if(resp.body.indexOf("token") != -1){
-          //   let token=JSON.parse(resp.body);
-          //   let expira = new Date(Date.parse(token["expiration"]));
-          //   if(expira < new Date()){
-
-          //   }
-          // }
-
         }
       }));
   }
 }
-
-
