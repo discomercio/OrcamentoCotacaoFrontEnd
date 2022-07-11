@@ -13,6 +13,11 @@ import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +25,9 @@ import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamen
 export class NovoOrcamentoService {
 
   constructor(telaDesktopService: TelaDesktopService,
-    public mensagemService: MensagemService) { }
+    public mensagemService: MensagemService,
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly alertaService:AlertaService) { }
 
   public orcamentoCotacaoDto: OrcamentoCotacaoResponse = new OrcamentoCotacaoResponse();
   public opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
@@ -53,6 +60,7 @@ export class NovoOrcamentoService {
   }
 
   percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
+  percentualMaxComissaoPadrao: PercMaxDescEComissaoResponseViewModel;
   setarPercentualComissao() {
     if (this.percentualMaxComissao)
       this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
@@ -78,21 +86,9 @@ export class NovoOrcamentoService {
     return totalVista;
   }
 
-
   atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
     this.opcaoOrcamentoCotacaoDto.formaPagto = lstFormaPagto;
     this.formaPagamento = formaPagamento;
-    // //vamos montar o texto para mostrar a forma de pagamento
-    // lstFormaPagto.forEach((fp) => {
-    //   let pagto = formaPagamento.filter(f => f.idTipoPagamento == fp.tipo_parcelamento)[0];
-    //   let texto: string;
-    //   if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-    //     texto = pagto.tipoPagamentoDescricao + " " + this.moedaUtils.formatarMoedaComPrefixo(this.totalAVista());
-    //   }
-    //   if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-    //     texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
-    //   }
-    // })
   }
 
   formaPagamento: FormaPagto[];
@@ -152,7 +148,7 @@ export class NovoOrcamentoService {
     });
     return texto;
   }
-  teste: string = "texto com <br> quebra de linha";
+
   atribuirCoeficienteParaProdutos(qtdeParcelas: number) {
 
     let coeficiente = this.coeficientes.filter(x => x.TipoParcela == this.siglaPagto && x.QtdeParcelas == qtdeParcelas);
@@ -175,7 +171,7 @@ export class NovoOrcamentoService {
       return;
     }
     this.coeficientes = coeficientes;
-    
+
     this.qtdeParcelas = qtdeParcelas;
 
     this.lstProdutosSelecionados.forEach(x => {
@@ -187,12 +183,12 @@ export class NovoOrcamentoService {
       x.coeficienteDeCalculo = coeficiente.Coeficiente;
       x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
     });
-    
+
     this.calcularPercentualComissao();
-    
+
   }
 
-  calcularPercentualComissao() {
+  calcularDescontoMedio(): number {
     let totalSemDesc = this.moedaUtils
       .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
         .reduce((sum, current) => sum + this.moedaUtils
@@ -201,23 +197,27 @@ export class NovoOrcamentoService {
     let totalComDesc = this.totalPedido();
 
     let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
-    /*No caso de vendedor interno sem parceiro
-    
-    */
 
+    return descMedio;
+  }
+  tipoUsuario: number;
+  calcularPercentualComissao() {
 
-    if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
-      let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
+    let descMedio = this.calcularDescontoMedio();
+    this.orcamentoCotacaoDto.parceiro != null
+    if (this.orcamentoCotacaoDto.parceiro != null) {
+      if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
+        let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
 
-      if (descontarComissao != 0) {
-        let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
-        this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
+        if (descontarComissao != 0) {
+          let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
+          this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
+        }
+      }
+      else {
+        this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);
       }
     }
-    else {
-      this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);
-    }
-
   }
 
   get coeficientesParaCalculo(): Array<CoeficienteDto> {
@@ -249,5 +249,78 @@ export class NovoOrcamentoService {
       return true;
     }
     return false;
+  }
+
+  verificarEdicao(): boolean {
+    //se orçamento com status aprovado = 3 ou cancelado = 2, não pode editar
+    if (this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
+      this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
+
+    // se orçamento estiver expirado só pode prorrogar o orçamento
+    // verificar se esta orçamento esta expirado
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    let validade = this.orcamentoCotacaoDto.validade.toString().slice(0, 10);
+    if (validade <= dataAtual) return false;
+
+    //ver se o usuário é o dono, se não for verificar se tem permissão de desconto superior
+    if (this.orcamentoCotacaoDto.cadastradoPor.toLocaleLowerCase() ==
+      this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
+    else {
+      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) return true;
+    }
+
+    return false;
+  }
+
+  verificarAlcadaUsuario(idOpcao: number): boolean {
+    let opcao = this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == idOpcao);
+    let maiorAlcadaUsuario = this.buscarMaiorAlcadaUsuario();
+
+    if (opcao.length > 1) {
+      this.alertaService.mostrarMensagem("Ocorreu um problema ao verificar uso de desconto superior!");
+      return false;
+    }
+
+    let usouAlcada = false;
+    let alcadaMenor = false;
+
+    if (opcao.length == 1) {
+      opcao[0].listaProdutos.forEach(x => {
+        if (x.idOperacaoAlcadaDescontoSuperior != null) {
+          usouAlcada = true;
+          if (x.idOperacaoAlcadaDescontoSuperior > maiorAlcadaUsuario) {
+            alcadaMenor = true;
+            return;
+          }
+        }
+      });
+    }
+
+    if (alcadaMenor) return false;
+
+    if (usouAlcada && maiorAlcadaUsuario == null) return false;
+
+    return true;
+  }
+
+  usuarioLogado: Usuario;
+  buscarMaiorAlcadaUsuario(): number {
+    let lstAlcadas = new Array<number>();
+
+    this.usuarioLogado.permissoes.forEach(x => {
+      if (x == ePermissao.DescontoSuperior1 ||
+        x == ePermissao.DescontoSuperior2 ||
+        x == ePermissao.DescontoSuperior3) {
+        lstAlcadas.push(Number.parseInt(x));
+      }
+    });
+
+    if (lstAlcadas.length > 0) {
+      return Math.max.apply(null, lstAlcadas);
+    }
+
+    return null;
   }
 }

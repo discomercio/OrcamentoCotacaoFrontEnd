@@ -13,6 +13,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ItensComponent } from '../itens/itens.component';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-forma-pagto',
@@ -23,7 +24,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
-    private readonly formaPagtoService: FormaPagtoService,
+    public readonly formaPagtoService: FormaPagtoService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
     public readonly itensComponent: ItensComponent,
     public readonly mensagemService: MensagemService,
@@ -43,6 +44,17 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   formaPagamento: FormaPagto[] = new Array();
   editando: boolean = false;
 
+  async buscarQtdeMaxParcelaCartaoVisa(){
+    if (this.tipoUsuario == this.constantes.GESTOR ||
+      this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+      this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
+        if (r != null) {
+          this.qtdeMaxParcelas = r;
+          return ;
+        }
+      });
+    }
+  }
   buscarFormasPagto(param: string) {
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
@@ -54,18 +66,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
     }
     
-    let qtdeMaxParcelaCartaoVisa: number = 0;
-    if (this.tipoUsuario == this.constantes.GESTOR ||
-      this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
-        if (r != null) {
-          qtdeMaxParcelaCartaoVisa = r;
-          this.qtdeMaxParcelas = r;
-        }
-      });
-    }
-    // aqui esta errado, precisa verificar se tem parceiro atribuido para passar o tipo de usuário
-    // então precisamos adicionar no param o tipo de usuário por aqui e não pegar o que esta no token
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
         comIndicacao, tipoUsuario, apelido)
@@ -74,7 +74,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
           if (r != null) {
             this.formaPagamento = r;
             this.montarFormasPagto();
-            if (param != undefined)
               this.setarTipoPagto();
           }
         }).catch((e) => this.alertaService.mostrarErroInternet(e));
@@ -117,10 +116,14 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     }
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
+      let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
+      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas;
+      let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
+      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
     this.setarSiglaPagto();
   }
@@ -282,6 +285,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   setarValorParcela(valorParcelas: number) {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+      
       return this.formaPagtoCriacaoAprazo.c_pc_valor = valorParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {

@@ -77,7 +77,6 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   verificarParam(param: any) {
-    debugger;
     if (param.filtro == "editar") return;
     if (param.filtro == "novo") {
       this.novoOrcamentoService.criarNovo();

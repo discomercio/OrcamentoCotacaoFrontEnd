@@ -40,13 +40,17 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
+    //verificar se tiver uso de alçada e o usuário sem alçada ou com alçada menor do que existir não deve poder acessar mais a edição
+    
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor.toLocaleLowerCase() !=
       this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-      if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1))
+      if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
         this.router.navigate(["/orcamentos/listar/orcamentos"]);
     }
 
@@ -54,7 +58,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
 
     this.buscarProdutos();
-    this.buscarPercentualPorAlcada();
+    if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
+      this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
+      this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
+      this.buscarPercentualPorAlcada();
 
   }
 
@@ -83,7 +90,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.formaPagto.habilitar = false;
 
     this.setarPagtoAvista();
-    // this.setarPagtoAprazo();
+
     let dataRefCoeficiente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.dataCadastro.slice(0, 10);
 
     this.itens.buscarCoeficientes(dataRefCoeficiente);
@@ -144,18 +151,36 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }
     //precisa saber se algum produto fez uso do pencentual de desconto por alçada
     //
+
     this.itens.formaPagto.atribuirFormasPagto();
 
-    debugger;
+    this.verificarDescontoMedio();
 
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
-    this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r)=>{
-      if(r == null){
+    this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
+      if (r == null) {
       }
       debugger;
 
     });
     //levantar o que precisa ser feito para enviar via post
+
+  }
+
+  verificarDescontoMedio() {
+    this.itens.novoOrcamentoService.percentualMaxComissao;
+    this.itens.novoOrcamentoService.percentualMaxComissaoPadrao;
+
+    let descMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
+    let tipoCliente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
+    let descontoComissaoPadrao = tipoCliente == this.itens.constantes.ID_PF ?
+      this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDesconto :
+      this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDescontoPJ;
+
+    if (descMedio > descontoComissaoPadrao) {
+
+    }
+    // debugger;
 
   }
 }

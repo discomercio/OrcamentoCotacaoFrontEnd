@@ -7,7 +7,8 @@ export class OrcamentoCotacaoResponse {
     parceiro: string;
     vendedorParceiro: string;
     loja: string;
-    validade: Date;
+    validade: string|Date;
+    status:number;
     qtdeRenovacao: number;
     concordaWhatsapp: boolean;
     observacoesGerais: string;
@@ -17,4 +18,6 @@ export class OrcamentoCotacaoResponse {
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
     cadastradoPor:string;
     dataCadastro:string;
+    idIndicador:number;
+    idIndicadorVendedor:number;
 }

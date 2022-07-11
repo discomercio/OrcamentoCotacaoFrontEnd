@@ -17,9 +17,10 @@ export class LojasService {
     return this.http.get<Lojas[]>(`${environment.apiUrl}Loja`);
   }
 
-  buscarPercentualComissao(loja: string): Observable<PercMaxDescEComissaoResponseViewModel> {
+  buscarPercentualComissao(loja: string, tipoCliente:string): Observable<PercMaxDescEComissaoResponseViewModel> {
     let params = new HttpParams();
     params = params.append('loja', loja);
+    params = params.append('tipoCliente', tipoCliente);
     return this.http.get<PercMaxDescEComissaoResponseViewModel>(environment.apiUrl + "Loja/buscarPercMaxPorLoja", { params: params });
   }
 

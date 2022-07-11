@@ -93,9 +93,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
     if (param.filtro == "novo") {
       this.param = param.filtro;
-      this.iniciarNovo();
-      this.buscarPercentualComissao();
+      
+      
     }
+    this.iniciarNovo();
+    this.buscarPercentualComissao();
   }
 
   iniciarNovo() {
@@ -106,12 +108,33 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.novoOrcamentoService.tipoUsuario = this.autenticacaoService.tipoUsuario;
   }
 
   async ngAfterViewInit() {
+    
     await this.formaPagto.buscarFormasPagto(this.param);
+    
     if (this.param == "novo") {
-      this.inscreveProdutoComboDto();
+      if (this.tipoUsuario == this.constantes.GESTOR ||
+        this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+        this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
+          if (r != null) {
+            this.formaPagto.qtdeMaxParcelas = r;
+            
+            this.formaPagto.formaPagtoCriacaoAprazo;
+            if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+              let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
+              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde = this.formaPagto.qtdeMaxParcelas;
+            }
+            if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+              let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
+              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.formaPagto.qtdeMaxParcelas;;
+            }
+            this.inscreveProdutoComboDto();
+          }
+        });
+      }
     }
 
     if (this.editando) this.formaPagto.editando = true;
@@ -151,14 +174,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
     if (this.usuario.loja == undefined) return;
-
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) {
-      this.novoOrcamentoService.percentualMaxComissao = undefined;
-      return;
-    }
-    this.lojaService.buscarPercentualComissao(this.usuario.loja).toPromise().then((r) => {
+    
+    this.lojaService.buscarPercentualComissao(this.usuario.loja, this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.percentualMaxComissao = r;
+        this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
         this.novoOrcamentoService.setarPercentualComissao();
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
@@ -241,16 +261,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
     if (!this.editando)
       this.buscarCoeficientes(dataRefCoeficiente);
-    // this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
-    //   if (r != null) {
-    //     this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
-    //     if (this.novoOrcamentoService.qtdeParcelas) {
-    //       this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
-    //       this.formaPagto.calcularValorAvista();
-    //     }
-    //   }
-    // }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
-
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
 
