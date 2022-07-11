@@ -36,6 +36,10 @@ export class DetalhesPrepedidoComponent implements OnInit {
     this.location.back();
   } 
 
+  editar() {
+    //
+  } 
+
   ngOnInit() {
     this.numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
     this.carregar();
