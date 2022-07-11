@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { PrePedidoDto } from 'src/app/dto/Prepedido/DetalhesPrepedido/PrePedidoDto';
 import { CommonModule } from "@angular/common";
 
 
@@ -12,11 +11,11 @@ import { CommonModule } from "@angular/common";
 export class PrepedidoService {
 
   public carregando: boolean = false;
-  private pedidos$: Observable<PrePedidoDto> = new Observable();
+  private pedidos$: Observable<any> = new Observable();
 
   constructor(private readonly http: HttpClient) { }    
     
-  public carregar(numeroPrePedido: string): Observable<PrePedidoDto> {
+  public carregar(numeroPrePedido: string): Observable<any> {
 
     // Initialize Params Object
     let params = new HttpParams();
