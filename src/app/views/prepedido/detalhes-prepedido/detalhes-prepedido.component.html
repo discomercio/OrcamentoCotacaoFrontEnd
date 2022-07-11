@@ -2,7 +2,11 @@
     <div class="nossobody">
 
         <section id="myPrint">
-
+            <br>
+            <div id="botao-impressao" style="text-align:center;">
+                <button pButton type="button" label="Versão para impressão" icon="fa fa-print"
+                    onclick="window.print();"></button>
+            </div><br>
             <div id="printable" name="printable">
                 <div class="nossobody-before">
                     As informações aqui contidas são confidenciais e protegidas pelo sigilo legal. A divulgação,
@@ -380,7 +384,7 @@
                     <br>
                     <div id="botao-voltar" style="text-align:center;">
                         <button pButton type="button" label="Voltar" icon="fa fa-reply"
-                            (click)="voltarClick()"></button>&nbsp;
+                            (click)="voltar()"></button>&nbsp;
                     </div>
 
                 </form>

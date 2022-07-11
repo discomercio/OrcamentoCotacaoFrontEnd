@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-
+import { Location } from '@angular/common';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
@@ -16,11 +16,9 @@ export class DetalhesPrepedidoComponent implements OnInit {
     public readonly prepedidoService: PrepedidoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
+    private location: Location
   ) { }
 
-  ngAfterViewInit() {
-    (document.querySelector('.element-style') as HTMLElement).style.top = '150px';
-  }
   numeroPrepedido = "";
   prepedido: any = null;
 
@@ -33,6 +31,10 @@ export class DetalhesPrepedidoComponent implements OnInit {
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
+
+  voltar() {
+    this.location.back();
+  } 
 
   ngOnInit() {
     this.numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
