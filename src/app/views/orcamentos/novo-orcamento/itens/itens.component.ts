@@ -173,6 +173,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
   mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
+    
     if (this.usuario.loja == undefined) return;
     
     this.lojaService.buscarPercentualComissao(this.usuario.loja, this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
@@ -589,5 +590,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   enviar() {
 
     return;
+  }
+
+  liberarEdicaoComissao(){
+    if(this.novoOrcamentoService.editarComissao){
+      this.novoOrcamentoService.editarComissao = false;
+      return;
+    } 
+    
+    this.novoOrcamentoService.editarComissao = true;
   }
 }

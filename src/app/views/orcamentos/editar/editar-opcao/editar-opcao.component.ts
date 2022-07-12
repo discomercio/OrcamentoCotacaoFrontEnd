@@ -28,8 +28,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   @ViewChild("itens", { static: false }) itens: ItensComponent;
   idOpcaoOrcamentoCotacao: number;
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
+ 
 
   ngOnInit(): void {
+
 
   }
 
@@ -37,11 +39,17 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.idOpcaoOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
     this.verificarPermissao();
     this.cdref.detectChanges();
+    this.atribuirPercRT();
+  }
+  atribuirPercRT(){
+    if(this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null){
+      this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.opcaoOrcamento.percRT;
+    }
   }
 
   verificarPermissao() {
     //verificar se tiver uso de alçada e o usuário sem alçada ou com alçada menor do que existir não deve poder acessar mais a edição
-    
+
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
@@ -49,20 +57,69 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor.toLocaleLowerCase() !=
       this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
       if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
         this.router.navigate(["/orcamentos/listar/orcamentos"]);
     }
 
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
+    this.itens.novoOrcamentoService.editando = true;
+    this.itens.novoOrcamentoService.calcularComissaoAuto = this.verificarCalculoComissao();
 
+    /*
+     SE USUÁRIO SEM PERMISSÃO DE ALÇADA E ORÇAMENTO COM PARCEIRO => calcula comissão automaticamente
+     ==
+     SE USUÁRIO COM PERMISSÃO DE ALÇADA E ORÇAMENTO COM PARCEIRO => permite editar manualmente a comissão
+     OBS: calcular o quanto será permitido dar de comissão
+     fórmula: limiteMaxDesconto = percMaxComissao - (descontoMedio - (PercMaxDescComissao - percMaxComissao)) 
+     ==
+     ORÇAMENTO SEM PARCEIRO => não desconta comissão e não grava nada em percRT
+
+
+     LIMITAR DESCONTO POR ITEM => cada item não poderá exceder o PercMaxDescComissao
+     Ex: limite máximo de desconto + comissão = 8%
+     sendo assim, não pode aplicar desconto maior que 8% em nenhum item do orçamento
+    */
     this.buscarProdutos();
     if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-      this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
+      this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
       this.buscarPercentualPorAlcada();
+    }
+  }
 
+  verificarCalculoComissao(): boolean {
+    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
+      //tem percRT
+      //tem parceiro
+      //tem comissão
+      if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro.toLocaleLowerCase() ==
+        this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+        //é o dono do orçamento
+        //desconta comissão
+        this.itens.novoOrcamentoService.descontaComissao= true;
+        this.itens.novoOrcamentoService.editarComissao = false;
+        //calcula comissão automaticamente
+        return true;
+      }
+
+      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
+          this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
+          this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)){
+            //usuário com alçada
+            //não desconta comissão
+            this.itens.novoOrcamentoService.descontaComissao = false;
+            //não calcula comissão automaticamente
+            return false;
+          }
+    }
+
+    //não tem parceiro
+    //não calcula comissão
+    //não tem percRT
+    this.itens.novoOrcamentoService.descontaComissao = false;
+    return false;
   }
 
   buscarProdutos() {
@@ -76,7 +133,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.lojaService.buscarPercentualAlcada(this.autenticacaoService._lojaLogado, tipoCliente).toPromise().then((r) => {
       if (r != null) {
         this.itens.novoOrcamentoService.percentualMaxComissao = r;
-        this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = 0;
+        // this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = 0;
         this.buscarFormaPagto();
         this.itens.inserirProduto(null);
         //para refletir as coisas!

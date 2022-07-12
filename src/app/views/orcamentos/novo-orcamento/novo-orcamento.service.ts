@@ -61,9 +61,14 @@ export class NovoOrcamentoService {
 
   percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
   percentualMaxComissaoPadrao: PercMaxDescEComissaoResponseViewModel;
+  editando:boolean;
+  editarComissao:boolean = false;
   setarPercentualComissao() {
-    if (this.percentualMaxComissao)
+    if(!this.editando){
+      if (this.percentualMaxComissao)
       this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
+    }
+    
   }
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
@@ -201,23 +206,30 @@ export class NovoOrcamentoService {
     return descMedio;
   }
   tipoUsuario: number;
+  calcularComissaoAuto: boolean;
+  descontaComissao: boolean;
   calcularPercentualComissao() {
-
-    let descMedio = this.calcularDescontoMedio();
-    this.orcamentoCotacaoDto.parceiro != null
-    if (this.orcamentoCotacaoDto.parceiro != null) {
-      if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
-        let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
-
-        if (descontarComissao != 0) {
-          let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
-          this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
+    
+    if(this.calcularComissaoAuto && this.descontaComissao){
+      let descMedio = this.calcularDescontoMedio();
+      
+      if (this.orcamentoCotacaoDto.parceiro != null) {
+        if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
+          let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
+  
+          if (descontarComissao != 0) {
+            let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
+            this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
+          return;
+          }
+        }
+        else {
+          this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);
+          return;
         }
       }
-      else {
-        this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);
-      }
     }
+    
   }
 
   get coeficientesParaCalculo(): Array<CoeficienteDto> {

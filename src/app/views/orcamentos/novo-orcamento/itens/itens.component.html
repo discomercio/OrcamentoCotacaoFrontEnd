@@ -90,7 +90,8 @@
                                         {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
                                     </div>
                                 </td>
-                                <td *ngIf="!editando" class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                <td *ngIf="!editando"
+                                    class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">Excluir:</span>
                                     <div class="p-text-right">
                                         <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
@@ -117,11 +118,31 @@
                                 </td>
                                 <td></td> -->
                                 <td class="p-text-right" colspan="3">
-                                    <span *ngIf="novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT > 0">
-                                        Comissão:
-                                        {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
-                                        %
-                                    </span>
+                                    <div class="p-d-inline-flex">
+                                        <span
+                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
+                                            Comissão:
+                                            {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
+                                            %
+                                        </span>
+                                        <div>
+                                            <input *ngIf="novoOrcamentoService.editarComissao" class="" pInputText
+                                                type="text"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
+                                                (keyup)="editarComissao()" (blur)="editarComissao()" />
+
+                                        </div>
+                                        <div class="p-as-center">
+                                            <button *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
+                                                pButton type="button" icon="pi pi-user-edit"
+                                                (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
+                                            <button *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"
+                                                pButton type="button" icon="pi pi-save"
+                                                (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
+                                        </div>
+                                    </div>
+
+
                                 </td>
                                 <!-- <td></td>
                                 <td></td>
@@ -140,7 +161,7 @@
                             <span>Comissão</span>
                             <span>{{novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT}}</span>
                         </div>
-                        
+
                         <div class="p-d-flex p-jc-between p-text-bold font-size">
                             <span>Total</span>
                             <span>{{moedaUtils.formatarMoedaSemPrefixo(novoOrcamentoService.totalPedido())}}</span>
@@ -161,12 +182,12 @@
                     <div class="p-col-12">
                         <div class="p-col-12 p-d-inline-flex p-jc-around">
                             <div>
-                                <button pButton pRipple label="{{telaDesktop ? 'Voltar' : ''}}"
-                                        icon="pi pi-arrow-left" (click)="voltar()"></button>
+                                <button pButton pRipple label="{{telaDesktop ? 'Voltar' : ''}}" icon="pi pi-arrow-left"
+                                    (click)="voltar()"></button>
                             </div>
                             <div>
                                 <button pButton pRipple label="{{telaDesktop ? 'Enviar orçamento' : ''}}"
-                                        icon="pi pi-send" (click)="salvarOrcamento()"></button>
+                                    icon="pi pi-send" (click)="salvarOrcamento()"></button>
                             </div>
                         </div>
                     </div>
