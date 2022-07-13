@@ -28,7 +28,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   @ViewChild("itens", { static: false }) itens: ItensComponent;
   idOpcaoOrcamentoCotacao: number;
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
- 
+
 
   ngOnInit(): void {
 
@@ -41,8 +41,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.cdref.detectChanges();
     this.atribuirPercRT();
   }
-  atribuirPercRT(){
-    if(this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null){
+  atribuirPercRT() {
+    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
       this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.opcaoOrcamento.percRT;
     }
   }
@@ -64,6 +64,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
+    this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
     this.itens.novoOrcamentoService.editando = true;
     this.itens.novoOrcamentoService.calcularComissaoAuto = this.verificarCalculoComissao();
 
@@ -86,11 +87,18 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
       this.buscarPercentualPorAlcada();
+      return;
     }
+
+    this.buscarFormaPagto();
+    this.itens.inserirProduto(null);
+    //para refletir as coisas!
+    this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
   }
 
   verificarCalculoComissao(): boolean {
-    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
+    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
+      this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
       //tem percRT
       //tem parceiro
       //tem comissão
@@ -98,21 +106,21 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
         //é o dono do orçamento
         //desconta comissão
-        this.itens.novoOrcamentoService.descontaComissao= true;
+        this.itens.novoOrcamentoService.descontaComissao = true;
         this.itens.novoOrcamentoService.editarComissao = false;
         //calcula comissão automaticamente
         return true;
       }
 
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
-          this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-          this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)){
-            //usuário com alçada
-            //não desconta comissão
-            this.itens.novoOrcamentoService.descontaComissao = false;
-            //não calcula comissão automaticamente
-            return false;
-          }
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+        //usuário com alçada
+        //não desconta comissão
+        this.itens.novoOrcamentoService.descontaComissao = false;
+        //não calcula comissão automaticamente
+        return false;
+      }
     }
 
     //não tem parceiro
@@ -133,10 +141,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.lojaService.buscarPercentualAlcada(this.autenticacaoService._lojaLogado, tipoCliente).toPromise().then((r) => {
       if (r != null) {
         this.itens.novoOrcamentoService.percentualMaxComissao = r;
-        // this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = 0;
+        this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar = r.percMaxComissaoEDesconto;
         this.buscarFormaPagto();
         this.itens.inserirProduto(null);
-        //para refletir as coisas!
         this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
         this.itens.cdref.detectChanges();
       }
@@ -206,12 +213,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
       return;
     }
-    //precisa saber se algum produto fez uso do pencentual de desconto por alçada
-    //
 
     this.itens.formaPagto.atribuirFormasPagto();
 
-    this.verificarDescontoMedio();
+    if (!this.validarDescontosProdutos()) {
+      this.alertaService.mostrarMensagem("Existe produto que excede o desconto máximo permitido!");
+      return;
+    }
 
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
@@ -219,24 +227,38 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       }
       debugger;
 
-    });
+    }).catch((e) => { this.alertaService.mostrarErroInternet(e); });
     //levantar o que precisa ser feito para enviar via post
 
   }
 
+  validarDescontosProdutos(): boolean {
+
+    let limiteDesconto = this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto;
+    let descontoMaior = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.some(x => {
+      if (x.descDado > limiteDesconto) {
+        return true;
+      }
+    });
+
+    if (descontoMaior) return false;
+
+    return true;
+
+  }
   verificarDescontoMedio() {
     this.itens.novoOrcamentoService.percentualMaxComissao;
     this.itens.novoOrcamentoService.percentualMaxComissaoPadrao;
 
-    let descMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
-    let tipoCliente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
-    let descontoComissaoPadrao = tipoCliente == this.itens.constantes.ID_PF ?
-      this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDesconto :
-      this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDescontoPJ;
+    // let descMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
+    // let tipoCliente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
+    // let descontoComissaoPadrao = tipoCliente == this.itens.constantes.ID_PF ?
+    //   this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDesconto :
+    //   this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDescontoPJ;
 
-    if (descMedio > descontoComissaoPadrao) {
+    // if (descMedio > descontoComissaoPadrao) {
 
-    }
+    // }
     // debugger;
 
   }

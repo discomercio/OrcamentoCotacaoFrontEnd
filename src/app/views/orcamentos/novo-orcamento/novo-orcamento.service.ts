@@ -27,7 +27,7 @@ export class NovoOrcamentoService {
   constructor(telaDesktopService: TelaDesktopService,
     public mensagemService: MensagemService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly alertaService:AlertaService) { }
+    private readonly alertaService: AlertaService) { }
 
   public orcamentoCotacaoDto: OrcamentoCotacaoResponse = new OrcamentoCotacaoResponse();
   public opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
@@ -41,6 +41,14 @@ export class NovoOrcamentoService {
   public siglaPagto: string;
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
+  tipoUsuario: number;
+  calcularComissaoAuto: boolean;
+  descontaComissao: boolean;
+  percMaxComissaoEDescontoUtilizar: number;
+  percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
+  percentualMaxComissaoPadrao: PercMaxDescEComissaoResponseViewModel;
+  editando: boolean;
+  editarComissao: boolean = false;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -59,16 +67,19 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = ClienteOrcamentoCotacao;
   }
 
-  percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
-  percentualMaxComissaoPadrao: PercMaxDescEComissaoResponseViewModel;
-  editando:boolean;
-  editarComissao:boolean = false;
+  
   setarPercentualComissao() {
-    if(!this.editando){
+    this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ? this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
+
+    if (this.orcamentoCotacaoDto.parceiro == null || this.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) return;
+
+    if (!this.editando) {
       if (this.percentualMaxComissao)
-      this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
+        this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
+      return;
     }
-    
+
+    this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
   }
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
@@ -205,22 +216,22 @@ export class NovoOrcamentoService {
 
     return descMedio;
   }
-  tipoUsuario: number;
-  calcularComissaoAuto: boolean;
-  descontaComissao: boolean;
+
   calcularPercentualComissao() {
-    
-    if(this.calcularComissaoAuto && this.descontaComissao){
+    if (this.calcularComissaoAuto && this.descontaComissao) {
       let descMedio = this.calcularDescontoMedio();
-      
-      if (this.orcamentoCotacaoDto.parceiro != null) {
-        if (descMedio > (this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao)) {
+
+      if (this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && this.orcamentoCotacaoDto.parceiro != null) {
+        if (descMedio > (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao)) {
           let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
-  
+
           if (descontarComissao != 0) {
-            let descMax = this.percentualMaxComissao.percMaxComissaoEDesconto - this.percentualMaxComissao.percMaxComissao;
-            this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax));
-          return;
+            
+            let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
+            this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
+            if(this.opcaoOrcamentoCotacaoDto.percRT < 0) this.opcaoOrcamentoCotacaoDto.percRT = 0;
+            this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT);
+            return;
           }
         }
         else {
@@ -229,7 +240,48 @@ export class NovoOrcamentoService {
         }
       }
     }
-    
+
+  }
+
+  verificarCalculoComissao(): boolean {
+    if (this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR &&
+      this.orcamentoCotacaoDto?.parceiro != null) {
+      //tem percRT
+      //tem parceiro
+      //tem comissão
+
+      if (this.orcamentoCotacaoDto.parceiro.toLocaleLowerCase() ==
+        this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+        //é o dono do orçamento
+        //desconta comissão
+        this.editarComissao = false;
+        this.descontaComissao = true;
+        //calcula comissão automaticamente
+        return true;
+      }
+
+      if (!this.editando) {
+        this.editando = false;
+        this.descontaComissao = true;
+        return true;
+      }
+
+      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
+        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+        //usuário com alçada
+        //não desconta comissão
+        this.descontaComissao = false;
+        //não calcula comissão automaticamente
+        return false;
+      }
+    }
+
+    //não tem parceiro
+    //não calcula comissão
+    //não tem percRT
+    this.descontaComissao = false;
+    return false;
   }
 
   get coeficientesParaCalculo(): Array<CoeficienteDto> {

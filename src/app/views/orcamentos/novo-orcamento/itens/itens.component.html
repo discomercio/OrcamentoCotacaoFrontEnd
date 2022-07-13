@@ -120,7 +120,7 @@
                                 <td class="p-text-right" colspan="3">
                                     <div class="p-d-inline-flex">
                                         <span
-                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
+                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
                                             Comissão:
                                             {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
@@ -129,11 +129,11 @@
                                             <input *ngIf="novoOrcamentoService.editarComissao" class="" pInputText
                                                 type="text"
                                                 [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
-                                                (keyup)="editarComissao()" (blur)="editarComissao()" />
+                                                (keyup)="formataComissao($event)" (blur)="editarComissao($event)" />
 
                                         </div>
-                                        <div class="p-as-center">
-                                            <button *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
+                                        <div class="p-as-center" *ngIf="param != 'novo'">
+                                            <button *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
                                                 pButton type="button" icon="pi pi-user-edit"
                                                 (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
                                             <button *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"

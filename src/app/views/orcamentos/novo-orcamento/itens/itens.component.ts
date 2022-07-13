@@ -93,8 +93,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
     if (param.filtro == "novo") {
       this.param = param.filtro;
-      
-      
+
+      this.novoOrcamentoService.editando = false;
+      this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
     }
     this.iniciarNovo();
     this.buscarPercentualComissao();
@@ -112,16 +113,16 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   async ngAfterViewInit() {
-    
+
     await this.formaPagto.buscarFormasPagto(this.param);
-    
+
     if (this.param == "novo") {
       if (this.tipoUsuario == this.constantes.GESTOR ||
         this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
         this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
           if (r != null) {
             this.formaPagto.qtdeMaxParcelas = r;
-            
+
             this.formaPagto.formaPagtoCriacaoAprazo;
             if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
               let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
@@ -173,14 +174,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
   mostrarPercrt: boolean = false;
   buscarPercentualComissao() {
-    
     if (this.usuario.loja == undefined) return;
-    
+
     this.lojaService.buscarPercentualComissao(this.usuario.loja, this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.percentualMaxComissao = r;
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
-        this.novoOrcamentoService.setarPercentualComissao();
+        if (!this.novoOrcamentoService.editando)
+          this.novoOrcamentoService.setarPercentualComissao();
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
   }
@@ -270,7 +271,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.formaPagto.habilitar = false;
   }
 
-  //fazer a busca separada para tentar buscar os coeficientes dos produtos que estão selecionados com a data da criação do orçamento
   buscarCoeficientes(dataReferencia: string) {
     let coeficienteRequest: CoeficienteRequest = new CoeficienteRequest();
     coeficienteRequest.lstFabricantes = new Array();
@@ -300,7 +300,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    if (this.novoOrcamentoService.percentualMaxComissao)
+    if (this.novoOrcamentoService.percentualMaxComissao && !this.novoOrcamentoService.editando)
       this.novoOrcamentoService.calcularPercentualComissao();
   }
 
@@ -354,7 +354,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       return;
     }
 
+    if (Number.parseFloat(v) > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
+      this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
+      return;
+    }
+
     item.descDado = Number.parseFloat(v);
+
+
 
     if (item.descDado > 100) {
       item.descDado = 100;
@@ -371,7 +378,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   }
 
-  
+
 
   formataPreco_Venda(e: Event, item: ProdutoOrcamentoDto): void {
     let valor = ((e.target) as HTMLInputElement).value;
@@ -391,6 +398,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     item.descDado = 100 * (item.precoLista - v) / item.precoLista;
     item.descDado = this.moedaUtils.formatarDecimal(item.descDado);
+
+    if (item.descDado > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
+      this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
+      return;
+    }
 
     if (item.precoLista == item.precoVenda) {
       item.alterouPrecoVenda = false;
@@ -592,12 +604,38 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     return;
   }
 
-  liberarEdicaoComissao(){
-    if(this.novoOrcamentoService.editarComissao){
+  liberarEdicaoComissao() {
+    if (this.novoOrcamentoService.editarComissao) {
       this.novoOrcamentoService.editarComissao = false;
       return;
-    } 
-    
+    }
+
     this.novoOrcamentoService.editarComissao = true;
+  }
+
+  antigoPercRT: number;
+  formataComissao(e: Event) {
+    let valor = ((e.target) as HTMLInputElement).value;
+    let v: any = valor.replace(/,/g, '');
+    v = Number.parseFloat((v / 100).toFixed(2) + '');
+
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
+  }
+
+  editarComissao(e: Event) {
+    let valor = ((e.target) as HTMLInputElement).value;
+    let v: any = valor.replace(/,/g, '');
+    v = Number.parseFloat((v / 100).toFixed(2) + '');
+
+    let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
+    let limiteDesconto = (this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
+    if (v > limiteDesconto) {
+      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
+      console.log(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT);
+      v = this.antigoPercRT;
+      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(this.antigoPercRT);
+    }
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
+    this.novoOrcamentoService.editarComissao = false;
   }
 }
