@@ -23,6 +23,7 @@ export class MoedaUtils {
     }
 
     public formatarValorDuasCasaReturnZero(nro: number) {
+        
         if (!!!nro)
             return "0,00";
         return this.formatter.format(nro);

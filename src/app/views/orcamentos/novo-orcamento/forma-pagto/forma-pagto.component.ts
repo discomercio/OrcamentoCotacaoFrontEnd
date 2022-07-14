@@ -44,13 +44,13 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   formaPagamento: FormaPagto[] = new Array();
   editando: boolean = false;
 
-  async buscarQtdeMaxParcelaCartaoVisa(){
+  async buscarQtdeMaxParcelaCartaoVisa() {
     if (this.tipoUsuario == this.constantes.GESTOR ||
       this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.qtdeMaxParcelas = r;
-          return ;
+          return;
         }
       });
     }
@@ -65,7 +65,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
       apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
     }
-    
+
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
         comIndicacao, tipoUsuario, apelido)
@@ -74,7 +74,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
           if (r != null) {
             this.formaPagamento = r;
             this.montarFormasPagto();
-              this.setarTipoPagto();
+            this.setarTipoPagto();
           }
         }).catch((e) => this.alertaService.mostrarErroInternet(e));
     }
@@ -111,6 +111,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   setarTipoPagto() {
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
+
     if (this.tipoUsuario != this.constantes.GESTOR && this.tipoUsuario != this.constantes.VENDEDOR_UNIS) {
       this.qtdeMaxParcelas = this.formasPagtoAPrazo[0].meios[0].qtdeMaxParcelas;
     }
@@ -173,9 +174,15 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   setarQtdeMaxParcelasEDias() {
+    let qtdeParcelas = this.buscarQtdeParcelas();
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+
       this.qtdeMaxParcelas = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
+
+      if (qtdeParcelas > this.qtdeMaxParcelas) {
+        this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
+      }
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
@@ -187,6 +194,12 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
             x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES)[0];
         this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
         this.qtdeMaxDias = meio.qtdeMaxDias;
+        if (qtdeParcelas > this.qtdeMaxParcelas) {
+          this.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde = this.qtdeMaxParcelas;
+        }
+        if (this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo > this.qtdeMaxDias) {
+          this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo = this.qtdeMaxDias;
+        }
         return;
       }
     }
@@ -198,22 +211,38 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto)[0];
         this.qtdeMaxPeriodoPrimPrest = pagto.qtdeMaxDias;
+        if (this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos > this.qtdeMaxPeriodoPrimPrest) {
+          this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos = this.qtdeMaxPeriodoPrimPrest;
+        }
       }
       if (this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto)[0];
         this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
         this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
+        if(this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde > this.qtdeMaxParcelas){
+          this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde = this.qtdeMaxParcelas;
+        }
+        if(this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo > this.qtdeMaxDias){
+          this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo = this.qtdeMaxPeriodo
+        }
       }
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
       let pagto = this.meioParcelaUnica.filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pu_forma_pagto)[0];
       this.qtdeMaxDias = pagto.qtdeMaxDias;
+      if(this.formaPagtoCriacaoAprazo.c_pu_vencto_apos > this.qtdeMaxDias){
+        this.formaPagtoCriacaoAprazo.c_pu_vencto_apos = this.qtdeMaxDias;
+      }
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
       this.qtdeMaxParcelas = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
+
+        if(this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde > this.qtdeMaxParcelas){
+          this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas
+        }
       return;
     }
   }
@@ -235,6 +264,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde;
     }
   }
+
+
 
   formaPagtoCriacaoAprazo: FormaPagtoCriacao = new FormaPagtoCriacao();
   formaPagtoCriacaoAvista: FormaPagtoCriacao = new FormaPagtoCriacao();
@@ -266,6 +297,9 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
     }
+    this.setarQtdeMaxParcelasEDias();
+    // this.validarQtdeParcelas()
+
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
     let valorParcela;
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
@@ -283,9 +317,19 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   }
 
+  validarQtdeParcelas() {
+    let qtdeParcelas = this.buscarQtdeParcelas();
+    if (qtdeParcelas > this.qtdeMaxParcelas) {
+      this.setarQtdeMaxParcelasEDias();
+      return false;
+    }
+
+    return true;
+  }
+
   setarValorParcela(valorParcelas: number) {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      
+
       return this.formaPagtoCriacaoAprazo.c_pc_valor = valorParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
@@ -367,16 +411,16 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   }
 
-  atribuirFormasPagto(){
+  atribuirFormasPagto() {
     let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
     lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
 
     if (this.checkedAvista && this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
       lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
     }
-    if(!this.checkedAvista){
-      lstFormaPagtoCriacao.forEach((e, i)=>{
-        if(e.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) lstFormaPagtoCriacao.splice(i, 1);
+    if (!this.checkedAvista) {
+      lstFormaPagtoCriacao.forEach((e, i) => {
+        if (e.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) lstFormaPagtoCriacao.splice(i, 1);
       });
     }
 
@@ -471,5 +515,5 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     return true;
   }
 
-  
+
 }
