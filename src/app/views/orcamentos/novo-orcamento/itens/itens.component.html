@@ -117,7 +117,7 @@
 
                                 </td>
                                 <td></td> -->
-                                <td class="p-text-right" colspan="3">
+                                <td class="p-text-right" colspan="2">
                                     <div class="p-d-inline-flex">
                                         <span
                                             *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
@@ -125,11 +125,13 @@
                                             {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
                                         </span>
-                                        <div>
-                                            <input *ngIf="novoOrcamentoService.editarComissao" class="" pInputText
-                                                type="text"
-                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
-                                                (keyup)="formataComissao($event)" (blur)="editarComissao($event)" />
+                                        <div class="p-d-inline-flex p-jc-end" *ngIf="novoOrcamentoService.editarComissao">
+                                            <div class="p-col-7 p-inputgroup">
+                                                <input type="text" pInputText class="p-text-right"
+                                                    [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
+                                                    (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
+                                                <span class="p-inputgroup-addon">%</span>
+                                            </div>
 
                                         </div>
                                         <div class="p-as-center" *ngIf="param != 'novo'">
@@ -146,7 +148,7 @@
 
 
                                 </td>
-                                <td class="p-text-right p-col-2" colspan="1">
+                                <td class="p-text-right p-col-2" colspan="2">
                                     <div>
                                         <div class="p-inputgroup">
                                             <input type="text" pInputText class="p-text-right"

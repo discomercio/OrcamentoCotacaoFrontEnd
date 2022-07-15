@@ -97,7 +97,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
     if (param.filtro == "novo") {
       this.param = param.filtro;
-
+      this.novoOrcamentoService.editarComissao = false;
       this.novoOrcamentoService.editando = false;
       this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
     }
@@ -130,19 +130,21 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
           this.formaPagto.formaPagtoCriacaoAprazo;
           if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
             let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-            this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde = this.formaPagto.qtdeMaxParcelas;
+            if (this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde == undefined)
+              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde = this.formaPagto.qtdeMaxParcelas;
           }
           if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
             let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-            this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.formaPagto.qtdeMaxParcelas;;
+            if (this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde == undefined)
+              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.formaPagto.qtdeMaxParcelas;
           }
-
+          this.inscreveProdutoComboDto();
         }
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
         this.carregandoProds = false;
       });
-      this.inscreveProdutoComboDto();
+      
       // }
     }
 
@@ -357,13 +359,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   digitouDescValor(item: ProdutoOrcamentoDto, v: string): void {
-    if (item.descDado === Number.parseFloat(v)) {
-      if (item.descDado == 0) {
-        item.descDado = 0;
-      }
-      return;
-    }
-
     if (Number.parseFloat(v) > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
       this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
       return;

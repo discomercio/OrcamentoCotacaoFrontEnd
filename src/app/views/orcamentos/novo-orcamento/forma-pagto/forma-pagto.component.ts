@@ -44,17 +44,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   formaPagamento: FormaPagto[] = new Array();
   editando: boolean = false;
 
-  async buscarQtdeMaxParcelaCartaoVisa() {
-    if (this.tipoUsuario == this.constantes.GESTOR ||
-      this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
-        if (r != null) {
-          this.qtdeMaxParcelas = r;
-          return;
-        }
-      });
-    }
-  }
   buscarFormasPagto(param: string) {
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
@@ -155,19 +144,31 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.tipoAPrazo;
     this.novoOrcamentoService.qtdeParcelas = 0;
-    this.qtdeMaxDias = 0;
-    this.qtdeMaxParcelas = 0;
-    this.qtdeMaxPeriodo = 0;
-    this.qtdeMaxPeriodoPrimPrest = 0;
+    // this.qtdeMaxDias = 0;
+    // this.qtdeMaxParcelas = 0;
+    // this.qtdeMaxPeriodo = 0;
+    // this.qtdeMaxPeriodoPrimPrest = 0;
 
-    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
-        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
-    }
-    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
-        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
-    }
+    // if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+    //   let qtdeParcela = this.formasPagtoAPrazo
+    //     .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
+    //   if (qtdeParcela != null) {
+    //     this.qtdeMaxParcelas = qtdeParcela;
+    //     return;
+    //   }
+    //   console.log("cartão: " + this.qtdeMaxParcelas);
+
+    // }
+    // if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+    //   let qtdeParcela = this.formasPagtoAPrazo
+    //     .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
+    //   if (qtdeParcela != null) {
+    //     this.qtdeMaxParcelas = qtdeParcela;
+    //     return;
+    //   }
+
+    //   console.log("maquineta: " + this.qtdeMaxParcelas);
+    // }
 
     this.setarSiglaPagto();
     this.calcularParcelas();
@@ -177,10 +178,12 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     let qtdeParcelas = this.buscarQtdeParcelas();
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
 
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+      let qtdeParcela = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
+      if (qtdeParcela != null)
+        this.qtdeMaxParcelas = qtdeParcela;
 
-      if (qtdeParcelas > this.qtdeMaxParcelas) {
+      if (this.qtdeMaxParcelas != null && qtdeParcelas > this.qtdeMaxParcelas) {
         this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
       }
       return;
@@ -192,12 +195,14 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         let meio = meiosPagtoEntrada
           .filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto &&
             x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES)[0];
-        this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
-        this.qtdeMaxDias = meio.qtdeMaxDias;
-        if (qtdeParcelas > this.qtdeMaxParcelas) {
+        if (meio.qtdeMaxParcelas != null)
+          this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
+        if (meio.qtdeMaxDias != null)
+          this.qtdeMaxDias = meio.qtdeMaxDias;
+        if (this.qtdeMaxParcelas != null && qtdeParcelas > this.qtdeMaxParcelas) {
           this.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde = this.qtdeMaxParcelas;
         }
-        if (this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo > this.qtdeMaxDias) {
+        if (this.qtdeMaxDias != null && this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo > this.qtdeMaxDias) {
           this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo = this.qtdeMaxDias;
         }
         return;
@@ -210,39 +215,53 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto)[0];
-        this.qtdeMaxPeriodoPrimPrest = pagto.qtdeMaxDias;
-        if (this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos > this.qtdeMaxPeriodoPrimPrest) {
+
+        if (pagto.qtdeMaxDias != null)
+          this.qtdeMaxPeriodoPrimPrest = pagto.qtdeMaxDias;
+
+        if (this.qtdeMaxPeriodoPrimPrest != null && this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos > this.qtdeMaxPeriodoPrimPrest) {
           this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos = this.qtdeMaxPeriodoPrimPrest;
         }
       }
       if (this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto)[0];
-        this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
-        this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
-        if(this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde > this.qtdeMaxParcelas){
+
+        if (pagto.qtdeMaxParcelas != null)
+          this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
+
+        if (pagto.qtdeMaxDias != null)
+          this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
+
+        if (this.qtdeMaxParcelas != null && this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde > this.qtdeMaxParcelas) {
           this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde = this.qtdeMaxParcelas;
         }
-        if(this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo > this.qtdeMaxDias){
+        if (this.qtdeMaxPeriodo != null && this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo > this.qtdeMaxPeriodo) {
           this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo = this.qtdeMaxPeriodo
         }
       }
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
       let pagto = this.meioParcelaUnica.filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pu_forma_pagto)[0];
-      this.qtdeMaxDias = pagto.qtdeMaxDias;
-      if(this.formaPagtoCriacaoAprazo.c_pu_vencto_apos > this.qtdeMaxDias){
+
+      if (pagto.qtdeMaxDias != null)
+        this.qtdeMaxDias = pagto.qtdeMaxDias;
+
+      if (this.qtdeMaxDias != null && this.formaPagtoCriacaoAprazo.c_pu_vencto_apos > this.qtdeMaxDias) {
         this.formaPagtoCriacaoAprazo.c_pu_vencto_apos = this.qtdeMaxDias;
       }
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+      let qtdeParcela = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
 
-        if(this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde > this.qtdeMaxParcelas){
-          this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas
-        }
+      if (qtdeParcela != null)
+        this.qtdeMaxParcelas = qtdeParcela;
+
+      if (this.qtdeMaxParcelas != null && this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde > this.qtdeMaxParcelas) {
+        this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas
+      }
       return;
     }
   }
@@ -298,7 +317,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
     this.setarQtdeMaxParcelasEDias();
-    // this.validarQtdeParcelas()
 
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
     let valorParcela;
@@ -315,16 +333,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     }
     this.setarValorParcela(valorParcela);
 
-  }
-
-  validarQtdeParcelas() {
-    let qtdeParcelas = this.buscarQtdeParcelas();
-    if (qtdeParcelas > this.qtdeMaxParcelas) {
-      this.setarQtdeMaxParcelasEDias();
-      return false;
-    }
-
-    return true;
   }
 
   setarValorParcela(valorParcelas: number) {

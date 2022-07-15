@@ -67,6 +67,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
     this.buscarConfigValidade();
+    this.desabilitarCampos();
     this.setarCamposDoForm();
     this.carregarListas();
     this.buscarEstados();
@@ -77,7 +78,11 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   verificarParam(param: any) {
-    if (param.filtro == "editar") return;
+    if (param.filtro == "editar") {
+      //se tiver opção de orçamento armazenado no orçamento, bloquear os campos de Tipo de cliente e parceiro
+      
+      return;
+    }
     if (param.filtro == "novo") {
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
@@ -85,6 +90,15 @@ export class CadastrarClienteComponent implements OnInit {
     if (param.filtro == "clone") {
       //vamos criar montar os dados de cliente apena?
     }
+  }
+
+  desabilitarCampos(){
+    
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0){
+      this.form.controls.Parceiro.disable();
+      this.form.controls.Tipo.disable();
+    }
+    
   }
 
   buscarConfigValidade() {
