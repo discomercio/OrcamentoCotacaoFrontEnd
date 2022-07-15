@@ -67,7 +67,7 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = ClienteOrcamentoCotacao;
   }
 
-  
+
   setarPercentualComissao() {
     this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ? this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
@@ -225,14 +225,12 @@ export class NovoOrcamentoService {
         if (descMedio > (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao)) {
           let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
 
-          if (descontarComissao != 0) {
-            
-            let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
-            this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
-            if(this.opcaoOrcamentoCotacaoDto.percRT < 0) this.opcaoOrcamentoCotacaoDto.percRT = 0;
-            this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT);
-            return;
-          }
+          let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
+          this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
+          if (this.opcaoOrcamentoCotacaoDto.percRT < 0) this.opcaoOrcamentoCotacaoDto.percRT = 0;
+          this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT);
+          return;
+
         }
         else {
           this.moedaUtils.formatarDecimal(this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao);

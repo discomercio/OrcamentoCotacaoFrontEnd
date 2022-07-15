@@ -366,8 +366,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     item.descDado = Number.parseFloat(v);
 
-
-
     if (item.descDado > 100) {
       item.descDado = 100;
     }
