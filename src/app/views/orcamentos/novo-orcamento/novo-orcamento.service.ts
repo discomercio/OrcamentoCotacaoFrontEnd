@@ -69,7 +69,8 @@ export class NovoOrcamentoService {
 
 
   setarPercentualComissao() {
-    this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ? this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
+    this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ?
+      this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
     if (this.orcamentoCotacaoDto.parceiro == null || this.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) return;
 
@@ -221,9 +222,8 @@ export class NovoOrcamentoService {
     if (this.calcularComissaoAuto && this.descontaComissao) {
       let descMedio = this.calcularDescontoMedio();
 
-      if (this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && this.orcamentoCotacaoDto.parceiro != null) {
+      if (this.calcularComissaoAuto && this.percMaxComissaoEDescontoUtilizar) {
         if (descMedio > (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao)) {
-          let descontarComissao = this.moedaUtils.formatarDecimal(this.percentualMaxComissao.percMaxComissao - descMedio);
 
           let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
           this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
@@ -239,6 +239,22 @@ export class NovoOrcamentoService {
       }
     }
 
+  }
+
+  VerificarUsuarioLogadoDonoOrcamento(): string {
+    if (this.orcamentoCotacaoDto?.vendedorParceiro != null) {
+      return this.orcamentoCotacaoDto.vendedorParceiro;
+    }
+    if (this.orcamentoCotacaoDto?.parceiro != null && this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR) {
+      //parceiro é o dono
+      return this.orcamentoCotacaoDto.parceiro;
+    }
+    if (this.orcamentoCotacaoDto?.vendedor != null) {
+      //vendedor é o dono
+      return this.orcamentoCotacaoDto.vendedor;
+    }
+
+    return;
   }
 
   verificarCalculoComissao(): boolean {
@@ -325,8 +341,8 @@ export class NovoOrcamentoService {
     if (validade <= dataAtual) return false;
 
     //ver se o usuário é o dono, se não for verificar se tem permissão de desconto superior
-    if (this.orcamentoCotacaoDto.cadastradoPor.toLocaleLowerCase() ==
-      this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
+    let donoOrcamento = this.VerificarUsuarioLogadoDonoOrcamento();
+    if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
     else {
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
@@ -334,6 +350,10 @@ export class NovoOrcamentoService {
     }
 
     return false;
+  }
+
+  verificarDonoOrcamento() {
+
   }
 
   verificarAlcadaUsuario(idOpcao: number): boolean {

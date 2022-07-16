@@ -54,8 +54,11 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
-    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor.toLocaleLowerCase() !=
-      this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+
+
+    let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+
+    if (donoOrcamento.toLocaleLowerCase() != this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
       if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
@@ -92,33 +95,23 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     this.buscarFormaPagto();
     this.itens.inserirProduto(null);
-    //para refletir as coisas!
-    this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
   }
 
   verificarCalculoComissao(): boolean {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-      //tem percRT
-      //tem parceiro
-      //tem comissão
-      if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro.toLocaleLowerCase() ==
-        this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-        //é o dono do orçamento
-        //desconta comissão
+      let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+      
+      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
         this.itens.novoOrcamentoService.descontaComissao = true;
         this.itens.novoOrcamentoService.editarComissao = false;
-        //calcula comissão automaticamente
         return true;
       }
 
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-        //usuário com alçada
-        //não desconta comissão
         this.itens.novoOrcamentoService.descontaComissao = false;
-        //não calcula comissão automaticamente
         return false;
       }
     }

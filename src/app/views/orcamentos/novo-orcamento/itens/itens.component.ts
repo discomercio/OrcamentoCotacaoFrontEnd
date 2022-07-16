@@ -33,8 +33,6 @@ import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
 import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
 import { Location } from '@angular/common';
-import { EventEmitter } from 'stream';
-import { eventDragMutationMassager } from '@fullcalendar/core';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -121,8 +119,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     await this.formaPagto.buscarFormasPagto(this.param);
 
     if (this.param == "novo") {
-      // if (this.tipoUsuario == this.constantes.GESTOR ||
-      //   this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
@@ -144,8 +140,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.alertaService.mostrarErroInternet(e);
         this.carregandoProds = false;
       });
-      
-      // }
     }
 
     if (this.editando) this.formaPagto.editando = true;
@@ -190,8 +184,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       if (r != null) {
         this.novoOrcamentoService.percentualMaxComissao = r;
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
-        if (!this.novoOrcamentoService.editando)
+
+        if (!this.novoOrcamentoService.editando){
           this.novoOrcamentoService.setarPercentualComissao();
+          return;
+        }
+
+        if (this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR){
+          this.novoOrcamentoService.setarPercentualComissao();
+          this.novoOrcamentoService.calcularPercentualComissao();
+        }
+          
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
   }
@@ -311,7 +314,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    if (this.novoOrcamentoService.percentualMaxComissao && !this.novoOrcamentoService.editando)
+    if (this.novoOrcamentoService.calcularComissaoAuto)
       this.novoOrcamentoService.calcularPercentualComissao();
   }
 

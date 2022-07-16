@@ -232,6 +232,7 @@ export class OrcamentosListarComponent implements OnInit {
         this.carregando = false;
       }
     }).catch((r) => {
+      debugger;
       this.carregando = false;
       this.alertaService.mostrarErroInternet(r);
     });
@@ -324,7 +325,7 @@ export class OrcamentosListarComponent implements OnInit {
     let lstFiltroDatas: Array<ListaDto> = new Array();
     let lstFiltraDataExpiracao: Array<ListaDto> = new Array();
     this.lstDtoFiltrada = new Array();
-
+    
     let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
     let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
@@ -356,7 +357,7 @@ export class OrcamentosListarComponent implements OnInit {
       if (lstFiltroStatus.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
       if (lstFiltroVendedor.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor); }
       if (lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Parceiro == x.Parceiro); }
-      if (this.filtro.VendedorParceiro != null) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.VendedorParceiro == x.VendedorParceiro); }
+      if (this.filtro.VendedorParceiro != null) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>  this.filtro.VendedorParceiro.toLocaleUpperCase() == x.VendedorParceiro?.toLocaleUpperCase()); }
       if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
       if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
       if (this.filtro.Expirado != undefined) {
@@ -365,7 +366,7 @@ export class OrcamentosListarComponent implements OnInit {
           this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
             new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
         }
-        
+
         if (this.filtro.Expirado == false) {
           this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
             new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
