@@ -3,8 +3,9 @@
         <div class="card">
             <app-itens #itens>
             </app-itens>
-            <div  class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
-                <button pButton pRipple label="Salvar Opção de Orçamento" (click)="salvarOpcao()"></button>
+            <div  class="p-d-flex p-jc-around">
+                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
+                <button pButton pRipple label="Salvar opção de orçamento" (click)="salvarOpcao()"></button>
             </div>
         </div>
     </div>

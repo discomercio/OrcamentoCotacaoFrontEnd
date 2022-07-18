@@ -2,11 +2,9 @@ import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '
 import { ActivatedRoute, Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
-import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
-import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { ItensComponent } from '../../novo-orcamento/itens/itens.component';
 
 @Component({
@@ -48,8 +46,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
-    //verificar se tiver uso de alçada e o usuário sem alçada ou com alçada menor do que existir não deve poder acessar mais a edição
-
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
@@ -71,20 +67,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.editando = true;
     this.itens.novoOrcamentoService.calcularComissaoAuto = this.verificarCalculoComissao();
 
-    /*
-     SE USUÁRIO SEM PERMISSÃO DE ALÇADA E ORÇAMENTO COM PARCEIRO => calcula comissão automaticamente
-     ==
-     SE USUÁRIO COM PERMISSÃO DE ALÇADA E ORÇAMENTO COM PARCEIRO => permite editar manualmente a comissão
-     OBS: calcular o quanto será permitido dar de comissão
-     fórmula: limiteMaxDesconto = percMaxComissao - (descontoMedio - (PercMaxDescComissao - percMaxComissao)) 
-     ==
-     ORÇAMENTO SEM PARCEIRO => não desconta comissão e não grava nada em percRT
-
-
-     LIMITAR DESCONTO POR ITEM => cada item não poderá exceder o PercMaxDescComissao
-     Ex: limite máximo de desconto + comissão = 8%
-     sendo assim, não pode aplicar desconto maior que 8% em nenhum item do orçamento
-    */
     this.buscarProdutos();
     if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
@@ -101,7 +83,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
       let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-      
+
       if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
         this.itens.novoOrcamentoService.descontaComissao = true;
         this.itens.novoOrcamentoService.editarComissao = false;
@@ -217,12 +199,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
+        this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
       }
-      debugger;
-
     }).catch((e) => { this.alertaService.mostrarErroInternet(e); });
-    //levantar o que precisa ser feito para enviar via post
-
   }
 
   validarDescontosProdutos(): boolean {
@@ -239,20 +218,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     return true;
 
   }
-  verificarDescontoMedio() {
-    this.itens.novoOrcamentoService.percentualMaxComissao;
-    this.itens.novoOrcamentoService.percentualMaxComissaoPadrao;
 
-    // let descMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
-    // let tipoCliente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
-    // let descontoComissaoPadrao = tipoCliente == this.itens.constantes.ID_PF ?
-    //   this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDesconto :
-    //   this.itens.novoOrcamentoService.percentualMaxComissaoPadrao.percMaxComissaoEDescontoPJ;
-
-    // if (descMedio > descontoComissaoPadrao) {
-
-    // }
-    // debugger;
-
+  voltar() {
+    this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
   }
 }

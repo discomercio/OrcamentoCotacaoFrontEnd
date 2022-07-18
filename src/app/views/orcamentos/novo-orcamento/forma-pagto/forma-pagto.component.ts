@@ -2,10 +2,8 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
-import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
-import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -13,7 +11,6 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ItensComponent } from '../itens/itens.component';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-forma-pagto',
@@ -144,31 +141,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.tipoAPrazo;
     this.novoOrcamentoService.qtdeParcelas = 0;
-    // this.qtdeMaxDias = 0;
-    // this.qtdeMaxParcelas = 0;
-    // this.qtdeMaxPeriodo = 0;
-    // this.qtdeMaxPeriodoPrimPrest = 0;
-
-    // if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-    //   let qtdeParcela = this.formasPagtoAPrazo
-    //     .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
-    //   if (qtdeParcela != null) {
-    //     this.qtdeMaxParcelas = qtdeParcela;
-    //     return;
-    //   }
-    //   console.log("cartão: " + this.qtdeMaxParcelas);
-
-    // }
-    // if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-    //   let qtdeParcela = this.formasPagtoAPrazo
-    //     .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
-    //   if (qtdeParcela != null) {
-    //     this.qtdeMaxParcelas = qtdeParcela;
-    //     return;
-    //   }
-
-    //   console.log("maquineta: " + this.qtdeMaxParcelas);
-    // }
 
     this.setarSiglaPagto();
     this.calcularParcelas();
@@ -303,7 +275,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.formaPagtoCriacaoAvista.tipo_parcelamento = 1;
     if (this.formaPagtoCriacaoAvista.tipo_parcelamento) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
-      // this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
       return;
     }
     else {
@@ -391,7 +362,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   incluirOpcao() {
-    //validar forma pagamento
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
@@ -403,7 +373,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
     if (!this.formaPagtoCriacaoAprazo && this.formaPagtoCriacaoAprazo.tipo_parcelamento == 0) {
-      //vamos validar cada opção a prazo para saber se todos os campos estão preenchidos
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Forma de pagamento a prazo é obrigatória!");
       return;
     }
