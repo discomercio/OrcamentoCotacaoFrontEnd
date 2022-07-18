@@ -405,4 +405,14 @@ export class NovoOrcamentoService {
 
     return null;
   }
+
+  validarDescontosProdutos():boolean{
+    let retorno = true;
+    this.lstProdutosSelecionados.some(x =>{
+      if (x.descDado > this.percMaxComissaoEDescontoUtilizar){
+        return retorno = false;
+      }
+    });
+    return retorno;
+  }
 }
