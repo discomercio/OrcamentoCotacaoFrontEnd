@@ -1,4 +1,7 @@
 export class ProdutoOrcamentoDto {
+    id:number;
+    idItemUnificado:number;
+    idOpcaoPagto:number;
     fabricante: string;
     fabricanteNome: string;
     produto: string;
@@ -13,4 +16,5 @@ export class ProdutoOrcamentoDto {
     totalItem: number | null;
     alterouPrecoVenda: boolean | null;
     mostrarCampos:boolean = false;
+    idOperacaoAlcadaDescontoSuperior: number;
 }

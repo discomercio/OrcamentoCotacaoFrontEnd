@@ -7,14 +7,17 @@ export class OrcamentoCotacaoResponse {
     parceiro: string;
     vendedorParceiro: string;
     loja: string;
-    validade: Date;
+    validade: string|Date;
+    status:number;
     qtdeRenovacao: number;
     concordaWhatsapp: boolean;
     observacoesGerais: string;
-    entregaImediata: boolean = true;
+    entregaImediata: boolean;
     dataEntregaImediata: Date;
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
     cadastradoPor:string;
-    status: number;
+    dataCadastro:string;
+    idIndicador:number;
+    idIndicadorVendedor:number;
 }

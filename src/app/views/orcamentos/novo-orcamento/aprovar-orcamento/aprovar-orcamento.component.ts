@@ -11,7 +11,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
@@ -25,6 +25,7 @@ import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indic
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensageriaComponent } from 'src/app/views/mensageria/mensageria.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 
 @Component({
@@ -45,7 +46,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private location: Location,
     private readonly formaPagtoService: FormaPagtoService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
-    private readonly autenticacaoService: AutenticacaoService) {
+    private readonly autenticacaoService: AutenticacaoService,
+    private router: Router) {
     super(telaDesktopService);
   }
   public form: FormGroup;
@@ -74,8 +76,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
 
+    //this.idOrcamentoCotacao = 258;
+    this.novoOrcamentoService.usuarioLogado = this.autenticacaoService.getUsuarioDadosToken();
     this.buscarOrcamento(this.idOrcamentoCotacao);
-    this.buscarFormasPagto();
+
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
   }
 
@@ -85,7 +89,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   buscarDadosParaMensageria(id: number) {
-    
+
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
@@ -93,7 +97,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.idUsuarioRemetente.toString();
           this.mensagemComponente.idTipoUsuarioContextoRemetente = r.idTipoUsuarioContextoRemetente.toString();
-          this.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();          
+          this.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();
           this.mensagemComponente.idUsuarioDestinatario = r.idUsuarioDestinatario.toString();
           this.mensagemComponente.donoOrcamento = r.donoOrcamento;
           this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.idTipoUsuarioContextoDestinatario.toString();
@@ -108,12 +112,22 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto = r;        
+        this.novoOrcamentoService.orcamentoCotacaoDto = r;  
+        this.verificarEdicao();      
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
+        this.buscarFormasPagto();
       }
     });
+  }
+
+  verificarAlcadaUsuario(idOpcao: number): boolean {
+    return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);
+  }
+  editar: boolean = false;
+  verificarEdicao() {
+    this.editar = this.novoOrcamentoService.verificarEdicao();
   }
 
   buscarParceiro(apelido) {
@@ -127,17 +141,23 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   buscarFormasPagto() {
     let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
     let comIndicacao: number = 0;
-    if (orcamento.parceiro != null)
+    let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
+    let apelido: string = this.autenticacaoService.usuario.nome;
+    if (orcamento.parceiro != null) {
       comIndicacao = 1;
+      tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
+      apelido = orcamento.parceiro;
+    }
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
     orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
       opcao.formaPagto.forEach(p => {
         formaPagtoOrcamento.push(p);
       })
-    })
+    });
 
-    this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo, comIndicacao)
+    this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
+      comIndicacao, tipoUsuario, apelido)
       .toPromise()
       .then((r) => {
         if (r != null) {
@@ -186,4 +206,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.location.back();
   }
 
+  editarOpcao(orcamento) {
+    this.router.navigate(["orcamentos/editar/editar-opcao", orcamento.id]);
+  }
 }

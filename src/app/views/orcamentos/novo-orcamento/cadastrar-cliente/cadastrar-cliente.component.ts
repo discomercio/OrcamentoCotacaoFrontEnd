@@ -16,6 +16,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -66,6 +67,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
     this.buscarConfigValidade();
+    this.desabilitarCampos();
     this.setarCamposDoForm();
     this.carregarListas();
     this.buscarEstados();
@@ -76,13 +78,27 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   verificarParam(param: any) {
-    if (param.filtro == "editar") return;
+    if (param.filtro == "editar") {
+      //se tiver opção de orçamento armazenado no orçamento, bloquear os campos de Tipo de cliente e parceiro
+      
+      return;
+    }
     if (param.filtro == "novo") {
       this.novoOrcamentoService.criarNovo();
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
     }
     if (param.filtro == "clone") {
       //vamos criar montar os dados de cliente apena?
     }
+  }
+
+  desabilitarCampos(){
+    
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0){
+      this.form.controls.Parceiro.disable();
+      this.form.controls.Tipo.disable();
+    }
+    
   }
 
   buscarConfigValidade() {
@@ -312,7 +328,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
 
-    this.router.navigate(["orcamentos/itens"]);
+    this.router.navigate(["orcamentos/itens", "novo"]);
   }
 
   dataEntrega = true;
