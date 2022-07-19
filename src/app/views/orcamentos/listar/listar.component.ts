@@ -533,6 +533,10 @@ export class OrcamentosListarComponent implements OnInit {
   prepedido_OnClick(id) {
     this.router.navigate(["prepedido/detalhes/", id]);
   }  
+
+  pedido_OnClick(id) {
+    this.router.navigate(["pedido/detalhes/", id]);
+  }    
 }
 
 

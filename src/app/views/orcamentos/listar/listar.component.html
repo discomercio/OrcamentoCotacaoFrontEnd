@@ -202,6 +202,7 @@
                                     }}
                                 </span>
                                 
+                                
                                 <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']=='0' && rowData['Cliente_Obra']"  (click)="prepedido_OnClick(rowData['NumPedido'])"
                                 style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{
@@ -210,7 +211,16 @@
                                     col.field == 'DtExpiracao'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                     rowData[col.field]
                                     }}
-                                </span>                                
+                                </span>       
+                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']!='0' && rowData['Cliente_Obra']"  (click)="pedido_OnClick(rowData['NumPedido'])"
+                                style="cursor:pointer; color:blue;text-decoration:underline">
+                                    {{
+                                    col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
+                                    col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
+                                    col.field == 'DtExpiracao'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
+                                    rowData[col.field]
+                                    }}
+                                </span>                                                            
                             </td>
                             <td *ngIf="parametro == 'PENDENTES'">
                                 <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0'" style="color: red;"
