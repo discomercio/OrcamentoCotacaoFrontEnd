@@ -60,7 +60,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
           if (r != null) {
             this.formaPagamento = r;
             this.montarFormasPagto();
-            this.setarTipoPagto();
+            // this.setarTipoPagto();
           }
         }).catch((e) => this.alertaService.mostrarErroInternet(e));
     }
@@ -98,27 +98,29 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   setarTipoPagto() {
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
 
-    if (this.tipoUsuario != this.constantes.GESTOR && this.tipoUsuario != this.constantes.VENDEDOR_UNIS) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo[0].meios[0].qtdeMaxParcelas;
+    let usuarioInterno = false;
+    if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+      usuarioInterno = true;
     }
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
-      this.formaPagtoCriacaoAprazo.c_pc_qtde = pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = usuarioInterno ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = usuarioInterno ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
       this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
 
-    if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS){
-      this.qtdeMaxParcelas = this.qtdeMaxParcelaCartaoVisa;
-    }
 
-    this.setarSiglaPagto();
+
+    this.setarSiglaPagto()
   }
+
+
+
   qtdeMaxParcelaCartaoVisa: number = 0;
   setarSiglaPagto() {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
@@ -385,7 +387,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    if(!this.novoOrcamentoService.validarDescontosProdutos()){
+    if (!this.novoOrcamentoService.validarDescontosProdutos()) {
       this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
       return;
     }
@@ -416,7 +418,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   limparCampos() {
-    
+
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
     this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
     this.meioDemaisPrestacoes = new Array<MeiosPagto>();

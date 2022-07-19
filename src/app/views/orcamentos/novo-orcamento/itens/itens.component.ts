@@ -123,17 +123,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
           this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
-          this.formaPagto.formaPagtoCriacaoAprazo;
-          if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-            let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-            if (this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde == undefined)
-              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde = this.formaPagto.qtdeMaxParcelas;
-          }
-          if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-            let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-            if (this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde == undefined)
-              this.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.formaPagto.qtdeMaxParcelas;
-          }
+         
+          this.formaPagto.setarTipoPagto();
           this.inscreveProdutoComboDto();
         }
       }).catch((e) => {
