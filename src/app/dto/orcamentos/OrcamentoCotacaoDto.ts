@@ -15,11 +15,13 @@ export class OrcamentoCotacaoDto {
     concordaWhatsapp: boolean;
     observacoesGerais: string;
     entregaImediata: boolean;
+    stEntregaImediata: number;
     dataEntregaImediata: Date;
     usuarioCadastro: string;
     uf: string;
     telefone: string;
     email: string;
+    token: string;
 
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];
