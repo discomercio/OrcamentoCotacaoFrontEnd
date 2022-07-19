@@ -12,10 +12,12 @@ export class FormaPagtoService {
 
   constructor(private http: HttpClient) { }
 
-  buscarFormaPagto(tipoCliente: string, comIndicacao: number): Observable<FormaPagto[]> {
+  buscarFormaPagto(tipoCliente: string, comIndicacao: number, tipoUsuario:number, apelido:string): Observable<FormaPagto[]> {
     let formaPagtoRequest: FormaPagtoRequest = new FormaPagtoRequest();
     formaPagtoRequest.TipoCliente = tipoCliente;
     formaPagtoRequest.ComIndicacao = comIndicacao;
+    formaPagtoRequest.TipoUsuario = tipoUsuario;
+    formaPagtoRequest.Apelido = apelido;
     return this.http.post<FormaPagto[]>(environment.apiUrl + "FormaPagamento/buscarFormasPagamentos", formaPagtoRequest);
   }
 

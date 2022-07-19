@@ -38,6 +38,7 @@ import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcam
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 
 @NgModule({
     imports: [
@@ -56,11 +57,12 @@ import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-pre
                                 path: 'orcamentos', canActivate: [AuthGuard], children: [
                                     { path: "listar/:filtro", canActivate: [AuthGuard], component: OrcamentosListarComponent },
                                     { path: "cadastrar-cliente/:filtro", canActivate: [AuthGuard], component: CadastrarClienteComponent },
-                                    { path: "itens", canActivate: [AuthGuard], component: ItensComponent },
+                                    { path: "itens/:filtro", canActivate: [AuthGuard], component: ItensComponent },
                                     { path: "select-prod", canActivate: [AuthGuard], component: SelectProdDialogComponent },
                                     { path: "visualizar-orcamento/:id", canActivate: [AuthGuard], component: VisualizarOrcamentoComponent },
                                     { path: "novo-orcamento", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
+                                    { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                 ]
                             },
 

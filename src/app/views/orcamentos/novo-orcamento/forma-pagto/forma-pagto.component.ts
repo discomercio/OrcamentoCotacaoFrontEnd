@@ -1,11 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
-import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
-import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -23,11 +21,12 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
-    private readonly formaPagtoService: FormaPagtoService,
+    public readonly formaPagtoService: FormaPagtoService,
     public readonly novoOrcamentoService: NovoOrcamentoService,
     public readonly itensComponent: ItensComponent,
-    public readonly mensagemService:MensagemService,
-    telaDesktopService: TelaDesktopService
+    public readonly mensagemService: MensagemService,
+    telaDesktopService: TelaDesktopService,
+    public cdref: ChangeDetectorRef
   ) {
     super(telaDesktopService);
   }
@@ -36,29 +35,26 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
   }
   checked: boolean = true;
+  checkedAvista: boolean = false;
   tipoUsuario: number;
   public constantes: Constantes = new Constantes();
   formaPagamento: FormaPagto[] = new Array();
+  editando: boolean = false;
 
-
-  buscarFormasPagto() {
+  buscarFormasPagto(param: string) {
     let comIndicacao: number = 0;
-    if (this.tipoUsuario == this.constantes.PARCEIRO ||
-      this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR)
+    let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
+    let apelido: string = this.autenticacaoService.usuario.nome;
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
       comIndicacao = 1;
-
-    let qtdeMaxParcelaCartaoVisa: number = 0;
-    if (this.tipoUsuario == this.constantes.GESTOR ||
-      this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
-        if (r != null) {
-          qtdeMaxParcelaCartaoVisa = r;
-          this.qtdeMaxParcelas = r;
-        }
-      });
+      tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
+      apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
     }
+
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
-      return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo, comIndicacao)
+      return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
+        comIndicacao, tipoUsuario, apelido)
         .toPromise()
         .then((r) => {
           if (r != null) {
@@ -101,15 +97,20 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   setarTipoPagto() {
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
+
     if (this.tipoUsuario != this.constantes.GESTOR && this.tipoUsuario != this.constantes.VENDEDOR_UNIS) {
       this.qtdeMaxParcelas = this.formasPagtoAPrazo[0].meios[0].qtdeMaxParcelas;
     }
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
+      let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
+      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas;
+      let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
+      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
     this.setarSiglaPagto();
   }
@@ -131,37 +132,32 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   qtdeMaxDias: number;
   qtdeMaxPeriodo: number;
   qtdeMaxPeriodoPrimPrest: number;
-  habilitar:boolean = true;
+  habilitar: boolean = true;
 
   selectAprazo() {
-    
+
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.tipoAPrazo;
     this.novoOrcamentoService.qtdeParcelas = 0;
-    this.qtdeMaxDias = 0;
-    this.qtdeMaxParcelas = 0;
-    this.qtdeMaxPeriodo = 0;
-    this.qtdeMaxPeriodoPrimPrest = 0;
-
-    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
-        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
-    }
-    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
-        .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
-    }
 
     this.setarSiglaPagto();
     this.calcularParcelas();
   }
 
   setarQtdeMaxParcelasEDias() {
+    let qtdeParcelas = this.buscarQtdeParcelas();
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+
+      let qtdeParcela = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0].meios[0].qtdeMaxParcelas;
+      if (qtdeParcela != null)
+        this.qtdeMaxParcelas = qtdeParcela;
+
+      if (this.qtdeMaxParcelas != null && qtdeParcelas > this.qtdeMaxParcelas) {
+        this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
+      }
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
@@ -171,8 +167,16 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         let meio = meiosPagtoEntrada
           .filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto &&
             x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES)[0];
-        this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
-        this.qtdeMaxDias = meio.qtdeMaxDias;
+        if (meio.qtdeMaxParcelas != null)
+          this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
+        if (meio.qtdeMaxDias != null)
+          this.qtdeMaxDias = meio.qtdeMaxDias;
+        if (this.qtdeMaxParcelas != null && qtdeParcelas > this.qtdeMaxParcelas) {
+          this.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde = this.qtdeMaxParcelas;
+        }
+        if (this.qtdeMaxDias != null && this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo > this.qtdeMaxDias) {
+          this.formaPagtoCriacaoAprazo.c_pce_prestacao_periodo = this.qtdeMaxDias;
+        }
         return;
       }
     }
@@ -183,23 +187,53 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto)[0];
-        this.qtdeMaxPeriodoPrimPrest = pagto.qtdeMaxDias;
+
+        if (pagto.qtdeMaxDias != null)
+          this.qtdeMaxPeriodoPrimPrest = pagto.qtdeMaxDias;
+
+        if (this.qtdeMaxPeriodoPrimPrest != null && this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos > this.qtdeMaxPeriodoPrimPrest) {
+          this.formaPagtoCriacaoAprazo.c_pse_prim_prest_apos = this.qtdeMaxPeriodoPrimPrest;
+        }
       }
       if (this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto) {
         let pagto = meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
           x.id.toString() == this.formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto)[0];
-        this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
-        this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
+
+        if (pagto.qtdeMaxParcelas != null)
+          this.qtdeMaxParcelas = pagto.qtdeMaxParcelas;
+
+        if (pagto.qtdeMaxDias != null)
+          this.qtdeMaxPeriodo = pagto.qtdeMaxDias;
+
+        if (this.qtdeMaxParcelas != null && this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde > this.qtdeMaxParcelas) {
+          this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde = this.qtdeMaxParcelas;
+        }
+        if (this.qtdeMaxPeriodo != null && this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo > this.qtdeMaxPeriodo) {
+          this.formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo = this.qtdeMaxPeriodo
+        }
       }
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
       let pagto = this.meioParcelaUnica.filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pu_forma_pagto)[0];
-      this.qtdeMaxDias = pagto.qtdeMaxDias;
+
+      if (pagto.qtdeMaxDias != null)
+        this.qtdeMaxDias = pagto.qtdeMaxDias;
+
+      if (this.qtdeMaxDias != null && this.formaPagtoCriacaoAprazo.c_pu_vencto_apos > this.qtdeMaxDias) {
+        this.formaPagtoCriacaoAprazo.c_pu_vencto_apos = this.qtdeMaxDias;
+      }
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo
+      let qtdeParcela = this.formasPagtoAPrazo
         .filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0].meios[0].qtdeMaxParcelas;
+
+      if (qtdeParcela != null)
+        this.qtdeMaxParcelas = qtdeParcela;
+
+      if (this.qtdeMaxParcelas != null && this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde > this.qtdeMaxParcelas) {
+        this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = this.qtdeMaxParcelas
+      }
       return;
     }
   }
@@ -222,6 +256,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     }
   }
 
+
+
   formaPagtoCriacaoAprazo: FormaPagtoCriacao = new FormaPagtoCriacao();
   formaPagtoCriacaoAvista: FormaPagtoCriacao = new FormaPagtoCriacao();
   meioDemaisPrestacoes: MeiosPagto[];
@@ -235,9 +271,10 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   totalAvista: number;
   calcularValorAvista() {
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento[0]) {
+    if (!this.checkedAvista) return;
+    this.formaPagtoCriacaoAvista.tipo_parcelamento = 1;
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
-      // this.formaPagtoCriacaoAvista.tipo_parcelamento = Number.parseInt(this.formaPagtoCriacaoAvista.tipo_parcelamento[0]);
       return;
     }
     else {
@@ -246,11 +283,12 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   calcularParcelas() {
-
     if (this.novoOrcamentoService.lstProdutosSelecionados.length <= 0) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
     }
+    this.setarQtdeMaxParcelasEDias();
+
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
     let valorParcela;
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
@@ -270,6 +308,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   setarValorParcela(valorParcelas: number) {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+
       return this.formaPagtoCriacaoAprazo.c_pc_valor = valorParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
@@ -323,19 +362,17 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   incluirOpcao() {
-    //validar forma pagamento
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
       return;
     }
     if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
-      
+
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
       return;
     }
     if (!this.formaPagtoCriacaoAprazo && this.formaPagtoCriacaoAprazo.tipo_parcelamento == 0) {
-      //vamos validar cada opção a prazo para saber se todos os campos estão preenchidos
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Forma de pagamento a prazo é obrigatória!");
       return;
     }
@@ -343,45 +380,35 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    if (!this.formaPagtoCriacaoAvista.tipo_parcelamento || this.formaPagtoCriacaoAvista.tipo_parcelamento != 1) {
-
-    }
-    let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
-    lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
-
-    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
-      let tipoPagto = this.formaPagtoCriacaoAvista.tipo_parcelamento[0];
-      this.formaPagtoCriacaoAvista.tipo_parcelamento = tipoPagto;
-      lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
+    // não deixar adicionar opção caso desconto esteja maior que o permitido
+    debugger;
+    if(!this.novoOrcamentoService.validarDescontosProdutos()){
+      this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
+      return;
     }
 
-    this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
-
-
-    /**
-     * Validar
-     *  se o tipo de pagamento a prazo esta com todos os campos preenchidos e válidos
-     *  se a forma de pagamento a vista esta selecionada, verificar se os campos estão preenchidos
-     *  
-     */
-
-    /**
-     * Após inserir a opção devemos:
-     *  limpar a lista de produtos selecionados em todos os lugares
-     *  limpar a lista de controle de produtos de novoOrcamentoService
-     *  Limpar as formas de pagamentos e setar a que estava no carregamento da tela
-     *  setar a comissão do indicador
-     */
-
-
-
-
-    // this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.formaPagto = this.novoOrcamentoService.atribuirOpcaoPagto(this.opcoesPagto, this.qtdeMaxParcelaCartaoVisa);
+    this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
 
+  }
+
+  atribuirFormasPagto() {
+    let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
+    lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
+
+    if (this.checkedAvista && this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
+      lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
+    }
+    if (!this.checkedAvista) {
+      lstFormaPagtoCriacao.forEach((e, i) => {
+        if (e.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) lstFormaPagtoCriacao.splice(i, 1);
+      });
+    }
+
+    this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
   }
 
   limparCampos() {
@@ -471,4 +498,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     return true;
   }
+
+
 }

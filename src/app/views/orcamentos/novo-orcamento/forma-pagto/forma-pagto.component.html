@@ -6,7 +6,7 @@
                 <div class="p-text-nowrap p-xl-1 espaco">
                     <p-checkbox name="{{formasPagtoAVista.idTipoPagamento}}"
                         value="{{formasPagtoAVista.idTipoPagamento}}" inputId="{{formasPagtoAVista.idTipoPagamento}}"
-                        (onChange)="calcularValorAvista()" [(ngModel)]="formaPagtoCriacaoAvista.tipo_parcelamento">
+                        (onChange)="calcularValorAvista()" [(ngModel)]="checkedAvista" binary="true">
                     </p-checkbox>
                     <label class="font-size p-mx-2 p-as-center"
                         for="{{formasPagtoAVista.idTipoPagamento}}">{{formasPagtoAVista.tipoPagamentoDescricao}}</label>
@@ -42,7 +42,7 @@
                     <label class="font-size p-mx-2 p-as-center" for="2">A Prazo</label>
                 </div>
                 <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
-                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo"
+                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo" [disabled]="editando"
                         optionLabel="tipoPagamentoDescricao" placeholder="Selecione" (onChange)="selectAprazo()"
                         [(ngModel)]="formaPagtoCriacaoAprazo.tipo_parcelamento" optionValue="idTipoPagamento">
                     </p-dropdown>
@@ -94,7 +94,7 @@
                             <label>Meio pagamento demais prestações</label>
                             <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="meiosDemaisPrestacoes"
                                 optionLabel="descricao" optionValue="id" placeholder="Selecione"
-                                (onChange)="setarQtdeMaxParcelasEDias()"
+                                (onChange)="calcularParcelas()"
                                 [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto">
                             </p-dropdown>
                         </div>
@@ -122,7 +122,7 @@
                         <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
                             <label class="p-text-nowrap p-as-sm-center p-pr-1">Período entre parcelas</label>
                             <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder="" [min]="0"
-                                [max]="qtdeMaxDias" [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo" />
+                                [max]="qtdeMaxDias" [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo" (blur)="calcularParcelas()" />
                         </div>
                         <div
                             class="p-as-lg-center p-as-md-center p-as-sm-center p-col-12 p-pl-lg-3 p-pl-md-4 p-pl-sm-4 
@@ -141,7 +141,7 @@
                             <label>Meio pagamento 1º Prestação</label>
                             <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8" id="aprazo"
                                 [options]="meioPrimPrest" optionLabel="descricao" optionValue="idTipoParcela"
-                                placeholder="Selecione" (onChange)="setarQtdeMaxParcelasEDias()"
+                                placeholder="Selecione" (onChange)="calcularParcelas()"
                                 [(ngModel)]="formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto">
                             </p-dropdown>
                         </div>
@@ -156,7 +156,7 @@
                             <div class="p-col-12 p-pl-0">
                                 <label>Vencendo após</label>
                                 <input id="vencApos" type="number" pInputText placeholder="" [min]="1"
-                                    [max]="qtdeMaxPeriodoPrimPrest"
+                                    [max]="qtdeMaxPeriodoPrimPrest" (blur)="calcularParcelas()"
                                     [(ngModel)]="formaPagtoCriacaoAprazo.c_pse_prim_prest_apos" />
                             </div>
                             <div class="p-col-2 p-as-center p-px-0 p-my-5">
@@ -172,7 +172,7 @@
                             <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8" id="aprazo"
                                 [options]="meiosDemaisPrestacoes" optionLabel="descricao" placeholder="Selecione"
                                 [(ngModel)]="formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto"
-                                (onChange)="setarQtdeMaxParcelasEDias()" optionValue="id">
+                                (onChange)="calcularParcelas()" optionValue="id">
                             </p-dropdown>
                         </div>
                         <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
@@ -193,8 +193,8 @@
                             <label>Período entre parcelas</label>
                             <div class="p-col-2">
                                 <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder="" [min]="0"
-                                    [max]="qtdeMaxPeriodo"
-                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo" />
+                                    [max]="qtdeMaxPeriodo" (blur)="calcularParcelas()"
+                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo" />
                             </div>
                             <div class="p-as-center">
                                 <span>
@@ -268,7 +268,10 @@
 
         
     </div>
-    <div class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
+    <div *ngIf="!editando" class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
         <button pButton pRipple label="Adicionar Opção de Orçamento" (click)="incluirOpcao()"></button>
     </div>
+    <!-- <div *ngIf="editando" class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
+        <button pButton pRipple label="Salvar Opção de Orçamento" (click)="salvarOpcao()"></button>
+    </div> -->
 </div>

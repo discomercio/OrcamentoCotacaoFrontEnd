@@ -35,4 +35,13 @@ export class Constantes {
     public SelecionarQualquerIndicadorDaLoja = "100400";
 
     public SEM_INDICADOR = "*_SEM_INDICADOR_*";
+
+    public USUARIO_PERFIL_CENTRAL = 1;
+    public USUARIO_PERFIL_VENDEDOR = 2;
+    public USUARIO_PERFIL_PARCEIRO_INDICADOR = 3;
+
+    public STATUS_ORCAMENTO_COTACAO_ENVIADO = 1;
+    public STATUS_ORCAMENTO_COTACAO_CANCELADO = 2;
+    public STATUS_ORCAMENTO_COTACAO_APROVADO = 3;
+    public STATUS_ORCAMENTO_COTACAO_EMAIL_INCORRETO = 4;
 }
