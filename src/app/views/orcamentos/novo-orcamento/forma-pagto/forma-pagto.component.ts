@@ -405,10 +405,13 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   limparCampos() {
+    
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
     this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
     this.meioDemaisPrestacoes = new Array<MeiosPagto>();
     this.totalAvista = 0;
+    this.novoOrcamentoService.descontoGeral = 0;
+    this.checkedAvista = false;
     this.setarTipoPagto();
 
     this.novoOrcamentoService.controleProduto = new Array<string>();

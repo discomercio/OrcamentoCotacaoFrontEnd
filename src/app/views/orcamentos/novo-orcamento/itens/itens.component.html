@@ -152,12 +152,12 @@
                                     <div>
                                         <div class="p-inputgroup">
                                             <input type="text" pInputText class="p-text-right"
-                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
                                                 (keyup)="formataDescontoGeral($event)">
                                             <span class="p-inputgroup-addon">%</span>
                                             <button type="button" pButton pRipple icon="pi pi-plus"
                                                 styleClass="p-button-warn" pTooltip="Aplicar desconto nos produtos"
-                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
                                                 (click)="aplicarDescontoGeral($event)"></button>
                                         </div>
                                     </div>

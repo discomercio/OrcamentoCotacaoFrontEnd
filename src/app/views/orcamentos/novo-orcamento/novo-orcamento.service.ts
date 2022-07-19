@@ -405,4 +405,30 @@ export class NovoOrcamentoService {
 
     return null;
   }
+
+  
+  validarDescontosProdutos():boolean{
+    let retorno = true;
+    this.lstProdutosSelecionados.some(x =>{
+      if (x.descDado > this.percMaxComissaoEDescontoUtilizar){
+        return retorno = false;
+      }
+    });
+    return retorno;
+  }
+
+  descontoGeral: number;
+  verificarDescontoGeral():boolean {
+    if (this.descontoGeral == undefined) {
+      this.descontoGeral = 0;
+      return true;
+    }
+
+    if (this.descontoGeral > this.percMaxComissaoEDescontoUtilizar) {
+      this.mensagemService.showErrorViaToast([`O desconto geral excede o máximo permitido!`]);
+      return false;
+    }
+
+    return true;
+  }
 }

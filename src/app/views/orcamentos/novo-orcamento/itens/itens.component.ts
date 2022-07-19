@@ -78,7 +78,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
-  descontoGeral: number;
+  
 
   ngOnInit(): void {
 
@@ -389,25 +389,27 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let v: any = valor.replace(/,/g, '');
 
     if (v == "") {
-      this.descontoGeral = 0;
+      this.novoOrcamentoService.descontoGeral = 0;
     }
 
     if (!isNaN(v)) {
       v = (v / 100).toFixed(2) + '';
-      this.descontoGeral = Number.parseFloat(v);
+      this.novoOrcamentoService.descontoGeral = Number.parseFloat(v);
     }
   }
 
   aplicarDescontoGeral(e: Event) {
-    if (this.descontoGeral == undefined) {
-      this.descontoGeral = 0;
-      return;
-    }
 
-    if (this.descontoGeral > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
-      this.mensagemService.showErrorViaToast([`O desconto geral excede o máximo permitido!`]);
-      return;
-    }
+    if(!this.novoOrcamentoService.verificarDescontoGeral()) return;
+    // if (this.novoOrcamentoService.descontoGeral == undefined) {
+    //   this.descontoGeral = 0;
+    //   return;
+    // }
+
+    // if (this.novoOrcamentoService.descontoGeral > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
+    //   this.mensagemService.showErrorViaToast([`O desconto geral excede o máximo permitido!`]);
+    //   return;
+    // }
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
       this.digitouDesc(e, x);
@@ -422,6 +424,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       item.precoVenda = this.moedaUtils.formatarDecimal(v);
     }
   }
+  
   digitouPreco_Venda(e: Event, item: ProdutoOrcamentoDto) {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/\D/g, '');
@@ -621,7 +624,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
         this.novoOrcamentoService.criarNovo();
-        this.descontoGeral = 0;
+        this.novoOrcamentoService.descontoGeral = 0;
         this.router.navigate(["orcamentos/listar/orcamentos"]);
       }
     }).catch((e) => {
