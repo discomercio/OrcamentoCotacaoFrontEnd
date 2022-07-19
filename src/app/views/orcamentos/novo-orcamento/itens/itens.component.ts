@@ -74,7 +74,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   dtOptions: any = {};
   produtoComboDto: ProdutoComboDto;
   carregandoProds = true;
-  qtdeMaxParcelaCartaoVisa: number = 0;
   clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
@@ -103,6 +102,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.buscarPercentualComissao();
   }
 
+
   iniciarNovo() {
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
@@ -122,7 +122,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
-
+          this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
           this.formaPagto.formaPagtoCriacaoAprazo;
           if (this.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
             let pagto = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];

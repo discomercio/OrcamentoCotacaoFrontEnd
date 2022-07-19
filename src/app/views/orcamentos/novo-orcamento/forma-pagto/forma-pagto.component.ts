@@ -112,9 +112,14 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
       this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
+
+    if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS){
+      this.qtdeMaxParcelas = this.qtdeMaxParcelaCartaoVisa;
+    }
+
     this.setarSiglaPagto();
   }
-
+  qtdeMaxParcelaCartaoVisa: number = 0;
   setarSiglaPagto() {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
       this.novoOrcamentoService.siglaPagto = this.constantes.COD_CUSTO_FINANC_FORNEC_TIPO_PARCELAMENTO__COM_ENTRADA;
@@ -380,8 +385,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    // não deixar adicionar opção caso desconto esteja maior que o permitido
-    debugger;
     if(!this.novoOrcamentoService.validarDescontosProdutos()){
       this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
       return;
@@ -389,9 +392,11 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     this.atribuirFormasPagto();
 
+    debugger;
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
+    this.setarQtdeMaxParcelasEDias();
 
   }
 
