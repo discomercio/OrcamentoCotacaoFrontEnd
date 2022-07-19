@@ -380,6 +380,13 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
+    // não deixar adicionar opção caso desconto esteja maior que o permitido
+    debugger;
+    if(!this.novoOrcamentoService.validarDescontosProdutos()){
+      this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
+      return;
+    }
+
     this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);

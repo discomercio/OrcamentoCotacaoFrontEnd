@@ -1,14 +1,13 @@
-import {Component, Input, Output, EventEmitter } from '@angular/core';
+import {Component } from '@angular/core';
 import {Router } from '@angular/router';
 import {AppComponent} from './app.component';
 import {AppMainComponent} from './app.main.component';
-import { OrcamentosService } from './../service/orcamento/orcamentos.service';
 import {AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import {MensageriaService } from './../service/mensageria/mensageria.service';
 import {DropDownItem} from '../views/orcamentos/models/DropDownItem';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
-import {Lojas} from '../dto/lojas/lojas';
+import { LojasService } from 'src/app/service/lojas/lojas.service';
 
 @Component({
     selector: 'app-topbar',
@@ -20,18 +19,23 @@ export class AppTopBarComponent {
     constructor(
         public app: AppComponent,
         public appMain: AppMainComponent,
-        private readonly autenticacaoService:  AutenticacaoService,
-        private readonly orcamentoService: OrcamentosService,
+        public readonly autenticacaoService:  AutenticacaoService,
         private readonly mensageriaService: MensageriaService,
         private readonly router: Router,
-        private fb: FormBuilder
+        private fb: FormBuilder,
+        private readonly lojaService: LojasService
+        
+        
     ) {}
     public lojaLogada : any;
     parametro: string;
-    qtdMensagem: number[];
+    qtdMensagem: any;
     public form: FormGroup;
     lojas: Array<DropDownItem> = [];
     filtro: Filtro = new Filtro();
+    imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+    corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
+    favIcon: HTMLLinkElement = document.querySelector('#favIcon');
 
     ngOnInit(): void {
         this.criarForm();
@@ -40,17 +44,39 @@ export class AppTopBarComponent {
                         
         setInterval(() => {
           this.obterQuantidadeMensagemPendente();
-        }, 60000);                
+        }, 5000);   
+        
+        this.buscarEstilo();
     }
 
     carregando: boolean = false;
     obterQuantidadeMensagemPendente() {
       this.mensageriaService.obterQuantidadeMensagemPendente().toPromise().then((r) => {
-        if (r != null) {      
+        if (r != null) {               
           this.qtdMensagem = r;
         }
       })
     } 
+
+    buscarEstilo() {
+      let lojaTmp:string;
+
+      if(this.lojaLogada) { 
+        lojaTmp = this.lojaLogada; //varias lojas
+      } else {
+        lojaTmp = this.autenticacaoService._lojaLogado; //somente 1 loja
+      }
+
+      this.lojaService.buscarLojaEstilo(lojaTmp).toPromise().then((r) => {
+        if (!!r) {        
+          
+          this.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
+          
+          this.corCabecalho = r.corCabecalho + " !important";
+          this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+        }
+      });
+    }    
 
     criarForm() {
     this.form = this.fb.group({

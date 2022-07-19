@@ -1,27 +1,20 @@
 
-import { environment } from 'src/environments/environment';
-import { AfterViewInit, Injectable } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Component, VERSION, OnInit, Input, ViewChild, ElementRef } from "@angular/core";
+import { AfterViewInit } from '@angular/core';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
-import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
-import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-import { OrcamentoOpcaoService } from 'src/app/service/orcamento-opcao/orcamento-opcao.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
-import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { FormaPagtoService } from 'src/app/service/forma-pagto/forma-pagto.service';
@@ -31,6 +24,7 @@ import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotaca
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensageriaComponent } from 'src/app/views/mensageria/mensageria.component';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 
@@ -45,6 +39,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     public readonly novoOrcamentoService: NovoOrcamentoService,
     telaDesktopService: TelaDesktopService,
     private readonly alertaService: AlertaService,
+    private readonly mensagemService: MensagemService,
     private readonly sweetalertService: SweetalertService,
     private readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
@@ -56,19 +51,25 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     super(telaDesktopService);
   }
   public form: FormGroup;
+  public mascaraTelefone: string;
   listaMensagens: MensageriaDto[];
   dataUtils: DataUtils = new DataUtils();
-
   vendedor: boolean;
   idUsuarioRemetente: string;
   idUsuarioDestinatario: string;
-  public mascaraTelefone: string;
   formataTelefone: FormataTelefone;
   usuarioLogado: Usuario;
-
+  idOrcamentoCotacao: number;
+  razaoSocialParceiro: string;
+  formaPagamento: FormaPagto[] = new Array();
+  activeState: boolean[] = [false, false, false];
+  @Input() desabiltarBotoes: boolean;
+  moedaUtils: MoedaUtils = new MoedaUtils();
+  stringUtils = StringUtils;
+  constantes: Constantes = new Constantes();
+  opcaoPagto: number;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
 
-  idOrcamentoCotacao: number;
   ngOnInit(): void {
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
     this.activatedRoute.params.subscribe(params => {
@@ -80,21 +81,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarOrcamento(this.idOrcamentoCotacao);
 
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
-
   }
 
   ngAfterViewInit() {
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
   }
-
-  @Input() desabiltarBotoes: boolean;
-
-  // opcoesOrcamento: OpcoesOrcamentoCotacaoDto = new OpcoesOrcamentoCotacaoDto();
-  moedaUtils: MoedaUtils = new MoedaUtils();
-  stringUtils = StringUtils;
-  constantes: Constantes = new Constantes();
-  opcaoPagto: number;
 
   buscarDadosParaMensageria(id: number) {
 
@@ -120,8 +112,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto = r;
-        this.verificarEdicao();
+        this.novoOrcamentoService.orcamentoCotacaoDto = r;  
+        this.verificarEdicao();      
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
@@ -138,7 +130,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.editar = this.novoOrcamentoService.verificarEdicao();
   }
 
-  razaoSocialParceiro: string;
   buscarParceiro(apelido) {
     this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) => {
       if (r != null) {
@@ -147,7 +138,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     })
   }
 
-  formaPagamento: FormaPagto[] = new Array();
   buscarFormasPagto() {
     let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
     let comIndicacao: number = 0;
@@ -177,11 +167,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
   }
 
-
-
-
-
-  activeState: boolean[] = [false, false, false];
   toggle(index: number) {
     if (this.activeState.toString().indexOf("true") == -1) return;
 
@@ -195,6 +180,23 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (!this.opcaoPagto) {
     }
     this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
+
+    });
+  }
+
+  prorrogar() {
+    this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+      if (!result) return;
+      
+      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
+        if (r != null) {
+          if(r.tipo == "WARN") {
+            this.mensagemService.showWarnViaToast(r.mensagem);
+          } else {
+            this.mensagemService.showSuccessViaToast(r.mensagem);
+          }
+        }
+      }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
     });
   }

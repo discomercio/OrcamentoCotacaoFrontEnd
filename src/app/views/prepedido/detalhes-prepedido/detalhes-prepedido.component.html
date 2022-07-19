@@ -1,0 +1,397 @@
+<div class="content-area">
+    <div class="nossobody">
+
+        <section id="myPrint">
+            <br>
+            <div id="botao-impressao" style="text-align:center;">
+                <button pButton type="button" label="Versão para impressão" icon="fa fa-print"
+                    onclick="window.print();"></button>
+            </div><br>
+            <div id="printable" name="printable">
+                <div class="nossobody-before">
+                    As informações aqui contidas são confidenciais e protegidas pelo sigilo legal. A divulgação,
+                    distribuição ou
+                    reprodução destas informações depende da autorização do emissor.
+                </div>
+
+                <form id="fPED" name="fPED" method="post" style="max-width: fit-content">
+                    <table width='649' cellpadding='0' cellspacing='0' style='border-bottom:1px solid black;'>
+                        <tr *ngIf="prepedido.TextoHeader != '' && prepedido.TextoHeader != null">
+                            <td valign='bottom' align='left' width='33%'>
+                                <span class='STP'>{{this.prepedido.TextoHeader}}
+                                </span>
+                                <span class='STP'>({{this.prepedido.CanceladoData}}) </span>
+                            </td>
+                            <td valign='bottom' align='center' width='33%'>
+                                <span class='STP'>{{this.prepedido.DataHoraPedido}} </span>
+                            </td>
+                            <td valign='bottom' align='right' nowrap>
+                                <span class='PREPEDIDO'>Nº&nbsp;{{this.prepedido.NumeroPrePedido}}</span>
+                            </td>
+                        </tr>
+                        <tr *ngIf="prepedido.TextoHeader == '' || prepedido.TextoHeader == null">
+                            <td valign='bottom' align='left' width='33%'>
+                                <span class='STP'>{{this.prepedido.DataHoraPedido}} </span>
+                                <span class="STP_HORA">
+                                    {{this.prepedido.Hora_Prepedido}}
+                                </span>
+                            </td>
+                            <td valign='bottom' align='right' nowrap>
+                                <span class='PREPEDIDO'>Nº&nbsp;{{this.prepedido.NumeroPrePedido}}</span>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- LOJA-->
+                    <table width="649" class="Q" cellspacing="0" align="center">
+                        <tr>
+
+                            <td class="MD" align="left">
+                                <p class="Rf">LOJA</p>
+                                <p class="C">{{this.prepedido.DadosCliente.Loja}}&nbsp;</p>
+                            </td>
+                            <td width="145" class="MD" align="left">
+                                <p class="Rf">ORÇAMENTISTA</p>
+                                <p class="C">{{this.prepedido.DadosCliente.Indicador_Orcamentista}}&nbsp;</p>
+                            </td>
+                            <td width="145" align="left">
+                                <p class="Rf">VENDEDOR</p>
+                                <p class="C">{{this.prepedido.DadosCliente.Vendedor}}&nbsp;</p>
+                            </td>
+                        </tr>
+                    </table>
+                    <!-- LOJA-->
+
+                    <!--  CLIENTE   -->
+                    <table width="649" class="Q" cellspacing="0">
+                        <tr>
+                            <td align="left" width="50%" class="MD">
+                                <p class="Rf">CPF/CNPJ &nbsp;</p>
+                                <a (click)="editar();" style="cursor: pointer;" title='clique para criar novo pedido'>
+                                    <p class="C">{{this.prepedido.DadosCliente.Cnpj_Cpf}} &nbsp;</p>
+                                </a>
+                            </td>
+
+                            <td align="left" class="MD">
+                                <p class="Rf">RG/IE &nbsp;</p>
+                                <p class="C">
+                                    {{this.prepedido.DadosCliente.Rg}}
+                                    &nbsp;</p>
+                            </td>
+                            <td align="center" valign="middle" style="width:15px">
+                                <a title="clique para visualizar o cadastro do cliente" style="cursor: pointer;">
+                                    <i class="fa fa-search"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="MC" align="left" colspan="3">
+                                <p class="Rf">Nome do Cliente &nbsp;</p>
+
+                                <a style="cursor: pointer;" title='clique para criar novo pedido'>
+                                    <p class="C">{{this.prepedido.DadosCliente.Nome}} &nbsp;</p>
+                                </a>
+                            </td>
+                        </tr>
+                    </table>
+                    <!--  CLIENTE   -->
+
+                    <!--  ENDEREÇO DO CLIENTE  -->
+                    <table width="649" class="QS" cellspacing="0">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">ENDEREÇO</p>
+                                <p class="C">
+                                    {{this.prepedido.DadosCliente.Endereco}}
+                                    ,{{this.prepedido.DadosCliente.Numero}} &nbsp;
+                                    - {{this.prepedido.DadosCliente.Bairro}} &nbsp;
+                                    - {{this.prepedido.DadosCliente.Cidade}} &nbsp;
+                                    - {{this.prepedido.DadosCliente.Uf}} &nbsp;
+                                    - {{this.prepedido.DadosCliente.Cep}} &nbsp;
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!--  TELEFONE DO CLIENTE  -->
+                    <table width="649" class="QS" cellspacing="0">
+                        <tr>
+                            <td class="MD" width="33%" align="left">
+                                <p class="Rf">TELEFONE</p>
+                                <p class="C" *ngif="this.prepedido.DadosCliente.TelefoneResidencial">
+                                    ({{this.prepedido.DadosCliente.DddResidencial}})-{{this.prepedido.DadosCliente.TelefoneResidencial}}
+                                    &nbsp;</p>
+                            </td>
+                            <td class="MD" width="33%" align="left">
+                                <p class="Rf">TELEFONE RESIDENCIAL</p>
+                                <p class="C" *ngif="this.prepedido.DadosCliente.TelComercial">
+                                    ({{this.prepedido.DadosCliente.DddComercial}})-{{this.prepedido.DadosCliente.TelComercial}}
+                                    &nbsp;</p>
+                            </td>
+                            <td align="left">
+                                <p class="Rf">CELULAR</p>
+                                <p class="C" *ngif="this.prepedido.DadosCliente.Celular">
+                                    ({{this.prepedido.DadosCliente.DddCelular}})-{{this.prepedido.DadosCliente.Celular}}
+                                    &nbsp;
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!--  E-MAIL DO CLIENTE  -->
+                    <table width="649" class="QS" cellspacing="0">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">E-MAIL</p>
+                                <p class="C">{{this.prepedido.DadosCliente.Email}} &nbsp;</p>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!--  ENDEREÇO DE ENTREGA  -->
+
+                    <table width="649" class="QS" cellspacing="0" style="table-layout:fixed">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">ENDEREÇO DE ENTREGA</p>
+                                <!-- <p class="C">{{formata_endereco_entrega()}} &nbsp;</p> -->
+                            </td>
+                        </tr>
+                        <!-- afazer: alterar o modo como mostramos os dados de endereço de entrega -->
+                        <tr>
+                            <td align="left" style="word-wrap:break-word">
+                                <!-- alterando a forma como mostramos o endereço d entrega por conta dos novos campos -->
+                                <textarea name="c_obs1" id="c_obs1" class="PLLe" 
+                                    style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly
+                                    tabindex=-1 [innerHTML]="">
+                         </textarea>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
+                    <br>
+                    <br>
+                    <table class="Qx" cellspacing="0">
+                        <tr bgcolor="#FFFFFF">
+                            <!-- fabricante -->
+                            <td class="MB" align="left" valign="bottom"><span class="PLTe">Fabr</span></td>
+                            <!-- Produto -->
+                            <td class="MB" align="left" valign="bottom"><span class="PLTe">Produto</span></td>
+                            <!-- Descricao -->
+                            <td class="MB" align="left" valign="bottom"><span class="PLTe">Descrição</span></td>
+                            <!-- QTDE -->
+                            <td class="MB" align="right" valign="bottom"><span class="PLTd">Qtd</span></td>
+                            <!-- Preco RA -->
+                            <td class="MB" align="right" valign="bottom" *ngIf="this.prepedido?.PermiteRAStatus == '1'">
+                                <span class="PLTd">Preço</span>
+                            </td>
+                            <!-- VlLista -->
+                            <td class="MB" align="right" valign="bottom"><span class="PLTd">VL Lista</span></td>
+                            <!-- Desconto -->
+                            <td class="MB" align="right" valign="bottom"><span class="PLTd">Desc</span></td>
+                            <!-- VLVenda -->
+                            <td class="MB" align="right" valign="bottom"><span class="PLTd">VL Venda</span></td>
+                            <!-- VlTotal -->
+                            <td class="MB" align="right" valign="bottom"><span class="PLTd">VL Total</span></td>
+                        </tr>
+                        <tr *ngFor="let linha of this.prepedido.ListaProdutos">
+
+                            <!-- fabricante -->
+                            <td class="MDBE" align="left"><input name="c_fabricante" class="PLLe" style="width:25px;"
+                                    value='{{linha.Fabricante}}' readonly tabindex=-1></td>
+                            <!-- Produto -->
+                            <td class="MDB" align="left"><input name="c_produto" class="PLLe" style="width:54px;"
+                                    value='{{linha.Produto}}' readonly tabindex=-1>
+                            </td>
+                            <!-- Descricao -->
+                            <td class="MDB" align="left" style="width:253px;">
+                                <span class="PLLe" [innerHTML]="linha.Descricao"></span>
+                                <!-- <input type="hidden" name="c_descricao" value='<%=s_descricao%>'> 
+             {{linha.Faltando==0?"":linha.Faltando}}-->
+                            </td>
+                            <!-- QTDE -->
+                            <td class="MDB" align="right"><input name="c_qtde" class="PLLd" style="width:21px;"
+                                    value='{{linha.Qtde}}' readonly tabindex=-1></td>
+
+                            <!-- Preco RA -->
+                            <td class="MDB" align="right" *ngIf="this.prepedido?.PermiteRAStatus == '1'">
+                                <input name="c_vl_NF" class="PLLd" style="width:62px;" value='{{linha.Preco_NF}}'
+                                    readonly tabindex=-1>
+                            </td>
+                            <!-- VlLista -->
+                            <td class="MDB" align="right">
+                                <input name="c_preco_lista" class="PLLd" style="width:62px;"
+                                    value='{{linha.Preco_Lista}}' readonly tabindex=-1>
+                            </td>
+                            <!-- Desconto -->
+                            <td class="MDB" align="right">
+                                <input name="c_desc" class="PLLd" style="width:28px;" value='{{linha.Desc_Dado}}'
+                                    readonly tabindex=-1>
+                            </td>
+                            <!-- VLVenda -->
+                            <td class="MDB" align="right">
+                                <input name="c_vl_unitario" class="PLLd" style="width:62px;"
+                                    value='{{linha.Preco_Venda}}' readonly tabindex=-1>
+                            </td>
+                            <!-- VlTotal -->
+                            <td class="MDB" align="right"><input name="c_vl_total" class="PLLd" style="width:70px;"
+                                    value='{{linha.VlTotalItem}}' readonly tabindex=-1></td>
+                        </tr>
+
+
+
+                        <tr>
+                            <td colspan="3" align="left">
+                                <table cellspacing="0" cellpadding="0" width='100%' style="margin-top:4px;">
+                                    <tr>
+                                        <td width="45%" align="left">&nbsp;</td>
+                                        <td align="right" *ngIf="this.prepedido?.PermiteRAStatus == '1'">
+                                            <table cellspacing="0" cellpadding="0">
+                                                <tr>
+                                                    <td class="MTBE" align="left" nowrap><span
+                                                            class="PLTe">&nbsp;RA</span>
+                                                    </td>
+                                                    <td class="MTBD" align="right">
+                                                        <input name="c_perc_RT" id="c_perc_RT" class="PLLd"
+                                                            style="width:90%;"
+                                                            value='{{this.prepedido.TotalFamiliaParcelaRA}}' readonly
+                                                            tabindex=-1>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                        <td style="width: 1%"></td>
+                                        <td align="right">
+                                            <table cellspacing="0" cellpadding="0" align="center">
+                                                <tr>
+                                                    <td class="MTBE" align="left" nowrap><span
+                                                            class="PLTe">&nbsp;COM(%)</span>
+                                                    </td>
+                                                    <td class="MTBD" align="right"><input name="c_perc_RT"
+                                                            id="c_perc_RT" class="PLLd" style="width:30px;color:blue;"
+                                                            value='{{this.prepedido.PercRT}}' readonly tabindex=-1></td>
+                                                </tr>
+                                            </table>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+
+                            <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MD" align="left">&nbsp;</td>
+                            <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MDB" align="right">
+                                <input name="c_total_NF" id="c_total_NF" class="PLLd" style="width:70px;color:blue;"
+                                    value='{{this.prepedido.ValorTotalDestePedidoComRA}}' readonly tabindex=-1>
+                            </td>
+                            <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" colspan="3" class="MD" align="left">
+                                &nbsp;
+                            </td>
+
+                            <!-- <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" colspan="4" class="MD" align="left">&nbsp;</td> -->
+                            <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" align="left">&nbsp;</td>
+                            <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" align="left">&nbsp;</td>
+                            <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" align="left">&nbsp;</td>
+                            <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" class="MD" align="left">&nbsp;</td>
+                            <td class="MDB" align="right"><input name="c_total_geral" id="c_total_geral" class="PLLd"
+                                    style="width:70px;color:blue;" value='{{this.prepedido.VlTotalDestePedido}}'
+                                    readonly tabindex=-1>
+                            </td>
+                        </tr>
+
+                    </table>
+
+                    <!-- FORMA PAGAMENTO-->
+
+                    <!--  NOVA VERSÃO DA FORMA DE PAGAMENTO   -->
+                    <br>
+                    <table class="Q" style="width:649px;" cellspacing="0">
+                        <tr>
+                            <td class="MB" colspan="6" align="left">
+                                <p class="Rf">Observações </p>
+                                <textarea name="c_obs1" id="c_obs1" class="PLLe"
+                                    style="width:99%;margin-left:2pt; resize: none;" readonly
+                                    tabindex=-1>{{this.prepedido?.DetalhesPrepedido.Observacoes}} &nbsp;</textarea>
+                                <!-- <span class="PLLe">{{this.prepedido?.DetalhesPrepedido.Observacoes}} &nbsp;</span> -->
+                            </td>
+                        </tr>
+
+                        <td class="MB" align="left" colspan="5">
+                            <p class="Rf">Previsão de Entrega</p>
+                            <p class="C">{{this.prepedido.DetalhesPrepedido.PrevisaoEntrega}}</p>
+                        </td>
+                        <tr>
+                            <td class="MD" align="left" nowrap>
+                                <p class="Rf">Nº Nota Fiscal</p>
+                                <input name="c_obs2" id="c_obs2" class="PLLe" style="width:75px;margin-left:2pt;"
+                                    readonly tabindex=-1 value='{{this.prepedido.DetalhesPrepedido.NumeroNF}}'>
+                            </td>
+                            <td class="MD" nowrap align="left" valign="top">
+                                <p class="Rf">Entrega Imediata</p>
+                                <p class="C" style="margin-top:3px;">
+                                    {{this.prepedido.DetalhesPrepedido.EntregaImediata}}
+                                    &nbsp;</p>
+                            </td>
+                            <td class="MD" nowrap align="left" valign="top">
+                                <p class="Rf">Bem Uso/Consumo</p>
+                                <p class="C" style="margin-top:3px;">
+                                    {{this.prepedido.DetalhesPrepedido.BemDeUso_Consumo}}
+                                    &nbsp;
+                                </p>
+                            </td>
+                            <td class="MD" nowrap align="left" valign="top">
+                                <p class="Rf">Instalador Instala</p>
+                                <p class="C" style="margin-top:3px;">
+                                    {{this.prepedido?.DetalhesPrepedido.InstaladorInstala}}
+                                    &nbsp;
+                                </p>
+                            </td>
+                            <!-- Foi solicitado pelo cliente que este campo abaixo não seria mais utilizado -->
+                            <!-- <td class="tdGarInd" nowrap align="left" valign="top">
+             <p class="Rf">Garantia Indicador</p>
+             <p class="C" style="margin-top:3px;">
+                 {{this.prepedido?.DetalhesPrepedido?.GarantiaIndicador}}&nbsp;</p>
+         </td> -->
+                        </tr>
+                    </table>
+                    <br>
+
+                    <table class="Q" style="width:649px;" cellspacing="0">
+                        <tr>
+                            <td align="left"><span class="Rf">Forma de Pagamento</span></td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <p align="left" class="C" *ngFor="let linha of this.prepedido.FormaPagto">{{linha}}</p>
+                            </td>
+                        </tr>
+
+                    </table>
+                    <table class="Q" style="width:649px;" cellspacing="0">
+                        <tr>
+                            <td align="left"><span class="Rf">Descrição da Forma de Pagamento</span></td>
+                        </tr>
+                        <tr>
+                            <td align="left">
+                                <textarea name="c_obs1" id="c_obs1" class="PLLe"
+                                    style="width:99%;margin-left:2pt; resize: none;" readonly tabindex=-1>{{this.prepedido?.DetalhesPrepedido.DescricaoFormaPagamento}} &nbsp;
+            </textarea>
+                                <!-- <span align="left" class="C">{{this.prepedido.DetalhesPrepedido.DescricaoFormaPagamento}}
+                &nbsp;</span> -->
+                            </td>
+                        </tr>
+
+                    </table>
+                
+
+                </form>
+            </div>
+            <br>
+            <div id="botao-voltar" style="text-align:center;">
+                <button pButton type="button" label="Voltar" icon="fa fa-reply"
+                    (click)="voltar()"></button>&nbsp;
+            </div>
+            <!-- FORMA PAGAMENTO-->
+        </section>
+
+    </div>
+</div>

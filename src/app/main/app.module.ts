@@ -60,6 +60,9 @@ import { PublicoHeaderComponent } from '../views/publico/header/header.component
 import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 
+import { DetalhesPrepedidoComponent } from '../views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
+
 @NgModule({
     imports: [
         SharedModule,
@@ -95,7 +98,9 @@ import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-
         PublicoOrcamentoComponent,
         PublicoHeaderComponent,
         CalculadoraVrfComponent,
-        SelectEvapDialogComponent
+        SelectEvapDialogComponent,
+        DetalhesPrepedidoComponent,
+        PedidoDetalhesComponent
     ],
     providers: [
         {

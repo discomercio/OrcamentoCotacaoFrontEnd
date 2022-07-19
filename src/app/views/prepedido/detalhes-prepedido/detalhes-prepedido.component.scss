@@ -1,0 +1,288 @@
+@import "../variaveis.scss";
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  #printable, #printable * {
+    visibility: visible;
+  }
+  #printable {
+    position: fixed;
+    left: 0;
+    top: 0;
+  }
+}
+
+
+.content-area {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+  .corpohome {
+    padding: 0em;
+  }
+
+  .corpohomeDesktop {
+    text-align: left;
+  }
+
+  .corpohomeCelular {
+    text-align: left;
+  }
+
+  /*
+  controle do flex
+  */
+  .contgrande {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .contgrande header {
+    margin: 1em;
+    padding: 0em;
+  }
+  .contgrande article {
+    margin-left: 2.0em;
+    margin-right: 0em;
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }
+  .contgrande footer {
+    margin: 1em;
+    text-align: center;
+  }
+
+  
+.notVisible {
+  display: none;
+}
+
+.notPrint {
+  display: auto;
+}
+
+.botaoVoltarDIv {
+  text-align: left;
+  padding-bottom: 1em;
+}
+
+@media print { 
+    #content{
+        background-color: yellow;
+    }
+  .botaoVoltar {
+    display: none;
+  }
+  .botaoImprimirDIv {
+    display: none;
+  }
+  .botaoVoltarDIv {
+    display: none;
+  }
+  .botaoEdbotaoEditarDiv{
+      display: none;
+  }
+  
+  .nossobody-before{
+      height:-100vh;       
+      margin: 0 !important; 
+      padding: 0 !important;
+      overflow: hidden;      
+  }
+  
+}
+
+.STP {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 12pt;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.STP_HORA{
+  font-size: small;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.PREPEDIDO {
+  font-family: Times New Roman, serif;
+  font-size: 18pt;
+  font-weight: bold;
+  font-style: italic;
+}
+
+a {
+  text-decoration: none;
+}
+
+
+
+.nossobody {
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  border: 0pt solid #000000;  
+  justify-content: center;
+  display: flex;
+  flex-direction: row;
+}
+
+.nossobody-before {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 9pt;
+  color: #696969;
+  text-align: center;
+  border: solid 2px #696969;
+  display: block;
+  position: relative;
+  padding: 4px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  width: 650px;
+}
+
+input {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+.C {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+}
+
+.MB {
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MC {
+  border-top: 1pt solid #c0c0c0;
+}
+
+.MD {
+  border-right: 1pt solid #c0c0c0;
+}
+
+.MDB {
+  border-right: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MDBE {
+  border-right: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MTBD {
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-right: 1pt solid #c0c0c0;
+}
+
+.MTBE {
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+
+
+.PLLd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  text-align: right;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.PLLe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bolder;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.PLTd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #808080;
+  font-weight: bold;
+  vertical-align: top;
+  text-align: right;
+  margin-right: 2pt;
+}
+
+.PLTe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #808080;
+  font-weight: bold;
+  vertical-align: top;
+  margin-left: 2pt;
+}
+
+.Q {
+  background: #ffffff;
+  border: 1pt solid #c0c0c0;
+  margin: 0pt;
+}
+
+.QS {
+  background: #ffffff;
+  border: 1pt solid #c0c0c0;
+  border-top: 0pt;
+  margin: 0pt;
+}
+
+.Qx {
+  background: #ffffff;
+  border: 0pt;
+  margin: 0pt;
+}
+
+.Rf {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  vertical-align: top;
+  margin: 0pt 0pt 0pt 2pt;
+}
+
+.botaoImprimirDIv {
+  text-align: right;
+  padding: 1em;
+  padding-left: 0%;
+}
+
+
+

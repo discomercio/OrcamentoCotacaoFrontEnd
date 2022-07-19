@@ -37,6 +37,8 @@ import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
+import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 
 @NgModule({
@@ -81,7 +83,7 @@ import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opc
                                     { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar/', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
+                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent }, 
                                     { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
                                     { path: 'propriedades/editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
@@ -106,7 +108,22 @@ import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opc
                                 path: 'calculadora-vrf', canActivate: [AuthGuard], component: CalculadoraVrfComponent, children: [
                                     { path: "select-evap-dialog", canActivate: [AuthGuard], component: SelectEvapDialogComponent }
                                 ]
-                            }
+                            },
+
+                            // Prepedido
+                            {
+                                path: 'prepedido/detalhes/:numeroPrepedido',
+                                canActivate: [AuthGuard],
+                                component: DetalhesPrepedidoComponent
+                              },     
+                              
+                            // Pedido
+                            {
+                                path: 'pedido/detalhes/:numeroPedido',
+                                canActivate: [AuthGuard],
+                                component: PedidoDetalhesComponent
+                            },                                      
+  
 
                         ]
                     }

@@ -185,16 +185,16 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.novoOrcamentoService.percentualMaxComissao = r;
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
 
-        if (!this.novoOrcamentoService.editando){
+        if (!this.novoOrcamentoService.editando) {
           this.novoOrcamentoService.setarPercentualComissao();
           return;
         }
 
-        if (this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR){
+        if (this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
           this.novoOrcamentoService.setarPercentualComissao();
           this.novoOrcamentoService.calcularPercentualComissao();
         }
-          
+
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
   }
@@ -665,16 +665,26 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let v: any = valor.replace(/,/g, '');
     v = Number.parseFloat((v / 100).toFixed(2) + '');
 
-    let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
-    let limiteDesconto = (this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
-
-    if (v > limiteDesconto || Number.parseFloat(v) > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
-      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
-      console.log(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT);
+    if (!this.validarComissao(v)) {
       v = this.antigoPercRT;
       ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(this.antigoPercRT);
     }
+
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
     this.novoOrcamentoService.editarComissao = false;
+  }
+
+  validarComissao(valor: any): boolean {
+
+    let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
+    let limiteDesconto = (this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
+
+    if (valor > limiteDesconto ||
+      Number.parseFloat(valor) > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
+      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
+      return false;
+    }
+
+    return true;
   }
 }

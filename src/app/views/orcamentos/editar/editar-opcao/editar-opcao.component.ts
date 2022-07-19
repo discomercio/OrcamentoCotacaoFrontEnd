@@ -196,6 +196,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if (!this.itens.validarComissao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)) return;
+
+
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
@@ -206,11 +209,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   validarDescontosProdutos(): boolean {
 
-    let limiteDesconto = this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissaoEDesconto;
+    let limiteDesconto = this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar;
     let descontoMaior = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.some(x => {
       if (x.descDado > limiteDesconto) {
         return true;
       }
+
     });
 
     if (descontoMaior) return false;
