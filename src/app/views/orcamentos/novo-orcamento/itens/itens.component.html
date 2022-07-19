@@ -28,7 +28,7 @@
                                 <th class="p-text-right">Qtde</th>
                                 <!-- <th class="p-text-right">Preço NF</th> -->
                                 <th class="p-text-right">Vl Lista</th>
-                                <th class="p-text-right">Desc%</th>
+                                <th class="p-text-right">Desc %</th>
                                 <th class="p-text-right">Vl Venda</th>
                                 <th class="p-text-right">Vl Total</th>
                                 <th *ngIf="!editando" class="p-text-right">Excluir</th>
@@ -72,7 +72,8 @@
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
                                             [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
-                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
+                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" />
+                                            <div class="p-pl-1">%</div>
                                     </div>
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
