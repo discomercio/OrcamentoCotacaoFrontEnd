@@ -152,7 +152,7 @@
                 <tr>
 
                     <td align="left" width="50%" class="MD">
-                        <p class="Rf">CPF/CNPJ &nbsp;</p>
+                        <p class="Rf">{{ehPf() ? "CPF" : "CNPJ"}} &nbsp;</p>
 
                         <a (click)="editar();" style="cursor: pointer" title='clique para criar novo pedido'>
                             <p class="C">{{pedido?.DadosCliente?.Cnpj_Cpf}} &nbsp;</p>
@@ -161,9 +161,9 @@
                     </td>
 
                     <td align="left" class="MD">
-                        <p class="Rf">RG/IE &nbsp;</p>
+                        <p class="Rf">{{ehPf() ? "RG" : "IE"}} &nbsp;</p>
                         <p class="C">
-                            {{pedido.DadosCliente?.Rg}}
+                            {{ehPf() ? somenteDigito(pedido?.DadosCliente?.Rg) : pedido?.DadosCliente?.Ie}}
                             &nbsp;</p>
                     </td>
 
@@ -177,7 +177,7 @@
 
                 <tr>
                     <td class="MC" align="left" colspan="3">
-                        <p class="Rf">NOME DO CLIENTE/RAZÃO SOCIAL DO CLIENTE &nbsp;</p>
+                        <p class="Rf">{{ehPf()?"NOME DO CLIENTE":"RAZÃO SOCIAL DO CLIENTE"}} &nbsp;</p>
 
                         <a (click)="editar();" style="cursor: pointer" title='clique para criar novo pedido'>
                             <p class="C">{{pedido.DadosCliente.Nome}} &nbsp;</p>
@@ -205,23 +205,35 @@
 
             <!--  TELEFONE DO CLIENTE  -->
             <table width="649" class="QS" cellspacing="0">
-                <tr>
+                <tr *ngIf="ehPf()">
                     <td class="MD" width="33%" align="left">
-                        <p class="Rf" *ngIf="pedido.DadosCliente.DddResidencial">TELEFONE RESIDENCIAL</p>
-                        <p class="C">({{pedido.DadosCliente.DddResidencial}})
-                            {{pedido.DadosCliente.TelefoneResidencial}} &nbsp;</p>
+                        <p class="Rf">TELEFONE RESIDENCIAL</p>
+                        <p class="C" *ngIf="pedido.DadosCliente.DddResidencial">({{pedido.DadosCliente.DddResidencial}})
+                            {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelefoneResidencial)}} &nbsp;</p>
                     </td>
                     <td class="MD" width="33%" align="left">
                         <p class="Rf">TELEFONE COMERCIAL</p>
                         <p class="C" *ngIf="pedido.DadosCliente.DddComercial">({{pedido.DadosCliente.DddComercial}})
-                            {{pedido.DadosCliente.TelComercial}} &nbsp;</p>
+                            {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;</p>
                     </td>
                     <td align="left">
                         <p class="Rf">CELULAR</p>
                         <p class="C" *ngIf="pedido.DadosCliente.DddCelular">({{pedido.DadosCliente.DddCelular}})
-                            {{pedido.DadosCliente.Celular}} &nbsp;</p>
+                            {{formatarTelefone.telefone_formata(pedido.DadosCliente.Celular)}} &nbsp;</p>
                     </td>
                 </tr>
+                <tr *ngIf="!ehPf()">
+                    <td class="MD" width="33%" align="left">
+                        <p class="Rf">TELEFONE</p>
+                        <p class="C" *ngIf="pedido.DadosCliente.DddComercial">({{pedido.DadosCliente.DddComercial}})
+                            {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;</p>
+                    </td>
+                    <td class="MD" width="33%" align="left">
+                        <p class="Rf">TELEFONE</p>
+                        <p class="C" *ngIf="pedido.DadosCliente.DddComercial2">({{pedido.DadosCliente.DddComercia2l}})
+                            {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial2)}} &nbsp;</p>
+                    </td>
+                </tr>                
 
             </table>
 
@@ -295,19 +307,19 @@
                             readonly tabindex=-1></td>
                     <td *ngIf="pedido?.OpcaoPossuiRA == 'S'" class="MDB" align="right"><input name="c_vl_NF"
                             class="PLLd" style="width:62px;" [ngStyle]="{'color': linha.CorFaltante}"
-                            value='{{linha.Preco_NF}}' readonly tabindex=-1>
+                            value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_NF)}}' readonly tabindex=-1>
                     </td>
                     <td class="MDB" align="right"><input name="c_preco_lista" class="PLLd" style="width:62px;"
-                            [ngStyle]="{'color': linha.CorFaltante}" value='{{linha.Preco_Lista}}' readonly tabindex=-1>
+                            [ngStyle]="{'color': linha.CorFaltante}" value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Lista)}}' readonly tabindex=-1>
                     </td>
                     <td class="MDB" align="right"><input name="c_desc" class="PLLd" style="width:28px;"
-                            [ngStyle]="{'color': linha.CorFaltante}" value='{{linha.Desc_Dado}}' readonly tabindex=-1>
+                            [ngStyle]="{'color': linha.CorFaltante}" value='{{moedaUtils.formatarPorcentagemUmaCasa(linha.Desc_Dado)}}' readonly tabindex=-1>
                     </td>
                     <td class="MDB" align="right"><input name="c_vl_unitario" class="PLLd" style="width:62px;"
-                            [ngStyle]="{'color': linha.CorFaltante}" value='{{linha.Preco_Venda}}' readonly tabindex=-1>
+                            [ngStyle]="{'color': linha.CorFaltante}" value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Venda)}}' readonly tabindex=-1>
                     </td>
                     <td class="MDB" align="right"><input name="c_vl_total" class="PLLd" style="width:70px;"
-                            [ngStyle]="{'color': linha.CorFaltante}" value='{{linha.VlTotalItem}}' readonly tabindex=-1>
+                            [ngStyle]="{'color': linha.CorFaltante}" value='{{moedaUtils.formatarMoedaSemPrefixo(linha.VlTotalItem)}}' readonly tabindex=-1>
                     </td>
                 </tr>
 
@@ -338,11 +350,11 @@
                                 <td align="right">
                                     <table cellspacing="0" cellpadding="0">
                                         <tr>
-                                            <td class="MTBE" align="left" nowrap><span class="PLTe">&nbsp;COM(%)</span>
-                                            </td>
+                                            <td class="MTBE" align="left" nowrap><span class="PLTe">&nbsp;COM(%)</span></td>
                                             <td class="MTBD" align="right"><input name="c_perc_RT" id="c_perc_RT"
                                                     class="PLLd" style="width:30px;color:blue;"
-                                                    value='{{pedido.PercRT}}' readonly tabindex=-1></td>
+                                                    value='{{moedaUtils.formatarPorcentagemUmaCasaReturnZero(pedido.PercRT)}}'
+                                                    readonly tabindex=-1></td>
                                         </tr>
                                     </table>
                                 </td>
@@ -415,7 +427,7 @@
                     </td>
                     <td class="MD" nowrap align="left" valign="top">
                         <p class="Rf">Entrega Imediata</p>
-                        <p class="C" style="margin-top:3px;">{{entregaImediata}} &nbsp;</p>
+                        <p class="C" style="margin-top:3px;">{{entregaImediata()}} &nbsp;</p>
                     </td>
                     <td class="MD" nowrap align="left" valign="top">
                         <p class="Rf">Bem Uso/Consumo</p>
@@ -497,19 +509,19 @@
                             [ngStyle]="{'color': pedido.DetalhesFormaPagto.CorStatusPagto}">{{pedido.DetalhesFormaPagto.StatusPagto}}&nbsp;</span>
                     </td>
                     <td width="16.67%" align="right" class="MD"><span
-                            class="Cd">{{pedido.DetalhesFormaPagto.VlTotalFamilia}}</span>
+                            class="Cd">{{moedaUtils.formatarMoedaSemPrefixo(pedido.DetalhesFormaPagto.VlTotalFamilia)}}</span>
                     </td>
                     <td width="16.67%" align="right" class="MD"><span class="Cd"
-                            [ngStyle]="{'color': pedido.DetalhesFormaPagto.VlPago >=0?'black':'red'}">{{pedido.DetalhesFormaPagto.VlPago}}</span>
+                            [ngStyle]="{'color': pedido.DetalhesFormaPagto.VlPago >=0?'black':'red'}">{{moedaUtils.formatarValorDuasCasaReturnZero(pedido.DetalhesFormaPagto.VlPago)}}</span>
                     </td>
                     <td width="16.67%" align="right" class="MD"><span
-                            class="Cd">{{pedido.DetalhesFormaPagto.VlDevolucao}}</span>
+                            class="Cd">{{moedaUtils.formatarValorDuasCasaReturnZero(pedido.DetalhesFormaPagto.VlDevolucao)}}</span>
                     </td>
                     <td width="16.67%" align="right" class="MD"><span
-                            class="Cd">{{pedido.DetalhesFormaPagto.VlPerdas}}</span>
+                            class="Cd">{{moedaUtils.formatarValorDuasCasaReturnZero(pedido.DetalhesFormaPagto.VlPerdas)}}</span>
                     </td>
                     <td width="16.65%" align="right"><span class="Cd"
-                            [ngStyle]="{'color': pedido.DetalhesFormaPagto.SaldoAPagar >=0?'black':'red'}">{{pedido.DetalhesFormaPagto.SaldoAPagar}}</span>
+                            [ngStyle]="{'color': pedido.DetalhesFormaPagto.SaldoAPagar >=0?'black':'red'}">{{moedaUtils.formatarValorDuasCasaReturnZero(pedido.DetalhesFormaPagto.SaldoAPagar)}}</span>
                     </td>
                 </tr>
             </table>
@@ -634,7 +646,7 @@
                                                 POR:</span>&nbsp;{{ocorrencia.Usuario}}</td>
                                         <td class="C MD MB tdWithPadding" width="33%" align="left" valign="top"><span
                                                 class="Rf" style="margin-left:0px;">EM:</span>&nbsp;
-                                            {{dataformatarDataTalvezHoraMin(ocorrencia.Dt_Hr_Cadastro)}}
+                                            {{dataUtils.formata_data_DDMMYYY(ocorrencia.Dt_Hr_Cadastro)}}
                                             &nbsp;
                                         </td>
                                         <td class="C MB tdWithPadding" align="left" valign="top"
@@ -690,7 +702,7 @@
                                                 <tr>
                                                     <td class="C MD MC tdWithPadding" style="width:60px;" align="center"
                                                         valign="top">
-                                                        {{dataformatarDataTalvezHoraMin(mensagem.Dt_Hr_Cadastro)}}
+                                                        {{mensagem.Dt_Hr_Cadastro}}
                                                     </td>
                                                     <td class="C MD MC tdWithPadding" style="width:80px;" align="center"
                                                         valign="top">
@@ -753,7 +765,7 @@
                                                         <td class="C tdWithPadding" width="50%" align="left"
                                                             valign="top">
                                                             <span class="Rf" style="margin-left:0px;">EM:</span>&nbsp;
-                                                            {{dataformatarDataTalvezHoraMin(ocorrencia.Finalizado_Data_Hora)}}
+                                                            {{ocorrencia.Finalizado_Data_Hora}}
                                                         </td>
                                                     </tr>
                                                 </table>
