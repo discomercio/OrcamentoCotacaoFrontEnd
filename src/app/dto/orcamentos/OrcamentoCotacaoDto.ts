@@ -6,6 +6,7 @@ export class OrcamentoCotacaoDto {
     id: number;
     loja: string;
     nomeCliente: string;
+    tipoCliente: string;
     nomeObra: string;
     vendedor: string;
     parceiro: string;
@@ -15,11 +16,14 @@ export class OrcamentoCotacaoDto {
     concordaWhatsapp: boolean;
     observacoesGerais: string;
     entregaImediata: boolean;
+    stEntregaImediata: number;
     dataEntregaImediata: Date;
     usuarioCadastro: string;
     uf: string;
     telefone: string;
     email: string;
+    status: number;
+    token: string;
 
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];

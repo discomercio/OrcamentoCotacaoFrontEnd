@@ -13,6 +13,7 @@ export class OrcamentoCotacaoDto {
     observacoesGerais: string;
     entregaImediata: boolean;
     dataEntregaImediata: Date;
+    tipoCliente: string;
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentoOpcaoDto[];
 }

@@ -2,8 +2,6 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { CommonModule } from "@angular/common";
-
 
 @Injectable({
   providedIn: 'root'
@@ -40,9 +38,11 @@ export class PrepedidoService {
   }
 
   public removerPrePedido(idPedido: string):Observable<any>{
-    //TODO: Investigar porque Interceptor não foi chamado para incluir o Header automaticamente
-    let headers: { [name: string]: string | string[]; } = { 'X-API-Version': environment.versaoApi };
-    return this.http.post(`${environment.apiUrl}api/prepedido/removerPrePedido/${idPedido}`, idPedido, { headers: headers});
+    return this.http.post(`${environment.apiUrl}api/prepedido/removerPrePedido/${idPedido}`, idPedido);
   }  
+
+  public cadastrarPrePedido(prePedidoDto: any):Observable<any>{
+    return this.http.post(`${environment.apiUrl}api/prepedido/cadastrarPrePedido`, prePedidoDto);
+  }
 
 }

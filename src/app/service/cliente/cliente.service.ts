@@ -1,0 +1,24 @@
+import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
+import { Observable } from 'rxjs/internal/Observable';
+import { environment } from 'src/environments/environment';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ClienteService {
+
+  constructor(
+    private readonly http: HttpClient
+    ) { }
+
+  public urlBase: string = `${environment.apiUrl}api/cliente`;
+
+  public buscarCliente(cpfCnpj:any):Observable<any>{
+    return this.http.get(`${this.urlBase}/buscarCliente/${cpfCnpj}`);
+  }
+
+  public cadastrarCliente(body:any):Observable<any>{
+    return this.http.post<any>(`${this.urlBase}/cadastrarCliente`, body);
+  }
+}

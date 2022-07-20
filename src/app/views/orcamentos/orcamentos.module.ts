@@ -2,19 +2,16 @@ import { SharedModule } from './../../main/shared.module';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { AutoCompleteModule } from 'primeng/autocomplete';
 import { NgModule } from '@angular/core';
-import { CommonModule, DatePipe } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
+import { DatePipe } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
 import { DropdownModule } from 'primeng/dropdown';
 import { CheckboxModule } from 'primeng/checkbox';
 import { ButtonModule } from 'primeng/button';
 import { NgxMaskModule } from 'ngx-mask';
 import { DividerModule } from 'primeng/divider';
-import { DialogModule } from 'primeng/dialog';
 import { TableModule } from 'primeng/table';
 import { InputTextareaModule } from 'primeng/inputtextarea';
 import { PaginatorModule } from 'primeng/paginator';
-import { AccordionModule } from 'primeng/accordion';
 import { AvatarModule } from 'primeng/avatar';
 import { TooltipModule } from 'primeng/tooltip';
 import { RadioButtonModule } from 'primeng/radiobutton';
@@ -59,7 +56,6 @@ import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.compone
     ButtonModule,
     NgxMaskModule.forRoot(),
     DividerModule,
-    DialogModule,
     TableModule,
     InputTextareaModule,
     PaginatorModule,

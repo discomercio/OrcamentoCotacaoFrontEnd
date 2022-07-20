@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
+import { DialogModule } from 'primeng/dialog';
 
 import { MensageriaComponent } from '../views/mensageria/mensageria.component';
 import { AppComponent } from './app.component';
@@ -34,11 +35,13 @@ import { AppRoutingModule } from './routing/app-routing.module';
         AppModuleComponents,
         AppModuleNgComponents,
         ReactiveFormsModule,
+        DialogModule,
     ],
     exports: [
         AppModuleComponents,
         AppModuleNgComponents,
         ReactiveFormsModule,
+        DialogModule,
 
         MensageriaComponent,
     ],

@@ -1,3 +1,4 @@
+import { PublicoCadastroClienteSucessoComponent } from 'src/app/views/publico/cadastro-cliente-sucesso/cadastro-cliente-sucesso.component';
 import { UsuarioMeusdadosComponent } from '../../views/usuarios/usuario-meusdados/usuario-meusdados.component';
 import { ClienteComponent } from '../../views/cliente/cliente.component';
 import { RouterModule } from '@angular/router';
@@ -37,9 +38,9 @@ import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
+import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
-import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 
 @NgModule({
     imports: [
@@ -50,6 +51,7 @@ import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opc
                     { path: 'account/login', component: LoginComponent, },
                     { path: 'orcamentos/aprovacao-orcamento-cliente', component: AprovacaoOrcamentoClienteComponent },
                     { path: 'publico/orcamento/:guid', component: PublicoOrcamentoComponent },
+                    { path: 'publico/cadastro-cliente-sucesso', component: PublicoCadastroClienteSucessoComponent },
                     {
                         path: '', component: AppMainComponent, canActivate: [AuthGuard], children: [
 
