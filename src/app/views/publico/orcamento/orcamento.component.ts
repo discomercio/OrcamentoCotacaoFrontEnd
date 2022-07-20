@@ -68,7 +68,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
           this.autenticacaoService.setarToken(r.token);
-          console.log(r.token);
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }

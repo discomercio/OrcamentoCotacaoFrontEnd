@@ -35,6 +35,7 @@ export class PublicoCadastroClienteComponent implements OnInit {
   clienteDto: ClienteDto = new ClienteDto();
   cadastroDto: CadastroDto = new CadastroDto();
   public form: FormGroup;
+  mensagemErro: string = ''; //'Campo obrigatório!';
 
   @Input() TipoCliente:string;
   @Input() NomeCliente: string;
@@ -84,7 +85,7 @@ export class PublicoCadastroClienteComponent implements OnInit {
       cpfCnpj: [this.cadastroDto.cpf_cnpj, [Validators.required, Validators.pattern('/^[0-9]{3}.?[0-9]{3}.?[0-9]{3}-?[0-9]{2}/')]],
       rg: [],
       nascimento: [],
-      sexo: [],
+      sexo: [this.cadastroDto.sexo, [Validators.required]],
       cep: [],
       endereco: [],
       numero: [],
@@ -97,9 +98,9 @@ export class PublicoCadastroClienteComponent implements OnInit {
       foneComercial: [],
       foneRamal: [],
       texto: [],
-      email: [this.cadastroDto.email, [Validators.required, Validators.email, Validators.maxLength(60)]],
+      email: [this.cadastroDto.email, [Validators.email, Validators.maxLength(60)]],
       emailXml: [],
-      produtorRural: [],
+      produtorRural: [this.cadastroDto.produtoRural, [Validators.required]],
 
       icms: [],
       inscricaoEstadual: [],
@@ -111,10 +112,6 @@ export class PublicoCadastroClienteComponent implements OnInit {
       bairro2: [],
       cidade2: [],
       uf2: [],
-
-      
-     // dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
-     // ativo: [this.usuario.ativo, Validators.required]
      city1: [],
      city2: [],
      campos: this.fb.array([])
@@ -122,6 +119,10 @@ export class PublicoCadastroClienteComponent implements OnInit {
   }
 
   salvar() {
+    if(!this.validacaoFormularioService.validaForm(this.form)) {
+      this.alertaService.mostrarMensagem('Verifique os campos obrigatórios, destacados em vermelho.');
+      return;
+    }
     // this.populaTela();
 
     let cpfCnpj = this.form.controls.cpfCnpj.value?.replaceAll('.','').replaceAll('-','');
