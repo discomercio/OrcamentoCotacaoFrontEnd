@@ -365,14 +365,14 @@
                     <td *ngIf="pedido?.OpcaoPossuiRA == 'S'" class="MD" align="left">&nbsp;</td>
                     <td *ngIf="pedido?.OpcaoPossuiRA == 'S'" class="MDB" align="right">
                         <input name="c_total_NF" id="c_total_NF" class="PLLd" style="width:70px;color:blue;"
-                            value='{{pedido.ValorTotalDestePedidoComRA}}' readonly tabindex=-1>
+                            value='{{moedaUtils.formatarMoedaSemPrefixo(pedido.ValorTotalDestePedidoComRA)}}' readonly tabindex=-1>
                     </td>
                     <td *ngIf="pedido?.OpcaoPossuiRA == 'S'" colspan="3" class="MD" align="left">&nbsp;</td>
 
                     <td *ngIf="pedido?.OpcaoPossuiRA != 'S'" colspan="4" class="MD" align="left">&nbsp;</td>
 
                     <td class="MDB" align="right"><input name="c_total_geral" id="c_total_geral" class="PLLd"
-                            style="width:70px;color:blue;" value='{{pedido.VlTotalDestePedido}}' readonly tabindex=-1>
+                            style="width:70px;color:blue;" value='{{moedaUtils.formatarMoedaSemPrefixo(pedido.VlTotalDestePedido)}}' readonly tabindex=-1>
                     </td>
                 </tr>
 
