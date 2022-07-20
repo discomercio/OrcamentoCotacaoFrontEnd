@@ -97,6 +97,16 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   showDialog() {
+      if(this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+        return;
+      }
+
+      if(this.orcamento.validade < new Date()) { 
+        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+        return;
+      }
+
       this.display = true;
   }
  
