@@ -82,7 +82,7 @@ export class PublicoCadastroClienteComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       nome: [this.cadastroDto.nome_razaoSocial, [Validators.required, Validators.maxLength(50)]],
-      cpfCnpj: [this.cadastroDto.cpf_cnpj, [Validators.required, Validators.pattern('/^[0-9]{3}.?[0-9]{3}.?[0-9]{3}-?[0-9]{2}/')]],
+      cpfCnpj: [this.cadastroDto.cpf_cnpj, [Validators.required]],
       rg: [],
       nascimento: [],
       sexo: [this.cadastroDto.sexo, [Validators.required]],

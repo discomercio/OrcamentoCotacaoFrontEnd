@@ -1,5 +1,4 @@
-import { AutenticacaoService } from './../autenticacao/autenticacao.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { environment } from 'src/environments/environment';
@@ -10,8 +9,7 @@ import { environment } from 'src/environments/environment';
 export class ClienteService {
 
   constructor(
-    private readonly http: HttpClient,
-    private readonly autenticacaoService: AutenticacaoService
+    private readonly http: HttpClient
     ) { }
 
   public urlBase: string = `${environment.apiUrl}api/cliente`;
