@@ -26,7 +26,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   @ViewChild("itens", { static: false }) itens: ItensComponent;
   idOpcaoOrcamentoCotacao: number;
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
-
+  carregando: boolean = false;
 
   ngOnInit(): void {
 
@@ -186,13 +186,16 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   salvarOpcao() {
+    this.carregando = true;
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
+      this.carregando = false;
       return;
     }
 
     this.itens.formaPagto.atribuirFormasPagto();
 
     if (!this.validarDescontosProdutos()) {
+      this.carregando = false;
       this.alertaService.mostrarMensagem("Existe produto que excede o desconto máximo permitido!");
       return;
     }
@@ -213,10 +216,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }
     else
       this.atualizarOpcao();
+
+
   }
 
   atualizaComEdicaoComissao() {
-    let percRT = this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT);
+    let percRT = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT.toFixed(2);
     if (!this.itens.novoOrcamentoService.validarComissao(percRT)) {
       let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
       let limiteComissao = (this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio -
@@ -227,7 +232,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       //fazer uma pergunta se quer arredondar para o valor máximo de desconto
       this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
         //se não => return;
-        if (!result) return;
+        if (!result){
+          this.carregando = false;
+          return;
+        } 
 
         this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = Number.parseFloat(limiteComissao);
         this.atualizarOpcao();
@@ -244,7 +252,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
       ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
-        if (!result) return;
+        if (!result){
+          this.carregando = false;
+          return;
+        }
 
         this.atualizarOpcao();
       });
@@ -256,9 +267,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
+        this.carregando = false;
         this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
       }
-    }).catch((e) => { this.alertaService.mostrarErroInternet(e); });
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    });
   }
 
   validarDescontosProdutos(): boolean {
