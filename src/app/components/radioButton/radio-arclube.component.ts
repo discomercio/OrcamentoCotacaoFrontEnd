@@ -62,6 +62,11 @@ export class RadioArClubeComponent {
 		this.requiredField = value
 		this.requiredLabel =  value? '*' : ''
 	}
+	
+	@Input() 
+	set setValueMultRadio (value: any ) {
+		this.valueSend = value
+	}
 
 	@Input() 
 	set setDisable(value: boolean ){

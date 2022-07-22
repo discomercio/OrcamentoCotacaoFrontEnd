@@ -1,0 +1,53 @@
+<label [for]="'inputRoot'+id">CEP</label>
+<div class="p-col-9" style="padding: 0px;display:flex;">
+  <p-inputMask [id]="'inputRoot'+id" class="p-inputMask p-inputtext " [(ngModel)]="value" (change)="returnValue()"
+    [placeholder]="placeholder" mask="99999-999" [unmask]="true" [attr.disabled]="disabled == 'true' ? '' : null"
+    [style]="{'padding': '0px','margin-bottom': '5px'}">
+  </p-inputMask>
+  <button-arclube setType="button" setIcon="fa fa-search" (click)="btnBuscar()"></button-arclube>
+  <!-- <button pButton pRipple type="button" icon="fa fa-search" class="p-button-pesquisar p-mr-2 p-mb-2"
+    (click)="buscarCep()">
+  </button> -->
+</div>
+
+<!-- MODAL DE CEP -->
+
+
+<modal-arclube setTitleHeader="Busca de CEP" [setShowDialog]="modalCEP" [setWidthDialog]="innerWidth"
+  [setHeightModal]="innerHeight" (closeModal)="CloseModalCEP()" (saveAction)="onSubmit('c')" setNoSaveBtn="true">
+  <div class="card">
+    <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+      <div class="p-col-2">
+        <dropdown-arclube titleInput="UF" setReset="SP" (ngModel)="CepDTO.Uf" setColor="black" [inputItems]="UFs"
+          setOptionsValueName="uf" setOptionsName="uf" (getItemSelected)="onChangeUF($event)"></dropdown-arclube>
+      </div>
+      <div class="p-col-2">
+        <dropdown-arclube titleInput="Localidade" setReset="São Caetano do Sul" (ngModel)="CepDTO.Cidade"
+          setColor="black" [inputItems]="Localidades" setOptionsValueName="name" setOptionsName="id"
+          (getItemSelected)="CepDTO.Cidade = $event"></dropdown-arclube>
+      </div>
+      <div class="p-col-4">
+        <input-arclube titleInput="Endereço" valueInput="Rua Piauí" (ngModel)="CepDTO.Endereco"
+          (inputValue)="CepDTO.Endereco = $event"></input-arclube>
+      </div>
+      <div class="p-col-4">
+        <label>&nbsp;</label>
+        <!-- <button 
+        pButton 
+        pRipple 
+        type="submit" 
+        label="Buscar CEP"
+        class="p-buttonbuscarCep p-mr-2 p-mb-2"
+        (click)="this.modalCEP = true">
+      </button> -->
+
+        <button-arclube setType="button" setLabel="Buscar CEP" (click)="btnBuscar()"></button-arclube>
+      </div>
+    </div>
+  </div>
+  <loading-arclube setLabel="Aguarde...Carregando..." *ngIf="_loading"></loading-arclube>
+  <table-arclube *ngIf="tableContent" [setItems]="tableContent[0]" [setHeaders]="tableContent[1]"
+    [setTotalRows]="tableContent[2]" setRowsControl="false" setPaginator="false" (getPagination)="getPage($event)"
+    (getItem)="updateModal($event)" setEditLabelTooltip="Consultar" (rowSelected)="onRowSelected($event)">
+  </table-arclube>
+</modal-arclube>

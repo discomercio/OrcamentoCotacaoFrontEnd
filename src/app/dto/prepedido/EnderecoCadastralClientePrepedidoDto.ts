@@ -1,0 +1,30 @@
+export class EnderecoCadastralClientePrepedidoDto {
+    St_memorizacao_completa_enderecos: boolean;
+    Endereco_logradouro: string;
+    Endereco_numero: string;
+    Endereco_complemento: string;
+    Endereco_bairro: string;
+    Endereco_cidade: string;
+    Endereco_uf: string;
+    Endereco_cep: string;
+    Endereco_email: string;
+    Endereco_email_xml: string;
+    Endereco_nome: string;
+    Endereco_ddd_res: string;
+    Endereco_tel_res: string;
+    Endereco_ddd_com: string;
+    Endereco_tel_com: string;
+    Endereco_ramal_com: string;
+    Endereco_ddd_cel: string;
+    Endereco_tel_cel: string;
+    Endereco_ddd_com_2: string;
+    Endereco_tel_com_2: string;
+    Endereco_ramal_com_2: string;
+    Endereco_tipo_pessoa: string;
+    Endereco_cnpj_cpf: string;
+    Endereco_contribuinte_icms_status: number;
+    Endereco_produtor_rural_status: number;
+    Endereco_ie: string;
+    Endereco_rg: string;
+    Endereco_contato: string;
+}

@@ -1,100 +1,112 @@
-<div class="first">
-    <input-arclube titleInput="CPF / CNPJ" setPlaceholder="Digite o CPF ou CNPJ do cliente">
-    </input-arclube>
-    <button-arclube setLabel="Pesquisar"></button-arclube>
+<div class="p-grid">
+    <div class="p-col-12 p-pb-0">
+        <div class="card">
+            <h4>Novo pedido</h4>
+            <div class="first p-col-6" *ngIf="step == 1">
+                <selecionarcliente-arclube (inputValue)="preencheDadosCliente($event)">
+                </selecionarcliente-arclube>
+            </div>
+            
+            <div class="second-up" *ngIf="step == 2">
+                <span><strong>Nome: </strong> Gabriel Prada Teodoro</span>
+                <span><strong>CPF: </strong> 352.707.458/24</span>
+                <span><strong>RG: </strong>50.044.287/0</span>
+                <span><strong>Nascimento: </strong> 19/06/1984</span>
+                <span><strong>Sexo: </strong>M</span>
+                <span><strong></strong>Rua Francisco Pecoraro, 97 - Água Fria - São Paulo - 02408-150</span>
+                <span><strong>Telefones: </strong>(11)98160-3313  (11)2532-1634</span>
+                <span><strong>Observação</strong> </span>
+                <span><strong>E-mail: </strong> gabriel.prada.teodoro@gmail.com</span>
+                <span><strong>E-mail(xml): </strong> </span>
+            </div>
+            <div class="second-mid" *ngIf="step == 2">
+                <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
+                <dropdown-arclube titleInput="Contribuinte ICMS"></dropdown-arclube>
+                <input-arclube titleInput="IE"></input-arclube>
+            </div>
+            
+            <div class="second-dados" *ngIf="step == 2">
+                <h5>Dados Cadastrais</h5>
+                <button-arclube setLabel="Dados Cadastrais"></button-arclube>
+                <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
+                <button-arclube setLabel="Não sei o CEP"></button-arclube>
+                <input-arclube titleInput="Endereço" setPlaceholder="Endereço"></input-arclube>
+                <input-arclube titleInput="Numero" setPlaceholder="Numero"></input-arclube>
+                <input-arclube titleInput="Complemento" setPlaceholder="Complemento"></input-arclube>
+                <input-arclube titleInput="Bairro" setPlaceholder="Bairro"></input-arclube>
+                <input-arclube titleInput="Cidade" setPlaceholder="Cidade"></input-arclube>
+                <input-arclube titleInput="UF" setPlaceholder="UF"></input-arclube>
+                <input-arclube titleInput="Fone residencial" setPlaceholder="Fone residencial"></input-arclube>
+                <input-arclube titleInput="Celular" setPlaceholder="Celular"></input-arclube>
+                <input-arclube titleInput="Fone Comercio" setPlaceholder="Fone Comercio"></input-arclube>
+                <input-arclube titleInput="Ramal" setPlaceholder="Ramal"></input-arclube>
+                <input-arclube titleInput="E-mail" setPlaceholder="E-mail"></input-arclube>
+                <input-arclube titleInput="E-mail(xml)" setPlaceholder="E-mail(xml)"></input-arclube>
+            </div>
+            
+            <div class="second-entrega" *ngIf="step == 2">
+                <p>Endereço de entrega</p>
+                <radio-arclube setIsMultiple="false" [setRadioItems]="itemPayment"></radio-arclube>
+            
+            </div>
+            
+            <div class="second-dados-entrega" *ngIf="step == 2">
+                <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
+                <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
+                <button-arclube setLabel="Não sei o CEP"></button-arclube>
+                <input-arclube titleInput="Endereço" setPlaceholder="Endereço"></input-arclube>
+                <input-arclube titleInput="Numero" setPlaceholder="Numero"></input-arclube>
+                <input-arclube titleInput="Complemento" setPlaceholder="Complemento"></input-arclube>
+                <input-arclube titleInput="Bairro" setPlaceholder="Bairro"></input-arclube>
+                <input-arclube titleInput="Cidade" setPlaceholder="Cidade"></input-arclube>
+                <input-arclube titleInput="UF" setPlaceholder="UF"></input-arclube>
+            </div>
+            
+            <div class="third-up" *ngIf="step == 3">
+                <span><strong>Cliente: </strong>352.704.458/24 - Gabriel Prada Teodoro</span>
+                <button-arclube setLabel="Adicionar produto"></button-arclube>
+            </div>
+            <div class="third-mid" *ngIf="step == 3">
+                <table-arclube>
+            
+                </table-arclube>
+            </div>
+            <div class="third-down" *ngIf="step == 3">
+                <dropdown-arclube titleInput="Forma de pagamento"></dropdown-arclube>
+                <dropdown-arclube titleInput="Valor a vista"></dropdown-arclube>
+                <dropdown-arclube titleInput="Meio de pagamento"></dropdown-arclube>
+            
+                <input-arclube titleInput="Valor Entrada"></input-arclube>
+                <dropdown-arclube titleInput="Meio de pagamento entrada"></dropdown-arclube>
+                <dropdown-arclube titleInput="Parcelamento"></dropdown-arclube>
+                <dropdown-arclube titleInput="Meio de pagamento parcelado"></dropdown-arclube>
+            
+            
+            
+                <input-arclube titleInput=" "></input-arclube>
+                <span><strong>Total do pedido: </strong></span>
+            </div>
+            
+            <div class="four-top" *ngIf="step == 4">
+                <span><strong>Cliente: </strong>352.704.458/24 - Gabriel Prada Teodoro</span>
+                <span><strong>Valor do pedido: 557,50</strong></span>
+            </div>
+            
+            <div class="four-mid" *ngIf="step == 4">
+                <input-arclube titleInput="Observações adicionais"></input-arclube>
+                <checkbox-arclube setTitleLabel="Entrega imediata"></checkbox-arclube>
+                <span>Atenção: Informar a data de entrega no campo "Previsão de entrega"</span>
+                <date-arclube titleInput="Previsão de entrega"></date-arclube>
+            
+                <checkbox-arclube setTitleLabel="Bem de Uso/Consumo"></checkbox-arclube>
+                <checkbox-arclube setTitleLabel="Instalador instala"></checkbox-arclube>
+            </div>
+            <!-- <div  class="p-d-flex p-jc-around">
+                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
+                <button pButton pRipple label="Salvar opção de orçamento" (click)="salvarOpcao()"></button>
+            </div> -->
+        </div>
+    </div>
 </div>
 
-<div class="second-up">
-    <span><strong>Nome: </strong> Gabriel Prada Teodoro</span>
-    <span><strong>CPF: </strong> 352.707.458/24</span>
-    <span><strong>RG: </strong>50.044.287/0</span>
-    <span><strong>Nascimento: </strong> 19/06/1984</span>
-    <span><strong>Sexo: </strong>M</span>
-    <span><strong></strong>Rua Francisco Pecoraro, 97 - Água Fria - São Paulo - 02408-150</span>
-    <span><strong>Telefones: </strong>(11)98160-3313  (11)2532-1634</span>
-    <span><strong>Observação</strong> </span>
-    <span><strong>E-mail: </strong> gabriel.prada.teodoro@gmail.com</span>
-    <span><strong>E-mail(xml): </strong> </span>
-</div>
-<div class="second-mid">
-    <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
-    <dropdown-arclube titleInput="Contribuinte ICMS"></dropdown-arclube>
-    <input-arclube titleInput="IE"></input-arclube>
-</div>
 
-<div class="second-dados">
-    <h5>Dados Cadastrais</h5>
-    <button-arclube setLabel="Dados Cadastrais"></button-arclube>
-    <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
-    <button-arclube setLabel="Não sei o CEP"></button-arclube>
-    <input-arclube titleInput="Endereço" setPlaceholder="Endereço"></input-arclube>
-    <input-arclube titleInput="Numero" setPlaceholder="Numero"></input-arclube>
-    <input-arclube titleInput="Complemento" setPlaceholder="Complemento"></input-arclube>
-    <input-arclube titleInput="Bairro" setPlaceholder="Bairro"></input-arclube>
-    <input-arclube titleInput="Cidade" setPlaceholder="Cidade"></input-arclube>
-    <input-arclube titleInput="UF" setPlaceholder="UF"></input-arclube>
-    <input-arclube titleInput="Fone residencial" setPlaceholder="Fone residencial"></input-arclube>
-    <input-arclube titleInput="Celular" setPlaceholder="Celular"></input-arclube>
-    <input-arclube titleInput="Fone Comercio" setPlaceholder="Fone Comercio"></input-arclube>
-    <input-arclube titleInput="Ramal" setPlaceholder="Ramal"></input-arclube>
-    <input-arclube titleInput="E-mail" setPlaceholder="E-mail"></input-arclube>
-    <input-arclube titleInput="E-mail(xml)" setPlaceholder="E-mail(xml)"></input-arclube>
-</div>
-
-<div class="second-entrega">
-    <p>Endereço de entrega</p>
-    <radio-arclube setIsMultiple="false" [setRadioItems]="itemPayment"></radio-arclube>
-
-</div>
-
-<div class="second-dados-entrega">
-    <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
-    <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
-    <button-arclube setLabel="Não sei o CEP"></button-arclube>
-    <input-arclube titleInput="Endereço" setPlaceholder="Endereço"></input-arclube>
-    <input-arclube titleInput="Numero" setPlaceholder="Numero"></input-arclube>
-    <input-arclube titleInput="Complemento" setPlaceholder="Complemento"></input-arclube>
-    <input-arclube titleInput="Bairro" setPlaceholder="Bairro"></input-arclube>
-    <input-arclube titleInput="Cidade" setPlaceholder="Cidade"></input-arclube>
-    <input-arclube titleInput="UF" setPlaceholder="UF"></input-arclube>
-</div>
-
-<div class="third-up">
-    <span><strong>Cliente: </strong>352.704.458/24 - Gabriel Prada Teodoro</span>
-    <button-arclube setLabel="Adicionar produto"></button-arclube>
-</div>
-<div class="third-mid">
-    <table-arclube>
-
-    </table-arclube>
-</div>
-<div class="third-down">
-    <dropdown-arclube titleInput="Forma de pagamento"></dropdown-arclube>
-    <dropdown-arclube titleInput="Valor a vista"></dropdown-arclube>
-    <dropdown-arclube titleInput="Meio de pagamento"></dropdown-arclube>
-
-    <input-arclube titleInput="Valor Entrada"></input-arclube>
-    <dropdown-arclube titleInput="Meio de pagamento entrada"></dropdown-arclube>
-    <dropdown-arclube titleInput="Parcelamento"></dropdown-arclube>
-    <dropdown-arclube titleInput="Meio de pagamento parcelado"></dropdown-arclube>
-
-
-
-    <input-arclube titleInput=" "></input-arclube>
-    <span><strong>Total do pedido: </strong></span>
-</div>
-
-<div class="four-top">
-    <span><strong>Cliente: </strong>352.704.458/24 - Gabriel Prada Teodoro</span>
-    <span><strong>Valor do peido: 557,50</strong></span>
-</div>
-
-<div class="four-mid">
-    <input-arclube titleInput="Observações adicionais"></input-arclube>
-    <checkbox-arclube setTitleLabel="Entrega imediata"></checkbox-arclube>
-    <span>Atenção: Informar a data de entrega no campo "Previsão de entrega"</span>
-    <date-arclube titleInput="Previsão de entrega"></date-arclube>
-
-    <checkbox-arclube setTitleLabel="Bem de Uso/Consumo"></checkbox-arclube>
-    <checkbox-arclube setTitleLabel="Instalador instala"></checkbox-arclube>
-</div>
