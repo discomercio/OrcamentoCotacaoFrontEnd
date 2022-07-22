@@ -11,11 +11,11 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 
 
 @Component({
-  selector: 'app-detalhes-prepedido',
-  templateUrl: './detalhes-prepedido.component.html',
-  styleUrls: ['./detalhes-prepedido.component.scss']
+  selector: 'app-prepedido-detalhes',
+  templateUrl: './prepedido-detalhes.component.html',
+  styleUrls: ['./prepedido-detalhes.component.scss']
 })
-export class DetalhesPrepedidoComponent implements OnInit {
+export class PrepedidoDetalhesComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
     public readonly prepedidoService: PrepedidoService,
     private readonly autenticacaoService: AutenticacaoService,
