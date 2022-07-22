@@ -20,7 +20,7 @@
                                 <label for="nomeObra" *ngIf="parametro == 'ORCAMENTOS'">Nº Orçamento / Nome do cliente /
                                     Nome da obra</label>
                                 <label for="nomeObra" *ngIf="parametro != 'ORCAMENTOS'">Nº Orçamento / Nº Pedido / Nome
-                                    do cliente / Nome da obra</label>
+                                    do cliente</label>
                                 <input pInputText type="text" formControlName="cliente" placeholder="Digite a busca"
                                     [(ngModel)]="filtro.Nome_numero" (keyup)="Pesquisar_Click()">
                                 <!-- (input)="dt1.filterGlobal($event.target.value, 'contains')" -->

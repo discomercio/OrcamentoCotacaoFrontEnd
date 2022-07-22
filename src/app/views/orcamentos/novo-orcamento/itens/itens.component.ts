@@ -606,8 +606,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
   }
 
-
-
   salvarOrcamento() {
 
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
@@ -625,11 +623,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   voltar() {
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
     this.router.navigate(["orcamentos/cadastrar-cliente", "editar"]);
-  }
-
-  enviar() {
-
-    return;
   }
 
   liberarEdicaoComissao() {
@@ -664,14 +657,4 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
     this.novoOrcamentoService.editarComissao = false;
   }
-
-  // validarComissao(valor: any): boolean {
-
-  //   if (!this.novoOrcamentoService.validarComissao(valor)) {
-      
-  //     return false;
-  //   }
-
-  //   return true;
-  // }
 }
