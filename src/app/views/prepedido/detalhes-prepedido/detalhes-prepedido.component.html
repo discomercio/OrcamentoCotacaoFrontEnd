@@ -65,16 +65,16 @@
                     <table width="649" class="Q" cellspacing="0">
                         <tr>
                             <td align="left" width="50%" class="MD">
-                                <p class="Rf">CPF/CNPJ &nbsp;</p>
+                                <p class="Rf">{{ehPf() ? "CPF" : "CNPJ"}} &nbsp;</p>
                                 <a (click)="editar();" style="cursor: pointer;" title='clique para criar novo pedido'>
                                     <p class="C">{{this.prepedido.DadosCliente.Cnpj_Cpf}} &nbsp;</p>
                                 </a>
                             </td>
 
                             <td align="left" class="MD">
-                                <p class="Rf">RG/IE &nbsp;</p>
+                                <p class="Rf">{{ehPf() ? "RG" : "IE"}} &nbsp;</p>
                                 <p class="C">
-                                    {{this.prepedido.DadosCliente.Rg}}
+                                    {{ehPf() ? this.prepedido?.DadosCliente.Rg : this.prepedido?.DadosCliente.Ie}}
                                     &nbsp;</p>
                             </td>
                             <td align="center" valign="middle" style="width:15px">
@@ -85,10 +85,10 @@
                         </tr>
                         <tr>
                             <td class="MC" align="left" colspan="3">
-                                <p class="Rf">Nome do Cliente &nbsp;</p>
+                                <p class="Rf">{{ehPf()?"NOME DO CLIENTE":"RAZÃO SOCIAL DO CLIENTE"}} &nbsp;</p>
 
                                 <a style="cursor: pointer;" title='clique para criar novo pedido'>
-                                    <p class="C">{{this.prepedido.DadosCliente.Nome}} &nbsp;</p>
+                                    <p class="C">{{this.prepedido?.DadosCliente?.Nome}} &nbsp;</p>
                                 </a>
                             </td>
                         </tr>
@@ -114,27 +114,36 @@
 
                     <!--  TELEFONE DO CLIENTE  -->
                     <table width="649" class="QS" cellspacing="0">
-                        <tr>
-                            <td class="MD" width="33%" align="left">
-                                <p class="Rf">TELEFONE</p>
-                                <p class="C" *ngif="this.prepedido.DadosCliente.TelefoneResidencial">
-                                    ({{this.prepedido.DadosCliente.DddResidencial}})-{{this.prepedido.DadosCliente.TelefoneResidencial}}
-                                    &nbsp;</p>
-                            </td>
+                        <tr *ngIf="ehPf()">
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE RESIDENCIAL</p>
-                                <p class="C" *ngif="this.prepedido.DadosCliente.TelComercial">
-                                    ({{this.prepedido.DadosCliente.DddComercial}})-{{this.prepedido.DadosCliente.TelComercial}}
-                                    &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido.DadosCliente.DddResidencial">({{this.prepedido.DadosCliente.DddResidencial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido.DadosCliente.TelefoneResidencial)}} &nbsp;</p>
+                            </td>
+                            <td class="MD" width="33%" align="left">
+                                <p class="Rf">TELEFONE COMERCIAL</p>
+                                <p class="C" *ngIf="this.prepedido.DadosCliente.DddComercial">({{this.prepedido.DadosCliente.DddComercial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido.DadosCliente.TelComercial)}} &nbsp;</p>
                             </td>
                             <td align="left">
                                 <p class="Rf">CELULAR</p>
-                                <p class="C" *ngif="this.prepedido.DadosCliente.Celular">
-                                    ({{this.prepedido.DadosCliente.DddCelular}})-{{this.prepedido.DadosCliente.Celular}}
-                                    &nbsp;
-                                </p>
+                                <p class="C" *ngIf="this.prepedido.DadosCliente.DddCelular">({{this.prepedido.DadosCliente.DddCelular}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido.DadosCliente.Celular)}} &nbsp;</p>
                             </td>
                         </tr>
+                        <tr *ngIf="!ehPf()">
+                            <td class="MD" width="33%" align="left">
+                                <p class="Rf">TELEFONE</p>
+                                <p class="C" *ngIf="this.prepedido.DadosCliente.DddComercial">({{this.prepedido.DadosCliente.DddComercial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido.DadosCliente.TelComercial)}} &nbsp;</p>
+                            </td>
+                            <td class="MD" width="33%" align="left">
+                                <p class="Rf">TELEFONE</p>
+                                <p class="C" *ngIf="this.prepedido.DadosCliente.DddComercial2">({{this.prepedido.DadosCliente.DddComercia2l}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido.DadosCliente.TelComercial2)}} &nbsp;</p>
+                            </td>
+                        </tr>                
+        
                     </table>
 
                     <!--  E-MAIL DO CLIENTE  -->
@@ -216,27 +225,27 @@
 
                             <!-- Preco RA -->
                             <td class="MDB" align="right" *ngIf="this.prepedido?.PermiteRAStatus == '1'">
-                                <input name="c_vl_NF" class="PLLd" style="width:62px;" value='{{linha.Preco_NF}}'
+                                <input name="c_vl_NF" class="PLLd" style="width:62px;" value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_NF)}}'
                                     readonly tabindex=-1>
                             </td>
                             <!-- VlLista -->
                             <td class="MDB" align="right">
                                 <input name="c_preco_lista" class="PLLd" style="width:62px;"
-                                    value='{{linha.Preco_Lista}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Lista)}}' readonly tabindex=-1>
                             </td>
                             <!-- Desconto -->
                             <td class="MDB" align="right">
-                                <input name="c_desc" class="PLLd" style="width:28px;" value='{{linha.Desc_Dado}}'
+                                <input name="c_desc" class="PLLd" style="width:28px;" value='{{moedaUtils.formatarPorcentagemUmaCasa(linha.Desc_Dado)}}'
                                     readonly tabindex=-1>
                             </td>
                             <!-- VLVenda -->
                             <td class="MDB" align="right">
                                 <input name="c_vl_unitario" class="PLLd" style="width:62px;"
-                                    value='{{linha.Preco_Venda}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Venda)}}' readonly tabindex=-1>
                             </td>
                             <!-- VlTotal -->
                             <td class="MDB" align="right"><input name="c_vl_total" class="PLLd" style="width:70px;"
-                                    value='{{linha.VlTotalItem}}' readonly tabindex=-1></td>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.VlTotalItem)}}' readonly tabindex=-1></td>
                         </tr>
 
 
@@ -253,10 +262,11 @@
                                                             class="PLTe">&nbsp;RA</span>
                                                     </td>
                                                     <td class="MTBD" align="right">
-                                                        <input name="c_perc_RT" id="c_perc_RT" class="PLLd"
+                                                        <input name="c_perc_RT" id="c_perc_RT"
+                                                            [ngStyle]="{'color':verificaValor()?'green':'red'}" class="PLLd"
                                                             style="width:90%;"
-                                                            value='{{this.prepedido.TotalFamiliaParcelaRA}}' readonly
-                                                            tabindex=-1>
+                                                            value='{{moedaUtils.formatarValorDuasCasaReturnZero(this.prepedido.TotalFamiliaParcelaRA)}}'
+                                                            readonly tabindex=-1>
                                                     </td>
                                                 </tr>
                                             </table>
@@ -270,7 +280,7 @@
                                                     </td>
                                                     <td class="MTBD" align="right"><input name="c_perc_RT"
                                                             id="c_perc_RT" class="PLLd" style="width:30px;color:blue;"
-                                                            value='{{this.prepedido.PercRT}}' readonly tabindex=-1></td>
+                                                            value='{{moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.prepedido.PercRT)}}' readonly tabindex=-1></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -281,7 +291,7 @@
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MD" align="left">&nbsp;</td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MDB" align="right">
                                 <input name="c_total_NF" id="c_total_NF" class="PLLd" style="width:70px;color:blue;"
-                                    value='{{this.prepedido.ValorTotalDestePedidoComRA}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido.ValorTotalDestePedidoComRA)}}' readonly tabindex=-1>
                             </td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" colspan="3" class="MD" align="left">
                                 &nbsp;
@@ -293,7 +303,7 @@
                             <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" align="left">&nbsp;</td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" class="MD" align="left">&nbsp;</td>
                             <td class="MDB" align="right"><input name="c_total_geral" id="c_total_geral" class="PLLd"
-                                    style="width:70px;color:blue;" value='{{this.prepedido.VlTotalDestePedido}}'
+                                    style="width:70px;color:blue;" value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido.VlTotalDestePedido)}}'
                                     readonly tabindex=-1>
                             </td>
                         </tr>
