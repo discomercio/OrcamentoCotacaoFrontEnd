@@ -77,7 +77,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
-  
+
 
   ngOnInit(): void {
 
@@ -123,7 +123,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
           this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
-         
+
           this.formaPagto.setarTipoPagto();
           this.inscreveProdutoComboDto();
         }
@@ -185,7 +185,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
           this.novoOrcamentoService.setarPercentualComissao();
           this.novoOrcamentoService.calcularPercentualComissao();
         }
-
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
   }
@@ -391,7 +390,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   aplicarDescontoGeral(e: Event) {
 
-    if(!this.novoOrcamentoService.verificarDescontoGeral()) return;
+    if (!this.novoOrcamentoService.verificarDescontoGeral()) return;
     // if (this.novoOrcamentoService.descontoGeral == undefined) {
     //   this.descontoGeral = 0;
     //   return;
@@ -415,7 +414,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       item.precoVenda = this.moedaUtils.formatarDecimal(v);
     }
   }
-  
+
   digitouPreco_Venda(e: Event, item: ProdutoOrcamentoDto) {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/\D/g, '');
@@ -656,26 +655,23 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     let v: any = valor.replace(/,/g, '');
     v = Number.parseFloat((v / 100).toFixed(2) + '');
 
-    if (!this.validarComissao(v)) {
+    if (!this.novoOrcamentoService.validarComissao(v)) {
       v = this.antigoPercRT;
       ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(this.antigoPercRT);
+      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
     }
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
     this.novoOrcamentoService.editarComissao = false;
   }
 
-  validarComissao(valor: any): boolean {
+  // validarComissao(valor: any): boolean {
 
-    let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
-    let limiteDesconto = (this.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
+  //   if (!this.novoOrcamentoService.validarComissao(valor)) {
+      
+  //     return false;
+  //   }
 
-    if (valor > limiteDesconto ||
-      Number.parseFloat(valor) > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
-      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
-      return false;
-    }
-
-    return true;
-  }
+  //   return true;
+  // }
 }

@@ -195,7 +195,7 @@ export class NovoOrcamentoService {
       let coeficiente = this.coeficientes?.filter(c => c.Fabricante == x.fabricante && c.QtdeParcelas == qtdeParcelas && c.TipoParcela == this.siglaPagto)[0];
       x.precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * coeficiente.Coeficiente);
       x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
-      x.descDado = x.alterouPrecoVenda ? (x.precoLista - x.precoVenda) * 100 / x.precoLista : x.descDado;
+      x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
       x.precoNF = x.precoVenda;
       x.coeficienteDeCalculo = coeficiente.Coeficiente;
       x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
@@ -406,11 +406,11 @@ export class NovoOrcamentoService {
     return null;
   }
 
-  
-  validarDescontosProdutos():boolean{
+
+  validarDescontosProdutos(): boolean {
     let retorno = true;
-    this.lstProdutosSelecionados.some(x =>{
-      if (x.descDado > this.percMaxComissaoEDescontoUtilizar){
+    this.lstProdutosSelecionados.some(x => {
+      if (x.descDado > this.percMaxComissaoEDescontoUtilizar) {
         return retorno = false;
       }
     });
@@ -418,7 +418,7 @@ export class NovoOrcamentoService {
   }
 
   descontoGeral: number;
-  verificarDescontoGeral():boolean {
+  verificarDescontoGeral(): boolean {
     if (this.descontoGeral == undefined) {
       this.descontoGeral = 0;
       return true;
@@ -430,5 +430,20 @@ export class NovoOrcamentoService {
     }
 
     return true;
+  }
+
+  validarComissao(valor: any): boolean {
+    let descontoMedio = this.calcularDescontoMedio();
+    let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
+
+    if (valor > limiteComissao || Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+
+    return true
+  }
+
+  descontouComissao(valor: any):boolean{
+    if(valor < this.percentualMaxComissao.percMaxComissao) return true;
+
+    return false;
   }
 }
