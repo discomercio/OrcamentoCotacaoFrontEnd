@@ -413,6 +413,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
           });
         }
+        else this.gravarOpcao();
     }
     else this.gravarOpcao();
   }
