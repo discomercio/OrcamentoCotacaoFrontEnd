@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DetalhesPrepedidoComponent } from './detalhes-prepedido.component';
+import { PrepedidoDetalhesComponent } from './detalhes-prepedido.component';
 
-describe('DetalhesPrepedidoComponent', () => {
-  let component: DetalhesPrepedidoComponent;
-  let fixture: ComponentFixture<DetalhesPrepedidoComponent>;
+describe('PrepedidoDetalhesComponent', () => {
+  let component: PrepedidoDetalhesComponent;
+  let fixture: ComponentFixture<PrepedidoDetalhesComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DetalhesPrepedidoComponent ]
+      declarations: [ PrepedidoDetalhesComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DetalhesPrepedidoComponent);
+    fixture = TestBed.createComponent(PrepedidoDetalhesComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

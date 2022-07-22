@@ -37,7 +37,7 @@ import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
-import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { PrepedidoDetalhesComponent } from 'src/app/views/prepedido/detalhes/prepedido-detalhes.component';
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 
@@ -114,7 +114,7 @@ import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opc
                             {
                                 path: 'prepedido/detalhes/:numeroPrepedido',
                                 canActivate: [AuthGuard],
-                                component: DetalhesPrepedidoComponent
+                                component: PrepedidoDetalhesComponent
                               },     
                               
                             // Pedido
