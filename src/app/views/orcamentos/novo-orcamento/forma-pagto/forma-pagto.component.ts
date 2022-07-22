@@ -404,7 +404,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
         if(this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)){
           let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
-          let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida. Confirma a redução da comissão?`;
+          let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
+          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}. Confirma a redução da comissão?`;
           this.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
             if (!result) return;
 

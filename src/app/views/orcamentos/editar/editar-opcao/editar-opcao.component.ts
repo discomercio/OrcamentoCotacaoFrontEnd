@@ -197,49 +197,59 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    //se tem parceiro
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
-      let percRT = this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT);
-      if (!this.itens.novoOrcamentoService.validarComissao(percRT)) {
-        let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
-        let limiteComissao = (this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio -
-          (this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
-        let pergunta = `A comissão excede o limite máximo permitido, gostaria de recalcular a comissão para o máximo permitido de 
-        ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(Number.parseFloat(limiteComissao))}%`;
-        //fazer uma pergunta se quer arredondar para o valor máximo de desconto
-        this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
-          //se não => return;
-          if (!result) return;
-          
-          this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = Number.parseFloat(limiteComissao);
-        });
+      if (!this.itens.novoOrcamentoService.verificarCalculoComissao()) {
+        this.atualizaComEdicaoComissao();
+        return;
       }
 
-      let antigoPercRT = this.itens.antigoPercRT.toFixed(2);
-      if (this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT < Number.parseFloat(antigoPercRT)) {
-        let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
-        let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida. Confirma a redução da comissão?`;
-        this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
-          if (!result) return;
-
-          this.atualizarOpcao();
-
-        });
+      if (this.itens.novoOrcamentoService.verificarCalculoComissao()) {
+        this.atualizaSemEdicaoComissao();
+        return;
       }
-      else this.atualizarOpcao();
     }
     else
       this.atualizarOpcao();
+  }
 
-    //se for calculado automaticamente, precisamos informar que a comissão foi alterada,
-    // para isso o usuário que esta editando não pode ter alçada.
-    //verificar se tem parceiro, se percRT é menor que o máximo de percComissao
-    //se sim, fazer uma pergunta e seguir somente se a resposta foi sim
+  atualizaComEdicaoComissao() {
+    let percRT = this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT);
+    if (!this.itens.novoOrcamentoService.validarComissao(percRT)) {
+      let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
+      let limiteComissao = (this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio -
+        (this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
+      let pergunta = `A comissão excede o limite máximo permitido, gostaria de recalcular a comissão para o máximo permitido de 
+      ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(Number.parseFloat(limiteComissao))}%`;
+      //fazer uma pergunta se quer arredondar para o valor máximo de desconto
+      this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+        //se não => return;
+        if (!result) return;
 
+        this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = Number.parseFloat(limiteComissao);
+        this.atualizarOpcao();
+      });
+    }
+    else this.atualizarOpcao();
+  }
 
+  atualizaSemEdicaoComissao() {
+    let antigoPercRT = this.itens.antigoPercRT.toFixed(2);
+    let atualPercRT = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT.toFixed(2);
+    if (Number.parseFloat(atualPercRT) < Number.parseFloat(antigoPercRT)) {
+      let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
+      let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
+      ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+      this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+        if (!result) return;
 
+        this.atualizarOpcao();
+      });
+    }
+    else this.atualizarOpcao();
   }
 
   atualizarOpcao() {
