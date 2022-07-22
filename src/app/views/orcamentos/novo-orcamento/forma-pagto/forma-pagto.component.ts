@@ -405,7 +405,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         if(this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)){
           let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
           let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
-          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}. Confirma a redução da comissão?`;
+          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
           this.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
             if (!result) return;
 
@@ -415,16 +415,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         }
     }
     else this.gravarOpcao();
-    // //verificar se tem parceiro, se percRT é menor que o máximo de percComissao
-    // //se sim, fazer uma pergunta e seguir somente se a resposta foi sim
-
-    // this.atribuirFormasPagto();
-
-    // this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
-    // this.novoOrcamentoService.criarNovoOrcamentoItem();
-    // this.limparCampos();
-    // this.setarQtdeMaxParcelasEDias();
-
   }
 
   gravarOpcao(){
