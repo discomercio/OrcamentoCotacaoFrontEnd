@@ -441,8 +441,8 @@ export class NovoOrcamentoService {
     return true
   }
 
-  descontouComissao(valor: any):boolean{
-    if(valor < this.percentualMaxComissao.percMaxComissao) return true;
+  descontouComissao(valor: any): boolean {
+    if (valor < this.percentualMaxComissao.percMaxComissao) return true;
 
     return false;
   }

@@ -83,7 +83,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.novoOrcamentoService.criarNovoOrcamentoItem();
-
+    this.novoOrcamentoService.descontoGeral = 0;
 
   }
   editando: boolean = false;
