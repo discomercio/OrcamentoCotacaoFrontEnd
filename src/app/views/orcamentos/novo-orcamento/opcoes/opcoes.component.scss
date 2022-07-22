@@ -1,0 +1,23 @@
+
+::ng-deep .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link{
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #292B2C;
+}
+::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link{
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #292B2C;
+}
+::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link 
+{
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #292B2C;
+}
+
+::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link{
+    background: #e9ecef;
+    border-color: #dee2e6;
+    color: #292B2C;
+}
