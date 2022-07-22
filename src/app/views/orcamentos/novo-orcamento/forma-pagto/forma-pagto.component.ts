@@ -11,6 +11,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ItensComponent } from '../itens/itens.component';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-forma-pagto',
@@ -26,7 +27,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     public readonly itensComponent: ItensComponent,
     public readonly mensagemService: MensagemService,
     telaDesktopService: TelaDesktopService,
-    public cdref: ChangeDetectorRef
+    public cdref: ChangeDetectorRef,
+    public readonly sweetalertService: SweetalertService
   ) {
     super(telaDesktopService);
   }
@@ -98,19 +100,24 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   setarTipoPagto() {
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
 
-    let usuarioInterno = false;
-    if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      usuarioInterno = true;
+    //se tiver parceiro no orçamento deve ser setado por 
+    let temParceiro = false;
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
+      temParceiro = true;
     }
+    // if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+    //   usuarioInterno = true;
+    // }
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-      this.qtdeMaxParcelas = usuarioInterno ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
       this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-      this.qtdeMaxParcelas = usuarioInterno ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
       this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
 
@@ -392,13 +399,32 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
+        if(this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)){
+          let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
+          let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
+          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+          this.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+            if (!result) return;
+
+            this.gravarOpcao();
+
+          });
+        }
+        else this.gravarOpcao();
+    }
+    else this.gravarOpcao();
+  }
+
+  gravarOpcao(){
     this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
     this.setarQtdeMaxParcelasEDias();
-
   }
 
   atribuirFormasPagto() {
