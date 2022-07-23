@@ -45,8 +45,9 @@
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
                             <div>
                                 <span class="p-text-bold">Validade:</span>
-                                <span>
-                                    {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.validade)}}</span>
+                                <span [ngStyle]="{'background-color':validadeBgColor}">
+                                    {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.validade)}}
+                                </span>
                             </div>
                             <div *ngIf="!novoOrcamentoService.orcamentoCotacaoDto.parceiro">
                                 <span class="p-text-bold">Vendedor:</span>

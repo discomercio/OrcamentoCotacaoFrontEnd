@@ -63,11 +63,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   razaoSocialParceiro: string;
   formaPagamento: FormaPagto[] = new Array();
   activeState: boolean[] = [false, false, false];
-  @Input() desabiltarBotoes: boolean;
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
   opcaoPagto: number;
+  validadeBgColor: string;
+  @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
 
   ngOnInit(): void {
@@ -193,7 +194,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           if(r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           } else {
-            this.mensagemService.showSuccessViaToast(r.mensagem);
+            if(r?.mensagem?.includes('|')) {
+              let msg = r.mensagem.split('|');
+              console.log(msg);
+              console.log(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
+              this.mensagemService.showSuccessViaToast(msg[1]);
+              this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
+              this.validadeBgColor = '#E94C4C';
+            } 
           }
         }
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
