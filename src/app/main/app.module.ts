@@ -1,4 +1,3 @@
-// import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
 import { SharedModule } from './shared.module';
 import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { NgModule } from '@angular/core';
@@ -102,7 +101,6 @@ import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhe
         PublicoCadastroClienteComponent,
         CalculadoraVrfComponent,
         SelectEvapDialogComponent,
-        // DetalhesPrepedidoComponent,
         PedidoDetalhesComponent,
         PublicoCadastroClienteComponent,
         PrepedidoDetalhesComponent,
