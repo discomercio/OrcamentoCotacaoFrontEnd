@@ -156,27 +156,30 @@
                         </tr>
                     </table>
 
-                    <!--  ENDEREÇO DE ENTREGA  -->
+            <!--  ENDEREÇO DE ENTREGA  -->
 
-                    <table width="649" class="QS" cellspacing="0" style="table-layout:fixed">
-                        <tr>
-                            <td align="left">
-                                <p class="Rf">ENDEREÇO DE ENTREGA</p>
-                                <!-- <p class="C">{{formata_endereco_entrega()}} &nbsp;</p> -->
-                            </td>
-                        </tr>
-                        <!-- afazer: alterar o modo como mostramos os dados de endereço de entrega -->
-                        <tr>
-                            <td align="left" style="word-wrap:break-word">
-                                <!-- alterando a forma como mostramos o endereço d entrega por conta dos novos campos -->
-                                <textarea name="c_obs1" id="c_obs1" class="PLLe" 
-                                    style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly
-                                    tabindex=-1 [innerHTML]="">
-                         </textarea>
-                            </td>
-                        </tr>
+            <table width="649" class="QS" cellspacing="0" style="table-layout:fixed">
+                <tr>
+                    <td align="left">
+                        <p class="Rf">ENDEREÇO DE ENTREGA</p>
+                        <!-- <p class="C">{{formata_endereco_entrega()}} &nbsp;</p> -->
+                    </td>
+                </tr>
+                
+                <!-- afazer: alterar o modo como mostramos os dados de endereço de entrega -->
+                <tr *ngIf="this.prepedido?.EnderecoEntrega?.EndEtg_descricao_justificativa?.trim() != ''">
+                    <td align="left" *ngIf="this.prepedido?.EnderecoEntrega?.OutroEndereco"
+                        style="word-wrap:break-word">
 
-                    </table>
+                        <!-- alterando a forma como mostramos o endereço d entrega por conta dos novos campos -->
+                        <textarea name="c_obs1" id="c_obs1" class="PLLe" rows="{{qtdeLinhaEndereco}}"
+                            style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly tabindex=-1
+                            [innerHTML]="enderecoEntregaFormatado">                            
+                        </textarea>
+                    </td>
+                </tr>
+
+            </table>
 
                     <!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
                     <br>
