@@ -6,8 +6,33 @@
                 <selecionarcliente-arclube (inputValue)="preencheDadosCliente($event)">
                 </selecionarcliente-arclube>
             </div>
+
+            <div class="second-up" *ngIf="step == 2 && cadastrarCliente == true">
+                <input-arclube titleInput="Nome" setPlaceholder="Nome"></input-arclube>
+                <input-arclube titleInput="CPF" setPlaceholder="CPF"></input-arclube>
+                <input-arclube titleInput="RG" setPlaceholder="RG"></input-arclube>
+                <input-arclube titleInput="Nascimento" setPlaceholder="Nascimento"></input-arclube>
+                <input-arclube titleInput="Sexo" setPlaceholder="Sexo"></input-arclube>
+                <selecionarcep-arclube (inputValue)="preencheEndereco($event)"></selecionarcep-arclube>
+                <input-arclube titleInput="Endereço" setPlaceholder="Endereço"></input-arclube>
+                <input-arclube titleInput="Nº" setPlaceholder="Nº"></input-arclube>
+                <input-arclube titleInput="Complemento" setPlaceholder="Complemento"></input-arclube>
+                <input-arclube titleInput="Bairro" setPlaceholder="Bairro"></input-arclube>
+                <input-arclube titleInput="Cidade" setPlaceholder="Cidade"></input-arclube>
+                <input-arclube titleInput="UF" setPlaceholder="UF"></input-arclube>
+                <input-arclube titleInput="Fone Residencial" setPlaceholder="Fone Residencial"></input-arclube>
+                <input-arclube titleInput="Celular" setPlaceholder="Celular"></input-arclube>
+                <input-arclube titleInput="Fone Comercial" setPlaceholder="Fone Comercial"></input-arclube>
+                <input-arclube titleInput="Ramal" setPlaceholder="Ramal"></input-arclube>
+                <input-arclube titleInput="Observação" setPlaceholder="Observação"></input-arclube>
+                <input-arclube titleInput="E-mail" setPlaceholder="E-mail"></input-arclube>
+                <input-arclube titleInput="E-mail (XML)" setPlaceholder="E-mail (XML)"></input-arclube>
+                <input-arclube titleInput="Produtor Rural" setPlaceholder="Produtor Rural"></input-arclube>
+                <button-arclube setLabel="Voltar"></button-arclube>
+                <button-arclube setLabel="Avançar" (click)="btnAvancarCriarCliente()"></button-arclube>
+            </div>
             
-            <div class="second-up" *ngIf="step == 2">
+            <div class="second-up" *ngIf="step == 2 && !cadastrarCliente">
                 <span><strong>Nome: </strong> Gabriel Prada Teodoro</span>
                 <span><strong>CPF: </strong> 352.707.458/24</span>
                 <span><strong>RG: </strong>50.044.287/0</span>
@@ -19,13 +44,13 @@
                 <span><strong>E-mail: </strong> gabriel.prada.teodoro@gmail.com</span>
                 <span><strong>E-mail(xml): </strong> </span>
             </div>
-            <div class="second-mid" *ngIf="step == 2">
+            <div class="second-mid" *ngIf="step == 2 && !cadastrarCliente">
                 <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
                 <dropdown-arclube titleInput="Contribuinte ICMS"></dropdown-arclube>
                 <input-arclube titleInput="IE"></input-arclube>
             </div>
             
-            <div class="second-dados" *ngIf="step == 2">
+            <div class="second-dados" *ngIf="step == 2 && !cadastrarCliente">
                 <h5>Dados Cadastrais</h5>
                 <button-arclube setLabel="Dados Cadastrais"></button-arclube>
                 <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
@@ -44,13 +69,13 @@
                 <input-arclube titleInput="E-mail(xml)" setPlaceholder="E-mail(xml)"></input-arclube>
             </div>
             
-            <div class="second-entrega" *ngIf="step == 2">
+            <div class="second-entrega" *ngIf="step == 2 && !cadastrarCliente">
                 <p>Endereço de entrega</p>
                 <radio-arclube setIsMultiple="false" [setRadioItems]="itemPayment"></radio-arclube>
             
             </div>
             
-            <div class="second-dados-entrega" *ngIf="step == 2">
+            <div class="second-dados-entrega" *ngIf="step == 2 && !cadastrarCliente">
                 <dropdown-arclube titleInput="Produtor rural"></dropdown-arclube>
                 <input-arclube titleInput="CEP" setPlaceholder="CEP"></input-arclube>
                 <button-arclube setLabel="Não sei o CEP"></button-arclube>

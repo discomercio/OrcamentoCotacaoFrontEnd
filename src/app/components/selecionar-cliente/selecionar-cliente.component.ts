@@ -146,7 +146,7 @@ export class SelecionarClienteArClubeComponent {
 	mostrarNaoCadastrado() {
 		if (confirm("Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?")) {
 			// this.modalCadastrarCliente = true;
-			this.router.navigate(["/cliente/cliente"])
+			this.inputValue.emit("novocliente")
 		}
 
 		// this.alertaService.mostrarMensagem("CPF ou CNPJ não encontrado.")
