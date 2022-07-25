@@ -1,5 +1,5 @@
 import { StringUtils } from './string-utils';
-import { CpfCnpjUtils } from './cpfCnpjUtils';
+import { FormataCpfCnpj } from './formata-cpf-cnpj';
 import { Constantes } from '../constantes';
 import { FormataTelefone } from './formata-telefone';
 
@@ -72,7 +72,7 @@ export class FormatarEndereco {
         if (!!enderecoEntrega.EndEtg_nome)
             sCabecalho = enderecoEntrega.EndEtg_nome;
 
-        sCabecalho += " \nCPF: " + CpfCnpjUtils.cnpj_cpf_formata(enderecoEntrega.EndEtg_cnpj_cpf);
+        sCabecalho += " \nCPF: " + FormataCpfCnpj.cnpj_cpf_formata(enderecoEntrega.EndEtg_cnpj_cpf);
 
         aux = "";
         if (enderecoEntrega.EndEtg_produtor_rural_status == this.constante.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM) {
@@ -140,7 +140,7 @@ export class FormatarEndereco {
         if (!!enderecoEntrega.EndEtg_nome)
             sCabecalho = enderecoEntrega.EndEtg_nome;
 
-        sCabecalho += " \nCNPJ: " + CpfCnpjUtils.cnpj_cpf_formata(enderecoEntrega.EndEtg_cnpj_cpf);
+        sCabecalho += " \nCNPJ: " + FormataCpfCnpj.cnpj_cpf_formata(enderecoEntrega.EndEtg_cnpj_cpf);
 
         if (enderecoEntrega.EndEtg_contribuinte_icms_status == this.constante.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)
             aux = "Não";

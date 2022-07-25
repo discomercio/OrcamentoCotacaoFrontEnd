@@ -1,6 +1,6 @@
 import { StringUtils } from './string-utils';
 
-export class CpfCnpjUtils {
+export class FormataCpfCnpj {
     //copiado de http://www.receita.fazenda.gov.br/aplicacoes/atcta/cpf/funcoes.js
     //Verifica se CPF é válido
     ReceitaFederalTestaCPF(strCPF: string): boolean {
@@ -34,10 +34,10 @@ export class CpfCnpjUtils {
         s = "" + cnpj_cpf;
         s = StringUtils.retorna_so_digitos(cnpj_cpf);
         if (s.length == 11) {
-            if (CpfCnpjUtils.cpf_ok(s)) return true;
+            if (FormataCpfCnpj.cpf_ok(s)) return true;
         }
         else if (s.length == 14) {
-            if (CpfCnpjUtils.cnpj_ok(s)) return true;
+            if (FormataCpfCnpj.cnpj_ok(s)) return true;
         }
         else if (s.length == 0) {
             return true;

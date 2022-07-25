@@ -133,8 +133,8 @@ export class PrepedidoDetalhesComponent implements OnInit {
     this.carregar();        
     setTimeout(() => {
       this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
-    }, 5000);    
-        
+    }, 1000);    
+
   }  
 
 }
