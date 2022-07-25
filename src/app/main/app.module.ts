@@ -1,3 +1,4 @@
+// import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
 import { SharedModule } from './shared.module';
 import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
 import { NgModule } from '@angular/core';
@@ -60,7 +61,7 @@ import { PublicoHeaderComponent } from '../views/publico/header/header.component
 import { PublicoCadastroClienteComponent } from '../views/publico/cadastro-cliente/cadastro-cliente.component';
 import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
-import { DetalhesPrepedidoComponent } from '../views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { PrepedidoDetalhesComponent } from '../views/prepedido/detalhes/prepedido-detalhes.component';
 import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
 
 
@@ -101,9 +102,11 @@ import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhe
         PublicoCadastroClienteComponent,
         CalculadoraVrfComponent,
         SelectEvapDialogComponent,
-        DetalhesPrepedidoComponent,
+        // DetalhesPrepedidoComponent,
         PedidoDetalhesComponent,
-        PublicoCadastroClienteComponent
+        PublicoCadastroClienteComponent,
+        PrepedidoDetalhesComponent,
+        PedidoDetalhesComponent
     ],
     providers: [
         {

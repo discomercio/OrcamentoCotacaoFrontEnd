@@ -29,6 +29,22 @@ export class MoedaUtils {
         return this.formatter.format(nro);
     }
 
+    public formatarPorcentagemUmaCasa(nro: number) {
+        
+        if (!!!nro)
+            return "";
+        // return this.formatter1casa.format(nro);
+        let teste = this.formatter1casa.format(nro);
+        return teste;
+    }    
+
+    public formatarPorcentagemUmaCasaReturnZero(nro: number) {
+        if (!!!nro)
+            return "0,0";
+        return this.formatter1casa.format(nro);
+    }    
+
+
     public formatarParaFloatUmaCasaReturnZero(nro: number) {
 
         if (!!!nro)
