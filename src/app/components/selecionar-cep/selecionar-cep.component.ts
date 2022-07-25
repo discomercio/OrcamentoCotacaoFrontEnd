@@ -343,7 +343,7 @@ export class SelecionarCepArClubeComponent {
 	}
 
 	onRowSelected(rowData) {
-		this.rowSelected.emit(rowData)
+		this.inputValue.emit(rowData)
 		this.modalCEP = false
 	}
 

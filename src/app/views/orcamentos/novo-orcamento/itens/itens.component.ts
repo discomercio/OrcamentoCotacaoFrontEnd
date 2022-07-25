@@ -6,10 +6,8 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { Table } from 'primeng/table';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
-import { SelecProdInfo } from '../select-prod-dialog/selec-prod-info';
-import { SelectProdDialogComponent } from '../select-prod-dialog/select-prod-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
-import { ProdutoTela } from '../select-prod-dialog/produto-tela';
+import { ProdutoTela } from '../../../produto/modal/produto-tela';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Constantes } from 'src/app/utilities/constantes';
@@ -33,6 +31,8 @@ import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
 import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
 import { Location } from '@angular/common';
+import { SelecProdInfo } from 'src/app/dto/prepedido/selec-prod-info';
+import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-prod-dialog.component';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,

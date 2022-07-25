@@ -44,7 +44,7 @@
       </ng-template>
       <!-- TABLE BODY -->
       <ng-template pTemplate="body" let-rowData let-item="items" >
-          <tr>
+          <tr (click)="onRowSelected(rowData)">
             <td *ngFor="let header of headers" style="font-size: 12px;" [style]="{width: header.width}">
               <!-- Edit Item e Remove Item-->
               <button pButton pRipple [pTooltip]="tooltipEditLabel" class="p-button-text" [icon]="viewItem? 'pi pi-eye' : 'pi pi-pencil'" *ngIf="(header.field === 'actions')" (click)="editItem(rowData)"></button> 

@@ -28,7 +28,6 @@ import { OrcamentosListarComponent } from '../../views/orcamentos/listar/listar.
 import { NovoOrcamentoComponent } from '../../views/orcamentos/novo-orcamento/novo-orcamento.component';
 import { CadastrarClienteComponent } from 'src/app/views/orcamentos/novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
 import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/itens.component';
-import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
 import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
@@ -40,6 +39,7 @@ import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-
 import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
+import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-prod-dialog.component';
 
 @NgModule({
     imports: [

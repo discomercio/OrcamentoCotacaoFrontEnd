@@ -13,6 +13,10 @@ export class SelecProdInfo {
     public Produto: string;
     public Qte: number;
 
+    public Uf: string;
+    public tipoCliente: string;
+    public siglaPagto: string;
+    public qtdeMaxParcelas: number;
     //saída
     public ClicouOk: boolean;
 

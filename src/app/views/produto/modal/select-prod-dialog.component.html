@@ -16,7 +16,7 @@
         </div>
         <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
             autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
-            [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true">
+            [rows]="pageItens" [filterDelay]="0" [paginator]="true">
             <ng-template pTemplate="body" let-p>
                 <ng-container *ngIf="p.visivel">
 
@@ -46,13 +46,13 @@
                             </td>
                             <td class="p-pl-6">
                                 <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
-                                <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right">
+                                <div *ngIf="!onResize() && f.alertas != null" class="p-text-right">
                                     <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
                                         pTooltip="{{f.alertas}}"
                                         [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
                                     </p-avatar>
                                 </div>
-                                <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right"
+                                <div *ngIf="onResize() && f.alertas != null" class="p-text-right"
                                     style="color:red">
                                     {{f.alertas}}
                                 </div>

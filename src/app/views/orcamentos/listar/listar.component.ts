@@ -206,7 +206,7 @@ export class OrcamentosListarComponent implements OnInit {
         return;
       }
       else {
-        this.prepedidoService.removerPrePedido(idPedido).toPromise().then(r => {
+        this.prepedidoService.remover(idPedido).toPromise().then(r => {
           this.lstDtoFiltrada.forEach((x, i) => {
             if (x.NumPedido == idPedido) {
               this.lstDtoFiltrada.splice(i, 1);
