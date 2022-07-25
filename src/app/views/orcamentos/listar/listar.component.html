@@ -188,7 +188,7 @@
                         <tr class="p-selectable-row" [pSelectableRow]="rowData">
                             <td *ngFor="let col of columns" class="p-py-2" [ngStyle]="{'display': col.visible}"
                                 style="text-align: center;">
-                                <span *ngIf="col.field == 'NumeroOrcamento'"
+                                <span *ngIf="col.field == 'NumeroOrcamento' && rowData['NumeroOrcamento']!='-'"
                                     (click)="orcamento_OnClick(rowData['NumeroOrcamento'])"
                                     style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{ rowData[col.field] }}
@@ -202,7 +202,7 @@
                                     }}
                                 </span>
                                 
-                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']=='0' && rowData['NumeroOrcamento']!='-' && rowData['Cliente_Obra']"  (click)="prepedido_OnClick(rowData['NumPedido'])"
+                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']=='0' && rowData['Cliente_Obra']"  (click)="prepedido_OnClick(rowData['NumPedido'])"
                                 style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{
                                     col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
@@ -211,7 +211,7 @@
                                     rowData[col.field]
                                     }}
                                 </span>       
-                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']!='0' && rowData['NumeroOrcamento']!='-' && rowData['Cliente_Obra']"  (click)="pedido_OnClick(rowData['NumPedido'])"
+                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']!='0' && rowData['Cliente_Obra']"  (click)="pedido_OnClick(rowData['NumPedido'])"
                                 style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{
                                     col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
