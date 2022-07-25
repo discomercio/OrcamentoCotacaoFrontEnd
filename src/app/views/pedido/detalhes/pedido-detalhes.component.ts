@@ -25,8 +25,8 @@ export class PedidoDetalhesComponent implements OnInit {
     private location: Location    
 
   ) { }
+
   
-  dataformatarDataTalvezHoraMinSS = DataUtils.formata_data_e_talvez_hora_hhmmss;
   dataFormatarTela = DataUtils.formatarTela;
 
   numeroPedido = "";
