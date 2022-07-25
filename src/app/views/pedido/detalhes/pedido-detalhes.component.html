@@ -258,7 +258,7 @@
                 </tr>
                 <tr *ngIf="pedido?.EnderecoEntrega?.EndEtg_descricao_justificativa?.trim() != ''">
                     <td align="left" style="word-wrap:break-word" *ngIf="pedido?.EnderecoEntrega?.OutroEndereco">
-                        <textarea name="c_obs1" id="c_obs1" class="PLLe"
+                        <textarea name="c_obs1" id="c_obs1" class="PLLe"  rows="{{qtdeLinhaEndereco}}"
                             style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly tabindex=-1
                             [innerHTML]="enderecoEntregaFormatado">
                         </textarea>
@@ -589,7 +589,7 @@
                 <tr>
                     <td align="left">
                         <p class="Rf">DATA DE COLETA</p>
-                        <p class="C">{{pedido.DetalhesFormaPagto.DataColeta}}</p>
+                        <p class="C">{{dataFormatarTela(pedido.DetalhesFormaPagto.DataColeta)}}</p>
                     </td>
                 </tr>
             </table>
