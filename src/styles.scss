@@ -58,23 +58,6 @@ $gutter: .5rem; //for primeflex grid system
     margin: 0% !important;
 }
 
-::ng-deep .p-accordion .p-accordion-header:not(.p-highlight):not(.p-disabled):hover .p-accordion-header-link{
-    background: #146fd7;
-    color: #fff;
-}
-::ng-deep .p-accordion .p-accordion-header .p-accordion-header-link{
-    background: #146fd7;
-    color: #fff;
-}
-::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight:hover .p-accordion-header-link 
-{
-    background: #146fd7;
-    color: #fff;
-}
 
-::ng-deep .p-accordion .p-accordion-header:not(.p-disabled).p-highlight .p-accordion-header-link{
-    background: #146fd7;
-    color: #fff;
-}
   
 
