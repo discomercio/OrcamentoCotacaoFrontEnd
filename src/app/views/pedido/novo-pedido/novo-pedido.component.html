@@ -304,8 +304,7 @@
                         <label for="IE" class="font-bold">IE</label>
                         <input id="IE" type="text" pInputText formControlName="IE" />
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'IE')">
-                            <small class="p-error"
-                                *ngIf="form.controls.IE.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.IE.errors?.required">{{mensagemErro}}</small>
                             <small class="p-error" *ngIf="form.controls.IE.errors?.maxlength">Quantidade de
                                 caracteres
                                 excede a o limite de
@@ -616,31 +615,498 @@
                     <span><strong>Cliente: </strong>{{this.pedido.DadosCliente.Nome}} -
                         {{this.pedido.DadosCliente.Cnpj_Cpf}}</span>
                 </div>
-                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                <!-- <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                     <button-arclube setLabel="Adicionar produto" (click)="adicionarProduto()"></button-arclube>
+                </div> -->
+            </div>
+            <!--Produtos-->
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="step == 3">
+                <div *ngIf="!editando" class="p-col-12 p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex p-jc-end p-px-0">
+                    <div class="p-mb-2 p-col-lg-3 p-col-md-3 p-col-sm-12">
+                        <button pButton pRipple label="Adicionar Produto" icon="pi pi-plus"
+                            (click)="adicionarProduto()"></button>
+                    </div>
+                </div>
+                <div class="p-col-12 p-px-0">
+                    <div *ngIf="!telaDesktop" class="font-size p-text-right p-text-bold p-md-12 p-sm-12">Quantidade de
+                        itens:
+                        {{lstProdutos?.length}}</div>
+                    <p-table #dataTable [value]="pedido.ListaProdutos" [responsive]="true" responsiveLayout="stack"
+                        autoLayout="true" styleClass="p-datatable-customers p-datatable-sm" [rows]="10"
+                        [filterDelay]="0">
+                        <ng-template pTemplate="header">
+                            <tr class="font-size">
+                                <th class="">Produto</th>
+                                <th class="p-text-right">Qtde</th>
+                                <!-- <th class="p-text-right">Preço NF</th> -->
+                                <th class="p-text-right">Vl Lista</th>
+                                <th class="p-text-right">Desc%</th>
+                                <th class="p-text-right">Vl Venda</th>
+                                <th class="p-text-right">Vl Total</th>
+                                <th *ngIf="!editando" class="p-text-right">Excluir</th>
+                            </tr>
+                        </ng-template>
+                        <ng-template pTemplate="body" let-p let-index="rowIndex">
+                            <tr class="p-selectable-row" class="font-size">
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title"
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Produto</span>
+                                    <input type="hidden" value="{{p.produto}}" [(ngModel)]="p.produto" />
+                                    <p class="{{telaDesktop ? '' : 'p-ml-2'}}" [innerHTML]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto,
+                                    p.Descricao)">
+                                        
+                                    </p>
+                                </td>
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title"
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
+                                    <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde"
+                                        type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
+                                        (change)="digitouQte(p)" />
+                                </td>
+                                <!-- <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                            <span class="p-column-title" [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Preço NF</span>
+                            <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="precoNF" type="text" pInputText placeholder=""
+                                [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoNF)"
+                                (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
+                        </td> -->
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title">VL Lista:</span>
+                                    <div class="p-text-right">
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.precoLista)}}
+                                    </div>
+                                </td>
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title"
+                                        [ngStyle]="telaDesktop ? {'':''}:{'display':'contents'}">Desc%</span>
+                                    <div class="p-d-inline-flex p-ai-center p-jc-end"
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'width':'100%'}">
+                                        <input
+                                            class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
+                                            pInputText id="desconto" type="text"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
+                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
+                                    </div>
+                                </td>
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title"
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Vl
+                                        Venda</span>
+                                    <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" pInputText
+                                        id="vlVenda" type="text"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)"
+                                        (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)" />
+                                </td>
+                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title">Vl Total:</span>
+                                    <div class="p-text-right">
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
+                                    </div>
+                                </td>
+                                <td *ngIf="!editando"
+                                    class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                    <span class="p-column-title">Excluir:</span>
+                                    <div class="p-text-right">
+                                        <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
+                                    </div>
+                                </td>
+                            </tr>
+                            <!-- <tr *ngIf="estoqueExcedido(p)" class="alerta">
+                                <td colspan="8" class="font-size">AVISO: Quantidade solicitada é maior que o estoque
+                                    disponível!</td>
+                            </tr> -->
+                            <!-- <tr *ngIf="produtoTemAviso(p)">
+                                <td colspan="8" class="font-size alerta">AVISO: {{mensagemAlerta}}</td>
+                            </tr> -->
+                            <!-- <tr *ngIf="qtdeVendaPermitida(p)" class="alerta">
+                                <td colspan="8" class="font-size">AVISO: Quantidade solicitada excede a quantidade
+                                    máxima de venda permitida!</td>
+                            </tr> -->
+                        </ng-template>
+                        <ng-template pTemplate="footer" class="font-size">
+                            <tr class="font-size">
+                                <!-- <td class="p-text-right">                                  
+
+                                </td>
+                                <td></td> -->
+                                <td class="p-text-right" colspan="2">
+                                    <div class="p-d-inline-flex">
+                                        <span
+                                            *ngIf="pedido?.parceiro != this.constantes.SEM_INDICADOR && pedido?.parceiro != null && !editarComissao">
+                                            Comissão:
+                                            {{moedaUtils.formatarValorDuasCasaReturnZero(pedido.percRT)}}
+                                            %
+                                        </span>
+                                        <div class="p-d-inline-flex p-jc-end" *ngIf="editarComissao">
+                                            <div class="p-col-7 p-inputgroup">
+                                                <input type="text" pInputText class="p-text-right"
+                                                    [value]="moedaUtils.formatarValorDuasCasaReturnZero(pedido.percRT)"
+                                                    (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
+                                                <span class="p-inputgroup-addon">%</span>
+                                            </div>
+
+                                        </div>
+                                        <div class="p-as-center" *ngIf="param != 'novo'">
+                                            <button
+                                                *ngIf="pedido?.parceiro != constantes.SEM_INDICADOR && pedido?.parceiro != null && !editarComissao && !descontaComissao"
+                                                pButton type="button" icon="pi pi-user-edit"
+                                                (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
+                                            <button *ngIf="pedido?.parceiro != null && editarComissao" pButton
+                                                type="button" icon="pi pi-save" (click)="liberarEdicaoComissao()"
+                                                class="p-button-text p-p-0"></button>
+                                        </div>
+                                    </div>
+
+
+                                </td>
+                                <td class="p-text-right p-col-2" colspan="2">
+                                    <div>
+                                        <div class="p-inputgroup">
+                                            <input type="text" pInputText class="p-text-right"
+                                                [value]="this.moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                (keyup)="formataDescontoGeral($event)">
+                                            <span class="p-inputgroup-addon">%</span>
+                                            <button type="button" pButton pRipple icon="pi pi-plus"
+                                                styleClass="p-button-warn" pTooltip="Aplicar desconto nos produtos"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                (click)="aplicarDescontoGeral($event)"></button>
+                                        </div>
+                                    </div>
+
+                                </td>
+
+                                <td class="p-text-right" colspan="2">
+                                    Total
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.pedido?.vlTotal)}}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </ng-template>
+                    </p-table>
+                    <div *ngIf="!telaDesktop && pedido.ListaProdutos?.length > 0"
+                        style="border: 1px solid #cecece; border-radius: 0.5rem" class="p-mt-4 p-p-2">
+                        <div class="p-d-flex p-jc-between p-text-bold font-size">
+                            <span>Comissão</span>
+                            <span>{{pedido.percRT}}</span>
+                        </div>
+
+                        <div class="p-d-flex p-jc-between p-text-bold font-size">
+                            <span>Total</span>
+                            <span>{{moedaUtils.formatarMoedaSemPrefixo(pedido.totalPedido())}}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Forma de pagamento-->
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-d-inline-flex" *ngIf="step == 3">
+                <div class="p-col-12 p-px-0" [ngClass]="{'desabilita': habilitar}">
+                    <div class="p-col-12 p-px-0 p-py-1">
+                        <h6>Formas de pagamento</h6>
+                        <div class="p-field-checkbox p-d-block" *ngIf="formasPagtoAVista">
+                            <div class="p-col-12 p-grid p-ai-center">
+                                <div class="p-text-nowrap p-xl-1 espaco">
+                                    <p-checkbox name="{{formasPagtoAVista.idTipoPagamento}}"
+                                        value="{{formasPagtoAVista.idTipoPagamento}}"
+                                        inputId="{{formasPagtoAVista.idTipoPagamento}}"
+                                        (onChange)="calcularValorAvista()" [(ngModel)]="checkedAvista" binary="true">
+                                    </p-checkbox>
+                                    <label class="font-size p-mx-2 p-as-center"
+                                        for="{{formasPagtoAVista.idTipoPagamento}}">{{formasPagtoAVista.tipoPagamentoDescricao}}</label>
+                                </div>
+
+                                <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
+                                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="avista"
+                                        [options]="formasPagtoAVista.meios" optionLabel="descricao"
+                                        placeholder="Selecione" optionValue="id">
+                                    </p-dropdown>
+                                </div>
+                                <div *ngIf="totalAvista > 0" class="p-my-lg-5 p-col-2">
+                                    {{moedaUtils.formatarMoedaComPrefixo(totalAvista)}}
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-grid p-ai-center">
+                                <div class="p-xl-1 espaco">
+
+                                </div>
+                                <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
+                                    <label>Observação</label>
+                                    <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="p-field-checkbox p-d-block">
+                            <div class="p-col-12 p-grid p-ai-center ">
+                                <div class="p-text-nowrap p-xl-1 espaco p-pr-1">
+                                    <p-checkbox name="" value="2" inputId="2" [disabled]="true" binary="true"
+                                        [(ngModel)]="checked">
+                                    </p-checkbox>
+                                    <label class="font-size p-mx-2 p-as-center" for="2">A Prazo</label>
+                                </div>
+                                <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
+                                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo"
+                                        [disabled]="editando" optionLabel="tipoPagamentoDescricao"
+                                        placeholder="Selecione" (onChange)="selectAprazo()"
+                                        optionValue="idTipoPagamento">
+                                    </p-dropdown>
+                                </div>
+                            </div>
+                            <div class="p-grid p-col-12 p-ai-center">
+                                <div class=" p-xl-1 espaco">
+
+                                </div>
+                                <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO"
+                                    class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex
+                                     p-d-block p-pl-lg-0 p-px-0 p-px-md-0 p-px-sm-0">
+                                    <div class="p-col-12 p-px-0">
+                                        <label>Qtde de parcelas</label>
+                                        <input id="qtdeParcelas" type="number" pInputText placeholder="" [min]="1"
+                                            class="p-text-right" [max]="qtdeMaxParcelas"
+                                            [(ngModel)]="formaPagtoCriacaoAprazo.c_pc_qtde"
+                                            (change)="calcularParcelas()" />
+                                    </div>
+                                    <div class="p-col-12 p-lg-7 p-md-7 p-sm-7 p-d-inline-flex p-jc-end p-jc-lg-start p-jc-md-start p-jc-sm-start
+                                     p-ai-lg-center p-ai-md-center p-ai-sm-center p-mt-3"
+                                        *ngIf="formaPagtoCriacaoAprazo.c_pc_valor">
+                                        X
+                                        {{moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pc_valor)}}
+                                    </div>
+                                </div>
+
+                                <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA"
+                                    class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
+                                    <div
+                                        class="p-col-12 p-px-0 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex">
+                                        <div
+                                            class="p-col-12 p-lg-6 p-md-6 p-pl-0 p-pl-lg-0 p-pl-md-0 p-pl-sm-0 p-pr-0 p-pr-lg-2 p-pr-md-2 p-pr-sm-2 p-sm-6">
+                                            <label>Meio pagamento entrada</label>
+                                            <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8"
+                                                [options]="meiosEntrada" optionLabel="descricao" optionValue="id"
+                                                placeholder="Selecione" (onChange)="setarQtdeMaxParcelasEDias()"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_entrada_forma_pagto">
+                                            </p-dropdown>
+                                        </div>
+                                        <div class="p-as-md-baseline p-as-md-center p-as-sm-center p-as-xl-baseline p-col-12 p-lg-6 p-md-6 p-pl-0 
+                                            p-pl-lg-0 p-pl-md-0 p-pl-sm-0 p-pr p-pr-0 p-sm-6 campo">
+                                            <label>Valor de entrada</label>
+                                            <input id="valorEntrada" type="text" pInputText placeholder=""
+                                                [value]="moedaUtils.formatarMoedaSemPrefixo(formaPagtoCriacaoAprazo.o_pce_entrada_valor)"
+                                                (keyup)="formatarVlEntrada($event)" (blur)="digitouVlEntrada()" />
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="p-col-12 p-px-0 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex">
+                                        <div class="p-col-12 p-lg-6 p-md-6 p-mt-4 p-mt-lg-0 p-mt-md-0 p-mt-sm-0 p-pl-0 p-pr-0 p-pr-lg-2 p-pr-md-2 
+                                            p-pr-sm-2 p-sm-6">
+                                            <label>Meio pagamento demais prestações</label>
+                                            <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo"
+                                                [options]="meiosDemaisPrestacoes" optionLabel="descricao"
+                                                optionValue="id" placeholder="Selecione" (onChange)="calcularParcelas()"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto">
+                                            </p-dropdown>
+                                        </div>
+                                        <div
+                                            class="campo2 p-as-lg-center p-as-md-center p-as-sm-center p-as-xl-baseline p-col-12 p-d-lg-inline-flex 
+                                                p-d-md-inline-flex p-d-sm-inline-flex p-lg-10 p-md-10 p-pl-0 p-pr-0 p-pr-lg-2 p-pr-md-2 p-sm-10">
+                                            <div
+                                                class="p-as-lg-center p-as-md-center p-as-sm-center p-as-xl-baseline p-col-12 p-lg-8 p-md-8 p-pl-0 
+                                                p-pl-lg-0 p-pl-md-0 p-pl-sm-0 p-pr-0 p-pr-lg-4 p-pr-md-3 p-pr-sm-3 p-sm-8">
+                                                <label>Qtde de parcelas</label>
+                                                <input id="qtdeParcelaEntrada" type="number" pInputText placeholder=""
+                                                    [min]="1" [max]="qtdeMaxParcelas" (keyup)="calcularParcelas()"
+                                                    (change)="calcularParcelas()"
+                                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_qtde" />
+
+                                            </div>
+                                            <div class="p-as-center p-col-12 p-lg-8 p-md-8 p-pl-lg-0 p-py-2 p-py-lg-0 p-py-md-0 p-py-sm-0 p-sm-8
+                                                    p-text-lg-left p-text-md-left p-text-right p-text-sm-left">
+                                                <span>
+                                                    X
+                                                    {{moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pce_prestacao_valor)}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
+                                        <div
+                                            class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
+                                            <label class="p-text-nowrap p-as-sm-center p-pr-1">Período entre
+                                                parcelas</label>
+                                            <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder=""
+                                                [min]="0" [max]="qtdeMaxDias"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.c_pce_prestacao_periodo"
+                                                (blur)="calcularParcelas()" />
+                                        </div>
+                                        <div
+                                            class="p-as-lg-center p-as-md-center p-as-sm-center p-col-12 p-pl-lg-3 p-pl-md-4 p-pl-sm-4 
+                                                p-pt-2 p-pt-lg-0 p-pt-md-0 p-pt-sm-0 p-text-lg-left p-text-md-left p-text-right p-text-sm-left">
+                                            <span>
+                                                dias
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA"
+                                    class="p-col-10">
+                                    <div class="p-grid p-col p-px-0">
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                                            <label>Meio pagamento 1º Prestação</label>
+                                            <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8" id="aprazo"
+                                                [options]="meioPrimPrest" optionLabel="descricao"
+                                                optionValue="idTipoParcela" placeholder="Selecione"
+                                                (onChange)="calcularParcelas()"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.op_pse_prim_prest_forma_pagto">
+                                            </p-dropdown>
+                                        </div>
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                                            <label>Valor 1ª Prestação</label>
+                                            <input id="valorPrimPrest" type="text" pInputText placeholder=""
+                                                [value]="moedaUtils.formatarMoedaSemPrefixo(formaPagtoCriacaoAprazo.c_pse_prim_prest_valor)"
+                                                (keyup)="formatarPrimPrest($event)" (blur)="digitouPrimPrest()" />
+
+                                        </div>
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3 p-pr-0 p-d-inline-flex">
+                                            <div class="p-col-12 p-pl-0">
+                                                <label>Vencendo após</label>
+                                                <input id="vencApos" type="number" pInputText placeholder="" [min]="1"
+                                                    [max]="qtdeMaxPeriodoPrimPrest" (blur)="calcularParcelas()"
+                                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pse_prim_prest_apos" />
+                                            </div>
+                                            <div class="p-col-2 p-as-center p-px-0 p-my-5">
+                                                <span>
+                                                    dias
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="p-grid  p-col p-px-0">
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                                            <label>Demais prestações</label>
+                                            <p-dropdown class="p-mx-3 p-col-12 p-lg-8 p-md-8 p-sm-8" id="aprazo"
+                                                [options]="meiosDemaisPrestacoes" optionLabel="descricao"
+                                                placeholder="Selecione"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.op_pse_demais_prest_forma_pagto"
+                                                (onChange)="calcularParcelas()" optionValue="id">
+                                            </p-dropdown>
+                                        </div>
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3">
+                                            <label>Qtde</label>
+                                            <input id="qtdeDemaisPrest" type="number" pInputText placeholder=""
+                                                [min]="1" (keyup)="calcularParcelas()" (change)="calcularParcelas()"
+                                                [max]="qtdeMaxParcelas"
+                                                [(ngModel)]="formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde" />
+
+                                        </div>
+                                        <div class="p-col-12 p-lg-3 p-md-3 p-sm-3 p-pr-0 p-d-inline-flex p-my-5">
+                                            X
+                                            {{moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pse_demais_prest_valor)}}
+
+                                        </div>
+                                    </div>
+                                    <div class="p-col p-px-0">
+                                        <div class="p-grid p-ai-center p-col-12">
+                                            <label>Período entre parcelas</label>
+                                            <div class="p-col-2">
+                                                <input id="qtdeDiasPrestacoes" type="number" pInputText placeholder=""
+                                                    [min]="0" [max]="qtdeMaxPeriodo" (blur)="calcularParcelas()"
+                                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pse_demais_prest_periodo" />
+                                            </div>
+                                            <div class="p-as-center">
+                                                <span>
+                                                    dias
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELA_UNICA"
+                                    class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-d-block 
+                                        p-pl-lg-0 p-px-0 p-px-md-0 p-px-sm-0 ng-star-inserted">
+                                    <div>
+                                        <div
+                                            class="p-col-12 p-px-0 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex">
+                                            <div class="p-col-12 p-px-0">
+                                                <label>Meio de pagamento</label>
+                                                <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo"
+                                                    [options]="meioParcelaUnica" optionLabel="descricao"
+                                                    optionValue="id" (onChange)="setarQtdeMaxParcelasEDias()"
+                                                    [(ngModel)]="formaPagtoCriacaoAprazo.op_pu_forma_pagto"
+                                                    placeholder="Selecione">
+                                                </p-dropdown>
+                                            </div>
+                                            <div class="p-as-lg-center p-as-md-center p-as-sm-center p-col-12 p-pl-lg-3 p-pl-md-3 p-pl-sm-3 p-px-0 
+                                                        p-text-lg-left p-text-md-left p-text-right p-text-sm-left">
+                                                {{moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pu_valor)}}
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
+                                            <div
+                                                class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-px-0">
+                                                <label class="p-text-nowrap p-as-sm-center p-pr-1">Vencendo após</label>
+                                                <input id="vencApos" type="number" pInputText placeholder="" [min]="1"
+                                                    [max]="qtdeMaxDias"
+                                                    [(ngModel)]="formaPagtoCriacaoAprazo.c_pu_vencto_apos" />
+                                            </div>
+                                            <div
+                                                class="p-as-lg-center p-as-md-center p-as-sm-center p-col-12 p-pl-lg-3 p-pl-md-4 p-pl-sm-4 
+                                                p-pt-2 p-pt-lg-0 p-pt-md-0 p-pt-sm-0 p-text-lg-left p-text-md-left p-text-right p-text-sm-left">
+                                                <span>
+                                                    dias
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div *ngIf="formaPagtoCriacaoAprazo?.tipo_parcelamento == constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA"
+                                    class="p-col-10 p-d-inline-flex p-px-0">
+                                    <div class="p-col-6 p-pl-0">
+                                        <label>Qtde de parcelas</label>
+                                        <input id="qtdeParcelas" type="number" pInputText placeholder="" [min]="1"
+                                            [max]="qtdeMaxParcelas"
+                                            [(ngModel)]="formaPagtoCriacaoAprazo.c_pc_maquineta_qtde"
+                                            (change)="calcularParcelas()" />
+                                    </div>
+                                    <div class="p-col p-d-inline-flex p-ai-center p-mt-3"
+                                        *ngIf="formaPagtoCriacaoAprazo.c_pc_maquineta_valor">
+                                        X
+                                        {{moedaUtils.formatarMoedaComPrefixo(formaPagtoCriacaoAprazo.c_pc_maquineta_valor)}}
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-col-12 p-grid p-ai-center p-mt-3">
+                                <div class="p-xl-1 espaco">
+
+                                </div>
+                                <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
+                                    <label>Observação</label>
+                                    <textarea rows="2" cols="30" pInputTextarea autoResize="autoResize"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                    <!-- <div *ngIf="editando" class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
+                        <button pButton pRipple label="Salvar Opção de Orçamento" (click)="salvarOpcao()"></button>
+                    </div> -->
                 </div>
             </div>
 
-            <div class="third-mid" *ngIf="step == 3">
-                <table-arclube>
-
-                </table-arclube>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-d-inline-flex" *ngIf="step == 3">
+                <div class="p-col-12 p-px-0">
+                    <div class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
+                        <button pButton pRipple label="Salvar pré-pedido"></button>
+                    </div>
+                </div>
             </div>
-            <div class="third-down" *ngIf="step == 3">
-                <dropdown-arclube titleInput="Forma de pagamento"></dropdown-arclube>
-                <dropdown-arclube titleInput="Valor a vista"></dropdown-arclube>
-                <dropdown-arclube titleInput="Meio de pagamento"></dropdown-arclube>
-
-                <input-arclube titleInput="Valor Entrada"></input-arclube>
-                <dropdown-arclube titleInput="Meio de pagamento entrada"></dropdown-arclube>
-                <dropdown-arclube titleInput="Parcelamento"></dropdown-arclube>
-                <dropdown-arclube titleInput="Meio de pagamento parcelado"></dropdown-arclube>
 
 
-
-                <input-arclube titleInput=" "></input-arclube>
-                <span><strong>Total do pedido: </strong></span>
-            </div>
 
             <div class="four-top" *ngIf="step == 4">
                 <span><strong>Cliente: </strong>352.704.458/24 - Gabriel Prada Teodoro</span>
@@ -665,8 +1131,7 @@
 </form>
 
 <style>
-    .font-bold
-    {
+    .font-bold {
         font-weight: bold;
     }
 </style>

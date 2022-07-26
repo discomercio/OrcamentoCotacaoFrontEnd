@@ -51,11 +51,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   ngOnInit(): void {
     this.displayModal = true;
     this.selecProdInfoPassado = this.option.data;
-    // this.transferirDados();
-
-    this.prodsTela = this.prodsArray;
     this.pageItens = this.telaDesktop ? 3 : 6;
+
+
     this.inscreveProdutoComboDto();
+
   }
 
   inscreveProdutoComboDto(): void {
@@ -63,7 +63,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     let produtoRequest: ProdutoRequest = new ProdutoRequest();
     produtoRequest.loja = this.autenticacaoService._lojaLogado;
-    produtoRequest.uf = this.option.data.uf;//this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
+    produtoRequest.uf = this.option.data.Uf;//this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
     produtoRequest.tipoCliente = this.option.data.tipoCliente//this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
     produtoRequest.tipoParcela = this.option.data.siglaPagto//this.novoOrcamentoService.siglaPagto;
     produtoRequest.qtdeParcelas = this.option.data.qtdeMaxParcelas//this.formaPagto.qtdeMaxParcelas;
@@ -71,8 +71,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
       if (r != null) {
-
-        this.produtoComboDto = r;
+        this.selecProdInfoPassado.produtoComboDto = r;
+        this.prodsTela = this.prodsArray;
+        this.transferirDados();
         this.carregandoProdutos = false;
         this.cdref.detectChanges();
       }
@@ -85,20 +86,20 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   public combo: ProdutoComboDto = new ProdutoComboDto();
 
   public limiteMaximo = 1000 * 1000;
-  // transferirDados() {
+  transferirDados() {
 
-  //   const limite = this.limiteMaximo;
-  //   for (let copiar = 0; copiar < limite; copiar++) {
-  //     //acabou?
-  //     if (!(this.prodsArray.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
-  //       break;
-  //     //colocamos mais um
-  //     let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[this.prodsArray.length],
-  //       this.selecProdInfoPassado.produtoComboDto.produtosCompostos);
+    const limite = this.limiteMaximo;
+    for (let copiar = 0; copiar < limite; copiar++) {
+      //acabou?
+      if (!(this.prodsArray.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
+        break;
+      //colocamos mais um
+      let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[this.prodsArray.length],
+        this.selecProdInfoPassado.produtoComboDto.produtosCompostos);
 
-  //     this.prodsArray.push(xy);
-  //   }
-  // }
+      this.prodsArray.push(xy);
+    }
+  }
 
 
 
@@ -111,38 +112,40 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   addProduto() {
-    // // precisa guardar os codigos de produto para fazer um distinct,
-    // // vamos guardar os produtos já separadamente?? se sim, criar no "novoOrcamentoService" pois assim,
-    // // saberemos se estamos ultrapassando o limite
-    // if (this.selecionado) {
-    //   let qtdeItens: number = 0;
-    //   if (this.selecionado.Filhos.length > 0) {
-    //     this.selecionado.Filhos.forEach(x => {
-    //       let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
-    //       if (!produto) {
-    //         this.novoOrcamentoService.controleProduto.push(x.produto);
-    //         qtdeItens++; 
-    //       }
-    //     });
-    //   }
-    //   else {
-    //     let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
-    //       if (!produto) {
-    //         this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
-    //         qtdeItens++; 
-    //       }
-    //   }
-    //   if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
-    //     this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
-    //     this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
-    //     return;
-    //   }
-    //   this.ref.close(this.selecionado);
-    //   return;
-    // }
-    // let msg: string[] = new Array();
-    // msg.push("Por favor, selecione um produto!");
-    // this.mensagemService.showErrorViaToast(msg);
+    // precisa guardar os codigos de produto para fazer um distinct,
+    // vamos guardar os produtos já separadamente?? se sim, criar no "novoOrcamentoService" pois assim,
+    // saberemos se estamos ultrapassando o limite
+    if (this.selecionado) {
+      this.ref.close(this.selecionado);
+      return;
+      // let qtdeItens: number = 0;
+      // if (this.selecionado.Filhos.length > 0) {
+      //   this.selecionado.Filhos.forEach(x => {
+      //     let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
+      //     if (!produto) {
+      //       this.novoOrcamentoService.controleProduto.push(x.produto);
+      //       qtdeItens++; 
+      //     }
+      //   });
+      // }
+      // else {
+      //   let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
+      //     if (!produto) {
+      //       this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
+      //       qtdeItens++; 
+      //     }
+      // }
+      // if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
+      //   this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
+      //   this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
+      //   return;
+      // }
+      // this.ref.close(this.selecionado);
+      // return;
+    }
+    let msg: string[] = new Array();
+    msg.push("Por favor, selecione um produto!");
+    this.mensagemService.showErrorViaToast(msg);
   }
 
   marcarLinha(e: Event) {

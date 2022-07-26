@@ -25,4 +25,5 @@
     C_forma_pagto: string;//Descrição da forma de pagto
     Descricao_meio_pagto: string;
     Tipo_parcelamento: number;
+  siglaPagto: string;
 }
