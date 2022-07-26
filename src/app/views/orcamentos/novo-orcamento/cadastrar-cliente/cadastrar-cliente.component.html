@@ -66,6 +66,15 @@
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
             </div>
 
+            <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                <label for="contribuinte">Contribuinte ICMS</label>
+                <p-dropdown id="contribuinte" [options]="lstContribuinteICMS" placeholder="Selecione"
+                    formControlName="ContribuinteICMS" optionLabel="label" optionValue="value">
+                </p-dropdown>
+                <small class="p-error"
+                    *ngIf="validacaoFormularioService.verificaCampo(form,'ContribuinteICMS')">{{mensagemErro}}</small>
+            </div>
+
             <div *ngIf="tipoUsuario == constantes.GESTOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedor">Vendedor</label>
                 <p-dropdown id="vendedor" [options]="lstVendedores" placeholder="Selecione" formControlName="Vendedor"
@@ -103,7 +112,8 @@
             </div>
             <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
                 <label class="p-d-block" for="entregaImediata">Entrega Imediata</label>
-                <p-inputSwitch id="entregaImediata" formControlName="EntregaImediata" (onChange)="entregaImediataOnChange()"></p-inputSwitch>
+                <p-inputSwitch id="entregaImediata" formControlName="EntregaImediata"
+                    (onChange)="entregaImediataOnChange()"></p-inputSwitch>
             </div>
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>

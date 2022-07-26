@@ -53,6 +53,7 @@ export class CadastrarClienteComponent implements OnInit {
   public lstEstado: SelectItem[] = [];
   lojasUsuario: SelectItem[] = [];
   lstTipo: SelectItem[];
+  lstContribuinteICMS: SelectItem[];
 
   //controle de campos
   public desabilitado: boolean = true;
@@ -72,6 +73,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.carregarListas();
     this.buscarEstados();
     this.buscarTiposCliente();
+    this.buscarContribuinteICMS();
     this.verificaDataValidade();
 
     this.novoOrcamentoService.mostrarOpcoes = false;
@@ -80,7 +82,7 @@ export class CadastrarClienteComponent implements OnInit {
   verificarParam(param: any) {
     if (param.filtro == "editar") {
       //se tiver opção de orçamento armazenado no orçamento, bloquear os campos de Tipo de cliente e parceiro
-      
+
       return;
     }
     if (param.filtro == "novo") {
@@ -92,13 +94,13 @@ export class CadastrarClienteComponent implements OnInit {
     }
   }
 
-  desabilitarCampos(){
-    
-    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0){
+  desabilitarCampos() {
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
       this.form.controls.Parceiro.disable();
       this.form.controls.Tipo.disable();
     }
-    
+
   }
 
   buscarConfigValidade() {
@@ -248,6 +250,14 @@ export class CadastrarClienteComponent implements OnInit {
     ]
   }
 
+  buscarContribuinteICMS(): void {
+    this.lstContribuinteICMS = [
+      { label: "Sim", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM },
+      { label: "Não", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO },
+      { label: "Isento", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO }
+    ]
+  }
+
   criarForm(): void {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
@@ -267,7 +277,8 @@ export class CadastrarClienteComponent implements OnInit {
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
-      DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata]
+      DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata],
+      ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS, [Validators.required]]
     });
   }
 
