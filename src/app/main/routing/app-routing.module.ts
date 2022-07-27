@@ -41,6 +41,7 @@ import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 import { PrepedidoDetalhesComponent } from 'src/app/views/prepedido/detalhes/prepedido-detalhes.component';
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
+import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-cliente/editar-cliente.component';
 
 @NgModule({
     imports: [
@@ -66,6 +67,7 @@ import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-de
                                     { path: "novo-orcamento", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
+                                    { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
                                 ]
                             },
 

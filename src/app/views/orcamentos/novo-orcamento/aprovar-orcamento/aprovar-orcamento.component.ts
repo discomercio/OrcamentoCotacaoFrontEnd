@@ -113,8 +113,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        this.novoOrcamentoService.orcamentoCotacaoDto = r;  
-        this.verificarEdicao();      
+        this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        this.verificarEdicao();
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
@@ -126,9 +126,20 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   verificarAlcadaUsuario(idOpcao: number): boolean {
     return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);
   }
+
+  editarDadosCadastrais: boolean = false;
+  verificarEdicaoDadosCadastraris():boolean {
+    if (this.editar) {
+      let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase())return true;
+    }
+    return false;
+  }
+
   editar: boolean = false;
   verificarEdicao() {
     this.editar = this.novoOrcamentoService.verificarEdicao();
+    this.editarDadosCadastrais = this.verificarEdicaoDadosCadastraris();
   }
 
   buscarParceiro(apelido) {
@@ -188,20 +199,20 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   prorrogar() {
     this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
       if (!result) return;
-      
+
       this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
-          if(r.tipo == "WARN") {
+          if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           } else {
-            if(r?.mensagem?.includes('|')) {
+            if (r?.mensagem?.includes('|')) {
               let msg = r.mensagem.split('|');
               console.log(msg);
               console.log(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
               this.mensagemService.showSuccessViaToast(msg[1]);
               this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
               this.validadeBgColor = '#E94C4C';
-            } 
+            }
           }
         }
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
@@ -216,5 +227,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   editarOpcao(orcamento) {
     this.router.navigate(["orcamentos/editar/editar-opcao", orcamento.id]);
+  }
+
+  editarDadosCliente(orcamento) {
+    this.router.navigate(["orcamentos/editar/editar-cliente"]);
   }
 }

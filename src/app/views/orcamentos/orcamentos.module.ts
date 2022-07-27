@@ -33,6 +33,7 @@ import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.co
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
+import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +47,8 @@ import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.compone
     FormaPagtoComponent,
     OpcoesComponent,
     AprovacaoOrcamentoClienteComponent,
-    EditarOpcaoComponent
+    EditarOpcaoComponent,
+    EditarClienteComponent
   ],
   imports: [
     SharedModule,

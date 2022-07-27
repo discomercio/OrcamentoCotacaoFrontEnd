@@ -1,5 +1,5 @@
 <form [formGroup]="form">
-    <div class="card">
+    <div class="card" [ngClass]="{'carregando': carregando}">
         <h4>Informações do orçamento</h4>
         <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
             <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
@@ -67,7 +67,7 @@
             </div>
 
             <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                <label for="contribuinte">Contribuinte ICMS</label>
+                <label for="contribuinte">Enquadramento ICMS</label>
                 <p-dropdown id="contribuinte" [options]="lstContribuinteICMS" placeholder="Selecione"
                     formControlName="ContribuinteICMS" optionLabel="label" optionValue="value">
                 </p-dropdown>
@@ -93,7 +93,7 @@
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
             </div>
             <div></div>
-            <div *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0"
+            <div *ngIf="(filtro == 'novo' && tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0) || (filtro == undefined && novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)"
                 class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedorParceiro">Vendedor do parceiro</label>
                 <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
@@ -118,7 +118,7 @@
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>
                 <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true"
-                    [readonlyInput]="true" [disabled]="form.controls.EntregaImediata.value"></p-calendar>
+                    [disabled]="form.controls.EntregaImediata.value != false"></p-calendar>
                 <small class="p-error" *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
             </div>
         </div>
@@ -131,9 +131,17 @@
             </div>
         </div>
 
-        <div class="p-d-flex p-jc-center">
+        <div *ngIf="filtro == 'novo'" class="p-d-flex p-jc-center">
             <button pButton pRipple label="Salvar" icon="pi pi-arrow-right" (click)="salvarOrcamento()"></button>
         </div>
-
+        <div *ngIf="filtro == undefined" class="p-d-flex p-jc-around">
+            <div>
+                <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
+            </div>
+            <div>
+                <button pButton pRipple label="Atualizar" icon="pi pi-save" (click)="atualizarDadosCadastrais()"></button>
+            </div>
+        </div>
+        
     </div>
 </form>

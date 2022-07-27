@@ -71,6 +71,9 @@
                             </div>
                         </div>
                     </div>
+                    <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto && editarDadosCadastrais" class="p-col-12 p-px-0 p-py-0 p-text-right">
+                        <button pButton pRipple label="Editar dados cadastrais" (click)="editarDadosCliente(novoOrcamentoService.orcamentoCotacaoDto)" icon="pi pi-user-edit"></button>
+                    </div>
                     <div class="p-col-12 p-px-0 p-pt-2"
                         *ngFor="let orcamento of novoOrcamentoService.orcamentoCotacaoDto?.listaOrcamentoCotacaoDto; let i = index">
                         <p-accordion>
