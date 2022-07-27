@@ -651,7 +651,7 @@
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title"
                                         [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Produto</span>
-                                    <input type="hidden" value="{{p.produto}}" [(ngModel)]="p.produto" />
+                                    <input type="hidden" value="{{p.Produto}}" [(ngModel)]="p.Produto" />
                                     <p class="{{telaDesktop ? '' : 'p-ml-2'}}" [innerHTML]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto,
                                     p.Descricao)">
                                         
@@ -661,7 +661,7 @@
                                     <span class="p-column-title"
                                         [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde"
-                                        type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
+                                        type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.Qtde"
                                         (change)="digitouQte(p)" />
                                 </td>
                                 <!-- <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
@@ -673,7 +673,7 @@
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
                                     <div class="p-text-right">
-                                        {{moedaUtils.formatarMoedaSemPrefixo(p.precoLista)}}
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.Preco_Lista)}}
                                     </div>
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
@@ -684,7 +684,7 @@
                                         <input
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
-                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.Desc_Dado)"
                                             (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
                                     </div>
                                 </td>
@@ -694,13 +694,13 @@
                                         Venda</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" pInputText
                                         id="vlVenda" type="text"
-                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.PrecoVenda)"
                                         (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)" />
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">Vl Total:</span>
                                     <div class="p-text-right">
-                                        {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
+                                        {{moedaUtils.formatarMoedaSemPrefixo(p.TotalItem)}}
                                     </div>
                                 </td>
                                 <td *ngIf="!editando"
@@ -734,13 +734,13 @@
                                         <span
                                             *ngIf="pedido?.parceiro != this.constantes.SEM_INDICADOR && pedido?.parceiro != null && !editarComissao">
                                             Comissão:
-                                            {{moedaUtils.formatarValorDuasCasaReturnZero(pedido.percRT)}}
+                                            {{moedaUtils.formatarValorDuasCasaReturnZero(pedido.PercRT)}}
                                             %
                                         </span>
                                         <div class="p-d-inline-flex p-jc-end" *ngIf="editarComissao">
                                             <div class="p-col-7 p-inputgroup">
                                                 <input type="text" pInputText class="p-text-right"
-                                                    [value]="moedaUtils.formatarValorDuasCasaReturnZero(pedido.percRT)"
+                                                    [value]="moedaUtils.formatarValorDuasCasaReturnZero(pedido.PercRT)"
                                                     (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
                                                 <span class="p-inputgroup-addon">%</span>
                                             </div>
@@ -777,7 +777,7 @@
 
                                 <td class="p-text-right" colspan="2">
                                     Total
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.pedido?.vlTotal)}}
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.pedido?.VlTotalDestePedido)}}
                                 </td>
                                 <td></td>
                             </tr>

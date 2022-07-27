@@ -193,6 +193,14 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     }
   }
 
+  removerItem(index: number) {
+    let produto = this.pedido.ListaProdutos.splice(index, 1)[0];
+
+    // this.removerProdutoDaListaControle(produto);
+
+    this.digitouQte(produto);
+  }
+
   inserirProduto(produto: PrepedidoProdutoDtoPrepedido): void {
 
     let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
