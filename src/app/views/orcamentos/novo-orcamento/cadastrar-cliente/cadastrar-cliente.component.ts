@@ -439,6 +439,7 @@ export class CadastrarClienteComponent implements OnInit {
   validarContribuinteICMS() {
     if (this.form.controls.Tipo.value == this.constantes.ID_PF) {
       this.form.controls.ContribuinteICMS.setValue(null);
+      this.form.controls.ContribuinteICMS.setErrors(null);
       return true;
     }
 
@@ -450,7 +451,5 @@ export class CadastrarClienteComponent implements OnInit {
         return false;
       }
     }
-    this.form.controls.ContribuinteICMS.setErrors(null);
-    return true;
   }
 }

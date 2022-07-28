@@ -60,7 +60,8 @@
             </div>
             <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="tipo">Tipo</label>
-                <p-dropdown id="tipo" [options]="lstTipo" placeholder="Selecione" formControlName="Tipo">
+                <p-dropdown id="tipo" [options]="lstTipo" placeholder="Selecione" formControlName="Tipo"
+                    (onChange)="validarContribuinteICMS()">
                 </p-dropdown>
                 <small class="p-error"
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
@@ -71,8 +72,7 @@
                 <p-dropdown id="contribuinte" [options]="lstContribuinteICMS" placeholder="Selecione"
                     formControlName="ContribuinteICMS" optionLabel="label" optionValue="value">
                 </p-dropdown>
-                <small class="p-error"
-                    *ngIf="!validarContribuinteICMS()">{{mensagemErro}}</small>
+                <small class="p-error" *ngIf="!validarContribuinteICMS()">{{mensagemErro}}</small>
             </div>
 
             <div *ngIf="tipoUsuario == constantes.GESTOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
@@ -139,9 +139,10 @@
                 <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
             </div>
             <div>
-                <button pButton pRipple label="Atualizar" icon="pi pi-save" (click)="atualizarDadosCadastrais()"></button>
+                <button pButton pRipple label="Atualizar" icon="pi pi-save"
+                    (click)="atualizarDadosCadastrais()"></button>
             </div>
         </div>
-        
+
     </div>
 </form>
