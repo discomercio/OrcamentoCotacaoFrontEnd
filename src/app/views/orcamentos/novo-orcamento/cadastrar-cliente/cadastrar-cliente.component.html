@@ -66,13 +66,13 @@
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Tipo')">{{mensagemErro}}</small>
             </div>
 
-            <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
-                <label for="contribuinte">Enquadramento ICMS</label>
+            <div *ngIf="form.controls.Tipo.value == constantes.ID_PJ" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                <label for="contribuinte">Contribuinte ICMS</label>
                 <p-dropdown id="contribuinte" [options]="lstContribuinteICMS" placeholder="Selecione"
                     formControlName="ContribuinteICMS" optionLabel="label" optionValue="value">
                 </p-dropdown>
                 <small class="p-error"
-                    *ngIf="validacaoFormularioService.verificaCampo(form,'ContribuinteICMS')">{{mensagemErro}}</small>
+                    *ngIf="!validarContribuinteICMS()">{{mensagemErro}}</small>
             </div>
 
             <div *ngIf="tipoUsuario == constantes.GESTOR" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
@@ -131,7 +131,7 @@
             </div>
         </div>
 
-        <div *ngIf="filtro == 'novo'" class="p-d-flex p-jc-center">
+        <div *ngIf="filtro == 'novo' || filtro == 'iniciar'" class="p-d-flex p-jc-center">
             <button pButton pRipple label="Salvar" icon="pi pi-arrow-right" (click)="salvarOrcamento()"></button>
         </div>
         <div *ngIf="filtro == undefined" class="p-d-flex p-jc-around">
