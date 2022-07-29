@@ -125,7 +125,7 @@ export class PedidoDetalhesComponent implements OnInit {
     this.carregar();
     setTimeout(() => {
       this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);
-    }, 5000);   
+    }, 7000);   
   }
 
 }
