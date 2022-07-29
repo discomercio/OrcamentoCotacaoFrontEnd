@@ -274,7 +274,7 @@ export class NovoOrcamentoService {
         return true;
       }
 
-      if (this.orcamentoCotacaoDto.vendedorParceiro.toLocaleLowerCase() ==
+      if (this.orcamentoCotacaoDto.vendedorParceiro?.toLocaleLowerCase() ==
         this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
         //é o dono do orçamento
         //desconta comissão

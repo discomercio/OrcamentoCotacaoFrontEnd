@@ -93,8 +93,6 @@
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
             </div>
             <div></div>
-            <!-- <div *ngIf="(filtro == 'novo' && tipoUsuario != constantes.PARCEIRO_VENDEDOR && lstVendedoresParceiros.length > 0) || (filtro == undefined && novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)"
-                class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"> -->
                 <div *ngIf="lstVendedoresParceiros.length > 0" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedorParceiro">Vendedor do parceiro</label>
                 <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"

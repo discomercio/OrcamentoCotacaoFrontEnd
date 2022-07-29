@@ -115,7 +115,7 @@
                                 <td class="p-text-right" colspan="2">
                                     <div class="p-d-inline-flex">
                                         <span
-                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
+                                            *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
                                             Comissão:
                                             {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
