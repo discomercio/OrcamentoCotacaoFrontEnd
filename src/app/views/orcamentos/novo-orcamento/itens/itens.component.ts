@@ -397,15 +397,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   aplicarDescontoGeral(e: Event) {
 
     if (!this.novoOrcamentoService.verificarDescontoGeral()) return;
-    // if (this.novoOrcamentoService.descontoGeral == undefined) {
-    //   this.descontoGeral = 0;
-    //   return;
-    // }
-
-    // if (this.novoOrcamentoService.descontoGeral > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
-    //   this.mensagemService.showErrorViaToast([`O desconto geral excede o máximo permitido!`]);
-    //   return;
-    // }
 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
       this.digitouDesc(e, x);
@@ -613,6 +604,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   salvarOrcamento() {
+
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0){
+      this.alertaService.mostrarMensagem("É necessário adicionar ao menos uma opção!");
+      return;
+    }
 
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {

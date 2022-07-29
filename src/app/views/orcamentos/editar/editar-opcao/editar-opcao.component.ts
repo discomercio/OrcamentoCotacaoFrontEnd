@@ -5,6 +5,7 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ItensComponent } from '../../novo-orcamento/itens/itens.component';
 
 @Component({
@@ -20,7 +21,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly lojaService: LojasService,
     private readonly alertaService: AlertaService,
-    public cdref: ChangeDetectorRef
+    public cdref: ChangeDetectorRef,
+    private readonly sweetalertService: SweetalertService
   ) { }
 
   @ViewChild("itens", { static: false }) itens: ItensComponent;
@@ -232,10 +234,11 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       //fazer uma pergunta se quer arredondar para o valor máximo de desconto
       this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
         //se não => return;
-        if (!result){
+        if (!result) {
           this.carregando = false;
+
           return;
-        } 
+        }
 
         this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = Number.parseFloat(limiteComissao);
         this.atualizarOpcao();
@@ -252,7 +255,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
       ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
-        if (!result){
+        if (!result) {
           this.carregando = false;
           return;
         }
@@ -268,6 +271,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
         this.carregando = false;
+        this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
         this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
       }
     }).catch((e) => {

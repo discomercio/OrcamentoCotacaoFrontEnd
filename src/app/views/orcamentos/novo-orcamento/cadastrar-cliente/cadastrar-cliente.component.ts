@@ -19,6 +19,7 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -39,7 +40,8 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly orcamentoService: OrcamentosService,
-    private readonly activatedRoute: ActivatedRoute) { }
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly sweetalertService: SweetalertService) { }
 
   //uteis
   public mascaraTelefone: string;
@@ -135,7 +137,7 @@ export class CadastrarClienteComponent implements OnInit {
       this.form.controls.Vendedor.disable();
       this.form.controls.Parceiro.disable();
       if (this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)
-        this.form.controls.endedorParceiro.disable();
+        this.form.controls.VendedorParceiro.disable();
     }
   }
 
@@ -412,6 +414,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.orcamentoService.atualizarDadosOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r == null) {
         this.carregando = false;
+        this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
         this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
       }
     }).catch((e) => {

@@ -51,12 +51,6 @@
                                         type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
                                         (change)="digitouQte(p)" />
                                 </td>
-                                <!-- <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                            <span class="p-column-title" [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Preço NF</span>
-                            <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="precoNF" type="text" pInputText placeholder=""
-                                [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoNF)"
-                                (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
-                        </td> -->
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
                                     <div class="p-text-right">
@@ -121,7 +115,7 @@
                                 <td class="p-text-right" colspan="2">
                                     <div class="p-d-inline-flex">
                                         <span
-                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
+                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
                                             Comissão:
                                             {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
@@ -195,7 +189,7 @@
                                             {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}}
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Total
                                     {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}} -->
                                 </td>

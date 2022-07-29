@@ -274,6 +274,16 @@ export class NovoOrcamentoService {
         return true;
       }
 
+      if (this.orcamentoCotacaoDto.vendedorParceiro.toLocaleLowerCase() ==
+        this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+        //é o dono do orçamento
+        //desconta comissão
+        this.editarComissao = false;
+        this.descontaComissao = true;
+        //calcula comissão automaticamente
+        return true;
+      }
+
       if (!this.editando) {
         this.editando = false;
         this.descontaComissao = true;
