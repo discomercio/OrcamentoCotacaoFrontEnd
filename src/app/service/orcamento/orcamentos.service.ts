@@ -38,6 +38,8 @@ export class OrcamentosService {
     return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarDados`, orcamento);
   }
 
+
+
   buscarConfigValidade(): Observable<ValidadeOrcamento> {
     return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
   }
@@ -49,6 +51,11 @@ export class OrcamentosService {
   prorrogarOrcamento(id: number): Observable<MensagemDto> {
     return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar`, id);
   }
+
+  cancelarOrcamento(id: number): Observable<MensagemDto> {
+    return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
+  }
+
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);
   }

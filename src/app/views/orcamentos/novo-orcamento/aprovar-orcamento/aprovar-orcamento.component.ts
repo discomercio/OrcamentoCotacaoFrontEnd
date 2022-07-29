@@ -220,6 +220,21 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
+  cancelar() {
+    this.sweetalertService.confirmarAprovacao("Confirma o cancelamento do orçamento?", "").subscribe(result => {
+      if (!result) return;
+      
+      this.orcamentoService.cancelarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
+        if (r != null) {
+          if(r.tipo == "WARN") {
+            this.mensagemService.showWarnViaToast(r.mensagem);
+          }
+        }
+      }).catch((e) => this.alertaService.mostrarErroInternet(e));
+
+    });
+  }  
+
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.location.back();
