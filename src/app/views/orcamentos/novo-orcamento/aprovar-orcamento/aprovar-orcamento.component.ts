@@ -229,7 +229,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           if(r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           }
+          
         }
+        // window.location.reload();
+        this.ngOnInit();
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
     });
