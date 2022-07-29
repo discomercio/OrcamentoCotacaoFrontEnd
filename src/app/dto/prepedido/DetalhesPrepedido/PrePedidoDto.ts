@@ -24,6 +24,7 @@ export class PrePedidoDto {
     DadosCliente: DadosClienteCadastroDto;
     EnderecoCadastroClientePrepedido: EnderecoCadastralClientePrepedidoDto;
     EnderecoEntrega: EnderecoEntregaDtoClienteCadastro | null;
+    EnderecoEntregaMesmoEnderecoCliente: boolean = true;
     ListaProdutos: PrepedidoProdutoDtoPrepedido[] = [];
     TotalFamiliaParcelaRA: number;
     PermiteRAStatus: number;

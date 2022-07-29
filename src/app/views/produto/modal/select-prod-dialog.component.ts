@@ -25,6 +25,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   pageItens: number;
   produtoComboDto: ProdutoComboDto;
   carregandoProdutos: boolean;
+  retornaIndividual: boolean = false;
 
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public readonly autenticacaoService: AutenticacaoService,
@@ -44,6 +45,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   public prodsArray: ProdutoTela[] = new Array();
   public moedaUtils: MoedaUtils = new MoedaUtils();
   selecionado: ProdutoTela;
+  selecionados: Array<ProdutoTela> = new Array();
   codigo: string;
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
   stringUtils = StringUtils;
@@ -68,7 +70,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     produtoRequest.tipoParcela = this.option.data.siglaPagto//this.novoOrcamentoService.siglaPagto;
     produtoRequest.qtdeParcelas = this.option.data.qtdeMaxParcelas//this.formaPagto.qtdeMaxParcelas;
     produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
-
+    this.retornaIndividual = this.option.data.retornaIndividual
     this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
       if (r != null) {
         this.selecProdInfoPassado.produtoComboDto = r;
@@ -116,32 +118,40 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     // vamos guardar os produtos já separadamente?? se sim, criar no "novoOrcamentoService" pois assim,
     // saberemos se estamos ultrapassando o limite
     if (this.selecionado) {
-      this.ref.close(this.selecionado);
-      return;
-      // let qtdeItens: number = 0;
-      // if (this.selecionado.Filhos.length > 0) {
-      //   this.selecionado.Filhos.forEach(x => {
-      //     let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
-      //     if (!produto) {
-      //       this.novoOrcamentoService.controleProduto.push(x.produto);
-      //       qtdeItens++; 
-      //     }
-      //   });
-      // }
-      // else {
-      //   let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
-      //     if (!produto) {
-      //       this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
-      //       qtdeItens++; 
-      //     }
-      // }
+      if (!this.retornaIndividual) {
+        this.ref.close(this.selecionado);
+        return;
+      }
+      let produtos: Array<ProdutoDto>
+
+      let qtdeItens: number = 0;
+      if (this.selecionado.Filhos.length > 0) {
+        this.selecionado.Filhos.forEach(x => {
+          let produtoComposto = this.selecProdInfoPassado.produtoComboDto.produtosCompostos.filter(c => c.paiProduto == this.selecionado.produtoDto.produto);
+          let produto = this.selecProdInfoPassado.produtoComboDto.produtosSimples.filter(c => c.produto == x.produto);
+          if (produto) {
+            let _produto;
+            _produto = new ProdutoTela(produto[0], produtoComposto)
+            this.selecionados.push(_produto)
+            // produtos.push();
+            qtdeItens++;
+          }
+        });
+      }
+      else {
+        // let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
+        //   if (!produto) {
+        //     this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
+        //     qtdeItens++; 
+        //   }
+      }
       // if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
       //   this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
       //   this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
       //   return;
       // }
-      // this.ref.close(this.selecionado);
-      // return;
+      this.ref.close(this.selecionados);
+      return;
     }
     let msg: string[] = new Array();
     msg.push("Por favor, selecione um produto!");

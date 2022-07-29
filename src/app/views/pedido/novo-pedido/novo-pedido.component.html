@@ -12,61 +12,85 @@
                 *ngIf="step == 2 && cadastrarCliente == true">
                 <div class="p-field p-col-12 p-lg-12 p-md-12 p-sm-12">
                     <label for="nome">Nome</label>
-                    <input id="nome" type="text" pInputText formControlName="Nome" />
+                    <input id="nome" type="text" pInputText formControlName="Nome"
+                        [(ngModel)]="pedido.DadosCliente.Nome" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Nome')">
                         <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
                             excede a o limite de {{form.controls.nome.errors.maxlength.requiredLength}}</small>
                     </div>
                 </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0"
+                    *ngIf="step == 2 && cadastrarCliente == true">
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
+                        <label for="cpf" *ngIf="pedido.DadosCliente.Tipo == 'PF'">CPF</label>
+                        <input id="cpf" type="text" pInputText formControlName="CPF"
+                            [(ngModel)]="pedido.DadosCliente.Cnpj_Cpf" *ngIf="pedido.DadosCliente.Tipo == 'PF'"
+                            disabled="disabled" readonly="readonly" />
+                        <div
+                            *ngIf="pedido.DadosCliente.Tipo == 'PF' && validacaoFormularioService.verificaCampo(form,'CPF')">
+                            <small class="p-error" *ngIf="form.controls.CPF.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.CPF.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.CPF.errors.maxlength.requiredLength}}</small>
+                        </div>
 
-                <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
-                    <label for="cpf">CPF</label>
-                    <input id="cpf" type="text" pInputText formControlName="CPF" />
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'CPF')">
-                        <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
-                            excede a o limite de {{form.controls.cpf.errors.maxlength.requiredLength}}</small>
-                    </div>
-                </div>
-                <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
-                    <label for="rg">RG</label>
-                    <input id="rg" type="text" pInputText formControlName="RG" />
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'RG')">
-                        <small class="p-error" *ngIf="form.controls.RG.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.RG.errors?.maxlength">Quantidade de caracteres
-                            excede a o limite de {{form.controls.rg.errors.maxlength.requiredLength}}</small>
-                    </div>
-                </div>
-                <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
-                    <label for="nascimento">Nascimento</label>
-                    <input id="nascimento" type="text" pInputText formControlName="Nascimento" />
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'Nome')">
-                        <small class="p-error"
-                            *ngIf="form.controls.Nascimento.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.Nascimento.errors?.maxlength">Quantidade de
-                            caracteres
-                            excede a o limite de {{form.controls.nascimento.errors.maxlength.requiredLength}}</small>
-                    </div>
-                </div>
-                <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
-                    <label for="sexo">Sexo</label>
-                    <p-dropdown id="sexo" [options]="lstSexo" placeholder="Selecione" formControlName="Sexo">
-                    </p-dropdown>
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'Sexo')">
-                        <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
-                            excede a o limite de {{form.controls.sexo.errors.maxlength.requiredLength}}</small>
-                    </div>
-                </div>
 
+                        <label for="cnpj" *ngIf="pedido.DadosCliente.Tipo == 'PJ'">CNPJ</label>
+                        <input id="cnpj" type="text" pInputText formControlName="CNPJ"
+                            [(ngModel)]="pedido.DadosCliente.Cnpj_Cpf" *ngIf="pedido.DadosCliente.Tipo == 'PJ'"
+                            disabled="disabled" readonly="readonly" />
+                        <!-- <input id="cnpj" type="text" pInputText formControlName="CNPJ"
+                            [(ngModel)]="pedido.DadosCliente.Cnpj_Cpf" *ngIf="pedido.DadosCliente.Tipo == 'PJ'"  disabled="disabled" readonly="readonly" /> -->
+                        <!-- <div
+                            *ngIf="pedido.DadosCliente.Tipo == 'PJ' && validacaoFormularioService.verificaCampo(form,'CNPJ')">
+                            <small class="p-error" *ngIf="form.controls.CNPJ.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.CNPJ.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.CNPJ.errors.maxlength.requiredLength}}</small>
+                        </div> -->
+                    </div>
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="rg">RG</label>
+                        <input id="rg" type="text" pInputText formControlName="RG"
+                            [(ngModel)]="pedido.DadosCliente.RG" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'RG')">
+                            <small class="p-error" *ngIf="form.controls.RG.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.RG.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.rg.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="nascimento">Nascimento</label>
+                        <input id="nascimento" type="text" pInputText formControlName="Nascimento"
+                            [(ngModel)]="pedido.DadosCliente.Nascimento" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Nome')">
+                            <small class="p-error"
+                                *ngIf="form.controls.Nascimento.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Nascimento.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.nascimento.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="sexo">Sexo</label>
+                        <p-dropdown id="sexo" [options]="lstSexo" placeholder="Selecione" formControlName="Sexo"
+                            [(ngModel)]="pedido.DadosCliente.Sexo">
+                        </p-dropdown>
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Sexo')">
+                            <small class="p-error" *ngIf="form.controls.Nome.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Nome.errors?.maxlength">Quantidade de caracteres
+                                excede a o limite de {{form.controls.sexo.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                </div>
                 <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
                     <selecionarcep-arclube (inputValue)="preencheEndereco($event)"></selecionarcep-arclube>
                 </div>
 
                 <div class="p-field p-col-4 p-lg-4 p-md-4 p-sm-4">
                     <label for="endereco">Endereço</label>
-                    <input id="endereco" type="text" pInputText formControlName="Endereco" />
+                    <input id="endereco" type="text" pInputText formControlName="Endereco"
+                        [(ngModel)]="pedido.DadosCliente.Endereco" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Endereco')">
                         <small class="p-error" *ngIf="form.controls.Endereco.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.Endereco.errors?.maxlength">Quantidade de caracteres
@@ -76,7 +100,8 @@
 
                 <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
                     <label for="numero">Nº</label>
-                    <input id="numero" type="text" pInputText formControlName="Numero" />
+                    <input id="numero" type="text" pInputText formControlName="Numero"
+                        [(ngModel)]="pedido.DadosCliente.Numero" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Numero')">
                         <small class="p-error" *ngIf="form.controls.Numero.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.Numero.errors?.maxlength">Quantidade de caracteres
@@ -85,7 +110,8 @@
                 </div>
                 <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
                     <label for="complemento">Complemento</label>
-                    <input id="complemento" type="text" pInputText formControlName="Complemento" />
+                    <input id="complemento" type="text" pInputText formControlName="Complemento"
+                        [(ngModel)]="pedido.DadosCliente.Complemento" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Complemento')">
                         <small class="p-error"
                             *ngIf="form.controls.Complemento.errors?.required">{{mensagemErro}}</small>
@@ -97,7 +123,8 @@
 
                 <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
                     <label for="bairro">Bairro</label>
-                    <input id="bairro" type="text" pInputText formControlName="Bairro" />
+                    <input id="bairro" type="text" pInputText formControlName="Bairro"
+                        [(ngModel)]="pedido.DadosCliente.Bairro" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Bairro')">
                         <small class="p-error" *ngIf="form.controls.bairro.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.bairro.errors?.maxlength">Quantidade de caracteres
@@ -106,7 +133,8 @@
                 </div>
                 <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
                     <label for="cidade">Cidade</label>
-                    <input id="cidade" type="text" pInputText formControlName="Cidade" />
+                    <input id="cidade" type="text" pInputText formControlName="Cidade"
+                        [(ngModel)]="pedido.DadosCliente.Cidade" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'Cidade')">
                         <small class="p-error" *ngIf="form.controls.Cidade.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.Cidade.errors?.maxlength">Quantidade de caracteres
@@ -115,7 +143,7 @@
                 </div>
                 <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
                     <label for="uf">UF</label>
-                    <input id="uf" type="text" pInputText formControlName="UF" />
+                    <input id="uf" type="text" pInputText formControlName="UF" [(ngModel)]="pedido.DadosCliente.Uf" />
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'UF')">
                         <small class="p-error" *ngIf="form.controls.UF.errors?.required">{{mensagemErro}}</small>
                         <small class="p-error" *ngIf="form.controls.UF.errors?.maxlength">Quantidade de caracteres
@@ -124,45 +152,50 @@
                 </div>
 
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
-                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
-                        <label for="foneresidencial">Fone Residencial</label>
-                        <input id="foneresidencial" type="text" pInputText formControlName="FoneResidencial" />
-                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'FoneResidencial')">
+                    <!--Telefones PF-->
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="TelefoneResidencial">Fone Residencial</label>
+                        <input id="TelefoneResidencial" type="text" pInputText formControlName="TelefoneResidencial"
+                            [(ngModel)]="pedido.DadosCliente.TelefoneResidencial" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'TelefoneResidencial')">
                             <small class="p-error"
-                                *ngIf="form.controls.FoneResidencial.errors?.required">{{mensagemErro}}</small>
-                            <small class="p-error" *ngIf="form.controls.FoneResidencial.errors?.maxlength">Quantidade de
+                                *ngIf="form.controls.TelefoneResidencial.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.TelefoneResidencial.errors?.maxlength">Quantidade de
                                 caracteres
                                 excede a o limite de
-                                {{form.controls.foneresidencial.errors.maxlength.requiredLength}}</small>
+                                {{form.controls.TelefoneResidencial.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
-                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
-                        <label for="fonecelular">Celular</label>
-                        <input id="fonecelular" type="text" pInputText formControlName="FoneCelular" />
-                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'FoneCelular')">
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="Celular">Celular</label>
+                        <input id="Celular" type="text" pInputText formControlName="Celular"
+                            [(ngModel)]="pedido.DadosCliente.Celular" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Celular')">
                             <small class="p-error"
-                                *ngIf="form.controls.FoneCelular.errors?.required">{{mensagemErro}}</small>
-                            <small class="p-error" *ngIf="form.controls.FoneCelular.errors?.maxlength">Quantidade de
+                                *ngIf="form.controls.Celular.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Celular.errors?.maxlength">Quantidade de
                                 caracteres
                                 excede a o limite de
-                                {{form.controls.fonecelular.errors.maxlength.requiredLength}}</small>
+                                {{form.controls.Celular.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
-                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
-                        <label for="fonecomercial">Fone Comercial</label>
-                        <input id="fonecomercial" type="text" pInputText formControlName="FoneComercial" />
-                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'FoneComercial')">
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
+                        <label for="TelComercial">Fone Comercial</label>
+                        <input id="TelComercial" type="text" pInputText formControlName="TelComercial"
+                            [(ngModel)]="pedido.DadosCliente.TelComercial" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'TelComercial')">
                             <small class="p-error"
-                                *ngIf="form.controls.FoneComercial.errors?.required">{{mensagemErro}}</small>
-                            <small class="p-error" *ngIf="form.controls.FoneComercial.errors?.maxlength">Quantidade de
+                                *ngIf="form.controls.TelComercial.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.TelComercial.errors?.maxlength">Quantidade de
                                 caracteres
                                 excede a o limite de
-                                {{form.controls.fonecomercial.errors.maxlength.requiredLength}}</small>
+                                {{form.controls.TelComercial.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
-                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2">
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PF'">
                         <label for="ramal">Ramal</label>
-                        <input id="ramal" type="text" pInputText formControlName="Ramal" />
+                        <input id="ramal" type="text" pInputText formControlName="Ramal"
+                            [(ngModel)]="pedido.DadosCliente.Ramal" />
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'Ramal')">
                             <small class="p-error" *ngIf="form.controls.Ramal.errors?.required">{{mensagemErro}}</small>
                             <small class="p-error" *ngIf="form.controls.Ramal.errors?.maxlength">Quantidade de
@@ -171,12 +204,70 @@
                                 {{form.controls.ramal.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
+                    <!--Telefones PF-->
+                    <!--Telefones PJ-->
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PJ'">
+                        <label for="TelComercial">Telefone 1</label>
+                        <input id="TelComercial" type="text" pInputText formControlName="TelComercial"
+                            [(ngModel)]="pedido.DadosCliente.TelComercial" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'TelComercial')">
+                            <small class="p-error"
+                                *ngIf="form.controls.TelComercial.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.TelComercial.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.TelComercial.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PJ'">
+                        <label for="Ramal">Ramal</label>
+                        <input id="Ramal" type="text" pInputText formControlName="Ramal"
+                            [(ngModel)]="pedido.DadosCliente.Ramal" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Ramal')">
+                            <small class="p-error"
+                                *ngIf="form.controls.Ramal.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Ramal.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.Ramal.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PJ'">
+                        <label for="TelComercial2">Telefone 2</label>
+                        <input id="TelComercial2" type="text" pInputText formControlName="TelComercial2"
+                            [(ngModel)]="pedido.DadosCliente.TelComercial2" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'TelComercial2')">
+                            <small class="p-error"
+                                *ngIf="form.controls.TelComercial2.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.TelComercial2.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.TelComercial2.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-2 p-lg-2 p-md-2 p-sm-2" *ngIf="pedido.DadosCliente.Tipo == 'PJ'">
+                        <label for="Ramal2">Ramal</label>
+                        <input id="Ramal2" type="text" pInputText formControlName="Ramal2"
+                            [(ngModel)]="pedido.DadosCliente.Ramal2" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Ramal2')">
+                            <small class="p-error"
+                                *ngIf="form.controls.Ramal2.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.Ramal2.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.Ramal2.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <!--Telefones PJ-->
+
+
 
                 </div>
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-12 p-md-12 p-sm-12">
                         <label for="email">E-mail</label>
-                        <input id="email" type="text" pInputText formControlName="Email" />
+                        <input id="email" type="text" pInputText formControlName="Email"
+                            [(ngModel)]="pedido.DadosCliente.Email" />
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'Email')">
                             <small class="p-error" *ngIf="form.controls.Email.errors?.required">{{mensagemErro}}</small>
                             <small class="p-error" *ngIf="form.controls.Email.errors?.maxlength">Quantidade de
@@ -190,7 +281,8 @@
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-12 p-md-12 p-sm-12">
                         <label for="emailxml">E-mail (XML)</label>
-                        <input id="emailxml" type="text" pInputText formControlName="EmailXML" />
+                        <input id="emailxml" type="text" pInputText formControlName="EmailXML"
+                            [(ngModel)]="pedido.DadosCliente.EmailXML" />
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'EmailXML')">
                             <small class="p-error"
                                 *ngIf="form.controls.EmailXML.errors?.required">{{mensagemErro}}</small>
@@ -206,7 +298,7 @@
                     <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
                         <label for="produtorrural">Produtor Rural</label>
                         <p-dropdown id="produtorrural" [options]="lstProdutorRural" placeholder="Selecione"
-                            formControlName="ProdutorRural">
+                            [(ngModel)]="pedido.DadosCliente.ProdutorRural" formControlName="ProdutorRural">
                         </p-dropdown>
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'ProdutorRural')">
                             <small class="p-error"
@@ -215,6 +307,34 @@
                                 caracteres
                                 excede a o limite de
                                 {{form.controls.produtorrural.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
+                        <label for="Contribuinte_Icms_Status">Contribuinte ICMS</label>
+                        <p-dropdown id="Contribuinte_Icms_Status" [options]="lstContribuinte" placeholder="Selecione"
+                            [(ngModel)]="pedido.DadosCliente.Contribuinte_Icms_Status"
+                            formControlName="Contribuinte_Icms_Status">
+                        </p-dropdown>
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'Contribuinte_Icms_Status')">
+                            <small class="p-error"
+                                *ngIf="form.controls.Contribuinte_Icms_Status.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error"
+                                *ngIf="form.controls.Contribuinte_Icms_Status.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.Contribuinte_Icms_Status.errors.maxlength.requiredLength}}</small>
+                        </div>
+                    </div>
+                    <div class="p-field p-col-3 p-lg-3 p-md-3 p-sm-3">
+                        <label for="ie">IE</label>
+                        <input id="ie" type="text" pInputText formControlName="IE"
+                            [(ngModel)]="pedido.DadosCliente.IE" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'IE')">
+                            <small class="p-error" *ngIf="form.controls.IE.errors?.required">{{mensagemErro}}</small>
+                            <small class="p-error" *ngIf="form.controls.IE.errors?.maxlength">Quantidade de
+                                caracteres
+                                excede a o limite de
+                                {{form.controls.IE.errors.maxlength.requiredLength}}</small>
                         </div>
                     </div>
                 </div>
@@ -329,12 +449,17 @@
                 </div>
 
                 <div class="p-field p-col-4 p-lg-4 p-md-4 p-sm-4">
-                    <label for="endereco">Endereço</label>
-                    <input id="endereco" type="text" pInputText formControlName="Endereco" />
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'Endereco')">
-                        <small class="p-error" *ngIf="form.controls.Endereco.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.Endereco.errors?.maxlength">Quantidade de caracteres
-                            excede a o limite de {{form.controls.endereco.errors.maxlength.requiredLength}}</small>
+                    <label for="EnderecoEntrega.EndEtg_endereco">Endereço</label>
+                    <input id="EnderecoEntrega.EndEtg_endereco" type="text" pInputText
+                        formControlName="EnderecoEntrega.EndEtg_endereco" />
+                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'EnderecoEntregaEndEtg_endereco')">
+                        <small class="p-error"
+                            *ngIf="form.controls.EnderecoEntregaEndEtg_endereco.errors?.required">{{mensagemErro}}</small>
+                        <small class="p-error"
+                            *ngIf="form.controls.EnderecoEntregaEndEtg_endereco.errors?.maxlength">Quantidade de
+                            caracteres
+                            excede a o limite de
+                            {{form.controls.EnderecoEntregaEndEtg_endereco.errors.maxlength.requiredLength}}</small>
                     </div>
                 </div>
 
@@ -654,7 +779,7 @@
                                     <input type="hidden" value="{{p.Produto}}" [(ngModel)]="p.Produto" />
                                     <p class="{{telaDesktop ? '' : 'p-ml-2'}}" [innerHTML]="stringUtils.formatarDescricao(p.Fabricante, p.Fabricante_Nome, p.Produto,
                                     p.Descricao)">
-                                        
+
                                     </p>
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">

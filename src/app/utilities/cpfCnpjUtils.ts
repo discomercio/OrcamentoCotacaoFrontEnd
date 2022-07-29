@@ -46,6 +46,12 @@ export class CpfCnpjUtils {
         return false;
     }
 
+    public static ehPessoaFisica(valor: string): boolean {
+        if (valor && StringUtils.retorna_so_digitos(valor).length == 11) {
+            return true;
+        }
+        return false;
+    }
 
     public static cpf_ok(cpf: string): boolean {
         let d: number, i: number, tudo_igual: boolean;
@@ -169,7 +175,7 @@ export class CpfCnpjUtils {
     }
 
     static mascaraCnpj(cnpj: string) {
-            return [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
+        return [/\d/, /\d/, '.', /\d/, /\d/, /\d/, '.', /\d/, /\d/, /\d/, '/', /\d/, /\d/, /\d/, /\d/, '-', /\d/, /\d/];
 
     }
 }

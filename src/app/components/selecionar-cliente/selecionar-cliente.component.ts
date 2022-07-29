@@ -145,8 +145,17 @@ export class SelecionarClienteArClubeComponent {
 	}
 	mostrarNaoCadastrado() {
 		if (confirm("Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?")) {
+			let tipopessoa = 'PJ'
+			if (CpfCnpjUtils.ehPessoaFisica(this.value)) {
+				tipopessoa = 'PF'
+			}
 			// this.modalCadastrarCliente = true;
-			this.inputValue.emit("novocliente")
+			let cliente = {
+				Nome: "novocliente",
+				Cnpj_Cpf: this.value,
+				Tipo: tipopessoa
+			}
+			this.inputValue.emit(cliente)
 		}
 
 		// this.alertaService.mostrarMensagem("CPF ou CNPJ não encontrado.")

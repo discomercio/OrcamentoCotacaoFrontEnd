@@ -2,13 +2,13 @@ import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
 import { PrePedidoDto } from 'src/app/dto/prepedido/DetalhesPrepedido/PrePedidoDto';
 import { PrepedidoProdutoDtoPrepedido } from 'src/app/dto/prepedido/DetalhesPrepedido/PrepedidoProdutoDtoPrepedido';
 import { SelecProdInfo } from 'src/app/dto/prepedido/selec-prod-info';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
-import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
 import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { Constantes } from 'src/app/utilities/constantes';
@@ -33,7 +33,9 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
   cadastrarCliente: boolean = false
   carregandoProdutos: boolean = false
   itemPayment: any;
-  lstProdutorRural: any;
+  lstProdutorRural: any = [];
+  lstSexo: any = [];
+  lstContribuinte: any = [];
   produtoComboDto: ProdutoComboDto = new ProdutoComboDto;
   selecProdInfo = new SelecProdInfo();
   editarComissao: boolean = false
@@ -42,7 +44,7 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
   public moedaUtils: MoedaUtils = new MoedaUtils
   public pedido: PrePedidoDto = new PrePedidoDto;
   stringUtils = StringUtils;
-  
+
   formasPagtoAPrazo: FormaPagto[] = new Array();
   formasPagtoAVista: FormaPagto = new FormaPagto();
   formaPagamento: FormaPagto[] = new Array();
@@ -56,7 +58,7 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
   qtdeMaxPeriodo: number;
   qtdeMaxPeriodoPrimPrest: number;
 
-  formaPagto: any;
+  formaPagto: any = FormaPagto;
   clicouAdicionarProduto: boolean;
   //#endregion
   constructor(private fb: FormBuilder,
@@ -67,19 +69,32 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     private produtoService: ProdutoService,
     telaDesktopService: TelaDesktopService,
     public cdref: ChangeDetectorRef) {
-      super(telaDesktopService);
-    }
+    super(telaDesktopService);
+  }
 
   ngOnInit(): void {
     this.criarForm()
     this.step = 1
     this.cadastrarCliente = false
+    this.lstProdutorRural.push({ label: "Selecione", value: -1 })
+    this.lstProdutorRural.push({ label: "Sim", value: 1 })
+    this.lstProdutorRural.push({ label: "Não", value: 0 })
+
+    this.lstSexo.push({ label: "Selecione", value: -1 })
+    this.lstSexo.push({ label: "Masculino", value: 1 })
+    this.lstSexo.push({ label: "Feminino", value: 0 })
+
+    this.lstContribuinte.push({ label: "Selecione", value: -1 })
+    this.lstContribuinte.push({ label: "Sim", value: 1 })
+    this.lstContribuinte.push({ label: "Não", value: 0 })
+    this.lstContribuinte.push({ label: "Isento", value: 0 })
   }
 
   criarForm() {
     this.form = this.fb.group({
       Nome: [''],
       CPF: [''],
+      CNPJ: [''],
       RG: [''],
       Sexo: [''],
       Cep: [''],
@@ -90,19 +105,24 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
       Cidade: [''],
       UF: [''],
       Nascimento: [''],
-      FoneResidencial: [''],
-      FoneCelular: [''],
-      FoneComercial: [''],
+      TelefoneResidencial: [''],
+      Celular: [''],
+      TelComercial: [''],
+      TelComercial2: [''],
       Ramal: [''],
+      Ramal2: [''],
       Observacao: [''],
       Email: [''],
       EmailXML: [''],
       ProdutorRural: [''],
-      tipoEndereco:['']
+      tipoEndereco: [''],
+      EnderecoEntregaEndEtg_endereco: [''],
+      Contribuinte_Icms_Status: [''],
+      IE: ['']
     });
   }
   //#region Carga de produtos e busca modal
- 
+
   adicionarProduto(): void {
     this.clicouAdicionarProduto = true;
     this.mostrarProdutos();
@@ -134,6 +154,7 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     this.selecProdInfo.qtdeMaxParcelas = 12;
     this.selecProdInfo.siglaPagto = this.pedido.FormaPagtoCriacao.siglaPagto;
     this.selecProdInfo.tipoCliente = this.pedido.DadosCliente.Tipo;
+    this.selecProdInfo.retornaIndividual = true
     let largura: string = this.prepedidoService.onResize() ? "" : "65vw";
     const ref = this.dialogService.open(SelectProdDialogComponent,
       {
@@ -142,36 +163,39 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
         data: this.selecProdInfo
       });
 
-    ref.onClose.subscribe((resultado: ProdutoTela) => {
+    ref.onClose.subscribe((resultado: Array<ProdutoTela>) => {
       if (resultado) {
         this.addProdutoSelecionado(resultado);
       }
     });
   }
 
-  addProdutoSelecionado(produto: ProdutoTela) {
+  addProdutoSelecionado(produto: Array<ProdutoTela>) {
     //let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == produto.produtoDto.produto)[0];
-    let produtoPrePedido: PrepedidoProdutoDtoPrepedido = new PrepedidoProdutoDtoPrepedido();
-    produtoPrePedido.Fabricante = produto.produtoDto.fabricante;// filtro2.fabricante;
-    produtoPrePedido.Fabricante_Nome = produto.produtoDto.fabricante_Nome;
-    produtoPrePedido.Produto = produto.produtoDto.produto;
-    produtoPrePedido.Descricao = produto.produtoDto.descricaoHtml;
-    produtoPrePedido.Preco_ListaBase = produto.produtoDto.precoListaBase;
-    produtoPrePedido.Preco_Lista = produto.produtoDto.precoLista;
-    produtoPrePedido.CoeficenteDeCalculo = 0;
-    produtoPrePedido.Desc_Dado = 0;
-    produtoPrePedido.Preco_NF = produto.produtoDto.precoLista;
-    produtoPrePedido.Preco_Venda = produto.produtoDto.precoLista;
-    produtoPrePedido.Qtde = 1;
-    produtoPrePedido.TotalItem = produtoPrePedido.Preco_Venda * produtoPrePedido.Qtde;
-    produtoPrePedido.Alterou_Preco_Venda = false;
-    produtoPrePedido.mostrarCampos = this.telaDesktop ? true : false;
+    
+    produto.forEach(x => {
+      let produtoPrePedido: PrepedidoProdutoDtoPrepedido = new PrepedidoProdutoDtoPrepedido();
+      produtoPrePedido.Fabricante = x.produtoDto.fabricante;// filtro2.fabricante;
+      produtoPrePedido.Fabricante_Nome = x.produtoDto.fabricante_Nome;
+      produtoPrePedido.Produto = x.produtoDto.produto;
+      produtoPrePedido.Descricao = x.produtoDto.descricaoHtml;
+      produtoPrePedido.Preco_ListaBase = x.produtoDto.precoListaBase;
+      produtoPrePedido.Preco_Lista = x.produtoDto.precoLista;
+      produtoPrePedido.CoeficenteDeCalculo = 0;
+      produtoPrePedido.Desc_Dado = 0;
+      produtoPrePedido.Preco_NF = x.produtoDto.precoLista;
+      produtoPrePedido.Preco_Venda = x.produtoDto.precoLista;
+      produtoPrePedido.Qtde = 1;
+      produtoPrePedido.TotalItem = produtoPrePedido.Preco_Venda * produtoPrePedido.Qtde;
+      produtoPrePedido.Alterou_Preco_Venda = false;
+      produtoPrePedido.mostrarCampos = this.telaDesktop ? true : false;
 
 
-    if (this.arrumarProdutosRepetidos(produtoPrePedido)) return;
+      if (this.arrumarProdutosRepetidos(produtoPrePedido)) return;
 
-    this.inserirProduto(produtoPrePedido);
-    this.digitouQte(produtoPrePedido);
+      this.inserirProduto(produtoPrePedido);
+      this.digitouQte(produtoPrePedido);
+    });
   }
 
   arrumarProdutosRepetidos(produto: PrepedidoProdutoDtoPrepedido): boolean {
@@ -229,10 +253,13 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
   //#region Step 1
 
   preencheDadosCliente(cliente) {
-    if (cliente == "novocliente") {
+    if (cliente.Nome == "novocliente") {
+      this.pedido.DadosCliente.Cnpj_Cpf = cliente.Cnpj_Cpf
+      this.pedido.DadosCliente.Tipo = cliente.Tipo
       this.cadastrarCliente = true
       this.step = 2;
     } else {
+      this.pedido.DadosCliente.Tipo = cliente.Tipo
       this.pedido.DadosCliente.Id = cliente.Id
       this.pedido.DadosCliente.Nome = cliente.Nome
       this.pedido.DadosCliente.Cnpj_Cpf = cliente.Cnpj_Cpf
@@ -266,17 +293,45 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     }
   }
 
-  preencheEndereco(value: any) {
+  preencheEnderecoEntrega(value: any) {
+    if (value.length > 0)
+      value = value[0]
+    this.pedido.EnderecoEntrega = new EnderecoEntregaDtoClienteCadastro();
+    this.pedido.EnderecoEntrega.EndEtg_bairro = value.Bairro
+    this.pedido.EnderecoEntrega.EndEtg_cep = value.Cep
+    this.pedido.EnderecoEntrega.EndEtg_uf = value.Uf
+    this.pedido.EnderecoEntrega.EndEtg_endereco = value.Endereco
+    this.pedido.EnderecoEntrega.EndEtg_cidade = value.Cidade
+    this.pedido.EnderecoEntrega.EndEtg_endereco_numero = value.Numero
+    this.pedido.EnderecoEntrega.EndEtg_endereco_complemento = value.Complemento
+  }
+  preencheEnderecoCliente(value: any) {
+    if (value.length > 0)
+      value = value[0]
+    this.pedido.DadosCliente.Bairro = value.Bairro
+    this.pedido.DadosCliente.Cep = value.Cep
+    this.pedido.DadosCliente.Uf = value.Uf
+    this.pedido.DadosCliente.Endereco = value.Endereco
+    this.pedido.DadosCliente.Cidade = value.Cidade
+    this.pedido.DadosCliente.Numero = value.Numero
+    this.pedido.DadosCliente.Complemento = value.Complemento
+  }
 
+  preencheEndereco(value: any) {
+    this.preencheEnderecoCliente(value)
+    this.preencheEnderecoEntrega(value)
   }
   //#endregion
 
   //#region Step2
   btnAvancarCriarCliente() {
+    this.pedido.EnderecoEntregaMesmoEnderecoCliente = true
+    this.preencheEnderecoEntrega(this.pedido.DadosCliente)
+    console.log(this.pedido)
     this.step = 3
   }
   //#endregion
-  
+
   //#region Forma de Pagamento
   montarFormasPagto() {
     if (this.formaPagamento != null) {

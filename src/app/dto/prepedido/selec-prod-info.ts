@@ -19,6 +19,7 @@ export class SelecProdInfo {
     public qtdeMaxParcelas: number;
     //saída
     public ClicouOk: boolean;
+  retornaIndividual: boolean;
 
 }
 
