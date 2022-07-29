@@ -135,7 +135,7 @@ export class CadastrarClienteComponent implements OnInit {
       this.form.controls.Vendedor.disable();
       this.form.controls.Parceiro.disable();
       if (this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)
-        this.form.controls.endedorParceiro.disable();
+        this.form.controls.VendedorParceiro.disable();
     }
   }
 
@@ -167,7 +167,7 @@ export class CadastrarClienteComponent implements OnInit {
     }
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
       this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
-      this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
+      this.form.controls.Parceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
       this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
       return;
     }

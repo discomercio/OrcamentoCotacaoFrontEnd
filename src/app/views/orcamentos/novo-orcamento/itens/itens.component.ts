@@ -614,6 +614,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   salvarOrcamento() {
 
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0){
+      this.alertaService.mostrarMensagem("É necessário adicionar ao menos uma opção!");
+      return;
+    }
+
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
