@@ -64,6 +64,7 @@ export class CadastrarClienteComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
@@ -77,9 +78,6 @@ export class CadastrarClienteComponent implements OnInit {
     this.buscarEstados();
     this.buscarTiposCliente();
     this.buscarContribuinteICMS();
-    this.verificaDataValidade();
-
-    // this.novoOrcamentoService.mostrarOpcoes = false;
   }
 
   filtro: string;
@@ -95,17 +93,10 @@ export class CadastrarClienteComponent implements OnInit {
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == null) {
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.constantes.SEM_INDICADOR;
       }
-
-
     }
+
     if (param.filtro == "novo") {
       this.filtro = param.filtro;
-      // debugger;
-      // if(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto != undefined && 
-      //   this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.nomeCliente != ""){
-      //   this.filtro = param.filtro;
-      //   return;
-      // }
     }
 
     if (param.filtro == "iniciar") {
@@ -125,6 +116,8 @@ export class CadastrarClienteComponent implements OnInit {
       this.form.controls.Parceiro.disable();
       this.form.controls.Tipo.disable();
     }
+
+    this.form.controls.Validade.disable();
   }
 
   desabiltarCamposParaEdicao() {
@@ -142,8 +135,7 @@ export class CadastrarClienteComponent implements OnInit {
       this.form.controls.Vendedor.disable();
       this.form.controls.Parceiro.disable();
       if (this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)
-        this.form.controls.vendedorParceiro.disable();
-      this.form.controls.Validade.disable();
+        this.form.controls.endedorParceiro.disable();
     }
   }
 
@@ -151,6 +143,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.orcamentoService.buscarConfigValidade().toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.configValidade = r;
+        this.setarOrcamentoValidade();
       }
     }).catch((e) => {
       console.log("erro");
@@ -308,7 +301,7 @@ export class CadastrarClienteComponent implements OnInit {
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
-      Validade: [this.novoOrcamentoService.orcamentoCotacaoDto.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      Validade: [null, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais],
       Nome: [clienteOrcamentoCotacao.nomeCliente, [Validators.required, Validators.maxLength(60)]],
       NomeObra: [clienteOrcamentoCotacao.nomeObra],
@@ -326,20 +319,15 @@ export class CadastrarClienteComponent implements OnInit {
     });
   }
 
-  verificaDataValidade(): void {
-    if (!this.form.controls.Validade.value) {
-      let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  setarOrcamentoValidade() {
+    if (!this.novoOrcamentoService.orcamentoCotacaoDto.validade) {
+      let data = new Date(Date.now() + this.novoOrcamentoService.configValidade.QtdeDiasValidade * 24 * 60 * 60 * 1000);
       this.form.controls.Validade.setValue(data);
-      this.form.controls.Validade.disable();
       return;
     }
 
-    let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    let dataCliente: Date = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
-    if (dataCliente > validacaoData) {
-      this.form.controls.Validade.setValue(dataCliente);
-      this.form.controls.Validade.enable();
-    }
+    let validade = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
+    this.form.controls.Validade.setValue(validade);
   }
 
   salvarOrcamento() {
@@ -382,7 +370,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacao;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCotacaoDto.id;
-    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date(this.form.controls.Validade.value).toDateString();
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date(this.form.controls.Validade.value);
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
@@ -451,5 +439,8 @@ export class CadastrarClienteComponent implements OnInit {
         return false;
       }
     }
+
+    this.form.controls.ContribuinteICMS.setErrors(null);
+    return true;
   }
 }

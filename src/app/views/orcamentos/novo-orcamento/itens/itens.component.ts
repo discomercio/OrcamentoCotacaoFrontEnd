@@ -80,7 +80,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
 
   ngOnInit(): void {
-
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.novoOrcamentoService.descontoGeral = 0;
@@ -88,6 +87,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
   editando: boolean = false;
   verificarParam(param: any) {
+
     if (param.filtro == undefined) {
       this.editando = true;
       this.carregandoProds = false;
@@ -115,6 +115,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   async ngAfterViewInit() {
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined ||
+      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == null) {
+      this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
+      return;
+    }
 
     await this.formaPagto.buscarFormasPagto(this.param);
 
