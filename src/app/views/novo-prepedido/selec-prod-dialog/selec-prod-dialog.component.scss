@@ -1,0 +1,65 @@
+@import "../../../../variaveis.scss";
+
+:host {
+  .fixo {
+    display: flex;
+    flex-direction: column;
+    height: 25%;
+    min-height: 20vh;
+  }
+  .listaprods {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    border-top: 1px grey solid;
+    border-bottom: 1px grey solid;
+  }
+  .prod {
+    padding: 0.5em;
+    background-color: $cor-fundo-listapedidos;
+    border: 1px solid #ddd;
+    //precisa disto ou no celular, quando tem scroll horizontal, a caixa não chega até o fim da linha
+    //não, dá propblema no desktop... width: fit-content;
+  }
+  .itemfilho {
+    padding-left: 3em;
+    padding-right: 0;
+    padding-bottom: 6px;
+  }
+  .trfilho {
+    font-size: 80%;
+  }
+  .tdtabela {
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 6px;
+  }
+
+  input[type=number] {
+    -webkit-appearance: textfield;
+       -moz-appearance: textfield;
+            appearance: textfield;
+  }
+  input[type=number]::-webkit-inner-spin-button, 
+  input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+  }
+  input[type=number]{
+  outline:none;
+  width: 60%;
+  }
+  label, input, button {
+      padding: 0.2em;
+      -moz-box-sizing: content-box;
+      -webkit-box-sizing: content-box;
+      box-sizing: content-box;
+  }
+  mat-icon{
+font-size: inherit;
+// background-color: white;
+padding-left:2%;
+padding-right:2%;
+outline:none;
+cursor: pointer;
+}
+
+}

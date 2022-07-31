@@ -4,14 +4,17 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
+import { FormaPagtoDto } from 'src/app/dto/forma-pagto/FormaPagtoDto';
 import { MeiosPagto } from 'src/app/dto/forma-pagto/meios-pagto';
 import { PrePedidoDto } from 'src/app/dto/prepedido/DetalhesPrepedido/PrePedidoDto';
 import { PrepedidoProdutoDtoPrepedido } from 'src/app/dto/prepedido/DetalhesPrepedido/PrepedidoProdutoDtoPrepedido';
 import { SelecProdInfo } from 'src/app/dto/prepedido/selec-prod-info';
+import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { Constantes } from 'src/app/utilities/constantes';
+import { eFormaPagto } from 'src/app/utilities/enums/eFormaPagto';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
@@ -42,6 +45,7 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
   descontaComissao: boolean = false
   public constantes: Constantes = new Constantes
   public moedaUtils: MoedaUtils = new MoedaUtils
+  eFormaPagto = eFormaPagto
   public pedido: PrePedidoDto = new PrePedidoDto;
   stringUtils = StringUtils;
 
@@ -60,6 +64,22 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
 
   formaPagto: any = FormaPagto;
   clicouAdicionarProduto: boolean;
+  enumFormaPagto: any;
+  opcaoPagtoParcUnica: string;
+  meioPagtoParcUnica: number;
+  diasVencParcUnica: number;
+  opcaoPagtoParcCartaoInternet: string;
+  opcaoPagtoParcCartaoMaquineta: string;
+  vlEntrada: number;
+  opcaoPagtoParcComEntrada: string;
+  meioPagtoEntrada: number;
+  meioPagtoEntradaPrest: number;
+  diasVenc: number;
+  formaPagtoNum: number;
+  lstNovoCoeficiente: any;
+  opcaoPagtoAvista: string;
+  meioPagtoAVista: number;
+  lstFormasPagto: any;
   //#endregion
   constructor(private fb: FormBuilder,
     private readonly alertaService: AlertaService,
@@ -68,7 +88,8 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private produtoService: ProdutoService,
     telaDesktopService: TelaDesktopService,
-    public cdref: ChangeDetectorRef) {
+    public cdref: ChangeDetectorRef,
+    ) {
     super(telaDesktopService);
   }
 
@@ -118,7 +139,8 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
       tipoEndereco: [''],
       EnderecoEntregaEndEtg_endereco: [''],
       Contribuinte_Icms_Status: [''],
-      IE: ['']
+      IE: [''],
+      formaPagamento: ['']
     });
   }
   //#region Carga de produtos e busca modal
@@ -172,7 +194,7 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
 
   addProdutoSelecionado(produto: Array<ProdutoTela>) {
     //let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == produto.produtoDto.produto)[0];
-    
+
     produto.forEach(x => {
       let produtoPrePedido: PrepedidoProdutoDtoPrepedido = new PrepedidoProdutoDtoPrepedido();
       produtoPrePedido.Fabricante = x.produtoDto.fabricante;// filtro2.fabricante;
@@ -329,34 +351,259 @@ export class NovoPedidoComponent extends TelaDesktopBaseComponent implements OnI
     this.preencheEnderecoEntrega(this.pedido.DadosCliente)
     console.log(this.pedido)
     this.step = 3
+
+    this.buscarQtdeParcCartaoVisa();
+    // this.verificarEmProcesso();
+    this.buscarFormaPagto();
+    // this.buscarCoeficiente(null);
+    // this.buscarNovoCoeficiente();
+    setTimeout(() => {
+      this.montaFormaPagtoExistente();
+    }, 300);
   }
   //#endregion
 
   //#region Forma de Pagamento
-  montarFormasPagto() {
-    if (this.formaPagamento != null) {
 
-      this.formaPagamento.forEach(e => {
-        if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-          this.formasPagtoAVista = e;
+  // foi solicitado que a qtde de parcelas disponível será baseada na
+  // qtde de parcelas disponível no cartão Visa(PRAZO_LOJA)
+  //então faremos a busca pela API
+  qtdeParcVisa: number;
+  public buscarQtdeParcCartaoVisa(): void {
+    this.prepedidoService.buscarQtdeParcCartaoVisa().subscribe({
+      next: (r: number) => {
+        if (!!r) {
+          this.qtdeParcVisa = r;
         }
         else {
-          if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
-            this.meiosEntrada = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_ENTRADA);
-            this.meiosDemaisPrestacoes = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES);
+          this.alertaService.mostrarMensagem("Erro ao carregar a quantidade de parcelas!");
+        }
+      },
+      error: (r: number) => this.alertaService.mostrarErroInternet(r)
+    })
+  }
+
+  formaPagtoDto: FormaPagtoDto;
+  buscarFormaPagto() {
+    return this.prepedidoService.buscarFormaPagto(this.pedido.DadosCliente.Tipo).subscribe({
+      next: (r: FormaPagtoDto) => {
+        if (!!r) {
+          this.formaPagtoDto = r;
+          this.lstFormasPagto = Array<any>()
+          if(r.ListaAvista){
+            this.lstFormasPagto.push({ name: "À vista", value: eFormaPagto.Avista })
           }
-          if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
-            this.meioPrimPrest = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES);
-            this.meiosDemaisPrestacoes = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES);
+          if(r.ListaParcComEntPrestacao){
+
           }
-          if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
-            this.meioParcelaUnica = e.meios;
+          if(r.ListaParcComEntrada){
+            this.lstFormasPagto.push({ name: "Parcelado com entrada", value: eFormaPagto.ParcComEnt })
           }
-          this.formasPagtoAPrazo.push(e);
+          if(r.ListaParcSemEntPrestacao){
+
+          }
+          if(r.ListaParcSemEntPrimPrest){
+            this.lstFormasPagto.push({ name: "Parcelado sem entrada", value: eFormaPagto.ParcSemEnt })
+          }
+          if(r.ListaParcUnica){
+            this.lstFormasPagto.push({ name: "Parcela única", value: eFormaPagto.ParcUnica })
+          }
+          if(r.ParcCartaoInternet){
+            this.lstFormasPagto.push({ name: "Parcelado Cartão Internet", value: eFormaPagto.ParcCartaoInternet })
+          }
+          if(r.ParcCartaoMaquineta){
+            this.lstFormasPagto.push({ name: "Parcelado Cartão Maquineta", value: eFormaPagto.ParcCartaoMaquineta })
+          }
+        }
+        else {
+          this.alertaService.mostrarMensagem("Erro ao carregar a lista de forma de pagamentos")
+        }
+      },
+      error: (r: FormaPagto) => this.alertaService.mostrarErroInternet(r)
+    })
+  }
+
+  montaFormaPagtoExistente() {
+
+    if (this.pedido.FormaPagtoCriacao.Tipo_parcelamento) {
+      this.pedido.FormaPagtoCriacao.Tipo_parcelamento;
+      switch (this.pedido.FormaPagtoCriacao.Tipo_parcelamento.toString()) {
+
+        case this.constantes.COD_FORMA_PAGTO_A_VISTA.toString():
+          //A vista
+          this.enumFormaPagto = eFormaPagto.Avista;//forma de pagamento
+          this.opcaoPagtoAvista = this.montaParcelamentoExistente();//recebe a descrição (1 X R$ 00,00)
+          this.meioPagtoAVista = parseInt(this.pedido.FormaPagtoCriacao.Op_av_forma_pagto);//deposito ou...
+          break;
+        case this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA.toString():
+          //ParcUnica
+          this.enumFormaPagto = eFormaPagto.ParcUnica;//forma de pagamento
+          this.opcaoPagtoParcUnica = this.montaParcelamentoExistente();//recebe a descrição (1 X R$ 00,00)
+          this.meioPagtoParcUnica = parseInt(this.pedido.FormaPagtoCriacao.Op_pu_forma_pagto);//deposito ou...
+          this.diasVencParcUnica = this.pedido.FormaPagtoCriacao.C_pu_vencto_apos;//dias para venc.
+          break;
+        case this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO.toString():
+          //ParcCartaoInternet
+          this.enumFormaPagto = eFormaPagto.ParcCartaoInternet;//forma de pagamento
+          this.opcaoPagtoParcCartaoInternet = this.montaParcelamentoExistente();//recebe a descrição (1 X R$ 00,00)
+          break;
+        case this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA.toString():
+          //ParcCartaoMaquineta
+          this.enumFormaPagto = eFormaPagto.ParcCartaoMaquineta;//forma de pagamento
+          this.opcaoPagtoParcCartaoMaquineta = this.montaParcelamentoExistente();//recebe a descrição (1 X R$ 00,00)
+          break;
+        case this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA.toString():
+          //ParcComEnt
+          this.enumFormaPagto = eFormaPagto.ParcComEnt;//forma de pagamento
+          this.vlEntrada = this.pedido.FormaPagtoCriacao.C_pce_entrada_valor;//valor de entrada
+          this.opcaoPagtoParcComEntrada = this.montaParcelamentoExistente();//recebe a descrição (1 X R$ 00,00)
+          this.meioPagtoEntrada = parseInt(this.pedido.FormaPagtoCriacao.Op_pce_entrada_forma_pagto);//deposito ou...
+          this.meioPagtoEntradaPrest = parseInt(this.pedido.FormaPagtoCriacao.Op_pce_prestacao_forma_pagto);//deposito ou...
+          this.diasVenc = this.pedido.FormaPagtoCriacao.C_pce_prestacao_periodo;//recebe os dias de vencimento
+          break;
+        case this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA.toString():
+          //ParcSemEnt
+          this.pedido.FormaPagtoCriacao.Rb_forma_pagto = this.enumFormaPagto.toString();
+          this.pedido.FormaPagtoCriacao.Op_pse_prim_prest_forma_pagto = "";//meio de pagamento
+          this.pedido.FormaPagtoCriacao.Op_pse_demais_prest_forma_pagto = "";//meio de pagamento
+          this.pedido.FormaPagtoCriacao.C_pse_prim_prest_valor = 0;
+          this.pedido.FormaPagtoCriacao.C_pse_prim_prest_apos = 0;
+          this.pedido.FormaPagtoCriacao.C_pse_demais_prest_qtde = 0;
+          this.pedido.FormaPagtoCriacao.C_pse_demais_prest_valor = 0;
+          this.pedido.FormaPagtoCriacao.C_pse_demais_prest_periodo = 0;
+          this.pedido.FormaPagtoCriacao.C_pse_demais_prest_qtde = 0;
+          break;
+      };
+    }
+  }
+
+  //metodo para montar o tipo de parcelamento que foi selecionado pelo usuário
+  montaParcelamentoExistente(): string {
+    let retorno = "";
+    this.pedido.FormaPagtoCriacao.Tipo_parcelamento;
+    this.recalcularValoresComCoeficiente(this.pedido.FormaPagtoCriacao.Tipo_parcelamento);
+
+    switch (this.pedido.FormaPagtoCriacao.Tipo_parcelamento.toString()) {
+      case this.constantes.COD_FORMA_PAGTO_A_VISTA.toString():
+        retorno = this.pedido.FormaPagtoCriacao.Qtde_Parcelas + " X " +
+          this.moedaUtils.formatarMoedaComPrefixo(this.pedido.VlTotalDestePedido);
+        break;
+      case this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA.toString():
+        //ParcUnica
+        retorno = this.pedido.FormaPagtoCriacao.Qtde_Parcelas + " X " +
+          this.moedaUtils.formatarMoedaComPrefixo(this.pedido.FormaPagtoCriacao.C_pu_valor);
+        break;
+      case this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO.toString():
+        //ParcCartaoInternet
+        retorno = this.pedido.FormaPagtoCriacao.Qtde_Parcelas + " X " +
+          this.moedaUtils.formatarMoedaComPrefixo(this.pedido.FormaPagtoCriacao.C_pc_valor);
+        break;
+      case this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA.toString():
+        //ParcCartaoMaquineta
+        retorno = this.pedido.FormaPagtoCriacao.Qtde_Parcelas + " X " +
+          this.moedaUtils.formatarMoedaComPrefixo(this.pedido.FormaPagtoCriacao.C_pc_maquineta_valor);
+        break;
+      case this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA.toString():
+        //ParcComEnt
+        retorno = this.pedido.FormaPagtoCriacao.C_pce_prestacao_qtde + " X " +
+          this.moedaUtils.formatarMoedaComPrefixo(this.pedido.FormaPagtoCriacao.C_pce_prestacao_valor);
+        break;
+      case this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA.toString():
+        //ParcSemEnt
+        break;
+    };
+
+    return retorno;
+  }
+
+  lstMsg: string[] = [];
+  tipoFormaPagto: string = '';
+  coeficienteDtoNovo: CoeficienteDto[][];
+  recalcularValoresComCoeficiente(enumFP: number): void {
+    //na mudança da forma de pagto iremos zerar todos os campos
+    this.zerarTodosCampos();
+    if (!!enumFP) {
+      this.formaPagtoNum = enumFP;
+      //verificar EnumTipoPagto para passar o valor do tipo "AV, SE, CE"
+      this.tipoFormaPagto = this.verificaEnum(this.formaPagtoNum);
+      //aisamos que está carregando...
+      this.lstMsg = new Array();
+      this.lstMsg.push("Carregando dados....");
+      this.buscarNovoCoeficiente((coefciente: CoeficienteDto[][]) => {
+        this.coeficienteDtoNovo = coefciente;
+        this.lstMsg = new Array();
+        this.lstMsg = this.lstNovoCoeficiente.CalcularTotalProdutosComCoeficiente(this.formaPagtoNum, this.coeficienteDtoNovo,
+          this.tipoFormaPagto, this.qtdeParcVisa, this.vlEntrada);
+        if (this.formaPagtoNum.toString() == this.constantes.COD_FORMA_PAGTO_A_VISTA.toString()) {
+          this.lstNovoCoeficiente.RecalcularListaProdutos(this.formaPagtoNum, this.coeficienteDtoNovo, this.tipoFormaPagto, 1);
+          this.opcaoPagtoAvista = this.lstMsg[0];
+        }
+        if (this.formaPagtoNum.toString() == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA.toString()) {
+          this.lstNovoCoeficiente.RecalcularListaProdutos(this.formaPagtoNum, this.coeficienteDtoNovo, this.tipoFormaPagto, 1);
+          this.opcaoPagtoParcUnica = this.lstMsg[0];
         }
       });
     }
   }
+
+  buscarNovoCoeficiente(callback: (coefciente: CoeficienteDto[][]) => void): void {
+    this.lstNovoCoeficiente.buscarCoeficienteFornecedores(callback);
+  }
+
+  enumTipoFP = eFormaPagto;
+  verificaEnum(enumFP: number) {
+    if (enumFP == eFormaPagto.Avista)
+      return this.enumTipoFP.Avista.toString();
+    else if (enumFP == eFormaPagto.ParcCartaoInternet)
+      return this.enumTipoFP.ParcCartaoInternet.toString();
+    else if (enumFP == eFormaPagto.ParcComEnt)
+      return this.enumTipoFP.ParcComEnt.toString();
+    else if (enumFP == eFormaPagto.ParcSemEnt)
+      return this.enumTipoFP.ParcSemEnt.toString();
+    else if (enumFP == eFormaPagto.ParcUnica)
+      return this.enumTipoFP.ParcUnica.toString();
+    else if (enumFP == eFormaPagto.ParcCartaoMaquineta)
+      return this.enumTipoFP.ParcCartaoMaquineta.toString();
+  }
+
+  public zerarTodosCampos(): void {
+    this.meioPagtoEntrada = null;
+    this.opcaoPagtoAvista = "";
+    this.meioPagtoAVista = null;
+    this.opcaoPagtoParcUnica = "";
+    this.meioPagtoParcUnica = null;
+    this.diasVencParcUnica = null;
+    this.opcaoPagtoParcComEntrada = "";
+    this.meioPagtoEntradaPrest = null;
+    this.diasVenc = null;
+    this.opcaoPagtoParcCartaoInternet = "";
+    this.opcaoPagtoParcCartaoMaquineta = "";
+  }
+
+  // montarFormasPagto() {
+  //   if (this.formaPagamento != null) {
+
+  //     this.formaPagamento.forEach(e => {
+  //       if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+  //         this.formasPagtoAVista = e;
+  //       }
+  //       else {
+  //         if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+  //           this.meiosEntrada = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_ENTRADA);
+  //           this.meiosDemaisPrestacoes = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES);
+  //         }
+  //         if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+  //           this.meioPrimPrest = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES);
+  //           this.meiosDemaisPrestacoes = e.meios.filter(e => e.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES);
+  //         }
+  //         if (e.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+  //           this.meioParcelaUnica = e.meios;
+  //         }
+  //         this.formasPagtoAPrazo.push(e);
+  //       }
+  //     });
+  //   }
+  // }
 
   //#endregion
 }

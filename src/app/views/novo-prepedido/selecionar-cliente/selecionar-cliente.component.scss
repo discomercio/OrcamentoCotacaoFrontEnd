@@ -1,0 +1,77 @@
+
+.corpohome {
+    padding: 2em;
+    padding-bottom: 0em;
+  }
+
+  .corpohomeDesktop {
+    text-align: left;
+    display: flex;
+    flex-flow: row nowrap;
+  }
+
+  .corpohomeCelular {
+    text-align: center;
+    display: flex;
+    flex-flow: column nowrap;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+    height: 100%;
+    padding: 0em;
+    margin-left: 2em;
+    margin-right: 2em;
+  }
+
+  .containerDesktop {
+    text-align: left;
+  }
+  .containerCelular {
+    text-align: left;
+    height: 100%;
+    padding: 0em;
+  }
+
+  .tituloDesktop {
+    border-left: 1em;
+    border-top: 1em;
+    padding: 1em;
+    padding-top: 2em;
+    padding-left: 0.5em;
+  }
+  .campoTextoDesktop {
+    height: 3em;
+    line-height: 1em;
+    padding: 0em;
+    padding-right: 2em;
+    width: 300px;
+  }
+  .margemdesktop {
+    padding-right: 2em;
+  }
+  .campoTextoCel {
+    height: 3em;
+    line-height: 1em;
+    padding: 0;
+    //width: 100%;
+    margin-top: 2em;
+    padding-left: 3em;
+    padding-right: 3em;
+  }
+  .cbcel {
+    padding: 0;
+    margin: 0;
+  }
+  .cbdesktop {
+    padding: 0;
+    padding-right: 1em;
+  }
+
+  .divCampos {
+    margin: 0.5em;
+  }
+
+  .checkboxes {
+    white-space: normal;
+  }
+

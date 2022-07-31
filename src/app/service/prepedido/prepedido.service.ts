@@ -4,6 +4,8 @@ import { HttpParams, HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { CommonModule } from "@angular/common";
 import { PrePedidoDto } from 'src/app/dto/prepedido/DetalhesPrepedido/PrePedidoDto';
+import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
+import { FormaPagtoDto } from 'src/app/dto/forma-pagto/FormaPagtoDto';
 
 
 @Injectable({
@@ -47,37 +49,43 @@ export class PrepedidoService {
   // }  
 
   public Obter_Permite_RA_Status(): Observable<number> {
-    return this.http.get<any>(environment.apiUrl + 'prepedido/obter_permite_ra_status');
+    return this.http.get<any>(environment.apiUrl + 'api/prepedido/obter_permite_ra_status');
   }
 
   public cadastrarPrepedido(prePedidoDto: PrePedidoDto): Observable<string[]> {
     
-    return this.http.post<string[]>(environment.apiUrl + 'prepedido/cadastrarPrepedido', prePedidoDto);
+    return this.http.post<string[]>(environment.apiUrl + 'api/prepedido/cadastrarPrepedido', prePedidoDto);
   }
 
  
   public buscarCoeficienteFornecedores(fornecedores: string[]): Observable<any[]> {
-    return this.http.post<any[]>(environment.apiUrl + 'prepedido/buscarCoeficienteFornecedores', fornecedores);
+    return this.http.post<any[]>(environment.apiUrl + 'api/prepedido/buscarCoeficienteFornecedores', fornecedores);
   }
 
   public buscarQtdeParcCartaoVisa(): Observable<number> {
-    return this.http.get<number>(environment.apiUrl + 'prepedido/buscarQtdeParcCartaoVisa');
+    return this.http.get<number>(environment.apiUrl + 'api/prepedido/buscarQtdeParcCartaoVisa');
   }
 
   public ObtemPercentualVlPedidoRA():Observable<number> {
-    return this.http.get<number>(environment.apiUrl + 'prepedido/obtemPercentualVlPedidoRA');
+    return this.http.get<number>(environment.apiUrl + 'api/prepedido/obtemPercentualVlPedidoRA');
   }
 
   public listarCpfCnpjPrepedidosCombo(): Observable<string[]> {
-    return this.http.get<string[]>(environment.apiUrl + 'prepedido/listarCpfCnpjPrepedidosCombo');
+    return this.http.get<string[]>(environment.apiUrl + 'api/prepedido/listarCpfCnpjPrepedidosCombo');
   }
 
   public listarNumerosPrepedidosCombo(): Observable<string[]> {
-    return this.http.get<string[]>(environment.apiUrl + 'prepedido/listarNumerosPrepedidosCombo');
+    return this.http.get<string[]>(environment.apiUrl + 'api/prepedido/listarNumerosPrepedidosCombo');
   }
 
   public remover(numeroPrepedido): Observable<any> {
-    return this.http.post(environment.apiUrl + 'prepedido/removerPrePedido/' + numeroPrepedido, numeroPrepedido);
+    return this.http.post(environment.apiUrl + 'api/prepedido/removerPrePedido/' + numeroPrepedido, numeroPrepedido);
+  }
+
+  public buscarFormaPagto(tipos_pessoa: string): Observable<FormaPagtoDto> {
+    let params = new HttpParams();
+    params = params.append('tipo_pessoa', tipos_pessoa);
+    return this.http.get<FormaPagtoDto>(environment.apiUrl + 'api/prepedido/buscarFormasPagto', { params: params });
   }
 
   @HostListener('window:resize', ['$event'])
