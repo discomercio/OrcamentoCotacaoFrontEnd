@@ -31,8 +31,8 @@ import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { CoeficienteRequest } from 'src/app/dto/produtos/coeficienteRequest';
 import { ProdutoFilhoDto } from 'src/app/dto/produtos/produto-filhoDto';
 import { Location } from '@angular/common';
-import { SelecProdInfo } from 'src/app/dto/prepedido/selec-prod-info';
 import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-prod-dialog.component';
+import { SelecProdInfo } from 'src/app/views/produto/modal/selec-prod-info';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,

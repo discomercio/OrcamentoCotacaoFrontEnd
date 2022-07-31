@@ -1,3 +1,273 @@
+/* You can add global styles to this file, and also import other style files */
+@import "~@angular/material/theming";
+// Plus imports for other components in your app.
+ 
+//variaveis gerais
+@import "./variaveis.scss";
+//layout desktop/celular
+@import "./desktopCelular.scss";
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat-core();
+
+// nossa paleta, baseada em Teal 50
+$nossapaletateal: (
+  50: #e0f2f1,
+  100: #b2dfdb,
+  200: #80cbc4,
+  300: #4db6ac,
+  400: #26a69a,
+  500: #009688,
+  600: #00897b,
+  700: #00796b,
+  800: #00695c,
+  900: #004d40,
+  A100: #a7ffeb,
+  A200: #64ffda,
+  A400: #1de9b6,
+  A700: #00bfa5,
+  A800: #007bff,
+  contrast: (
+    50: black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: black,
+    600: black,
+    700: black,
+    800: black,
+    900: black,
+    A100: black,
+    A200: black,
+    A400: black,
+    A700: black
+  )
+);
+
+// $nossapaletateal: (
+//   50: #FBE9E7,
+//   100: #FFCCBC,
+//   200: #FFAB91,
+//   300: #FF8A65,
+//   400: #FF7043,
+//   500: #FF5722,
+//   600: #F4511E,
+//   700: #E64A19,
+//   800: #D84315,
+//   900: #BF360C,
+//   A100: #FF9E80,
+//   A200: #FF6E40,
+//   A400: #FF3D00,
+//   A700: #DD2C00,
+//   contrast: (
+//     50: black,
+//     100: black,
+//     200: black,
+//     300: black,
+//     400: black,
+//     500: black,
+//     600: black,
+//     700: black,
+//     800: black,
+//     900: black,
+//     A100: black,
+//     A200: black,
+//     A400: black,
+//     A700: black
+//   )
+// );
+
+/*
+a verde:
+
+
+    Green 500
+    mui-color('green'[, shade]) #4CAF50
+    50 #E8F5E9
+    100 #C8E6C9
+    200 #A5D6A7
+    300 #81C784
+    400 #66BB6A
+    500 #4CAF50
+    600 #43A047
+    700 #388E3C
+    800 #2E7D32
+    900 #1B5E20
+    A100 #B9F6CA
+    A200 #69F0AE
+    A400 #00E676
+    A700 #00C853
+
+*/
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+//$candy-app-accent:  mat-palette($mat-pink, A200, A100, A400);
+$candy-app-primary: mat-palette($mat-gray);
+// $candy-app-accent: mat-palette($mat-green, A400, A100, A200);
+//$candy-app-accent: mat-palette($nossapaletateal, A400, A100, A200);
+
+// The warn palette is optional (defaults to red).
+$candy-app-warn: mat-palette($mat-red);
+
+//gabriel
+
+$candy-app-accent: mat-palette($mat-green, A400,A200);
+//fim
+
+// Create the theme object (a Sass map containing all of the palettes).
+$candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-app-warn);
+
+
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include angular-material-theme($candy-app-theme);
+
+//@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+//purple-green
+
+html,
+body {
+  height: 100vh;
+}
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  background-color: white;
+  //background-color: $cor-fundo-menu;
+}
+
+button{
+  background-color: #007bff !important;
+  color: white !important;
+}
+
+//tambem está definido em desktopCeluar.scss
+.titulopagina {
+  font-size: 120%;
+  font-weight: bold;
+  margin-left: 1em;
+  margin-right: 1em;
+}
+
+@keyframes loading {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.carregando {
+  overflow: hidden !important;
+  transform: translate3d(0, 0, 0);
+  cursor: wait;
+
+  &::after {
+    overflow: hidden !important;
+    content: "";
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    opacity: 1;
+    background: linear-gradient(
+      45deg,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.9) 70%,
+      rgba(255, 255, 255, 0) 0%
+    );
+    transform: translateX(-100%);
+    animation: loading 1s infinite;
+  }
+}
+
+/* acertar estilo dos chec boxes, global
+*/
+.mat-checkbox-layout {
+  white-space: normal !important;
+}
+
+@media only screen and (max-width: 600px) {
+  body {
+    font-size: 80%;
+  }
+}
+
+@media only screen {
+  .largura-maxima-campo-formulario {
+    width: calc(100% - 2em);
+  }
+}
+
+// para destacaar a linha do mouse
+.destaquelinha :hover {
+  background-color: $cor-fundo-listapedido-destaque !important;
+}
+//esepcial apra o mat-table, ele é diferente!
+.destaquelinhaMatTable tbody :hover {
+  background-color: $cor-fundo-listapedido-destaque !important;
+}
+
+//gabriel
+
+.mat-checkbox-background {
+  // border: 2px solid #464646;
+  background: none !important;
+  //  background:none !important;
+}
+.mat-checkbox-checkmark-path {
+  stroke: #464646 !important;
+}
+// .mat-raised-button,.mat-mini-fab {
+//   background: #009688;
+// }
+
+// .mat-radio-inner-circle{
+//   background:#f58635 !important;
+// }
+
+// .mat-radio-outer-circle{
+//   border-color: #f58635 !important;
+// }
+
+.icone-lixeira, .mat-column-Remover{
+  color: #ed1b24 !important;
+}
+
+// .mat-slide-toggle-thumb
+// {
+//   background-color: #f58635 !important;
+// }
+
+// .mat-slide-toggle.mat-checked .mat-slide-toggle-bar{
+//   background-color: #f58635b8 !important;
+// }
+
+
+.PLLe b {
+  font-size: 10pt !important;
+  font-weight: 900;
+}
+
+
+footer{
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  
+}
+header{
+  z-index: 999999;
+}
+
+
+
+
 $gutter: .5rem; //for primeflex grid system
 
 @import "../node_modules/primeng/resources/primeng.min.css";

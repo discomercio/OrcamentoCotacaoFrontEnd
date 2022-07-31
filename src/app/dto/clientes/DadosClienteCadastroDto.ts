@@ -1,5 +1,5 @@
 ﻿
-import { EnderecoCadastralClientePrepedidoDto } from '../prepedido/EnderecoCadastralClientePrepedidoDto';
+import { EnderecoCadastralClientePrepedidoDto } from '../prepedido/prepedido/EnderecoCadastralClientePrepedidoDto';
 import { EnderecoEntregaDtoClienteCadastro } from './EnderecoEntregaDTOClienteCadastro';
 
 

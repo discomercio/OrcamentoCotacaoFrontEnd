@@ -30,7 +30,6 @@ import { CadastrarClienteComponent } from 'src/app/views/orcamentos/novo-orcamen
 import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/itens.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
-import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
@@ -40,6 +39,15 @@ import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-pre
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-prod-dialog.component';
+import { NovoPrepedidoComponent } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido.component';
+import { SelecionarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/selecionar-cliente/selecionar-cliente.component';
+import { NovoPrepedidoModule } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido.module';
+import { NovoPrepedidoRoutingModule } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido-routing.module';
+import { PrePedidoConfirmarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-cliente/prepedidoconfirmar-cliente.component';
+import { PrePedidoObservacoesComponent } from 'src/app/views/prepedido/novo-prepedido/observacoes/prepedidoobservacoes.component';
+import { ConfirmarPrepedidoComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-prepedido/confirmar-prepedido.component';
+import { PrePedidoItensComponent } from 'src/app/views/prepedido/novo-prepedido/itens/prepedidoitens.component';
+import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/cadastrar-cliente/prepedidocadastrar-cliente.component';
 
 @NgModule({
     imports: [
@@ -61,7 +69,7 @@ import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-pr
                                     { path: "itens/:filtro", canActivate: [AuthGuard], component: ItensComponent },
                                     { path: "select-prod", canActivate: [AuthGuard], component: SelectProdDialogComponent },
                                     { path: "visualizar-orcamento/:id", canActivate: [AuthGuard], component: VisualizarOrcamentoComponent },
-                                    { path: "novo-orcamento", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
+                                    { path: "novo-orcamento",pathMatch: "full", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                 ]
@@ -69,12 +77,104 @@ import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-pr
 
                             // Dashboard
                             { path: 'dashboards/generic', canActivate: [AuthGuard], component: DashboardDemoComponent },
-
                             {
-                                path: 'pedido', canActivate: [AuthGuard], children: [
-                                    { path: 'novo-pedido', canActivate: [AuthGuard], component: NovoPedidoComponent },
+                                path: 'novoprepedido',
+                                canActivate: [AuthGuard],
+                                // component: NovoPrepedidoComponent,
+                                children:[
+                                      {
+                                        path: 'confirmar-cliente/:cpfCnpj',
+                                        canActivate: [AuthGuard],
+                                        pathMatch: "prefix",
+                                        component: PrePedidoConfirmarClienteComponent
+                                      },
+                                      {
+                                        path: 'cadastrar-cliente/:cpfCnpj',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoCadastrarClienteComponent
+                                      },
+                                      {
+                                        path: 'itens/:numeroPrepedido',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoItensComponent
+                                      },
+                                      {
+                                        path: 'itens',
+                                        canActivate: [AuthGuard],
+                                        pathMatch: "full",
+                                        component: PrePedidoItensComponent
+                                      },
+                                      {
+                                        path: 'observacoes',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoObservacoesComponent
+                                      },
+                                      {
+                                        path: 'confirmar-prepedido',
+                                        canActivate: [AuthGuard],
+                                        component: ConfirmarPrepedidoComponent
+                                      },
+                                      {
+                                        path: '**',
+                                        canActivate: [AuthGuard],
+                                        component: SelecionarClienteComponent
+                                      }
                                 ]
-                            },
+                              },
+                            // {
+                            //     path: 'selecionacliente',
+                            //     canActivate: [AuthGuard],
+                            //     component: SelecionarClienteComponent
+                            //   },
+                            // { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
+                            // {
+                            //     path: 'novo-prepedido',
+                            //     canActivate: [AuthGuard],
+                            //     component: NovoPrepedidoComponent,
+                            //     children: [
+                            //       {
+                            //         path: 'confirmar-cliente/:cpfCnpj',
+                            //         canActivate: [AuthGuard],
+                            //         component: ConfirmarClienteComponent
+                            //       },
+                            //       {
+                            //         path: 'cadastrar-cliente/:cpfCnpj',
+                            //         canActivate: [AuthGuard],
+                            //         component: CadastrarClienteComponent
+                            //       },
+                            //       {
+                            //         path: 'itens/:numeroPrepedido',
+                            //         canActivate: [AuthGuard],
+                            //         component: ItensComponent
+                            //       },
+                            //       {
+                            //         path: 'itens',
+                            //         canActivate: [AuthGuard],
+                            //         component: ItensComponent
+                            //       },
+                            //       {
+                            //         path: 'observacoes',
+                            //         canActivate: [AuthGuard],
+                            //         component: ObservacoesComponent
+                            //       },
+                            //       {
+                            //         path: 'confirmar-prepedido',
+                            //         canActivate: [AuthGuard],
+                            //         component: ConfirmarPrepedidoComponent
+                            //       },
+                            //       {
+                            //         path: '**',
+                            //         canActivate: [AuthGuard],
+                            //         component: SelecionarClienteComponent
+                            //       },
+                            //     ],
+                            //   },
+                            // { path: 'selecionacliente',canActivate: [AuthGuard],component: SelecionarClienteComponent },
+                            //tem suas prórpias rotas filhas
+
+                            // path: 'pedido', canActivate: [AuthGuard], children: [
+                            //     { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
+                            // ]
                             // Produtos Catalogo
                             {
                                 path: 'produtos-catalogo', canActivate: [AuthGuard], children: [
@@ -83,7 +183,7 @@ import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-pr
                                     { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent }, 
+                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
                                     { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
                                     { path: 'propriedades/editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
@@ -115,15 +215,15 @@ import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-pr
                                 path: 'prepedido/detalhes/:numeroPrepedido',
                                 canActivate: [AuthGuard],
                                 component: DetalhesPrepedidoComponent
-                              },     
-                              
+                            },
+
                             // Pedido
                             {
                                 path: 'pedido/detalhes/:numeroPedido',
                                 canActivate: [AuthGuard],
                                 component: PedidoDetalhesComponent
-                            },                                      
-  
+                            },
+
 
                         ]
                     }
@@ -132,6 +232,7 @@ import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-pr
             // { path: 'dashboards/generic', component: DashboardDemoComponent },
         ], { scrollPositionRestoration: 'enabled' },
         )
+        // NovoPrepedidoRoutingModule
     ],
     exports: [RouterModule]
 })

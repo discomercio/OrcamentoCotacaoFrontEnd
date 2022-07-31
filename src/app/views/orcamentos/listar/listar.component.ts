@@ -8,7 +8,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { enumParametros } from '../enumParametros';
 import { OrcamentoCotacaoStatus } from '../models/OrcamentoCotacaoStatus';
 import { DropDownItem } from '../models/DropDownItem';
-import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
@@ -24,6 +23,8 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
+import { PrepedidoListarService } from 'src/app/service/prepedido/prepedido-listar.service';
+import { PrepedidoRemoverService } from 'src/app/service/prepedido/prepedido-remover.service';
 @Component({
   selector: 'app-listar',
   templateUrl: './listar.component.html',
@@ -43,7 +44,8 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly prepedidoService: PrepedidoService,
+    private readonly prepedidoService: PrepedidoListarService,
+    private readonly prepedidoRemoverService: PrepedidoRemoverService,
     private readonly sweetalertService: SweetalertService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService
@@ -206,7 +208,7 @@ export class OrcamentosListarComponent implements OnInit {
         return;
       }
       else {
-        this.prepedidoService.remover(idPedido).toPromise().then(r => {
+        this.prepedidoRemoverService.remover(idPedido).toPromise().then(r => {
           this.lstDtoFiltrada.forEach((x, i) => {
             if (x.NumPedido == idPedido) {
               this.lstDtoFiltrada.splice(i, 1);

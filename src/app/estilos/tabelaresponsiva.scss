@@ -1,0 +1,85 @@
+// para tabelas responsivas
+//https://codepen.io/AllThingsSmitty/pen/MyqmdM
+
+//nao funcionou bem para os itens do prepedido, http://localhost:4200/novo-prepedido/itens/221841Z
+//esta solução é genérica demais.
+
+
+@import "../../variaveis.scss";
+
+.sectionDesktop .tabelaresponsiva {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.sectionDesktop .tabelaresponsiva caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+
+.sectionDesktop .tabelaresponsiva tr {
+  background-color: $cor-fundo-listapedidos;
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+.sectionDesktop .tabelaresponsiva th,
+.sectionDesktop .tabelaresponsiva td {
+  padding: 0.625em;
+  text-align: center;
+}
+
+.sectionDesktop .tabelaresponsiva th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+}
+
+.sectionCelular .tabelaresponsiva {
+  border: 0;
+}
+
+.sectionCelular .tabelaresponsiva caption {
+  font-size: 1.3em;
+}
+
+.sectionCelular .tabelaresponsiva thead {
+  border: none;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.sectionCelular .tabelaresponsiva tr {
+  border-bottom: 3px solid #ddd;
+  display: block;
+  margin-bottom: 0.625em;
+}
+
+.sectionCelular .tabelaresponsiva td {
+  border-bottom: 1px solid #ddd;
+  display: block;
+  font-size: 0.8em;
+  text-align: right;
+}
+
+.sectionCelular .tabelaresponsiva td::before {
+  /*
+      * aria-label has no advantage, it won't be read inside a table
+      content: attr(aria-label);
+      */
+  content: attr(data-label);
+  float: left;
+  font-weight: bold;
+}
+
+.sectionCelular .tabelaresponsiva td:last-child {
+  border-bottom: 0;
+}

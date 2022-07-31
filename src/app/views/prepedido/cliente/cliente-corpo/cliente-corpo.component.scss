@@ -1,0 +1,29 @@
+:host
+{
+    //em edição, todos os blocos ficam dentro de caixas
+    .caixa{
+        display: inline-block;
+        padding: 0.5em;
+        padding-left: 0em;
+    }
+    .caixa .rotulo{
+        display: inline;
+        font-weight: bold;
+        opacity: 0.9;
+        padding-right: 0.5em;
+    }
+    .caixa .dado{
+        display: inline;
+        padding-right: 1.0em;
+        word-break: break-word;
+    }
+   
+
+#selectProdutorRural .mat-form-field-wrapper .mat-form-field-flex{
+    background-color: red;
+    display: block !important;
+}
+}
+.dado::before{
+    content: " ";
+}

@@ -65,7 +65,7 @@
                         "label": "Novo",
                         "icon": "pi pi-plus",
                         "routerLink": [
-                            "/pedido/novo-pedido"
+                            "/novoprepedido"
                         ]
                     }
                 ]

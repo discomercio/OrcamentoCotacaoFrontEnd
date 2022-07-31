@@ -1,0 +1,73 @@
+@import "../../../variaveis.scss";
+
+
+:host{
+    // .campoTextoDesktop {
+    //     height: 3em;
+    //     line-height: 1em;
+    //     padding: 1em;
+    //     width: 1em;
+    //   }
+    // .fixo {[(value)]
+    //   display: flex;
+    //   flex-direction: column;
+    //   //height: 100%;
+    //   min-height: 70vh;
+    // }
+      .campoTextoCel {
+        height: 3em;
+        line-height: 1em;
+        padding: 0;
+        width: 100%;
+        margin-top: 2em;
+      }
+      
+      
+}
+.sectionDesktop .tabela_endereco {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.sectionDesktop .tabela_endereco caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+
+.sectionDesktop .tabela_endereco tr {
+  background-color: $cor-fundo-listapedidos;
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+.sectionDesktop .tabela_endereco th,
+.sectionDesktop .tabela_endereco td {
+  padding: 0.625em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+  //text-align: center;
+}
+
+.sectionDesktop .tabela_endereco th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+}
+
+.sectionDesktop article .tabela_endereco .mat-form-field {
+  padding: 0em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+}
+
+
+// versão celular
+.caixacel{
+  background-color: $cor-fundo-listapedidos;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+}

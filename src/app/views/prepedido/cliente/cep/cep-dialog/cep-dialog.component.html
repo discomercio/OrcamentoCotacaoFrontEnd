@@ -1,0 +1,207 @@
+<section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
+
+    <header style="margin-left: -10px;">Busca de CEP</header>
+    <article mat-dialog-content class="fixo" [ngClass]="{'carregando': carregando}">
+
+        <form>
+            <div *ngIf="telaDesktop">
+                <mat-form-field style="width: 5em">
+                    <mat-label>UF</mat-label>
+                    <mat-select [(ngModel)]="uf" [ngModelOptions]="{standalone: true}">
+                        <mat-option value="">Selecione</mat-option>
+                        <mat-option *ngFor="let i of lstUf" [value]="i" required (click)="buscarLocalidades()">
+                            {{i}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: 30%">
+                    <input matInput type="text" placeholder="Localidade" [(ngModel)]="localidade" name="buscaLocalidade"
+                        list="dlbuscaLocalidade">
+                    <datalist *ngIf="localidade.length > 2" id="dlbuscaLocalidade">
+                        <ng-container *ngFor="let option of lstCidades">
+                            <option *ngIf="option.toLowerCase().indexOf(localidade.toLowerCase()) != -1"
+                                [value]="option">
+                        </ng-container>
+                    </datalist>
+                </mat-form-field>
+                <!-- teste para alterar o datalist -->
+                <!-- <mat-form-field>
+                    <input type="text" placeholder="Enter Location" matInput 
+                         [matAutocomplete]="auto">
+                       <mat-autocomplete #auto="matAutocomplete">
+                         <mat-option *ngFor="let option of options" [value]="option">
+                           {{option}}
+                        </mat-option>
+                    </mat-autocomplete>
+                 </mat-form-field> -->
+
+
+                <mat-form-field style="width: 18em">
+                    <input matInput type="text" placeholder="Endereço" [(ngModel)]="endereco"
+                        [ngModelOptions]="{standalone: true}">
+                </mat-form-field>
+
+                <button  mat-raised-button (click)="buscarCepPorEndereco()">
+                    <!-- <mat-icon>search</mat-icon> -->
+                    <span class="pi pi-search"></span>Buscar Cep
+                </button>
+            </div>
+            <div *ngIf="!telaDesktop" fxLayoutAlign="center center">
+                <div>
+                    <mat-form-field style="width: 98%">
+                        <mat-label>Uf</mat-label>
+                        <mat-select [(ngModel)]="uf" [ngModelOptions]="{standalone: true}">
+                            <mat-option value="">Selecione</mat-option>
+                            <mat-option *ngFor="let i of lstUf" [value]="i" required (click)="buscarLocalidades()">
+                                {{i}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field style="width: 98%">
+                        <input matInput type="text" placeholder="Localidade" [(ngModel)]="localidade"
+                            name="buscaLocalidade" list="dlbuscaLocalidade">
+                        <datalist *ngIf="localidade.length > 2" id="dlbuscaLocalidade">
+                            <ng-container *ngFor="let option of lstCidades">
+                                <option *ngIf="option.toLowerCase().indexOf(localidade.toLowerCase()) != -1"
+                                    [value]="option">
+                            </ng-container>
+                        </datalist>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field style="width: 98%">
+                        <input matInput type="text" placeholder="Endereço" [(ngModel)]="endereco" required
+                            [ngModelOptions]="{standalone: true}">
+                    </mat-form-field>
+                </div>
+                <button  mat-raised-button (click)="buscarCepPorEndereco()" style="font-size: 80%; margin-left: 20%">
+                        <!-- <mat-icon style="font-size: 180%; margin-left:-15%">search</mat-icon>  -->
+                        <span class="pi pi-search"> </span>Buscar Cep
+                    </button>
+                <!-- <a *ngIf="!telaDesktop" mat-mini-fab aria-label="teste" (click)="buscarCepPorEndereco()"
+                    style="margin-left: 40%;">
+                    <mat-icon>search</mat-icon>
+                </a> -->
+            </div>
+
+        </form>
+        <!-- teste mensagem  -->
+        <div style="text-align: center; color: red">
+            <span *ngIf="endNaoEncontrado !=''">{{this.endNaoEncontrado}}</span>
+        </div>
+
+        <!-- tabela de cep versão desktop-->
+        <mat-radio-group *ngIf="lstEnderecos.length > 0" [(ngModel)]="endereco_selecionado" required
+            [ngModelOptions]="{standalone: true}">
+            <table class="tabela_endereco" *ngIf="telaDesktop">
+                <thead>
+                    <tr>
+                        <th style="width: 1.1em" align="left" valign="bottom">
+                            <!-- checkbox -->
+                        </th>
+
+                        <th style="width: 5.5em;" align="left" valign="bottom">
+                            CEP
+                        </th>
+                        <th style="width: 2em;" align="left" valign="bottom">
+                            UF
+                        </th>
+                        <th style="width: 8em;" align="left" valign="bottom">
+                            Cidade
+                        </th>
+                        <th style="width: 8em;" align="left" valign="bottom">
+                            Bairro
+                        </th>
+                        <th style="width: 15em;" align="left" valign="bottom">
+                            Lougradouro
+                        </th>
+                        <th style="width: 10vw;" align="left" valign="bottom">
+                            Complemento
+                        </th>
+                    </tr>
+                </thead>
+                <tbody class="destaquelinha">
+                    <ng-container *ngFor="let i of lstEnderecos; let idx = index">
+                        <tr>
+                            <td>
+                                <mat-radio-button type="radio" name="chkIndice" value="{{idx}}">
+
+                                </mat-radio-button>
+                            </td>
+                            <td>
+                                {{formatarEndereco.cep_formata(i.Cep)}}
+                            </td>
+                            <td>
+                                {{i.Uf}}
+                            </td>
+                            <td>
+                                {{i.Cidade}}
+                            </td>
+                            <td>
+                                {{i.Bairro}}
+                            </td>
+                            <td>
+                                {{i.Endereco}}
+                            </td>
+                            <td>
+                                {{i.LogradouroComplemento}}
+                            </td>
+                        </tr>
+                    </ng-container>
+                </tbody>
+            </table>
+        </mat-radio-group>
+        
+        <!-- versão celular -->
+        <div *ngIf="!telaDesktop" style="display: block; padding-top: 1em;">
+            <mat-radio-group *ngIf="lstEnderecos.length > 0" [(ngModel)]="endereco_selecionado" required
+                [ngModelOptions]="{standalone: true}">
+                <div *ngFor="let i of lstEnderecos; let idx = index" class="caixacel">
+
+                    <!-- sempre uma linha inteira -->
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        <mat-radio-button *ngIf="!telaDesktop" type="radio" name="chkIndice" value="{{idx}}">
+
+                        </mat-radio-button>
+
+                    </div>
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        {{formatarEndereco.cep_formata(i.Cep)}} |
+
+                    </div>
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        {{i.Uf}} |
+                    </div>
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        {{i.Cidade}} |
+                    </div>
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        {{i.Bairro}} |
+                    </div>
+                    <div style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        {{i.Endereco}}
+                    </div>
+                    <div *ngIf="i.LogradouroComplemento != ''"
+                        style="cursor: pointer; padding-bottom: 1em; text-align: center; display: inline">
+                        | {{i.LogradouroComplemento}}
+                    </div>
+                </div>
+            </mat-radio-group>
+        </div>
+    </article>
+    <footer *ngIf="lstEnderecos.length > 0 && telaDesktop" mat-dialog-actions style="justify-content: space-around;">
+        <button mat-raised-button (click)="onNoClick()" cdkFocusInitial color="accent">Cancelar</button>
+        <button mat-raised-button (click)="onOkClick()" color="accent">
+            Confirmar
+        </button>
+    </footer>
+    <footer *ngIf="lstEnderecos.length > 0 && !telaDesktop" mat-dialog-actions 
+        style="justify-content: space-around; min-width: 100%">
+            <button mat-raised-button (click)="onNoClick()" cdkFocusInitial color="accent" style="font-size: 80%;">Cancelar</button>
+            <button mat-raised-button (click)="onOkClick()" color="accent" style="font-size: 80%;">
+                Confirmar
+            </button>
+        </footer>
+</section>

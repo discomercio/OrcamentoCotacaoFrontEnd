@@ -1,0 +1,21 @@
+<section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop, 'carregando':carregando}">
+    <form style="display: contents;" (keydown.enter)="$event.preventDefault()">
+        <header>
+            Cadastrar Cliente <ng-container *ngIf="ehPf(); else pessoajuridica">Pessoa Física</ng-container>
+            <ng-template #pessoajuridica>Pessoa Jurídica</ng-template>
+        </header>
+        <article>
+            <app-cliente-corpo [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="true"
+                [clienteCadastroDto]="clienteCadastroDto" [editarIcms]="true" #clienteCorpo [dadosCadastrais]="false">
+            </app-cliente-corpo>
+        </article>
+        <footer>
+            <a mat-raised-button color="accent" (click)="voltar()" style="background-color: #007bff !important;color: white !important;">
+                <span class="pi pi-arrow-circle-left"> </span> Voltar
+            </a>
+            <button mat-raised-button color="accent" (click)="continuar()" type="submit" id="avancar" [disabled]="desabilita">
+                <span class="pi pi-arrow-circle-right"> </span> Avançar
+            </button>
+        </footer>
+    </form>
+</section>

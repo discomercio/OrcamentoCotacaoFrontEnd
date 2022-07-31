@@ -1,0 +1,226 @@
+<section
+    [ngClass]="{'carregando': prepedidoListarService.carregando || pedidoListarService.carregando, 'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}"
+    style="min-height: 150px;">
+    <!-- deixamos style="min-height: 200px;" para forçar o scroll se ficar muito pequeno -->
+    <header id="header" *ngIf="telaDesktop && emPrepedidos" style="padding-top: 0em; padding-bottom: 0em;">
+        <div style="float: right; padding-right: 2em; padding-bottom: 0.5em; font-weight: normal; font-size: 80%;">
+            Pedidos localizados: {{(prepedidos$|async)?.length}}
+        </div>
+    </header>
+
+    <article *ngIf="telaDesktop && emPrepedidos">
+        <table mat-table [dataSource]="prepedidos$|async" class="mat-elevation-z1 tabeladesktop destaquelinhaMatTable">
+
+            <ng-container matColumnDef="DataPrepedido">
+                <th mat-header-cell *matHeaderCellDef> Data </th>
+                <td mat-cell *matCellDef="let element"> {{dataFormatarTela(element.DataPrePedido)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="NumeroPrepedido">
+                <th mat-sort-header="NumeroPrepedido" mat-header-cell *matHeaderCellDef> Número </th>
+                <td mat-cell *matCellDef="let element"> {{element.NumeroPrepedido}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="NomeCliente">
+                <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                <td mat-cell *matCellDef="let element"> {{element.NomeCliente}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ValoTotal">
+                <th mat-header-cell *matHeaderCellDef> Valor </th>
+                <td mat-cell *matCellDef="let element"> {{moedaUtils.formatarMoedaComPrefixo(element.ValoTotal)}} </td>
+            </ng-container>
+            <!-- colocar condição para não mostrar o delete caso seja a lista de excluidos -->
+            <ng-container matColumnDef="Remover">
+                <th mat-header-cell *matHeaderCellDef> </th>
+                <td mat-cell *matCellDef="let element"><button
+                        *ngIf="(element.Status.toLowerCase().indexOf('em andamento') == -1) && element.Status != 'Excluído'"
+                        mat-button (click)="removerPrepedido(element.NumeroPrepedido)">
+                        <span class="pi pi-trash"> </span>
+                    </button></td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="cliqueLinha(row)"
+                style="cursor: pointer" title="Detalhes do pedido"></tr>
+        </table>
+    </article>
+
+    <header id="header" *ngIf="telaDesktop && !emPrepedidos" style="padding-top: 0em; padding-bottom: 0em;">
+        <div style="float: right; padding-right: 2em; padding-bottom: 0.5em; font-weight: normal; font-size: 80%;">
+            Pedidos localizados: {{(pedidos$|async)?.length}}
+        </div>
+    </header>
+    <article id="content" *ngIf="telaDesktop && !emPrepedidos">
+        <table mat-table [dataSource]="pedidos$|async" class="mat-elevation-z1 tabeladesktop destaquelinhaMatTable">
+
+            <ng-container matColumnDef="DataPedido">
+                <th mat-header-cell *matHeaderCellDef> Data </th>
+                <td mat-cell *matCellDef="let element"> {{dataFormatarTela(element.DataPedido)}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="NumeroPedido">
+                <th mat-sort-header="NumeroPedido" style="text-align: center;" mat-header-cell *matHeaderCellDef> Número
+                </th>
+                <td mat-cell *matCellDef="let element" style="text-align: center;"> {{element.NumeroPedido}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="NomeCliente">
+                <th mat-header-cell *matHeaderCellDef> Cliente </th>
+                <td mat-cell *matCellDef="let element"> {{element.NomeCliente}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="Status">
+                <th mat-header-cell *matHeaderCellDef> Status </th>
+                <td mat-cell *matCellDef="let element"> {{element.Status}} </td>
+            </ng-container>
+
+            <ng-container matColumnDef="ValoTotal">
+                <th mat-header-cell *matHeaderCellDef> Valor </th>
+                <td mat-cell *matCellDef="let element"> {{moedaUtils.formatarMoedaComPrefixo(element.ValorTotal)}} </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsPedido"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPedido;" (click)="cliqueLinha(row)"
+                style="cursor: pointer" title="Detalhes do pedido"></tr>
+        </table>
+    </article>
+
+    <!-- campos incluídos na tela de celular -->
+    <div style="float: left; text-align: center; padding: 3%" class="textocelnumero"
+        *ngIf="!telaDesktop && emPrepedidos">
+        <span>
+            {{dataFormatarTela(data_FormTela(prepedidoListarService.paramsBuscaPrepedido.dataInicial))}}
+            até
+            {{dataFormatarTela(data_FormTela(prepedidoListarService.paramsBuscaPrepedido.dataFinal))}}
+        </span>
+    </div>
+
+    <article id="content" *ngIf="!telaDesktop && emPrepedidos">
+
+        <mat-card *ngFor="let option of prepedidos$|async" class="cartao" (click)="cliqueLinha(option)">
+            <div class="containercel">
+                <div class=".cellinha">
+                    <div class="celcol1">
+                        Data: </div>
+                    <div class="celcol2">
+                        {{dataFormatarTela(option.DataPrePedido)}}
+                    </div>
+                    <span style="float: right"><button
+                            *ngIf="(option.Status.toLowerCase().indexOf('em andamento') == -1) && option.Status != 'Excluído'"
+                            mat-button (click)="removerPrepedido(option.NumeroPrepedido)">
+                            <span class="pi pi-trash"> </span>
+                        </button>
+                    </span>
+
+                </div>
+                <div class=".cellinha">
+                    <div class="celcol1">
+                        Núm: </div>
+                    <div class="celcol2">
+                        {{option.NumeroPrepedido}}
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Cliente:
+                        </div>
+                        <div class="celcol2">
+                            {{option.NomeCliente}}
+                        </div>
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Status:
+                        </div>
+                        <div class="celcol2">
+                            {{option.Status}}
+                        </div>
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Valor:
+                        </div>
+                        <div class="celcol2">
+                            {{moedaUtils.formatarMoedaComPrefixo(option.ValoTotal)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+    </article>
+    <footer id="header" *ngIf="!telaDesktop && emPrepedidos" style="justify-content: space-between; ">
+        <div style="float: left;" class="textocelnumero">
+            Pedidos localizados: {{(prepedidos$|async)?.length}}
+        </div>
+        <button mat-raised-button color="accent" *ngIf="!telaDesktop" (click)="voltar()"
+            style="float: right;"
+            [ngClass]="{'botaoDesktop': telaDesktop, 'botaoCelular': !telaDesktop}">Nova
+            busca</button>
+    </footer>
+
+    <div style="float: left; text-align: center; padding: 3%" class="textocelnumero"
+        *ngIf="!telaDesktop && !emPrepedidos">
+        <span>
+            {{dataFormatarTela(data_FormTela(pedidoListarService.paramsBuscaPedido.dataInicial))}}
+            até
+            {{dataFormatarTela(data_FormTela(pedidoListarService.paramsBuscaPedido.dataFinal))}}
+        </span>
+    </div>
+    <article id="content" *ngIf="!telaDesktop && !emPrepedidos">
+        <mat-card *ngFor="let option of pedidos$|async" class="cartao" (click)="cliqueLinha(option)">
+            <div class="containercel">
+                <div class=".cellinha">
+                    <div class="celcol1">
+                        Data: </div>
+                    <div class="celcol2">
+                        {{dataFormatarTela(option.DataPedido)}}
+                    </div>
+                </div>
+                <div class=".cellinha">
+                    <div class="celcol1">
+                        Núm: </div>
+                    <div class="celcol2">
+                        {{option.NumeroPedido}}
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Cliente:
+                        </div>
+                        <div class="celcol2">
+                            {{option.NomeCliente}}
+                        </div>
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Status:
+                        </div>
+                        <div class="celcol2">
+                            {{option.Status}}
+                        </div>
+                    </div>
+                    <div class=".cellinha">
+                        <div class="celcol1">
+                            Valor:
+                        </div>
+                        <div class="celcol2">
+                            {{moedaUtils.formatarMoedaComPrefixo(option.ValorTotal)}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </mat-card>
+    </article>
+    <footer id="header" *ngIf="!telaDesktop && !emPrepedidos" style="justify-content: space-between; ">
+        <div style="float: left;" class="textocelnumero">
+            Pedidos localizados: {{(pedidos$|async)?.length}}
+        </div>
+        <button mat-raised-button color="accent" *ngIf="!telaDesktop" (click)="voltar()" style="float: right; "
+            [ngClass]="{'botaoDesktop': telaDesktop, 'botaoCelular': !telaDesktop}">Nova
+            busca</button>
+    </footer>
+</section>

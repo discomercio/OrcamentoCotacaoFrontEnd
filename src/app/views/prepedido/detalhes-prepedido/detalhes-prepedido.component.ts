@@ -3,11 +3,12 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
+import { PrepedidoBuscarService } from 'src/app/service/prepedido/prepedido-buscar.service';
+import { PedidoBuscarService } from 'src/app/service/pedido/pedido-buscar.service';
 
 
 @Component({
@@ -17,7 +18,8 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 })
 export class DetalhesPrepedidoComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
-    public readonly prepedidoService: PrepedidoService,
+    public readonly prepedidoBuscarService: PrepedidoBuscarService,
+    public readonly pedidoBuscarService: PedidoBuscarService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
     private location: Location
@@ -32,7 +34,7 @@ export class DetalhesPrepedidoComponent implements OnInit {
 
   carregar() {
     if (this.numeroPrepedido) {
-      this.prepedidoService.carregar(this.numeroPrepedido).toPromise().then((r) => {
+      this.prepedidoBuscarService.buscar(this.numeroPrepedido).toPromise().then((r) => {
         if (r != null) {
           this.prepedido = r;
         }

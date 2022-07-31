@@ -22,4 +22,6 @@ export class ProdutoService {
   buscarCoeficientes(coeficienteRequest:CoeficienteRequest):Observable<CoeficienteDto[]>{
     return this.http.post<CoeficienteDto[]>(environment.apiUrl + "Produto/buscarCoeficientes", coeficienteRequest);
   }
+
+  
 }

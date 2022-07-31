@@ -4,12 +4,13 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserModule } from '@angular/platform-browser';
+import { CommonModule } from '@angular/common';  
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LocationStrategy, PathLocationStrategy } from '@angular/common';
-// import {
-//     MatButtonModule, MatIconModule, MatToolbarModule,
-//     MatSidenavModule, MatTableModule, MatDialogModule,
-//   } from '@angular/material';
+import {
+    MatButtonModule, MatIconModule, MatToolbarModule,
+    MatSidenavModule, MatTableModule, MatDialogModule,
+  } from '@angular/material';
 
 
 import { AppCodeModule } from './app.code.component';
@@ -56,7 +57,6 @@ import { UsuarioMeusdadosComponent } from '../views/usuarios/usuario-meusdados/u
 import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/consultar/consultar.component';
 
 //Alerts
-import { NovoPedidoComponent } from '../views/pedido/novo-pedido/novo-pedido.component';
 import { AuthGuard } from './guards/auth.guard';
 import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
 import { PublicoHeaderComponent } from '../views/publico/header/header.component';
@@ -65,12 +65,21 @@ import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-
 
 import { DetalhesPrepedidoComponent } from '../views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
 import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
+import { TextMaskModule } from 'angular2-text-mask';
+import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prepedido.module';
 
 @NgModule({
     imports: [
         SharedModule,
-        
+        CommonModule,
+        MatButtonModule,
+        MatIconModule,
+        MatToolbarModule,
+        MatSidenavModule,
+        MatTableModule,
+        MatDialogModule,        
         BrowserModule,
+        TextMaskModule,
         HttpClientModule,
         BrowserAnimationsModule,
         AppCodeModule,
@@ -79,6 +88,7 @@ import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhe
         FontAwesomeModule,
         NgxMaskModule.forRoot(),
         OrcamentosModule,
+        NovoPrepedidoModule
     ],
     declarations: [
         DownloadsComponent,
@@ -97,7 +107,6 @@ import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhe
         ProdutosCatalogoPropriedadesCriarComponent,
         UsuarioMeusdadosComponent,
         ProdutosCatalogoConsultarComponent,
-        NovoPedidoComponent,
         PublicoOrcamentoComponent,
         PublicoHeaderComponent,
         CalculadoraVrfComponent,
