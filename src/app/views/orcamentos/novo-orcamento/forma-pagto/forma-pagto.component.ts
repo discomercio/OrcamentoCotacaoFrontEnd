@@ -11,6 +11,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ItensComponent } from '../itens/itens.component';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-forma-pagto',
@@ -26,7 +27,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     public readonly itensComponent: ItensComponent,
     public readonly mensagemService: MensagemService,
     telaDesktopService: TelaDesktopService,
-    public cdref: ChangeDetectorRef
+    public cdref: ChangeDetectorRef,
+    public readonly sweetalertService: SweetalertService
   ) {
     super(telaDesktopService);
   }
@@ -60,7 +62,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
           if (r != null) {
             this.formaPagamento = r;
             this.montarFormasPagto();
-            this.setarTipoPagto();
+            // this.setarTipoPagto();
           }
         }).catch((e) => this.alertaService.mostrarErroInternet(e));
     }
@@ -98,23 +100,35 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   setarTipoPagto() {
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
 
-    if (this.tipoUsuario != this.constantes.GESTOR && this.tipoUsuario != this.constantes.VENDEDOR_UNIS) {
-      this.qtdeMaxParcelas = this.formasPagtoAPrazo[0].meios[0].qtdeMaxParcelas;
+    //se tiver parceiro no orçamento deve ser setado por 
+    let temParceiro = false;
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
+      temParceiro = true;
     }
+    // if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+    //   usuarioInterno = true;
+    // }
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
-      this.formaPagtoCriacaoAprazo.c_pc_qtde = pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-      this.qtdeMaxParcelas = pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
       this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
-    this.setarSiglaPagto();
+
+
+
+    this.setarSiglaPagto()
   }
 
+
+
+  qtdeMaxParcelaCartaoVisa: number = 0;
   setarSiglaPagto() {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
       this.novoOrcamentoService.siglaPagto = this.constantes.COD_CUSTO_FINANC_FORNEC_TIPO_PARCELAMENTO__COM_ENTRADA;
@@ -380,19 +394,37 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-    // não deixar adicionar opção caso desconto esteja maior que o permitido
-    debugger;
-    if(!this.novoOrcamentoService.validarDescontosProdutos()){
+    if (!this.novoOrcamentoService.validarDescontosProdutos()) {
       this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
       return;
     }
 
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
+        if(this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)){
+          let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
+          let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
+          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+          this.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+            if (!result) return;
+
+            this.gravarOpcao();
+
+          });
+        }
+        else this.gravarOpcao();
+    }
+    else this.gravarOpcao();
+  }
+
+  gravarOpcao(){
     this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();
-
+    this.setarQtdeMaxParcelasEDias();
   }
 
   atribuirFormasPagto() {
@@ -412,10 +444,13 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   limparCampos() {
+
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
     this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
     this.meioDemaisPrestacoes = new Array<MeiosPagto>();
     this.totalAvista = 0;
+    this.novoOrcamentoService.descontoGeral = 0;
+    this.checkedAvista = false;
     this.setarTipoPagto();
 
     this.novoOrcamentoService.controleProduto = new Array<string>();

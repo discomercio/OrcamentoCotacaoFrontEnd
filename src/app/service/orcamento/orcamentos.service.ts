@@ -34,13 +34,11 @@ export class OrcamentosService {
     return this.http.post<number>(`${environment.apiUrl}Orcamento`, model);
   }
 
-  criarOrcamento(cliente: ClienteOrcamentoCotacaoDto): Observable<ClienteOrcamentoCotacaoDto> {
-    return this.http.post<ClienteOrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, cliente);
+  atualizarDadosOrcamento(orcamento:OrcamentoCotacaoResponse): Observable<any> {
+    return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarDados`, orcamento);
   }
 
-  atualizarClienteOrcamento(cliente: ClienteOrcamentoCotacaoDto): Observable<ClienteOrcamentoCotacaoDto> {
-    return this.http.put<ClienteOrcamentoCotacaoDto>(`${environment.apiUrl}Orcamento`, cliente);
-  }
+
 
   buscarConfigValidade(): Observable<ValidadeOrcamento> {
     return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
@@ -53,7 +51,16 @@ export class OrcamentosService {
   prorrogarOrcamento(id: number): Observable<MensagemDto> {
     return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar`, id);
   }
+
+  cancelarOrcamento(id: number): Observable<MensagemDto> {
+    return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
+  }
+
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);
+  }
+
+  verificarUsoDeAlcada(idOrcamento:number):Observable<number>{
+    return this.http.get<number>(`${environment.apiUrl}Orcamento/verificarUsoDeAlcada?idOrcamento=${idOrcamento}`);
   }
 }

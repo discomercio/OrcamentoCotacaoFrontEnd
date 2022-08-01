@@ -315,5 +315,19 @@ $gutter: .5rem; //for primeflex grid system
     }
   }
 
+  ::ng-deep .p-accordion-content{
+    padding: 0 !important;
+}
+
+.font-size > td > input,
+.font-size {
+    font-size: smaller !important; 
+}
+
+::ng-deep .p-divider.p-divider-horizontal{
+    margin: 0% !important;
+}
+
+
   
 

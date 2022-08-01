@@ -60,10 +60,10 @@ import { ProdutosCatalogoConsultarComponent } from '../views/produtos-catalogo/c
 import { AuthGuard } from './guards/auth.guard';
 import { PublicoOrcamentoComponent } from '../views/publico/orcamento/orcamento.component';
 import { PublicoHeaderComponent } from '../views/publico/header/header.component';
+import { PublicoCadastroClienteComponent } from '../views/publico/cadastro-cliente/cadastro-cliente.component';
 import { CalculadoraVrfComponent } from '../views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from '../views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
-
-import { DetalhesPrepedidoComponent } from '../views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
+import { PrepedidoDetalhesComponent } from '../views/prepedido/detalhes/prepedido-detalhes.component';
 import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prepedido.module';
@@ -109,9 +109,12 @@ import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prep
         ProdutosCatalogoConsultarComponent,
         PublicoOrcamentoComponent,
         PublicoHeaderComponent,
+        PublicoCadastroClienteComponent,
         CalculadoraVrfComponent,
         SelectEvapDialogComponent,
-        DetalhesPrepedidoComponent,
+        PedidoDetalhesComponent,
+        PublicoCadastroClienteComponent,
+        PrepedidoDetalhesComponent,
         PedidoDetalhesComponent
     ],
     providers: [

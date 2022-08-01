@@ -17,6 +17,8 @@ class decodifica_data_retorno {
     ano: string;
 }
 
+
+
 export class DataUtils {
     public static formataParaFormulario(data: Date): string {
         if (typeof data.toISOString != "function")
@@ -27,13 +29,58 @@ export class DataUtils {
     }
 
     
-    public static formata_dataString_para_formato_data(data:string){
+    // public static formata_dataString_para_formato_data(data:string){
+    public  formata_data_e_talvez_hora_hhmmss(dt: Date | string): string {
+
+        let decodifica_data = DataUtils.decodifica_data(dt);
+        if (!decodifica_data.sucesso)
+            return "";
+        let s = DataUtils.formatarTela(dt);
+
+        let decodifica_hora = DataUtils.decodifica_hora(dt);
+
+        if (decodifica_hora.sucesso &&
+            (decodifica_hora.hora != "00" || decodifica_hora.min != "00" || decodifica_hora.seg != "00")) {
+            s = s + " " + decodifica_hora.hora + ":" + decodifica_hora.min + ":" + decodifica_hora.seg;
+
+        }
+        return s;
+    }
+
+//     ' ------------------------------------------------------------------------
+    // '	FORMATA_DATA_E_TALVEZ_HORA_HHMM
+    // '	Formata a data e hora (se houver hora): DD/MM/YYYY HH:NN
+    // '	Senão será apenas a data: DD/MM/YYYY
+    // '	Lembrando que mesmo que a informação referente aos segundos não
+    // '	seja exibida, o fato desse campo ser diferente de zero significa
+    // '	que há informação sobre o horário armazenado.
+    public formata_data_e_talvez_hora_hhmm(dt: Date | string): string {
+
+        let decodifica_data = DataUtils.decodifica_data(dt);
+        if (!decodifica_data.sucesso)
+            return "";
+        let s = DataUtils.formatarTela(dt);
+
+        let decodifica_hora = DataUtils.decodifica_hora(dt);
+
+        if (decodifica_hora.sucesso &&
+            (decodifica_hora.hora != "00" || decodifica_hora.min != "00" || decodifica_hora.seg != "00")) {
+            s = s + " " + decodifica_hora.hora + ":" + decodifica_hora.min;
+
+        }
+        return s;
+
+    }    
+
+   
+
+    public static formata_dataString_para_formato_data(data: string) {
         let split = data.split('/');
-        let dia:string;
-        let mes:string;
-        let ano:string;
-        let retorno:string;
-        if(split.length == 3){
+        let dia: string;
+        let mes: string;
+        let ano: string;
+        let retorno: string;
+        if (split.length == 3) {
             retorno = split[2] + "-" + split[1] + "-" + split[0];
         }
 
@@ -59,7 +106,7 @@ export class DataUtils {
             return;
 
         let split = data.split('-');
-        return split[2].substring(0,2) + "/" + split[1] + "/" + split[0];
+        return split[2].substring(0, 2) + "/" + split[1] + "/" + split[0];
     }
     public static validarData(data: Date): boolean{
         if(isNaN(data.getTime())) return false;

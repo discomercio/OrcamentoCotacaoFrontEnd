@@ -28,7 +28,7 @@
                                 <th class="p-text-right">Qtde</th>
                                 <!-- <th class="p-text-right">Preço NF</th> -->
                                 <th class="p-text-right">Vl Lista</th>
-                                <th class="p-text-right">Desc%</th>
+                                <th class="p-text-right">Desc %</th>
                                 <th class="p-text-right">Vl Venda</th>
                                 <th class="p-text-right">Vl Total</th>
                                 <th *ngIf="!editando" class="p-text-right">Excluir</th>
@@ -51,19 +51,13 @@
                                         type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
                                         (change)="digitouQte(p)" />
                                 </td>
-                                <!-- <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                            <span class="p-column-title" [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Preço NF</span>
-                            <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="precoNF" type="text" pInputText placeholder=""
-                                [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoNF)"
-                                (blur)="digitouPreco_NF($event, p)" (keyup)="formatarPreco_NF($event, p)" />
-                        </td> -->
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
                                     <div class="p-text-right">
                                         {{moedaUtils.formatarMoedaSemPrefixo(p.precoLista)}}
                                     </div>
                                 </td>
-                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                <td class="{{telaDesktop ? 'p-text-right' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title"
                                         [ngStyle]="telaDesktop ? {'':''}:{'display':'contents'}">Desc%</span>
                                     <div class="p-d-inline-flex p-ai-center p-jc-end"
@@ -72,7 +66,8 @@
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
                                             [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
-                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" /> %
+                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" />
+                                        <div class="p-pl-1">%</div>
                                     </div>
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
@@ -120,12 +115,13 @@
                                 <td class="p-text-right" colspan="2">
                                     <div class="p-d-inline-flex">
                                         <span
-                                            *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao">
+                                            *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
                                             Comissão:
                                             {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
                                         </span>
-                                        <div class="p-d-inline-flex p-jc-end" *ngIf="novoOrcamentoService.editarComissao">
+                                        <div class="p-d-inline-flex p-jc-end"
+                                            *ngIf="novoOrcamentoService.editarComissao">
                                             <div class="p-col-7 p-inputgroup">
                                                 <input type="text" pInputText class="p-text-right"
                                                     [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
@@ -141,32 +137,61 @@
                                                 (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
                                             <button
                                                 *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"
-                                                pButton type="button" icon="pi pi-save"
+                                                pButton type="button" icon="pi pi-times"
                                                 (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
                                         </div>
                                     </div>
 
 
                                 </td>
-                                <td class="p-text-right p-col-2" colspan="2">
-                                    <div>
+                                <td></td>
+                                <td class="p-text-right">
+                                    <div class="p-d-inline-flex p-ai-center p-jc-end"
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'width':'100%'}">
+                                        <input
+                                            class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
+                                            pInputText id="desconto" type="text"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
+                                            (keyup)="formataDescontoGeral($event)" />
+                                        <div class="p-pl-1">%</div>
+                                    </div>
+                                    <!-- <div class="p-d-inline-flex p-ai-center p-jc-end">
+                                        <input type="text" pInputText class="p-text-right"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
+                                            (keyup)="formataDescontoGeral($event)">
+                                        <div class="p-pl-1">%</div>
+                                    </div> -->
+                                    <!-- <div>
                                         <div class="p-inputgroup">
                                             <input type="text" pInputText class="p-text-right"
-                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
                                                 (keyup)="formataDescontoGeral($event)">
                                             <span class="p-inputgroup-addon">%</span>
                                             <button type="button" pButton pRipple icon="pi pi-plus"
                                                 styleClass="p-button-warn" pTooltip="Aplicar desconto nos produtos"
-                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(descontoGeral)"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
                                                 (click)="aplicarDescontoGeral($event)"></button>
                                         </div>
-                                    </div>
+                                    </div> -->
 
                                 </td>
 
-                                <td class="p-text-right" colspan="2">
-                                    Total
-                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}}
+                                <td colspan="2">
+                                    <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
+                                        <div>
+                                            <button type="button" pButton pRipple icon="fa fa-check"
+                                                styleClass="p-button-warn" pTooltip="Aplicar desconto nos produtos"
+                                                [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
+                                                (click)="aplicarDescontoGeral($event)"></button>
+                                        </div>
+                                        <div class="p-as-center">
+                                            Total
+                                            {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}}
+                                        </div>
+                                    </div>
+
+                                    <!-- Total
+                                    {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}} -->
                                 </td>
                                 <td></td>
                             </tr>

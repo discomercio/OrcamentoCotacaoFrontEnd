@@ -9,8 +9,8 @@ export class MensagemService {
 
   constructor(private messageService: MessageService) { }
 
-  showInfoViaToast() {
-    this.messageService.add({ key: 'tst', severity: 'info', summary: 'Info Message', detail: 'PrimeNG rocks' });
+  showInfoViaToast(mensagem: string) {
+    this.messageService.add({ key: 'tst', severity: 'info', summary: 'Info', detail: mensagem });
   }
 
   showWarnViaToast(mensagem: string) {

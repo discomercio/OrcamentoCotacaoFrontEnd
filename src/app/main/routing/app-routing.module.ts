@@ -1,3 +1,4 @@
+import { PublicoCadastroClienteSucessoComponent } from 'src/app/views/publico/cadastro-cliente-sucesso/cadastro-cliente-sucesso.component';
 import { UsuarioMeusdadosComponent } from '../../views/usuarios/usuario-meusdados/usuario-meusdados.component';
 import { ClienteComponent } from '../../views/cliente/cliente.component';
 import { RouterModule } from '@angular/router';
@@ -35,19 +36,17 @@ import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
-import { DetalhesPrepedidoComponent } from 'src/app/views/prepedido/detalhes-prepedido/detalhes-prepedido.component';
-import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
 import { SelectProdDialogComponent } from 'src/app/views/produto/modal/select-prod-dialog.component';
-import { NovoPrepedidoComponent } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido.component';
 import { SelecionarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/selecionar-cliente/selecionar-cliente.component';
-import { NovoPrepedidoModule } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido.module';
-import { NovoPrepedidoRoutingModule } from 'src/app/views/prepedido/novo-prepedido/novo-prepedido-routing.module';
 import { PrePedidoConfirmarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-cliente/prepedidoconfirmar-cliente.component';
 import { PrePedidoObservacoesComponent } from 'src/app/views/prepedido/novo-prepedido/observacoes/prepedidoobservacoes.component';
 import { ConfirmarPrepedidoComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-prepedido/confirmar-prepedido.component';
 import { PrePedidoItensComponent } from 'src/app/views/prepedido/novo-prepedido/itens/prepedidoitens.component';
 import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/cadastrar-cliente/prepedidocadastrar-cliente.component';
+import { PrepedidoDetalhesComponent } from 'src/app/views/prepedido/detalhes/prepedido-detalhes.component';
+import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
+import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-cliente/editar-cliente.component';
 
 @NgModule({
     imports: [
@@ -58,6 +57,7 @@ import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo
                     { path: 'account/login', component: LoginComponent, },
                     { path: 'orcamentos/aprovacao-orcamento-cliente', component: AprovacaoOrcamentoClienteComponent },
                     { path: 'publico/orcamento/:guid', component: PublicoOrcamentoComponent },
+                    { path: 'publico/cadastro-cliente-sucesso', component: PublicoCadastroClienteSucessoComponent },
                     {
                         path: '', component: AppMainComponent, canActivate: [AuthGuard], children: [
 
@@ -72,6 +72,7 @@ import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo
                                     { path: "novo-orcamento",pathMatch: "full", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
+                                    { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
                                 ]
                             },
 
@@ -214,7 +215,7 @@ import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo
                             {
                                 path: 'prepedido/detalhes/:numeroPrepedido',
                                 canActivate: [AuthGuard],
-                                component: DetalhesPrepedidoComponent
+                                component: PrepedidoDetalhesComponent
                             },
 
                             // Pedido

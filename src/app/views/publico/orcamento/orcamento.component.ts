@@ -1,3 +1,4 @@
+import { AutenticacaoService } from './../../../service/autenticacao/autenticacao.service';
 import { PublicoService } from './../../../service/publico/publico.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -14,6 +15,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import { Constantes } from 'src/app/utilities/constantes';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cliente.component';
 
 @Component({
   selector: 'app-orcamento',
@@ -28,6 +30,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly publicoService: PublicoService,
     private readonly alertaService: AlertaService,
     private readonly sweetalertService: SweetalertService,
+    private readonly autenticacaoService: AutenticacaoService,
   ) { 
     super(telaDesktopService);
   }
@@ -40,6 +43,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   dataUtils: DataUtils = new DataUtils();
   stringUtils = StringUtils;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
+  @ViewChild(PublicoCadastroClienteComponent) child;
+  display: boolean = false;
   
   ngOnInit(): void {
     this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
@@ -61,17 +66,25 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
           this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
           this.mensagemComponente.obterListaMensagem(this.orcamento.id);
+
+          this.autenticacaoService.setarToken(r.token);
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
+  salvar() {
+    this.child.salvar();
+  }
+
   aprovar(opcao) {
     // if (!this.opcaoPagto) {
     // }
-      this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
-    });
+    //   this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
+    // });
   }
+
+
 
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {
@@ -81,6 +94,20 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       if (i == index) this.activeState[i] = true;
       else this.activeState[i] = false;
     }
+  }
+
+  showDialog() {
+      if(this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+        return;
+      }
+
+      if(this.orcamento.validade < new Date()) { 
+        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+        return;
+      }
+
+      this.display = true;
   }
  
   formatarFormaPagamento(orcamento, opcao: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {

@@ -234,7 +234,7 @@ export class OrcamentosListarComponent implements OnInit {
         this.carregando = false;
       }
     }).catch((r) => {
-      debugger;
+      
       this.carregando = false;
       this.alertaService.mostrarErroInternet(r);
     });

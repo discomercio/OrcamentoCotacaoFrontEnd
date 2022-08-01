@@ -29,6 +29,14 @@ export class ClienteService {
     return this.http.post<string[]>(environment.apiUrl + 'api/cliente/cadastrarCliente', clienteCadastroDto);
   }
 
+  public buscarClienteOrcamento(cpfCnpj: any): Observable<any> {
+    return this.http.get(environment.apiUrl + '/buscarCliente/' + cpfCnpj);
+  }
+
+  public cadastrarClienteOrcamento(body: any): Observable<any> {
+    return this.http.post<any>(environment.apiUrl + '/cadastrarCliente', body);
+  }
+
   public atualizarCliente(dadosClienteCadastroDto: DadosClienteCadastroDto) {
     return this.http.post<string[]>(environment.apiUrl + 'api/cliente/atualizarClienteparcial', dadosClienteCadastroDto);
   }

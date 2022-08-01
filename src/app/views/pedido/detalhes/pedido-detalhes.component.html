@@ -258,7 +258,7 @@
                 </tr>
                 <tr *ngIf="pedido?.EnderecoEntrega?.EndEtg_descricao_justificativa?.trim() != ''">
                     <td align="left" style="word-wrap:break-word" *ngIf="pedido?.EnderecoEntrega?.OutroEndereco">
-                        <textarea name="c_obs1" id="c_obs1" class="PLLe"
+                        <textarea name="c_obs1" id="c_obs1" class="PLLe"  rows="{{qtdeLinhaEndereco}}"
                             style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly tabindex=-1
                             [innerHTML]="enderecoEntregaFormatado">
                         </textarea>
@@ -384,7 +384,7 @@
                 <tr>
                     <td class="MB" colspan="6" align="left">
                         <p class="Rf">Observações </p>
-                        <textarea name="c_obs1" id="c_obs1" class="PLLe notPrint"
+                        <textarea name="c_obs1" id="c_obs1" class="PLLe notPrint" rows="5"
                             style="width:99%;margin-left:2pt; resize: none;" readonly
                             tabindex=-1>{{pedido?.DetalhesNF.Observacoes}} &nbsp;</textarea>
                         <span class="PLLe notVisible">{{pedido?.DetalhesNF.Observacoes}} &nbsp;</span>
@@ -589,7 +589,7 @@
                 <tr>
                     <td align="left">
                         <p class="Rf">DATA DE COLETA</p>
-                        <p class="C">{{pedido.DetalhesFormaPagto.DataColeta}}</p>
+                        <p class="C">{{dataFormatarTela(pedido.DetalhesFormaPagto.DataColeta)}}</p>
                     </td>
                 </tr>
             </table>
@@ -646,7 +646,7 @@
                                                 POR:</span>&nbsp;{{ocorrencia.Usuario}}</td>
                                         <td class="C MD MB tdWithPadding" width="33%" align="left" valign="top"><span
                                                 class="Rf" style="margin-left:0px;">EM:</span>&nbsp;
-                                            {{dataUtils.formata_data_DDMMYYY(ocorrencia.Dt_Hr_Cadastro)}}
+                                            {{dataUtils.formata_data_e_talvez_hora_hhmmss(ocorrencia.Dt_Hr_Cadastro)}}
                                             &nbsp;
                                         </td>
                                         <td class="C MB tdWithPadding" align="left" valign="top"
@@ -702,7 +702,7 @@
                                                 <tr>
                                                     <td class="C MD MC tdWithPadding" style="width:60px;" align="center"
                                                         valign="top">
-                                                        {{mensagem.Dt_Hr_Cadastro}}
+                                                        {{dataUtils.formata_data_e_talvez_hora_hhmm(mensagem.Dt_Hr_Cadastro)}}
                                                     </td>
                                                     <td class="C MD MC tdWithPadding" style="width:80px;" align="center"
                                                         valign="top">
@@ -765,7 +765,7 @@
                                                         <td class="C tdWithPadding" width="50%" align="left"
                                                             valign="top">
                                                             <span class="Rf" style="margin-left:0px;">EM:</span>&nbsp;
-                                                            {{ocorrencia.Finalizado_Data_Hora}}
+                                                            {{dataUtils.formata_data_e_talvez_hora_hhmm(ocorrencia.Finalizado_Data_Hora)}}
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -814,7 +814,7 @@
                         <ng-container
                             *ngIf="nota.Dt_Hora_Cadastro && nota.Dt_Hora_Cadastro.toString().trim() != '0001-01-01T00:00:00'">
                             <td class="C ME MD MB" style="width:60px;" align="center" valign="top">
-                                {{dataformatarDataTalvezHoraMinSS(nota.Dt_Hora_Cadastro)}}
+                                {{dataUtils.formata_data_e_talvez_hora_hhmmss(nota.Dt_Hora_Cadastro)}}
                             </td>
                             <td class="C MD MB" style="width:80px;" align="center" valign="top">
                                 {{nota.Usuario}} <ng-container *ngIf="nota?.Loja != '' && nota?.Loja != null">(Loja

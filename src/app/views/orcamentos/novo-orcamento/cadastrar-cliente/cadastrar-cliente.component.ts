@@ -17,6 +17,9 @@ import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentis
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -37,7 +40,8 @@ export class CadastrarClienteComponent implements OnInit {
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly orcamentoService: OrcamentosService,
-    private readonly activatedRoute: ActivatedRoute) { }
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly sweetalertService: SweetalertService) { }
 
   //uteis
   public mascaraTelefone: string;
@@ -53,6 +57,7 @@ export class CadastrarClienteComponent implements OnInit {
   public lstEstado: SelectItem[] = [];
   lojasUsuario: SelectItem[] = [];
   lstTipo: SelectItem[];
+  lstContribuinteICMS: SelectItem[];
 
   //controle de campos
   public desabilitado: boolean = true;
@@ -61,6 +66,7 @@ export class CadastrarClienteComponent implements OnInit {
 
 
   ngOnInit(): void {
+
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
@@ -68,43 +74,78 @@ export class CadastrarClienteComponent implements OnInit {
     this.tipoUsuario = this.autenticacaoService.tipoUsuario;
     this.buscarConfigValidade();
     this.desabilitarCampos();
+    this.desabiltarCamposParaEdicao();
     this.setarCamposDoForm();
     this.carregarListas();
     this.buscarEstados();
     this.buscarTiposCliente();
-    this.verificaDataValidade();
-
-    this.novoOrcamentoService.mostrarOpcoes = false;
+    this.buscarContribuinteICMS();
   }
 
+  filtro: string;
   verificarParam(param: any) {
-    if (param.filtro == "editar") {
-      //se tiver opção de orçamento armazenado no orçamento, bloquear os campos de Tipo de cliente e parceiro
-      
-      return;
+    if (param.filtro == undefined) {
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined ||
+        this.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
+        this.router.navigate(["/orcamentos/listar/orcamentos"]);
+        return;
+      }
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == null) {
+        this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.constantes.SEM_INDICADOR;
+      }
     }
+
     if (param.filtro == "novo") {
+      this.filtro = param.filtro;
+    }
+
+    if (param.filtro == "iniciar") {
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
+      this.filtro = param.filtro;
     }
+
     if (param.filtro == "clone") {
       //vamos criar montar os dados de cliente apena?
     }
   }
 
-  desabilitarCampos(){
-    
-    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0){
+  desabilitarCampos() {
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
       this.form.controls.Parceiro.disable();
       this.form.controls.Tipo.disable();
     }
-    
+
+    this.form.controls.Validade.disable();
+  }
+
+  desabiltarCamposParaEdicao() {
+    if (this.filtro == null) {
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
+        this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
+          opcao.listaProdutos.forEach(produto => {
+            if (produto.idOperacaoAlcadaDescontoSuperior != null) {
+              this.form.controls.ContribuinteICMS.disable();
+              this.form.controls.Uf.disable();
+            }
+          });
+        });
+      }
+      this.form.controls.Vendedor.disable();
+      this.form.controls.Parceiro.disable();
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)
+        this.form.controls.VendedorParceiro.disable();
+    }
   }
 
   buscarConfigValidade() {
     this.orcamentoService.buscarConfigValidade().toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.configValidade = r;
+        this.setarOrcamentoValidade();
       }
     }).catch((e) => {
       console.log("erro");
@@ -248,13 +289,21 @@ export class CadastrarClienteComponent implements OnInit {
     ]
   }
 
+  buscarContribuinteICMS(): void {
+    this.lstContribuinteICMS = [
+      { label: "Sim", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM },
+      { label: "Não", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO },
+      { label: "Isento", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO }
+    ]
+  }
+
   criarForm(): void {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
 
     let clienteOrcamentoCotacao = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto;
     this.form = this.fb.group({
-      Validade: [this.novoOrcamentoService.orcamentoCotacaoDto.validade, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
+      Validade: [null, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais],
       Nome: [clienteOrcamentoCotacao.nomeCliente, [Validators.required, Validators.maxLength(60)]],
       NomeObra: [clienteOrcamentoCotacao.nomeObra],
@@ -267,24 +316,20 @@ export class CadastrarClienteComponent implements OnInit {
       Uf: [clienteOrcamentoCotacao.uf, [Validators.required, Validators.maxLength(2)]],
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
-      DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata]
+      DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
+      ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS]
     });
   }
 
-  verificaDataValidade(): void {
-    if (!this.form.controls.Validade.value) {
-      let data = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+  setarOrcamentoValidade() {
+    if (!this.novoOrcamentoService.orcamentoCotacaoDto.validade) {
+      let data = new Date(Date.now() + this.novoOrcamentoService.configValidade.QtdeDiasValidade * 24 * 60 * 60 * 1000);
       this.form.controls.Validade.setValue(data);
-      this.form.controls.Validade.disable();
       return;
     }
 
-    let validacaoData: Date = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-    let dataCliente: Date = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
-    if (dataCliente > validacaoData) {
-      this.form.controls.Validade.setValue(dataCliente);
-      this.form.controls.Validade.enable();
-    }
+    let validade = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
+    this.form.controls.Validade.setValue(validade);
   }
 
   salvarOrcamento() {
@@ -308,6 +353,14 @@ export class CadastrarClienteComponent implements OnInit {
       this.form.controls.VendedorParceiro.setValue(null);
     }
 
+    if (!this.validarContribuinteICMS()) return;
+
+    this.atribuirDados();
+
+    this.router.navigate(["orcamentos/itens", "novo"]);
+  }
+
+  atribuirDados() {
     let clienteOrcamentoCotacao = new ClienteOrcamentoCotacaoDto();
     clienteOrcamentoCotacao.nomeCliente = this.form.controls.Nome.value;
     clienteOrcamentoCotacao.nomeObra = this.form.controls.NomeObra.value;
@@ -315,10 +368,11 @@ export class CadastrarClienteComponent implements OnInit {
     clienteOrcamentoCotacao.telefone = this.form.controls.Telefone.value;
     clienteOrcamentoCotacao.uf = this.form.controls.Uf.value;
     clienteOrcamentoCotacao.tipo = this.form.controls.Tipo.value;
+    clienteOrcamentoCotacao.contribuinteICMS = this.form.controls.ContribuinteICMS.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacao;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCotacaoDto.id;
-    this.novoOrcamentoService.orcamentoCotacaoDto.validade = this.form.controls.Validade.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date(this.form.controls.Validade.value);
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
@@ -327,8 +381,6 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
-
-    this.router.navigate(["orcamentos/itens", "novo"]);
   }
 
   dataEntrega = true;
@@ -347,5 +399,51 @@ export class CadastrarClienteComponent implements OnInit {
   entregaImediataOnChange() {
     let entrega = this.form.controls.EntregaImediata.value;
     if (entrega) this.form.controls.DataEntregaImediata.setValue(null);
+  }
+
+  carregando: boolean = false;
+  atualizarDadosCadastrais() {
+    this.carregando = true;
+    if (!this.validacaoFormularioService.validaForm(this.form))
+      return;
+
+
+    this.atribuirDados();
+
+    //enviar para api
+    this.orcamentoService.atualizarDadosOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
+      if (r == null) {
+        this.carregando = false;
+        this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
+        this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    });
+  }
+
+  voltar() {
+    this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+  }
+
+  validarContribuinteICMS() {
+    if (this.form.controls.Tipo.value == this.constantes.ID_PF) {
+      this.form.controls.ContribuinteICMS.setValue(null);
+      this.form.controls.ContribuinteICMS.setErrors(null);
+      return true;
+    }
+
+    if (this.form.controls.Tipo.value == this.constantes.ID_PJ) {
+      if (this.form.controls.ContribuinteICMS.value == 0 ||
+        this.form.controls.ContribuinteICMS.value == undefined) {
+        this.form.controls.ContribuinteICMS.setErrors({ "status": "INVALID" });
+        this.form.controls.ContribuinteICMS.markAsDirty();
+        return false;
+      }
+    }
+
+    this.form.controls.ContribuinteICMS.setErrors(null);
+    return true;
   }
 }

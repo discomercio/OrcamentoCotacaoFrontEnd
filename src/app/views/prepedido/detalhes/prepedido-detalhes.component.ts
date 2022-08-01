@@ -3,7 +3,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { PedidoService } from 'src/app/service/pedido/pedido.service';
+import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
@@ -11,26 +11,21 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-endereco';
 import { Constantes } from 'src/app/utilities/constantes';
 
-
 @Component({
-  selector: 'app-pedido-detalhes',
-  templateUrl: './pedido-detalhes.component.html',
-  styleUrls: ['./pedido-detalhes.component.scss']
+  selector: 'app-prepedido-detalhes',
+  templateUrl: './prepedido-detalhes.component.html',
+  styleUrls: ['./prepedido-detalhes.component.scss']
 })
-export class PedidoDetalhesComponent implements OnInit {
+export class PrepedidoDetalhesComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
-    public readonly pedidoService: PedidoService,
+    public readonly prepedidoService: PrepedidoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
-    private location: Location    
-
+    private location: Location
   ) { }
 
-  
-  dataFormatarTela = DataUtils.formatarTela;
-
-  numeroPedido = "";
-  pedido: any = null;
+  numeroPrepedido = "";
+  prepedido: any = null;
   stringUtils = new StringUtils();  
   moedaUtils: MoedaUtils = new MoedaUtils();  
   dataUtils: DataUtils = new DataUtils();  
@@ -40,14 +35,13 @@ export class PedidoDetalhesComponent implements OnInit {
   public enderecoEntregaFormatado: string;
   public qtdeLinhaEndereco: number;
 
-  montarEnderecoEntrega(enderecoEntregaDto: any) {
+  montarEnderecoEntrega(enderecoEntregaDto: any): void {  
     
     if (enderecoEntregaDto.OutroEndereco) {
       let retorno: string = "";
       let sEndereco: string;
       let split: string[];
       //vamos formatar conforme é feito no asp
-      
       sEndereco = this.formatarEndereco.formata_endereco(enderecoEntregaDto.EndEtg_endereco,
         enderecoEntregaDto.EndEtg_endereco_numero, enderecoEntregaDto.EndEtg_endereco_complemento,
         enderecoEntregaDto.EndEtg_bairro, enderecoEntregaDto.EndEtg_cidade, enderecoEntregaDto.EndEtg_uf,
@@ -59,34 +53,53 @@ export class PedidoDetalhesComponent implements OnInit {
       if (enderecoEntregaDto.St_memorizacao_completa_enderecos == 0) {
         this.enderecoEntregaFormatado = sEndereco + "\n" + enderecoEntregaDto.EndEtg_descricao_justificativa;
         return;
+        // return;
       }
-      // else {
-      //   if (this.pedido.DadosCliente.Tipo == this.constantes.ID_PF) {
-      //     this.enderecoEntregaFormatado = sEndereco + "\n" + enderecoEntregaDto.EndEtg_descricao_justificativa;
-      //     return;
-      //   }
-      // }
-      
+      else {
+        
+        let emails: string = "";
+        if (this.prepedido.DadosCliente.Tipo == this.constantes.ID_PF) {
+          if ((!!enderecoEntregaDto.EndEtg_email) ||
+            (!!enderecoEntregaDto.EndEtg_email_xml))
+            emails = "\n";
+
+          if (!!enderecoEntregaDto.EndEtg_email && enderecoEntregaDto.EndEtg_email != "")
+            emails += "E-mail: " + enderecoEntregaDto.EndEtg_email + " ";
+
+          if (!!enderecoEntregaDto.EndEtg_email_xml && enderecoEntregaDto.EndEtg_email_xml != "")
+            emails += "E-mail (XML): " + enderecoEntregaDto.EndEtg_email_xml;
+          
+          this.enderecoEntregaFormatado = sEndereco + emails + "\n" + enderecoEntregaDto.EndEtg_descricao_justificativa;
+
+          split = this.enderecoEntregaFormatado.split('\n');
+          this.qtdeLinhaEndereco = split.length;
+          return;
+        }
+      }
+
       //memorização ativa, colocamos os campos adicionais
       if (enderecoEntregaDto.EndEtg_tipo_pessoa == this.constantes.ID_PF) {
-        this.enderecoEntregaFormatado = this.formatarEndereco.montarEnderecoEntregaPF(this.pedido.EnderecoEntrega, sEndereco);
+        this.enderecoEntregaFormatado = this.formatarEndereco.montarEnderecoEntregaPF(enderecoEntregaDto, sEndereco);
 
         split = this.enderecoEntregaFormatado.split('\n');
         this.qtdeLinhaEndereco = split.length;
         return;
       }
       //se chegar aqui é PJ
-      this.enderecoEntregaFormatado = this.formatarEndereco.montarEnderecoEntregaPJ(this.pedido.EnderecoEntrega, sEndereco);
+      this.enderecoEntregaFormatado = this.formatarEndereco.montarEnderecoEntregaPJ(enderecoEntregaDto, sEndereco);
       split = this.enderecoEntregaFormatado.split('\n');
       this.qtdeLinhaEndereco = split.length;
     }
-  }
 
-  carregar() {    
-    if (this.numeroPedido) {
-      this.pedidoService.carregar(this.numeroPedido).toPromise().then((r) => {
+    return;
+  }  
+
+  carregar() {
+    
+    if (this.numeroPrepedido) {
+      this.prepedidoService.carregar(this.numeroPrepedido).toPromise().then((r) => {
         if (r != null) {
-          this.pedido = r;
+          this.prepedido = r;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
@@ -98,34 +111,30 @@ export class PedidoDetalhesComponent implements OnInit {
 
   editar() {
     //
-  }
-  
+  } 
+
   //para dizer se é PF ou PJ
   ehPf(): boolean {
-    if (this.pedido && this.pedido.DadosCliente && this.pedido.DadosCliente.Tipo)
-      return this.pedido.DadosCliente.Tipo == 'PF';
+    if (this.prepedido && this.prepedido.DadosCliente && this.prepedido.DadosCliente.Tipo)
+      return this.prepedido.DadosCliente.Tipo == 'PF';
     //sem dados! qualquer opção serve...  
     return true;
-  }     
-
-  somenteDigito(msg: string): string {
-    return msg.replace(/\D/g, "");
   }
   
-  //status da entrega imediata
-  entregaImediata(): string {
-    if (!this.pedido || !this.pedido.DetalhesNF)
-      return "";
-
-    return this.pedido.DetalhesNF.EntregaImediata;
+  verificaValor() {
+    if (this.prepedido.TotalFamiliaParcelaRA >= 0)
+      return true
+    else
+      return false;
   }  
 
   ngOnInit() {
-    this.numeroPedido = this.activatedRoute.snapshot.params.numeroPedido;
-    this.carregar();
+    this.numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
+    this.carregar();        
     setTimeout(() => {
-      this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);
-    }, 7000);   
-  }
+      this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
+    }, 7000);    
+
+  }  
 
 }

@@ -8,6 +8,7 @@ import {DropDownItem} from '../views/orcamentos/models/DropDownItem';
 import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
+import { AlertaService } from '../components/alert-dialog/alerta.service';
 
 @Component({
     selector: 'app-topbar',
@@ -23,7 +24,8 @@ export class AppTopBarComponent {
         private readonly mensageriaService: MensageriaService,
         private readonly router: Router,
         private fb: FormBuilder,
-        private readonly lojaService: LojasService
+        private readonly lojaService: LojasService,
+        private readonly alertaService:AlertaService
         
         
     ) {}
@@ -59,15 +61,19 @@ export class AppTopBarComponent {
     } 
 
     buscarEstilo() {
-      let lojaTmp:string;
 
-      if(this.lojaLogada) { 
-        lojaTmp = this.lojaLogada; //varias lojas
-      } else {
-        lojaTmp = this.autenticacaoService._lojaLogado; //somente 1 loja
+      let usuario = this.autenticacaoService.getUsuarioDadosToken();
+      if(usuario == null){
+        this.alertaService.mostrarMensagem("Falha ao carregar estilos!");
+        return;
       }
 
-      this.lojaService.buscarLojaEstilo(lojaTmp).toPromise().then((r) => {
+      if(usuario.loja == null){
+        this.alertaService.mostrarMensagem("Ops! Parece que não conseguimos carregar a loja do usuário!");
+        return;
+      }
+
+      this.lojaService.buscarLojaEstilo(usuario.loja).toPromise().then((r) => {
         if (!!r) {        
           
           this.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
