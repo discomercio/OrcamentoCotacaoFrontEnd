@@ -3,13 +3,13 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { Location } from '@angular/common';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-endereco';
 import { Constantes } from 'src/app/utilities/constantes';
+import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
 
 @Component({
   selector: 'app-prepedido-detalhes',
@@ -18,8 +18,8 @@ import { Constantes } from 'src/app/utilities/constantes';
 })
 export class PrepedidoDetalhesComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
-    public readonly prepedidoService: PrepedidoService,
     private readonly autenticacaoService: AutenticacaoService,
+    private readonly prepedidoService : PrepedidoService,
     private readonly alertaService: AlertaService,
     private location: Location
   ) { }
