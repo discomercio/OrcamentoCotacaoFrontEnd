@@ -67,7 +67,7 @@ export class CalculadoraVrfComponent implements OnInit {
   simultaneidadeCalculada1aparelho: number;
 
   totalKcalEvaporadoras: number;
-  simultaneidade: number;
+  simultaneidade: string;
   qtdeCondensadora: number;
   voltagem: number;
   descarga: number;
@@ -83,6 +83,8 @@ export class CalculadoraVrfComponent implements OnInit {
   telefone: string;
   email: string;
   observacao: string;
+  instalador: string;
+  telInstalador: string;
 
   mascaraTelefone: string;
 
@@ -114,32 +116,52 @@ export class CalculadoraVrfComponent implements OnInit {
   exportPdf() {
     //Buscar a imagem conforme a unidade de negocio
     let img = new Image();
+    //buscar por param de unidade de negócio
     img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;;
 
     let doc = new jsPDF();
 
+    // Logo
     if (img.src.includes('Unis')) doc.addImage(img, 'png', 14, 10, 15, 10);
     else doc.addImage(img, 'png', 14, 10, 17, 10);
-
+    //titulo
     doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
+    //1ª linha
+    let inicio = 14;
+    let linha = 37;
+    if (!!this.nomeCliente) {
+      doc.setFont('helvetica', 'normal').setFontSize(11).text("Cliente:", inicio, linha);
+      doc.setFontSize(11).text(this.nomeCliente != undefined ? this.nomeCliente : '', 28, linha, {
+        maxWidth: 54,
+        align: 'left'
+      });
+    }
 
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome:", 14, 37);
-    doc.setFontSize(11).text(this.nomeCliente != undefined ? this.nomeCliente : '', 26, 37, {
-      maxWidth: 54,
-      align: 'left'
-    });
+    let meio = 80;
+    if (!!this.nomeObra) {
+      if (!!this.nomeCliente)
+        doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", meio, linha);
+      else
+        doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", inicio, linha);
 
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", 80, 37);
-    doc.setFontSize(11).text(this.nomeObra != undefined ? this.nomeObra : '', 108, 37, {
-      maxWidth: 45,
-      align: 'left'
-    });
+      doc.setFontSize(11).text(this.nomeObra != undefined ? this.nomeObra : '', 108, linha, {
+        maxWidth: 45,
+        align: 'left'
+      });
+    }
 
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", 153, 37);
-    doc.setFontSize(11).text(this.telefone != undefined ? this.stringUtils.formataTextoTelefone(this.telefone) : '', 170, 37, {
-      maxWidth: 30,
-      align: 'left'
-    });
+    let fim = 153;
+    if (!!this.telefone) {
+      
+      doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", fim, linha);
+
+
+      doc.setFontSize(11).text(this.telefone != undefined ? this.stringUtils.formataTextoTelefone(this.telefone) : '', 170, linha, {
+        maxWidth: 30,
+        align: 'left'
+      });
+    }
+
 
     doc.setFont('helvetica', 'normal').setFontSize(11).text("E-mail:", 14, 44);
     doc.setFontSize(11).text(this.email != undefined ? this.email : '', 27, 44, {
@@ -183,14 +205,14 @@ export class CalculadoraVrfComponent implements OnInit {
       body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
       styles: { halign: 'center' },
       startY: 122,
-      foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom1aparelhos))]],
+      foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom1aparelhos))]],
       didParseCell: (data) => {
         if (data.column.dataKey == 0) {
           data.cell.styles.halign = "left";
         }
       }
     });
-    
+
 
     if (this.descarga != 52) {
       doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 condensadoras", 14, 165);
@@ -203,7 +225,7 @@ export class CalculadoraVrfComponent implements OnInit {
         body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
         styles: { halign: 'center' },
         startY: 167,
-        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom2aparelhos))]],
+        foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom2aparelhos))]],
         didParseCell: (data) => {
           if (data.column.dataKey == 0) {
             data.cell.styles.halign = "left";
@@ -222,7 +244,7 @@ export class CalculadoraVrfComponent implements OnInit {
         body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
         styles: { halign: 'center' },
         startY: 212,
-        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom3aparelhos))]],
+        foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom3aparelhos))]],
         didParseCell: (data) => {
           if (data.column.dataKey == 0) {
             data.cell.styles.halign = "left";
@@ -270,8 +292,8 @@ export class CalculadoraVrfComponent implements OnInit {
   filtrarProdutosVrf() {
     this.produtosVrf = this.produtosDados.filter(x => Number.parseInt(x.idPropriedade) == 1 && x.idValorPropriedadeOpcao == 12);
 
-    this.buscarFabricantes();
     this.buscarEvaporadoras();
+    this.buscarFabricantes();
     this.buscarCondensadoras();
   }
 
@@ -338,9 +360,9 @@ export class CalculadoraVrfComponent implements OnInit {
       if (evap.length > 0) {
         let lista = this.produtosDados.filter(p => p.produto == x.produto);
 
-        let temKcal = lista.filter(t => Number.parseInt(t.idPropriedade) == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
+        let temKw = lista.filter(t => Number.parseInt(t.idPropriedade) == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
 
-        if (temKcal.length > 0) {
+        if (temKw.length > 0) {
           let produtoTabela = new ProdutoTabela();
           produtoTabela.id = lista[0].id;
           produtoTabela.fabricante = lista[0].fabricante;
@@ -352,7 +374,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
           lista.forEach(l => {
             if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
-              produtoTabela.kcal = l.valorPropriedade;
+              produtoTabela.kw = l.valorPropriedade;
             }
             if (Number.parseInt(l.idPropriedade) == 5) {
               produtoTabela.btu = l.valorPropriedade;
@@ -403,22 +425,23 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarSimultaneidades() {
-    this.lstSimultaneidades.push({ title: eSimultaneidade.Noventa, value: eSimultaneidade.Noventa, label: eSimultaneidade.Noventa },
-      { title: eSimultaneidade.VoventaECinco, value: eSimultaneidade.VoventaECinco, label: eSimultaneidade.VoventaECinco },
-      { title: eSimultaneidade.Cem, value: eSimultaneidade.Cem, label: eSimultaneidade.Cem },
-      { title: eSimultaneidade.CentoECinco, value: eSimultaneidade.CentoECinco, label: eSimultaneidade.CentoECinco },
-      { title: eSimultaneidade.CentoEDez, value: eSimultaneidade.CentoEDez, label: eSimultaneidade.CentoEDez },
-      { title: eSimultaneidade.CentoEQuinze, value: eSimultaneidade.CentoEQuinze, label: eSimultaneidade.CentoEQuinze },
-      { title: eSimultaneidade.CentoEVinte, value: eSimultaneidade.CentoEVinte, label: eSimultaneidade.CentoEVinte },
-      { title: eSimultaneidade.CentoEVinteECinco, value: eSimultaneidade.CentoEVinteECinco, label: eSimultaneidade.CentoEVinteECinco });
+    this.lstSimultaneidades.push(
+      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
+      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
+      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
+      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
+      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
+    );
   }
 
   buscarVoltagens() {
     let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
 
     voltagens.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstVoltagens.push(opcao);
+      if (x.valor != "127") {
+        let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+        this.lstVoltagens.push(opcao);
+      }
     });
   }
 
@@ -508,7 +531,7 @@ export class CalculadoraVrfComponent implements OnInit {
       this.evaporadorasSelecionadas.forEach(x => {
         const index = this.evaporadorasSelecionadas.findIndex(f => f.produto == produto.produto);
         if (x.produto == produto.produto) {
-          x.qtde = x.qtde == undefined ? 1 : x.qtde;
+          x.qtde = x.qtde == undefined ? 1 : x.qtde + 1;
           this.digitouQte(x);
           return;
         }
@@ -579,7 +602,7 @@ export class CalculadoraVrfComponent implements OnInit {
   limparFiltrosCondensadoras() {
     this.voltagem = 0;
     this.descarga = 0;
-    this.simultaneidade = 0;
+    this.simultaneidade = "";
     this.qtdeCondensadora = 0;
   }
 
@@ -597,9 +620,13 @@ export class CalculadoraVrfComponent implements OnInit {
     this.limparCombinacoesCondensadoras();
 
     let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
-      .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+      .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
 
-    let simultaneidadeFloat = this.simultaneidade / 100;
+    let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
+    let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin) / 100;
+
+    let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
+    let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax) / 100;
 
     this.filtrarCondensadoras();
 
@@ -608,15 +635,15 @@ export class CalculadoraVrfComponent implements OnInit {
       cond.push([x.produto, Math.round(Number.parseFloat(x.kcal))])
     });
 
-    let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
+    let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
     this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
     this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
 
-    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
+    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
     this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
     this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
 
-    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
+    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
     this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
     this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
 
@@ -706,6 +733,7 @@ export class CalculadoraVrfComponent implements OnInit {
           if (estaCapcidade == minimoAtingido) {
             let variacaoAtual = Math.abs(ret[0][1] - ret[1][1]);
             let candidato = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]]];
+            console.log("candidato: " + candidato);
             let variacaoNova = Math.abs(candidato[0][1] - candidato[1][1]);
             if (variacaoNova < variacaoAtual) {
               ret = candidato;

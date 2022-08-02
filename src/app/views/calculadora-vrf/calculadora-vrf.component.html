@@ -25,6 +25,14 @@
                         <input pInputText type="text" [(ngModel)]="email">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label>Nome do instalador/empresa</label>
+                        <input pInputText type="text" [(ngModel)]="instalador">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                        <label>Telefone do instalador/empresa</label>
+                        <input pInputText type="text" [(ngModel)]="telInstalador" mask="{{mascaraTelefone}}">
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label>Observações / Previsão de instalação</label>
                         <textarea pInputTextarea [(ngModel)]="observacao"></textarea>
                     </div>
@@ -71,7 +79,6 @@
                                 <th class="p-text-right p-py-0 p-col-2">Qtde</th>
                                 <th class="p-text-center p-py-0 p-col-2">Capacidade (BTU/h)</th>
                                 <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
-                                <th class="p-text-center p-py-0 p-col-2">Total (Kcal/h)</th>
                                 <th class="p-text-center p-py-0 p-col-1">Ações</th>
                             </tr>
                         </ng-template>
@@ -88,9 +95,7 @@
                                 </td>
                                 <td class="p-text-center p-py-0">{{p.btu}}</td>
                                 <td class="p-text-center p-py-0">
-                                    {{p.kcal}}</td>
-                                <td class="p-text-center p-py-0">
-                                    {{totalEvaporadora(p)}}</td>
+                                    {{p.kw}}</td>
                                 <td class="p-text-right p-py-0">
                                     <div class="p-text-center">
                                         <i class="pi pi-trash" style="color: red" (click)="removerItem(index)"></i>
@@ -98,7 +103,7 @@
                                 </td>
                             </tr>
                         </ng-template>
-                        <ng-template pTemplate="footer" class="font-size">
+                        <!-- <ng-template pTemplate="footer" class="font-size">
                             <tr class="font-size">
                                 <td colspan="4" class="p-text-right p-py-0">Total</td>
                                 <td class="p-text-center">
@@ -106,7 +111,7 @@
                                 </td>
                                 <td></td>
                             </tr>
-                        </ng-template>
+                        </ng-template> -->
                     </p-table>
                 </div>
             </div>

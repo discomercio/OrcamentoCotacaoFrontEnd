@@ -28,15 +28,15 @@ export class SelectEvapDialogComponent implements OnInit {
   evaporadoras: ProdutoTabela[];
   evaporadoraSelecionada: ProdutoTabela;
   lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
-  lstVoltagens: SelectItem[] = [];
-  lstDescargas: SelectItem[] = [];
   lstBtus: SelectItem[] = [];
   lstLinhaProdutos: SelectItem[] = [];
+  lstKcals: SelectItem[] = [];
 
   linhaProduto: string;
   descarga: string;
   voltagem: string;
   btu: string;
+  kcal:string;
 
   ngOnInit(): void {
     this.evaporadorasPassadas = this.option.data.evaps;
@@ -44,6 +44,7 @@ export class SelectEvapDialogComponent implements OnInit {
     this.evaporadoras = this.evaporadorasPassadas;
     this.buscarLinhaProdutos();
     this.buscarBtus();
+    this.buscarKcals();
   }
 
   addProduto() {
@@ -51,6 +52,14 @@ export class SelectEvapDialogComponent implements OnInit {
       this.ref.close(this.evaporadoraSelecionada);
     }
     return;
+  }
+
+  buscarKcals() {
+    let kcals = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 10);
+    kcals.forEach(x => {
+      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+      this.lstKcals.push(opcao);
+    });
   }
 
   buscarBtus() {
@@ -78,8 +87,9 @@ export class SelectEvapDialogComponent implements OnInit {
     let evaporadorasFiltradas: ProdutoTabela[] = this.evaporadorasPassadas;
 
     if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.linhaProduto + "|"));
-    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" +this.btu+ "|"));
-
+    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.btu + "|"));
+    if (this.kcal) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.kcal + "|"));
+    
     this.evaporadoras = evaporadorasFiltradas;
   }
 

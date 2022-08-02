@@ -9,6 +9,7 @@ export class ProdutoTabela {
   voltagem: string;
   capacidade: string;
   kcal: string;
+  kw:string;
   descarga: string;
   btu:string;
   qtde: number;
