@@ -67,7 +67,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
   opcaoPagto: number;
-  validadeBgColor: string;
   @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
 
@@ -77,7 +76,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
 
-    //this.idOrcamentoCotacao = 258;
     this.novoOrcamentoService.usuarioLogado = this.autenticacaoService.getUsuarioDadosToken();
     this.buscarOrcamento(this.idOrcamentoCotacao);
 
@@ -197,10 +195,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   prorrogar() {
-    this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+    this.sweetalertService.confirmarSemMostrar("Deseja prorrogar esse orçamento?", "").subscribe(result => {
       if (!result) return;
 
-      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
+      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
@@ -211,7 +209,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
               console.log(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
               this.mensagemService.showSuccessViaToast(msg[1]);
               this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
-              this.validadeBgColor = '#E94C4C';
             }
           }
         }

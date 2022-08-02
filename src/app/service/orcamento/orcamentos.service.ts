@@ -48,8 +48,8 @@ export class OrcamentosService {
     return this.http.get<RemetenteDestinatarioResponse>(`${environment.apiUrl}Orcamento/buscarDadosParaMensageria?idOrcamento=${idOrcamentoCotacao}&usuarioInterno=${usuarioIterno}`);
   }
 
-  prorrogarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar`, id);
+  prorrogarOrcamento(id: number, lojaLogada: string): Observable<MensagemDto> {
+    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar?lojalogada=${lojaLogada}`, id);
   }
 
   cancelarOrcamento(id: number): Observable<MensagemDto> {
