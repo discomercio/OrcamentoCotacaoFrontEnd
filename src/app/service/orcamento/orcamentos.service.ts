@@ -40,8 +40,8 @@ export class OrcamentosService {
 
 
 
-  buscarConfigValidade(): Observable<ValidadeOrcamento> {
-    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
+  buscarConfigValidade(loja:string): Observable<ValidadeOrcamento> {
+    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade?lojaLogada=${loja}`);
   }
 
   buscarDadosParaMensageria(idOrcamentoCotacao: number, usuarioIterno: boolean): Observable<RemetenteDestinatarioResponse> {

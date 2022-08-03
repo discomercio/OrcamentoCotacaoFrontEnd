@@ -142,7 +142,7 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   buscarConfigValidade() {
-    this.orcamentoService.buscarConfigValidade().toPromise().then((r) => {
+    this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.configValidade = r;
         this.setarOrcamentoValidade();
