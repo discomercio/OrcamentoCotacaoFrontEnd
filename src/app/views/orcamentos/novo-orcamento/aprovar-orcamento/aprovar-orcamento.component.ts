@@ -26,6 +26,9 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensageriaComponent } from 'src/app/views/mensageria/mensageria.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 
 
 @Component({
@@ -69,6 +72,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   opcaoPagto: number;
   @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
+  exibeBotaoEditar: boolean;
+  items: MenuItem[];
+  condicoesGerais: string;
+  statusOrcamento: string;
 
   ngOnInit(): void {
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
@@ -80,12 +87,112 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarOrcamento(this.idOrcamentoCotacao);
 
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    this.carrregarBotoneira();    
   }
 
   ngAfterViewInit() {
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    this.buscarParametrosOrcamento(12);   
+    
   }
+
+  carrregarBotoneira() {
+
+    if (this.novoOrcamentoService.orcamentoCotacaoDto && this.editarDadosCadastrais) {
+      this.exibeBotaoEditar = true;
+    } else {
+      this.exibeBotaoEditar = false;
+    }
+
+    this.exibeBotaoEditar = true;
+    this.items = [
+      {
+        label: 'Editar', icon: 'pi pi-fw pi-user-edit',
+        visible: this.exibeBotaoEditar,
+        command: () => this.editarDadosCliente(this.novoOrcamentoService.orcamentoCotacaoDto)
+      },
+      {
+        label: 'Cancelar',
+        icon: 'pi pi-fw pi-times',
+        command: () => this.cancelar()
+      },
+      {
+        label: 'Prorrogar',
+        icon: 'pi pi-fw pi-calendar-times',
+        command: () => this.prorrogar()
+      }
+    ];
+
+  }
+
+  retornarSimOuNao(data: any) {
+    if (data == true) {
+      return "Sim";
+    } else {
+      return "Não";
+    }
+  }
+
+  retornarTipoPessoa(data: any) {
+    if (data == 'PF') {
+      return "Pessoa física";
+    } else {
+      return "Pessoa jurídica";
+    }
+  }
+
+  retornarContibuinteICMS(data: any) {
+    switch (data) {
+      case 1:
+        return 'Sim';
+        break;
+      case 2:
+        return 'Não';
+        break;
+      case 3:
+        return 'Isento';
+        break;
+
+      default:
+        return 'Indisponível';
+        break;
+    }
+  }
+
+  buscarParametrosOrcamento(id: number) {
+
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarParametrosOrcamento(id).toPromise().then((r) => {
+        if (r != null) {
+          this.condicoesGerais = r[0]['Valor'];
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+  }
+
+  buscarStatus(id: any) {
+    
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
+        var indice = 0;
+        if (r != null) {   
+          while(indice<=r.length){
+            if (r[indice]['Id'] == id){
+              this.statusOrcamento = r[indice]['Value'];
+              break;
+            }
+            indice++;
+          }
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }    
+  }
+
 
   buscarDadosParaMensageria(id: number) {
 
@@ -112,6 +219,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
         this.verificarEdicao();
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
@@ -126,10 +234,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   editarDadosCadastrais: boolean = false;
-  verificarEdicaoDadosCadastraris():boolean {
+  verificarEdicaoDadosCadastraris(): boolean {
     if (this.editar) {
       let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase())return true;
+      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
     }
     return false;
   }
@@ -220,20 +328,20 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   cancelar() {
     this.sweetalertService.confirmarAprovacao("Confirma o cancelamento do orçamento?", "").subscribe(result => {
       if (!result) return;
-      
+
       this.orcamentoService.cancelarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
-          if(r.tipo == "WARN") {
+          if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           }
-          
+
         }
         // window.location.reload();
         this.ngOnInit();
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
     });
-  }  
+  }
 
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
