@@ -4,6 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoTabela } from 'src/app/dto/produtos-catalogo/ProdutoTabela';
+import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
@@ -31,7 +32,7 @@ export class SelectEvapDialogComponent implements OnInit {
   lstBtus: SelectItem[] = [];
   lstLinhaProdutos: SelectItem[] = [];
   lstKcals: SelectItem[] = [];
-
+  moedaUtils = new MoedaUtils();
   linhaProduto: string;
   descarga: string;
   voltagem: string;

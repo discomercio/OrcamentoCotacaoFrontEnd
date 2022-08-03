@@ -152,7 +152,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     let fim = 153;
     if (!!this.telefone) {
-      
+
       doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", fim, linha);
 
 
@@ -279,6 +279,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarProduto() {
+    this.carregando = true;
     this.produtoService.listarProdutosPropriedadesAtivos(false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtosDados = r;
@@ -295,6 +296,7 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarEvaporadoras();
     this.buscarFabricantes();
     this.buscarCondensadoras();
+    this.carregando = false;
   }
 
   buscarCondensadoras() {
@@ -316,7 +318,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
         let voltagem: boolean = false;
         let descarga: boolean = false;
-        let kcal: boolean = false;
+        let kw: boolean = false;
         let ciclo: boolean = false;
 
         lista.forEach(l => {
@@ -334,11 +336,21 @@ export class CalculadoraVrfComponent implements OnInit {
             produtoTabela.descarga = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
-          //kcal
+          //kw
           if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
-            kcal = true;
+            kw = true;
+            produtoTabela.kw = l.valorPropriedade;
+            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
+          }
+          if (Number.parseInt(l.idPropriedade) == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            kw = true;
             produtoTabela.kcal = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
+          }
+          if (Number.parseInt(l.idPropriedade) == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            kw = true;
+            produtoTabela.hp = l.valorPropriedade;
+            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
           }
           if (Number.parseInt(l.idPropriedade) == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
@@ -346,7 +358,7 @@ export class CalculadoraVrfComponent implements OnInit {
           }
         });
 
-        if (voltagem && descarga && kcal && ciclo) {
+        if (voltagem && descarga && kw && ciclo) {
           this.condensadoras.push(produtoTabela);
         }
       }
@@ -632,7 +644,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     let cond = [];
     this.condensadorasFiltradas.forEach(x => {
-      cond.push([x.produto, Math.round(Number.parseFloat(x.kcal))])
+      cond.push([x.produto, Math.round(Number.parseFloat(x.kw))])
     });
 
     let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
@@ -666,6 +678,7 @@ export class CalculadoraVrfComponent implements OnInit {
           produto2.id = y.id;
           produto2.kcal = y.kcal;
           produto2.qtde = condensadoras[i][2];
+          produto2.hp = y.hp;
           retorno.push(produto2);
         }
       });
