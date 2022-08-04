@@ -19,6 +19,7 @@ import autoTable from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { JsonpClientBackend } from '@angular/common/http';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -391,6 +392,9 @@ export class CalculadoraVrfComponent implements OnInit {
             if (Number.parseInt(l.idPropriedade) == 5) {
               produtoTabela.btu = l.valorPropriedade;
             }
+            if (Number.parseInt(l.idPropriedade) == 10) {
+              produtoTabela.kcal = l.valorPropriedade;
+            }
 
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
           });
@@ -531,11 +535,6 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  totalEvaporadora(produto: ProdutoTabela) {
-    produto.totalKcal = this.moedaUtils.formatarParaFloatUmaCasaReturnZero(produto.qtde * Number.parseFloat(produto.kcal));
-    return produto.totalKcal;
-  }
-
   arrumarProdutosRepetidos(produto: ProdutoTabela) {
     let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto);
 
@@ -564,6 +563,7 @@ export class CalculadoraVrfComponent implements OnInit {
       this.lstCiclos.push(opcao);
     });
   }
+
   filtrarCondensadoras() {
 
     this.condensadorasFiltradas = new Array();
@@ -635,29 +635,44 @@ export class CalculadoraVrfComponent implements OnInit {
       .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
 
     let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
-    let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin) / 100;
+    let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin);
 
     let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
-    let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax) / 100;
+    let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax);
 
     this.filtrarCondensadoras();
 
     let cond = [];
     this.condensadorasFiltradas.forEach(x => {
-      cond.push([x.produto, Math.round(Number.parseFloat(x.kw))])
+      cond.push([x.produto, Number.parseFloat(x.kw)])
     });
 
-    let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
-    this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
-    this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
+    // let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), cond);
+    // this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
+    // this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
 
-    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
+    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), this.condensadorasFiltradas);
+    console.log("simultaneidade max: " + simultaneidadeMaxFloat);
+    console.log("simultaneidade min: " + simultaneidadeMinFloat);
+
+    condensadoras2.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x);
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, somaCapacidadeEvaporadoras);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+        console.log("simultaneidade: " + simultaneidade);
+        prodUnificado.forEach(item =>{
+          console.log("produtos: " + item.produto);
+        });        
+      }
+
+      //remover combinações já existentes ex:(2650 | 2611) (2611 | 2650)
+    })
     this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
     this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
 
-    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / simultaneidadeMaxFloat, cond);
-    this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
-    this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
+    // let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), cond);
+    // this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
+    // this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
 
 
     this.calculado = true;
@@ -692,33 +707,50 @@ export class CalculadoraVrfComponent implements OnInit {
     let simultaneidade = 0;
     if (arrayProdutosEscolhidos.length > 0) {
       for (let i1 = 0; i1 < arrayProdutosEscolhidos.length; i1++) {
-        capacidadeProdutosEscolhidos += (arrayProdutosEscolhidos[i1][1] * arrayProdutosEscolhidos[i1][2]);
+        capacidadeProdutosEscolhidos += (Number.parseFloat(arrayProdutosEscolhidos[i1].kw) * arrayProdutosEscolhidos[i1].qtde);
       }
       simultaneidade = somaCapacidadeEvaporadoras / capacidadeProdutosEscolhidos;
     }
     return Math.round(simultaneidade * 10000) / 100;
   }
 
-  unificarEquipamentosIguais(arrayProdutosEscolhidos) {
+  unificarEquipamentosIguais(arrayProdutosEscolhidos: ProdutoTabela[]) {
     let x = 0;
     let arrayCodigos = [];
     let arrayProdutosUnificados = [];
+    let retorno = [];
     if (arrayProdutosEscolhidos.length > 0) {
-      for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
-        let index = arrayCodigos.indexOf(arrayProdutosEscolhidos[i][0]);
-        if (index === -1) {
-          arrayCodigos.push(arrayProdutosEscolhidos[i][0]);
-          arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
-          arrayProdutosUnificados[x][2] = 1;
-          x++;
-        } else {
-          arrayProdutosUnificados[index][2] += 1;
+      arrayProdutosEscolhidos.forEach(item => {
+        let index = arrayProdutosEscolhidos.filter(x => x.id == item.id)
+        if (index.length <= 1) {
+          item.qtde = 1;
+          retorno.push(item);
         }
-
-      }
+        else {
+          if(retorno.indexOf(item.produto) == -1){
+            item.qtde += 1;
+            retorno.push(item);
+          }
+          
+        }
+      });
     }
+    // for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
+    //   let index = arrayProdutosEscolhidos.filter(x => x.id == arrayProdutosEscolhidos[i].id)
+    //   if (index.length <= 1) {
+    //     arra
+    //     arrayCodigos.push(arrayProdutosEscolhidos[i]);
+    //     arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
+    //     arrayProdutosUnificados[x].qtde = 1;
+    //     x++;
+    //   } else {
+    //     arrayProdutosUnificados[index][2] += 1;
+    //   }
 
-    return arrayProdutosUnificados;
+    // }
+    // }
+
+    return retorno;
   }
 
   calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades) {
@@ -733,33 +765,30 @@ export class CalculadoraVrfComponent implements OnInit {
         }
       }
     }
-    return this.unificarEquipamentosIguais(ret);
+    // return this.unificarEquipamentosIguais(ret);
   }
 
-  calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades) {
-    let ret = [];
+  calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
+    let cominacaoes = [];
     let minimoAtingido = -1;
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
-        let estaCapcidade = arrayCapacidades[i1][1] + arrayCapacidades[i2][1];
+        let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw);
         if (estaCapcidade >= capacidadeMinima) {
-          if (estaCapcidade == minimoAtingido) {
-            let variacaoAtual = Math.abs(ret[0][1] - ret[1][1]);
-            let candidato = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]]];
-            console.log("candidato: " + candidato);
-            let variacaoNova = Math.abs(candidato[0][1] - candidato[1][1]);
-            if (variacaoNova < variacaoAtual) {
-              ret = candidato;
-            }
-          }
-          if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
-            minimoAtingido = estaCapcidade;
-            ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]]];
-          }
+          if (arrayCapacidades[i1].id < arrayCapacidades[i2].id)
+            cominacaoes.push([arrayCapacidades[i1], arrayCapacidades[i2]]);
+          else cominacaoes.push([arrayCapacidades[i2], arrayCapacidades[i1]]);
         }
       }
     }
-    return this.unificarEquipamentosIguais(ret);
+    //remover duplicados
+
+    let retorno = cominacaoes.filter(function (a) {
+      return !this[JSON.stringify(a)] && (this[JSON.stringify(a)] = true);
+    }, Object.create(null))
+
+    return retorno;
+    // return this.unificarEquipamentosIguais(ret);
   }
 
   calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades) {
