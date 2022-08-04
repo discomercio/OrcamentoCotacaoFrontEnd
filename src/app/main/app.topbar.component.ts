@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-topbar',
@@ -25,8 +26,8 @@ export class AppTopBarComponent {
         private readonly router: Router,
         private fb: FormBuilder,
         private readonly lojaService: LojasService,
-        private readonly alertaService:AlertaService
-        
+        private readonly alertaService:AlertaService,
+        private titleService:Title        
         
     ) {}
     public lojaLogada : any;
@@ -38,6 +39,7 @@ export class AppTopBarComponent {
     imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
     favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+    
 
     ngOnInit(): void {
         this.criarForm();
@@ -80,6 +82,7 @@ export class AppTopBarComponent {
           
           this.corCabecalho = r.corCabecalho + " !important";
           this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+          this.titleService.setTitle('Portal de Vendas');
         }
       });
     }    
