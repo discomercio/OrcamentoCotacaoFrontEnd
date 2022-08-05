@@ -11,6 +11,8 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { Constantes } from 'src/app/utilities/constantes';
 import { SelectItem } from 'primeng/api';
 import { LojasService } from '../lojas/lojas.service';
+import {Title} from "@angular/platform-browser";
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,6 +22,7 @@ export class AutenticacaoService {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
+    private titleService:Title
   ) {
   }
 
@@ -70,6 +73,7 @@ export class AutenticacaoService {
         this._lojaEstilo.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
         this._lojaEstilo.corCabecalho = r.corCabecalho + " !important";
         this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+        this.titleService.setTitle('Portal de Vendas');
       }
     });
   }
