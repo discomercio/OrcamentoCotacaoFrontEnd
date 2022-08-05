@@ -2,12 +2,8 @@ import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 
 export class SelecProdInfo {
 
-    constructor() {
-        this.produtoComboDto = new ProdutoComboDto
-    }
-
     //entrada
-    public produtoComboDto: ProdutoComboDto
+    public produtoComboDto: ProdutoComboDto;
 
     //entrada e saída
     public Fabricante: string;
