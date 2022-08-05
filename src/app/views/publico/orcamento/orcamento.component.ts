@@ -45,6 +45,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
   @ViewChild(PublicoCadastroClienteComponent) child;
   display: boolean = false;
+
   
   ngOnInit(): void {
     this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
@@ -54,12 +55,45 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.sub.unsubscribe();
   }
 
+  retornarSimOuNao(data: any) {
+    if (data == true) {
+      return "Sim";
+    } else {
+      return "Não";
+    }
+  }
+
+  retornarTipoPessoa(data: any) {
+    if (data == 'PF') {
+      return "Pessoa física";
+    } else {
+      return "Pessoa jurídica";
+    }
+  }
+
+  retornarContibuinteICMS(data: any) {
+    switch (data) {
+      case 1:
+        return 'Sim';
+        break;
+      case 2:
+        return 'Não';
+        break;
+      case 3:
+        return 'Isento';
+        break;        
+
+      default:
+        return 'Indisponível';
+        break;
+    }
+  }   
+
   buscarOrcamentoPorGuid(param) {
     if(param.guid.length >= 32) {
         this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
           this.orcamento = r;
-
           this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
           this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
