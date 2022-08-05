@@ -144,7 +144,7 @@
                                 <div *ngIf="orcamento.dataEntregaImediata">
                                     <span class="p-text-bold">Data prevista de entrega:</span>
                                     <span>
-                                        {{orcamento.dataEntregaImediata}}</span>
+                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
                                 </div>
                                 <div *ngIf="orcamento.stEntregaImediata">
                                     <span class="p-text-bold">Entrega Imediata:</span>

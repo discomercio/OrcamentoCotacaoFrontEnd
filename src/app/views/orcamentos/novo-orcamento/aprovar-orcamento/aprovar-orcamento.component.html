@@ -150,7 +150,7 @@
                                 <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata">
                                     <span class="p-text-bold">Data prevista de entrega:</span>
                                     <span>
-                                        {{novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata}}</span>
+                                        {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata)}}</span>
                                 </div>
                                 <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata">
                                     <span class="p-text-bold">Entrega Imediata:</span>
