@@ -3,20 +3,21 @@
 <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
     <div class="p-grid p-jc-center">
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
-            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
+            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" *ngIf="orcamento">
 
+                <h5>&nbsp;&nbsp;Orçamento Nº {{orcamento.id}}</h5>
                 <!-- <p>****</p>
                 <app-cadastro-cliente></app-cadastro-cliente>
                 <p>****</p> -->
-
+  
                 <div class="p-col-12">
-                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0"
-                        *ngIf="orcamento">
+                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0">
+                        
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
                             <div>
-                                <h5>Orçamento Nº {{orcamento.id}}</h5>
+                                <h5>&nbsp;</h5>
                             </div>
-                            <p-card>
+                            
                                 <div>
                                     <span class="p-text-bold">Status:</span>
                                     <span>
@@ -33,13 +34,14 @@
                                         {{dataUtils.formata_data_DDMMYYY(orcamento.validade)}}
                                     </span>
                                 </div>
-                            </p-card>
+                                <br>
+                            
                         </div>
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
                             <div>
                                 <h5><i class="pi pi-users"></i>&nbsp;Dados do Vendedor/Parceiro</h5>
                             </div>
-                            <p-card>
+                            
                                 <div *ngIf="!orcamento.parceiro">
                                     <span class="p-text-bold">Vendedor:</span>
                                     <span>
@@ -60,8 +62,8 @@
                                     <span>
                                         {{orcamento.usuarioCadastro}}</span>
                                 </div>
-                                <br>
-                            </p-card>
+                                
+                            
                         </div>
                     </div>
                     <br><br>
@@ -70,7 +72,7 @@
                         *ngIf="orcamento">
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
                             <h5><i class="pi pi-user"></i>&nbsp;Dados do Cliente</h5>
-                            <p-card>
+                            
                                 <div>
 
                                     <span class="p-text-bold">Cliente:</span>
@@ -128,11 +130,12 @@
                                         style="width: 100%; height:100%" autoResize="autoResize"
                                         disabled="true"></textarea>
                                 </div>
-                            </p-card>
+                                <br><br>
+                            
                         </div>
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
                             <h5><i class="pi pi-send"></i>&nbsp;Dados de Entrega</h5>
-                            <p-card>
+                            
                                 <div>
                                     <span class="p-text-bold">UF (Entrega):</span>
                                     <span>
@@ -141,14 +144,14 @@
                                 <div *ngIf="orcamento.dataEntregaImediata">
                                     <span class="p-text-bold">Data prevista de entrega:</span>
                                     <span>
-                                        {{orcamento.dataEntregaImediata}}</span>
+                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
                                 </div>
                                 <div *ngIf="orcamento.stEntregaImediata">
                                     <span class="p-text-bold">Entrega Imediata:</span>
                                     <span>
                                         {{retornarSimOuNao(orcamento.stEntregaImediata)}}</span>
                                 </div>                                                              
-                            </p-card>
+                            
                         </div>
                         
                     </div>
