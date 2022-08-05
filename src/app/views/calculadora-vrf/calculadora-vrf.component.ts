@@ -764,6 +764,7 @@ export class CalculadoraVrfComponent implements OnInit {
           ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]]];
         }
       }
+      
     }
     // return this.unificarEquipamentosIguais(ret);
   }
