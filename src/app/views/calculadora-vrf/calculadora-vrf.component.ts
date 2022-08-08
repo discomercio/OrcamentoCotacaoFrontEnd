@@ -647,28 +647,19 @@ export class CalculadoraVrfComponent implements OnInit {
       cond.push([x.produto, Number.parseFloat(x.kw)])
     });
 
-    // let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), cond);
-    // this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
-    // this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
+    let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), this.condensadorasFiltradas);
+    this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
+    this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
 
-    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), this.condensadorasFiltradas);
-    console.log("simultaneidade max: " + simultaneidadeMaxFloat);
-    console.log("simultaneidade min: " + simultaneidadeMinFloat);
+    let capacidadeMinima = somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100);
 
-    condensadoras2.forEach(x => {
-      let prodUnificado = this.unificarEquipamentosIguais(x);
-      let simultaneidade = this.calcularSimultaneidade(prodUnificado, somaCapacidadeEvaporadoras);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
-        console.log("simultaneidade: " + simultaneidade);
-        prodUnificado.forEach(item =>{
-          console.log("produtos: " + item.produto);
-        });        
-      }
+    this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
-      //remover combinações já existentes ex:(2650 | 2611) (2611 | 2650)
-    })
-    this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
-    this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
+
+    // // this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(candidata, somaCapacidadeEvaporadoras);
+    // this.simultaneidadeCalculada2aparelhos = melhor[1];
+    // this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(melhor[0]);
 
     // let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), cond);
     // this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
@@ -679,20 +670,89 @@ export class CalculadoraVrfComponent implements OnInit {
   }
   calculado: boolean = false;
 
+  buscarMelhorCombinacao2Condensadoras(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
+    simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
+
+    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(capacidadeMinima, condensadoras);
+
+    //estamos com problema na qtde, esta refletindo na lista, então esta alterando em outros lugares
+    let candidatas = [];
+    condensadoras2.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x);
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+        candidatas.push([prodUnificado, simultaneidade]);
+      }
+    });
+
+    if (candidatas.length == 0) return new Array();
+
+    let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
+
+    let maiores = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
+
+    let melhor = this.selecionarMelhorOpcao2Condensadoras(maiores);
+
+    this.simultaneidadeCalculada2aparelhos = melhor[1];
+    return this.criarRetornoCondensadoras(melhor[0]);
+  }
+
+  pegarMaiorSimultaneidade(candidatas: any) {
+    let maior = 0;
+    candidatas.forEach(prod => {
+      let simultaneidadeAtual = prod[1];
+      if (simultaneidadeAtual > maior) {
+        maior = simultaneidadeAtual;
+      }
+    });
+
+    return maior;
+  }
+
+  selecionarMaioresCondensadoras(candidatas: any, maior: number) {
+    let maiores = [];
+    candidatas.forEach(x => {
+      if (x[1] == maior) {
+        maiores.push(x);
+      }
+    });
+
+    return maiores;
+  }
+
+  selecionarMelhorOpcao2Condensadoras(maiores: any[]) {
+    let melhorOpcao = [];
+    let variacao = 0;
+    maiores.forEach(x => {
+      // pode ser que não tenha 2 itens aqui
+      let variacaoAtual = x[0].length > 1 ? Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) : 0;
+      if (variacao == 0) {
+        variacao = variacaoAtual;
+        melhorOpcao = x;
+      }
+      else {
+        if (variacaoAtual <= variacao) {
+          melhorOpcao = x;
+        }
+      }
+    });
+
+    return melhorOpcao;
+  }
 
   criarRetornoCondensadoras(condensadoras: any[]): ProdutoTabela[] {
     let retorno: ProdutoTabela[] = new Array();
 
     for (let i = 0; i < condensadoras.length; i++) {
       this.condensadorasFiltradas.forEach(y => {
-        if (y.produto == condensadoras[i][0]) {
+        if (y.produto == condensadoras[i].produto) {
           let produto2 = new ProdutoTabela();
           produto2.fabricante = y.fabricante;
           produto2.produto = y.produto;
           produto2.descricao = y.descricao;
           produto2.id = y.id;
           produto2.kcal = y.kcal;
-          produto2.qtde = condensadoras[i][2];
+          produto2.qtde = condensadoras[i].qtde;
           produto2.hp = y.hp;
           retorno.push(produto2);
         }
@@ -707,89 +767,81 @@ export class CalculadoraVrfComponent implements OnInit {
     let simultaneidade = 0;
     if (arrayProdutosEscolhidos.length > 0) {
       for (let i1 = 0; i1 < arrayProdutosEscolhidos.length; i1++) {
-        capacidadeProdutosEscolhidos += (Number.parseFloat(arrayProdutosEscolhidos[i1].kw) * arrayProdutosEscolhidos[i1].qtde);
+        capacidadeProdutosEscolhidos += (arrayProdutosEscolhidos[i1].kw * arrayProdutosEscolhidos[i1].qtde);
       }
       simultaneidade = somaCapacidadeEvaporadoras / capacidadeProdutosEscolhidos;
     }
     return Math.round(simultaneidade * 10000) / 100;
   }
 
-  unificarEquipamentosIguais(arrayProdutosEscolhidos: ProdutoTabela[]) {
+  unificarEquipamentosIguais(arrayProdutosEscolhidos) {
     let x = 0;
     let arrayCodigos = [];
     let arrayProdutosUnificados = [];
-    let retorno = [];
     if (arrayProdutosEscolhidos.length > 0) {
-      arrayProdutosEscolhidos.forEach(item => {
-        let index = arrayProdutosEscolhidos.filter(x => x.id == item.id)
-        if (index.length <= 1) {
-          item.qtde = 1;
-          retorno.push(item);
+      for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
+        let index = arrayCodigos.indexOf(arrayProdutosEscolhidos[i].id);
+        if (index === -1) {
+          arrayCodigos.push(arrayProdutosEscolhidos[i].id);
+          arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
+          arrayProdutosUnificados[x].qtde = 1;
+          x++;
+        } else {
+          arrayProdutosUnificados[index].qtde += 1;
         }
-        else {
-          if(retorno.indexOf(item.produto) == -1){
-            item.qtde += 1;
-            retorno.push(item);
-          }
-          
-        }
-      });
+
+      }
     }
-    // for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
-    //   let index = arrayProdutosEscolhidos.filter(x => x.id == arrayProdutosEscolhidos[i].id)
-    //   if (index.length <= 1) {
-    //     arra
-    //     arrayCodigos.push(arrayProdutosEscolhidos[i]);
-    //     arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
-    //     arrayProdutosUnificados[x].qtde = 1;
-    //     x++;
-    //   } else {
-    //     arrayProdutosUnificados[index][2] += 1;
-    //   }
 
-    // }
-    // }
-
-    return retorno;
+    return arrayProdutosUnificados;
   }
 
-  calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades) {
+  calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
     let ret = [];
     let minimoAtingido = -1;
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
-      let estaCapcidade = arrayCapacidades[i1][1];
+      let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw);
       if (estaCapcidade >= capacidadeMinima) {
         if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
           minimoAtingido = estaCapcidade;
-          ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]]];
+          ret = [arrayCapacidades[i1]];
         }
       }
-      
+
     }
-    // return this.unificarEquipamentosIguais(ret);
+    return this.unificarEquipamentosIguais(ret);
   }
 
   calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
     let cominacaoes = [];
-    let minimoAtingido = -1;
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
         let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw);
         if (estaCapcidade >= capacidadeMinima) {
-          if (arrayCapacidades[i1].id < arrayCapacidades[i2].id)
+          if (Number.parseInt(arrayCapacidades[i1][0]) < Number.parseInt(arrayCapacidades[i2][0]))
             cominacaoes.push([arrayCapacidades[i1], arrayCapacidades[i2]]);
           else cominacaoes.push([arrayCapacidades[i2], arrayCapacidades[i1]]);
         }
       }
     }
-    //remover duplicados
 
-    let retorno = cominacaoes.filter(function (a) {
-      return !this[JSON.stringify(a)] && (this[JSON.stringify(a)] = true);
-    }, Object.create(null))
+    return this.removerDuplicados(cominacaoes);
+    // return this.unificarEquipamentosIguais(ret);
+  }
+
+  removerDuplicados(combinacaoes) {
+    let retorno = [];
+    combinacaoes.forEach((item) => {
+      var duplicated = retorno.findIndex(redItem => {
+        return JSON.stringify(item) == JSON.stringify(redItem);
+      }) > -1;
+
+      if (!duplicated) {
+        retorno.push(item);
+      }
+    });
 
     return retorno;
-    // return this.unificarEquipamentosIguais(ret);
   }
 
   calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades) {
