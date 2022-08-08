@@ -678,7 +678,7 @@ export class CalculadoraVrfComponent implements OnInit {
     //estamos com problema na qtde, esta refletindo na lista, então esta alterando em outros lugares
     let candidatas = [];
     condensadoras2.forEach(x => {
-      let prodUnificado = this.unificarEquipamentosIguais(x);
+      let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
       if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
         candidatas.push([prodUnificado, simultaneidade]);
@@ -724,7 +724,6 @@ export class CalculadoraVrfComponent implements OnInit {
     let melhorOpcao = [];
     let variacao = 0;
     maiores.forEach(x => {
-      // pode ser que não tenha 2 itens aqui
       let variacaoAtual = x[0].length > 1 ? Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) : 0;
       if (variacao == 0) {
         variacao = variacaoAtual;
@@ -774,26 +773,35 @@ export class CalculadoraVrfComponent implements OnInit {
     return Math.round(simultaneidade * 10000) / 100;
   }
 
-  unificarEquipamentosIguais(arrayProdutosEscolhidos) {
-    let x = 0;
-    let arrayCodigos = [];
-    let arrayProdutosUnificados = [];
-    if (arrayProdutosEscolhidos.length > 0) {
-      for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
-        let index = arrayCodigos.indexOf(arrayProdutosEscolhidos[i].id);
-        if (index === -1) {
-          arrayCodigos.push(arrayProdutosEscolhidos[i].id);
-          arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
-          arrayProdutosUnificados[x].qtde = 1;
-          x++;
-        } else {
-          arrayProdutosUnificados[index].qtde += 1;
-        }
-
+  unificarEquipamentosIguais(produtosEscolhidos) {
+    let retorno = [];
+    produtosEscolhidos.forEach(x => {
+      let produto = new ProdutoTabela();
+      produto.id = x.id;
+      produto.linhaBusca = x.linhaBusca;
+      produto.produto = x.produto;
+      produto.fabricante = x.fabricante;
+      produto.descricao = x.descricao;
+      produto.linhaProduto = x.linhaProduto;
+      produto.tipoUnidade = x.tipoUnidade;
+      produto.voltagem = x.voltagem;
+      produto.capacidade = x.capacidade;
+      produto.kcal = x.kcal;
+      produto.kw = x.kw;
+      produto.hp = x.hp;
+      produto.descarga = x.descarga;
+      produto.btu = x.btu;
+      produto.qtde = x.qtde;
+      if (JSON.stringify(retorno).indexOf(x.id) > -1) {
+        produto.qtde += 1;
       }
-    }
+      else {
+        produto.qtde = 1;
+        retorno.push(produto);
+      }
+    });
 
-    return arrayProdutosUnificados;
+    return retorno;
   }
 
   calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
