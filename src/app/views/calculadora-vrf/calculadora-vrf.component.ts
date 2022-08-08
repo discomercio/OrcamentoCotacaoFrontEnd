@@ -88,6 +88,10 @@ export class CalculadoraVrfComponent implements OnInit {
   telInstalador: string;
 
   mascaraTelefone: string;
+  calculado: boolean = false;
+  desabilita: boolean = false;
+  lstCiclos: SelectItem[] = [];
+  ciclo: string;
 
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -287,7 +291,8 @@ export class CalculadoraVrfComponent implements OnInit {
         this.filtrarProdutosVrf();
       }
     }).catch((e) => {
-
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
     });
   }
 
@@ -325,34 +330,37 @@ export class CalculadoraVrfComponent implements OnInit {
         lista.forEach(l => {
 
           produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
-          //voltagem
+
           if (Number.parseInt(l.idPropriedade) == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
             produtoTabela.voltagem = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
-          //descarga
+
           if (Number.parseInt(l.idPropriedade) == 3) {
             descarga = true;
             produtoTabela.descarga = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
-          //kw
+
           if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kw = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
           }
+
           if (Number.parseInt(l.idPropriedade) == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kcal = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
           }
+
           if (Number.parseInt(l.idPropriedade) == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.hp = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
           }
+
           if (Number.parseInt(l.idPropriedade) == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
@@ -511,7 +519,6 @@ export class CalculadoraVrfComponent implements OnInit {
     this.digitouQte(produto);
   }
 
-  desabilita: boolean = false;
   filtrarQtdeCondensadora() {
     if (this.descarga == 52) {
       this.qtdeCondensadora = 1;
@@ -553,8 +560,6 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  lstCiclos: SelectItem[] = [];
-  ciclo: string;
   buscarCiclos() {
     let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
 
@@ -619,7 +624,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   calcularCondensadoras() {
-    // this.calculado = false;
+    
     if (!this.validacaoFormularioService.validaForm(this.form2)) {
       return;
     }
@@ -642,11 +647,6 @@ export class CalculadoraVrfComponent implements OnInit {
 
     this.filtrarCondensadoras();
 
-    let cond = [];
-    this.condensadorasFiltradas.forEach(x => {
-      cond.push([x.produto, Number.parseFloat(x.kw)])
-    });
-
     let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), this.condensadorasFiltradas);
     this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
     this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
@@ -656,26 +656,17 @@ export class CalculadoraVrfComponent implements OnInit {
     this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
       simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
-
-    // // this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(candidata, somaCapacidadeEvaporadoras);
-    // this.simultaneidadeCalculada2aparelhos = melhor[1];
-    // this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(melhor[0]);
-
-    // let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100), cond);
-    // this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
-    // this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
-
+    this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
     this.calculado = true;
   }
-  calculado: boolean = false;
 
   buscarMelhorCombinacao2Condensadoras(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
     simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
 
     let condensadoras2 = this.calcularCombinacaoCom2aparelhos(capacidadeMinima, condensadoras);
 
-    //estamos com problema na qtde, esta refletindo na lista, então esta alterando em outros lugares
     let candidatas = [];
     condensadoras2.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
@@ -694,6 +685,32 @@ export class CalculadoraVrfComponent implements OnInit {
     let melhor = this.selecionarMelhorOpcao2Condensadoras(maiores);
 
     this.simultaneidadeCalculada2aparelhos = melhor[1];
+    return this.criarRetornoCondensadoras(melhor[0]);
+  }
+
+  buscarMelhorCombinacao3Condensadoras(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
+    simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
+
+    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(capacidadeMinima, condensadoras);
+
+    let candidatas = [];
+    condensadoras3.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x).slice();
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+        candidatas.push([prodUnificado, simultaneidade]);
+      }
+    });
+
+    if (candidatas.length == 0) return new Array();
+
+    let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
+
+    let maiores = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
+
+    let melhor = this.selecionarMelhorOpcao3Condensadoras(maiores);
+
+    this.simultaneidadeCalculada3aparelhos = melhor[1];
     return this.criarRetornoCondensadoras(melhor[0]);
   }
 
@@ -725,6 +742,37 @@ export class CalculadoraVrfComponent implements OnInit {
     let variacao = 0;
     maiores.forEach(x => {
       let variacaoAtual = x[0].length > 1 ? Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) : 0;
+      if (variacao == 0) {
+        variacao = variacaoAtual;
+        melhorOpcao = x;
+      }
+      else {
+        if (variacaoAtual <= variacao) {
+          melhorOpcao = x;
+        }
+      }
+    });
+
+    return melhorOpcao;
+  }
+
+  selecionarMelhorOpcao3Condensadoras(maiores: any[]) {
+    let melhorOpcao = [];
+    let variacao = 0;
+    maiores.forEach(x => {
+      let variacaoAtual = 0;
+      if (x[0].length == 1) {
+        variacaoAtual = 0;
+      }
+      if (x[0].length == 2) {
+        variacaoAtual = Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw));
+      }
+      if (x[0].length == 3) {
+        variacaoAtual = Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) +
+          Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][2].kw)) +
+          Math.abs(Number.parseFloat(x[0][1].kw) - Number.parseFloat(x[0][2].kw));
+      }
+
       if (variacao == 0) {
         variacao = variacaoAtual;
         melhorOpcao = x;
@@ -793,7 +841,8 @@ export class CalculadoraVrfComponent implements OnInit {
       produto.btu = x.btu;
       produto.qtde = x.qtde;
       if (JSON.stringify(retorno).indexOf(x.id) > -1) {
-        produto.qtde += 1;
+        let item = retorno.filter(p => p.id == x.id)[0];
+        item.qtde += 1;
       }
       else {
         produto.qtde = 1;
@@ -807,6 +856,7 @@ export class CalculadoraVrfComponent implements OnInit {
   calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
     let ret = [];
     let minimoAtingido = -1;
+    let candidatas = [];
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw);
       if (estaCapcidade >= capacidadeMinima) {
@@ -821,20 +871,43 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
-    let cominacaoes = [];
+    let combinacaoes = [];
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
         let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw);
         if (estaCapcidade >= capacidadeMinima) {
-          if (Number.parseInt(arrayCapacidades[i1][0]) < Number.parseInt(arrayCapacidades[i2][0]))
-            cominacaoes.push([arrayCapacidades[i1], arrayCapacidades[i2]]);
-          else cominacaoes.push([arrayCapacidades[i2], arrayCapacidades[i1]]);
+          if (Number.parseInt(arrayCapacidades[i1].id) < Number.parseInt(arrayCapacidades[i2].id))
+            combinacaoes.push([arrayCapacidades[i1], arrayCapacidades[i2]]);
+          else combinacaoes.push([arrayCapacidades[i2], arrayCapacidades[i1]]);
         }
       }
     }
 
-    return this.removerDuplicados(cominacaoes);
-    // return this.unificarEquipamentosIguais(ret);
+    return this.removerDuplicados(combinacaoes);
+  }
+
+  calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
+    let combinacaoes = [];
+
+    for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
+      for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
+        for (let i3 = 0; i3 < arrayCapacidades.length; i3++) {
+          let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw) + + Number.parseFloat(arrayCapacidades[i3].kw);
+          if (estaCapcidade >= capacidadeMinima) {
+            let item = [arrayCapacidades[i1], arrayCapacidades[i2], arrayCapacidades[i3]];
+            item.sort((a, b) => {
+              if (a.id < b.id) return -1;
+              if (b.id > a.id) return 1;
+              return 0;
+            });
+            combinacaoes.push(item);
+          }
+        }
+      }
+    }
+
+
+    return this.removerDuplicados(combinacaoes);
   }
 
   removerDuplicados(combinacaoes) {
@@ -850,36 +923,6 @@ export class CalculadoraVrfComponent implements OnInit {
     });
 
     return retorno;
-  }
-
-  calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades) {
-    let ret = [];
-    let minimoAtingido = -1;
-
-    for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
-      for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
-        for (let i3 = 0; i3 < arrayCapacidades.length; i3++) {
-          let estaCapcidade = arrayCapacidades[i1][1] + arrayCapacidades[i2][1] + arrayCapacidades[i3][1];
-          ;
-          if (estaCapcidade >= capacidadeMinima) {
-            if (estaCapcidade == minimoAtingido) {
-              let variacaoAtual = Math.abs(ret[0][1] - ret[1][1]) + Math.abs(ret[0][1] - ret[2][1]) + Math.abs(ret[1][1] - ret[2][1]);
-              let candidato = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]], [arrayCapacidades[i3][0], arrayCapacidades[i3][1]]];
-              let variacaoNova = Math.abs(candidato[0][1] - candidato[1][1]) + Math.abs(candidato[0][1] - candidato[2][1]) + Math.abs(candidato[1][1] - candidato[2][1]);
-              if (variacaoNova < variacaoAtual) {
-                ret = candidato;
-
-              }
-            }
-            if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
-              minimoAtingido = estaCapcidade;
-              ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]], [arrayCapacidades[i3][0], arrayCapacidades[i3][1]]];
-            }
-          }
-        }
-      }
-    }
-    return this.unificarEquipamentosIguais(ret);
   }
 
   somarTotalCondensadoras(lstCondensadora: ProdutoTabela[]) {
