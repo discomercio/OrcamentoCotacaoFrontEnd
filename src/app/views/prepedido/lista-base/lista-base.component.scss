@@ -1,0 +1,80 @@
+@import "../../../../variaveis.scss";
+
+.botaoCelular {
+  padding-bottom: 0px;
+}
+
+//para o desktop
+.tabeladesktop {
+  width: calc(100% - 2em);
+  margin: 0em;
+  padding-left: 0em;
+  padding-right: 0em;
+  text-align: left;
+  background-color: $cor-fundo-listapedidos;
+  
+}
+
+.tabeladesktop th{
+  border: 20px solid transparent;
+}
+
+.mat-header-row th {
+  font-weight: bold;
+  //color: black;
+}
+.mat-column-ValoTotal {
+  text-align: right;
+}
+.mat-header-row .mat-column-ValoTotal {
+  text-align: center;
+}
+
+.mat-column-NumeroPrepedido {
+  text-align: center;
+}
+.mat-column-DataPrePedido {
+  text-align: center;
+}
+.mat-column-NomeCliente {
+  text-align: left;
+}
+.mat-column-Remover {
+  text-align: center;
+  color: $cor-verde-icones;
+}
+.tabeladesktop td {
+  border-top-style: solid;
+  border-top-color: white;
+  border-top-width: 10px;
+}
+
+//para o celular
+.containercel {
+  margin: 0.5em;
+}
+.celcol1 {
+  min-width: 4em;
+  display: inline-block;
+  font-weight: bold;
+}
+.celcol2 {
+  width: auto;
+  display: inline-block;
+}
+.cellinha {
+  height: 1em;
+}
+.textocelnumero {
+  font-size: 14px;
+  vertical-align: bottom;
+  padding: 0em;
+  //height: 100%;
+}
+.cartao {
+  background-color: $cor-fundo-listapedidos;
+  padding: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+

@@ -5,7 +5,6 @@ import { ProdutoTela } from './produto-tela';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { Table } from 'primeng/table';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
-import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';

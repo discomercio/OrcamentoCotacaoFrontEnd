@@ -1,5 +1,5 @@
 <div class="flex p-flex-column" [style]="{width:  widthContainer+'%'}">
-  <div class="title-input" [style]="{width: widthTitle+'%', 'padding': '5px 0px 4px'}">
+  <div class="title-input" [style]="{width: widthTitle+'%', 'padding': '5px 0px 10px'}">
     <label [for]="'inputRoot'+id" *ngIf="type != 'hidden'" [style]="getLabelStatus()">{{titleLabel+requiredLabel}}</label>
   </div>
   <div class="p-grid p-col-12" [style]="{width: widthInput+'%'}">
@@ -7,7 +7,7 @@
             [id]="'inputRoot'+id" 
             type="type"
             pInputText 
-            class="p-col-10" 
+            [class]="class == '' ? p-col-10 : class" 
             [class.ng-dirty]= "invalid == 'true'"
             [class.ng-invalid]= "invalid == 'true'" 
             [(ngModel)]="value" 
@@ -52,6 +52,7 @@
         *ngIf="mask.length"
         [unmask]="true"
         [attr.disabled]="disabled == 'true' ? '' : null" 
+        [readonly]="disabled == 'true' ? 'true' : null" 
         [style]="{width: '100%', padding: '0px', border: '0px'}">
     </p-inputMask>
 

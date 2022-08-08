@@ -29,19 +29,24 @@ import { OrcamentosListarComponent } from '../../views/orcamentos/listar/listar.
 import { NovoOrcamentoComponent } from '../../views/orcamentos/novo-orcamento/novo-orcamento.component';
 import { CadastrarClienteComponent } from 'src/app/views/orcamentos/novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
 import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/itens.component';
-import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
-import { NovoPedidoComponent } from 'src/app/views/pedido/novo-pedido/novo-pedido.component';
 import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
 import { SelectEvapDialogComponent } from 'src/app/views/calculadora-vrf/select-evap-dialog/select-evap-dialog.component';
 import { EditarOpcaoComponent } from 'src/app/views/orcamentos/editar/editar-opcao/editar-opcao.component';
+import { SelecionarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/selecionar-cliente/selecionar-cliente.component';
+import { PrePedidoConfirmarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-cliente/prepedidoconfirmar-cliente.component';
+import { PrePedidoObservacoesComponent } from 'src/app/views/prepedido/novo-prepedido/observacoes/prepedidoobservacoes.component';
+import { ConfirmarPrepedidoComponent } from 'src/app/views/prepedido/novo-prepedido/confirmar-prepedido/confirmar-prepedido.component';
+import { PrePedidoItensComponent } from 'src/app/views/prepedido/novo-prepedido/itens/prepedidoitens.component';
+import { PrePedidoCadastrarClienteComponent } from 'src/app/views/prepedido/novo-prepedido/cadastrar-cliente/prepedidocadastrar-cliente.component';
 import { PrepedidoDetalhesComponent } from 'src/app/views/prepedido/detalhes/prepedido-detalhes.component';
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-cliente/editar-cliente.component';
+import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 
 @NgModule({
     imports: [
@@ -64,7 +69,7 @@ import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-c
                                     { path: "itens/:filtro", canActivate: [AuthGuard], component: ItensComponent },
                                     { path: "select-prod", canActivate: [AuthGuard], component: SelectProdDialogComponent },
                                     { path: "visualizar-orcamento/:id", canActivate: [AuthGuard], component: VisualizarOrcamentoComponent },
-                                    { path: "novo-orcamento", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
+                                    { path: "novo-orcamento",pathMatch: "full", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                     { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
@@ -73,12 +78,104 @@ import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-c
 
                             // Dashboard
                             { path: 'dashboards/generic', canActivate: [AuthGuard], component: DashboardDemoComponent },
-
                             {
-                                path: 'pedido', canActivate: [AuthGuard], children: [
-                                    { path: 'novo-pedido', canActivate: [AuthGuard], component: NovoPedidoComponent },
+                                path: 'novoprepedido',
+                                canActivate: [AuthGuard],
+                                // component: NovoPrepedidoComponent,
+                                children:[
+                                      {
+                                        path: 'confirmar-cliente/:cpfCnpj',
+                                        canActivate: [AuthGuard],
+                                        pathMatch: "prefix",
+                                        component: PrePedidoConfirmarClienteComponent
+                                      },
+                                      {
+                                        path: 'cadastrar-cliente/:cpfCnpj',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoCadastrarClienteComponent
+                                      },
+                                      {
+                                        path: 'itens/:numeroPrepedido',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoItensComponent
+                                      },
+                                      {
+                                        path: 'itens',
+                                        canActivate: [AuthGuard],
+                                        pathMatch: "full",
+                                        component: PrePedidoItensComponent
+                                      },
+                                      {
+                                        path: 'observacoes',
+                                        canActivate: [AuthGuard],
+                                        component: PrePedidoObservacoesComponent
+                                      },
+                                      {
+                                        path: 'confirmar-prepedido',
+                                        canActivate: [AuthGuard],
+                                        component: ConfirmarPrepedidoComponent
+                                      },
+                                      {
+                                        path: '**',
+                                        canActivate: [AuthGuard],
+                                        component: SelecionarClienteComponent
+                                      }
                                 ]
-                            },
+                              },
+                            // {
+                            //     path: 'selecionacliente',
+                            //     canActivate: [AuthGuard],
+                            //     component: SelecionarClienteComponent
+                            //   },
+                            // { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
+                            // {
+                            //     path: 'novo-prepedido',
+                            //     canActivate: [AuthGuard],
+                            //     component: NovoPrepedidoComponent,
+                            //     children: [
+                            //       {
+                            //         path: 'confirmar-cliente/:cpfCnpj',
+                            //         canActivate: [AuthGuard],
+                            //         component: ConfirmarClienteComponent
+                            //       },
+                            //       {
+                            //         path: 'cadastrar-cliente/:cpfCnpj',
+                            //         canActivate: [AuthGuard],
+                            //         component: CadastrarClienteComponent
+                            //       },
+                            //       {
+                            //         path: 'itens/:numeroPrepedido',
+                            //         canActivate: [AuthGuard],
+                            //         component: ItensComponent
+                            //       },
+                            //       {
+                            //         path: 'itens',
+                            //         canActivate: [AuthGuard],
+                            //         component: ItensComponent
+                            //       },
+                            //       {
+                            //         path: 'observacoes',
+                            //         canActivate: [AuthGuard],
+                            //         component: ObservacoesComponent
+                            //       },
+                            //       {
+                            //         path: 'confirmar-prepedido',
+                            //         canActivate: [AuthGuard],
+                            //         component: ConfirmarPrepedidoComponent
+                            //       },
+                            //       {
+                            //         path: '**',
+                            //         canActivate: [AuthGuard],
+                            //         component: SelecionarClienteComponent
+                            //       },
+                            //     ],
+                            //   },
+                            // { path: 'selecionacliente',canActivate: [AuthGuard],component: SelecionarClienteComponent },
+                            //tem suas prórpias rotas filhas
+
+                            // path: 'pedido', canActivate: [AuthGuard], children: [
+                            //     { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
+                            // ]
                             // Produtos Catalogo
                             {
                                 path: 'produtos-catalogo', canActivate: [AuthGuard], children: [
@@ -87,7 +184,7 @@ import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-c
                                     { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
-                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent }, 
+                                    { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
                                     { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },
                                     { path: 'propriedades/editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesEditarComponent },
@@ -119,15 +216,15 @@ import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-c
                                 path: 'prepedido/detalhes/:numeroPrepedido',
                                 canActivate: [AuthGuard],
                                 component: PrepedidoDetalhesComponent
-                              },     
-                              
+                            },
+
                             // Pedido
                             {
                                 path: 'pedido/detalhes/:numeroPedido',
                                 canActivate: [AuthGuard],
                                 component: PedidoDetalhesComponent
-                            },                                      
-  
+                            },
+
 
                         ]
                     }
@@ -136,6 +233,7 @@ import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-c
             // { path: 'dashboards/generic', component: DashboardDemoComponent },
         ], { scrollPositionRestoration: 'enabled' },
         )
+        // NovoPrepedidoRoutingModule
     ],
     exports: [RouterModule]
 })

@@ -1,0 +1,37 @@
+:host {
+  //em edição, todos os blocos ficam dentro de caixas
+  .caixa {
+    display: inline-block;
+    padding: 0.5em;
+    padding-left: 0em;
+  }
+  .caixa .rotulo {
+    display: inline;
+    font-weight: bold;
+    opacity: 0.9;
+    padding-right: 0.5em;
+  }
+  .caixa .dado {
+    display: inline;
+    padding-right: 1em;
+  }
+
+  #endereco-radio-group-label {
+    display: block;
+    padding-top: 1em;
+    padding-bottom: 0.5em;
+  }
+  .enderecoradio {
+    display: block;
+    padding-bottom: 0.5em;
+  }
+
+  .boxnovoednereco {
+    padding-top: 1em;
+  }
+  .desab {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+}

@@ -7,180 +7,199 @@
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
                 <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                     <label for="tipo">Tipo</label>
-                    <div>
-                        <input id="opt-pf" checked="checked" type="radio"  name="TipoPessoa"
-                            (click)="tipoPessoaSelPF();" value="PF" />&nbsp;
-                        <label for="opt-pf">Pessoa Física </label> &nbsp;
-                        <input id="opt-pj" type="radio"  name="TipoPessoa" value="PJ"
-                            (click)="tipoPessoaSelPF();" />
-                        <label for="opt-pj">Pessoa Jurídica </label>
-                    </div>
+                    <div><radio-arclube [setRadioItems]="[{'label': 'CPF', 'value':'PF'},{'label': 'CNPJ', 'value':'PJ'}]" setIsMultiple="true" setValueMultRadio="PF"
+                        (getItemSelected)="tipoPessoa_OnChange($event)"></radio-arclube></div>
                 </div>
 
                 <!-- Campos PF -->
-                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirTipo">
-                    <label for="cpf">CPF*</label>
-                    <input id="cpf" type="text" pInputText placeholder="CPF" />
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirPF">
+                    <input-arclube titleInput="CPF" setPlaceholder="CPF" (inputValue)="cliente.DadosCliente.Cnpj_Cpf = $event" setMask="999.999.999-99"></input-arclube>
+                    <!-- <label for="cpf">CPF*</label>
+                    <input id="cpf" type="text" pInputText placeholder="CPF" /> -->
                 </div>
-                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirTipo">
-                    <label for="rg">RG</label>
-                    <input id="rg" type="text" pInputText placeholder="RG" />
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirPF">
+                    <!-- <label for="rg">RG</label>
+                    <input id="rg" type="text" pInputText placeholder="RG" /> -->
+                    <input-arclube titleInput="RG" setPlaceholder="RG" (inputValue)="cliente.DadosCliente.RG = $event"></input-arclube>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="this.exibirTipo">
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirPF">
+                    <!-- <label for="rg">RG</label>
+                    <input id="rg" type="text" pInputText placeholder="RG" /> -->
+                    <input-arclube titleInput="Nascimento" setPlaceholder="Nascimento" (inputValue)="nascimento = $event" setMask="99/99/9999"></input-arclube>
+                    <!-- <date-arclube titleInput="Nascimento" isRequired="true" [setReset]="cliente.DadosCliente.Nascimento" (valueInput)="cliente.DadosCliente.Nascimento"
+                    (getItemSelected)="cliente.DadosCliente.Nascimento = $event" setWidthContainer="20"></date-arclube> -->
+                </div>
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="this.exibirPF">
+                    <!-- <label for="rg">RG</label>
+                    <input id="rg" type="text" pInputText placeholder="RG" /> -->
+                    <!-- <input-arclube titleInput="Sexo" setPlaceholder="Sexo" (inputValue)="cliente.DadosCliente.Sexo = $event"></input-arclube> -->
+                    <dropdown-arclube titleInput="Sexo" [setReset]="cliente.DadosCliente.Sexo" (ngModel)="cliente.DadosCliente.Sexo" setColor="black" [inputItems]="sexo"
+                    setOptionsValueName="value" setOptionsName="label" (getItemSelected)="cliente.DadosCliente.Sexo = $event"></dropdown-arclube>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="this.exibirPF">
                     <div class="p-field p-col-12">
-                        <label for="nome">Nome*</label>
-                        <input id="nome" type="text" pInputText placeholder="Digite seu nome" />
+                        <input-arclube titleInput="Nome" setPlaceholder="Nome" (inputValue)="cliente.DadosCliente.Nome = $event"></input-arclube>
+                        <!-- <label for="nome">Nome*</label>
+                        <input id="nome" type="text" pInputText placeholder="Digite seu nome" /> -->
                     </div>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirTipo">
-                        <label for="cep">CEP*</label>
-                        <input id="cep" type="text" pInputText placeholder="CEP" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirTipo">
-                        <label for="endereco">Endereço*</label>
-                        <input id="endereco" type="text" pInputText placeholder="Endereço" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirTipo">
-                        <label for="numero">Número*</label>
-                        <input id="numero" type="text" pInputText placeholder="Número" />
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirTipo">
-                        <label for="complemento">Complemento</label>
-                        <input id="complemento" type="text" pInputText placeholder="Complemento" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirTipo">
-                        <label for="bairro">Bairro*</label>
-                        <input id="bairro" type="text" pInputText placeholder="Bairro" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirTipo">
-                        <label for="numero">Cidade*</label>
-                        <input id="numero" type="text" pInputText placeholder="Cidade" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="this.exibirTipo">
-                        <label for="tipoCliente">Estado</label>
-                        <p-dropdown id="tipoCliente" [options]="" placeholder="Selecione">
-                        </p-dropdown>
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirTipo">
-                        <label for="telefone">Telefone*</label>
-                        <input id="telefone" type="text" pInputText placeholder="Telefone" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirTipo">
-                        <label for="comercial">Comercial</label>
-                        <input id="comercial" type="text" pInputText placeholder="Comercial" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirTipo">
-                        <label for="celular">Celular*</label>
-                        <input id="celular" type="text" pInputText placeholder="Celular" />
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirTipo">
-                        <label for="email">E-mail*</label>
-                        <input id="email" type="text" pInputText placeholder="E-mail" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirTipo">
-                        <label for="emailxml">E-mail XML</label>
-                        <input id="emailxml" type="text" pInputText placeholder="E-mail XML" />
-                    </div>
-                </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"  *ngIf="this.exibirTipo">
-                    <label for="observacao">Observação</label>
-                    <textarea pinputtextarea="" autoresize="autoResize"
-                        class="p-inputtextarea p-inputtext p-component p-element p-inputtextarea-resizable" rows="5"
-                        cols="30" style="height: 109px; overflow: hidden;"></textarea>
-                </div>
+
 
                 <!-- Campos PJ -->
-                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="!this.exibirTipo">
-                    <label for="cnpj">CNPJ</label>
-                    <input id="cnpj" type="text" pInputText placeholder="CNPJ" />
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="!this.exibirPF">
+                    <!-- <label for="cnpj">CNPJ</label>
+                    <input id="cnpj" type="text" pInputText placeholder="CNPJ" /> -->
+                    <input-arclube titleInput="CNPJ" setPlaceholder="CNPJ" (inputValue)="cliente.DadosCliente.Cnpj_Cpf = $event" setMask="99.999.999/9999-99"></input-arclube>
                 </div>
 
-                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="!this.exibirTipo">
-                    <label for="ie">IE</label>
-                    <input id="ie" type="text" pInputText placeholder="IE" />
+                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="!this.exibirPF">
+                    <input-arclube titleInput="IE" setPlaceholder="IE" (inputValue)="cliente.DadosCliente.Ie = $event"></input-arclube>
+                    <!-- <label for="ie">IE</label>
+                    <input id="ie" type="text" pInputText placeholder="IE" /> -->
                 </div>
 
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="!this.exibirTipo">
-                        <label for="razaosocial">Razão Social*</label>
-                        <input id="razaosocial" type="text" pInputText placeholder="Razão Social" />
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="!this.exibirPF">
+                        <input-arclube titleInput="Razão Social" setPlaceholder="Razão Social" (inputValue)="cliente.DadosCliente.Nome = $event"></input-arclube>
+                        <!-- <label for="razaosocial">Razão Social*</label>
+                        <input id="razaosocial" type="text" pInputText placeholder="Razão Social" /> -->
                     </div>
-                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="!this.exibirTipo">
+                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="!this.exibirPF">
                     <label for="nomefantasia">Nome Fantasia*</label>
-                    <input id="nomefantasia" type="text" pInputText placeholder="Nome Fantasia" />
+                    <!-- <input id="nomefantasia" type="text" pInputText placeholder="Nome Fantasia" /> -->
                 </div>
+
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="!this.exibirTipo">
+                    <selecionarcep-arclube class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3" *ngIf="this.exibirPF" (rowSelected)="cepSelecionado($event)" 
+                    [(valueInput)]="cliente.DadosCliente.Cep" (inputValue)="preencheEndereco($event)"></selecionarcep-arclube>
+                    <!-- <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirPF">                       
                         <label for="cep">CEP*</label>
                         <input id="cep" type="text" pInputText placeholder="CEP" />
+                    </div> -->
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Endereço" setPlaceholder="Endereço" [(valueInput)]="cliente.DadosCliente.Endereco"></input-arclube>
+                        <!-- <label for="endereco">Endereço*</label>
+                        <input id="endereco" type="text" pInputText placeholder="Endereço" /> -->
                     </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="!this.exibirTipo">
-                        <label for="endereco">Endereço*</label>
-                        <input id="endereco" type="text" pInputText placeholder="Endereço" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="!this.exibirTipo">
-                        <label for="numero">Número*</label>
-                        <input id="numero" type="text" pInputText placeholder="Número" />
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Número" setPlaceholder="Número" (inputValue)="cliente.DadosCliente.Numero = $event"></input-arclube>
+                        <!-- <label for="numero">Número*</label>
+                        <input id="numero" type="text" pInputText placeholder="Número" /> -->
                     </div>
                 </div>
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="!this.exibirTipo">
-                        <label for="complemento">Complemento</label>
-                        <input id="complemento" type="text" pInputText placeholder="Complemento" />
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Complemento" setPlaceholder="Complemento" (inputValue)="cliente.DadosCliente.Complemento = $event"></input-arclube>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="!this.exibirTipo">
-                        <label for="bairro">Bairro*</label>
-                        <input id="bairro" type="text" pInputText placeholder="Bairro" />
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Bairro" setPlaceholder="Bairro" [(valueInput)]="cliente.DadosCliente.Bairro"></input-arclube>
+                        <!-- <label for="bairro">Bairro*</label>
+                        <input id="bairro" type="text" pInputText placeholder="Bairro" /> -->
                     </div>
-                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="!this.exibirTipo">
-                        <label for="numero">Cidade*</label>
-                        <input id="numero" type="text" pInputText placeholder="Cidade" />
+                    <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Cidade" setPlaceholder="Cidade" [(valueInput)]="cliente.DadosCliente.Cidade"></input-arclube>
+                        <!-- <label for="numero">Cidade*</label>
+                        <input id="numero" type="text" pInputText placeholder="Cidade" /> -->
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="!this.exibirTipo">
-                        <label for="tipoCliente">Estado</label>
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="this.exibirPF">
+                        <dropdown-arclube titleInput="Estado" [setReset]="cliente.DadosCliente.Uf" (ngModel)="cliente.DadosCliente.Uf" setColor="black" [inputItems]="estados"
+          setOptionsValueName="value" setOptionsName="label" (getItemSelected)="cliente.DadosCliente.Uf = $event"></dropdown-arclube>
+                        <!-- <label for="tipoCliente">Estado</label>
                         <p-dropdown id="tipoCliente" [options]="" placeholder="Selecione">
-                        </p-dropdown>
+                        </p-dropdown> -->
                     </div>
                 </div>
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="!this.exibirTipo">
-                        <label for="telefone1">Telefone 1*</label>
-                        <input id="telefone1" type="text" pInputText placeholder="Telefone" />
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirPF">
+                        <!-- <label for="telefone">Telefone*</label>
+                        <input id="telefone" type="text" pInputText placeholder="Telefone" /> -->
+                        <input-arclube titleInput="Telefone" setPlaceholder="Telefone" (inputValue)="residencial = $event"
+                        setMask="(99)9999-9999"></input-arclube>
                     </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="!this.exibirTipo">
-                        <label for="ramal1">Ramal*</label>
-                        <input id="ramal1" type="text" pInputText placeholder="Ramal" />
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="Comercial" setPlaceholder="Comercial" (inputValue)="comercial = $event"
+                        setMask="(99)9999-9999"></input-arclube>
                     </div>
-                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="!this.exibirTipo">
-                        <label for="telefone2">Telefone 2*</label>
-                        <input id="telefone2" type="text" pInputText placeholder="Telefone" />
-                    </div>
-                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="!this.exibirTipo">
-                        <label for="ramal2">Ramal*</label>
-                        <input id="ramal2" type="text" pInputText placeholder="Ramal" />
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="this.exibirPF">
+                        <!-- <label for="celular">Celular*</label>
+                        <input id="celular" type="text" pInputText placeholder="Celular" /> -->
+                        <input-arclube titleInput="Celular" setPlaceholder="Celular" (inputValue)="celular = $event"
+                        setMask="(99)99999-9999"></input-arclube>
                     </div>
                 </div>
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="!this.exibirTipo">
-                        <label for="nomecontato">Nome do Contato*</label>
-                        <input id="nomecontat" type="text" pInputText placeholder="Nome do Contato" />
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirPF">
+                        <!-- <label for="email">E-mail*</label>
+                        <input id="email" type="text" pInputText placeholder="E-mail" /> -->
+                        <input-arclube titleInput="E-mail" setPlaceholder="E-mail" (inputValue)="cliente.DadosCliente.Email = $event"></input-arclube>
                     </div>
-                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="!this.exibirTipo">
-                        <label for="email">E-mail</label>
-                        <input id="email" type="text" pInputText placeholder="E-mail " />
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="this.exibirPF">
+                        <input-arclube titleInput="E-mail XML" setPlaceholder="E-mail XML" (inputValue)="cliente.DadosCliente.EmailXml = $event"></input-arclube>
+                        <!-- <label for="emailxml">E-mail XML</label>
+                        <input id="emailxml" type="text" pInputText placeholder="E-mail XML" /> -->
                     </div>
                 </div>
-                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"  *ngIf="!this.exibirTipo">
-                    <label for="observacao">Observação</label>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"  *ngIf="this.exibirPF">
+                    <input-arclube titleInput="Observação" setPlaceholder="Observação" (inputValue)="cliente.DadosCliente.Observacao_Filiacao = $event"></input-arclube>
+                    <!-- <label for="observacao">Observação</label>
                     <textarea pinputtextarea="" autoresize="autoResize"
                         class="p-inputtextarea p-inputtext p-component p-element p-inputtextarea-resizable" rows="5"
-                        cols="30" style="height: 109px; overflow: hidden;"></textarea>
+                        cols="30" style="height: 109px; overflow: hidden;"></textarea> -->
+                </div>
+
+                
+                
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="!this.exibirPF">
+                        <!-- <label for="telefone1">Telefone 1*</label>
+                        <input id="telefone1" type="text" pInputText placeholder="Telefone" /> -->
+                        <input-arclube titleInput="Telefone 1" setPlaceholder="Telefone 1" (inputValue)="comercial = $event" 
+                        setMask="(99)9999-9999"></input-arclube>
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="!this.exibirPF">
+                        <input-arclube titleInput="Ramal" setPlaceholder="Ramal" (inputValue)="cliente.DadosCliente.Ramal = $event"></input-arclube>
+                        <!-- <label for="ramal1">Ramal*</label>
+                        <input id="ramal1" type="text" pInputText placeholder="Ramal" /> -->
+                    </div>
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4"  *ngIf="!this.exibirPF">
+                        <input-arclube titleInput="Telefone 2" setPlaceholder="Telefone 2" (inputValue)="comercial2 = $event"
+                         setMask="(99)9999-9999"></input-arclube>
+                        <!-- <label for="telefone2">Telefone 2*</label>
+                        <input id="telefone2" type="text" pInputText placeholder="Telefone" /> -->
+                    </div>
+                    <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-2"  *ngIf="!this.exibirPF">
+                        <!-- <label for="ramal2">Ramal*</label>
+                        <input id="ramal2" type="text" pInputText placeholder="Ramal" /> -->
+                        <input-arclube titleInput="Ramal" setPlaceholder="Ramal" (inputValue)="cliente.DadosCliente.Ramal = $event"></input-arclube>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="!this.exibirPF">
+                        <input-arclube titleInput="Nome do Contato" setPlaceholder="Nome do Contato" (inputValue)="cliente.DadosCliente.Contato = $event"></input-arclube>
+                        <!-- <label for="nomecontato">Nome do Contato*</label>
+                        <input id="nomecontat" type="text" pInputText placeholder="Nome do Contato" /> -->
+                    </div>
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6"  *ngIf="!this.exibirPF">
+                        <!-- <label for="email">E-mail</label>
+                        <input id="email" type="text" pInputText placeholder="E-mail " /> -->
+                        <input-arclube titleInput="Email" setPlaceholder="Email" (inputValue)="cliente.DadosCliente.Email = $event"></input-arclube>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"  *ngIf="!this.exibirPF">
+                    <input-arclube titleInput="Observação" setPlaceholder="Observação" (inputValue)="cliente.DadosCliente.Observacao_Filiacao = $event"></input-arclube>
+                    <!-- <label for="observacao">Observação</label>
+                    <textarea pinputtextarea="" autoresize="autoResize"
+                        class="p-inputtextarea p-inputtext p-component p-element p-inputtextarea-resizable" rows="5"
+                        cols="30" style="height: 109px; overflow: hidden;"></textarea> -->
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0"  *ngIf="this.exibirPF">
+                    <dropdown-arclube titleInput="Produtor Rural" [setReset]="cliente.DadosCliente.ProdutorRural" (ngModel)="cliente.DadosCliente.ProdutorRural" setColor="black" [inputItems]="produtorRural"
+                    setOptionsValueName="value" setOptionsName="label" (getItemSelected)="cliente.DadosCliente.ProdutorRural = $event"></dropdown-arclube>
+                    <!-- <input-arclube titleInput="Produtor Rural" setPlaceholder="Produtor Rural" (inputValue)="cliente.DadosCliente.ProdutorRural = $event"></input-arclube> -->
+                    
+                    <!-- <label for="observacao">Observação</label>
+                    <textarea pinputtextarea="" autoresize="autoResize"
+                        class="p-inputtextarea p-inputtext p-component p-element p-inputtextarea-resizable" rows="5"
+                        cols="30" style="height: 109px; overflow: hidden;"></textarea> -->
                 </div>
             </div>
 

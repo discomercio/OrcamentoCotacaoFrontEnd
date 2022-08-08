@@ -1,10 +1,10 @@
-import {Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 // import {PaymentEnum} from '@app/enums/paymentEnum';
 
 @Component({
-	selector: 'table-arclube',
-	templateUrl: './table-arclube.component.html',
-	styleUrls: ['./table-arclube.component.scss']
+  selector: 'table-arclube',
+  templateUrl: './table-arclube.component.html',
+  styleUrls: ['./table-arclube.component.scss']
 })
 export class TableArClubeComponent {
   items: any[]
@@ -25,7 +25,7 @@ export class TableArClubeComponent {
   tooltipEditLabel: string = 'Editar'
   tooltipRemoveLabel: string = 'Remover'
   viewItem: boolean = false
-  
+
   @Output() getPagination = new EventEmitter()
   @Output() getItem = new EventEmitter()
   @Output() showItem = new EventEmitter()
@@ -34,57 +34,57 @@ export class TableArClubeComponent {
   @Output() repproveItem = new EventEmitter()
 
   @Input()
-  set setHeaders(value: any[]){
+  set setHeaders(value: any[]) {
     this.headers = value
   }
 
   @Input()
-  set setItems(value: any[]){
+  set setItems(value: any[]) {
     this.items = value
   }
 
   @Input()
-  set setTitleLabel(value: string){
+  set setTitleLabel(value: string) {
     this.titleLabel = value
   }
 
   @Input()
-  set setIsSelection(value: boolean){
+  set setIsSelection(value: boolean) {
     this.isSelection = value
   }
 
   @Input()
-  set setIsEditItem(value: boolean){
+  set setIsEditItem(value: boolean) {
     this.isEditItem = value
   }
 
   @Input()
-  set setIsDeleteItem(value: boolean){
+  set setIsDeleteItem(value: boolean) {
     this.isDeleteItem = value
   }
 
   @Input()
-  set setIsSortableHeader(value: boolean){
+  set setIsSortableHeader(value: boolean) {
     this.isSortable = value
   }
 
   @Input()
-  set setStatusType(value: string){
+  set setStatusType(value: string) {
     this.statusType = value
   }
 
   @Input()
-  set setTotalRows(value: any){
+  set setTotalRows(value: any) {
     this.totalRecords = value
   }
 
   @Input()
-  set setRowsControl(value: any){
+  set setRowsControl(value: any) {
     this.rows = value
   }
 
   @Input()
-  set setApproves(value: boolean){
+  set setApproves(value: boolean) {
     this.isApproves = value
   }
 
@@ -94,12 +94,12 @@ export class TableArClubeComponent {
   }
 
   @Input()
-  set setRemoveLabelTooltip(value: string){
+  set setRemoveLabelTooltip(value: string) {
     this.tooltipRemoveLabel = value
   }
 
   @Input()
-  set isViewItem (value: boolean){
+  set isViewItem(value: boolean) {
     this.viewItem = value
   }
 
@@ -120,19 +120,19 @@ export class TableArClubeComponent {
     this.getPagination.emit(event)
   }
 
-  approve(event: any){
+  approve(event: any) {
     this.approveItem.emit(event)
   }
 
-  repprove(event: any){
+  repprove(event: any) {
     this.repproveItem.emit(event)
   }
 
-  show(event: any){
+  show(event: any) {
     this.showItem.emit(event)
   }
 
-  getColorStatus(value:any) {
+  getColorStatus(value: any) {
     // switch(this.statusType) {
     //   case 'payment': 
     //     switch (value){
@@ -150,7 +150,9 @@ export class TableArClubeComponent {
     //     return 'black'  
     // }
   }
-
+  onRowSelected(value: any) {
+    this.getItem.emit(value)
+  }
   GetTooltipStatus(value: any) {
     // switch(this.statusType) {
     //   case 'payment': 

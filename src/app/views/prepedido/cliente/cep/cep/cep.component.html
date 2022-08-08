@@ -1,0 +1,74 @@
+<div [ngClass]="{'carregando': carregando}">
+
+    <!-- Afazer: incluir os novos campos de endereço de endereço de entrega e 
+        memorização de endereços
+    -->
+    <!-- Ao selecionar "Outro Endereço" temos que incluir:
+         - Tipo da pessoa que irá receber a entrega: incluir 2 checkbox "PJ" e "PF"
+         - Campos que devem ser incluidos em ambos: 
+                                                    IE
+                                                    Contribuinte ICMS
+         - Para PJ: CNPJ
+                    IE
+                    Contribuinte ICMS => "Não", "Sim", "Isento"
+                    Razão Social
+                    2 telefones para contato com RAMAL
+         - Para PF: CPF
+                    Nome
+                    Produtor Rural
+                    2 telefones => 1 para celular / 1 para residencial
+
+        PASSOS PARA VERIFICAÇÃO de memorização de endereço:
+        - Na linha 76 esta sendo chamado o metodo "isActivatedFlagPedidoUsarMemorizacaoCompletaEnderecos", 
+            onde é feito uma verificação com dados que vem da base utilizando "ID_PARAMETRO_Flag_Pedido_MemorizacaoCompletaEnderecos"
+    -->
+    <!-- Começo Gabriel novos campos -->
+
+    <!-- Fim novos campos -->
+
+    <mat-form-field floatLabel="floatLabel()" class="edicao-cep">
+        <input matInput type="text" placeholder="CEP" [(ngModel)]="Cep" [required]="required" maxlength="10" size="11"
+            id="cep" (blur)="saiuCep()" [textMask]="{mask: mascaraCep}" (keydown.enter)="enterCep($event)">
+    </mat-form-field>
+    <button mat-raised-button color="accent" (click)="buscarCep()" id="naoSeiCep" style="font-size:80%;">
+        <!-- <mat-icon style="font-size: 180%; margin-left: -15%"></mat-icon> -->
+        <span class="pi pi-search" style="margin-right: 10px;"></span>Não sei o CEP
+    </button>
+
+    <!-- espaçador -->
+    <span style="width: 2em; display: inline-block;"> </span>
+
+    <!-- ************   ENDEREÇO   ************  -->
+    <mat-form-field floatLabel="floatLabel()" class="edicao-endereco">
+        <input matInput type="text" placeholder="ENDEREÇO" [(ngModel)]="Endereco" [required]="required" maxlength="60"
+            size="85">
+    </mat-form-field>
+
+    <!-- ************ Nº/COMPLEMENTO ************  -->
+    <mat-form-field floatLabel="floatLabel()" class="edicao-numero">
+        <input matInput type="text" placeholder="Nº" [(ngModel)]="Numero" id="numero" [required]="required"
+            maxlength="20" size="10">
+    </mat-form-field>
+    <mat-form-field floatLabel="floatLabel()" class="edicao-compl">
+        <input matInput type="text" placeholder="COMPLEMENTO" [(ngModel)]="Complemento" maxlength="60" size="10">
+    </mat-form-field>
+
+
+    <!-- ************ BAIRRO/CIDADE ************  -->
+    <mat-form-field floatLabel="floatLabel()" class="edicao-bairro">
+        <input matInput type="text" placeholder="BAIRRO" [(ngModel)]="Bairro" [required]="required" maxlength="72">
+    </mat-form-field>
+
+    <mat-form-field floatLabel="floatLabel()" class="edicao-cidade">
+        <input matInput [readonly]="temCidade" type="text" placeholder="CIDADE" [(ngModel)]="Cidade"
+            [required]="required" maxlength="60">
+    </mat-form-field>
+
+
+    <!-- ************ UF/CEP ************  -->
+    <mat-form-field floatLabel="floatLabel()" class="edicao-uf">
+        <input matInput [readonly]="temUf" type="text" placeholder="UF" [(ngModel)]="Uf" [required]="required"
+            maxlength="2" size="3">
+    </mat-form-field>
+
+</div>

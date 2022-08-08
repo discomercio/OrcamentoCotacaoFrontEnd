@@ -9,16 +9,19 @@
         "build": "ng build",
         "test": "ng test",
         "lint": "ng lint",
-        "e2e": "ng e2e"
+        "e2e": "ng e2e",
+        "node-sass": "node-sass --output-style compressed -o dist/css src/scss"
     },
     "private": true,
     "dependencies": {
         "@angular/animations": "~11.0.0",
-        "@angular/cdk": "~11.0.0",
+        "@angular/cdk": "^8.2.3",
         "@angular/common": "~11.0.0",
         "@angular/compiler": "~11.0.0",
         "@angular/core": "~11.0.0",
+        "@angular/flex-layout": "^9.0.0-beta.29",
         "@angular/forms": "~11.0.0",
+        "@angular/material": "^8.2.3",
         "@angular/platform-browser": "~11.0.0",
         "@angular/platform-browser-dynamic": "~11.0.0",
         "@angular/router": "~11.0.0",
@@ -30,6 +33,7 @@
         "@fullcalendar/interaction": "4.1.0",
         "@fullcalendar/timegrid": "4.1.0",
         "@types/jwt-decode": "^3.1.0",
+        "angular2-text-mask": "^9.0.0",
         "chart.js": "2.7.3",
         "file-saver": "^2.0.5",
         "font-awesome": "^4.7.0",
@@ -46,7 +50,7 @@
         "prismjs": "^1.26.0",
         "rxjs": "^6.6.0",
         "sweetalert2": "^11.3.6",
-        "tslib": "^2.0.0",
+        "tslib": "^2.4.0",
         "web-animations-js": "^2.3.2",
         "xlsx": "^0.17.3",
         "zone.js": "~0.10.2"

@@ -1,0 +1,94 @@
+@import "./variaveis.scss";
+
+// desktop
+.sectionDesktop {
+  padding: 0em;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.sectionDesktop header {
+  text-align: left;
+  font-size: 120%;
+  font-weight: bold;
+  margin: 0em; 
+  padding: 1em;
+  padding-bottom: 0.3em;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.sectionDesktop article {
+  width: calc(100% - 2em);
+  text-align: left;
+  padding: 1em;
+  flex: 1 1 auto;
+  overflow-y: auto;
+}
+.sectionDesktop footer {
+  text-align: center;
+  padding: 1em;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+//caixa de texto
+.sectionDesktop article .mat-form-field {
+  padding-left: 1em;
+  padding-right: 1em;
+  padding-top: 0em;
+  padding-bottom: 0em;
+}
+
+// celular
+.sectionCelular {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.sectionCelular header {
+  padding: 0.7em;
+  padding-bottom: 0.3em;
+  text-align: left;
+  font-size: 120%;
+  font-weight: bold;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+.sectionCelular article {
+  overflow-y: auto;
+  padding: 0.7em;
+  text-align: left;
+  flex: 1 1 auto;
+}
+//caixa de texto
+.sectionCelular article .mat-form-field {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+  padding-top: 0em;
+  padding-bottom: 0em;
+}
+
+.sectionCelular footer {
+  padding: 0.7em;
+  text-align: center;
+  flex-grow: 0;
+  flex-shrink: 0;
+}
+
+//deixar os botões da parte de baixo distribuidos uniformemente
+.sectionCelular footer,
+.sectionDesktop footer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  max-width: 100%;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+.sectionCelular footer button,
+.sectionDesktop footer button {
+  width: 8em;
+}

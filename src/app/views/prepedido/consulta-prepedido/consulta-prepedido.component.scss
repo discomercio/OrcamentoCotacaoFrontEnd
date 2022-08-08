@@ -1,0 +1,14 @@
+
+/*
+  controle do flex
+  */
+  .contgrande {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+  }
+
+  .contgrande article {
+    flex: 1 1 auto;
+    overflow-y: auto;
+  }

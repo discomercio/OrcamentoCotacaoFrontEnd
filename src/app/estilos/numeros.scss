@@ -1,0 +1,32 @@
+// campos de edicao de endereço
+
+.quantidade {
+  width: 6ch;
+  text-align: right;
+}
+.preco {
+  width: 10ch;
+  text-align: right;
+}
+.desconto {
+  width: 6ch;
+  text-align: right;
+  padding-right: 0 !important;
+}
+
+
+.hquantidade {
+  min-width: 6ch;
+  width: 6ch;
+  text-align: right;
+}
+.hpreco {
+  min-width: 12ch;
+  width: 12ch;
+  text-align: right;
+}
+.hdesconto {
+  min-width: 11ch;
+  width: 11ch;
+  text-align: right;
+}

@@ -1,5 +1,4 @@
 import { AlertaService } from './../../../components/alert-dialog/alerta.service';
-import { PrepedidoService } from 'src/app/service/prepedido/prepedido.service';
 import { MensagemService } from './../../../utilities/mensagem/mensagem.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -8,6 +7,8 @@ import { ClienteService } from 'src/app/service/cliente/cliente.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ClienteDto } from 'src/app/dto/clientes/cliente-dto';
 import {Router} from "@angular/router"
+import { PrepedidoBuscarService } from 'src/app/service/prepedido/prepedido-buscar.service';
+import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -175,11 +176,11 @@ export class PublicoCadastroClienteComponent implements OnInit {
         }
       };
 
-    this.clienteService.buscarCliente(cpfCnpj).toPromise().then((r) => {
+    this.clienteService.buscarClienteOrcamento(cpfCnpj).toPromise().then((r) => {
       if (r == null) {
 
         this.mensagemService.showWarnViaToast('Cadastrando cliente...');
-        this.clienteService.cadastrarCliente(cadastro).toPromise().then((r) => {
+        this.clienteService.cadastrarClienteOrcamento(cadastro).toPromise().then((r) => {
           if (r != null) {
             if(r.DadosCliente?.id !== undefined) {
             this.mensagemService.showInfoViaToast('Cliente cadastrado!');

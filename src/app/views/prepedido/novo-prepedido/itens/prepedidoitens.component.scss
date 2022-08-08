@@ -1,0 +1,54 @@
+@import "../../variaveis.scss";
+
+.avisoestoque {
+  padding-left: 5em !important;
+  color: red;
+}
+
+.sectionDesktop .tabelaitens {
+  border: 1px solid #ccc;
+  border-collapse: collapse;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.sectionDesktop .tabelaitens caption {
+  font-size: 1.5em;
+  margin: 0.5em 0 0.75em;
+}
+
+.sectionDesktop .tabelaitens tr {
+  background-color: $cor-fundo-listapedidos;
+  border: 1px solid #ddd;
+  padding: 0.35em;
+}
+
+.sectionDesktop .tabelaitens th,
+.sectionDesktop .tabelaitens td {
+  padding: 0.625em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+  //text-align: center;
+  border: 15px solid transparent !important;
+}
+
+.sectionDesktop .tabelaitens th {
+  font-size: 0.85em;
+  letter-spacing: 0.1em;
+}
+
+.sectionDesktop article .tabelaitens .mat-form-field {
+  padding: 0em;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+}
+
+.caixacel{
+  background-color: $cor-fundo-listapedidos;
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+  margin-bottom: 1em;
+}
+

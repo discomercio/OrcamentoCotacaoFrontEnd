@@ -150,7 +150,7 @@ export class CadastrarClienteComponent implements OnInit {
     }).catch((e) => {
       console.log("erro");
       this.alertaService.mostrarErroInternet(e);
-    })
+    });
   }
 
   setarCamposDoForm(): void {

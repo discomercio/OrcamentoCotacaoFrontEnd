@@ -22,6 +22,7 @@ export class InputArClubeComponent {
 	requiredField: boolean = false
 	requiredLabel: string = ''
 	number: number;
+	class: string;
 
 	constructor() { }	
 
@@ -98,6 +99,10 @@ export class InputArClubeComponent {
 		this.requiredLabel =  value? '*' : ''
 	}
 	
+	@Input()
+	set setClass(value: string){
+		this.class = value
+	}
 	getLabelStatus() {
 		if (this.id == 'Login' || this.id == 'Password')
 			return "color: white;"

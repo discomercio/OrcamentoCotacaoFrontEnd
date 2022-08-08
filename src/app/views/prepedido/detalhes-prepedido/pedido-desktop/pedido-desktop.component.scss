@@ -1,0 +1,691 @@
+/* para comprolar por impressão ou na tela, mas estamos sempre imprimirndo o que já aparece na tela! */
+.notVisible {
+  display: none;
+}
+
+.notPrint {
+  display: auto;
+}
+
+.botaoImprimirDIv {
+    text-align: right;
+    padding: 1em;
+  }
+  .botaoVoltarDIv {
+    text-align: left;
+    padding-bottom: 1em;
+  }
+    
+@media print {
+  .botaoVoltar {
+    display: none;
+  }
+  .botaoImprimirDIv {
+    display: none;
+  }
+  .botaoVoltarDIv {
+    display: none;
+  }
+  .nossobody-before{
+    height:-100vh; 
+    margin: 0 !important; 
+    padding: 0 !important;
+    overflow: hidden;
+}
+}
+
+a {
+  text-decoration: none;
+}
+
+.nossobody {
+  background: #ffffff;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  border: 0pt solid #000000;
+  max-width: fit-content;
+}
+
+.nossobody-before {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 9pt;
+  color: #696969;
+  text-align: center;
+  border: solid 2px #696969;
+  display: block;
+  position: relative;
+  padding: 4px;
+  margin-top: 2px;
+  margin-bottom: 8px;
+  width: 650px;
+}
+
+input {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+select {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+textarea {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10pt;
+}
+
+.ALERTA {
+  background: #f00000;
+  border: 1pt solid #ff0000;
+  color: #ffff00;
+  font-size: 12pt;
+  font-weight: bold;
+  text-align: center;
+}
+
+.Botao {
+  background: #abe0a6;
+  border: 3px double #696969;
+  cursor: pointer;
+  text-align: center;
+}
+
+.Button {
+  background: #f5f5f5;
+  border: 3px double #808080;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+}
+
+.CBOX {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10pt;
+  border: 0px;
+}
+
+.C {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+}
+
+.Cc {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+  text-align: center;
+}
+
+.Cd {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+  text-align: right;
+}
+
+.Cn {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+}
+
+.Cnc {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+  text-align: center;
+}
+
+.Cnd {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 8pt;
+  font-style: normal;
+  margin: 0pt 2pt 1pt 2pt;
+  text-align: right;
+}
+
+.DefaultBkg {
+  background: #eefaed;
+}
+
+.Expl {
+  font-family: Arial, Times New Roman, serif;
+  font-size: 10pt;
+  font-style: italic;
+  color: #808080;
+}
+
+.F {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 9pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 4pt 0pt 4pt;
+}
+
+.HoraPed {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 9pt;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.L {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 0pt 0pt 0pt;
+  text-align: right;
+}
+
+.Lbl {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  color: #808080;
+}
+
+.LAlteraSenha {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #008000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 0pt 0pt 0pt;
+  text-align: right;
+}
+
+.LPagInicial {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #008000;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 0pt 0pt 0pt;
+  text-align: right;
+}
+
+.LSessaoEncerra {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #ff0000;
+  font-size: 10pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 0pt 0pt 0pt;
+  text-align: right;
+}
+
+.LPesqCep {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #094ab3;
+  font-size: 8pt;
+  font-weight: bold;
+  font-style: normal;
+  margin: 0pt 0pt 0pt 0pt;
+  text-align: right;
+  cursor: pointer;
+}
+
+.MB {
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MC {
+  border-top: 1pt solid #c0c0c0;
+}
+
+.MD {
+  border-right: 1pt solid #c0c0c0;
+}
+
+.MDB {
+  border-right: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MDBE {
+  border-right: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MDE {
+  border-right: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MDTE {
+  border-right: 1pt solid #c0c0c0;
+  border-top: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.ME {
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MEB {
+  border-left: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MT {
+  border: 1pt solid #c0c0c0;
+}
+
+.MTB {
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+}
+
+.MTBD {
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-right: 1pt solid #c0c0c0;
+}
+
+.MTBE {
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MTD {
+  border-top: 1pt solid #c0c0c0;
+  border-right: 1pt solid #c0c0c0;
+}
+
+.MTE {
+  border-top: 1pt solid #c0c0c0;
+  border-left: 1pt solid #c0c0c0;
+}
+
+.MtAviso {
+  background: #efffed;
+  color: #000080;
+  border: 1pt solid #000080;
+  margin: 0px 0px 0px 0px;
+}
+
+.MtAlerta {
+  background: #f00000;
+  color: #ffff00;
+  border: 1pt solid #ff0000;
+  margin: 0px 0px 0px 0px;
+}
+
+.MtLink {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 9pt;
+  font-weight: bold;
+  background: #fffaf0;
+  color: #2f4f4f;
+  border: 1pt solid #000000;
+  margin: 0px 0px 0px 0px;
+  cursor: pointer;
+}
+
+.N {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+.Np {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  font-weight: bold;
+}
+
+.OpPg {
+  font-size: 10pt;
+  color: #000000;
+  font-style: normal;
+  font-family: Arial;
+  text-decoration: none;
+}
+
+.PEDIDO {
+  font-family: Times New Roman, serif;
+  font-size: 18pt;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.PLLc {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  text-align: center;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.PLLd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  text-align: right;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.PLLe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.PLTc {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #808080;
+  font-weight: bold;
+  vertical-align: top;
+  text-align: center;
+  margin-right: 2pt;
+}
+
+.PLTd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #808080;
+  font-weight: bold;
+  vertical-align: top;
+  text-align: right;
+  margin-right: 2pt;
+}
+
+.PLTe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #808080;
+  font-weight: bold;
+  vertical-align: top;
+  margin-left: 2pt;
+}
+
+.PLBc {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  text-align: center;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+}
+
+.PLBd {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  text-align: right;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+}
+
+.PLBe {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 8pt;
+  color: #000000;
+  font-weight: bold;
+  margin-left: 1pt;
+  margin-right: 1pt;
+  background: #ffffff;
+}
+
+.Q {
+  background: #ffffff;
+  border: 1pt solid #c0c0c0;
+  margin: 0pt;
+}
+
+.Qt {
+  background: #ffffff;
+  margin: 0pt;
+  border-top: 1pt solid #c0c0c0;
+  border-bottom: 0pt;
+  border-left: 0pt;
+  border-right: 0pt;
+}
+
+.QFn {
+  background: #ffffff;
+  border: 1pt solid #c0c0c0;
+  margin: 0 50 0 50;
+  background: #eefaed;
+  width: 500px;
+}
+
+.QuadroAviso {
+  font-weight: bold;
+  font-size: 10pt;
+  background: #ffffff;
+  width: 640px;
+  height: 240px;
+  color: #000000;
+  font-family: Arial, Helvetica, sans-serif;
+  letter-spacing: 0pt;
+}
+
+.QS {
+  background: #ffffff;
+  border: 1pt solid #c0c0c0;
+  border-top: 0pt;
+  margin: 0pt;
+}
+
+.QT {
+  background: #ffffff;
+  margin-top: 0pt;
+}
+
+.Qx {
+  background: #ffffff;
+  border: 0pt;
+  margin: 0pt;
+}
+
+.R {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  vertical-align: top;
+  margin: 1pt 0pt 0pt 2pt;
+}
+
+.Rf {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  vertical-align: top;
+  margin: 0pt 0pt 0pt 2pt;
+}
+
+.rbLink {
+  font-family: Arial, Helvetica, sans-serif;
+  font-weight: bold;
+  font-size: 10pt;
+  border: 0px;
+  cursor: pointer;
+}
+
+.Rc {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  font-weight: bold;
+  vertical-align: top;
+  margin: 1pt 0pt 0pt 2pt;
+  text-align: center;
+}
+
+.Rd {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #808080;
+  font-size: 8pt;
+  vertical-align: top;
+  margin: 0pt 4pt 0pt 2pt;
+  text-align: right;
+}
+
+.STP {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #000000;
+  font-size: 12pt;
+  font-weight: bold;
+  font-style: normal;
+}
+.STP_HORA{
+  font-size: small;
+  font-weight: bold;
+  font-style: normal;
+}
+
+.T {
+  color: #0d8c01;
+  font-family: Times New Roman, serif;
+  font-size: 16pt;
+  font-weight: bold;
+  font-style: italic;
+  text-align: center;
+}
+
+.TA {
+  background: #ffffff;
+  border: 0pt;
+  border-bottom: 0pt;
+}
+
+.TFn {
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 10pt;
+  font-weight: bold;
+  margin: 10 10 10 10;
+}
+
+.TracoBottom {
+  border-bottom: 1px solid #01ad00;
+}
+
+#rb_etg_imediata {
+  margin: 0pt 2pt 1pt 15pt;
+  vertical-align: top;
+}
+
+#divConsultaPedidoWrapper {
+  left: 1px;
+  position: absolute;
+  margin-left: 1px;
+  width: 110px;
+  z-index: 0;
+}
+
+#divConsultaPedido {
+  margin-top: 60px;
+  border: 1px solid #a9a9a9;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 6px;
+  padding-right: 6px;
+  position: absolute;
+  background-color: #f5f5f5;
+  top: 0;
+  z-index: 0;
+}
+
+#divConsultaPedido.divFixo {
+  position: fixed;
+  top: 0;
+}
+
+#divClienteConsultaView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  background-color: #808080;
+  opacity: 1;
+}
+
+#divInternoClienteConsultaView {
+  position: absolute;
+  top: 6%;
+  left: 5%;
+  width: 90%;
+  height: 90%;
+  z-index: 1000;
+  background-color: #808080;
+  opacity: 1;
+}
+
+#divInternoClienteConsultaView.divFixo {
+  position: fixed;
+  top: 6%;
+}
+
+#imgFechaDivClienteConsultaView {
+  position: fixed;
+  top: 6%;
+  left: 50%;
+  margin-left: -16px;
+  /* -1 * image width / 2 */
+  margin-top: -32px;
+  z-index: 1001;
+}
+
+#iframeClienteConsultaView {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: solid 4px black;
+}

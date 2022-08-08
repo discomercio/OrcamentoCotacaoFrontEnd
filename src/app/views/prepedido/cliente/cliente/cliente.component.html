@@ -1,0 +1,18 @@
+<!-- [ngClass]="{'carregando': prepedidoBuscarService.carregando || pedidoBuscarService.carregando}" -->
+<section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
+    <header >
+        Detalhes do Cliente
+    </header>
+
+    <article>
+        <app-cliente-corpo [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="false"
+        [clienteCadastroDto]="clienteCadastroDto" [editarIcms]="false" [dadosCadastrais]="false">
+        </app-cliente-corpo>
+
+    </article>
+    <footer>
+        <button mat-raised-button color="accent" (click)="voltar()">
+            <span class="pi pi-arrow-circle-left"></span> Voltar
+        </button>
+    </footer>
+</section>

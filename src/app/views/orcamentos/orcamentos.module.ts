@@ -25,7 +25,6 @@ import { OrcamentosListarComponent } from './listar/listar.component';
 import { AprovarOrcamentoComponent } from './novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { CadastrarClienteComponent } from './novo-orcamento/cadastrar-cliente/cadastrar-cliente.component';
 import { ItensComponent } from './novo-orcamento/itens/itens.component';
-import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { VisualizarOrcamentoComponent } from './novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.component';
 import { InputSwitchModule } from 'primeng/inputswitch';
@@ -34,6 +33,7 @@ import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
 import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
+import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 
 @NgModule({
   declarations: [

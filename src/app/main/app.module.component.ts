@@ -22,6 +22,8 @@ import { MenuDropdownArClubeComponent } from '../components/menu-dropdown/menu-d
 import { ButtonArClubeComponent } from '../components/button/button-arclube.component'
 import { LoadingArClubeComponent } from '../components/loading/loading-arclube.component'
 import { HeaderArClubeComponent } from '../components/header/header-arclube.component'
+import { SelecionarClienteArClubeComponent } from '../components/selecionar-cliente/selecionar-cliente.component'
+import { SelecionarCepArClubeComponent } from '../components/selecionar-cep/selecionar-cep.component'
 
 
 
@@ -48,7 +50,9 @@ import { HeaderArClubeComponent } from '../components/header/header-arclube.comp
     MenuDropdownArClubeComponent,
     ButtonArClubeComponent,
     LoadingArClubeComponent,
-    HeaderArClubeComponent
+    HeaderArClubeComponent,
+    SelecionarClienteArClubeComponent,
+    SelecionarCepArClubeComponent
   ],
   exports: [
     InputArClubeComponent,
@@ -64,7 +68,9 @@ import { HeaderArClubeComponent } from '../components/header/header-arclube.comp
     MenuDropdownArClubeComponent,
     ButtonArClubeComponent,
     LoadingArClubeComponent,
-    HeaderArClubeComponent
+    HeaderArClubeComponent,
+    SelecionarClienteArClubeComponent,
+    SelecionarCepArClubeComponent
   ]
 })
 export class AppModuleComponents { }

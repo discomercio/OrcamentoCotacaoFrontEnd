@@ -28,6 +28,8 @@ export class DataUtils {
         return data.toISOString().slice(0, 10);
     }
 
+    
+    // public static formata_dataString_para_formato_data(data:string){
     public  formata_data_e_talvez_hora_hhmmss(dt: Date | string): string {
 
         let decodifica_data = DataUtils.decodifica_data(dt);
@@ -70,15 +72,52 @@ export class DataUtils {
 
     }    
 
-    public static dataLocal(data: Date): string {
-        let dia = data.getDate().toString(),
-            diaF = (dia.length == 1) ? '0' + dia : dia,
-            mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
-            mesF = (mes.length == 1) ? '0' + mes : mes,
-            anoF = data.getFullYear();
-        return diaF + "/" + mesF + "/" + anoF;
+   
+
+    public static formata_dataString_para_formato_data(data: string) {
+        let split = data.split('/');
+        let dia: string;
+        let mes: string;
+        let ano: string;
+        let retorno: string;
+        if (split.length == 3) {
+            retorno = split[2] + "-" + split[1] + "-" + split[0];
+        }
+
+        return retorno;
     }
 
+    public static formata_formulario_date(data: string): Date {
+        if (!data)
+            return;
+
+        const aux = new Date();
+        const hhmmss = " 00:00:00";
+        const dt = new Date(data = data + hhmmss);
+        dt.setHours(aux.getHours());
+        dt.setMinutes(aux.getMinutes());
+        dt.setSeconds(aux.getSeconds());
+
+        return dt;
+    }
+
+    public formata_data_DDMMYYY(data: any): any {
+        if (!data)
+            return;
+
+        let split = data.split('-');
+        return split[2].substring(0, 2) + "/" + split[1] + "/" + split[0];
+    }
+    public static validarData(data: Date): boolean{
+        if(isNaN(data.getTime())) return false;
+        return true;
+    }
+    public static somarDias(data: Date, dias: number): Date {
+        //define a data de 60 dias para trás
+        //https://stackoverflow.com/questions/563406/add-days-to-javascript-date
+        let ms = data.getTime() + (86400000 * dias);
+        return new Date(ms);
+    }
     public static formatarTela(data: Date | string): string {
         //para imprimir na tela
         //está vindo como string do c#!
@@ -96,6 +135,15 @@ export class DataUtils {
         if (!aux2)
             return "";
         return DataUtils.dataLocal(aux2);
+    }
+
+    public static dataLocal(data: Date): string {
+        let dia = data.getDate().toString(),
+            diaF = (dia.length == 1) ? '0' + dia : dia,
+            mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+            mesF = (mes.length == 1) ? '0' + mes : mes,
+            anoF = data.getFullYear();
+        return diaF + "/" + mesF + "/" + anoF;
     }
 
     public static formatarTelaHora(data: Date | string): string {
@@ -159,48 +207,49 @@ export class DataUtils {
         return this.formatarTela(data) + this.formatarTelaHora(data);
 
     }
+     //     ' ------------------------------------------------------------------------
+    // '	FORMATA_DATA_E_TALVEZ_HORA_HHMM
+    // '	Formata a data e hora (se houver hora): DD/MM/YYYY HH:NN
+    // '	Senão será apenas a data: DD/MM/YYYY
+    // '	Lembrando que mesmo que a informação referente aos segundos não
+    // '	seja exibida, o fato desse campo ser diferente de zero significa
+    // '	que há informação sobre o horário armazenado.
+    public static formata_data_e_talvez_hora_hhmm(dt: Date | string): string {
 
-    // ' --------------------------------------------------------------------------
-    // '   DECODIFICA_HORA
-    // '   Desmembra a data e retorna os respectivos valores para hora, min e seg.
-    public static decodifica_hora(dt1: Date | string): decodifica_hora_retorno {
+        let decodifica_data = DataUtils.decodifica_data(dt);
+        if (!decodifica_data.sucesso)
+            return "";
+        let s = DataUtils.formatarTela(dt);
 
-        let decodifica_hora = new decodifica_hora_retorno();
-        decodifica_hora.sucesso = false;
-        decodifica_hora.hora = "";
-        decodifica_hora.min = "";
-        decodifica_hora.seg = "";
+        let decodifica_hora = DataUtils.decodifica_hora(dt);
 
-        if (!dt1)
-            return decodifica_hora;
-        const aux = Date.parse(dt1.toString());
-        if (!aux)
-            return decodifica_hora;
-        const aux2 = new Date(aux);
-        if (!aux2)
-            return decodifica_hora;
+        if (decodifica_hora.sucesso &&
+            (decodifica_hora.hora != "00" || decodifica_hora.min != "00" || decodifica_hora.seg != "00")) {
+            s = s + " " + decodifica_hora.hora + ":" + decodifica_hora.min;
 
-        let dt2 = aux2;
-        //'   HORA
-        decodifica_hora.hora = dt2.getHours().toString();
-        if (decodifica_hora.hora.length == 1)
-            decodifica_hora.hora = "0" + decodifica_hora.hora;
+        }
+        return s;
 
-        //'   MINUTO
-        decodifica_hora.min = dt2.getMinutes().toString();
-        if (decodifica_hora.min.length == 1)
-            decodifica_hora.min = "0" + decodifica_hora.min;
-
-        //'   SEGUNDO
-        decodifica_hora.seg = dt2.getSeconds().toString();
-        if (decodifica_hora.seg.length == 1)
-            decodifica_hora.seg = "0" + decodifica_hora.seg;
-
-        decodifica_hora.sucesso = true;
-        return decodifica_hora;
     }
 
-    // ' ------------------------------------------------------------------------
+    public static formata_data_e_talvez_hora_hhmmss(dt: Date | string): string {
+
+        let decodifica_data = DataUtils.decodifica_data(dt);
+        if (!decodifica_data.sucesso)
+            return "";
+        let s = DataUtils.formatarTela(dt);
+
+        let decodifica_hora = DataUtils.decodifica_hora(dt);
+
+        if (decodifica_hora.sucesso &&
+            (decodifica_hora.hora != "00" || decodifica_hora.min != "00" || decodifica_hora.seg != "00")) {
+            s = s + " " + decodifica_hora.hora + ":" + decodifica_hora.min + ":" + decodifica_hora.seg;
+
+        }
+        return s;
+
+    }
+     // ' ------------------------------------------------------------------------
     // '   DECODIFICA_DATA
     // '   Desmembra a data e retorna os respectivos valores para dia, mês e ano.
     public static decodifica_data(dt1: Date | string): decodifica_data_retorno {
@@ -242,38 +291,46 @@ export class DataUtils {
         return decodifica_data;
     }
 
-    public static formata_dataString_para_formato_data(data: string) {
-        let split = data.split('/');
-        let dia: string;
-        let mes: string;
-        let ano: string;
-        let retorno: string;
-        if (split.length == 3) {
-            retorno = split[2] + "-" + split[1] + "-" + split[0];
-        }
 
-        return retorno;
+
+    // ' --------------------------------------------------------------------------
+    // '   DECODIFICA_HORA
+    // '   Desmembra a data e retorna os respectivos valores para hora, min e seg.
+    public static decodifica_hora(dt1: Date | string): decodifica_hora_retorno {
+
+        let decodifica_hora = new decodifica_hora_retorno();
+        decodifica_hora.sucesso = false;
+        decodifica_hora.hora = "";
+        decodifica_hora.min = "";
+        decodifica_hora.seg = "";
+
+        if (!dt1)
+            return decodifica_hora;
+        const aux = Date.parse(dt1.toString());
+        if (!aux)
+            return decodifica_hora;
+        const aux2 = new Date(aux);
+        if (!aux2)
+            return decodifica_hora;
+
+        let dt2 = aux2;
+        //'   HORA
+        decodifica_hora.hora = dt2.getHours().toString();
+        if (decodifica_hora.hora.length == 1)
+            decodifica_hora.hora = "0" + decodifica_hora.hora;
+
+        //'   MINUTO
+        decodifica_hora.min = dt2.getMinutes().toString();
+        if (decodifica_hora.min.length == 1)
+            decodifica_hora.min = "0" + decodifica_hora.min;
+
+        //'   SEGUNDO
+        decodifica_hora.seg = dt2.getSeconds().toString();
+        if (decodifica_hora.seg.length == 1)
+            decodifica_hora.seg = "0" + decodifica_hora.seg;
+
+        decodifica_hora.sucesso = true;
+        return decodifica_hora;
     }
 
-    public static formata_formulario_date(data: string): Date {
-        if (!data)
-            return;
-
-        const aux = new Date();
-        const hhmmss = " 00:00:00";
-        const dt = new Date(data = data + hhmmss);
-        dt.setHours(aux.getHours());
-        dt.setMinutes(aux.getMinutes());
-        dt.setSeconds(aux.getSeconds());
-
-        return dt;
-    }
-
-    public formata_data_DDMMYYY(data: any): any {
-        if (!data)
-            return;
-
-        let split = data.split('-');
-        return split[2].substring(0, 2) + "/" + split[1] + "/" + split[0];
-    }
 }
