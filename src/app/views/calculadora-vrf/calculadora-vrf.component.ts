@@ -93,6 +93,7 @@ export class CalculadoraVrfComponent implements OnInit {
   lstCiclos: SelectItem[] = [];
   ciclo: string;
 
+  gerandoPDF:boolean = false;
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
@@ -100,6 +101,35 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
+    this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
+
+    this.nomeCliente = "Gabriel Prada Teodoro";
+    this.nomeObra = "Obra";
+    this.telefone = "11981603313";
+    this.email = "gabriel.prada@mail.com";
+    this.instalador = "Prada";
+    this.telInstalador = "1125321634";
+    this.observacao = "Apenas para visualização";
+  }
+
+
+  buscarLogoPDF(lojaLogada: string) {
+    //IdCfgParametro = 21
+
+    // img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+
+    // this.orcamentoService.buscarParametrosOrcamento(id).toPromise().then((r) => {
+    //   if (r != null) {
+    //     this.condicoesGerais = r[0]['Valor'];
+    //   }
+    // }).catch((e) => {
+    //   this.alertaService.mostrarErroInternet(e);
+    // })
+  }
+
+  textoRodape: string;
+  buscarTextoRodapePDF(lojaLogada: string) {
+    //IdCfgParametro = 22
   }
 
   montarDadosParaPDF(produto: ProdutoTabela[]) {
@@ -119,154 +149,31 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   exportPdf() {
-    //Buscar a imagem conforme a unidade de negocio
-    let img = new Image();
-    //buscar por param de unidade de negócio
-    img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;;
+    //esconder e mostrar
+this.gerandoPDF = true;
+    let doc = new jsPDF('p', 'pt', 'a4');
 
-    let doc = new jsPDF();
-
-    // Logo
-    if (img.src.includes('Unis')) doc.addImage(img, 'png', 14, 10, 15, 10);
-    else doc.addImage(img, 'png', 14, 10, 17, 10);
-    //titulo
-    doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
-    //1ª linha
-    let inicio = 14;
-    let linha = 37;
-    if (!!this.nomeCliente) {
-      doc.setFont('helvetica', 'normal').setFontSize(11).text("Cliente:", inicio, linha);
-      doc.setFontSize(11).text(this.nomeCliente != undefined ? this.nomeCliente : '', 28, linha, {
-        maxWidth: 54,
-        align: 'left'
-      });
-    }
-
-    let meio = 80;
-    if (!!this.nomeObra) {
-      if (!!this.nomeCliente)
-        doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", meio, linha);
-      else
-        doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", inicio, linha);
-
-      doc.setFontSize(11).text(this.nomeObra != undefined ? this.nomeObra : '', 108, linha, {
-        maxWidth: 45,
-        align: 'left'
-      });
-    }
-
-    let fim = 153;
-    if (!!this.telefone) {
-
-      doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", fim, linha);
-
-
-      doc.setFontSize(11).text(this.telefone != undefined ? this.stringUtils.formataTextoTelefone(this.telefone) : '', 170, linha, {
-        maxWidth: 30,
-        align: 'left'
-      });
-    }
-
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("E-mail:", 14, 44);
-    doc.setFontSize(11).text(this.email != undefined ? this.email : '', 27, 44, {
-      maxWidth: 75,
-      align: 'left'
-    });
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Observações:", 108, 44);
-    doc.setFontSize(11).text(this.observacao != undefined ? this.observacao : '', 133, 44, {
-      maxWidth: 66,
-      align: 'left'
-    });
-
-    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(BTU/h)', 'Capacidade(Kcal/h)', 'Total(Kcal/h)']];
-
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
-    autoTable(doc, {
-      head: columnsEvaps,
-      body: this.montarDadosParaPDF(this.evaporadorasSelecionadas),
-      styles: { halign: 'center' },
-      startY: 61,
-      didParseCell: (data) => {
-        if (data.column.dataKey == 0) {
-          data.cell.styles.halign = "left";
-        }
-      }
-    });
-
-    const head = [['Produto', 'Quantidade', 'Capacidade(Kcal/h)']];
-
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 condensadora", 14, 120);
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 120, { align: 'left' });
-    doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada1aparelho) + " %", 182, 120, { align: 'left', maxWidth: 19 });
-    let produtos = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
-    if (produtos.length <= 0) {
-
-    }
-    let data = produtos.splice(1, 1);
-    autoTable(doc, {
-      head: head,
-      body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-      styles: { halign: 'center' },
-      startY: 122,
-      foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom1aparelhos))]],
-      didParseCell: (data) => {
-        if (data.column.dataKey == 0) {
-          data.cell.styles.halign = "left";
-        }
-      }
-    });
-
-
-    if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 condensadoras", 14, 165);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 165, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada2aparelhos) + " %", 182, 165, { align: 'left', maxWidth: 19 });
-      produtos = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
-      data = produtos.splice(1, 2);
-      autoTable(doc, {
-        head: head,
-        body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-        styles: { halign: 'center' },
-        startY: 167,
-        foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom2aparelhos))]],
-        didParseCell: (data) => {
-          if (data.column.dataKey == 0) {
-            data.cell.styles.halign = "left";
-          }
-        }
-      });
-    }
-
-    if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 3 condensadoras", 14, 210);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 210, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada3aparelhos) + " %", 182, 210, { align: 'left', maxWidth: 19 });
-      produtos = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
-      autoTable(doc, {
-        head: head,
-        body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-        styles: { halign: 'center' },
-        startY: 212,
-        foot: [['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom3aparelhos))]],
-        didParseCell: (data) => {
-          if (data.column.dataKey == 0) {
-            data.cell.styles.halign = "left";
-          }
-        }
-      });
-    }
-
-    doc.setFont('helvetica', 'bold').setFontSize(8).text("ATENÇÃO:", 14, 280);
-    let rodape = "O CALCULO É REALIZADO ATRAVÉS DA SIMULTANEIDADE APROXIMADA DE ACORDO COM O MANUAL TÉCNICO DO " +
-      "FABRICANTE. PARA MAIS INFORMAÇÕES , ENTRE EM CONTATO COM NOSSA EQUIPE COMERCIAL: SP - (11) 4858-2434";
-    doc.setFont('helvetica', 'normal').setFontSize(8).text(rodape, 30, 280, { maxWidth: 174 });
+    let margins = {
+      top: 40,
+      bottom: 40,
+      left: 40,
+      right: 40
+    };
 
     doc.setProperties({ title: "calculo_vrf" });
-    doc.save('calculo_vrf');
-    let x: string = doc.output('bloburl').toString();
-    window.open(x);
+    
+    let div = document.getElementById("table");
+    doc.html(div, {
+       margin: [margins.top, margins.right, margins.bottom, margins.left],
+      callback: (doc) => {
+        doc.save('calculo_vrf');
+        let x: string = doc.output('bloburl').toString();
+        window.open(x);
+      }
+    })
+    // doc.save('calculo_vrf');
+    // let x: string = doc.output('bloburl').toString();
+    // window.open(x);
   }
 
   criarForm() {
