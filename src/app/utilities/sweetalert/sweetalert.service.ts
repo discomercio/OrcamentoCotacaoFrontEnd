@@ -72,6 +72,14 @@ export class SweetalertService {
         );
     }
 
+    private swalAviso(mensagem: string) {
+        Swal.fire(
+            'Aviso!',
+            mensagem,
+            'warning'
+        );
+    }    
+
     confirmarAprovacao(titulo: string, texto: string): Observable<any> {
         this.setConfirm(titulo, texto);
         return this.subject.asObservable();
@@ -100,6 +108,10 @@ export class SweetalertService {
     sucesso(mensagem: string): void {
         this.swalSucesso(mensagem);
     }
+
+    aviso(mensagem: string): void {
+        this.swalAviso(mensagem);
+    }    
 
     confirmarSemMostrar(titulo: string, texto: string): Observable<any> {
         this.setSemConfirm(titulo, texto);
