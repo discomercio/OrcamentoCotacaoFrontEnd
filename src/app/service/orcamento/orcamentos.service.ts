@@ -56,8 +56,8 @@ export class OrcamentosService {
     return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
   }
 
-  buscarParametrosOrcamento(idCfgParametro: any): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}Orcamento/parametros?idCfgParametro=${idCfgParametro}`);
+  buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {    
+    return this.http.get<any>(`${environment.apiUrl}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
   }    
 
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
