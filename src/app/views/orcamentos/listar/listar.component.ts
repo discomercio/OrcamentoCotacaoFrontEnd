@@ -233,6 +233,7 @@ export class OrcamentosListarComponent implements OnInit {
         this.Pesquisar_Click();
         this.carregando = false;
       }
+      else this.carregando = false;
     }).catch((r) => {
       
       this.carregando = false;

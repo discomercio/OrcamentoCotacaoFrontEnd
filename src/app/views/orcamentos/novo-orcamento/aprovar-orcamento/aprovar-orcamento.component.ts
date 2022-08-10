@@ -96,7 +96,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   ngAfterViewInit() {
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
-    this.buscarParametrosOrcamento(12);
+    this.buscarParametros(12);
 
   }
 
@@ -187,10 +187,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  buscarParametrosOrcamento(id: number) {
+  buscarParametros(id: number) {
 
     if (this.autenticacaoService._usuarioLogado) {
-      this.orcamentoService.buscarParametrosOrcamento(id).toPromise().then((r) => {
+      this.orcamentoService.buscarParametros(id,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           this.condicoesGerais = r[0]['Valor'];
         }

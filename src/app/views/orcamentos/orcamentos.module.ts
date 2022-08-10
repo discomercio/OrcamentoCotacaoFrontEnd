@@ -32,8 +32,8 @@ import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.co
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
 import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
-import { SelectProdDialogComponent } from '../produto/modal/select-prod-dialog.component';
 import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
+import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 
 @NgModule({
   declarations: [
