@@ -158,7 +158,7 @@
             Pedidos localizados: {{(prepedidos$|async)?.length}}
         </div>
         <button mat-raised-button color="accent" *ngIf="!telaDesktop" (click)="voltar()"
-            style="float: right;"
+            style="font-size:80%;background-color: #007bff !important;color: white !important;float: right;"
             [ngClass]="{'botaoDesktop': telaDesktop, 'botaoCelular': !telaDesktop}">Nova
             busca</button>
     </footer>
@@ -219,7 +219,7 @@
         <div style="float: left;" class="textocelnumero">
             Pedidos localizados: {{(pedidos$|async)?.length}}
         </div>
-        <button mat-raised-button color="accent" *ngIf="!telaDesktop" (click)="voltar()" style="float: right; "
+        <button mat-raised-button color="accent" *ngIf="!telaDesktop" (click)="voltar()" style="font-size:80%;background-color: #007bff !important;color: white !important; float: right;"
             [ngClass]="{'botaoDesktop': telaDesktop, 'botaoCelular': !telaDesktop}">Nova
             busca</button>
     </footer>

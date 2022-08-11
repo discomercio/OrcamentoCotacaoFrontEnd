@@ -124,9 +124,9 @@
 
         </article>
         <footer *ngIf="telaDesktop" mat-dialog-actions style="justify-content: space-around;">
-            <button mat-raised-button type="button" (click)="onNoClick($event)" color="accent">Cancelar</button>
+            <button mat-raised-button type="button" (click)="onNoClick($event)" style="background-color: #007bff !important;color: white !important;">Cancelar</button>
 
-            <button mat-raised-button (click)="onAdicionarClick()" color="accent">
+            <button mat-raised-button (click)="onAdicionarClick()" style="background-color: #007bff !important;color: white !important;">
                 <ng-template *ngIf="selecProdInfoPassado.Produto; then modificarBlock else adicionarBlock">
                 </ng-template>
                 <ng-template #modificarBlock>Modificar</ng-template>
@@ -135,9 +135,9 @@
             
         </footer>
         <footer *ngIf="!telaDesktop" mat-dialog-actions>
-                <button mat-raised-button type="button" (click)="onNoClick($event)" color="accent"
+                <button mat-raised-button type="button" (click)="onNoClick($event)" style="background-color: #007bff !important;color: white !important;"
                 style="width: 5%; font-size: 80%">Cancelar</button>
-                <button mat-raised-button (click)="onAdicionarClick()" color="accent" style="width: 5%;font-size: 80%">
+                <button mat-raised-button (click)="onAdicionarClick()" style="background-color: #007bff !important;color: white !important;width: 5%;font-size: 80%">
                         <ng-template *ngIf="selecProdInfoPassado.Produto; then modificarBlock else adicionarBlock">
                         </ng-template>
                         <ng-template #modificarBlock>Modificar</ng-template>

@@ -4,7 +4,7 @@
             *ngIf="!impressaoService.emImpressao() && telaDesktop">
             <mat-icon>edit</mat-icon> Editar
         </button> -->
-        <button mat-raised-button color="accent" (click)="imprimir()" class="botaoImprimir"
+        <button mat-raised-button color="accent" style="font-size:80%;background-color: #007bff !important;color: white !important;" (click)="imprimir()" class="botaoImprimir"
             *ngIf="!impressaoService.emImpressao() && telaDesktop">
             <!-- <mat-icon>print</mat-icon> -->
             <span class="pi pi-print"> </span> Versão para impressão
