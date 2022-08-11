@@ -585,7 +585,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   limparFiltros() {
     if (this.evaporadorasSelecionadas.length > 0) {
-      this.sweetalertService.confirmarSemMostrar("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
+      this.sweetalertService.dialogo("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
         if (!result) {
           this.fabricanteSelecionado = this.fabricante;
           return;
