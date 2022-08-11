@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -20,6 +20,8 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { JsonpClientBackend } from '@angular/common/http';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -36,7 +38,8 @@ export class CalculadoraVrfComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     public dialogService: DialogService,
     private readonly sweetalertService: SweetalertService,
-    private readonly autenticacaoService: AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly orcamentoService: OrcamentosService
   ) { }
 
   form: FormGroup;
@@ -93,15 +96,22 @@ export class CalculadoraVrfComponent implements OnInit {
   lstCiclos: SelectItem[] = [];
   ciclo: string;
 
-  gerandoPDF:boolean = false;
+  opcao1: boolean = false;
+  opcao2: boolean = false;
+  opcao3: boolean = false;
+  dataUtils: DataUtils = new DataUtils();
+
+  gerandoPDF: boolean = false;
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
+    this.criarForm2();
     this.buscarProduto();
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
     this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
+    this.buscarTextoRodapePDF(this.autenticacaoService._lojaLogado);
 
     this.nomeCliente = "Gabriel Prada Teodoro";
     this.nomeObra = "Obra";
@@ -110,26 +120,38 @@ export class CalculadoraVrfComponent implements OnInit {
     this.instalador = "Prada";
     this.telInstalador = "1125321634";
     this.observacao = "Apenas para visualização";
+
+    this.dataAtual = new Date().toLocaleString();
   }
 
-
+  logo: string;
+  dataAtual: string;
   buscarLogoPDF(lojaLogada: string) {
-    //IdCfgParametro = 21
 
-    // img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+    let IdCfgParametro = 21
 
-    // this.orcamentoService.buscarParametrosOrcamento(id).toPromise().then((r) => {
+    // this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
     //   if (r != null) {
-    //     this.condicoesGerais = r[0]['Valor'];
+    //     this.logo = "assets/layout/images/" + r[0]['Valor'];
     //   }
     // }).catch((e) => {
     //   this.alertaService.mostrarErroInternet(e);
-    // })
+    // });
   }
 
   textoRodape: string;
   buscarTextoRodapePDF(lojaLogada: string) {
     //IdCfgParametro = 22
+    let IdCfgParametro = 22
+
+    this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada).toPromise().then((r) => {
+      if (r != null) {
+        this.textoRodape = r[0]['Valor'];
+        this.logo = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   montarDadosParaPDF(produto: ProdutoTabela[]) {
@@ -147,10 +169,13 @@ export class CalculadoraVrfComponent implements OnInit {
     });
     return retorno;
   }
+  imprimindo: boolean = false;
+
+  mostrarImpressao() {
+    this.imprimindo = true;
+  }
 
   exportPdf() {
-    //esconder e mostrar
-this.gerandoPDF = true;
     let doc = new jsPDF('p', 'pt', 'a4');
 
     let margins = {
@@ -160,34 +185,139 @@ this.gerandoPDF = true;
       right: 40
     };
 
+    let alturaPagina = 842 - 80;
     doc.setProperties({ title: "calculo_vrf" });
-    
-    let div = document.getElementById("table");
-    doc.html(div, {
-       margin: [margins.top, margins.right, margins.bottom, margins.left],
-      callback: (doc) => {
-        doc.save('calculo_vrf');
-        let x: string = doc.output('bloburl').toString();
-        window.open(x);
-      }
-    })
-    // doc.save('calculo_vrf');
-    // let x: string = doc.output('bloburl').toString();
-    // window.open(x);
+    doc.setFontSize(2);
+
+    let htmlPdf = document.getElementById("html-pdf");
+    let logo = document.getElementById("logo");
+    let titulo = document.getElementById("titulo");
+    let formalrio = document.getElementById("formulario");
+    let evaps = document.getElementById("evaps");
+    let opcao1;
+    let opcao2;
+    let opcao3;
+
+    let filho = document.getElementById("div-filho");
+    let altHtmlPdf = htmlPdf.clientHeight; // altura total do html para pdf
+    let numeroPaginas = 0;
+    numeroPaginas = altHtmlPdf / alturaPagina;
+    if (altHtmlPdf > alturaPagina) {
+      alert("entrou");
+    }
+    else {
+      
+      htmlPdf.style.width = "520.3px";
+      doc.html(htmlPdf, {
+        margin: [margins.top, margins.right, margins.bottom, margins.left],
+        callback: (doc) => {
+          doc.save('calculo_vrf');
+          let x: string = doc.output('bloburl').toString();
+          window.open(x);
+          htmlPdf.style.width = '';
+          this.imprimindo = false;
+        }
+      });
+    }
+
+    debugger;
+
+    // let altLogo = logo.clientHeight;
+    // let altTitulo = titulo.clientHeight;
+    // let altForm = formalrio.clientHeight;
+    // let altEvaps = evaps.clientHeight;
+    // let altTotal = altLogo + altTitulo + altForm + altEvaps;
+
+    // let pai = document.getElementById("div-pai");
+
+    // filho.append(logo);
+    // filho.append(titulo);
+    // filho.append(formalrio);
+
+    // let folha2 = false;
+    // if (this.opcao1) {
+    //   opcao1 = document.getElementById("opcao1");
+    //   if (altTotal + opcao1.clientHeight < alturaPagina - margins.bottom) {
+    //     altTotal += opcao1.clientHeight;
+    //   }
+    //   else {
+    //     folha2 = true;
+
+    //   }
+    // }
+    // if (this.opcao2) {
+    //   opcao2 = document.getElementById("opcao2");
+    //   altTotal += opcao2.clientHeight;
+    // }
+    // if (this.opcao3) {
+    //   opcao3 = document.getElementById("opcao3");
+    //   altTotal += opcao3.clientHeight;
+    // }
+
+
+
+
+
+
+    // if (altTotal > alturaPagina - margins.bottom) {
+    //   //vamos quebrar a pagina
+    //   filho.append(logo);
+    //   filho.append(titulo);
+    // }
+    // else {
+    //   filho.append(logo);
+    //   filho.append(titulo);
+    //   filho.append(formalrio);
+    // }
+
+    // pai.style.width = "520.3px";
+    // pai.append(filho);
+
+    // debugger;
+
+
+    // doc.html(pai, {
+    //   margin: [margins.top, margins.right, margins.bottom, margins.left],
+    //   callback: (doc) => {
+    //     doc.addPage('pt', 'p');
+    //     doc.html(filho, {
+    //       margin: [0, margins.right, margins.bottom, margins.left],
+    //       callback: (doc) => {
+    //         // doc.save();
+    //         let x: string = doc.output('bloburl').toString();
+    //         window.open(x);
+    //       }, y: 855
+    //     });
+    //   }, html2canvas: { scale: 1 }
+    // });
+
+
+    // doc.html(elementoparapag, {
+    //   margin: [margins.top, margins.right, margins.bottom, margins.left],
+    //   callback: (doc) => {
+    //     doc.save('calculo_vrf');
+    //     let x: string = doc.output('bloburl').toString();
+    //     window.open(x);
+    //     // elementoparapag.style.width = '';
+    //     this.imprimindo = false;
+    //   }
+    // });
   }
 
   criarForm() {
     this.form = this.fb.group({
       fabricanteSelecionado: ['', [Validators.required]]
     });
+  }
 
+  criarForm2() {
     this.form2 = this.fb.group({
       voltagem: ['', [Validators.required]],
       descarga: ['', [Validators.required]],
       simultaneidade: ['', [Validators.required]],
       qtdeCondensadora: ['', [Validators.required]],
       ciclo: ['', [Validators.required]]
-    })
+    });
   }
 
   buscarProduto() {
@@ -393,8 +523,8 @@ this.gerandoPDF = true;
 
   filtrarEvaporadoras(): ProdutoTabela[] {
     let fabricante = this.form.controls.fabricanteSelecionado.value;
-
-    return this.evaporadoras.filter(x => x.fabricante == fabricante);
+    let evaps = this.evaporadoras.filter(x => x.fabricante == fabricante).slice()
+    return evaps;
   }
 
   adicionarEvaporadoras() {
@@ -412,6 +542,7 @@ this.gerandoPDF = true;
 
     ref.onClose.subscribe((resultado: ProdutoTabela) => {
       if (resultado) {
+
         this.arrumarProdutosRepetidos(resultado);
         this.digitouQte(resultado);
         this.limparCombinacoesCondensadoras();
@@ -450,11 +581,10 @@ this.gerandoPDF = true;
   }
 
   arrumarProdutosRepetidos(produto: ProdutoTabela) {
-    let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto);
+    let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto).slice();
 
     if (repetidos.length >= 1) {
       this.evaporadorasSelecionadas.forEach(x => {
-        const index = this.evaporadorasSelecionadas.findIndex(f => f.produto == produto.produto);
         if (x.produto == produto.produto) {
           x.qtde = x.qtde == undefined ? 1 : x.qtde + 1;
           this.digitouQte(x);
@@ -463,7 +593,17 @@ this.gerandoPDF = true;
       });
     }
     else {
-      this.evaporadorasSelecionadas.push(produto);
+      let produto2 = new ProdutoTabela();
+      produto2.fabricante = produto.fabricante;
+      produto2.produto = produto.produto;
+      produto2.descricao = produto.descricao;
+      produto2.id = produto.id;
+      produto2.kcal = produto.kcal;
+      produto2.kw = produto.kw;
+      produto2.qtde = 1;
+      produto2.linhaBusca = produto.linhaBusca;
+      produto2.linhaProduto = produto.linhaProduto;
+      this.evaporadorasSelecionadas.push(produto2);
     }
   }
 
@@ -521,13 +661,16 @@ this.gerandoPDF = true;
     this.simultaneidadeCalculada3aparelhos = 0;
 
     this.calculado = false;
+    this.opcao1 = false;
+    this.opcao2 = false;
+    this.opcao3 = false;
   }
 
   limparFiltrosCondensadoras() {
-    this.voltagem = 0;
-    this.descarga = 0;
-    this.simultaneidade = "";
-    this.qtdeCondensadora = 0;
+    this.criarForm2();
+    this.opcao1 = false;
+    this.opcao2 = false;
+    this.opcao3 = false;
   }
 
   calcularCondensadoras() {
