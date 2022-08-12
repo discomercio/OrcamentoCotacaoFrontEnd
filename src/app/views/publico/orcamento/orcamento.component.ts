@@ -45,7 +45,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
   @ViewChild(PublicoCadastroClienteComponent) child;
   display: boolean = false;
-  validado: boolean = true;
+  validado: boolean = false;
 
   
   ngOnInit(): void {
@@ -94,6 +94,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if(param.guid.length >= 32) {
         this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {          
+          this.validado = true;
           this.orcamento = r;   
           this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
@@ -102,10 +103,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
           this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
-          this.autenticacaoService.setarToken(r.token);
+          this.autenticacaoService.setarToken(r.token);          
         }else{
-          this.validado = false;
-          this.sweetalertService.aviso("Orçamento não está mais disponível para visualização!");
+          
+          this.sweetalertService.aviso("Link inválido para este orçamento");
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
