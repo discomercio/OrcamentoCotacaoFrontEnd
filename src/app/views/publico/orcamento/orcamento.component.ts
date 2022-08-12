@@ -104,11 +104,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
           this.autenticacaoService.setarToken(r.token);          
-        }else{
-          
+        }else{          
           this.sweetalertService.aviso("Link inválido para este orçamento");
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      });
     }
   }
 
