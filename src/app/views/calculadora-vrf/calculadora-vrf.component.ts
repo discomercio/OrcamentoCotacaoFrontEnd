@@ -266,6 +266,8 @@ export class CalculadoraVrfComponent implements OnInit {
     let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
     pai.append(filho.cloneNode(true) as HTMLElement);
 
+    
+
     doc.html(pai, {
       margin: [margins.top, margins.right, margins.bottom, margins.left],
       callback: (doc) => {

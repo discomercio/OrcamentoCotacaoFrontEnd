@@ -437,7 +437,7 @@
                                 <ng-template pTemplate="body" let-p let-index="rowIndex">
                                     <tr style="font-size: 10px;" [pSelectableRow]="p">
                                         <td class="p-text-left p-d-inline-flex p-pl-2 p-py-1">
-                                            <p class="p-ml-2"
+                                            <p class="p-ml-2" style="word-spacing: 5px;"
                                                 [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
                                             </p>
                                         </td>
@@ -452,10 +452,10 @@
                     <!-- lista de opção 1 condensadora -->
                     <div id="opcao1" class="p-col-12 p-px-0" *ngIf="opcao1">
                         <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
-                            <div>
+                            <div class="p-py-1">
                                 <span class="p-text-bold">Opção com 1 condensadora</span>
                             </div>
-                            <div>
+                            <div class="p-py-1">
                                 <span class="p-text-bold">Simultaneidade</span>
                                 <span class="p-text-bold">
                                     {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada1aparelho)}}%
@@ -478,8 +478,8 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-p>
                                 <tr style="font-size: 10px;">
-                                    <td class="p-py-1">
-                                        <p class="p-ml-2"
+                                    <td class="p-py-1" style="font-size: 10px;">
+                                        <p class="p-ml-2" style="word-spacing: 5px;"
                                             [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
                                         </p>
                                     </td>
@@ -496,7 +496,7 @@
                             </ng-template>
                             <ng-template pTemplate="emptymessage">
                                 <tr>
-                                    <td class="p-text-center" style="font-size: 12px;" colspan="4">
+                                    <td class="p-text-center" style="font-size: 10px;" colspan="4">
                                         Não existem condensadoras para esse conjunto de evaporadoras
                                     </td>
                                 </tr>
@@ -509,7 +509,7 @@
                             <div class="p-py-1">
                                 <span class="p-text-bold">Opção com 2 condensadoras</span>
                             </div>
-                            <div>
+                            <div class="p-py-1">
                                 <span class="p-text-bold">Simultaneidade</span>
                                 <span class="p-text-bold">
                                     {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada2aparelhos)}}%
@@ -532,25 +532,25 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-p2>
                                 <tr style="font-size: 10px;" *ngIf="combinacaoCom2aparelhos.length > 0">
-                                    <td>
-                                        <p class="p-ml-2"
+                                    <td style="font-size: 10px;">
+                                        <p class="p-ml-2" style="word-spacing: 5px;"
                                             [innerHtml]="stringUtils.formatarDescricao(p2.fabricante, '', p2.produto, p2.descricao)">
                                         </p>
                                     </td>
-                                    <td class="p-text-center">
+                                    <td class="p-text-center" style="font-size: 10px;">
                                         {{p2.qtde}}
                                     </td>
-                                    <td class="p-text-center">
+                                    <td class="p-text-center" style="font-size: 10px;">
                                         {{p2.kcal}}
                                     </td>
-                                    <td class="p-text-center">
+                                    <td class="p-text-center" style="font-size: 10px;">
                                         {{p2.hp}}
                                     </td>
                                 </tr>
                             </ng-template>
                             <ng-template pTemplate="emptymessage">
                                 <tr>
-                                    <td class="p-text-center" style="font-size: 12px;" colspan="4">
+                                    <td class="p-text-center" style="font-size: 10px;" colspan="4">
                                         Não existem condensadoras para esse conjunto de evaporadoras
                                     </td>
                                 </tr>
@@ -563,7 +563,7 @@
                             <div class="p-py-1">
                                 <span class="p-text-bold">Opção com 3 condensadoras</span>
                             </div>
-                            <div>
+                            <div class="p-py-1">
                                 <span class="p-text-bold">Simultaneidade</span>
                                 <span class="p-text-bold">
                                     {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada3aparelhos)}}%
@@ -586,8 +586,8 @@
                             </ng-template>
                             <ng-template pTemplate="body" let-p3>
                                 <tr style="font-size: 10px;">
-                                    <td>
-                                        <p class="p-ml-2"
+                                    <td> 
+                                        <p class="p-ml-2" style="word-spacing: 5px;"
                                             [innerHtml]="stringUtils.formatarDescricao(p3.fabricante, '', p3.produto, p3.descricao)">
                                         </p>
                                     </td>
@@ -604,7 +604,7 @@
                             </ng-template>
                             <ng-template pTemplate="emptymessage">
                                 <tr>
-                                    <td class="p-text-center" style="font-size: 12px;" colspan="4">
+                                    <td class="p-text-center" style="font-size: 10px;" colspan="4">
                                         Não existem condensadoras para esse conjunto de evaporadoras
                                     </td>
                                 </tr>
@@ -612,8 +612,8 @@
                         </p-table>
                     </div>
                     <!-- texto para rodapé -->
-                    <div id="rodape" style="font-size: 10px;">
-                        <span>{{textoRodape}}</span>
+                    <div id="rodape" style="font-size: 10px; text-align: left; word-spacing: 5px;" class="p-col-12 p-px-0">
+                        <p [innerHtml]="textoRodape"></p>
                     </div>
                 </div>
             </div>
@@ -621,7 +621,7 @@
     </div>
 </div>
 
-<div id="div-pai" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 520.3px;">
+<div id="div-pai" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 530.3px;">
 
 </div>
-<div id="div-filho" class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;width: 520.3px;"></div>
+<div id="div-filho" class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;width: 530.3px;"></div>
