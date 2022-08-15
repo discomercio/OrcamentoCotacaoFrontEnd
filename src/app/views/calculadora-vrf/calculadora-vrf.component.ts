@@ -125,13 +125,13 @@ export class CalculadoraVrfComponent implements OnInit {
     //Alterar para buscar da base quando enviarem as imagens
     
 
-    // this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-    //   if (r != null) {
-    //     this.logo = "assets/layout/images/" + r[0]['Valor'];
-    //   }
-    // }).catch((e) => {
-    //   this.alertaService.mostrarErroInternet(e);
-    // });
+    this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+      if (r != null) {
+        this.logo = "assets/layout/images/" + r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   textoRodape: string;
@@ -142,7 +142,7 @@ export class CalculadoraVrfComponent implements OnInit {
     this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada).toPromise().then((r) => {
       if (r != null) {
         this.textoRodape = r[0]['Valor'];
-        this.logo = this.autenticacaoService._lojaEstilo.imagemLogotipo;
+        this.buscarLogoPDF(lojaLogada);
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
