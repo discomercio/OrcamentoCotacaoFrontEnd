@@ -71,7 +71,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.buscarConfigValidade();
     this.desabilitarCampos();
     this.desabiltarCamposParaEdicao();
