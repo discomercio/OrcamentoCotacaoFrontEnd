@@ -82,13 +82,13 @@ export class CalculadoraVrfComponent implements OnInit {
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
-  nomeCliente: string;
-  nomeObra: string;
-  telefone: string;
-  email: string;
-  observacao: string;
-  instalador: string;
-  telInstalador: string;
+  nomeCliente: string = '';
+  nomeObra: string = '';
+  telefone: string = '';
+  email: string = '';
+  observacao: string = '';
+  instalador: string = '';
+  telInstalador: string = '';
 
   mascaraTelefone: string;
   calculado: boolean = false;
@@ -113,14 +113,6 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
     this.buscarTextoRodapePDF(this.autenticacaoService._lojaLogado);
 
-    this.nomeCliente = "Gabriel Prada Teodoro";
-    this.nomeObra = "Obra";
-    this.telefone = "11981603313";
-    this.email = "gabriel.prada@mail.com";
-    this.instalador = "Prada";
-    this.telInstalador = "1125321634";
-    this.observacao = "Apenas para visualização";
-
     this.dataAtual = new Date().toLocaleString();
   }
 
@@ -128,7 +120,10 @@ export class CalculadoraVrfComponent implements OnInit {
   dataAtual: string;
   buscarLogoPDF(lojaLogada: string) {
 
-    let IdCfgParametro = 21
+    let IdCfgParametro = 21;
+
+    //Alterar para buscar da base quando enviarem as imagens
+    
 
     // this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
     //   if (r != null) {
@@ -175,6 +170,123 @@ export class CalculadoraVrfComponent implements OnInit {
     this.imprimindo = true;
   }
 
+
+  gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
+
+    doc.html(htmlPdf, {
+      margin: [margins.top, margins.right, margins.bottom, margins.left],
+      callback: (doc) => {
+        doc.text('página 1', 520.3 / 2, 842 - 20);
+        doc.save('calculo_vrf');
+        let x: string = doc.output('bloburl').toString();
+        window.open(x);
+        // htmlPdf.style.width = '';
+        this.imprimindo = false;
+      }
+    });
+    return;
+  }
+
+  gerarPDF2paginas(doc: jsPDF, margins: any, alturaPagina: number) {
+
+    //TENTAR COLOCAR AS DIV'S EM UMA LISTA E FAZER APENAS UM FOR PARA IR ADICIONANDO
+
+    let logo = document.getElementById("logo").cloneNode(true) as HTMLElement;
+    let titulo = document.getElementById("titulo").cloneNode(true) as HTMLElement;
+    let formulario = document.getElementById("formulario").cloneNode(true) as HTMLElement;
+    let opcao1;
+    let opcao2;
+    let opcao3;
+
+    let filho = document.getElementById("div-filho");
+    let filho2 = filho.cloneNode(true) as HTMLElement;
+
+    filho.append(logo);
+    filho.append(titulo);
+    filho.append(formulario);
+
+    filho2.append(logo.cloneNode(true) as HTMLElement);
+    let evaps = document.getElementById("evaps");
+    if (filho.clientHeight + evaps.clientHeight > alturaPagina) {
+      //jogamos para outra página ou iremos quebrar a lista
+      filho2.append(evaps.cloneNode(true) as HTMLElement);
+    }
+    else {
+      filho.append(evaps.cloneNode(true) as HTMLElement);
+    }
+
+    if (this.opcao1) {
+      opcao1 = document.getElementById("opcao1");
+      if (filho2.clientHeight > 0) {
+        //evaps jão esta na folha2
+        filho2.append(opcao1.cloneNode(true) as HTMLElement);
+      }
+      else if (filho.clientHeight + opcao1.clientHeight > alturaPagina) {
+        //jogamos para outra página
+        filho2.append(opcao1.cloneNode(true) as HTMLElement);
+      }
+      else {
+        filho.append(opcao1.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    if (this.opcao2) {
+      opcao2 = document.getElementById("opcao2");
+      if (filho2.clientHeight > 0) {
+        //evaps jão esta na folha2
+        filho2.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+      else if (filho.clientHeight + opcao2.clientHeight > alturaPagina) {
+        //jogamos para outra página
+        filho2.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+      else {
+        filho.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    if (this.opcao3) {
+      opcao3 = document.getElementById("opcao3");
+      
+      if (filho2.clientHeight > 0) {
+        filho2.append(opcao3.cloneNode(true) as HTMLElement);
+      }
+      else if (filho.clientHeight + opcao3.clientHeight > alturaPagina) {
+        filho2.append(opcao3.cloneNode(true) as HTMLElement);
+        
+      }
+      else {
+        filho.append(opcao3.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    let rodape = document.getElementById("rodape");
+    filho2.append(rodape.cloneNode(true) as HTMLElement);
+
+    let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
+    pai.append(filho.cloneNode(true) as HTMLElement);
+
+    doc.html(pai, {
+      margin: [margins.top, margins.right, margins.bottom, margins.left],
+      callback: (doc) => {
+        doc.text('página 1', 520.3 / 2, 842 - 20);
+        doc.addPage('pt', 'p');
+        doc.html(filho2, {
+          margin: [0, margins.right, margins.bottom, margins.left],
+          callback: (doc) => {
+            doc.text('página 2', 520.3 / 2, 842 - 25);
+            let x: string = doc.output('bloburl').toString();
+            window.open(x);
+            while (filho.hasChildNodes()) {
+              filho.removeChild(filho.firstChild);
+            };
+            this.imprimindo = false;
+          }, y: 855
+        });
+      }, html2canvas: { scale: 1 }
+    });
+  }
+
   exportPdf() {
     let doc = new jsPDF('p', 'pt', 'a4');
 
@@ -190,118 +302,15 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.setFontSize(2);
 
     let htmlPdf = document.getElementById("html-pdf");
-    let logo = document.getElementById("logo");
-    let titulo = document.getElementById("titulo");
-    let formalrio = document.getElementById("formulario");
-    let evaps = document.getElementById("evaps");
-    let opcao1;
-    let opcao2;
-    let opcao3;
 
-    let filho = document.getElementById("div-filho");
-    let altHtmlPdf = htmlPdf.clientHeight; // altura total do html para pdf
-    let numeroPaginas = 0;
-    numeroPaginas = altHtmlPdf / alturaPagina;
-    if (altHtmlPdf > alturaPagina) {
-      alert("entrou");
-    }
-    else {
-      
-      htmlPdf.style.width = "520.3px";
-      doc.html(htmlPdf, {
-        margin: [margins.top, margins.right, margins.bottom, margins.left],
-        callback: (doc) => {
-          doc.save('calculo_vrf');
-          let x: string = doc.output('bloburl').toString();
-          window.open(x);
-          htmlPdf.style.width = '';
-          this.imprimindo = false;
-        }
-      });
+    let altHtmlPdf = htmlPdf.clientHeight;
+
+    if (altHtmlPdf < alturaPagina) {
+      this.gerarPDF1pagina(doc, htmlPdf, margins);
+      return;
     }
 
-    debugger;
-
-    // let altLogo = logo.clientHeight;
-    // let altTitulo = titulo.clientHeight;
-    // let altForm = formalrio.clientHeight;
-    // let altEvaps = evaps.clientHeight;
-    // let altTotal = altLogo + altTitulo + altForm + altEvaps;
-
-    // let pai = document.getElementById("div-pai");
-
-    // filho.append(logo);
-    // filho.append(titulo);
-    // filho.append(formalrio);
-
-    // let folha2 = false;
-    // if (this.opcao1) {
-    //   opcao1 = document.getElementById("opcao1");
-    //   if (altTotal + opcao1.clientHeight < alturaPagina - margins.bottom) {
-    //     altTotal += opcao1.clientHeight;
-    //   }
-    //   else {
-    //     folha2 = true;
-
-    //   }
-    // }
-    // if (this.opcao2) {
-    //   opcao2 = document.getElementById("opcao2");
-    //   altTotal += opcao2.clientHeight;
-    // }
-    // if (this.opcao3) {
-    //   opcao3 = document.getElementById("opcao3");
-    //   altTotal += opcao3.clientHeight;
-    // }
-
-
-
-
-
-
-    // if (altTotal > alturaPagina - margins.bottom) {
-    //   //vamos quebrar a pagina
-    //   filho.append(logo);
-    //   filho.append(titulo);
-    // }
-    // else {
-    //   filho.append(logo);
-    //   filho.append(titulo);
-    //   filho.append(formalrio);
-    // }
-
-    // pai.style.width = "520.3px";
-    // pai.append(filho);
-
-    // debugger;
-
-
-    // doc.html(pai, {
-    //   margin: [margins.top, margins.right, margins.bottom, margins.left],
-    //   callback: (doc) => {
-    //     doc.addPage('pt', 'p');
-    //     doc.html(filho, {
-    //       margin: [0, margins.right, margins.bottom, margins.left],
-    //       callback: (doc) => {
-    //         // doc.save();
-    //         let x: string = doc.output('bloburl').toString();
-    //         window.open(x);
-    //       }, y: 855
-    //     });
-    //   }, html2canvas: { scale: 1 }
-    // });
-
-
-    // doc.html(elementoparapag, {
-    //   margin: [margins.top, margins.right, margins.bottom, margins.left],
-    //   callback: (doc) => {
-    //     doc.save('calculo_vrf');
-    //     let x: string = doc.output('bloburl').toString();
-    //     window.open(x);
-    //     // elementoparapag.style.width = '';
-    //     this.imprimindo = false;
-    //   }
-    // });
+    this.gerarPDF2paginas(doc, margins, alturaPagina);
   }
 
   criarForm() {
@@ -993,5 +1002,9 @@ export class CalculadoraVrfComponent implements OnInit {
   somarTotalCondensadoras(lstCondensadora: ProdutoTabela[]) {
     return lstCondensadora
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+  }
+
+  voltar(){
+    this.imprimindo = false;
   }
 }
