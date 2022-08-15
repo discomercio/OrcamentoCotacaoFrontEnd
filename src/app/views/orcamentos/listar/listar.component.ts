@@ -203,7 +203,7 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   btnDelete_onClick(idPedido) {
-    this.sweetalertService.confirmarExclusao(`Tem certeza que deseja excluir o pedido? ${idPedido}`, "").subscribe(result => {
+    this.sweetalertService.dialogo("",`Tem certeza que deseja excluir o pedido? ${idPedido}`).subscribe(result => {
       if (!result) {
         return;
       }

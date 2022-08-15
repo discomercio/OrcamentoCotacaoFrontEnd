@@ -232,7 +232,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pergunta = `Para manter o desconto médio de ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
         ${this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
       //fazer uma pergunta se quer arredondar para o valor máximo de desconto
-      this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+      this.itens.formaPagto.sweetalertService.dialogo("",pergunta).subscribe(result => {
         //se não => return;
         if (!result) {
           this.carregando = false;
@@ -254,7 +254,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
       ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
-      this.itens.formaPagto.sweetalertService.confirmarAprovacao(pergunta, "").subscribe(result => {
+      this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
           this.carregando = false;
           return;

@@ -325,13 +325,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   aprovar(orcamento) {
     if (!this.opcaoPagto) {
     }
-    this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
+    this.sweetalertService.dialogo("","Deseja aprovar essa opção?").subscribe(result => {
 
     });
   }
 
   prorrogar() {
-    this.sweetalertService.confirmarSemMostrar("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+    this.sweetalertService.dialogo("","Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
 
       this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
@@ -354,7 +354,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   cancelar() {
-    this.sweetalertService.confirmarAprovacao("Confirma o cancelamento do orçamento?", "").subscribe(result => {
+    this.sweetalertService.dialogo("", "Confirma o cancelamento do orçamento?").subscribe(result => {
       if (!result) return;
 
       this.orcamentoService.cancelarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {

@@ -1,6 +1,7 @@
 <app-publico-header></app-publico-header>
 
-<div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
+
+<div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" *ngIf="validado">
     <div class="p-grid p-jc-center">
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" *ngIf="orcamento">
@@ -287,7 +288,7 @@
                 </div>
             </div>
         </div>
-
+        
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-2">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
                 <div class="p-col-12">
@@ -298,9 +299,7 @@
                             </ng-template>
                             <ng-template pTemplate="content">
                                 <div style="font-size:smaller" class="p-col-12">
-                                    Aqui vai ter um texto mostrando as condições gerais do orçamento.
-                                    Precisamos mostrar isso com letras miúdas.
-                                    Isso não pode estar com letras grandes
+                                    {{orcamento.condicoesGerais}}
                                 </div>
                             </ng-template>
                         </p-accordionTab>

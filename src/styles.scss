@@ -132,21 +132,6 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
 //@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 //purple-green
 
-html,
-body {
-  height: 100vh;
-}
-body {
-  margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
-  background-color: white;
-  //background-color: $cor-fundo-menu;
-}
-
-button{
-  background-color: #007bff !important;
-  color: white !important;
-}
 
 //tambem está definido em desktopCeluar.scss
 .titulopagina {
@@ -319,10 +304,7 @@ $gutter: .5rem; //for primeflex grid system
     padding: 0 !important;
 }
 
-.font-size > td > input,
-.font-size {
-    font-size: smaller !important; 
-}
+
 
 ::ng-deep .p-divider.p-divider-horizontal{
     margin: 0% !important;

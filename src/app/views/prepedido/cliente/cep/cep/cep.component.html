@@ -30,7 +30,7 @@
         <input matInput type="text" placeholder="CEP" [(ngModel)]="Cep" [required]="required" maxlength="10" size="11"
             id="cep" (blur)="saiuCep()" [textMask]="{mask: mascaraCep}" (keydown.enter)="enterCep($event)">
     </mat-form-field>
-    <button mat-raised-button color="accent" (click)="buscarCep()" id="naoSeiCep" style="font-size:80%;">
+    <button mat-raised-button color="accent"  (click)="buscarCep()" id="naoSeiCep"  style="font-size:80%;background-color: #007bff !important;color: white !important;">
         <!-- <mat-icon style="font-size: 180%; margin-left: -15%"></mat-icon> -->
         <span class="pi pi-search" style="margin-right: 10px;"></span>Não sei o CEP
     </button>

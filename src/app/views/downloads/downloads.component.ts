@@ -201,7 +201,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       this.mensagemService.showWarnViaToast("Selecione uma pasta, ou arquivo!");
       return;
     }
-    this.sweetalertService.confirmarAprovacao("Tem certeza que deseja excluir?", "").subscribe(result => {
+    this.sweetalertService.dialogo("", "Tem certeza que deseja excluir?").subscribe(result => {
       if (!result) return;
       else this.concluirExclusao();
     });
