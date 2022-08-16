@@ -115,10 +115,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
       this.exibeBotaoCancelar = true;
       this.exibeBotaoProrrogar = true;
+      this.desabiltarBotoes = false;
 
-    } else {
+    } else {     
       this.exibeBotaoCancelar = false;
       this.exibeBotaoProrrogar = false;
+      this.desabiltarBotoes = true;
+    }
+
+    if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))){
+      this.exibeBotaoCancelar = false;
+      this.desabiltarBotoes = true;
     }
 
     if (!this.exibeBotaoCancelar && !this.exibeBotaoProrrogar && !this.exibeBotaoEditar) {
@@ -226,6 +233,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
+
+          if (this.novoOrcamentoService.permiteEnviarMensagem(r.status,r.validade)){            
+            this.mensagemComponente.permiteEnviarMensagem = true;            
+          }else{
+            this.mensagemComponente.permiteEnviarMensagem = false;             
+          }
 
           this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.idUsuarioRemetente.toString();
@@ -341,8 +354,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           } else {
             if (r?.mensagem?.includes('|')) {
               let msg = r.mensagem.split('|');
-              console.log(msg);
-              console.log(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
               this.mensagemService.showSuccessViaToast(msg[1]);
               this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
             }
