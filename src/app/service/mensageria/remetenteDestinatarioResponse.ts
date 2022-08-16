@@ -5,4 +5,6 @@ export class RemetenteDestinatarioResponse {
     idUsuarioDestinatario: number;
     idTipoUsuarioContextoDestinatario: number;
     donoOrcamento: boolean;
+    status: number;
+    validade: string;
 }

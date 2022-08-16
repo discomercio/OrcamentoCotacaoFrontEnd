@@ -362,6 +362,29 @@ export class NovoOrcamentoService {
     return false;
   }
 
+  permiteEnviarMensagem(status, dataValidade): boolean {
+    
+    if (status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
+      status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
+
+    return this.validarExpiracao(dataValidade);
+
+  }
+
+  validarExpiracao(dataValidade): boolean {
+
+    // transportando a validação já existente porque é chamada em mais de um lugar
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    let validade = dataValidade.toString().slice(0, 10);
+
+
+    if (validade <= dataAtual) return false;
+    
+    return true;
+
+  }
+
+
   verificarDonoOrcamento() {
 
   }
