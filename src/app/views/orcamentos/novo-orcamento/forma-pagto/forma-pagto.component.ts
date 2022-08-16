@@ -34,7 +34,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   ngOnInit(): void {
-    this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
   }
   checked: boolean = true;
   checkedAvista: boolean = false;
@@ -45,7 +45,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   buscarFormasPagto(param: string) {
     let comIndicacao: number = 0;
-    let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
+    let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {

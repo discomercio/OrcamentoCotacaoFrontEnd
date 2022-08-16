@@ -31,7 +31,7 @@ export class AppMenuComponent implements OnInit {
 
     ngOnInit() {
         this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-        this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+        this.tipoUsuario = this.autenticacaoService._tipoUsuario;
         this.menuService.buscar().toPromise().then((r) => {
             if (r != null) {
                 this.model = r;

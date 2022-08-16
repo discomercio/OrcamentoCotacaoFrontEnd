@@ -124,18 +124,19 @@ export class CadastrarClienteComponent implements OnInit {
   }
 
   desabiltarCamposParaEdicao() {
-    if (this.filtro == null) {
-      if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
-        this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
-          opcao.listaProdutos.forEach(produto => {
-            if (produto.idOperacaoAlcadaDescontoSuperior != null) {
+    if (this.filtro == undefined) {
+      this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
+        opcao.listaProdutos.forEach(produto => {
+          if (produto.idOperacaoAlcadaDescontoSuperior != null) {
+            if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
               this.form.controls.ContribuinteICMS.disable();
-              this.form.controls.Uf.disable();
-              this.form.controls.VendedorParceiro.disable();
             }
-          });
+            this.form.controls.Uf.disable();
+            this.form.controls.VendedorParceiro.disable();
+          }
         });
-      }
+      });
+
       this.form.controls.Vendedor.disable();
       this.form.controls.Parceiro.disable();
       this.form.controls.VendedorParceiro.disable();
