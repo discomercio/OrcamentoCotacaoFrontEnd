@@ -77,7 +77,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
-
+  habilitarClone: boolean = false;
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
@@ -98,15 +98,28 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       this.novoOrcamentoService.editando = false;
       this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
     }
-    if(param.filtro == "clone"){
-      debugger;
+    if (param.filtro == "clone") {
       this.param = param.filtro;
-      this.carregandoProds = false;
+      this.habilitarClone = true;
+      // this.carregandoProds = false;
     }
     this.iniciarNovo();
     this.buscarPercentualComissao();
   }
 
+  abriModalOpcoes(){
+    debugger;
+    if(this.novoOrcamentoService.lstProdutosSelecionados.length > 0){
+      this.sweetalertService.dialogo("Atenção", "Ao clonar uma opção a lista de produtos e formas de pagamentos serão sobrepostas!")
+      .subscribe(retorno =>{
+        if (!retorno) {
+          return;
+        }
+        //vamos abrir a modal
+        alert(retorno);
+      });
+    }
+  }
 
   iniciarNovo() {
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
@@ -129,7 +142,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     await this.formaPagto.buscarFormasPagto(this.param);
 
-    if (this.param == "novo") {
+    if (this.param == "novo" || this.param == "clone") {
       this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
@@ -610,7 +623,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   salvarOrcamento() {
 
-    if(this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0){
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0) {
       this.alertaService.mostrarMensagem("É necessário adicionar ao menos uma opção!");
       return;
     }
