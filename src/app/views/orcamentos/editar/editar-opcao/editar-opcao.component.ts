@@ -78,7 +78,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }
 
     this.buscarFormaPagto();
-    this.itens.inserirProduto(null);
+    this.itens.inserirProduto();
   }
 
   verificarCalculoComissao(): boolean {
@@ -120,7 +120,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         this.itens.novoOrcamentoService.percentualMaxComissao = r;
         this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar = r.percMaxComissaoEDesconto;
         this.buscarFormaPagto();
-        this.itens.inserirProduto(null);
+        this.itens.inserirProduto();
         this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
 
         this.itens.cdref.detectChanges();

@@ -174,7 +174,7 @@
                                     <div class="p-ml-auto p-p-0 p-text-right">
                                         <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotal)}}</span>
                                     </div>
-                                    <div *ngIf="editar && verificarAlcadaUsuario(orcamento.id)"
+                                    <div *ngIf="editar || verificarAlcadaUsuario(orcamento.id)"
                                         class="p-ml-auto p-p-0 p-text-right">
                                         <button style="color: #fff;" pButton type="button" label="Editar"
                                             icon="pi pi-user-edit" (click)="editarOpcao(orcamento)"

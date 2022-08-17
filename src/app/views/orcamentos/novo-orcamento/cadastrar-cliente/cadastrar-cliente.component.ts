@@ -66,7 +66,6 @@ export class CadastrarClienteComponent implements OnInit {
   tipoUsuario: number;//usar o do Usuario
   habilitarClone: boolean = false;
   habilitarVoltar: boolean = false;
-  orcamentoCloneCotacaoDto: OrcamentoCotacaoResponse;
 
   ngOnInit(): void {
 
@@ -112,27 +111,32 @@ export class CadastrarClienteComponent implements OnInit {
     }
 
     if (param.filtro == "clone") {
-      if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined) {
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.id == undefined) {
         this.router.navigate(["/orcamentos/listar/orcamentos"]);
         return;
       }
 
 
-      this.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
-      this.orcamentoCloneCotacaoDto = this.novoOrcamentoService.orcamentoCotacaoDto;
+      
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined){
+        this.novoOrcamentoService.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
+        this.novoOrcamentoService.orcamentoCloneCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCotacaoDto));
+
+      }
+
       this.filtro = param.filtro;
-      if (this.orcamentoCloneCotacaoDto.status != undefined) this.novoOrcamentoService.criarNovo();
-      this.novoOrcamentoService.orcamentoCotacaoDto.id = this.orcamentoCloneCotacaoDto.id;
-      this.novoOrcamentoService.orcamentoCotacaoDto.status = undefined;
+      if (this.novoOrcamentoService.orcamentoCloneCotacaoDto.status != undefined) this.novoOrcamentoService.criarNovo();
+      this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCloneCotacaoDto.id;
+      this.novoOrcamentoService.orcamentoCloneCotacaoDto.status = undefined;
       this.habilitarClone = true;
       this.habilitarVoltar = true;
-      if (this.orcamentoCloneCotacaoDto.status != undefined) this.criarForm();
+      if (this.novoOrcamentoService.orcamentoCloneCotacaoDto.status != undefined) this.criarForm();
 
     }
   }
 
   copiarDados() {
-    this.novoOrcamentoService.orcamentoCotacaoDto = this.orcamentoCloneCotacaoDto;
+    this.novoOrcamentoService.orcamentoCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCloneCotacaoDto));
     this.novoOrcamentoService.orcamentoCotacaoDto.qtdeRenovacao = undefined;
     this.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor = undefined;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataCadastro = undefined;
@@ -140,6 +144,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.idIndicador = undefined;
     this.novoOrcamentoService.orcamentoCotacaoDto.idIndicadorVendedor = undefined;
     this.novoOrcamentoService.orcamentoCotacaoDto.idIndicadorVendedor = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
     this.novoOrcamentoService.orcamentoCotacaoDto.status = undefined;
 
     this.desabilitarCampos();
