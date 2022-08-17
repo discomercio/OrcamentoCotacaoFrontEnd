@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
+import { ePermissao } from './../utilities/enums/ePermissao';
 import {Title} from "@angular/platform-browser";
 
 @Component({
@@ -39,7 +40,8 @@ export class AppTopBarComponent {
     imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
     favIcon: HTMLLinkElement = document.querySelector('#favIcon');
-    
+
+    meuDados: boolean = false;
 
     ngOnInit(): void {
         this.criarForm();
@@ -85,6 +87,10 @@ export class AppTopBarComponent {
           this.titleService.setTitle('Portal de Vendas');
         }
       });
+
+      if(usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)){
+        this.meuDados = true; 
+      }
     }    
 
     criarForm() {
@@ -114,7 +120,7 @@ export class AppTopBarComponent {
                     this.lojas.push({ Id:x, Value:`Loja: ${x}`});
                 });
             }
-          }
+          } 
 
           if(this.lojas.length > 0) {
             if(this.lojaLogada) {
