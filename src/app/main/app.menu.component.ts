@@ -7,6 +7,7 @@ import { Constantes } from './../utilities/constantes';
 import { eMenu } from './../utilities/enums/eMenu';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import { Usuario } from '../dto/usuarios/usuario';
+import { Console } from 'console';
 
 @Component({
     selector: 'app-menu',
@@ -35,7 +36,53 @@ export class AppMenuComponent implements OnInit {
         this.menuService.buscar().toPromise().then((r) => {
             if (r != null) {
                 this.model = r;
-                this.montarMenu();
+                
+                this.model.forEach((x) => {
+                    for(let i = 0; i<x.items.length;i++){
+
+                        if(!this.usuario.permissoes.includes(ePermissao.PrePedido)){
+                            if(x.items[i].label == eMenu.Pedidos){
+                                x.items.splice(i, 1);
+                            }
+                        }
+
+                        if(!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarEditar)){
+                            if(x.items[i].label == eMenu.Catalogos){
+                                for(let y = 0; y< x.items[i].items.length;y++){
+                                    
+                                    if(x.items[i].items[y].label == eMenu.CaradastrarEditar){
+                                        x.items[i].items.splice(y, 1);
+                                        y--;
+                                    }
+                                }
+                            }
+                        }
+
+                        if(!this.usuario.permissoes.includes(ePermissao.CatalogoPropriedade)){
+                            if(x.items[i].label == eMenu.Catalogos){
+                                for(let y = 0; y< x.items[i].items.length;y++){                                    
+                                    if(x.items[i].items[y].label == eMenu.Propriedades){
+                                        x.items[i].items.splice(y, 1);
+                                        y--;
+                                    }
+                                }
+                            }
+                        }
+
+                        if(!this.usuario.permissoes.includes(ePermissao.CatalogoVendedorParceiro)){
+                            if(x.items[i].label == eMenu.Catalogos){
+                                for(let y = 0; y< x.items[i].items.length;y++){
+                                    if(x.items[i].items[y].label == eMenu.VendedorParceiro){
+                                        x.items[i].items.splice(y, 1);
+                                        y--;
+                                    }
+                                }
+                            }
+                        }   
+                    }
+                }); 
+
+                //this.montarMenu();
             }
         }).catch(e => this.alertaService.mostrarMensagem("Ops! Tivemos problemas ao carregar o menu."));
     }

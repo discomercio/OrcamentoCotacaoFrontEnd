@@ -9,6 +9,7 @@ import {FormBuilder, FormGroup} from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
+import { ePermissao } from './../utilities/enums/ePermissao';
 
 @Component({
     selector: 'app-topbar',
@@ -38,6 +39,7 @@ export class AppTopBarComponent {
     imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
     favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+    meuDados: boolean = false;
 
     ngOnInit(): void {
         this.criarForm();
@@ -82,6 +84,10 @@ export class AppTopBarComponent {
           this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
         }
       });
+
+      if(usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)){
+        this.meuDados = true;
+      }
     }    
 
     criarForm() {
