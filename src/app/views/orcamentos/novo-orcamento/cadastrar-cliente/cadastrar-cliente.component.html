@@ -1,6 +1,13 @@
 <form [formGroup]="form">
     <div class="card" [ngClass]="{'carregando': carregando}">
-        <h4>Informações do orçamento</h4>
+        <div class="p-p-0 p-col-12 p-d-inline-flex p-jc-between">
+            <h4>Informações do orçamento</h4>
+            <div *ngIf="habilitarClone">
+                <button pButton pRipple label="Clonar" icon="pi pi-fw pi-copy" (click)="copiarDados()"></button>
+            </div>
+        </div>
+
+
         <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
             <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                 <label for="nome">Nome do cliente</label>
@@ -93,7 +100,7 @@
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
             </div>
             <div></div>
-                <div *ngIf="lstVendedoresParceiros.length > 0" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+            <div *ngIf="lstVendedoresParceiros.length > 0" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="vendedorParceiro">Vendedor do parceiro</label>
                 <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
                     [showClear]="true" formControlName="VendedorParceiro">
@@ -130,16 +137,19 @@
             </div>
         </div>
 
-        <div *ngIf="filtro == 'novo' || filtro == 'iniciar'" class="p-d-flex p-jc-center">
+        <!-- <div *ngIf="filtro == 'novo' || filtro == 'iniciar'" class="p-d-flex p-jc-center">
             <button pButton pRipple label="Salvar" icon="pi pi-arrow-right" (click)="salvarOrcamento()"></button>
-        </div>
-        <div *ngIf="filtro == undefined" class="p-d-flex p-jc-around">
-            <div>
+        </div> -->
+        <div  class="p-d-flex p-jc-around">
+            <div *ngIf="habilitarVoltar">
                 <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
             </div>
-            <div>
+            <div *ngIf="filtro == undefined">
                 <button pButton pRipple label="Atualizar" icon="pi pi-save"
                     (click)="atualizarDadosCadastrais()"></button>
+            </div>
+            <div *ngIf="filtro == 'novo' || filtro == 'iniciar' || filtro == 'clone'">
+                <button pButton pRipple label="Salvar" icon="pi pi-arrow-right" (click)="salvarOrcamento()"></button>
             </div>
         </div>
 

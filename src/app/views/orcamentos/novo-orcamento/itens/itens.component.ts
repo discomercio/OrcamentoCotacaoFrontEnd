@@ -98,6 +98,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       this.novoOrcamentoService.editando = false;
       this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
     }
+    if(param.filtro == "clone"){
+      debugger;
+      this.param = param.filtro;
+      this.carregandoProds = false;
+    }
     this.iniciarNovo();
     this.buscarPercentualComissao();
   }
@@ -624,7 +629,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   voltar() {
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
+    this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
   }
 
   liberarEdicaoComissao() {
