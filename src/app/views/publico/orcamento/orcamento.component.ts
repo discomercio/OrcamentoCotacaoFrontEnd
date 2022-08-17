@@ -100,13 +100,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {          
           this.validado = true;
-          this.orcamento = r;  
-          
+          this.orcamento = r;          
+          this.mensagemComponente.permiteEnviarMensagem = true;
+
           if (r.status ==3){
             this.desabiltarBotoes = true;
+            this.mensagemComponente.permiteEnviarMensagem = false;
           }
 
-          this.mensagemComponente.permiteEnviarMensagem = true;
           this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
           this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
