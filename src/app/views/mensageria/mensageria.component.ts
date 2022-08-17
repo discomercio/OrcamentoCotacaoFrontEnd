@@ -30,6 +30,9 @@ export class MensageriaComponent implements AfterViewInit {
   @Input('donoOrcamento')
   public donoOrcamento: boolean;  
 
+  @Input('permiteEnviarMensagem')
+  public permiteEnviarMensagem: boolean;   
+
   listaMensagens: MensageriaDto[];
 
   constructor(

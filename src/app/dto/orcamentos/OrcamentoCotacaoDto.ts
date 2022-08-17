@@ -24,6 +24,7 @@ export class OrcamentoCotacaoDto {
     email: string;
     status: number;
     token: string;
+    condiCoesGerais: string;
 
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];

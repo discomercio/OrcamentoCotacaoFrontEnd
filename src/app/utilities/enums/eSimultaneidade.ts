@@ -1,10 +1,12 @@
 export enum eSimultaneidade {
+    Oitenta = "80",
     Noventa = "90",
-    VoventaECinco = "95",
+    NoventaEUm = "91",
     Cem = "100",
-    CentoECinco = "105",
+    CentoEUm = "101",
     CentoEDez = "110",
-    CentoEQuinze = "115",
+    CentoEOnze = "111",
     CentoEVinte = "120",
-    CentoEVinteECinco = "125"
+    CentoEVinteEUm = "121",
+    CentoETrinta = "130"
 }

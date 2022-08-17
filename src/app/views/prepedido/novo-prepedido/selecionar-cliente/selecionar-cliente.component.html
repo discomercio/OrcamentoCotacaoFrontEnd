@@ -12,10 +12,9 @@
                         floatLabel="floatLabel()">
                         <input matInput type="text" placeholder="Digite o CPF ou CNPJ do cliente"
                             [(ngModel)]="clienteBusca" name="clienteBusca" appFocoAutomatico>
-                    </mat-form-field>
-
+                    </mat-form-field>                    
                     <div class="item item-4" style="text-align: center;">
-                        <button mat-raised-button color="accent" type="submit" [ngClass]="{'carregando': carregando}"> 
+                        <button mat-raised-button color="accent" type="submit"  style="background-color: #007bff !important;color: white !important;" [ngClass]="{'carregando': carregando}"> 
                             <span class="pi pi-search"></span>
                             Pesquisar
                             <!-- <mat-icon></mat-icon> Pesquisar -->
@@ -44,7 +43,7 @@
                     </div>
 
                     <div class="item item-4" style="text-align: center;">
-                        <button mat-raised-button color="accent" type="submit" [ngClass]="{'carregando': carregando}"
+                        <button mat-raised-button color="accent" type="submit" style="background-color: #007bff !important;color: white !important;" [ngClass]="{'carregando': carregando}"
                             style="font-size: 80%">
                             <span class="pi pi-search"> </span> Pesquisar
                         </button>

@@ -40,21 +40,25 @@ export class OrcamentosService {
 
 
 
-  buscarConfigValidade(): Observable<ValidadeOrcamento> {
-    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade`);
+  buscarConfigValidade(loja:string): Observable<ValidadeOrcamento> {
+    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade?lojaLogada=${loja}`);
   }
 
   buscarDadosParaMensageria(idOrcamentoCotacao: number, usuarioIterno: boolean): Observable<RemetenteDestinatarioResponse> {
     return this.http.get<RemetenteDestinatarioResponse>(`${environment.apiUrl}Orcamento/buscarDadosParaMensageria?idOrcamento=${idOrcamentoCotacao}&usuarioInterno=${usuarioIterno}`);
   }
 
-  prorrogarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar`, id);
+  prorrogarOrcamento(id: number, lojaLogada: string): Observable<MensagemDto> {
+    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar?lojalogada=${lojaLogada}`, id);
   }
 
   cancelarOrcamento(id: number): Observable<MensagemDto> {
     return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
   }
+
+  buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {    
+    return this.http.get<any>(`${environment.apiUrl}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
+  }    
 
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
     return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);

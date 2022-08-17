@@ -117,6 +117,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
       this.form.controls.Parceiro.disable();
       this.form.controls.Tipo.disable();
+      this.form.controls.VendedorParceiro.disable();
     }
 
     this.form.controls.Validade.disable();
@@ -130,19 +131,19 @@ export class CadastrarClienteComponent implements OnInit {
             if (produto.idOperacaoAlcadaDescontoSuperior != null) {
               this.form.controls.ContribuinteICMS.disable();
               this.form.controls.Uf.disable();
+              this.form.controls.VendedorParceiro.disable();
             }
           });
         });
       }
       this.form.controls.Vendedor.disable();
       this.form.controls.Parceiro.disable();
-      if (this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro != null)
-        this.form.controls.VendedorParceiro.disable();
+      this.form.controls.VendedorParceiro.disable();
     }
   }
 
   buscarConfigValidade() {
-    this.orcamentoService.buscarConfigValidade().toPromise().then((r) => {
+    this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
       if (r != null) {
         this.novoOrcamentoService.configValidade = r;
         this.setarOrcamentoValidade();
@@ -150,7 +151,7 @@ export class CadastrarClienteComponent implements OnInit {
     }).catch((e) => {
       console.log("erro");
       this.alertaService.mostrarErroInternet(e);
-    })
+    });
   }
 
   setarCamposDoForm(): void {

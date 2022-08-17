@@ -10,6 +10,7 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { NovoPrepedidoDadosService } from '../novo-prepedido-dados.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-selecionar-cliente',
@@ -30,11 +31,13 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
     public readonly activatedRoute: ActivatedRoute,
     private readonly alertaService: AlertaService,
     private readonly buscarClienteService: BuscarClienteService, 
+    private readonly sweetalertService: SweetalertService,
     private readonly novoPrepedidoDadosService: NovoPrepedidoDadosService) {
     super(telaDesktopService);
   }
 
   ngOnInit() {
+    
     this.novoPrepedidoDadosService.prePedidoDto = null;
   }
 
@@ -75,10 +78,19 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
 
   //cliente ainda não está cadastrado
   mostrarNaoCadastrado() {
+
+    this.sweetalertService.dialogo("","Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?").subscribe(result => {
+      if (result) {
+        //vamos cadastrar um novo
+        this.router.navigate(['cadastrar-cliente', this.clienteBusca], { relativeTo: this.activatedRoute })
+      }
+    });    
+  }
+    /*
     this.carregando = false;
     const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
       width: '380px',
-      data: `Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?`
+      data: `Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?s2`
     });
     dialogRef.afterClosed().subscribe((result) => {
       if (result) {
@@ -86,6 +98,6 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
         this.router.navigate(['cadastrar-cliente', this.clienteBusca], { relativeTo: this.activatedRoute })
       }
     });
-  }
+  }*/
 
 }

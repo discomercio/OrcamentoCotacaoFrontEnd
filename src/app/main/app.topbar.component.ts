@@ -10,6 +10,7 @@ import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
+import {Title} from "@angular/platform-browser";
 
 @Component({
     selector: 'app-topbar',
@@ -26,8 +27,8 @@ export class AppTopBarComponent {
         private readonly router: Router,
         private fb: FormBuilder,
         private readonly lojaService: LojasService,
-        private readonly alertaService:AlertaService
-        
+        private readonly alertaService:AlertaService,
+        private titleService:Title        
         
     ) {}
     public lojaLogada : any;
@@ -39,6 +40,7 @@ export class AppTopBarComponent {
     imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
     corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
     favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+
     meuDados: boolean = false;
 
     ngOnInit(): void {
@@ -82,11 +84,12 @@ export class AppTopBarComponent {
           
           this.corCabecalho = r.corCabecalho + " !important";
           this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+          this.titleService.setTitle('Portal de Vendas');
         }
       });
 
       if(usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)){
-        this.meuDados = true;
+        this.meuDados = true; 
       }
     }    
 
@@ -117,7 +120,7 @@ export class AppTopBarComponent {
                     this.lojas.push({ Id:x, Value:`Loja: ${x}`});
                 });
             }
-          }
+          } 
 
           if(this.lojas.length > 0) {
             if(this.lojaLogada) {

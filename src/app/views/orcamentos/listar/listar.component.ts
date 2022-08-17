@@ -203,7 +203,7 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   btnDelete_onClick(idPedido) {
-    this.sweetalertService.confirmarExclusao(`Tem certeza que deseja excluir o pedido? ${idPedido}`, "").subscribe(result => {
+    this.sweetalertService.dialogo("",`Tem certeza que deseja excluir o pedido? ${idPedido}`).subscribe(result => {
       if (!result) {
         return;
       }
@@ -233,6 +233,7 @@ export class OrcamentosListarComponent implements OnInit {
         this.Pesquisar_Click();
         this.carregando = false;
       }
+      else this.carregando = false;
     }).catch((r) => {
       
       this.carregando = false;

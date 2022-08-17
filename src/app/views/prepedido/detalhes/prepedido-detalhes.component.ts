@@ -21,6 +21,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly prepedidoService : PrepedidoService,
     private readonly alertaService: AlertaService,
+    private router: Router,
     private location: Location
   ) { }
 
@@ -106,7 +107,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
   }
 
   voltar() {
-    this.location.back();
+    this.router.navigate(["orcamentos/listar/pendentes/"]);
   } 
 
   editar() {

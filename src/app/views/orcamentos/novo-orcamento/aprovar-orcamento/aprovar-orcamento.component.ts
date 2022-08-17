@@ -26,6 +26,9 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { MensageriaComponent } from 'src/app/views/mensageria/mensageria.component';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { MenuModule } from 'primeng/menu';
+import { MenuItem } from 'primeng/api';
+import { CardModule } from 'primeng/card';
 
 
 @Component({
@@ -67,9 +70,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
   opcaoPagto: number;
-  validadeBgColor: string;
   @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
+  exibeBotaoEditar: boolean;
+  exibeBotaoCancelar: boolean;
+  exibeBotaoProrrogar: boolean;
+  exibeBotaoNenhumaOpcao: boolean;
+  items: MenuItem[];
+  condicoesGerais: string;
+  statusOrcamento: string;
 
   ngOnInit(): void {
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
@@ -77,23 +86,159 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
 
-    //this.idOrcamentoCotacao = 258;
     this.novoOrcamentoService.usuarioLogado = this.autenticacaoService.getUsuarioDadosToken();
     this.buscarOrcamento(this.idOrcamentoCotacao);
 
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    //this.carrregarBotoneira();    
   }
 
   ngAfterViewInit() {
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    this.buscarParametros(12);
+
   }
+
+  carrregarBotoneira() {
+
+    this.exibeBotaoNenhumaOpcao = false;
+    //Regras para Edição
+    if (this.novoOrcamentoService.orcamentoCotacaoDto && this.editarDadosCadastrais) {
+      this.exibeBotaoEditar = true;
+    } else {
+      this.exibeBotaoEditar = false;
+    }
+
+    //Regras para Cancelamento [2] = cancelado [3] = aprovado
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.status != 2 &&
+      this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
+      this.exibeBotaoCancelar = true;
+      this.exibeBotaoProrrogar = true;
+      this.desabiltarBotoes = false;
+
+    } else {     
+      this.exibeBotaoCancelar = false;
+      this.exibeBotaoProrrogar = false;
+      this.desabiltarBotoes = true;
+    }
+
+    if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))){
+      this.exibeBotaoCancelar = false;
+      this.desabiltarBotoes = true;
+    }
+
+    if (!this.exibeBotaoCancelar && !this.exibeBotaoProrrogar && !this.exibeBotaoEditar) {
+      this.exibeBotaoNenhumaOpcao = true;
+    }
+
+    this.items = [
+      {
+        label: 'Editar', icon: 'pi pi-fw pi-user-edit',
+        visible: this.exibeBotaoEditar,
+        command: () => this.editarDadosCliente(this.novoOrcamentoService.orcamentoCotacaoDto)
+      },
+      {
+        label: 'Cancelar',
+        icon: 'pi pi-fw pi-times',
+        visible: this.exibeBotaoCancelar,
+        command: () => this.cancelar()
+      },
+      {
+        label: 'Prorrogar',
+        icon: 'pi pi-fw pi-calendar-times',
+        visible: this.exibeBotaoProrrogar,
+        command: () => this.prorrogar()
+      }
+      ,
+      {
+        label: 'Nenhuma',
+        visible: this.exibeBotaoNenhumaOpcao
+      }
+
+    ];
+
+  }
+
+  retornarSimOuNao(data: any) {
+    if (data == true) {
+      return "Sim";
+    } else {
+      return "Não";
+    }
+  }
+
+  retornarTipoPessoa(data: any) {
+    if (data == 'PF') {
+      return "Pessoa física";
+    } else {
+      return "Pessoa jurídica";
+    }
+  }
+
+  retornarContibuinteICMS(data: any) {
+    switch (data) {
+      case 1:
+        return 'Sim';
+        break;
+      case 2:
+        return 'Não';
+        break;
+      case 3:
+        return 'Isento';
+        break;
+
+      default:
+        return 'Indisponível';
+        break;
+    }
+  }
+
+  buscarParametros(id: number) {
+
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarParametros(id,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+        if (r != null) {
+          this.condicoesGerais = r[0]['Valor'];
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+  }
+
+  buscarStatus(id: any) {
+
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
+        var indice = 0;
+        if (r != null) {
+          while (indice <= r.length) {
+            if (r[indice]['Id'] == id) {
+              this.statusOrcamento = r[indice]['Value'];
+              break;
+            }
+            indice++;
+          }
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+  }
+
 
   buscarDadosParaMensageria(id: number) {
 
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
+
+          if (this.novoOrcamentoService.permiteEnviarMensagem(r.status,r.validade)){            
+            this.mensagemComponente.permiteEnviarMensagem = true;            
+          }else{
+            this.mensagemComponente.permiteEnviarMensagem = false;             
+          }
 
           this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.idUsuarioRemetente.toString();
@@ -114,7 +259,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
         this.verificarEdicao();
+        this.carrregarBotoneira();
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
@@ -128,10 +275,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   editarDadosCadastrais: boolean = false;
-  verificarEdicaoDadosCadastraris():boolean {
+  verificarEdicaoDadosCadastraris(): boolean {
     if (this.editar) {
       let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase())return true;
+      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
     }
     return false;
   }
@@ -191,27 +338,24 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   aprovar(orcamento) {
     if (!this.opcaoPagto) {
     }
-    this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
+    this.sweetalertService.dialogo("","Deseja aprovar essa opção?").subscribe(result => {
 
     });
   }
 
   prorrogar() {
-    this.sweetalertService.confirmarAprovacao("Deseja prorrogar esse orçamento?", "").subscribe(result => {
+    this.sweetalertService.dialogo("","Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
 
-      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
+      this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           } else {
             if (r?.mensagem?.includes('|')) {
               let msg = r.mensagem.split('|');
-              console.log(msg);
-              console.log(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
               this.mensagemService.showSuccessViaToast(msg[1]);
               this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
-              this.validadeBgColor = '#E94C4C';
             }
           }
         }
@@ -221,22 +365,22 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   cancelar() {
-    this.sweetalertService.confirmarAprovacao("Confirma o cancelamento do orçamento?", "").subscribe(result => {
+    this.sweetalertService.dialogo("", "Confirma o cancelamento do orçamento?").subscribe(result => {
       if (!result) return;
-      
+
       this.orcamentoService.cancelarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
-          if(r.tipo == "WARN") {
+          if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           }
-          
+
         }
         // window.location.reload();
         this.ngOnInit();
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
     });
-  }  
+  }
 
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();

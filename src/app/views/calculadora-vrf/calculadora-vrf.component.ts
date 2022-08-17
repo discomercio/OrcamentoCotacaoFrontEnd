@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -19,6 +19,9 @@ import autoTable from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { JsonpClientBackend } from '@angular/common/http';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -35,7 +38,8 @@ export class CalculadoraVrfComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     public dialogService: DialogService,
     private readonly sweetalertService: SweetalertService,
-    private readonly autenticacaoService: AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly orcamentoService: OrcamentosService
   ) { }
 
   form: FormGroup;
@@ -67,7 +71,7 @@ export class CalculadoraVrfComponent implements OnInit {
   simultaneidadeCalculada1aparelho: number;
 
   totalKcalEvaporadoras: number;
-  simultaneidade: number;
+  simultaneidade: string;
   qtdeCondensadora: number;
   voltagem: number;
   descarga: number;
@@ -78,21 +82,71 @@ export class CalculadoraVrfComponent implements OnInit {
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
 
-  nomeCliente: string;
-  nomeObra: string;
-  telefone: string;
-  email: string;
-  observacao: string;
+  nomeCliente: string = '';
+  nomeObra: string = '';
+  telefone: string = '';
+  email: string = '';
+  observacao: string = '';
+  instalador: string = '';
+  telInstalador: string = '';
 
   mascaraTelefone: string;
+  calculado: boolean = false;
+  desabilita: boolean = false;
+  lstCiclos: SelectItem[] = [];
+  ciclo: string;
 
+  opcao1: boolean = false;
+  opcao2: boolean = false;
+  opcao3: boolean = false;
+  dataUtils: DataUtils = new DataUtils();
+
+  gerandoPDF: boolean = false;
   ngOnInit(): void {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
+    this.criarForm2();
     this.buscarProduto();
     this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
+    this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
+    this.buscarTextoRodapePDF(this.autenticacaoService._lojaLogado);
+
+    this.dataAtual = new Date().toLocaleString();
+  }
+
+  logo: string;
+  dataAtual: string;
+  buscarLogoPDF(lojaLogada: string) {
+
+    let IdCfgParametro = 21;
+
+    //Alterar para buscar da base quando enviarem as imagens
+    
+
+    this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+      if (r != null) {
+        this.logo = "assets/layout/images/" + r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
+  }
+
+  textoRodape: string;
+  buscarTextoRodapePDF(lojaLogada: string) {
+    //IdCfgParametro = 22
+    let IdCfgParametro = 22
+
+    this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada).toPromise().then((r) => {
+      if (r != null) {
+        this.textoRodape = r[0]['Valor'];
+        this.buscarLogoPDF(lojaLogada);
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   montarDadosParaPDF(produto: ProdutoTabela[]) {
@@ -110,169 +164,193 @@ export class CalculadoraVrfComponent implements OnInit {
     });
     return retorno;
   }
+  imprimindo: boolean = false;
 
-  exportPdf() {
-    //Buscar a imagem conforme a unidade de negocio
-    let img = new Image();
-    img.src = this.autenticacaoService._lojaEstilo.imagemLogotipo;;
+  mostrarImpressao() {
+    this.imprimindo = true;
+  }
 
-    let doc = new jsPDF();
 
-    if (img.src.includes('Unis')) doc.addImage(img, 'png', 14, 10, 15, 10);
-    else doc.addImage(img, 'png', 14, 10, 17, 10);
+  gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
 
-    doc.setFont(undefined, 'bold').setFontSize(16).text("Resumo do Sistema VRF", 70, 25);
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome:", 14, 37);
-    doc.setFontSize(11).text(this.nomeCliente != undefined ? this.nomeCliente : '', 26, 37, {
-      maxWidth: 54,
-      align: 'left'
-    });
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Nome da Obra:", 80, 37);
-    doc.setFontSize(11).text(this.nomeObra != undefined ? this.nomeObra : '', 108, 37, {
-      maxWidth: 45,
-      align: 'left'
-    });
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Telefone:", 153, 37);
-    doc.setFontSize(11).text(this.telefone != undefined ? this.stringUtils.formataTextoTelefone(this.telefone) : '', 170, 37, {
-      maxWidth: 30,
-      align: 'left'
-    });
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("E-mail:", 14, 44);
-    doc.setFontSize(11).text(this.email != undefined ? this.email : '', 27, 44, {
-      maxWidth: 75,
-      align: 'left'
-    });
-
-    doc.setFont('helvetica', 'normal').setFontSize(11).text("Observações:", 108, 44);
-    doc.setFontSize(11).text(this.observacao != undefined ? this.observacao : '', 133, 44, {
-      maxWidth: 66,
-      align: 'left'
-    });
-
-    let columnsEvaps = [['Produto', 'Qtde', 'Capacidade(BTU/h)', 'Capacidade(Kcal/h)', 'Total(Kcal/h)']];
-
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Evaporadoras", 14, 60);
-    autoTable(doc, {
-      head: columnsEvaps,
-      body: this.montarDadosParaPDF(this.evaporadorasSelecionadas),
-      styles: { halign: 'center' },
-      startY: 61,
-      didParseCell: (data) => {
-        if (data.column.dataKey == 0) {
-          data.cell.styles.halign = "left";
-        }
+    doc.html(htmlPdf, {
+      margin: [margins.top, margins.right, margins.bottom, margins.left],
+      callback: (doc) => {
+        doc.text('página 1', 520.3 / 2, 842 - 20);
+        doc.save('calculo_vrf');
+        let x: string = doc.output('bloburl').toString();
+        window.open(x);
+        // htmlPdf.style.width = '';
+        this.imprimindo = false;
       }
     });
+    return;
+  }
 
-    const head = [['Produto', 'Quantidade', 'Capacidade(Kcal/h)']];
+  gerarPDF2paginas(doc: jsPDF, margins: any, alturaPagina: number) {
 
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 1 condensadora", 14, 120);
-    doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 120, { align: 'left' });
-    doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada1aparelho) + " %", 182, 120, { align: 'left', maxWidth: 19 });
-    let produtos = this.montarDadosParaPDF(this.combinacaoCom1aparelhos);
-    if (produtos.length <= 0) {
+    //TENTAR COLOCAR AS DIV'S EM UMA LISTA E FAZER APENAS UM FOR PARA IR ADICIONANDO
 
+    let logo = document.getElementById("logo").cloneNode(true) as HTMLElement;
+    let titulo = document.getElementById("titulo").cloneNode(true) as HTMLElement;
+    let formulario = document.getElementById("formulario").cloneNode(true) as HTMLElement;
+    let opcao1;
+    let opcao2;
+    let opcao3;
+
+    let filho = document.getElementById("div-filho");
+    let filho2 = filho.cloneNode(true) as HTMLElement;
+
+    filho.append(logo);
+    filho.append(titulo);
+    filho.append(formulario);
+
+    filho2.append(logo.cloneNode(true) as HTMLElement);
+    let evaps = document.getElementById("evaps");
+    if (filho.clientHeight + evaps.clientHeight > alturaPagina) {
+      //jogamos para outra página ou iremos quebrar a lista
+      filho2.append(evaps.cloneNode(true) as HTMLElement);
     }
-    let data = produtos.splice(1, 1);
-    autoTable(doc, {
-      head: head,
-      body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-      styles: { halign: 'center' },
-      startY: 122,
-      foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom1aparelhos))]],
-      didParseCell: (data) => {
-        if (data.column.dataKey == 0) {
-          data.cell.styles.halign = "left";
-        }
+    else {
+      filho.append(evaps.cloneNode(true) as HTMLElement);
+    }
+
+    if (this.opcao1) {
+      opcao1 = document.getElementById("opcao1");
+      if (filho2.clientHeight > 0) {
+        //evaps jão esta na folha2
+        filho2.append(opcao1.cloneNode(true) as HTMLElement);
       }
-    });
+      else if (filho.clientHeight + opcao1.clientHeight > alturaPagina) {
+        //jogamos para outra página
+        filho2.append(opcao1.cloneNode(true) as HTMLElement);
+      }
+      else {
+        filho.append(opcao1.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    if (this.opcao2) {
+      opcao2 = document.getElementById("opcao2");
+      if (filho2.clientHeight > 0) {
+        //evaps jão esta na folha2
+        filho2.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+      else if (filho.clientHeight + opcao2.clientHeight > alturaPagina) {
+        //jogamos para outra página
+        filho2.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+      else {
+        filho.append(opcao2.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    if (this.opcao3) {
+      opcao3 = document.getElementById("opcao3");
+      
+      if (filho2.clientHeight > 0) {
+        filho2.append(opcao3.cloneNode(true) as HTMLElement);
+      }
+      else if (filho.clientHeight + opcao3.clientHeight > alturaPagina) {
+        filho2.append(opcao3.cloneNode(true) as HTMLElement);
+        
+      }
+      else {
+        filho.append(opcao3.cloneNode(true) as HTMLElement);
+      }
+    }
+
+    let rodape = document.getElementById("rodape");
+    filho2.append(rodape.cloneNode(true) as HTMLElement);
+
+    let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
+    pai.append(filho.cloneNode(true) as HTMLElement);
+
     
 
-    if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 2 condensadoras", 14, 165);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 165, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada2aparelhos) + " %", 182, 165, { align: 'left', maxWidth: 19 });
-      produtos = this.montarDadosParaPDF(this.combinacaoCom2aparelhos);
-      data = produtos.splice(1, 2);
-      autoTable(doc, {
-        head: head,
-        body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-        styles: { halign: 'center' },
-        startY: 167,
-        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom2aparelhos))]],
-        didParseCell: (data) => {
-          if (data.column.dataKey == 0) {
-            data.cell.styles.halign = "left";
-          }
-        }
-      });
-    }
+    doc.html(pai, {
+      margin: [margins.top, margins.right, margins.bottom, margins.left],
+      callback: (doc) => {
+        doc.text('página 1', 520.3 / 2, 842 - 20);
+        doc.addPage('pt', 'p');
+        doc.html(filho2, {
+          margin: [0, margins.right, margins.bottom, margins.left],
+          callback: (doc) => {
+            doc.text('página 2', 520.3 / 2, 842 - 25);
+            let x: string = doc.output('bloburl').toString();
+            window.open(x);
+            while (filho.hasChildNodes()) {
+              filho.removeChild(filho.firstChild);
+            };
+            this.imprimindo = false;
+          }, y: 855
+        });
+      }, html2canvas: { scale: 1 }
+    });
+  }
 
-    if (this.descarga != 52) {
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Opção com 3 condensadoras", 14, 210);
-      doc.setFont('helvetica', 'bold').setFontSize(11).text("Simultaneidade:", 151, 210, { align: 'left' });
-      doc.setFont('helvetica', 'bold').setFontSize(11).text(this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.simultaneidadeCalculada3aparelhos) + " %", 182, 210, { align: 'left', maxWidth: 19 });
-      produtos = this.montarDadosParaPDF(this.combinacaoCom3aparelhos);
-      autoTable(doc, {
-        head: head,
-        body: produtos.length <= 0 ? [["Não existem condensadoras para esse conjunto de evaporadoras"]] : produtos,
-        styles: { halign: 'center' },
-        startY: 212,
-        foot:[['', "Total: ", this.moedaUtils.formatarParaFloatUmaCasaReturnZero(this.somarTotalCondensadoras(this.combinacaoCom3aparelhos))]],
-        didParseCell: (data) => {
-          if (data.column.dataKey == 0) {
-            data.cell.styles.halign = "left";
-          }
-        }
-      });
-    }
+  exportPdf() {
+    let doc = new jsPDF('p', 'pt', 'a4');
 
-    doc.setFont('helvetica', 'bold').setFontSize(8).text("ATENÇÃO:", 14, 280);
-    let rodape = "O CALCULO É REALIZADO ATRAVÉS DA SIMULTANEIDADE APROXIMADA DE ACORDO COM O MANUAL TÉCNICO DO " +
-      "FABRICANTE. PARA MAIS INFORMAÇÕES , ENTRE EM CONTATO COM NOSSA EQUIPE COMERCIAL: SP - (11) 4858-2434";
-    doc.setFont('helvetica', 'normal').setFontSize(8).text(rodape, 30, 280, { maxWidth: 174 });
+    let margins = {
+      top: 40,
+      bottom: 40,
+      left: 40,
+      right: 40
+    };
 
+    let alturaPagina = 842 - 80;
     doc.setProperties({ title: "calculo_vrf" });
-    doc.save('calculo_vrf');
-    let x: string = doc.output('bloburl').toString();
-    window.open(x);
+    doc.setFontSize(2);
+
+    let htmlPdf = document.getElementById("html-pdf");
+
+    let altHtmlPdf = htmlPdf.clientHeight;
+
+    if (altHtmlPdf < alturaPagina) {
+      this.gerarPDF1pagina(doc, htmlPdf, margins);
+      return;
+    }
+
+    this.gerarPDF2paginas(doc, margins, alturaPagina);
   }
 
   criarForm() {
     this.form = this.fb.group({
       fabricanteSelecionado: ['', [Validators.required]]
     });
+  }
 
+  criarForm2() {
     this.form2 = this.fb.group({
       voltagem: ['', [Validators.required]],
       descarga: ['', [Validators.required]],
       simultaneidade: ['', [Validators.required]],
       qtdeCondensadora: ['', [Validators.required]],
       ciclo: ['', [Validators.required]]
-    })
+    });
   }
 
   buscarProduto() {
+    this.carregando = true;
     this.produtoService.listarProdutosPropriedadesAtivos(false, false).toPromise().then((r) => {
       if (r != null) {
         this.produtosDados = r;
         this.filtrarProdutosVrf();
       }
     }).catch((e) => {
-
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
     });
   }
 
   filtrarProdutosVrf() {
     this.produtosVrf = this.produtosDados.filter(x => Number.parseInt(x.idPropriedade) == 1 && x.idValorPropriedadeOpcao == 12);
 
-    this.buscarFabricantes();
     this.buscarEvaporadoras();
+    this.buscarFabricantes();
     this.buscarCondensadoras();
+    this.carregando = false;
   }
 
   buscarCondensadoras() {
@@ -294,37 +372,50 @@ export class CalculadoraVrfComponent implements OnInit {
 
         let voltagem: boolean = false;
         let descarga: boolean = false;
-        let kcal: boolean = false;
+        let kw: boolean = false;
         let ciclo: boolean = false;
 
         lista.forEach(l => {
 
           produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
-          //voltagem
+
           if (Number.parseInt(l.idPropriedade) == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
             produtoTabela.voltagem = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
-          //descarga
+
           if (Number.parseInt(l.idPropriedade) == 3) {
             descarga = true;
             produtoTabela.descarga = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
-          //kcal
+
           if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
-            kcal = true;
+            kw = true;
+            produtoTabela.kw = l.valorPropriedade;
+            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
+          }
+
+          if (Number.parseInt(l.idPropriedade) == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            kw = true;
             produtoTabela.kcal = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
           }
+
+          if (Number.parseInt(l.idPropriedade) == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            kw = true;
+            produtoTabela.hp = l.valorPropriedade;
+            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
+          }
+
           if (Number.parseInt(l.idPropriedade) == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
         });
 
-        if (voltagem && descarga && kcal && ciclo) {
+        if (voltagem && descarga && kw && ciclo) {
           this.condensadoras.push(produtoTabela);
         }
       }
@@ -338,9 +429,9 @@ export class CalculadoraVrfComponent implements OnInit {
       if (evap.length > 0) {
         let lista = this.produtosDados.filter(p => p.produto == x.produto);
 
-        let temKcal = lista.filter(t => Number.parseInt(t.idPropriedade) == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
+        let temKw = lista.filter(t => Number.parseInt(t.idPropriedade) == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
 
-        if (temKcal.length > 0) {
+        if (temKw.length > 0) {
           let produtoTabela = new ProdutoTabela();
           produtoTabela.id = lista[0].id;
           produtoTabela.fabricante = lista[0].fabricante;
@@ -352,10 +443,13 @@ export class CalculadoraVrfComponent implements OnInit {
 
           lista.forEach(l => {
             if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
-              produtoTabela.kcal = l.valorPropriedade;
+              produtoTabela.kw = l.valorPropriedade;
             }
             if (Number.parseInt(l.idPropriedade) == 5) {
               produtoTabela.btu = l.valorPropriedade;
+            }
+            if (Number.parseInt(l.idPropriedade) == 10) {
+              produtoTabela.kcal = l.valorPropriedade;
             }
 
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
@@ -403,22 +497,23 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarSimultaneidades() {
-    this.lstSimultaneidades.push({ title: eSimultaneidade.Noventa, value: eSimultaneidade.Noventa, label: eSimultaneidade.Noventa },
-      { title: eSimultaneidade.VoventaECinco, value: eSimultaneidade.VoventaECinco, label: eSimultaneidade.VoventaECinco },
-      { title: eSimultaneidade.Cem, value: eSimultaneidade.Cem, label: eSimultaneidade.Cem },
-      { title: eSimultaneidade.CentoECinco, value: eSimultaneidade.CentoECinco, label: eSimultaneidade.CentoECinco },
-      { title: eSimultaneidade.CentoEDez, value: eSimultaneidade.CentoEDez, label: eSimultaneidade.CentoEDez },
-      { title: eSimultaneidade.CentoEQuinze, value: eSimultaneidade.CentoEQuinze, label: eSimultaneidade.CentoEQuinze },
-      { title: eSimultaneidade.CentoEVinte, value: eSimultaneidade.CentoEVinte, label: eSimultaneidade.CentoEVinte },
-      { title: eSimultaneidade.CentoEVinteECinco, value: eSimultaneidade.CentoEVinteECinco, label: eSimultaneidade.CentoEVinteECinco });
+    this.lstSimultaneidades.push(
+      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
+      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
+      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
+      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
+      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
+    );
   }
 
   buscarVoltagens() {
     let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
 
     voltagens.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstVoltagens.push(opcao);
+      if (x.valor != "127") {
+        let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+        this.lstVoltagens.push(opcao);
+      }
     });
   }
 
@@ -439,8 +534,8 @@ export class CalculadoraVrfComponent implements OnInit {
 
   filtrarEvaporadoras(): ProdutoTabela[] {
     let fabricante = this.form.controls.fabricanteSelecionado.value;
-
-    return this.evaporadoras.filter(x => x.fabricante == fabricante);
+    let evaps = this.evaporadoras.filter(x => x.fabricante == fabricante).slice()
+    return evaps;
   }
 
   adicionarEvaporadoras() {
@@ -458,6 +553,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: ProdutoTabela) => {
       if (resultado) {
+
         this.arrumarProdutosRepetidos(resultado);
         this.digitouQte(resultado);
         this.limparCombinacoesCondensadoras();
@@ -472,7 +568,6 @@ export class CalculadoraVrfComponent implements OnInit {
     this.digitouQte(produto);
   }
 
-  desabilita: boolean = false;
   filtrarQtdeCondensadora() {
     if (this.descarga == 52) {
       this.qtdeCondensadora = 1;
@@ -496,31 +591,33 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  totalEvaporadora(produto: ProdutoTabela) {
-    produto.totalKcal = this.moedaUtils.formatarParaFloatUmaCasaReturnZero(produto.qtde * Number.parseFloat(produto.kcal));
-    return produto.totalKcal;
-  }
-
   arrumarProdutosRepetidos(produto: ProdutoTabela) {
-    let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto);
+    let repetidos = this.evaporadorasSelecionadas.filter(x => x.produto == produto.produto).slice();
 
     if (repetidos.length >= 1) {
       this.evaporadorasSelecionadas.forEach(x => {
-        const index = this.evaporadorasSelecionadas.findIndex(f => f.produto == produto.produto);
         if (x.produto == produto.produto) {
-          x.qtde = x.qtde == undefined ? 1 : x.qtde;
+          x.qtde = x.qtde == undefined ? 1 : x.qtde + 1;
           this.digitouQte(x);
           return;
         }
       });
     }
     else {
-      this.evaporadorasSelecionadas.push(produto);
+      let produto2 = new ProdutoTabela();
+      produto2.fabricante = produto.fabricante;
+      produto2.produto = produto.produto;
+      produto2.descricao = produto.descricao;
+      produto2.id = produto.id;
+      produto2.kcal = produto.kcal;
+      produto2.kw = produto.kw;
+      produto2.qtde = 1;
+      produto2.linhaBusca = produto.linhaBusca;
+      produto2.linhaProduto = produto.linhaProduto;
+      this.evaporadorasSelecionadas.push(produto2);
     }
   }
 
-  lstCiclos: SelectItem[] = [];
-  ciclo: string;
   buscarCiclos() {
     let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
 
@@ -529,6 +626,7 @@ export class CalculadoraVrfComponent implements OnInit {
       this.lstCiclos.push(opcao);
     });
   }
+
   filtrarCondensadoras() {
 
     this.condensadorasFiltradas = new Array();
@@ -545,7 +643,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   limparFiltros() {
     if (this.evaporadorasSelecionadas.length > 0) {
-      this.sweetalertService.confirmarSemMostrar("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
+      this.sweetalertService.dialogo("", "Ao mudar o fabricante, as condensadoras calculadas e as evaporadoras selecionadas serão excluidas! Tem certeza que deseja alterar o fabricante selecionado?").subscribe(result => {
         if (!result) {
           this.fabricanteSelecionado = this.fabricante;
           return;
@@ -574,17 +672,20 @@ export class CalculadoraVrfComponent implements OnInit {
     this.simultaneidadeCalculada3aparelhos = 0;
 
     this.calculado = false;
+    this.opcao1 = false;
+    this.opcao2 = false;
+    this.opcao3 = false;
   }
 
   limparFiltrosCondensadoras() {
-    this.voltagem = 0;
-    this.descarga = 0;
-    this.simultaneidade = 0;
-    this.qtdeCondensadora = 0;
+    this.criarForm2();
+    this.opcao1 = false;
+    this.opcao2 = false;
+    this.opcao3 = false;
   }
 
   calcularCondensadoras() {
-    // this.calculado = false;
+
     if (!this.validacaoFormularioService.validaForm(this.form2)) {
       return;
     }
@@ -597,48 +698,190 @@ export class CalculadoraVrfComponent implements OnInit {
     this.limparCombinacoesCondensadoras();
 
     let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
-      .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+      .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
 
-    let simultaneidadeFloat = this.simultaneidade / 100;
+    let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
+    let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin);
+
+    let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
+    let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax);
 
     this.filtrarCondensadoras();
 
-    let cond = [];
-    this.condensadorasFiltradas.forEach(x => {
-      cond.push([x.produto, Math.round(Number.parseFloat(x.kcal))])
-    });
+    let capacidadeMinima = somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100);
 
-    let condensadora1 = this.calcularCombinacaoCom1aparelho(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    this.simultaneidadeCalculada1aparelho = this.calcularSimultaneidade(condensadora1, somaCapacidadeEvaporadoras);
-    this.combinacaoCom1aparelhos = this.criarRetornoCondensadoras(condensadora1);
+    this.combinacaoCom1aparelhos = this.buscarMelhorCombinacao1Condensadora(capacidadeMinima, this.condensadorasFiltradas,
+      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
-    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    this.simultaneidadeCalculada2aparelhos = this.calcularSimultaneidade(condensadoras2, somaCapacidadeEvaporadoras);
-    this.combinacaoCom2aparelhos = this.criarRetornoCondensadoras(condensadoras2);
+    this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
-    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(somaCapacidadeEvaporadoras / simultaneidadeFloat, cond);
-    this.simultaneidadeCalculada3aparelhos = this.calcularSimultaneidade(condensadoras3, somaCapacidadeEvaporadoras);
-    this.combinacaoCom3aparelhos = this.criarRetornoCondensadoras(condensadoras3);
-
+    this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
     this.calculado = true;
   }
-  calculado: boolean = false;
+  buscarMelhorCombinacao1Condensadora(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
+    simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
+    let condensadora1 = this.calcularCombinacaoCom1aparelho(capacidadeMinima, this.condensadorasFiltradas);
 
+    let candidatas = [];
+    condensadora1.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x).slice();
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat)
+        candidatas.push([prodUnificado, simultaneidade]);
+    });
+
+    if (candidatas.length == 0) return new Array();
+
+    let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
+
+    let maior = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
+
+    this.simultaneidadeCalculada1aparelho = maior[0][1];
+    return this.criarRetornoCondensadoras(maior[0][0]);
+  }
+
+  buscarMelhorCombinacao2Condensadoras(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
+    simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
+
+    let condensadoras2 = this.calcularCombinacaoCom2aparelhos(capacidadeMinima, condensadoras);
+
+    let candidatas = [];
+    condensadoras2.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x).slice();
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+        candidatas.push([prodUnificado, simultaneidade]);
+      }
+    });
+
+    if (candidatas.length == 0) return new Array();
+
+    let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
+
+    let maiores = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
+
+    let melhor = this.selecionarMelhorOpcao2Condensadoras(maiores);
+
+    this.simultaneidadeCalculada2aparelhos = melhor[1];
+    return this.criarRetornoCondensadoras(melhor[0]);
+  }
+
+  buscarMelhorCombinacao3Condensadoras(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
+    simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
+
+    let condensadoras3 = this.calcularCombinacaoCom3aparelhos(capacidadeMinima, condensadoras);
+
+    let candidatas = [];
+    condensadoras3.forEach(x => {
+      let prodUnificado = this.unificarEquipamentosIguais(x).slice();
+      let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
+      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+        candidatas.push([prodUnificado, simultaneidade]);
+      }
+    });
+
+    if (candidatas.length == 0) return new Array();
+
+    let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
+
+    let maiores = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
+
+    let melhor = this.selecionarMelhorOpcao3Condensadoras(maiores);
+
+    this.simultaneidadeCalculada3aparelhos = maiorSimultaneidadeOpcoes;
+    return this.criarRetornoCondensadoras(melhor[0]);
+  }
+
+  pegarMaiorSimultaneidade(candidatas: any) {
+    let maior = 0;
+    candidatas.forEach(prod => {
+      let simultaneidadeAtual = prod[1];
+      if (simultaneidadeAtual > maior) {
+        maior = simultaneidadeAtual;
+      }
+    });
+
+    return maior;
+  }
+
+  selecionarMaioresCondensadoras(candidatas: any, maior: number) {
+    let maiores = [];
+    candidatas.forEach(x => {
+      if (x[1] == maior) {
+        maiores.push(x);
+      }
+    });
+
+    return maiores;
+  }
+
+  selecionarMelhorOpcao2Condensadoras(maiores: any[]) {
+    let melhorOpcao = [];
+    let variacao = 0;
+    maiores.forEach(x => {
+      let variacaoAtual = x[0].length > 1 ? Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) : 0;
+      if (variacao == 0) {
+        variacao = variacaoAtual;
+        melhorOpcao = x;
+      }
+      else {
+        if (variacaoAtual <= variacao) {
+          melhorOpcao = x;
+        }
+      }
+    });
+
+    return melhorOpcao;
+  }
+
+  selecionarMelhorOpcao3Condensadoras(maiores: any[]) {
+    let melhorOpcao = [];
+    let variacao = 0;
+    maiores.forEach(x => {
+      let variacaoAtual = 0;
+      if (x[0].length == 1) {
+        variacaoAtual = 0;
+      }
+      if (x[0].length == 2) {
+        variacaoAtual = Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw));
+      }
+      if (x[0].length == 3) {
+        variacaoAtual = Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][1].kw)) +
+          Math.abs(Number.parseFloat(x[0][0].kw) - Number.parseFloat(x[0][2].kw)) +
+          Math.abs(Number.parseFloat(x[0][1].kw) - Number.parseFloat(x[0][2].kw));
+      }
+
+      if (variacao == 0) {
+        variacao = variacaoAtual;
+        melhorOpcao = x;
+      }
+      else {
+        if (variacaoAtual <= variacao) {
+          melhorOpcao = x;
+        }
+      }
+    });
+
+    return melhorOpcao;
+  }
 
   criarRetornoCondensadoras(condensadoras: any[]): ProdutoTabela[] {
     let retorno: ProdutoTabela[] = new Array();
 
     for (let i = 0; i < condensadoras.length; i++) {
       this.condensadorasFiltradas.forEach(y => {
-        if (y.produto == condensadoras[i][0]) {
+        if (y.produto == condensadoras[i].produto) {
           let produto2 = new ProdutoTabela();
           produto2.fabricante = y.fabricante;
           produto2.produto = y.produto;
           produto2.descricao = y.descricao;
           produto2.id = y.id;
           produto2.kcal = y.kcal;
-          produto2.qtde = condensadoras[i][2];
+          produto2.qtde = condensadoras[i].qtde;
+          produto2.hp = y.hp;
           retorno.push(produto2);
         }
       });
@@ -652,107 +895,118 @@ export class CalculadoraVrfComponent implements OnInit {
     let simultaneidade = 0;
     if (arrayProdutosEscolhidos.length > 0) {
       for (let i1 = 0; i1 < arrayProdutosEscolhidos.length; i1++) {
-        capacidadeProdutosEscolhidos += (arrayProdutosEscolhidos[i1][1] * arrayProdutosEscolhidos[i1][2]);
+        capacidadeProdutosEscolhidos += (arrayProdutosEscolhidos[i1].kw * arrayProdutosEscolhidos[i1].qtde);
       }
       simultaneidade = somaCapacidadeEvaporadoras / capacidadeProdutosEscolhidos;
     }
     return Math.round(simultaneidade * 10000) / 100;
   }
 
-  unificarEquipamentosIguais(arrayProdutosEscolhidos) {
-    let x = 0;
-    let arrayCodigos = [];
-    let arrayProdutosUnificados = [];
-    if (arrayProdutosEscolhidos.length > 0) {
-      for (let i = 0; i < arrayProdutosEscolhidos.length; i++) {
-        let index = arrayCodigos.indexOf(arrayProdutosEscolhidos[i][0]);
-        if (index === -1) {
-          arrayCodigos.push(arrayProdutosEscolhidos[i][0]);
-          arrayProdutosUnificados[x] = arrayProdutosEscolhidos[i];
-          arrayProdutosUnificados[x][2] = 1;
-          x++;
-        } else {
-          arrayProdutosUnificados[index][2] += 1;
-        }
-
+  unificarEquipamentosIguais(produtosEscolhidos) {
+    let retorno = [];
+    produtosEscolhidos.forEach(x => {
+      let produto = new ProdutoTabela();
+      produto.id = x.id;
+      produto.linhaBusca = x.linhaBusca;
+      produto.produto = x.produto;
+      produto.fabricante = x.fabricante;
+      produto.descricao = x.descricao;
+      produto.linhaProduto = x.linhaProduto;
+      produto.tipoUnidade = x.tipoUnidade;
+      produto.voltagem = x.voltagem;
+      produto.capacidade = x.capacidade;
+      produto.kcal = x.kcal;
+      produto.kw = x.kw;
+      produto.hp = x.hp;
+      produto.descarga = x.descarga;
+      produto.btu = x.btu;
+      produto.qtde = x.qtde;
+      if (JSON.stringify(retorno).indexOf(x.id) > -1) {
+        let item = retorno.filter(p => p.id == x.id)[0];
+        item.qtde += 1;
       }
-    }
+      else {
+        produto.qtde = 1;
+        retorno.push(produto);
+      }
+    });
 
-    return arrayProdutosUnificados;
+    return retorno;
   }
 
-  calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades) {
-    let ret = [];
-    let minimoAtingido = -1;
-    for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
-      let estaCapcidade = arrayCapacidades[i1][1];
+  calcularCombinacaoCom1aparelho(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
+    let candidatas = [];
+    arrayCapacidades.forEach(x => {
+      let estaCapcidade = Number.parseFloat(x.kw);
       if (estaCapcidade >= capacidadeMinima) {
-        if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
-          minimoAtingido = estaCapcidade;
-          ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]]];
-        }
+        candidatas.push([x]);
       }
-    }
-    return this.unificarEquipamentosIguais(ret);
+    });
+
+    return candidatas;
   }
 
-  calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades) {
-    let ret = [];
-    let minimoAtingido = -1;
+  calcularCombinacaoCom2aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
+    let combinacaoes = [];
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
-        let estaCapcidade = arrayCapacidades[i1][1] + arrayCapacidades[i2][1];
+        let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw);
         if (estaCapcidade >= capacidadeMinima) {
-          if (estaCapcidade == minimoAtingido) {
-            let variacaoAtual = Math.abs(ret[0][1] - ret[1][1]);
-            let candidato = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]]];
-            let variacaoNova = Math.abs(candidato[0][1] - candidato[1][1]);
-            if (variacaoNova < variacaoAtual) {
-              ret = candidato;
-            }
-          }
-          if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
-            minimoAtingido = estaCapcidade;
-            ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]]];
-          }
+          if (Number.parseInt(arrayCapacidades[i1].id) < Number.parseInt(arrayCapacidades[i2].id))
+            combinacaoes.push([arrayCapacidades[i1], arrayCapacidades[i2]]);
+          else combinacaoes.push([arrayCapacidades[i2], arrayCapacidades[i1]]);
         }
       }
     }
-    return this.unificarEquipamentosIguais(ret);
+
+    return this.removerDuplicados(combinacaoes);
   }
 
-  calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades) {
-    let ret = [];
-    let minimoAtingido = -1;
+  calcularCombinacaoCom3aparelhos(capacidadeMinima, arrayCapacidades: ProdutoTabela[]) {
+    let combinacaoes = [];
 
     for (let i1 = 0; i1 < arrayCapacidades.length; i1++) {
       for (let i2 = 0; i2 < arrayCapacidades.length; i2++) {
         for (let i3 = 0; i3 < arrayCapacidades.length; i3++) {
-          let estaCapcidade = arrayCapacidades[i1][1] + arrayCapacidades[i2][1] + arrayCapacidades[i3][1];
-          ;
+          let estaCapcidade = Number.parseFloat(arrayCapacidades[i1].kw) + Number.parseFloat(arrayCapacidades[i2].kw) + + Number.parseFloat(arrayCapacidades[i3].kw);
           if (estaCapcidade >= capacidadeMinima) {
-            if (estaCapcidade == minimoAtingido) {
-              let variacaoAtual = Math.abs(ret[0][1] - ret[1][1]) + Math.abs(ret[0][1] - ret[2][1]) + Math.abs(ret[1][1] - ret[2][1]);
-              let candidato = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]], [arrayCapacidades[i3][0], arrayCapacidades[i3][1]]];
-              let variacaoNova = Math.abs(candidato[0][1] - candidato[1][1]) + Math.abs(candidato[0][1] - candidato[2][1]) + Math.abs(candidato[1][1] - candidato[2][1]);
-              if (variacaoNova < variacaoAtual) {
-                ret = candidato;
-
-              }
-            }
-            if (estaCapcidade < minimoAtingido || minimoAtingido == -1) {
-              minimoAtingido = estaCapcidade;
-              ret = [[arrayCapacidades[i1][0], arrayCapacidades[i1][1]], [arrayCapacidades[i2][0], arrayCapacidades[i2][1]], [arrayCapacidades[i3][0], arrayCapacidades[i3][1]]];
-            }
+            let item = [arrayCapacidades[i1], arrayCapacidades[i2], arrayCapacidades[i3]];
+            item.sort((a, b) => {
+              if (a.id < b.id) return -1;
+              if (b.id > a.id) return 1;
+              return 0;
+            });
+            combinacaoes.push(item);
           }
         }
       }
     }
-    return this.unificarEquipamentosIguais(ret);
+
+
+    return this.removerDuplicados(combinacaoes);
+  }
+
+  removerDuplicados(combinacaoes) {
+    let retorno = [];
+    combinacaoes.forEach((item) => {
+      var duplicated = retorno.findIndex(redItem => {
+        return JSON.stringify(item) == JSON.stringify(redItem);
+      }) > -1;
+
+      if (!duplicated) {
+        retorno.push(item);
+      }
+    });
+
+    return retorno;
   }
 
   somarTotalCondensadoras(lstCondensadora: ProdutoTabela[]) {
     return lstCondensadora
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
+  }
+
+  voltar(){
+    this.imprimindo = false;
   }
 }
