@@ -34,8 +34,10 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
   displayModal: boolean = false;
   prodsTela: ProdutoTela[] = new Array();
   prodsArray: ProdutoTela[] = new Array();
-
+  carregandoProdutos:boolean = true;
+  carregando:boolean;
   ngOnInit(): void {
+    
     this.displayModal = true;
     this.selecProdInfoPassado = this.option.data;
     this.transferirDados();
@@ -44,6 +46,8 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
   }
 
   copiarOpcao(opcaoClone: OrcamentosOpcaoResponse) {
+    if(this.carregandoProdutos) return;
+
     let listaProdutosOpcao = opcaoClone.listaProdutos.slice();
     //O que queremos da opção
     // lista de produtos => precisamos para buscar os produtos 
@@ -59,18 +63,23 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
     let retorno = new Array<ProdutoTela>();
     //vamos verificar se o produto ainda existe para venda
     let item = new Array<ProdutoTela>();
+    let itensInexistententes = new Array<string>();
     produtos.forEach(produto => {
       item = this.prodsArray.filter(x => x.produtoDto.produto == produto.produto);
 
       if (item.length == 0) {
         //vamos adicionar na lista para mostrar que esse produto não está mais a venda
-        this.alertaService.mostrarMensagem("Os produtos abaixo não estão mais a venda!/n");
+        itensInexistententes.push(produto.fabricante + "/" + produto.produto);
+
         return;
       }
       item[0].qtde = produto.qtde;
       retorno.push(item[0]);
     });
-
+    if (itensInexistententes.length > 0) {
+      let texto = "Os produtos abaixo não estão mais a venda!\n"+ itensInexistententes.join('\n');
+      this.alertaService.mostrarMensagem(texto);
+    }
     //retornar o item
     return retorno;
   }
@@ -89,8 +98,8 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
 
       this.prodsArray.push(xy);
     }
+
+    this.carregandoProdutos = false;
+
   }
-
-
-
 }

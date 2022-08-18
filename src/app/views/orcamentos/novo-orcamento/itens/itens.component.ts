@@ -111,6 +111,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   abriModalOpcoes() {
+    if (this.carregandoProds) {
+      //ainda não carregou, vamos esperar....
+      return false;
+    }
+    
     if (this.novoOrcamentoService.lstProdutosSelecionados.length > 0) {
       this.sweetalertService.dialogo("Atenção", "Ao clonar uma opção a lista de produtos e formas de pagamentos serão sobrepostas!")
         .subscribe(retorno => {
@@ -148,7 +153,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     });
   }
 
-  addFormaPagtoClonados(formasPagtos:any[]){
+  addFormaPagtoClonados(formasPagtos: any[]) {
     //acho que precisamos verificar os tipos dos pagamentos para poder atribuir nos lugares certos
     let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
     if (pagtoAvista.length > 0) {
@@ -158,16 +163,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
 
     let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
-      if (pagtoPrazo.length > 0) {
-        this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
-        this.formaPagto.setarQtdeParcelas();
-
-        this.novoOrcamentoService.qtdeParcelas;
-        // this.formaPagto.cdref.detectChanges();
-        // this.cdref.detectChanges();
-        this.formaPagto.setarSiglaPagto();
-      }
-    debugger;
+    if (pagtoPrazo.length > 0) {
+      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
+      this.formaPagto.setarQtdeParcelas();
+      this.novoOrcamentoService.qtdeParcelas;
+      this.formaPagto.setarSiglaPagto();
+    }
     this.formaPagto.atribuirFormasPagto();
   }
 
@@ -182,7 +183,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.inserirProduto();
 
-    produtoOrcamento.forEach(item =>{
+    produtoOrcamento.forEach(item => {
       this.digitouQte(item);
     });
   }
@@ -208,7 +209,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     await this.formaPagto.buscarFormasPagto(this.param);
 
-    if (this.param != undefined) {
+    // if (this.param != undefined) {
       this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
@@ -221,7 +222,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.alertaService.mostrarErroInternet(e);
         this.carregandoProds = false;
       });
-    }
+    // }
 
     if (this.editando) this.formaPagto.editando = true;
   }
@@ -693,7 +694,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
   }
 
-  desabilitarEnvio:boolean = false;
+  desabilitarEnvio: boolean = false;
   salvarOrcamento() {
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0) {

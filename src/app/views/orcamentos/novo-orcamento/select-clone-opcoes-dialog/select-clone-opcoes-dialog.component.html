@@ -3,14 +3,14 @@
     <p-accordionTab>
         <ng-template pTemplate="header">
             Opção {{i + 1}}
-            <div class="p-ml-auto p-p-0 p-text-right">
+            <div class="p-ml-auto p-p-0 p-text-right" [ngClass]="{'carregando': carregandoProds}">
                 <span>{{novoOrcamentoService.moedaUtils.formatarMoedaComPrefixo(orcamento.VlTotal)}}</span>
                 <i class="pi pi-fw pi-copy" (click)="copiarOpcao(orcamento)"></i>
             </div>
         </ng-template>
         <ng-template pTemplate="content">
             <p-table #dataTable [value]="orcamento.listaProdutos" [responsive]="true" responsiveLayout="stack"
-                [ngClass]="{'carregando': carregando}" autoLayout="true"
+                 autoLayout="true"
                 styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                 <ng-template pTemplate="header">
                     <tr class="font-size">
