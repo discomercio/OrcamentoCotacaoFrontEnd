@@ -235,7 +235,7 @@
                             </div>
                             <div>
                                 <button pButton pRipple label="{{telaDesktop ? 'Enviar orçamento' : ''}}"
-                                    icon="pi pi-send" (click)="salvarOrcamento()"></button>
+                                    icon="pi pi-send" (click)="salvarOrcamento()" [disabled]="desabilitarEnvio"></button>
                             </div>
                         </div>
                     </div>

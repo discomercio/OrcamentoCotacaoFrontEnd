@@ -95,7 +95,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       this.carregandoProds = false;
     }
     if (param.filtro == "novo" || param.filtro == "iniciar") {
-      this.param = param.filtro;
+      this.param = "novo";
       this.novoOrcamentoService.editarComissao = false;
       this.novoOrcamentoService.editando = false;
       this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
@@ -141,11 +141,34 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       });
 
     ref.onClose.subscribe((resultado: any) => {
-      debugger;
       if (resultado) {
-        this.addListaProdutosClonados(resultado);
+        this.addListaProdutosClonados(resultado.produtos);
+        this.addFormaPagtoClonados(resultado.formasPagtos);
       }
     });
+  }
+
+  addFormaPagtoClonados(formasPagtos:any[]){
+    //acho que precisamos verificar os tipos dos pagamentos para poder atribuir nos lugares certos
+    let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
+    if (pagtoAvista.length > 0) {
+      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista[0];
+      this.formaPagto.checkedAvista = true;
+      this.formaPagto.calcularValorAvista();
+    }
+
+    let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
+      if (pagtoPrazo.length > 0) {
+        this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
+        this.formaPagto.setarQtdeParcelas();
+
+        this.novoOrcamentoService.qtdeParcelas;
+        // this.formaPagto.cdref.detectChanges();
+        // this.cdref.detectChanges();
+        this.formaPagto.setarSiglaPagto();
+      }
+    debugger;
+    this.formaPagto.atribuirFormasPagto();
   }
 
   addListaProdutosClonados(lstProdutosClonados: ProdutoTela[]) {
@@ -179,13 +202,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined ||
       this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == null) {
-      this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
+      this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
       return;
     }
 
     await this.formaPagto.buscarFormasPagto(this.param);
 
-    if (this.param == "novo" || this.param == "iniciar" || this.param == "clone") {
+    if (this.param != undefined) {
       this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
         if (r != null) {
           this.formaPagto.qtdeMaxParcelas = r;
@@ -670,6 +693,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
   }
 
+  desabilitarEnvio:boolean = false;
   salvarOrcamento() {
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0) {
@@ -677,6 +701,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       return;
     }
 
+    this.desabilitarEnvio = true;
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (r != null) {
         this.sweetalertService.sucesso("Orçamento salvo!");
@@ -686,6 +711,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
+      this.desabilitarEnvio = false;
     });
   }
 

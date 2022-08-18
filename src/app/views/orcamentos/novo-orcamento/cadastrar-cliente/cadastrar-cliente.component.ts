@@ -108,6 +108,9 @@ export class CadastrarClienteComponent implements OnInit {
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
       this.filtro = param.filtro;
+      this.criarForm();
+      this.desabilitarCampos();
+      this.desabiltarCamposParaEdicao();
     }
 
     if (param.filtro == "clone") {
@@ -117,8 +120,8 @@ export class CadastrarClienteComponent implements OnInit {
       }
 
 
-      
-      if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined){
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined) {
         this.novoOrcamentoService.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
         this.novoOrcamentoService.orcamentoCloneCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCotacaoDto));
 
@@ -156,11 +159,14 @@ export class CadastrarClienteComponent implements OnInit {
 
   desabilitarCampos() {
 
-    if (this.filtro == undefined) {
+    if (this.filtro == undefined || this.filtro == "novo" || this.filtro == "clone") {
       if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
         this.form.controls.Parceiro.disable();
         this.form.controls.Tipo.disable();
         this.form.controls.VendedorParceiro.disable();
+        // if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
+        //   this.form.controls.ContribuinteICMS.disable();
+        // }
       }
     }
 
@@ -168,16 +174,34 @@ export class CadastrarClienteComponent implements OnInit {
     this.form.controls.Validade.disable();
   }
 
+  formataData(e: Event){
+    let valor = ((e.target) as HTMLInputElement).value;
+    if (valor != "") {
+      // const maskDate = value => {
+      //   return value
+      //     .replace(/\D/g, "")
+      //     .replace(/(\d{2})(\d)/, "$1/$2")
+      //     .replace(/(\d{2})(\d)/, "$1/$2")
+      //     .replace(/(\d{4})(\d)/, "$1");
+      // };
+      return valor
+          .replace(/\D/g, "")
+          .replace(/(\d{2})(\d)/, "$1/$2")
+          .replace(/(\d{2})(\d)/, "$1/$2")
+          .replace(/(\d{4})(\d)/, "$1");
+    }
+  }
+
   desabiltarCamposParaEdicao() {
     if (this.filtro == undefined) {
       this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
         opcao.listaProdutos.forEach(produto => {
           if (produto.idOperacaoAlcadaDescontoSuperior != null) {
+            this.form.controls.Uf.disable();
+            this.form.controls.VendedorParceiro.disable();
             if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
               this.form.controls.ContribuinteICMS.disable();
             }
-            this.form.controls.Uf.disable();
-            this.form.controls.VendedorParceiro.disable();
           }
         });
       });

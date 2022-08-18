@@ -45,31 +45,34 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
 
   copiarOpcao(opcaoClone: OrcamentosOpcaoResponse) {
     let listaProdutosOpcao = opcaoClone.listaProdutos.slice();
-    this.copiarProdutos(listaProdutosOpcao);
     //O que queremos da opção
     // lista de produtos => precisamos para buscar os produtos 
     // forma de pagamento
+    let retorno = { produtos: [], formasPagtos: [] };
+
+    retorno.produtos = this.copiarProdutos(listaProdutosOpcao);
+    retorno.formasPagtos = opcaoClone.formaPagto;
+    this.ref.close(retorno);
   }
 
-  copiarProdutos(produtos:ProdutoOrcamentoDto[]) {
-    debugger;
+  copiarProdutos(produtos: ProdutoOrcamentoDto[]): ProdutoTela[] {
     let retorno = new Array<ProdutoTela>();
     //vamos verificar se o produto ainda existe para venda
     let item = new Array<ProdutoTela>();
-    produtos.forEach(produto =>{
+    produtos.forEach(produto => {
       item = this.prodsArray.filter(x => x.produtoDto.produto == produto.produto);
-    
-      if(item.length == 0){
+
+      if (item.length == 0) {
         //vamos adicionar na lista para mostrar que esse produto não está mais a venda
         this.alertaService.mostrarMensagem("Os produtos abaixo não estão mais a venda!/n");
         return;
       }
       item[0].qtde = produto.qtde;
       retorno.push(item[0]);
-    });  
+    });
 
     //retornar o item
-    this.ref.close(retorno);
+    return retorno;
   }
 
   public limiteMaximo = 1000 * 1000;

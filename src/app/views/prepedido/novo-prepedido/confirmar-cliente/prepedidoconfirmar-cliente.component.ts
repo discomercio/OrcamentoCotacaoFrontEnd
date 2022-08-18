@@ -80,7 +80,6 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
           //quando para nesse ponto, já fomos direcionado para a tela "home"
           //se tiver prepedido é pq veio de DetalhesPrepedido e precisamos passar para o serviço, 
           //pois a loja do dadoscliente esta com o nome e não o código da loja e teremos problemas para buscar os produtos
-          debugger;
           if (this.novoPrepedidoDadosService.prePedidoDto != null)
             this.novoPrepedidoDadosService.prePedidoDto.DadosCliente = r.DadosCliente;
           this.dadosClienteCadastroDto = r.DadosCliente;

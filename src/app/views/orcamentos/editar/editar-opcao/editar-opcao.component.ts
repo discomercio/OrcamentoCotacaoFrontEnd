@@ -154,7 +154,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pagtoPrazo = this.opcaoOrcamento.formaPagto.filter(x => x.tipo_parcelamento != this.itens.constantes.COD_FORMA_PAGTO_A_VISTA);
       if (pagtoPrazo.length > 0) {
         this.itens.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
-        this.setarQtdeParcelas();
+        this.itens.formaPagto.setarQtdeParcelas();
 
         this.itens.novoOrcamentoService.qtdeParcelas;
         this.itens.formaPagto.cdref.detectChanges();
@@ -164,28 +164,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }, 700);
   }
 
-  setarQtdeParcelas() {
-    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pc_qtde;
-      return;
-    }
-    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
-      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde;
-      return;
-    }
-    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
-      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde;
-      return;
-    }
-    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
-      this.itens.novoOrcamentoService.qtdeParcelas = 0;
-      return;
-    }
-    if (this.itens.formaPagto.formaPagtoCriacaoAprazo.tipo_parcelamento == this.itens.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      this.itens.novoOrcamentoService.qtdeParcelas = this.itens.formaPagto.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde;
-      return;
-    }
-  }
+  
 
   salvarOpcao() {
     this.carregando = true;
