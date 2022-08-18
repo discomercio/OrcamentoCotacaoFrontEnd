@@ -300,7 +300,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   buscarFormasPagto() {
     let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
     let comIndicacao: number = 0;
-    let tipoUsuario: number = this.autenticacaoService.tipoUsuario;
+    let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
     if (orcamento.parceiro != null) {
       comIndicacao = 1;

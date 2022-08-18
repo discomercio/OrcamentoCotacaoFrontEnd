@@ -18,7 +18,7 @@ export class UsuarioMeusdadosComponent implements OnInit {
 
         if(this.autenticacaoService._usuarioLogado) {
             this.usuario.nome = this.autenticacaoService._usuarioLogado;
-            this.usuario.tipoUsuario = this.autenticacaoService.tipoUsuario;
+            this.usuario.tipoUsuario = this.autenticacaoService._tipoUsuario;
             this.usuario.loja = this.autenticacaoService._lojaLogado;
             this.usuario.idVendedor = this.autenticacaoService._vendedor;
             this.usuario.idParceiro = this.autenticacaoService._parceiro;

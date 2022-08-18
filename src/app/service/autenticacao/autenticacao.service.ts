@@ -11,7 +11,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { Constantes } from 'src/app/utilities/constantes';
 import { SelectItem } from 'primeng/api';
 import { LojasService } from '../lojas/lojas.service';
-import {Title} from "@angular/platform-browser";
+import { Title } from "@angular/platform-browser";
 
 @Injectable({
   providedIn: 'root'
@@ -22,12 +22,12 @@ export class AutenticacaoService {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
-    private titleService:Title
+    private titleService: Title
   ) {
   }
 
   salvar: boolean = false;
-  usuario:Usuario;
+  usuario: Usuario;
   public lembrarSenhaParaAlterarSenha: boolean;
   public senhaExpirada: boolean = false;
   public _usuarioLogado: string = null;
@@ -37,9 +37,10 @@ export class AutenticacaoService {
   public _lojaLogado: string = null;
   public unidade_negocio: string = null;
   public constantes: Constantes = new Constantes();
-  public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null );
+  public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null);
   public _lojaEstilo: lojaEstilo = new lojaEstilo();
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+  public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
@@ -53,16 +54,17 @@ export class AutenticacaoService {
     this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
     this._permissoes = (user && user.Permissoes) ? user.Permissoes.split(",") : null;
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
+    this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;
     if (!this._lojaLogado) {
-        if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
-          this._lojaLogado = this._lojasUsuarioLogado[0];
-        }
-        else {
-          this._lojaLogado = sessionStorage.getItem("lojaLogada");
-        }
+      if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
+        this._lojaLogado = this._lojasUsuarioLogado[0];
+      }
+      else {
+        this._lojaLogado = sessionStorage.getItem("lojaLogada");
+      }
     }
 
-    this.buscarEstilo(this._lojaLogado); 
+    this.buscarEstilo(this._lojaLogado);
 
     return true;
   }
@@ -79,17 +81,17 @@ export class AutenticacaoService {
   }
 
   montaListaLojas() {
-      if(sessionStorage.getItem('lojas')) {
-        // sessionStorage.getItem('lojas').split(',')
-        // .forEach(x => {
-        //     let item: SelectItem = { label: x, value: x };
-        // this._lojasUsuarioLogado.push(item);
-        // }
-      }
+    if (sessionStorage.getItem('lojas')) {
+      // sessionStorage.getItem('lojas').split(',')
+      // .forEach(x => {
+      //     let item: SelectItem = { label: x, value: x };
+      // this._lojasUsuarioLogado.push(item);
+      // }
     }
+  }
 
   getUsuarioDadosToken(): Usuario {
-    if(this.readToken(this.obterToken())){
+    if (this.readToken(this.obterToken())) {
       this.usuario = new Usuario();
       if (this._usuarioLogado) {
         this.usuario.nome = this._usuarioLogado;
@@ -112,11 +114,11 @@ export class AutenticacaoService {
     msg.push("" + ((erro && erro.message) ? erro.message : erro.toString()));
 
     if (erro && erro.status === 400) {
-        if(erro && erro.error && erro.error.Message) {
-            msg.push(erro.error.Message);
-        } else {
-            msg.push("usuário ou senha inválidos.");
-        }
+      if (erro && erro.error && erro.error.Message) {
+        msg.push(erro.error.Message);
+      } else {
+        msg.push("usuário ou senha inválidos.");
+      }
     }
     if (erro && erro.status === 403) msg.push("loja do usuário não possui unidade_negocio. Entre em contato com o suporte.");
     if (erro && erro.status === 0) msg.push("servidor de autenticação não disponível.");
@@ -131,20 +133,6 @@ export class AutenticacaoService {
       senhaNovaConfirma: senhaNovaConfirma
     });
   }
-
-  get tipoUsuario():number{
-    if(this._permissoes) {
-        if (this._permissoes.includes(this.constantes.AdministradorDoModulo)) {
-            return this.constantes.VENDEDOR_UNIS;
-        }
-        if (this._permissoes.includes(this.constantes.ParceiroIndicadorUsuarioMaster)) {
-            return this.constantes.PARCEIRO;
-        }
-        if (this._permissoes.length == 1 && this._permissoes.includes(this.constantes.AcessoAoModulo)) {
-            return this.constantes.PARCEIRO_VENDEDOR;
-        }
-    }
-}
 
   get authUsuario(): string {
     if (!this.readToken(this.obterToken())) return null;

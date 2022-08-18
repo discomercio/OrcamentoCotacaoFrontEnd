@@ -110,8 +110,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
 
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.tipoUsuario = this.autenticacaoService.tipoUsuario;
-    this.novoOrcamentoService.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
+    this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
   }
 
   async ngAfterViewInit() {

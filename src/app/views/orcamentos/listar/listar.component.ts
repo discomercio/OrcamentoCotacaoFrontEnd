@@ -104,7 +104,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarCbExpirado();
     this.buscarRegistros();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.tipoUsuario = this.autenticacaoService.tipoUsuario;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
   }
 
