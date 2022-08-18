@@ -80,9 +80,7 @@ export class AppMenuComponent implements OnInit {
                             }
                         }   
                     }
-                }); 
-
-                //this.montarMenu();
+                });
             }
         }).catch(e => this.alertaService.mostrarMensagem("Ops! Tivemos problemas ao carregar o menu."));
     }
