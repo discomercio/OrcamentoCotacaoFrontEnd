@@ -1,6 +1,6 @@
 import { AutenticacaoService } from './../../../service/autenticacao/autenticacao.service';
 import { PublicoService } from './../../../service/publico/publico.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild,AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -22,7 +22,7 @@ import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cl
   templateUrl: './orcamento.component.html',
   styleUrls: ['./orcamento.component.scss']
 })
-export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit {
+export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
 
   constructor(
     telaDesktopService: TelaDesktopService,
@@ -46,9 +46,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   @ViewChild(PublicoCadastroClienteComponent) child;
   display: boolean = false;
   validado: boolean = false;
+  desabiltarBotoes: boolean;
 
   
   ngOnInit(): void {
+    this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
+  }
+
+  ngAfterViewInit(): void {
     this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
   }
 
@@ -95,7 +100,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {          
           this.validado = true;
-          this.orcamento = r;   
+          this.orcamento = r;          
+          this.mensagemComponente.permiteEnviarMensagem = true;
+
+          if (r.status ==3){
+            this.desabiltarBotoes = true;
+            this.mensagemComponente.permiteEnviarMensagem = false;
+          }
+
           this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
           this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
           this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
@@ -105,7 +117,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
           this.autenticacaoService.setarToken(r.token);          
         }else{          
-          this.sweetalertService.aviso("Link inválido para este orçamento");
+          this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         }
       });
     }
