@@ -117,13 +117,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.exibeBotaoProrrogar = true;
       this.desabiltarBotoes = false;
 
-    } else {     
+    } else {
       this.exibeBotaoCancelar = false;
       this.exibeBotaoProrrogar = false;
       this.desabiltarBotoes = true;
     }
 
-    if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))){
+    if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))) {
       this.exibeBotaoCancelar = false;
       this.desabiltarBotoes = true;
     }
@@ -149,8 +149,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         icon: 'pi pi-fw pi-calendar-times',
         visible: this.exibeBotaoProrrogar,
         command: () => this.prorrogar()
-      }
-      ,
+      },
+      {
+        label: 'Clonar',
+        icon: 'pi pi-fw pi-copy',
+        visible: true,
+        command: () => this.clonarOrcamento()
+      },
       {
         label: 'Nenhuma',
         visible: this.exibeBotaoNenhumaOpcao
@@ -158,6 +163,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     ];
 
+  }
+
+  clonarOrcamento(){
+    this.idOrcamentoCotacao;
+    this.router.navigate(["orcamentos/cadastrar-cliente", "clone"]);
   }
 
   retornarSimOuNao(data: any) {
@@ -197,7 +207,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   buscarParametros(id: number) {
 
     if (this.autenticacaoService._usuarioLogado) {
-      this.orcamentoService.buscarParametros(id,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+      this.orcamentoService.buscarParametros(id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           this.condicoesGerais = r[0]['Valor'];
         }
@@ -234,10 +244,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
 
-          if (this.novoOrcamentoService.permiteEnviarMensagem(r.status,r.validade)){            
-            this.mensagemComponente.permiteEnviarMensagem = true;            
-          }else{
-            this.mensagemComponente.permiteEnviarMensagem = false;             
+          if (this.novoOrcamentoService.permiteEnviarMensagem(r.status, r.validade)) {
+            this.mensagemComponente.permiteEnviarMensagem = true;
+          } else {
+            this.mensagemComponente.permiteEnviarMensagem = false;
           }
 
           this.mensagemComponente.idOrcamentoCotacao = r.idOrcamentoCotacao;
@@ -338,13 +348,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   aprovar(orcamento) {
     if (!this.opcaoPagto) {
     }
-    this.sweetalertService.dialogo("","Deseja aprovar essa opção?").subscribe(result => {
+    this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
 
     });
   }
 
   prorrogar() {
-    this.sweetalertService.dialogo("","Deseja prorrogar esse orçamento?").subscribe(result => {
+    this.sweetalertService.dialogo("", "Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
 
       this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {

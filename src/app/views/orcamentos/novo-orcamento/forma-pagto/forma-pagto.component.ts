@@ -534,5 +534,26 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     return true;
   }
 
-
+  setarQtdeParcelas() {
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+      this.novoOrcamentoService.qtdeParcelas = this.formaPagtoCriacaoAprazo.c_pc_qtde;
+      return;
+    }
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+      this.novoOrcamentoService.qtdeParcelas = this.formaPagtoCriacaoAprazo.c_pce_prestacao_qtde;
+      return;
+    }
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+      this.novoOrcamentoService.qtdeParcelas = this.formaPagtoCriacaoAprazo.c_pse_demais_prest_qtde;
+      return;
+    }
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+      this.novoOrcamentoService.qtdeParcelas = 0;
+      return;
+    }
+    if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+      this.novoOrcamentoService.qtdeParcelas = this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde;
+      return;
+    }
+  }
 }

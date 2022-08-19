@@ -43,6 +43,7 @@ export class ProdutoTela {
     //se esta está visível
     public visivel = true;
 
+    public qtde = 1;
     //os filhos que esse cara tem
     public Filhos: ProdutoFilhoDto[];
 

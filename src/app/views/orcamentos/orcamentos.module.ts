@@ -34,6 +34,7 @@ import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-client
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
 import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
 import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
+import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-opcoes-dialog/select-clone-opcoes-dialog.component';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/s
     OpcoesComponent,
     AprovacaoOrcamentoClienteComponent,
     EditarOpcaoComponent,
-    EditarClienteComponent
+    EditarClienteComponent,
+    SelectCloneOpcoesDialogComponent
   ],
   imports: [
     SharedModule,

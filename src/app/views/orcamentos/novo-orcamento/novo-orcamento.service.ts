@@ -29,6 +29,7 @@ export class NovoOrcamentoService {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService) { }
 
+  public orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
   public orcamentoCotacaoDto: OrcamentoCotacaoResponse = new OrcamentoCotacaoResponse();
   public opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
   public constantes: Constantes = new Constantes();
@@ -363,7 +364,7 @@ export class NovoOrcamentoService {
   }
 
   permiteEnviarMensagem(status, dataValidade): boolean {
-    
+
     if (status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
       status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
 
@@ -379,7 +380,7 @@ export class NovoOrcamentoService {
 
 
     if (validade <= dataAtual) return false;
-    
+
     return true;
 
   }

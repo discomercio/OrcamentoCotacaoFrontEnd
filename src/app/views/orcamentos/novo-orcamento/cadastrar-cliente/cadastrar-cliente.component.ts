@@ -20,6 +20,7 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 
 @Component({
   selector: 'app-cadastrar-cliente',
@@ -63,7 +64,8 @@ export class CadastrarClienteComponent implements OnInit {
   public desabilitado: boolean = true;
 
   tipoUsuario: number;//usar o do Usuario
-
+  habilitarClone: boolean = false;
+  habilitarVoltar: boolean = false;
 
   ngOnInit(): void {
 
@@ -95,6 +97,7 @@ export class CadastrarClienteComponent implements OnInit {
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == null) {
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.constantes.SEM_INDICADOR;
       }
+      this.habilitarVoltar = true;
     }
 
     if (param.filtro == "novo") {
@@ -105,22 +108,88 @@ export class CadastrarClienteComponent implements OnInit {
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
       this.filtro = param.filtro;
+      this.criarForm();
+      this.desabilitarCampos();
+      this.desabiltarCamposParaEdicao();
     }
 
     if (param.filtro == "clone") {
-      //vamos criar montar os dados de cliente apena?
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.id == undefined) {
+        this.router.navigate(["/orcamentos/listar/orcamentos"]);
+        return;
+      }
+
+
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined) {
+        this.novoOrcamentoService.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
+        this.novoOrcamentoService.orcamentoCloneCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCotacaoDto));
+
+      }
+
+      this.filtro = param.filtro;
+      if (this.novoOrcamentoService.orcamentoCloneCotacaoDto.status != undefined) this.novoOrcamentoService.criarNovo();
+      this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCloneCotacaoDto.id;
+      this.novoOrcamentoService.orcamentoCloneCotacaoDto.status = undefined;
+      this.habilitarClone = true;
+      this.habilitarVoltar = true;
+      if (this.novoOrcamentoService.orcamentoCloneCotacaoDto.status != undefined) this.criarForm();
+
     }
+  }
+
+  copiarDados() {
+    this.novoOrcamentoService.orcamentoCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCloneCotacaoDto));
+    this.novoOrcamentoService.orcamentoCotacaoDto.qtdeRenovacao = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.dataCadastro = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.idIndicador = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.idIndicadorVendedor = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.idIndicadorVendedor = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
+    this.novoOrcamentoService.orcamentoCotacaoDto.status = undefined;
+
+    this.desabilitarCampos();
+    this.criarForm();
+    this.setarCamposDoForm();
+    this.carregarListas();
+    this.setarOrcamentoValidade();
   }
 
   desabilitarCampos() {
 
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
-      this.form.controls.Parceiro.disable();
-      this.form.controls.Tipo.disable();
-      this.form.controls.VendedorParceiro.disable();
+    if (this.filtro == undefined || this.filtro == "novo" || this.filtro == "clone") {
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length > 0) {
+        this.form.controls.Parceiro.disable();
+        this.form.controls.Tipo.disable();
+        this.form.controls.VendedorParceiro.disable();
+        // if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
+        //   this.form.controls.ContribuinteICMS.disable();
+        // }
+      }
     }
 
+
     this.form.controls.Validade.disable();
+  }
+
+  formataData(e: Event){
+    let valor = ((e.target) as HTMLInputElement).value;
+    if (valor != "") {
+      // const maskDate = value => {
+      //   return value
+      //     .replace(/\D/g, "")
+      //     .replace(/(\d{2})(\d)/, "$1/$2")
+      //     .replace(/(\d{2})(\d)/, "$1/$2")
+      //     .replace(/(\d{4})(\d)/, "$1");
+      // };
+      return valor
+          .replace(/\D/g, "")
+          .replace(/(\d{2})(\d)/, "$1/$2")
+          .replace(/(\d{2})(\d)/, "$1/$2")
+          .replace(/(\d{4})(\d)/, "$1");
+    }
   }
 
   desabiltarCamposParaEdicao() {
@@ -128,11 +197,11 @@ export class CadastrarClienteComponent implements OnInit {
       this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
         opcao.listaProdutos.forEach(produto => {
           if (produto.idOperacaoAlcadaDescontoSuperior != null) {
+            this.form.controls.Uf.disable();
+            this.form.controls.VendedorParceiro.disable();
             if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PJ) {
               this.form.controls.ContribuinteICMS.disable();
             }
-            this.form.controls.Uf.disable();
-            this.form.controls.VendedorParceiro.disable();
           }
         });
       });
@@ -359,7 +428,7 @@ export class CadastrarClienteComponent implements OnInit {
 
     this.atribuirDados();
 
-    this.router.navigate(["orcamentos/itens", "novo"]);
+    this.router.navigate(["orcamentos/itens", this.filtro]);
   }
 
   atribuirDados() {

@@ -132,7 +132,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   carregandoProds = true;
   produtoComboDto: ProdutoComboDto;
   inscreverProdutoComboDto() {
-    debugger;
     this.produtoService.listarProdutosCombo(this.prePedidoDto.DadosCliente.Loja, this.prePedidoDto.DadosCliente.Id).subscribe({
       next: (r: ProdutoComboDto) => {
         if (!!r) {

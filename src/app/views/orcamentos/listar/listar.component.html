@@ -152,7 +152,7 @@
                     </div>
                 </div>
                 <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [responsive]="true"
-                    responsiveLayout="stack" breakpoint="680px" [(first)]="first"
+                    responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
                     styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true"
                     [filterDelay]="0"
                     [globalFilterFields]="['NumeroOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
@@ -229,7 +229,7 @@
                     </ng-template>
                     <ng-template pTemplate="emptymessage" let-columns>
                         <tr>
-                            <td [attr.colspan]="columns.length">
+                            <td [attr.colspan]="columns.length" class="p-text-center">
                                 Nenhum dado encontrado.
                             </td>
                         </tr>
