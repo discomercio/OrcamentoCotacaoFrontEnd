@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { SelectItem } from 'primeng/api';
 import { DialogService } from 'primeng/dynamicdialog';
@@ -15,11 +15,9 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { SelectEvapDialogComponent } from './select-evap-dialog/select-evap-dialog.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import jsPDF from 'jspdf';
-import autoTable from 'jspdf-autotable'
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { JsonpClientBackend } from '@angular/common/http';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
@@ -122,10 +120,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     let IdCfgParametro = 21;
 
-    //Alterar para buscar da base quando enviarem as imagens
-    
-
-    this.orcamentoService.buscarParametros(IdCfgParametro,this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+    this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
       if (r != null) {
         this.logo = "assets/layout/images/" + r[0]['Valor'];
       }
@@ -136,7 +131,6 @@ export class CalculadoraVrfComponent implements OnInit {
 
   textoRodape: string;
   buscarTextoRodapePDF(lojaLogada: string) {
-    //IdCfgParametro = 22
     let IdCfgParametro = 22
 
     this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada).toPromise().then((r) => {
@@ -167,6 +161,10 @@ export class CalculadoraVrfComponent implements OnInit {
   imprimindo: boolean = false;
 
   mostrarImpressao() {
+    if(!this.opcao1 && !this.opcao2 && !this.opcao3) {
+      this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
+      return;
+    }
     this.imprimindo = true;
   }
 
@@ -180,7 +178,6 @@ export class CalculadoraVrfComponent implements OnInit {
         doc.save('calculo_vrf');
         let x: string = doc.output('bloburl').toString();
         window.open(x);
-        // htmlPdf.style.width = '';
         this.imprimindo = false;
       }
     });
@@ -189,7 +186,6 @@ export class CalculadoraVrfComponent implements OnInit {
 
   gerarPDF2paginas(doc: jsPDF, margins: any, alturaPagina: number) {
 
-    //TENTAR COLOCAR AS DIV'S EM UMA LISTA E FAZER APENAS UM FOR PARA IR ADICIONANDO
 
     let logo = document.getElementById("logo").cloneNode(true) as HTMLElement;
     let titulo = document.getElementById("titulo").cloneNode(true) as HTMLElement;
@@ -208,7 +204,6 @@ export class CalculadoraVrfComponent implements OnInit {
     filho2.append(logo.cloneNode(true) as HTMLElement);
     let evaps = document.getElementById("evaps");
     if (filho.clientHeight + evaps.clientHeight > alturaPagina) {
-      //jogamos para outra página ou iremos quebrar a lista
       filho2.append(evaps.cloneNode(true) as HTMLElement);
     }
     else {
@@ -247,13 +242,13 @@ export class CalculadoraVrfComponent implements OnInit {
 
     if (this.opcao3) {
       opcao3 = document.getElementById("opcao3");
-      
+
       if (filho2.clientHeight > 0) {
         filho2.append(opcao3.cloneNode(true) as HTMLElement);
       }
       else if (filho.clientHeight + opcao3.clientHeight > alturaPagina) {
         filho2.append(opcao3.cloneNode(true) as HTMLElement);
-        
+
       }
       else {
         filho.append(opcao3.cloneNode(true) as HTMLElement);
@@ -266,8 +261,6 @@ export class CalculadoraVrfComponent implements OnInit {
     let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
     pai.append(filho.cloneNode(true) as HTMLElement);
 
-    
-
     doc.html(pai, {
       margin: [margins.top, margins.right, margins.bottom, margins.left],
       callback: (doc) => {
@@ -277,6 +270,7 @@ export class CalculadoraVrfComponent implements OnInit {
           margin: [0, margins.right, margins.bottom, margins.left],
           callback: (doc) => {
             doc.text('página 2', 520.3 / 2, 842 - 25);
+            doc.save('calculo_vrf');
             let x: string = doc.output('bloburl').toString();
             window.open(x);
             while (filho.hasChildNodes()) {
@@ -290,6 +284,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   exportPdf() {
+
     let doc = new jsPDF('p', 'pt', 'a4');
 
     let margins = {
@@ -719,6 +714,8 @@ export class CalculadoraVrfComponent implements OnInit {
     this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
       simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
 
+    if (this.qtdeCondensadora == 1) this.opcao1 = true;
+
     this.calculado = true;
   }
   buscarMelhorCombinacao1Condensadora(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
@@ -1006,7 +1003,7 @@ export class CalculadoraVrfComponent implements OnInit {
       .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
   }
 
-  voltar(){
+  voltar() {
     this.imprimindo = false;
   }
 }
