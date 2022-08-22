@@ -19,6 +19,7 @@ import { ValidacoesClienteUtils } from 'src/app/utilities/validacoesClienteUtils
 import { FormatarTelefone } from 'src/app/utilities/formatarTelefone';
 import { ClienteCorpoComponent } from '../../cliente/cliente-corpo/cliente-corpo.component';
 import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-cliente.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 
 
@@ -84,6 +85,7 @@ export class PrePedidoCadastrarClienteComponent extends TelaDesktopBaseComponent
     private readonly router: Router,
     private readonly location: Location,
     private readonly alertaService: AlertaService,
+    private readonly sweetalertService: SweetalertService,
     telaDesktopService: TelaDesktopService,
     private readonly autenticacaoService: AutenticacaoService) {
     super(telaDesktopService);
@@ -182,7 +184,7 @@ export class PrePedidoCadastrarClienteComponent extends TelaDesktopBaseComponent
     //mostrar as mensagens
     if (validacoes.length > 0) {
       this.desconverterTelefones();
-      this.alertaService.mostrarMensagem("Campos inválidos. Preencha os campos marcados como obrigatórios. \nLista de erros: \n" + validacoes.join("\n"));
+      this.sweetalertService.aviso("Campos inválidos. Preencha os campos marcados como obrigatórios. <br>Lista de erros: <br>" + validacoes.join("<br>"));
       this.desabilita = false;
       return;
     }

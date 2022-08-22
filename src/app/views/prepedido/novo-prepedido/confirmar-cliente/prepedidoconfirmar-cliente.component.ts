@@ -16,6 +16,7 @@ import { Constantes } from 'src/app/dto/prepedido/Constantes';
 import { ClienteCadastroUtils } from 'src/app/dto/prepedido/AngularClienteCadastroUtils/ClienteCadastroUtils';
 import { ClienteCorpoComponent } from '../../cliente/cliente-corpo/cliente-corpo.component';
 import { ValidacoesClienteUtils } from 'src/app/utilities/validacoesClienteUtils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 
 @Component({
@@ -37,6 +38,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     private readonly location: Location,
     public readonly dialog: MatDialog,
     private readonly alertaService: AlertaService,
+    private readonly sweetalertService: SweetalertService,
     private readonly novoPrepedidoDadosService: NovoPrepedidoDadosService,
     private readonly buscarClienteService: BuscarClienteService) {
     super(telaDesktopService);
@@ -356,7 +358,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     }
 
     if (validacoes.length > 0) {
-      this.alertaService.mostrarMensagem("Campos inválidos. Preencha os campos marcados como obrigatórios. \nLista de erros: \n" + validacoes.join("\n"));
+      this.sweetalertService.aviso("Campos inválidos. Preencha os campos marcados como obrigatórios. <br>Lista de erros: <br>" + validacoes.join("<br>"));
       this.clienteCorpo.desconverterTelefonesEnderecoDadosCadastrais(this.endCadastralClientePrepedidoDto);
       this.converteu_tel_endCadastralClientePrepedidoDto = false;
       this.clienteCorpo.componenteCepDadosCadastrais.required = true;

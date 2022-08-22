@@ -5,7 +5,7 @@
 
         <form>
             <div *ngIf="telaDesktop">
-                <mat-form-field style="width: 5em">
+                <mat-form-field style="width: 10em">
                     <mat-label>UF</mat-label>
                     <mat-select [(ngModel)]="uf" [ngModelOptions]="{standalone: true}">
                         <mat-option value="">Selecione</mat-option>
@@ -102,7 +102,7 @@
                             <!-- checkbox -->
                         </th>
 
-                        <th style="width: 5.5em;" align="left" valign="bottom">
+                        <th  align="left" valign="bottom">
                             CEP
                         </th>
                         <th style="width: 2em;" align="left" valign="bottom">
@@ -131,6 +131,7 @@
                                 </mat-radio-button>
                             </td>
                             <td>
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                                 {{formatarEndereco.cep_formata(i.Cep)}}
                             </td>
                             <td>
@@ -192,15 +193,15 @@
         </div>
     </article>
     <footer *ngIf="lstEnderecos.length > 0 && telaDesktop" mat-dialog-actions style="justify-content: space-around;">
-        <button mat-raised-button (click)="onNoClick()" cdkFocusInitial color="accent">Cancelar</button>
-        <button mat-raised-button (click)="onOkClick()" color="accent">
+        <button mat-raised-button (click)="onNoClick()" cdkFocusInitial color="accent" style="font-size: 80%; background-color: #007bff !important; color: white !important;">Cancelar</button>
+        <button mat-raised-button (click)="onOkClick()" color="accent" style="font-size: 80%;background-color: #007bff !important; color: white !important;">
             Confirmar
         </button>
     </footer>
     <footer *ngIf="lstEnderecos.length > 0 && !telaDesktop" mat-dialog-actions 
         style="justify-content: space-around; min-width: 100%">
             <button mat-raised-button (click)="onNoClick()" cdkFocusInitial color="accent" style="font-size: 80%;">Cancelar</button>
-            <button mat-raised-button (click)="onOkClick()" color="accent" style="font-size: 80%;">
+            <button mat-raised-button (click)="onOkClick()" color="accent" style="font-size: 80%;background-color: #007bff !important; color: white !important;">
                 Confirmar
             </button>
         </footer>
