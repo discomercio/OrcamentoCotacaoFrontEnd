@@ -74,7 +74,7 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   }
 
   clonarClick(id:any){
-    
+    this.router.navigate(["/produtos-catalogo/clonar", id]);
   }
 
   copiarClick(id: any) {
