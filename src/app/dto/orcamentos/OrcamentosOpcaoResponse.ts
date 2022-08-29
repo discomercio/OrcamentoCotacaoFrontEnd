@@ -12,4 +12,5 @@ export class OrcamentosOpcaoResponse {
     formaPagto:FormaPagtoCriacao[];
     percRT:number;
     loja:string;
+    aprovado: boolean;
 }

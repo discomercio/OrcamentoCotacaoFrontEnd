@@ -76,6 +76,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   exibeBotaoCancelar: boolean;
   exibeBotaoProrrogar: boolean;
   exibeBotaoNenhumaOpcao: boolean;
+  exibeBotaoClonar: boolean;
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
@@ -102,7 +103,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   carrregarBotoneira() {
 
+    //Precisa definir regras para exibição do clonar
+    this.exibeBotaoClonar = true;
     this.exibeBotaoNenhumaOpcao = false;
+
     //Regras para Edição
     if (this.novoOrcamentoService.orcamentoCotacaoDto && this.editarDadosCadastrais) {
       this.exibeBotaoEditar = true;
@@ -128,7 +132,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = true;
     }
 
-    if (!this.exibeBotaoCancelar && !this.exibeBotaoProrrogar && !this.exibeBotaoEditar) {
+    if (!this.exibeBotaoCancelar && !this.exibeBotaoProrrogar && !this.exibeBotaoEditar && !this.exibeBotaoClonar) {
       this.exibeBotaoNenhumaOpcao = true;
     }
 
@@ -153,7 +157,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       {
         label: 'Clonar',
         icon: 'pi pi-fw pi-copy',
-        visible: true,
+        visible: this.exibeBotaoClonar,
         command: () => this.clonarOrcamento()
       },
       {
@@ -165,7 +169,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   }
 
-  clonarOrcamento(){
+  clonarOrcamento() {
     this.idOrcamentoCotacao;
     this.router.navigate(["orcamentos/cadastrar-cliente", "clone"]);
   }
@@ -268,7 +272,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
+
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
+        
         this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
         this.verificarEdicao();
         this.carrregarBotoneira();
@@ -319,9 +325,24 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
+
+
     orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
       opcao.formaPagto.forEach(p => {
-        formaPagtoOrcamento.push(p);
+
+        // Se aprovado, retorna somente opções aprovadas
+        if (orcamento.status == 3) {
+
+          if (p['aprovado'] == true) {
+            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
+            formaPagtoOrcamento.push(p);
+          }else{
+            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
+          }
+        } else {
+          formaPagtoOrcamento.push(p);
+        }
+
       })
     });
 
