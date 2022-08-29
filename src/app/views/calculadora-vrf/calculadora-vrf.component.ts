@@ -20,6 +20,7 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -161,7 +162,7 @@ export class CalculadoraVrfComponent implements OnInit {
   imprimindo: boolean = false;
 
   mostrarImpressao() {
-    if(!this.opcao1 && !this.opcao2 && !this.opcao3) {
+    if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
       this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
       return;
     }
@@ -679,45 +680,62 @@ export class CalculadoraVrfComponent implements OnInit {
     this.opcao3 = false;
   }
 
-  calcularCondensadoras() {
-
+  podeCalcular() {
     if (!this.validacaoFormularioService.validaForm(this.form2)) {
-      return;
+      return false;
     }
 
     if (this.evaporadorasSelecionadas.length <= 0) {
       this.mensagemService.showWarnViaToast("Por favor, selecione evaporadoras antes de calcular condensadoras!");
-      return;
+      return false;
     }
 
+    return true;
+  }
+
+  calcularCondensadoras() {
     this.limparCombinacoesCondensadoras();
 
-    let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
-      .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
+    this.carregando = true;
+    setTimeout(() => {
+      if (!this.podeCalcular()) {
+        this.carregando = false;
+        return;
+      }
+  
+      let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
+        .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
+  
+      let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
+      let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin);
+  
+      let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
+      let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax);
+  
+      this.filtrarCondensadoras();
+  
+      let capacidadeMinima = somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100);
+  
+      this.combinacaoCom1aparelhos = this.buscarMelhorCombinacao1Condensadora(capacidadeMinima, this.condensadorasFiltradas,
+        simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
+  
+      if (this.qtdeCondensadora > 1) {
+        this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+          simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
+  
+        if (this.qtdeCondensadora == 3)
+          this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
+            simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
+      }
+  
+      //caso o cálculo seja para 1 condensadora, já deve setar a selação para incluir no PDF
+      if (this.qtdeCondensadora == 1) this.opcao1 = true;
 
-    let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
-    let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin);
-
-    let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
-    let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax);
-
-    this.filtrarCondensadoras();
-
-    let capacidadeMinima = somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100);
-
-    this.combinacaoCom1aparelhos = this.buscarMelhorCombinacao1Condensadora(capacidadeMinima, this.condensadorasFiltradas,
-      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
-
-    this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
-      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
-
-    this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
-      simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
-
-    if (this.qtdeCondensadora == 1) this.opcao1 = true;
-
-    this.calculado = true;
+      this.carregando = false;
+      this.calculado = true;
+    }, 100);
   }
+
   buscarMelhorCombinacao1Condensadora(capacidadeMinima: number, condensadoras: ProdutoTabela[], simultaneidadeMaxFloat: number,
     simultaneidadeMinFloat: number, capacidadeTotalEvaps: number) {
     let condensadora1 = this.calcularCombinacaoCom1aparelho(capacidadeMinima, this.condensadorasFiltradas);
@@ -781,15 +799,12 @@ export class CalculadoraVrfComponent implements OnInit {
     });
 
     if (candidatas.length == 0) return new Array();
-
     let maiorSimultaneidadeOpcoes = this.pegarMaiorSimultaneidade(candidatas);
-
     let maiores = this.selecionarMaioresCondensadoras(candidatas, maiorSimultaneidadeOpcoes);
-
     let melhor = this.selecionarMelhorOpcao3Condensadoras(maiores);
-
     this.simultaneidadeCalculada3aparelhos = maiorSimultaneidadeOpcoes;
     return this.criarRetornoCondensadoras(melhor[0]);
+
   }
 
   pegarMaiorSimultaneidade(candidatas: any) {
@@ -918,9 +933,9 @@ export class CalculadoraVrfComponent implements OnInit {
       produto.descarga = x.descarga;
       produto.btu = x.btu;
       produto.qtde = x.qtde;
-      if (JSON.stringify(retorno).indexOf(x.id) > -1) {
-        let item = retorno.filter(p => p.id == x.id)[0];
-        item.qtde += 1;
+      let produtoJaExiste = retorno.filter(p => p.id == x.id);
+      if (produtoJaExiste.length > 0) {
+        produtoJaExiste[0].qtde += 1;
       }
       else {
         produto.qtde = 1;
