@@ -91,9 +91,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
       if (r != null) {
         this.produtoDetalhe = r;
         this.produtoDetalhe.Fabricante = this.produtoDetalhe.Fabricante.split('-')[0].trim();
-        //remover o id da imagem caso tenha
         if (this.produtoDetalhe.imagens && this.produtoDetalhe.imagens.length > 0) {
-          debugger;
           this.imagem = new ProdutoCatalogoImagem();
           this.imagem.Caminho = this.produtoDetalhe.imagens[0].Caminho;
           this.imagem.Ordem = this.produtoDetalhe.imagens[0].Ordem;
@@ -269,12 +267,10 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
             this.router.navigate(["//produtos-catalogo/listar"]);
           }
         }).catch((r) => {
-          debugger;
           this.alertaService.mostrarErroInternet(r);
         });
       }
     }).catch((e) => {
-      debugger;
       this.alertaService.mostrarErroInternet(e);
     });
 
@@ -307,6 +303,5 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);
-    // this.produtoDetalhe.imagens.push(this.setarDadosImagem(arquivo));
   }
 }
