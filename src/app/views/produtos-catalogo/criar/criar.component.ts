@@ -153,7 +153,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
      this.produto.imagens = [];
      let img = new ProdutoCatalogoImagem();
      img.IdProdutoCatalogo = "-1";
-     img.IdIipoImagem = "1";
+     img.IdIipoImagem = 1;
      img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
      img.Ordem = "200";
 

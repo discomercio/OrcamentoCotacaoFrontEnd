@@ -206,7 +206,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.produtoDetalhe.imagens = [];
     let img = new ProdutoCatalogoImagem();
     img.IdProdutoCatalogo = this.id.toString();
-    img.IdIipoImagem = "1";
+    img.IdIipoImagem = 1;
     img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
     img.Ordem = "200";
 

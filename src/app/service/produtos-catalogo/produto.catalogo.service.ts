@@ -47,8 +47,8 @@ export class ProdutoCatalogoService {
     return this.http.delete<boolean>(`${environment.apiUrl}produtocatalogo/${id}`);
   }
 
-  criarProduto(produto:any):Observable<any>{
-    return this.http.post<any>(`${environment.apiUrl}produtocatalogo`, produto);
+  criarProduto(formData:any):Observable<any>{ 
+    return this.http.post<any>(`${environment.apiUrl}produtocatalogo/criar`, formData);
   }
 
   criarProdutoCatalogoItem(produtoCatalogoItem:any):Observable<any>{

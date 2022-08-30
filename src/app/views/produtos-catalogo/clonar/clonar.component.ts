@@ -93,7 +93,10 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
         this.produtoDetalhe.Fabricante = this.produtoDetalhe.Fabricante.split('-')[0].trim();
         //remover o id da imagem caso tenha
         if (this.produtoDetalhe.imagens && this.produtoDetalhe.imagens.length > 0) {
-
+          debugger;
+          this.imagem = new ProdutoCatalogoImagem();
+          this.imagem.Caminho = this.produtoDetalhe.imagens[0].Caminho;
+          this.imagem.Ordem = this.produtoDetalhe.imagens[0].Ordem;
         }
         this.criarForm();
       }
@@ -245,21 +248,33 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     produto.Descricao = this.form.controls.descricao.value; //Descricao Completa
     produto.Ativo = this.form.controls.ativo.value;
     produto.campos = campos;
-    produto.imagens = this.produtoDetalhe.imagens == [] ? [] : this.produtoDetalhe.imagens;
+    if (!!this.imagem) {
+      produto.imagens = new Array<ProdutoCatalogoImagem>();
+      produto.imagens.push(this.imagem);
+    }
 
     this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
       if (r != null) {
         this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
         return;
       } else {
-        this.produtoService.criarProduto(produto).toPromise().then((r) => {
+        let formData = new FormData();
+        if (!!this.arquivo)
+          formData.append("arquivo", this.arquivo, this.arquivo.name);
+
+        formData.append("produto", JSON.stringify(produto));
+        this.produtoService.criarProduto(formData).toPromise().then((r) => {
           if (r != null) {
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
             this.router.navigate(["//produtos-catalogo/listar"]);
           }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
+        }).catch((r) => {
+          debugger;
+          this.alertaService.mostrarErroInternet(r);
+        });
       }
     }).catch((e) => {
+      debugger;
       this.alertaService.mostrarErroInternet(e);
     });
 
@@ -269,25 +284,15 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
-  onUpload($event, id): void {
-    debugger;
-    var arquivo = $event.originalEvent.body.file;
-
-    this.produtoDetalhe.imagens = [];
-
-    this.produtoDetalhe.imagens.push(this.setarDadosImagem(arquivo));
-
-    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
-  }
-
-  setarDadosImagem(arquivo: any): ProdutoCatalogoImagem {
+  imagem: ProdutoCatalogoImagem;
+  setarDadosImagem(arquivo: any): void {
     let img = new ProdutoCatalogoImagem();
     img.IdProdutoCatalogo = "-1";
-    img.IdIipoImagem = "1";
-    img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
+    img.IdIipoImagem = 1;
+    img.Caminho = arquivo.name;
     img.Ordem = "200";
 
-    return img;
+    this.imagem = img;
   }
 
   excluirImagemClick(idImagem) {
@@ -296,8 +301,12 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }
 
-  onSelectFile(event: { files: File }) {
-    //verificando troca de envio de imagem do produto
-    this.produtoDetalhe.imagens.push(this.setarDadosImagem(event.files));
+  arquivo: File;
+  onSelectFile(event) {
+    this.produtoDetalhe.imagens = new Array<ProdutoCatalogoImagem>();
+    let arquivo = event.files[0];
+    this.arquivo = arquivo;
+    this.setarDadosImagem(arquivo);
+    // this.produtoDetalhe.imagens.push(this.setarDadosImagem(arquivo));
   }
 }

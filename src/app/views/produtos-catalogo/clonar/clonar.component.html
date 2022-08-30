@@ -31,10 +31,9 @@
 
             <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens?.length == 0" accept="image/*"
                 [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
-                url="{{urlUpload}}" (onUpload)="onUpload($event, this)" chooseLabel="Carregar" chooseIcon="pi pi-upload" 
+                chooseLabel="Carregar" chooseIcon="pi pi-upload" [showUploadButton]=false
                 cancelLabel="Cancelar"  uploadIcon="fa fa-send" [customUpload]="true"
-                (uploadHandler)="onFileUploadClicked($event)" (onSelect)="onSelectFile($event)" >
-                <!-- [showUploadButton]=false -->
+                (onSelect)="onSelectFile($event)" >
             </p-fileUpload>
         </div>
     </div>
