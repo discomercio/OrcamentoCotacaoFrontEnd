@@ -299,7 +299,6 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
 
   arquivo: File;
   onSelectFile(event) {
-    this.produtoDetalhe.imagens = new Array<ProdutoCatalogoImagem>();
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);

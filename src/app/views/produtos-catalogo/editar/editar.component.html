@@ -20,18 +20,21 @@
                         <div class="p-mb-12">
                             <center>
                                 <p-button type="button" styleClass="p-button-help p-button-rounded" icon="pi pi-trash"
-                                    (click)="excluirImagemClick(produtoDetalhe.imagens[0].Id)" pTooltip="Excluir imagem">
+                                    (click)="excluirImagemClick(produtoDetalhe.imagens[0].Id)"
+                                    pTooltip="Excluir imagem">
                                 </p-button>
                             </center>
                         </div>
                     </div>
                 </div>
             </div>
-
             <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens?.length == 0" accept="image/*"
                 [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
-                url="{{urlUpload}}" (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)">
+                chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false 
+                uploadIcon="fa fa-send" [customUpload]="true" [showCancelButton]=false
+                (onSelect)="onSelectFile($event)">
             </p-fileUpload>
+
         </div>
     </div>
 </div>
@@ -41,7 +44,8 @@
 
             <h4 style="color: #007BFF">
                 <i class="fa fa-info-circle" style="font-size:36px"></i>
-                &nbsp;Características do Produto</h4>
+                &nbsp;Características do Produto
+            </h4>
         </div>
     </div>
 </div>
@@ -67,9 +71,7 @@
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field">
                             <input id="fabricante" name="descricao" type="text" pInputText placeholder="Fabricante"
-                                formControlName="fabricante"
-                                value="{{produtoDetalhe.Fabricante}}"
-                                disabled="true" />
+                                formControlName="fabricante" value="{{produtoDetalhe.Fabricante}}" disabled="true" />
                         </div>
                         <small class="p-error"
                             *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">{{mensagemErro}}</small>
@@ -123,7 +125,8 @@
                     <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0">
                         <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                         <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
-                            <div class="p-ac-around p-col-12 p-d-inline-block p-lg-1 p-md-1 p-sm-1" style="vertical-align: middle;">
+                            <div class="p-ac-around p-col-12 p-d-inline-block p-lg-1 p-md-1 p-sm-1"
+                                style="vertical-align: middle;">
                                 <p-inputSwitch id="campo-ativo-{{lista.id}}" (onChange)="onChangeAtivo(lista.id,i)"
                                     [(ngModel)]="!produtosParaTela[i].propriedadeOcultaItem">
                                 </p-inputSwitch>
@@ -141,8 +144,9 @@
                                 </p-inputSwitch>
                             </div>
                             <div class="p-col-5" style="display: inline-block;vertical-align: middle;">
-                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="value" optionLabel="label"
-                                    placeholder="Selecione" [(ngModel)]="produtosParaTela[i].idValorPropriedadeOpcao" [showClear]="true">
+                                <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="value"
+                                    optionLabel="label" placeholder="Selecione"
+                                    [(ngModel)]="produtosParaTela[i].idValorPropriedadeOpcao" [showClear]="true">
                                 </p-dropdown>
                             </div>
                         </div>

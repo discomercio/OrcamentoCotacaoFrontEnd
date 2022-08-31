@@ -81,7 +81,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
       this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
         if (r != null) {
-        //   this.produto = r;
+          //   this.produto = r;
           this.consolidarLista(r);
           this.consolidarLista(y);
           this.buscarPropriedades();
@@ -195,26 +195,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.produtosParaTela[index].propriedadeOcultaItem = !this.produtosParaTela[index].propriedadeOcultaItem;
   }
 
-  onBeforeUpload(event) {
-    console.log('onBeforeUpload');
-    event.formData.append('idProdutoCalatogo', this.id);
-  }
-
-  onUpload(event, fileUpload) {
-    var arquivo = event.originalEvent.body.file;
-
-    this.produtoDetalhe.imagens = [];
-    let img = new ProdutoCatalogoImagem();
-    img.IdProdutoCatalogo = this.id.toString();
-    img.IdIipoImagem = 1;
-    img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
-    img.Ordem = "200";
-
-    this.produtoDetalhe.imagens.push(img);
-
-    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
-  }
-
   excluirImagemClick(idImagem) {
     this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
@@ -232,14 +212,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   atualizarProdutoClick() {
-console.clear();
+
     let campos: ProdutoCatalogoItem[] = [];
 
     this.produtosParaTela.forEach(x => {
       if (
-          x.idTipoCampo == "0" && x.valorPropriedade != null && x.valorPropriedade != "" ||
-          x.idTipoCampo == "1" && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
-          ) {
+        x.idTipoCampo == "0" && x.valorPropriedade != null && x.valorPropriedade != "" ||
+        x.idTipoCampo == "1" && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
+      ) {
         let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
         itemModelo.IdProdutoCatalogo = this.produtoDetalhe.Id;
         itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
@@ -252,7 +232,7 @@ console.clear();
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = x.idValorPropriedadeOpcao == 0 ? x.valorPropriedade : x.idValorPropriedadeOpcao.toString();
           itemModelo.Valor = null;
           console.log(x);
-    }
+        }
 
         campos.push(itemModelo);
       }
@@ -264,16 +244,28 @@ console.clear();
     produto.Descricao = this.produtoDetalhe.Descricao; //Descricao Completa
     produto.Ativo = this.produtoDetalhe.Ativo;
     produto.campos = campos;
-    produto.imagens = null;
+    if (!!this.imagem) {
+      produto.imagens = new Array<ProdutoCatalogoImagem>();
+      produto.imagens.push(this.imagem);
+    }
 
-    this.produtoService.atualizarProduto(produto).toPromise().then((r) => {
-        if (r != null) {
-            this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
-            this.router.navigate(["//produtos-catalogo/listar"]);
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    let formData = new FormData();
+    if (!!this.arquivo)
+      formData.append("arquivo", this.arquivo, this.arquivo.name);
 
-   
+    formData.append("produto", JSON.stringify(produto));
+
+    this.produtoService.atualizarProduto(formData).toPromise().then((r) => {
+      if (r != null) {
+        this.mensagemService.showErrorViaToast([r]);
+        return;
+      }
+
+      this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+      this.router.navigate(["//produtos-catalogo/listar"]);
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+
   }
 
   lstPropriedades: any = [];
@@ -288,6 +280,24 @@ console.clear();
           Valor: valor
         });
     }
+  }
+
+  imagem: ProdutoCatalogoImagem;
+  setarDadosImagem(arquivo: any): void {
+    let img = new ProdutoCatalogoImagem();
+    img.IdProdutoCatalogo = "-1";
+    img.IdIipoImagem = 1;
+    img.Caminho = arquivo.name;
+    img.Ordem = "200";
+
+    this.imagem = img;
+  }
+
+  arquivo: File;
+  onSelectFile(event) {
+    let arquivo = event.files[0];
+    this.arquivo = arquivo;
+    this.setarDadosImagem(arquivo);
   }
 }
 

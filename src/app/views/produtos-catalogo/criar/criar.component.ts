@@ -147,21 +147,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  onUpload($event, id): void {
-    var arquivo = $event.originalEvent.body.file;
-
-    this.produto.imagens = [];
-    let img = new ProdutoCatalogoImagem();
-    img.IdProdutoCatalogo = "-1";
-    img.IdIipoImagem = 1;
-    img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
-    img.Ordem = "200";
-
-    this.produto.imagens.push(img);
-
-    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
-  }
-
   excluirImagemClick(idImagem) {
     this.produto.imagens = null;
 
