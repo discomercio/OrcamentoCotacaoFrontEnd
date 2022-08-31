@@ -209,9 +209,10 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       }
 
       this.produtoDetalhe.imagens = [];
-
       this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r)
+    });
   }
 
   atualizarProdutoClick() {
