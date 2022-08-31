@@ -28,7 +28,13 @@
                 </div>
             </div>
 
-            <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}" *ngIf="produto.imagens == null"
+            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produto.imagens == null" accept="image/*"
+                [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block" fileLimit="1"
+                chooseLabel="Carregar" chooseIcon="pi pi-upload" [showUploadButton]=false
+                cancelLabel="Cancelar"  uploadIcon="fa fa-send" [customUpload]="true"
+                (onSelect)="onSelectFile($event)" >
+            </p-fileUpload>
+            <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}" *ngIf="produto.imagens == null"
                 (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event, this)"
                 fileLimit="1" accept="image/*" maxFileSize="52428800">
                 <ng-template pTemplate="content">
@@ -36,7 +42,7 @@
                         <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
                     </ul>
                 </ng-template>
-            </p-fileUpload>
+            </p-fileUpload> -->
         </div>
     </div>
 </div>

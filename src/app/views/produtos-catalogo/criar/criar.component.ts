@@ -18,7 +18,7 @@ import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCata
 @Component({
   selector: 'app-criar-produto',
   templateUrl:
-  './criar.component.html',
+    './criar.component.html',
   styleUrls: ['./criar.component.scss']
 })
 export class ProdutosCatalogoCriarComponent implements OnInit {
@@ -77,7 +77,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.produtoService.buscarPropriedades().toPromise().then((r) => {
       if (r != null) {
         this.propriedades = r;
-       
+
         this.carregando = false;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
@@ -148,19 +148,19 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
 
   onUpload($event, id): void {
-      var arquivo = $event.originalEvent.body.file;
+    var arquivo = $event.originalEvent.body.file;
 
-     this.produto.imagens = [];
-     let img = new ProdutoCatalogoImagem();
-     img.IdProdutoCatalogo = "-1";
-     img.IdIipoImagem = 1;
-     img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
-     img.Ordem = "200";
+    this.produto.imagens = [];
+    let img = new ProdutoCatalogoImagem();
+    img.IdProdutoCatalogo = "-1";
+    img.IdIipoImagem = 1;
+    img.Caminho = arquivo.split('\\')[arquivo.split('\\').length - 1];
+    img.Ordem = "200";
 
-     this.produto.imagens.push(img);
+    this.produto.imagens.push(img);
 
-     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
-    }
+    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
+  }
 
   excluirImagemClick(idImagem) {
     this.produto.imagens = null;
@@ -171,8 +171,8 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   obterIdOpcao(idProdutoCatalogoPropriedade, valorOpcaoSelecionado) {
     var opcao = this.opcoes.filter(x => x.id_produto_catalogo_propriedade == idProdutoCatalogoPropriedade && x.valor == valorOpcaoSelecionado)[0];
 
-    if(opcao) {
-        return opcao.id;
+    if (opcao) {
+      return opcao.id;
     }
 
     return null;
@@ -180,67 +180,93 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
   salvarClick() {
     this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
-        if(r != null) {
-            this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
-            return;
-        } else {
-            let prod = new ProdutoCatalogo();
-            let campo = new ProdutoCatalogoItem();
+      if (r != null) {
+        this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
+        return;
+      } else {
+        let prod = new ProdutoCatalogo();
+        let campo = new ProdutoCatalogoItem();
 
-            prod.Fabricante = this.form.controls.fabricante.value;
-            prod.Produto = this.form.controls.produto.value;
-            prod.Nome = this.form.controls.nome_produto.value;
-            prod.Descricao = this.form.controls.descricao.value;
-            prod.Ativo = this.produto.Ativo;
-            prod.campos = [];
-            prod.imagens = this.produto.imagens == null ? []  : this.produto.imagens;
-            var listaInput = document.getElementsByTagName("input");
-
-            for(let i = 0; i < listaInput.length; i++) {
-                if(listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
-                    campo = new ProdutoCatalogoItem();
-                    campo.IdProdutoCatalogo = '-1';
-                    campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-','');
-                    campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
-                    campo.Valor = listaInput[i].value;
-                    campo.Oculto = document.getElementById(listaInput[i].id.replace('txt','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
-                    prod.campos.push(campo);
-                }
-            }
-
-            var listaDrop = document.getElementsByTagName("p-dropdown");
-            for(let d = 0; d < listaDrop.length -1; d++) {
-                var listaOpt = listaDrop[d].getElementsByTagName("span");
-                for(let i = 0; i < listaOpt.length -1; i++) {
-                    if(listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
-                        campo = new ProdutoCatalogoItem();
-                        campo.IdProdutoCatalogo = '-1';
-                        campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-','');
-                        campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-',''), listaOpt[i].innerText)}`;
-                        campo.Valor = '';
-                        campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo','chk')).getElementsByTagName('input')[0].checked.toString() == "true"? false:true;
-                        prod.campos.push(campo);
-                    }
-                }
-            }
-
-            if (!this.validacaoFormularioService.validaForm(this.form)){
-              return;
-            }
-
-            this.produtoService.criarProduto(prod).toPromise().then((r) => {
-              if (r != null) {
-                this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-                this.router.navigate(["//produtos-catalogo/listar"]);
-              }
-            }).catch((r)=> this.alertaService.mostrarErroInternet(r));
-
-            
+        prod.Fabricante = this.form.controls.fabricante.value;
+        prod.Produto = this.form.controls.produto.value;
+        prod.Nome = this.form.controls.nome_produto.value;
+        prod.Descricao = this.form.controls.descricao.value;
+        prod.Ativo = this.produto.Ativo;
+        prod.campos = [];
+        // prod.imagens = this.produto.imagens == null ? [] : this.produto.imagens;
+        if (!!this.imagem) {
+          prod.imagens = new Array<ProdutoCatalogoImagem>();
+          prod.imagens.push(this.imagem);
         }
-      }).catch();
+        var listaInput = document.getElementsByTagName("input");
+
+        for (let i = 0; i < listaInput.length; i++) {
+          if (listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
+            campo = new ProdutoCatalogoItem();
+            campo.IdProdutoCatalogo = '-1';
+            campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-', '');
+            campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
+            campo.Valor = listaInput[i].value;
+            campo.Oculto = document.getElementById(listaInput[i].id.replace('txt', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
+            prod.campos.push(campo);
+          }
+        }
+
+        var listaDrop = document.getElementsByTagName("p-dropdown");
+        for (let d = 0; d < listaDrop.length - 1; d++) {
+          var listaOpt = listaDrop[d].getElementsByTagName("span");
+          for (let i = 0; i < listaOpt.length - 1; i++) {
+            if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
+              campo = new ProdutoCatalogoItem();
+              campo.IdProdutoCatalogo = '-1';
+              campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-', '');
+              campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-', ''), listaOpt[i].innerText)}`;
+              campo.Valor = '';
+              campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
+              prod.campos.push(campo);
+            }
+          }
+        }
+
+        if (!this.validacaoFormularioService.validaForm(this.form)) {
+          return;
+        }
+
+        let formData = new FormData();
+        if (!!this.arquivo)
+          formData.append("arquivo", this.arquivo, this.arquivo.name);
+
+        formData.append("produto", JSON.stringify(prod));
+        this.produtoService.criarProduto(formData).toPromise().then((r) => {
+          if (r != null) {
+            this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+            this.router.navigate(["//produtos-catalogo/listar"]);
+          }
+        }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+
+      }
+    }).catch();
 
   }
 
+  imagem: ProdutoCatalogoImagem;
+  setarDadosImagem(arquivo: any): void {
+    let img = new ProdutoCatalogoImagem();
+    img.IdProdutoCatalogo = "-1";
+    img.IdIipoImagem = 1;
+    img.Caminho = arquivo.name;
+    img.Ordem = "200";
+
+    this.imagem = img;
+  }
+
+  arquivo: File;
+  onSelectFile(event) {
+    let arquivo = event.files[0];
+    this.arquivo = arquivo;
+    this.setarDadosImagem(arquivo);
+  }
 
 }
 
