@@ -110,22 +110,22 @@
         <div class="card">
             <p-table #dt1 [value]="propriedades">
                 <ng-template pTemplate="body" let-lista>
-                    <div class="p-fluid p-formgrid p-col-12 p-lg-12 p-md-12">
+                    <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0">
                         <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
-                        <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-6">
-                            <div class="p-col-1" style="display: inline-block;vertical-align: middle;">
+                        <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
+                            <div class="p-col-3 p-md-1 p-sm-2" style="display: inline-block;vertical-align: middle;">
                                 <p-inputSwitch id="chk-{{lista.id}}"></p-inputSwitch>
                             </div>
-                            <div class="p-col-5" style="display: inline-block;vertical-align: middle;">
+                            <div class="p-col-9 p-sm-5" style="display: inline-block;vertical-align: middle;">
                                 <input id="txt-{{lista.id}}" type="text" pInputText placeholder="{{lista.descricao}}"
                                     value="" />
                             </div>
                         </div>
-                        <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 1" class="p-col-6">
-                            <div class="p-col-1" style="display: inline-block;vertical-align: middle;">
+                        <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 1" class="p-col-12">
+                            <div class="p-col-3 p-md-1 p-sm-2" style="display: inline-block;vertical-align: middle;">
                                 <p-inputSwitch id="chk-{{lista.id}}"></p-inputSwitch>
                             </div>
-                            <div class="p-col-5" style="display: inline-block;vertical-align: middle;">
+                            <div class="p-col-9 p-sm-5" style="display: inline-block;vertical-align: middle;">
                                 <p-dropdown id="cbo-{{lista.id}}" [options]="lstOpcoes[lista.id]"
                                     placeholder="Selecione" [showClear]="true"></p-dropdown>
                             </div>

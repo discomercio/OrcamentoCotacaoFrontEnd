@@ -198,16 +198,19 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   excluirImagemClick(idImagem) {
     this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
-        for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
-          if (this.produtoDetalhe.imagens[x].Id == idImagem) {
-            this.produtoDetalhe.imagens.splice(x, 1);
-          }
-        }
-
-        this.produtoDetalhe.imagens = [];
-
-        this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
+        this.alertaService.mostrarMensagem(r);
+        return;
       }
+
+      for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
+        if (this.produtoDetalhe.imagens[x].Id == idImagem) {
+          this.produtoDetalhe.imagens.splice(x, 1);
+        }
+      }
+
+      this.produtoDetalhe.imagens = [];
+
+      this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 

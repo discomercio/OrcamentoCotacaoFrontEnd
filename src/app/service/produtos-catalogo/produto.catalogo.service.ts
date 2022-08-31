@@ -59,8 +59,8 @@ export class ProdutoCatalogoService {
     return this.http.put<any>(`${environment.apiUrl}produtocatalogo`, formData);
   }
 
-  excluirImagem(idProduto: string, idImagem: string): Observable<boolean> {
-    return this.http.delete<boolean>(`${environment.apiUrl}produtocatalogo/imagem?idProduto=${idProduto}&idImagem=${idImagem}`);
+  excluirImagem(idProduto: string, idImagem: string): Observable<string> {
+    return this.http.delete<string>(`${environment.apiUrl}produtocatalogo/imagem?idProduto=${idProduto}&idImagem=${idImagem}`);
   }
 
   /* Propriedades do Produto */
