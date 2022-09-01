@@ -50,7 +50,9 @@
                         <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
                         <td style="text-align: left">{{lista.IdProdutoCatalogoImagem != null ? 'Sim' : 'Não'}}</td>
                         <td style="text-align: center">{{lista.Ativo == true ? 'Sim': 'Não'}}</td>
-                        <td style="text-align: right">
+                        <td style="text-align: center">
+                            <button pButton style="align-content: flex-end;" icon="fa fa-copy"
+                                (click)="clonarClick(this.lista.Id)" pTooltip="Clonar"></button>&nbsp;
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit"
                                 (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
                         </td>

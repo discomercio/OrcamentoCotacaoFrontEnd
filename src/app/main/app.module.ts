@@ -67,6 +67,7 @@ import { PrepedidoDetalhesComponent } from '../views/prepedido/detalhes/prepedid
 import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prepedido.module';
+import { ProdutosCatalogoClonarComponent } from '../views/produtos-catalogo/clonar/clonar.component';
 
 @NgModule({
     imports: [
@@ -115,7 +116,8 @@ import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prep
         PedidoDetalhesComponent,
         PublicoCadastroClienteComponent,
         PrepedidoDetalhesComponent,
-        PedidoDetalhesComponent
+        PedidoDetalhesComponent,
+        ProdutosCatalogoClonarComponent
     ],
     providers: [
         {
