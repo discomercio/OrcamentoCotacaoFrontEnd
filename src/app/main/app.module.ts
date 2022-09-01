@@ -67,6 +67,7 @@ import { PrepedidoDetalhesComponent } from '../views/prepedido/detalhes/prepedid
 import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhes.component';
 import { TextMaskModule } from 'angular2-text-mask';
 import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prepedido.module';
+import { ClienteModule } from '../views/prepedido/cliente/cliente.module';
 
 @NgModule({
     imports: [
@@ -88,7 +89,8 @@ import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prep
         FontAwesomeModule,
         NgxMaskModule.forRoot(),
         OrcamentosModule,
-        NovoPrepedidoModule
+        NovoPrepedidoModule,
+        ClienteModule
     ],
     declarations: [
         DownloadsComponent,

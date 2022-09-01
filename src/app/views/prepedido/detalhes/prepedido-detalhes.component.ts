@@ -10,6 +10,7 @@ import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefo
 import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-endereco';
 import { Constantes } from 'src/app/utilities/constantes';
 import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
+import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrePedidoDto';
 
 @Component({
   selector: 'app-prepedido-detalhes',
@@ -26,7 +27,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
   ) { }
 
   numeroPrepedido = "";
-  prepedido: any = null;
+  prepedido: PrePedidoDto;
   stringUtils = new StringUtils();  
   moedaUtils: MoedaUtils = new MoedaUtils();  
   dataUtils: DataUtils = new DataUtils();  
@@ -138,4 +139,8 @@ export class PrepedidoDetalhesComponent implements OnInit {
 
   }  
 
+  consultarCliente(){
+    let cliente = StringUtils.retorna_so_digitos(this.prepedido.DadosCliente.Cnpj_Cpf);
+     this.router.navigate(["/prepedido/cliente/cliente", cliente]);
+  }
 }
