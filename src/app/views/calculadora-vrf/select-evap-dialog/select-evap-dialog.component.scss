@@ -1,51 +1,24 @@
-::ng-deep .p-dialog{
-    max-height: 100% !important;
+
+.footer {
+  border-top: 0;
+  background: white;
+  text-align: right;
+  border-top: 1px solid #e9ecef;
+  display: flex;
+  justify-content: center;
+}
+
+.tabela{
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+@media only screen and (max-width: 600px) {
+  .tabela{
+    max-height: 300px;
   }
-  
-  ::ng-deep .dynamicDialog .p-dialog-content{
-      padding: 0;
-      border-bottom-left-radius: 4px !important;
-      border-bottom-right-radius: 4px !important;
-      overflow-y:hidden;
-  }
-  
-  ::ng-deep .p-datatable-wrapper{
-    max-height: 75vw;
-  }
-  
-  :host {
-      .container {
-        padding: 1rem;
-      }
-    
-      .footer {
-        border-top: 0;
-        background: white;
-        padding: 1rem;
-        text-align: right;
-        border-top: 1px solid #e9ecef;
-        display: flex;
-        justify-content: center;
-      }
-    
-      .footer button {
-        margin: 0 .5rem 0 0;
-        width: auto;
-      }
-    }
-  
-    #linha_tabela{
-      @media only screen and (max-width: 641px) {
-        border-bottom: 3px solid #cecece !important;
-      }
-    }
-  
-   ::ng-deep .p-datatable .p-datatable-tbody > tr>td{
-     border: none;
-   }
-   ::ng-deep .p-datatable .p-datatable-tbody > tr{
-     text-align: left;
-     border: 1px solid #dee2e6;
-     border-width: 1px 0 0 0;
-  }
-   
+}
+
+::ng-deep .p-dialog-content{
+  padding-bottom: 0% !important;
+}
