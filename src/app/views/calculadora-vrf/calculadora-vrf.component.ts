@@ -543,7 +543,6 @@ export class CalculadoraVrfComponent implements OnInit {
     const ref = this.dialogService.open(SelectEvapDialogComponent,
       {
         width: "80%",
-        styleClass: 'dynamicDialog',
         data: { evaps: this.filtrarEvaporadoras(), opcoes: this.lstOpcoes }
       });
 

@@ -1,66 +1,74 @@
 <div class="container">
     <div class="p-col-12 p-px-0">
-        <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-d-xl-inline-flex p-fluid 
+        <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-d-xl-inline-flex p-fluid 
                 p-formgrid p-grid p-lg-12 p-mx-0 p-px-0 p-py-0 p-xl-12">
-            <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
+            <div class="p-col-4 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Linha de produto</label>
                 <p-dropdown [options]="lstLinhaProdutos" placeholder="Selecione" optionLabel="label" optionValue="value"
                     [(ngModel)]="linhaProduto" [showClear]="true" (onChange)="filtrarEvaporadoras()">
                 </p-dropdown>
             </div>
 
-            <div class="p-col-12 p-xl-4 p-lg-4 p-sm-4 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-formgrid p-grid 
-                 p-mx-0 p-px-0 p-py-0 ">
-                <div class="p-as-end p-col-12 p-field">
-                    <label>Capacidade (BTU/h)</label>
-                    <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="value"
-                        [(ngModel)]="btu" [showClear]="true" (onChange)="filtrarEvaporadoras()">
-                    </p-dropdown>
-                </div>
+            <div class="p-col-4 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
+                <label>Capacidade (BTU/h)</label>
+                <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="value"
+                    [(ngModel)]="btu" [showClear]="true" (onChange)="filtrarEvaporadoras()">
+                </p-dropdown>
             </div>
-            <div class="p-col-12 p-xl-4 p-lg-4 p-sm-4 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-formgrid p-grid 
-                 p-mx-0 p-px-0 p-py-0 ">
-                <div class="p-as-end p-col-12 p-field">
-                    <label>Kcal/h</label>
-                    <p-dropdown [options]="lstKcals" placeholder="Selecione" optionLabel="label" optionValue="value"
-                        [(ngModel)]="kcal" [showClear]="true" (onChange)="filtrarEvaporadoras()">
-                    </p-dropdown>
-                </div>
+            <div class="p-col-4 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
+                <label>Kcal/h</label>
+                <p-dropdown [options]="lstKcals" placeholder="Selecione" optionLabel="label" optionValue="value"
+                    [(ngModel)]="kcal" [showClear]="true" (onChange)="filtrarEvaporadoras()">
+                </p-dropdown>
             </div>
         </div>
-        <p-table #dt1 [value]="evaporadoras" [responsive]="true" responsiveLayout="stack"
-            styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [(selection)]="evaporadoraSelecionada"
-            [paginator]="true" [filterDelay]="0">
-            <ng-template pTemplate="emptymessage">
-                <tr>
-                    <td class="p-text-center" colspan="3">Não foram encontradas evaporadoras com essas características
-                    </td>
-                </tr>
+        <div class="tabela">
+            <p-table #dt1 [value]="evaporadoras" [responsive]="true" responsiveLayout="stack"
+                styleClass="p-datatable-customers p-datatable-striped" [rows]="10" autoLayout="true"
+                [(selection)]="evaporadoraSelecionada" [paginator]="true" [filterDelay]="0">
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td class="p-text-center" colspan="3">Não foram encontradas evaporadoras com essas
+                            características
+                        </td>
+                    </tr>
 
-            </ng-template>
-            <ng-template pTemplate="header" class="p-text-center" let-p>
-                <tr>
-                    <th class="p-text-left p-col-8 p-py-0">Produto</th>
-                    <th class="p-text-center p-py-0">Capacidade <br>(BTU/h)</th>
-                    <th class="p-text-center p-py-0">Kcal/h</th>
-                </tr>
-            </ng-template>
-            <ng-template pTemplate="body" let-p>
-                <tr class="" [pSelectableRow]="p">
-                    <td class="p-text-left p-d-inline-flex p-py-2">
-                        <span>
-                            <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
-                        </span>
-                        <p class="p-ml-2"
-                            [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
-                        </p>
-                    </td>
-                    <td class="p-text-center p-py-0">{{p.btu}}</td>
-                    <td class="p-text-center p-py-0">{{p.kcal}}</td>
-                </tr>
-            </ng-template>
-        </p-table>
+                </ng-template>
+                <ng-template pTemplate="header" class="p-text-center" let-p>
+                    <tr>
+                        <th class="p-text-center p-col-1 p-py-0"></th>
+                        <th class="p-text-left p-col-8 p-py-0">Produto</th>
+                        <th class="p-text-center p-py-0">Capacidade <br>(BTU/h)</th>
+                        <th class="p-text-center p-py-0">Kcal/h</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-p>
+                    <tr class="" [pSelectableRow]="p">
+                        <td class="p-text-center p-col-1">
+                            <span>
+                                <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
+                            </span>
+                        </td>
+                        <td class="p-text-left p-py-2">
+                            <p class="p-ml-2"
+                                [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
+                            </p>
+                            
+                        </td>
+                        <td class="p-text-center p-py-0">
+                            {{p.btu}}
+                        </td>
+                        <td class="p-text-center p-py-0">
+                            {{p.kcal}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
     </div>
     <div class="footer">
-        <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button>
+        <div class="p-col-12 p-text-center">
+            <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button>
+        </div>
     </div>
