@@ -19,8 +19,7 @@ export class SelectEvapDialogComponent implements OnInit {
 
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
     public ref: DynamicDialogRef,
-    public readonly mensagemService: MensagemService,
-    telaDesktopService: TelaDesktopService) {
+    public readonly mensagemService: MensagemService) {
   }
 
   @ViewChild('dataTable') table: Table;

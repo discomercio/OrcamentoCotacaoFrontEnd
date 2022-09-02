@@ -47,6 +47,7 @@ import { PrepedidoDetalhesComponent } from 'src/app/views/prepedido/detalhes/pre
 import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-detalhes.component';
 import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-cliente/editar-cliente.component';
 import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
+import { ProdutosCatalogoClonarComponent } from 'src/app/views/produtos-catalogo/clonar/clonar.component';
 import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/cliente.component';
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 
@@ -186,6 +187,7 @@ import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-c
                                     { path: 'listar', canActivate: [AuthGuard], component: ProdutosCatalogoListarComponent },
                                     { path: 'visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoVisualizarComponent },
                                     { path: 'editar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoEditarComponent },
+                                    { path: 'clonar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoClonarComponent },
                                     { path: 'propriedades/criar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesCriarComponent },
                                     { path: 'propriedades/listar', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesListarComponent },
                                     { path: 'propriedades/visualizar/:id', canActivate: [AuthGuard], component: ProdutosCatalogoPropriedadesVisualizarComponent },

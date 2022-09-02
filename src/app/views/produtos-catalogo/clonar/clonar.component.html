@@ -28,12 +28,12 @@
                     </div>
                 </div>
             </div>
+
             <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens?.length == 0" accept="image/*"
                 [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
-                chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false uploadIcon="fa fa-send"
-                [customUpload]="true" [showCancelButton]=false (onSelect)="onSelectFile($event)">
+                chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false [showCancelButton]=false
+                uploadIcon="fa fa-send" [customUpload]="true" (onSelect)="onSelectFile($event)">
             </p-fileUpload>
-
         </div>
     </div>
 </div>
@@ -54,46 +54,50 @@
             <form [formGroup]="form">
                 <p align="right"><button pButton type="button" label="Voltar" icon="fa fa-reply"
                         (click)="voltarClick()"></button>&nbsp;
-                    <button pButton type="button" label="Salvar" icon="fa fa-save"
-                        (click)="atualizarProdutoClick()"></button>
+                    <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
                 </p>
                 <div class="p-d-lg-flex p-d-md-flex">
                     <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
+
+
+
                         <div class="p-text-bold">Exibir no Catálogo:</div>
                         <div class="p-field">
                             <p-inputSwitch id="ativo" formControlName="ativo" [(ngModel)]="produtoDetalhe.Ativo">
                             </p-inputSwitch>
                         </div>
                         <div class="p-text-bold">Nome do Fabricante:</div>
-                        <div class="p-field">
-                            <input id="fabricante" name="descricao" type="text" pInputText placeholder="Fabricante"
-                                formControlName="fabricante" value="{{produtoDetalhe.Fabricante}}" disabled="true" />
+                        <div class="p-field p-col-12">
+                            <p-dropdown id="dpdFabricante" [options]="lstFabricantes" formControlName="fabricante"
+                                placeholder="Selecione"></p-dropdown>
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">{{mensagemErro}}</small>
                         </div>
-                        <small class="p-error"
-                            *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">{{mensagemErro}}</small>
-
                         <div class="p-text-bold">Código:<br></div>
-                        <div class="p-field">
-                            <input id="produto" formControlName="produto" type="text" pInputText
-                                value="{{produtoDetalhe.Produto}}" disabled="true" />
+                        <div class="p-field p-col-12">
+                            <input id="id" type="text" formControlName="produto" pInputText
+                                value="{{('000000' + this.produtoDetalhe.Produto).slice(-6)}}" maxlength="8" />
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'produto')">{{mensagemErro}}</small>
                         </div>
 
-                        <div class="p-field">
-                            <label class="p-text-bold">Descrição:</label>
-                            <input id="nome" name="nome" type="text" pInputText placeholder="Nome do Produto"
-                                formControlName="nome" [(ngModel)]="produtoDetalhe.Nome" />
+                        <div class="p-text-bold">Nome do Produto:</div>
+                        <div class="p-field p-col-12">
+                            <input id="descricao" name="nome_produto" type="text" pInputText
+                                placeholder="Nome do Produto" formControlName="nome_produto"
+                                value="{{produtoDetalhe.Nome}}" />
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'nome_produto')">{{mensagemErro}}</small>
                         </div>
-                        <small class="p-error"
-                            *ngIf="validacaoFormularioService.verificaCampo(form,'nome')">{{mensagemErro}}</small>
 
-                        <div class="p-field">
-                            <label for="descricao" class="p-text-bold">Descrição Completa:</label>
+                        <div class="p-text-bold">Descrição:</div>
+                        <div class="p-field p-col-12">
                             <input id="descricao" name="descricao" type="text" pInputText
                                 placeholder="Descrição completa" formControlName="descricao"
-                                [(ngModel)]="produtoDetalhe.Descricao" />
+                                value="{{produtoDetalhe.Descricao}}" />
+                            <small class="p-error"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                         </div>
-                        <small class="p-error"
-                            *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
                     </div>
                 </div>
 

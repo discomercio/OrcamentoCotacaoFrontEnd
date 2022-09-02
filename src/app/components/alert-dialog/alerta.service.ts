@@ -102,13 +102,15 @@ export class AlertaService {
 
       if (error.status == 400) {
         let mensagens: Array<string> = new Array();
-        for (let key in error.error.errors) {
-          let listaErros = error.error.errors[key]
-          for (let erro in listaErros) {
-            mensagens.push(listaErros[erro]);
-          }
-        }
-        this.mostrarMensagemComLargura("Erro ao salvar. <br>Lista de erros: <br>" + mensagens.join("<br>"), "250px", null);
+        let erro = error.error.message;
+          mensagens.push(erro);
+        // for (let key in error.error.errors) {
+        //   // let listaErros = error.error.errors[key];
+        //   // for (let erro in listaErros) {
+        //   //   mensagens.push(listaErros[erro]);
+        //   // }
+        // }
+        this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
         return
       }
 

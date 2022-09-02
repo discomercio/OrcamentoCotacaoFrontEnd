@@ -84,7 +84,7 @@ export class AppTopBarComponent {
           
           this.corCabecalho = r.corCabecalho + " !important";
           this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
-          this.titleService.setTitle('Portal de Vendas');
+          this.titleService.setTitle(r.titulo);
         }
       });
 
