@@ -5,16 +5,19 @@
 
             <div class="p-field p-d-flex p-jc-end p-mt-5">
                 <button pButton pRipple label="{{!this.ehUpload ? 'Upload' : 'Cancelar'}}"
-                    icon="{{!this.ehUpload ? 'pi pi-upload': 'pi pi-times'}}" *ngIf="!ehArquivo && isAutorizado"
+                    icon="{{!this.ehUpload ? 'pi pi-upload': 'pi pi-times'}}" *ngIf="!ehArquivo && exibeBotaoUpload"
                     class="p-as-end p-mr-2" (click)="uploadClick();"
                     [ngClass]="{'p-button-icon-only':!telaDesktop, 'p-button-outlined':this.ehUpload}"></button>
+
                 <button pButton pRipple label="{{!this.novaPasta ? 'Nova pasta': 'Cancelar'}}"
-                    icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}" *ngIf="!ehArquivo && isAutorizado"
+                    icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}" *ngIf="!ehArquivo && exibeBotaoNovaPasta"
                     class="p-as-end" (click)="novaPastaClick()"
                     [ngClass]="{'p-button-icon-only':!telaDesktop, 'altura':!telaDesktop, 'p-button-outlined':this.novaPasta}"></button>&nbsp;
-                <button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="isAutorizado && !edicao"
+
+                <button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="exibeBotaoEditarArquivoPasta && !edicao"
                     class="p-as-end" (click)="editarClick()" [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
-                <button pButton pRipple label="Cancelar" icon="pi pi-times" *ngIf="isAutorizado && edicao"
+
+                <button pButton pRipple label="Cancelar" icon="pi pi-times" *ngIf="edicao"
                     class="p-as-end p-button-outlined" (click)="editarClick()"
                     [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
             </div>
@@ -58,7 +61,7 @@
                             <button pButton pRipple label="Salvar" icon="pi pi-save"
                                 (click)="editarSalvarClick()"></button>
                         </div>
-                        <div class="p-field p-col-12  p-lg-3 p-as-end p-md-3 p-sm-3">
+                        <div class="p-field p-col-12  p-lg-3 p-as-end p-md-3 p-sm-3" *ngIf="exibeBotaoExcluirArquivoPasta">
                             <button pButton pRipple label="Excluir" icon="pi pi-trash" class="p-button-danger"
                                 (click)="excluirClick()"></button>
                         </div>
@@ -68,7 +71,7 @@
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
                 <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
                     (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event)" fileLimit="1" accept=".pdf"
-                    maxFileSize="52428800">
+                    maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">
                             <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
@@ -100,8 +103,7 @@
                                     class="pi pi-file"></i>&nbsp;</span>
                             {{rowData[col.field]}}
                             <div *ngIf="rowData.type == 'File' && col.field == 'acoes'" class="p-text-center">
-                                <button pButton pRipple label="Download" icon="pi pi-download"
-                                     class="p-as-end p-mr-2"
+                                <button pButton pRipple label="Download" icon="pi pi-download" class="p-as-end p-mr-2"
                                     (click)="downloadSelecionado(rowData)"
                                     [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
                             </div>
