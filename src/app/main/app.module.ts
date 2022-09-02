@@ -68,6 +68,7 @@ import { PedidoDetalhesComponent } from '../views/pedido/detalhes/pedido-detalhe
 import { TextMaskModule } from 'angular2-text-mask';
 import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prepedido.module';
 import { ProdutosCatalogoClonarComponent } from '../views/produtos-catalogo/clonar/clonar.component';
+import { SenhaMeusdadosComponent } from '../views/senha/senha-meusdados.component';
 
 @NgModule({
     imports: [
@@ -117,7 +118,8 @@ import { ProdutosCatalogoClonarComponent } from '../views/produtos-catalogo/clon
         PublicoCadastroClienteComponent,
         PrepedidoDetalhesComponent,
         PedidoDetalhesComponent,
-        ProdutosCatalogoClonarComponent
+        ProdutosCatalogoClonarComponent,
+        SenhaMeusdadosComponent
     ],
     providers: [
         {
