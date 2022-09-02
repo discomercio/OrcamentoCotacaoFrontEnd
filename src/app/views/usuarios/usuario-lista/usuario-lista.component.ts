@@ -11,6 +11,7 @@ import { SelectItem } from 'primeng/api/selectitem';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { mergeMap } from 'rxjs/operators';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -34,25 +35,34 @@ export class UsuarioListaComponent implements OnInit {
   perfil: SelectItem;
   carregando: boolean = false;
   tipo: UsuarioTipo = 'todos';
+  permite: boolean = false;
 
   ngOnInit(): void {
-    this.route.queryParamMap.pipe(
-        mergeMap((params) => {
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.CatalogoVendedorParceiro)) {
+      this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(['orcamentos/listar/orcamentos']);
+      return;
+    }
 
-            this.tipo = params.get('tipo') as UsuarioTipo || 'todos';
-            //if(this.tipo == 'vendedor-parceiro')
-            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this.autenticacaoService._parceiro)
-        })
-    ).subscribe( r=>{
-        if (r == null) {
-            this.alertaService.mostrarErroInternet('Nenhum usuário encontrado');
-            return;
-        }
-        this.usuarios = r;
+    this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
+    
+    this.route.queryParamMap.pipe(
+      mergeMap((params) => {
+
+        this.tipo = params.get('tipo') as UsuarioTipo || 'todos';
+        //if(this.tipo == 'vendedor-parceiro')
+        return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this.autenticacaoService._parceiro)
+      })
+    ).subscribe(r => {
+      if (r == null) {
+        this.alertaService.mostrarErroInternet('Nenhum usuário encontrado');
+        return;
+      }
+      this.usuarios = r;
     },
-    (error)=>{
+      (error) => {
         this.alertaService.mostrarErroInternet(error);
-    });
+      });
 
     this.form = this.fb.group({
       usuario: ['', [Validators.required]],
@@ -60,15 +70,15 @@ export class UsuarioListaComponent implements OnInit {
       perfil: ['', [Validators.required]]
     });
     this.cols = [
-        {field : 'nome', header: 'Nome'},
-        {field : 'email', header: 'E-mail', width: '300px'},
-        {field : 'vendedorResponsavel', header: 'Responsável'},
-        {field : 'ativoLabel', header: 'Ativo', width: '60px'},
-    //   { field: 'Responsavel', header: 'Responsável' },
-    //   { field: 'Papel', header: 'Papel' },
-    //   { field: 'Nome', header: 'Nome' },
-    //   { field: 'Apelido', header: 'Apelido' },
-    //   { field: 'Ativo', header: 'Ativo' }
+      { field: 'nome', header: 'Nome' },
+      { field: 'email', header: 'E-mail', width: '300px' },
+      { field: 'vendedorResponsavel', header: 'Responsável' },
+      { field: 'ativoLabel', header: 'Ativo', width: '60px' },
+      //   { field: 'Responsavel', header: 'Responsável' },
+      //   { field: 'Papel', header: 'Papel' },
+      //   { field: 'Nome', header: 'Nome' },
+      //   { field: 'Apelido', header: 'Apelido' },
+      //   { field: 'Ativo', header: 'Ativo' }
     ];
   }
 
@@ -76,7 +86,7 @@ export class UsuarioListaComponent implements OnInit {
     if (!!this.usuarioSelecionado) {
       this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
     }
-    else{
+    else {
       this.router.navigate(['/usuarios/usuario-edicao', 'novo', { tipo: this.tipo }],);
     }
   }
