@@ -29,7 +29,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
     private readonly alertaService: AlertaService,
-    ) { }
+  ) { }
 
   public form: FormGroup;
   public apelido: string;
@@ -60,13 +60,13 @@ export class UsuarioEdicaoComponent implements OnInit {
         if (this.apelido.toLowerCase() != "novo") {
           this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
             if (!!r) {
-                this.usuario =r;
-                this.criarForm();
+              this.usuario = r;
+              this.criarForm();
 
-                // const datastamp = this.usuario.senha;
-                // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
-                // this.form.controls.senha.setValue(senhaConvertida);
-                // this.form.controls.confirmacao.setValue(senhaConvertida);
+              // const datastamp = this.usuario.senha;
+              // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
+              // this.form.controls.senha.setValue(senhaConvertida);
+              // this.form.controls.confirmacao.setValue(senhaConvertida);
             }
           });
         }
@@ -114,12 +114,11 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.usuario.parceiro = this.autenticacaoService._parceiro;
 
     if (this.usuario.id) {
-        console.log(this.usuario);
       this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
         .toPromise()
         .then((x) => {
-            this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
-            this.router.navigate([`/usuarios/usuario-lista`]);
+          this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+          this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
           this.alertaService.mostrarErroInternet(e);
@@ -128,11 +127,11 @@ export class UsuarioEdicaoComponent implements OnInit {
       this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
         .toPromise()
         .then((x) => {
-            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
-            this.router.navigate([`/usuarios/usuario-lista`]);
+          this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
+          this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
+          this.alertaService.mostrarErroInternet(e);
         });
     }
   }
