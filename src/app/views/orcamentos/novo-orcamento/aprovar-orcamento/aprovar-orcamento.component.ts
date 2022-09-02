@@ -118,7 +118,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.novoOrcamentoService.orcamentoCotacaoDto.status != 2 &&
       this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
       this.exibeBotaoCancelar = true;
-      this.exibeBotaoProrrogar = true;
+      this.exibeBotaoProrrogar = this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento);
       this.desabiltarBotoes = false;
 
     } else {
@@ -375,6 +375,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   prorrogar() {
+
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento)) return;
+
     this.sweetalertService.dialogo("", "Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
 
