@@ -9,6 +9,8 @@ import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentis
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 @Component({
   selector: 'app-usuario-edicao',
   templateUrl: './usuario-edicao.component.html',
@@ -26,6 +28,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
+    private readonly alertaService: AlertaService,
     ) { }
 
   public form: FormGroup;
@@ -39,6 +42,11 @@ export class UsuarioEdicaoComponent implements OnInit {
   tipo: UsuarioTipo = 'todos';
 
   ngOnInit(): void {
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
+      this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(['orcamentos/listar/orcamentos']);
+      return;
+    }
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();

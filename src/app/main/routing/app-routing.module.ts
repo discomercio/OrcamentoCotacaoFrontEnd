@@ -48,6 +48,8 @@ import { PedidoDetalhesComponent } from 'src/app/views/pedido/detalhes/pedido-de
 import { EditarClienteComponent } from 'src/app/views/orcamentos/editar/editar-cliente/editar-cliente.component';
 import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { ProdutosCatalogoClonarComponent } from 'src/app/views/produtos-catalogo/clonar/clonar.component';
+import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/cliente.component';
+import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 
 @NgModule({
@@ -71,7 +73,7 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                                     { path: "itens/:filtro", canActivate: [AuthGuard], component: ItensComponent },
                                     { path: "select-prod", canActivate: [AuthGuard], component: SelectProdDialogComponent },
                                     { path: "visualizar-orcamento/:id", canActivate: [AuthGuard], component: VisualizarOrcamentoComponent },
-                                    { path: "novo-orcamento",pathMatch: "full", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
+                                    { path: "novo-orcamento", pathMatch: "full", canActivate: [AuthGuard], component: NovoOrcamentoComponent },
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                     { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
@@ -84,46 +86,46 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                                 path: 'novoprepedido',
                                 canActivate: [AuthGuard],
                                 // component: NovoPrepedidoComponent,
-                                children:[
-                                      {
+                                children: [
+                                    {
                                         path: 'confirmar-cliente/:cpfCnpj',
                                         canActivate: [AuthGuard],
                                         pathMatch: "prefix",
                                         component: PrePedidoConfirmarClienteComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: 'cadastrar-cliente/:cpfCnpj',
                                         canActivate: [AuthGuard],
                                         component: PrePedidoCadastrarClienteComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: 'itens/:numeroPrepedido',
                                         canActivate: [AuthGuard],
                                         component: PrePedidoItensComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: 'itens',
                                         canActivate: [AuthGuard],
                                         pathMatch: "full",
                                         component: PrePedidoItensComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: 'observacoes',
                                         canActivate: [AuthGuard],
                                         component: PrePedidoObservacoesComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: 'confirmar-prepedido',
                                         canActivate: [AuthGuard],
                                         component: ConfirmarPrepedidoComponent
-                                      },
-                                      {
+                                    },
+                                    {
                                         path: '**',
                                         canActivate: [AuthGuard],
                                         component: SelecionarClienteComponent
-                                      }
+                                    }
                                 ]
-                              },
+                            },
                             // {
                             //     path: 'selecionacliente',
                             //     canActivate: [AuthGuard],
@@ -215,11 +217,9 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                             },
 
                             // Prepedido
-                            {
-                                path: 'prepedido/detalhes/:numeroPrepedido',
-                                canActivate: [AuthGuard],
-                                component: PrepedidoDetalhesComponent
-                            },
+                            { path: 'prepedido/detalhes/:numeroPrepedido', canActivate: [AuthGuard], component: PrepedidoDetalhesComponent },
+                            { path: 'prepedido/cliente/cliente/:cpfcnpj', canActivate: [AuthGuard], component: ClienteComponent2 },
+                            { path: 'prepedido/cliente/cliente-corpo', canActivate: [AuthGuard], component: ClienteCorpoComponent },
 
                             // Pedido
                             {
@@ -228,12 +228,6 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                                 component: PedidoDetalhesComponent
                             },
 
-                            // Senha
-                            {
-                                path: 'senha', canActivate: [AuthGuard], children: [
-                                    { path: 'senha-meusdados', component: SenhaMeusdadosComponent, canActivate: [AuthGuard] },
-                                ]
-                            }
 
                         ]
                     }

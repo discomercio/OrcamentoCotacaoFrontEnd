@@ -12,6 +12,7 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { SelectItem } from 'primeng/api';
 import { LojasService } from '../lojas/lojas.service';
 import { Title } from "@angular/platform-browser";
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
 
 @Injectable({
@@ -179,6 +180,13 @@ export class AutenticacaoService {
       return false;
     if (token.trim() == "")
       return false;
+
+    return true;
+  }
+
+  verificarPermissoes(permissao:ePermissao):boolean{
+
+    if(!this.usuario.permissoes.includes(permissao)) return false;
 
     return true;
   }
