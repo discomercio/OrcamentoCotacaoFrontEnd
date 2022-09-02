@@ -228,7 +228,12 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                                 component: PedidoDetalhesComponent
                             },
 
-
+                            // Senha
+                            {
+                                path: 'senha', canActivate: [AuthGuard], children: [
+                                    { path: 'senha-meusdados', component: SenhaMeusdadosComponent, canActivate: [AuthGuard] },
+                                ]
+                            },
                         ]
                     }
                 ]
