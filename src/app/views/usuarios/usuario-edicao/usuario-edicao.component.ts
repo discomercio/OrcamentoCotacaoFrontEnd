@@ -122,7 +122,7 @@ export class UsuarioEdicaoComponent implements OnInit {
             this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
-            this.mensagemService.showWarnViaToast(e.error.Message);
+          this.alertaService.mostrarErroInternet(e);
         });
     } else {
       this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
@@ -132,7 +132,7 @@ export class UsuarioEdicaoComponent implements OnInit {
             this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
-            this.mensagemService.showWarnViaToast(e.error.Message);
+            this.alertaService.mostrarErroInternet(e);
         });
     }
   }

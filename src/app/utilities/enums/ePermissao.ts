@@ -13,5 +13,6 @@ export enum ePermissao {
     CatalogoVendedorParceiro = "100310",
     ConsultarUsuarioLogado = "100210",
     CadastroVendedorParceiroIncluirEditar ="100320",
-    ProrrogarVencimentoOrcamento = "100500"
+    ProrrogarVencimentoOrcamento = "100500",
+    AprovarOrcamento = "100550"
 }
