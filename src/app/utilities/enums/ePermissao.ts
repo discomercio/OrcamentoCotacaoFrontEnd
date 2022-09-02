@@ -11,5 +11,6 @@ export enum ePermissao {
     CatalogoCaradastrarEditar = "102500",
     CatalogoPropriedade = "102600",
     CatalogoVendedorParceiro = "100310",
-    ConsultarUsuarioLogado = "100210"
+    ConsultarUsuarioLogado = "100210",
+    CadastroVendedorParceiroIncluirEditar ="100320"
 }
