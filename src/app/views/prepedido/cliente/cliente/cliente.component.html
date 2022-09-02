@@ -4,15 +4,15 @@
         Detalhes do Cliente
     </header>
 
-    <article>
-        <app-cliente-corpo [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="false"
+    <!-- <article> -->
+        <app-cliente-corpo style="padding: 16px;" [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="false"
         [clienteCadastroDto]="clienteCadastroDto" [editarIcms]="false" [dadosCadastrais]="false">
         </app-cliente-corpo>
 
-    </article>
+    <!-- </article> -->
     <footer>
-        <button mat-raised-button color="accent" (click)="voltar()" style="font-size:80%;background-color: #007bff !important;color: white !important;">
-            <span class="pi pi-arrow-circle-left"></span> Voltar
+        <button mat-raised-button color="accent" (click)="voltar()" class="botao">
+            <span class="pi pi-arrow-left"></span> Voltar
         </button>
     </footer>
 </section>

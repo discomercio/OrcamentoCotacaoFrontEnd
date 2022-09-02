@@ -22,8 +22,8 @@ export class PedidoDetalhesComponent implements OnInit {
     public readonly pedidoService: PedidoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
-    private location: Location    
-
+    private location: Location,  
+    private router: Router
   ) { }
 
   
@@ -128,4 +128,8 @@ export class PedidoDetalhesComponent implements OnInit {
     }, 7000);   
   }
 
+  consultarCliente(){
+    let cliente = StringUtils.retorna_so_digitos(this.pedido.DadosCliente.Cnpj_Cpf);
+     this.router.navigate(["/prepedido/cliente/cliente", cliente]);
+  }
 }

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { MatDialog } from '@angular/material';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -16,7 +15,7 @@ import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-c
   templateUrl: './cliente.component.html',
   styleUrls: ['./cliente.component.scss']
 })
-export class ClienteComponent extends TelaDesktopBaseComponent implements OnInit {
+export class ClienteComponent2 extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(private readonly router: Router,
     private readonly location: Location,
