@@ -13,6 +13,7 @@ import { SelectItem } from 'primeng/api';
 import { LojasService } from '../lojas/lojas.service';
 import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -190,4 +191,14 @@ export class AutenticacaoService {
     return true;
   }
 
+  public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
+    return this.http.post<usuarioSenhaResponse>(environment.apiUrl + 'Account/AtualzarSenha', 
+    { 
+      tipoUsuario: tipoUsuario, 
+      apelido: usuario,
+      senha: senha,
+      novaSenha: novaSenha,
+      confirmacaoSenha: confirmacaSenha
+    });
+  }
 }

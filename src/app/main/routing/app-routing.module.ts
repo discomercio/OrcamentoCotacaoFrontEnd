@@ -50,6 +50,7 @@ import { SelectProdDialogComponent } from 'src/app/views/orcamentos/novo-orcamen
 import { ProdutosCatalogoClonarComponent } from 'src/app/views/produtos-catalogo/clonar/clonar.component';
 import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/cliente.component';
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
+import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 
 @NgModule({
     imports: [
@@ -221,9 +222,18 @@ import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-c
                             { path: 'prepedido/cliente/cliente-corpo', canActivate: [AuthGuard], component: ClienteCorpoComponent },
 
                             // Pedido
-                            { path: 'pedido/detalhes/:numeroPedido', canActivate: [AuthGuard], component: PedidoDetalhesComponent },
+                            {
+                                path: 'pedido/detalhes/:numeroPedido',
+                                canActivate: [AuthGuard],
+                                component: PedidoDetalhesComponent
+                            },
 
-
+                            // Senha
+                            {
+                                path: 'senha', canActivate: [AuthGuard], children: [
+                                    { path: 'senha-meusdados', component: SenhaMeusdadosComponent, canActivate: [AuthGuard] },
+                                ]
+                            },
                         ]
                     }
                 ]

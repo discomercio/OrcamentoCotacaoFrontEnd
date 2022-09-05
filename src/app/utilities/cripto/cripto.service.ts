@@ -7,6 +7,68 @@ export class CriptoService {
 
   constructor() { }
 
+  public gerarChave() {
+    // gerar chave
+    const fator: number = 1209;
+    const cod_min: number = 35;
+    const cod_max: number = 96;
+    const tamanhoChave: number = 128;
+
+    let chave: string = "";
+
+    for (let i: number = 1; i < tamanhoChave; i++) {
+      let k: number = (cod_max - cod_min) + 1;
+      k *= fator;
+      k = (k * i) + cod_min;
+      k %= 128;
+      chave += String.fromCharCode(k);
+    }
+
+    return chave;
+  }
+
+  public CodificaSenha(origem: string, chave: string): string {
+
+    let i: number = 0;
+    let i_chave: number = 0;
+    let i_dado: number = 0;
+    let s_origem: string = origem;
+    let letra: string = "";
+    let s_destino: string = "";
+
+    if (s_origem.length > 15) {
+      s_origem = s_origem.substr(0, 15);
+    }
+
+    for (i = 0; i < s_origem.length; i++) {
+      letra = chave.substr(i, 1);
+      i_chave = (letra.charCodeAt(0) * 2) + 1;
+      i_dado = s_origem.substr(i, 1).charCodeAt(0) * 2;
+      let contaMod = i_chave ^ i_dado;
+      s_destino += String.fromCharCode(contaMod);
+    }
+
+    s_origem = s_destino;
+    s_destino = "";
+    let destino = "";
+
+    for (i = 0; i < s_origem.length; i++) {
+      letra = s_origem.substr(i, 1);
+      i_chave = letra.charCodeAt(0);
+      let hexNumber = i_chave.toString(16);
+
+      while (hexNumber.length < 2) {
+        hexNumber = hexNumber.padStart(2, '0');
+      }
+      destino += hexNumber;
+    }
+    while (destino.length < 30) {
+      destino = "0" + destino;
+    }
+    s_destino = "0x" + destino;
+    return s_destino;
+  }
+
   decodificaDado(strOrigem: string, fator: number) {
     let i: number = 0;
     let i_chave: number = 0;
