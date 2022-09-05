@@ -80,6 +80,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
+  habilitaBotaoAprovar: boolean;
 
   ngOnInit(): void {
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
@@ -118,8 +119,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.novoOrcamentoService.orcamentoCotacaoDto.status != 2 &&
       this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
       this.exibeBotaoCancelar = true;
-      this.exibeBotaoProrrogar = true;
+      this.exibeBotaoProrrogar = this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento);
       this.desabiltarBotoes = false;
+
+      //se tiver permissão e é dono do orçamento retornamos "false" para "disabled" do botão de aprovação das opções
+      this.habilitaBotaoAprovar = this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento);
 
     } else {
       this.exibeBotaoCancelar = false;
@@ -274,7 +278,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       if (r != null) {
 
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
-        
+
         this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
         this.verificarEdicao();
         this.carrregarBotoneira();
@@ -293,9 +297,16 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   editarDadosCadastrais: boolean = false;
   verificarEdicaoDadosCadastraris(): boolean {
     if (this.editar) {
-      let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
+      if (this.verificarUsuarioLogadoEDonoOrcamento()) return true;
     }
+    return false;
+  }
+
+  verificarUsuarioLogadoEDonoOrcamento() {
+    //pega o dono do orçamento
+    let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+    if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
+
     return false;
   }
 
@@ -336,7 +347,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           if (p['aprovado'] == true) {
             this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
             formaPagtoOrcamento.push(p);
-          }else{
+          } else {
             this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
           }
         } else {
@@ -367,6 +378,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   aprovar(orcamento) {
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento)) return;
+
     if (!this.opcaoPagto) {
     }
     this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
@@ -375,6 +388,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   prorrogar() {
+
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento)) return;
+
     this.sweetalertService.dialogo("", "Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
 
