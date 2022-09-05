@@ -56,6 +56,10 @@ export class OrcamentosService {
     return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
   }
 
+  reenviarOrcamento(id: number): Observable<MensagemDto> {
+    return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/reenviar`,id);
+  }  
+
   buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {    
     return this.http.get<any>(`${environment.apiUrl}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
   }    
