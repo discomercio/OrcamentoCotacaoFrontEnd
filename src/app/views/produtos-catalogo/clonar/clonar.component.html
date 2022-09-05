@@ -12,7 +12,7 @@
         <div class="card">
             <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3">
                 <div class="product-item">
-                    <div class="product-item-content" *ngIf="produtoDetalhe.imagens != null">
+                    <div class="product-item-content" *ngIf="produtoDetalhe.imagens?.length > 0">
                         <div class="p-mb-12">
                             <img src="{{imgUrl}}{{produtoDetalhe.imagens[0].Caminho}}" class="product-image"
                                 style="max-width: 300px; max-height: 200px;" />
@@ -29,7 +29,7 @@
                 </div>
             </div>
 
-            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens == null" accept="image/*"
+            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens?.length == 0" accept="image/*"
                 [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
                 chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false [showCancelButton]=false
                 uploadIcon="fa fa-send" [customUpload]="true" (onSelect)="onSelectFile($event)">
