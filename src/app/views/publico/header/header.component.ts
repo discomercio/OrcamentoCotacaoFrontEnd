@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
 
 @Component({
   selector: 'app-publico-header',
@@ -11,5 +12,5 @@ export class PublicoHeaderComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
+  imagemLogotipo:string;
 }
