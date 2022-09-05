@@ -18,6 +18,7 @@ export class ExportExcelService {
   dataUtils: DataUtils = new DataUtils();
 
   public exportAsXLSXFile(json: any[], excelFileName: string): void {
+    debugger;
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
     const workbook: XLSX.WorkBook = { Sheets: { 'data': worksheet }, SheetNames: ['data'] };
     const excelBuffer: any = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -25,6 +26,7 @@ export class ExportExcelService {
   }
 
   public exportAsCSVFile(json: any[], excelFileName: string): void {
+    debugger;
     const worksheet: XLSX.WorkSheet = XLSX.utils.json_to_sheet(json);
     const csvOutput: string = XLSX.utils.sheet_to_csv(worksheet);
     this.saveAsExcelFile(csvOutput, excelFileName, CSV_TYPE, CSV_EXTENSION);
@@ -33,7 +35,7 @@ export class ExportExcelService {
   private saveAsExcelFile(buffer: any, fileName: string, type: string, extension: string): void {
     const data: Blob = new Blob([buffer], { type: type });
     let dataAtual = new Date();
-    let dateTime = DataUtils.formata_formulario_date(dataAtual.toLocaleDateString());
+    let dateTime = DataUtils.formata_yyyy_mm_dd_hh_mm_ss(dataAtual);
     FileSaver.saveAs(data, fileName + '_' + dateTime + extension);
   }
 
