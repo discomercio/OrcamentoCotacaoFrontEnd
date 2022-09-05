@@ -1,6 +1,7 @@
 import { MensageriaDadosDto } from './MensageriaDadosDto';
 import { OrcamentoOpcaoDto } from './orcamento-opcao-dto';
 import { FormaPagto } from '../forma-pagto/forma-pagto';
+import { lojaEstilo } from '../lojas/lojaEstilo';
 
 export class OrcamentoCotacaoDto {
     id: number;
@@ -29,5 +30,7 @@ export class OrcamentoCotacaoDto {
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];
     mensageria: MensageriaDadosDto;
+
+    lojaViewModel:lojaEstilo;
 }
 
