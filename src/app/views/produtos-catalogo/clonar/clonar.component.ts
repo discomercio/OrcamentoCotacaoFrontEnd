@@ -246,7 +246,8 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     produto.Descricao = this.form.controls.descricao.value; //Descricao Completa
     produto.Ativo = this.form.controls.ativo.value;
     produto.campos = campos;
-    if (!!this.imagem) {
+    debugger;
+    if (this.imagem != null) {
       produto.imagens = new Array<ProdutoCatalogoImagem>();
       produto.imagens.push(this.imagem);
     }
@@ -292,7 +293,9 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    this.produtoDetalhe.imagens = [];
+    
+    this.imagem = null;
+    this.produtoDetalhe.imagens = null;
 
     this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }
