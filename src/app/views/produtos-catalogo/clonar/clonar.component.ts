@@ -295,7 +295,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   excluirImagemClick(idImagem) {
     
     this.imagem = null;
-    this.produtoDetalhe.imagens = null;
+    this.produtoDetalhe.imagens = [];
 
     this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }
