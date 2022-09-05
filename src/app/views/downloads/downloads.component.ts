@@ -12,6 +12,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { Constantes } from 'src/app/utilities/constantes';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 
 
@@ -43,9 +44,13 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   public edicao: boolean = false;
   public ehArquivo: boolean = false;
   public ehUpload: boolean = false;
-  public isAutorizado: boolean;
   public urlUpload: string = this.downloadsService.urlUpload;
   public constantes: Constantes = new Constantes();
+  exibeBotaoUpload: boolean;
+  exibeBotaoNovaPasta: boolean;
+  exibeBotaoEditarArquivoPasta: boolean;
+  exibeBotaoExcluirArquivoPasta: boolean;
+
 
   ngOnInit(): void {
     this.criarForm();
@@ -55,9 +60,11 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   verificarPermissoes() {
-    if (this.autenticacaoService._permissoes.includes(this.constantes.AdministradorDoModulo)) {
-      this.isAutorizado = true;
-    }
+    this.exibeBotaoUpload = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoNovaPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoEditarArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoExcluirArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+
   }
 
   buscarPastas() {
@@ -129,6 +136,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   editarSalvarClick() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
     this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then((r) => {
       this.mensagemService.showSuccessViaToast("Salvo com sucesso");
       this.editarItem();
@@ -185,6 +194,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   uploadClick() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
     if (!!this.selectedFiles2 == false) {
       this.mensagemService.showWarnViaToast("Selecione uma pasta!");
       return;
@@ -196,6 +207,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   excluirClick() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.selectedFiles2 == false) {
       this.mensagemService.showWarnViaToast("Selecione uma pasta, ou arquivo!");
@@ -208,6 +220,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   concluirExclusao() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
     if (this.selectedFiles2.hasOwnProperty('children') && this.selectedFiles2.children.length > 0) {
       this.mensagemService.showWarnViaToast("Não é possivel excluir pastas que possuem arquivos!");
       return;
@@ -223,7 +237,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         }
         this.remove();
       }
-    }).catch(e => this.alertaService.mostrarErroInternet("Falha ao excluir!"));
+    }).catch(e => this.alertaService.mostrarErroInternet(e));
 
   }
 
@@ -245,6 +259,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   addPastaTable() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     this.downloadsService.novaPasta(this.form.controls.pasta.value, this.selectedFiles2.data.key).toPromise().then(r => {
       if (r != null) {
@@ -307,11 +322,15 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
 
   onBeforeUpload(event) {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
     event.formData.append('idPai', this.selectedFiles2.data.key);
     event.formData.append('descricao', this.form.controls.descricaoPasta.value);
   }
 
   onUpload(event) {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
     this.ehUpload = false;
     this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
 
