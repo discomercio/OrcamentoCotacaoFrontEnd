@@ -1,6 +1,6 @@
 import { AutenticacaoService } from './../../../service/autenticacao/autenticacao.service';
 import { PublicoService } from './../../../service/publico/publico.service';
-import { Component, OnInit, ViewChild,AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -16,6 +16,7 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cliente.component';
+import { PublicoHeaderComponent } from '../header/header.component';
 
 @Component({
   selector: 'app-orcamento',
@@ -31,7 +32,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly alertaService: AlertaService,
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService,
-  ) { 
+  ) {
     super(telaDesktopService);
   }
 
@@ -48,9 +49,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   validado: boolean = false;
   desabiltarBotoes: boolean;
 
-  
+  @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
+
   ngOnInit(): void {
-    this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
+    
+    this.sub = this.activatedRoute.params.subscribe((param: any) => {
+      this.buscarOrcamentoPorGuid(param);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -87,23 +92,26 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         break;
       case 3:
         return 'Isento';
-        break;        
+        break;
 
       default:
         return 'Indisponível';
         break;
     }
-  }   
-
+  }
   buscarOrcamentoPorGuid(param) {
-    if(param.guid.length >= 32) {
-        this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
-        if (r != null) {          
+    
+    if (param.guid.length >= 32) {
+      this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
+        if (r != null) {
           this.validado = true;
-          this.orcamento = r;          
+          this.orcamento = r;
+          this.publicHeader.imagemLogotipo = 'assets/layout/images/' + this.orcamento.lojaViewModel.imagemLogotipo;
+
           this.mensagemComponente.permiteEnviarMensagem = true;
 
-          if (r.status ==3){
+
+          if (r.status == 3) {
             this.desabiltarBotoes = true;
             this.mensagemComponente.permiteEnviarMensagem = false;
           }
@@ -115,8 +123,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
           this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
-          this.autenticacaoService.setarToken(r.token);          
-        }else{          
+          this.autenticacaoService.setarToken(r.token);
+        } else {
           this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         }
       });
@@ -147,19 +155,19 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   showDialog() {
-      if(this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
-        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
-        return;
-      }
+    if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+      return;
+    }
 
-      if(this.orcamento.validade < new Date()) { 
-        this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
-        return;
-      }
+    if (this.orcamento.validade < new Date()) {
+      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+      return;
+    }
 
-      this.display = true;
+    this.display = true;
   }
- 
+
   formatarFormaPagamento(orcamento, opcao: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
 
     let texto: string = "";
@@ -181,7 +189,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
         texto = pagto?.tipoPagamentoDescricao + " em " + fp?.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp?.c_pc_valor);
-        
+
         return true;
       }
 
@@ -193,7 +201,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           " <br> Demais Prestações: " + meioPrestacao + " em " + fPagto.c_pce_prestacao_qtde + " X de "
           + this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pce_prestacao_valor) + "<br> Período entre Parcelas: " +
           fPagto.c_pce_prestacao_periodo + " dias";
-        
+
         return true;
       }
 

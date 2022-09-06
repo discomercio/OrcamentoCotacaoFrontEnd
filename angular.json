@@ -66,6 +66,7 @@
                         },
                         "des": {
                             "outputPath": "dist/front-des",
+                            "outputHashing": "all",
                             "fileReplacements": [
                             {
                               "replace": "src/environments/environment.ts",
