@@ -77,6 +77,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   exibeBotaoProrrogar: boolean;
   exibeBotaoNenhumaOpcao: boolean;
   exibeBotaoClonar: boolean;
+  exibeBotaoReenviar: boolean;  
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
@@ -119,6 +120,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.novoOrcamentoService.orcamentoCotacaoDto.status != 2 &&
       this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
       this.exibeBotaoCancelar = true;
+      this.exibeBotaoReenviar = true;
       this.exibeBotaoProrrogar = this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento);
       this.desabiltarBotoes = false;
 
@@ -126,6 +128,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.habilitaBotaoAprovar = this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento);
 
     } else {
+      this.exibeBotaoReenviar = false;
       this.exibeBotaoCancelar = false;
       this.exibeBotaoProrrogar = false;
       this.desabiltarBotoes = true;
@@ -165,6 +168,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         command: () => this.clonarOrcamento()
       },
       {
+        label: 'Re-enviar',
+        icon: 'pi pi-fw pi-send',
+        visible: this.exibeBotaoReenviar,
+        command: () => this.reenviarOrcamento()
+      },      
+      {
         label: 'Nenhuma',
         visible: this.exibeBotaoNenhumaOpcao
       }
@@ -177,6 +186,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.idOrcamentoCotacao;
     this.router.navigate(["orcamentos/cadastrar-cliente", "clone"]);
   }
+
+
 
   retornarSimOuNao(data: any) {
     if (data == true) {
@@ -428,6 +439,24 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     });
   }
+
+  reenviarOrcamento() {
+    this.sweetalertService.dialogo("", "Confirma o reenvio do orçamento?").subscribe(result => {
+      if (!result) return;
+
+      this.orcamentoService.reenviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
+        if (r != null) {
+          if (r.tipo == "WARN") {
+            this.mensagemService.showWarnViaToast(r.mensagem);
+          }
+
+        }
+        // window.location.reload();
+        this.ngOnInit();
+      }).catch((e) => this.alertaService.mostrarErroInternet(e));
+
+    });
+  }  
 
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
