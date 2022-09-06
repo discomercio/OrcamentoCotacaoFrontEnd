@@ -347,7 +347,7 @@ export class NovoOrcamentoService {
 
     // se orçamento estiver expirado só pode prorrogar o orçamento
     // verificar se esta orçamento esta expirado
-    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let validade = this.orcamentoCotacaoDto.validade.toString().slice(0, 10);
     if (validade <= dataAtual) return false;
 
@@ -375,7 +375,7 @@ export class NovoOrcamentoService {
   validarExpiracao(dataValidade): boolean {
 
     // transportando a validação já existente porque é chamada em mais de um lugar
-    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let validade = dataValidade.toString().slice(0, 10);
 
 

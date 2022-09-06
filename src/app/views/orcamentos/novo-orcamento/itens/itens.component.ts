@@ -239,7 +239,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
     produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
     produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
-    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
 
     this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
       if (r != null) {
@@ -361,7 +361,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   inserirProduto(): void {
 
-    let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString().slice(0, 10));
+    let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     if (!this.editando)
       this.buscarCoeficientes(dataRefCoeficiente);
 
