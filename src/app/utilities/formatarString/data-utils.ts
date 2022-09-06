@@ -1,5 +1,6 @@
 import { strict } from 'assert';
 import { concat } from 'rxjs/operators';
+import { SSF } from 'xlsx';
 
 /*
 classes auxiliares de retornos
@@ -28,9 +29,9 @@ export class DataUtils {
         return data.toISOString().slice(0, 10);
     }
 
-    
+
     // public static formata_dataString_para_formato_data(data:string){
-    public  formata_data_e_talvez_hora_hhmmss(dt: Date | string): string {
+    public formata_data_e_talvez_hora_hhmmss(dt: Date | string): string {
 
         let decodifica_data = DataUtils.decodifica_data(dt);
         if (!decodifica_data.sucesso)
@@ -47,7 +48,7 @@ export class DataUtils {
         return s;
     }
 
-//     ' ------------------------------------------------------------------------
+    //     ' ------------------------------------------------------------------------
     // '	FORMATA_DATA_E_TALVEZ_HORA_HHMM
     // '	Formata a data e hora (se houver hora): DD/MM/YYYY HH:NN
     // '	Senão será apenas a data: DD/MM/YYYY
@@ -70,9 +71,9 @@ export class DataUtils {
         }
         return s;
 
-    }    
+    }
 
-   
+
 
     public static formata_dataString_para_formato_data(data: string) {
         let split = data.split('/');
@@ -108,8 +109,8 @@ export class DataUtils {
         let split = data.split('-');
         return split[2].substring(0, 2) + "/" + split[1] + "/" + split[0];
     }
-    public static validarData(data: Date): boolean{
-        if(isNaN(data.getTime())) return false;
+    public static validarData(data: Date): boolean {
+        if (isNaN(data.getTime())) return false;
         return true;
     }
     public static somarDias(data: Date, dias: number): Date {
@@ -207,7 +208,7 @@ export class DataUtils {
         return this.formatarTela(data) + this.formatarTelaHora(data);
 
     }
-     //     ' ------------------------------------------------------------------------
+    //     ' ------------------------------------------------------------------------
     // '	FORMATA_DATA_E_TALVEZ_HORA_HHMM
     // '	Formata a data e hora (se houver hora): DD/MM/YYYY HH:NN
     // '	Senão será apenas a data: DD/MM/YYYY
@@ -249,7 +250,7 @@ export class DataUtils {
         return s;
 
     }
-     // ' ------------------------------------------------------------------------
+    // ' ------------------------------------------------------------------------
     // '   DECODIFICA_DATA
     // '   Desmembra a data e retorna os respectivos valores para dia, mês e ano.
     public static decodifica_data(dt1: Date | string): decodifica_data_retorno {
@@ -333,4 +334,11 @@ export class DataUtils {
         return decodifica_hora;
     }
 
+    public static formata_yyyy_mm_dd_hh_mm_ss(data: Date): string {
+        let yyyy_mm_dd = DataUtils.formataParaFormulario(data);
+        let hora = data.getHours();
+        let min = data.getMinutes();
+        let ss = data.getSeconds();
+        return yyyy_mm_dd + "_" + hora + "-" + min + "-" + ss;
+    }
 }

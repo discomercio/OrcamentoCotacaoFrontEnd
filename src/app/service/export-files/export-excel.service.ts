@@ -33,7 +33,7 @@ export class ExportExcelService {
   private saveAsExcelFile(buffer: any, fileName: string, type: string, extension: string): void {
     const data: Blob = new Blob([buffer], { type: type });
     let dataAtual = new Date();
-    let dateTime = DataUtils.formata_formulario_date(dataAtual.toLocaleDateString());
+    let dateTime = DataUtils.formata_yyyy_mm_dd_hh_mm_ss(dataAtual);
     FileSaver.saveAs(data, fileName + '_' + dateTime + extension);
   }
 
