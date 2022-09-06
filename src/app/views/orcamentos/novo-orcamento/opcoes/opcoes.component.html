@@ -84,9 +84,15 @@
                 </ng-template>
                 <ng-template pTemplate="footer" class="font-size">
                     <tr class="font-size">
-                        <td class="p-text-right"></td>
-                        <td></td>
+                        <td ></td>
+                        <td class="p-text-right"><span
+                            *ngIf="orcamento.percRT != null">
+                            Comissão:
+                            {{novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(orcamento.percRT)}}
+                            %
+                        </span></td>
                         <td class="p-text-right">
+                            
                         </td>
                         <td></td>
                         <td></td>
@@ -108,7 +114,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="p-mt-3">
                 <div *ngFor="let fp of orcamento.formaPagto">
                     <div class="p-grid p-col-12 p-my-2">
