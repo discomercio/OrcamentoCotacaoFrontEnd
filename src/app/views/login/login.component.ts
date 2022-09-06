@@ -16,22 +16,23 @@ import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  
-  @ViewChild(InputArClubeComponent, {static: false})
+
+  @ViewChild(InputArClubeComponent, { static: false })
   input: InputArClubeComponent
 
-  @ViewChild(DropdownArClubeComponent, {static: false})
+  @ViewChild(DropdownArClubeComponent, { static: false })
   dropdown: DropdownArClubeComponent
 
-  @ViewChild(ButtonArClubeComponent, {static: false})
+  @ViewChild(ButtonArClubeComponent, { static: false })
   button: ButtonArClubeComponent
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-     private readonly mensagemService: MensagemService,) { }
-    //public toast: Toast
+    private readonly mensagemService: MensagemService,) { }
+  //public toast: Toast
 
   ngOnInit(): void {
+    
   }
 
   senha: string;
@@ -41,17 +42,19 @@ export class LoginComponent implements OnInit {
   mostrarLoja: boolean = false;
   autenticou: boolean = false;
   lembrar = false;
+  carregando: boolean;
 
   login() {
+    
     if (!this.usuario || !this.senha) {
       //this.toast.showToast(eToast.error,"É necessário prencher usuário e senha!")
-       this.mensagemService.showErrorViaToast(["É necessário prencher usuário e senha!"]);
+      this.mensagemService.showErrorViaToast(["É necessário prencher usuário e senha!"]);
       return;
     }
 
     if (!this.loja && this.mostrarLoja) {
       // this.toast.showToast(eToast.warning,"Precisamos que selecione uma loja!")
-       this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
+      this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
       return;
     }
     if (!!this.loja && this.mostrarLoja) {
@@ -62,12 +65,15 @@ export class LoginComponent implements OnInit {
       this.router.navigate(['orcamentos/listar/orcamentos']);
       return;
     }
-
+    this.carregando = true;
+    this.button.disabled = true;
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
         if (!this.autenticacaoService.readToken(r.AccessToken)) {
           //this.toast.showToast(eToast.error,"Ops! Tivemos um problema!")
           this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
+          this.button.disabled = false;
+          this.carregando = false;
           return;
         }
 
@@ -78,29 +84,31 @@ export class LoginComponent implements OnInit {
           this.autenticou = true;
           //this.toast.showToast(eToast.success,"Precisamos que selecione uma loja!")
           this.mensagemService.showSuccessViaToast("Precisamos que selecione uma loja!");
+          this.button.disabled = false;
+          this.carregando = false;
           return;
         }
 
         this.autenticacaoService.setarToken(r.AccessToken);
         // sessionStorage.setItem("lojaLogada", this.loja);
         // sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
+        this.carregando = false;
         this.router.navigate(['orcamentos/listar/orcamentos']);
       }
     }).catch((e) => {
+      this.button.disabled = false;
+      this.carregando = false;
       this.autenticacaoService.tratarErros(e);
       return;
     });
   }
 
   montarSelectLoja() {
-    this.lojasUsuario= [];
+    this.lojasUsuario = [];
     this.autenticacaoService._lojasUsuarioLogado.forEach(x => {
       let item: SelectItem = { label: x, value: x };
       this.lojasUsuario.push(item);
     });
-  }
-  desligarFazendoLoginFOrmulario(): void {
-    // this.fazendoLogin = false;
   }
 
 }
