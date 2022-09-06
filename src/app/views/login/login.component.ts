@@ -45,7 +45,7 @@ export class LoginComponent implements OnInit {
   carregando: boolean;
 
   login() {
-    
+
     if (!this.usuario || !this.senha) {
       this.mensagemService.showErrorViaToast(["É necessário prencher usuário e senha!"]);
       return;
@@ -65,6 +65,7 @@ export class LoginComponent implements OnInit {
     }
     this.carregando = true;
     this.button.disabled = true;
+
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
 
