@@ -25,5 +25,6 @@ export class ListaDtoExport {
     Status: string;
     VistoEm: string;
     Mensagem: string;
+    DtExpiracao: Date;
     DtCadastro: Date;
 }
