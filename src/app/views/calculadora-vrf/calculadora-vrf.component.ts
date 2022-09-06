@@ -112,7 +112,7 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
     this.buscarTextoRodapePDF(this.autenticacaoService._lojaLogado);
 
-    this.dataAtual = new Date().toLocaleString();
+    this.dataAtual = new Date().toLocaleString("pt-br");
   }
 
   logo: string;
