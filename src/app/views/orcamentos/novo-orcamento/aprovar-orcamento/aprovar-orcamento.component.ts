@@ -125,7 +125,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.desabiltarBotoes = false;
 
       //se tiver permissão e é dono do orçamento retornamos "false" para "disabled" do botão de aprovação das opções
-      this.habilitaBotaoAprovar = this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento);
+      this.habilitaBotaoAprovar = !this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento);
 
     } else {
       this.exibeBotaoReenviar = false;
