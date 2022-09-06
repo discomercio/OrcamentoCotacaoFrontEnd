@@ -47,13 +47,11 @@ export class LoginComponent implements OnInit {
   login() {
     
     if (!this.usuario || !this.senha) {
-      //this.toast.showToast(eToast.error,"É necessário prencher usuário e senha!")
       this.mensagemService.showErrorViaToast(["É necessário prencher usuário e senha!"]);
       return;
     }
 
     if (!this.loja && this.mostrarLoja) {
-      // this.toast.showToast(eToast.warning,"Precisamos que selecione uma loja!")
       this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
       return;
     }
@@ -69,8 +67,8 @@ export class LoginComponent implements OnInit {
     this.button.disabled = true;
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
+
         if (!this.autenticacaoService.readToken(r.AccessToken)) {
-          //this.toast.showToast(eToast.error,"Ops! Tivemos um problema!")
           this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
           this.button.disabled = false;
           this.carregando = false;
@@ -82,7 +80,6 @@ export class LoginComponent implements OnInit {
           this.montarSelectLoja();
           this.autenticacaoService.setarToken(r.AccessToken);
           this.autenticou = true;
-          //this.toast.showToast(eToast.success,"Precisamos que selecione uma loja!")
           this.mensagemService.showSuccessViaToast("Precisamos que selecione uma loja!");
           this.button.disabled = false;
           this.carregando = false;
@@ -90,9 +87,9 @@ export class LoginComponent implements OnInit {
         }
 
         this.autenticacaoService.setarToken(r.AccessToken);
-        // sessionStorage.setItem("lojaLogada", this.loja);
-        // sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
         this.carregando = false;
+
+        this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
         this.router.navigate(['orcamentos/listar/orcamentos']);
       }
     }).catch((e) => {

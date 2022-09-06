@@ -66,8 +66,6 @@ export class AutenticacaoService {
       }
     }
 
-    this.buscarEstilo(this._lojaLogado);
-
     return true;
   }
 
