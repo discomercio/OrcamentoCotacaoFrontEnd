@@ -16,5 +16,8 @@
             "dom"
         ],
         "skipLibCheck": true
-    }
+    },
+    "exclude":[
+        "**/appsettings.json"
+    ]
 }

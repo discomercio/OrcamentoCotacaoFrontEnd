@@ -5,6 +5,7 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidatorFn, ValidationErrors } from '@angular/forms';
 import { CriptoService } from 'src/app/utilities/cripto/cripto.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-senha-meusdados',
@@ -14,6 +15,7 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 export class SenhaMeusdadosComponent implements OnInit {
 
     constructor(
+      private router: Router,
       public readonly autenticacaoService: AutenticacaoService,
       public readonly validacaoFormularioService: ValidacaoFormularioService,
       private fb: FormBuilder,
@@ -68,17 +70,24 @@ export class SenhaMeusdadosComponent implements OnInit {
           this.usuarioSenha.confirmacaoSenha)
           .toPromise()
           .then((x) => {
-            this.mensagemService.showSuccessViaToast(x.MensagemRetorno);
 
-            let controles = this.form.controls;
-            controles.senha.setValue("");
-            controles.novaSenha.setValue("");
-            controles.confirmacao.setValue("");
+          if(x.Sucesso) {
+              this.mensagemService.showSuccessViaToast(x.MensagemRetorno);
+
+              setTimeout(() => {
+                this.router.navigate(['/']);
+              }, 3500);
+            }
+            else {
+              var mensagensErro = new Array<string>();
+              mensagensErro.push(x.MensagemRetorno);
+
+              this.mensagemService.showErrorViaToast(mensagensErro);
+            }
           })
           .catch((e) => {
-            console.log(e.error);
             var mensagensErro = new Array<string>();
-            mensagensErro.push(e.error)
+            mensagensErro.push(e.error);
 
             this.mensagemService.showErrorViaToast(mensagensErro);
           });

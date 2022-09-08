@@ -45,7 +45,7 @@
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
                                 <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve
-                                    possuir no mínimo 5 caracteres!</small>
+                                    possuir no mínimo 8 caracteres!</small>
                                 <small class="p-error" *ngIf="form.controls.senha.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de {{form.controls.senha.errors.maxlength.requiredLength}}</small>
@@ -65,7 +65,7 @@
                                 <small class="p-error"
                                     *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
                                 <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
-                                    possuir no mínimo 5 caracteres!</small>
+                                    possuir no mínimo 8 caracteres!</small>
                                 <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de
