@@ -77,8 +77,8 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
       email: [this.usuario.email, [Validators.required, Validators.email, Validators.maxLength(60)]],
-      senha: [this.usuario.senha, [Validators.required, Validators.minLength(5), Validators.maxLength(15)]],
-      confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(5)]],
+      senha: [this.usuario.senha, [Validators.required, Validators.minLength(8), Validators.maxLength(15)]],
+      confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(8)]],
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required]
@@ -147,7 +147,7 @@ export function compararSenha(): ValidatorFn {
       let senha: string = control.get('senha').value;
       const confirmacao: string = control.get('confirmacao').value;
 
-      if ((!!senha && !!confirmacao) && (senha.length >= 5 && confirmacao.length >= 5)) {
+      if ((!!senha && !!confirmacao) && (senha.length >= 8 && confirmacao.length >= 8)) {
         if (senha === confirmacao) {
           control.get('confirmacao').setErrors(null);
           return null;
