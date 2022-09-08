@@ -1,4 +1,4 @@
-<div class="login-body">
+<div class="login-body" [ngClass]="{'carregando': carregando}">
     <div class="card login-panel login-image p-fluid" style="height: 100%;">
         <div class="login-panel-content" style="top:105px">
             <div class="p-grid">
@@ -7,36 +7,22 @@
                     <h2 class="welcome-text">Bem-vindo</h2>
                 </div>
                 <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
-                    <input-arclube setId="Login" titleInput="E-mail/Usuário" (inputValue)="usuario = $event" class="p-col-12"></input-arclube>
-                    <!-- <label class="login-label">E-mail/ Usuário</label>
-                    <div class="login-input">
-                        <input type="text" [(ngModel)]="usuario" placeholder="Usuário" pInputText />
-                    </div> -->
+                    <input-arclube setId="Login" titleInput="E-mail/Usuário" (inputValue)="usuario = $event"
+                        class="p-col-12"></input-arclube>
                 </div>
                 <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
-                    <input-arclube setId="Password" titleInput="Password" typeInput="password" (inputValue)="senha = $event" class="p-col-12"></input-arclube>
-                    <!-- <label class="login-label">Senha</label>
-                    <div class="login-input">
-                        <input type="password" [(ngModel)]="senha" placeholder="Senha" pPassword p-password-info="Entre com a senha" [feedback]="false"/>
-                    </div> -->
+                    <input-arclube setId="Password" titleInput="Password" typeInput="password"
+                        (inputValue)="senha = $event" class="p-col-12"></input-arclube>
                 </div>
                 <div *ngIf="mostrarLoja" class="p-col-12" style="text-align:left;">
                     <div class="login-input">
-                        <dropdown-arclube
-                        setId="Loja"
-                        titleInput="Loja"
-                        [inputItems]="lojasUsuario"
-                        setOptionsName="label"
-                        setOptionsValueName="value"
-                        (getItemSelected)="loja = $event"
-                        class="p-col-12"
-                    ></dropdown-arclube>
-                        <!-- <p-dropdown id="loja" [options]="lojasUsuario" placeholder="Selecione" [(ngModel)]="loja">
-                        </p-dropdown> -->
+                        <dropdown-arclube setId="Loja" titleInput="Loja" [inputItems]="lojasUsuario"
+                            setOptionsName="label" setOptionsValueName="value" (getItemSelected)="loja = $event"
+                            class="p-col-12"></dropdown-arclube>
                     </div>
                 </div>
                 <div class="p-col-12">
-                    <button-arclube type="submit" (click)="login()" setLabel="Entrar"></button-arclube>
+                    <button-arclube type="submit" (value)="login()" setLabel="Entrar"></button-arclube>
                 </div>
             </div>
         </div>
