@@ -446,9 +446,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       this.orcamentoService.reenviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
+
           if (r.tipo == "WARN") {
             this.mensagemService.showWarnViaToast(r.mensagem);
           }
+
+          if (r.tipo == "SUCCESS") {
+            this.mensagemService.showSuccessViaToast(r.mensagem);
+          }          
 
         }
         // window.location.reload();
