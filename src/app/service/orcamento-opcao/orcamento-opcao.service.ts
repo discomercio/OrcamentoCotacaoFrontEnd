@@ -11,13 +11,13 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 })
 export class OrcamentoOpcaoService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
   enviarOrcamentoOpcao(orcamentoOpcao: OrcamentosOpcaoResponse): Observable<OrcamentosOpcaoResponse> {
-    return this.http.post<OrcamentosOpcaoResponse>(environment.apiUrl + "OrcamentoOpcao", orcamentoOpcao);
+    return this.http.post<OrcamentosOpcaoResponse>(this.env.apiUrl() + "OrcamentoOpcao", orcamentoOpcao);
   }
 
   removerOrcamentoOpcao(): Observable<any> {
-    return this.http.delete<OrcamentosOpcaoResponse>(environment.apiUrl + "OrcamentoOpcao");
+    return this.http.delete<OrcamentosOpcaoResponse>(this.env.apiUrl() + "OrcamentoOpcao");
   }
 
   buscarOpcoesOrcamento(id: string): Observable<OrcamentosOpcaoResponse[]> {

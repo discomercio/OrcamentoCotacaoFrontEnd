@@ -4,7 +4,7 @@
     <div class="p-field p-col-5 p-lg-5 p-md-5 p-sm-5">
       <label [for]="'inputRoot'+id">CEP</label>
       <p-inputMask [id]="'inputRoot'+id" pInputMask [(ngModel)]="value" (change)="returnValue()"
-        [placeholder]="placeholder" mask="99999-999" [unmask]="true" [attr.disabled]="disabled == 'true' ? '' : null">
+        [placeholder]="placeholder" mask="99999-999" [unmask]="true" [attr.disabled]="disabled == true ? '' : null">
       </p-inputMask>
     </div>
     <div class="p-field p-col-7 p-lg-7 p-md-7 p-sm-7">

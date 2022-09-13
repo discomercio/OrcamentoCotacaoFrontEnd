@@ -10,25 +10,28 @@ import { stream } from 'xlsx';
   providedIn: 'root'
 })
 export class UsuariosService {
+  constructor(private http: HttpClient,
+    private env: environment
+    ) { 
 
-  constructor(private http: HttpClient) { }
+  }
 
 
   buscarTodosUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario');
+    return this.http.get<Usuario[]>(this.env.apiUrl + 'Usuario');
   }
 
   buscarVendedores(loja: string): Observable<Usuario[]> {
     let params = new HttpParams();
     params = params.append('loja', loja);
-    return this.http.get<Usuario[]>(environment.apiUrl + 'Usuario/vendedores', { params: params });
+    return this.http.get<Usuario[]>(this.env.apiUrl + 'Usuario/vendedores', { params: params });
   }
 
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.post<Usuario>(this.env.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.put<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 }

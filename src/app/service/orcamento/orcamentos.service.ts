@@ -16,59 +16,59 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 })
 export class OrcamentosService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   buscarRegistros(filtro: any): Observable<ListaDto[]> {
-    return this.http.post<ListaDto[]>(`${environment.apiUrl}Orcamento/porfiltro`, filtro);
+    return this.http.post<ListaDto[]>(`${this.env.apiUrl()}Orcamento/porfiltro`, filtro);
   }
 
   buscarStatus(origem: string): Observable<any> {
-    return this.http.get<any>(`${environment.apiUrl}Orcamento/Status?origem=${origem}`);
+    return this.http.get<any>(`${this.env.apiUrl()}Orcamento/Status?origem=${origem}`);
   }
 
   buscarOrcamento(id: number): Observable<OrcamentoCotacaoResponse> {
-    return this.http.get<OrcamentoCotacaoResponse>(`${environment.apiUrl}Orcamento?id=${id}`);
+    return this.http.get<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento?id=${id}`);
   }
 
   enviarOrcamento(model: OrcamentoCotacaoResponse): Observable<number> {
-    return this.http.post<number>(`${environment.apiUrl}Orcamento`, model);
+    return this.http.post<number>(`${this.env.apiUrl()}Orcamento`, model);
   }
 
   atualizarDadosOrcamento(orcamento:OrcamentoCotacaoResponse): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarDados`, orcamento);
+    return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
   }
 
 
 
   buscarConfigValidade(loja:string): Observable<ValidadeOrcamento> {
-    return this.http.get<ValidadeOrcamento>(`${environment.apiUrl}Orcamento/validade?lojaLogada=${loja}`);
+    return this.http.get<ValidadeOrcamento>(`${this.env.apiUrl()}Orcamento/validade?lojaLogada=${loja}`);
   }
 
   buscarDadosParaMensageria(idOrcamentoCotacao: number, usuarioIterno: boolean): Observable<RemetenteDestinatarioResponse> {
-    return this.http.get<RemetenteDestinatarioResponse>(`${environment.apiUrl}Orcamento/buscarDadosParaMensageria?idOrcamento=${idOrcamentoCotacao}&usuarioInterno=${usuarioIterno}`);
+    return this.http.get<RemetenteDestinatarioResponse>(`${this.env.apiUrl()}Orcamento/buscarDadosParaMensageria?idOrcamento=${idOrcamentoCotacao}&usuarioInterno=${usuarioIterno}`);
   }
 
   prorrogarOrcamento(id: number, lojaLogada: string): Observable<MensagemDto> {
-    return this.http.post<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/prorrogar?lojalogada=${lojaLogada}`, id);
+    return this.http.post<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/prorrogar?lojalogada=${lojaLogada}`, id);
   }
 
   cancelarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/status/2`,id);
+    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/status/2`,id);
   }
 
   reenviarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.put<MensagemDto>(`${environment.apiUrl}Orcamento/${id}/reenviar`,id);
+    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/reenviar`,id);
   }  
 
   buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {    
-    return this.http.get<any>(`${environment.apiUrl}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
+    return this.http.get<any>(`${this.env.apiUrl()}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
   }    
 
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
-    return this.http.post<any>(`${environment.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);
+    return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarOrcamentoOpcao`, opcao);
   }
 
   verificarUsoDeAlcada(idOrcamento:number):Observable<number>{
-    return this.http.get<number>(`${environment.apiUrl}Orcamento/verificarUsoDeAlcada?idOrcamento=${idOrcamento}`);
+    return this.http.get<number>(`${this.env.apiUrl()}Orcamento/verificarUsoDeAlcada?idOrcamento=${idOrcamento}`);
   }
 }

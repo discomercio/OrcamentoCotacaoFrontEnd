@@ -1,13 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { Router } from '@angular/router';
-
+import { AppSettingsService } from '../utilities/appsettings/appsettings.service';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
-
     layoutMode = 'static';
 
     darkMenu = false;
@@ -20,7 +19,11 @@ export class AppComponent implements OnInit {
 
     constructor(
         private primengConfig: PrimeNGConfig,
-        private readonly router: Router) { }
+        private readonly router: Router,
+        ) {
+            // private appSettings: AppSettingsService
+            // console.log(appSettings.apiBaseUrl)
+         }
 
     ngOnInit() {
         this.primengConfig.setTranslation({

@@ -51,6 +51,7 @@
         "read-appsettings-json": "^1.0.98",
         "rxjs": "^6.6.0",
         "sweetalert2": "^11.3.6",
+        "sync-fetch": "^0.4.1",
         "tslib": "^2.4.0",
         "web-animations-js": "^2.3.2",
         "xlsx": "^0.17.3",

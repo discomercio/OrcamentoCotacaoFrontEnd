@@ -10,7 +10,7 @@ import { CommonModule } from "@angular/common";
 export class PedidoService {
   public carregando: boolean = false;
   private pedidos$: Observable<any> = new Observable();
-  constructor(private http:HttpClient) { }
+  constructor(private http:HttpClient, private env: environment) { }
 
   carregar(numeroPedido:any){
 
@@ -22,7 +22,7 @@ export class PedidoService {
     this.carregando = true;
     
     this.pedidos$ = Observable.create(observer => {
-      this.http.get<any>(environment.apiUrl + 'api/pedido/buscarPedido', { params: params }).toPromise()
+      this.http.get<any>(this.env.apiUrl() + 'api/pedido/buscarPedido', { params: params }).toPromise()
         .then(response => {
           if(response)
             this.carregando = false;

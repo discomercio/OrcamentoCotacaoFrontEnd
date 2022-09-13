@@ -10,7 +10,7 @@ import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 })
 export class FormaPagtoService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   buscarFormaPagto(tipoCliente: string, comIndicacao: number, tipoUsuario:number, apelido:string): Observable<FormaPagto[]> {
     let formaPagtoRequest: FormaPagtoRequest = new FormaPagtoRequest();
@@ -18,10 +18,10 @@ export class FormaPagtoService {
     formaPagtoRequest.ComIndicacao = comIndicacao;
     formaPagtoRequest.TipoUsuario = tipoUsuario;
     formaPagtoRequest.Apelido = apelido;
-    return this.http.post<FormaPagto[]>(environment.apiUrl + "FormaPagamento/buscarFormasPagamentos", formaPagtoRequest);
+    return this.http.post<FormaPagto[]>(this.env.apiUrl() + "FormaPagamento/buscarFormasPagamentos", formaPagtoRequest);
   }
 
   buscarQtdeMaxParcelaCartaoVisa(): Observable<number> {
-    return this.http.get<number>(environment.apiUrl + "FormaPagamento/buscarQtdeMaxPacelas");
+    return this.http.get<number>(this.env.apiUrl() + "FormaPagamento/buscarQtdeMaxPacelas");
   }
 }
