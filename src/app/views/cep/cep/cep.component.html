@@ -1,6 +1,6 @@
 <div [ngClass]="{'carregando': carregando}">
     <div class="p-fluid p-grid">
-        <div class="p-field p-col-12 p-lg-2 p-md-2 p-sm-3 p-as-end p-py-0">
+        <div class="p-field p-col-8 p-lg-2 p-md-2 p-sm-3 p-as-end p-py-0">
             <label for="cep">Cep</label>
             <p-inputMask type="text" id="cep" [(ngModel)]="Cep" (blur)="saiuCep()" placeholder="CEP" mask="{{mascaraCep}}"></p-inputMask>
         </div>

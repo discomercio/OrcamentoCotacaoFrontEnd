@@ -16,7 +16,7 @@
                          </small>
                          </div> -->
                 </div>
-                <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                     <label for="cpfCnpj">CPF</label>
                     <p-inputMask id="cpfCnpj" type="text" [(ngModel)]="dadosCliente.Cnpj_Cpf" mask="{{mascaraCPF}}">
                     </p-inputMask>
@@ -28,16 +28,16 @@
                           </small>
                         </div> -->
                 </div>
-                <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                     <label for="rg">RG</label>
                     <input id="rg" [(ngModel)]="dadosCliente.Rg" pInputText>
                 </div>
-                <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                     <label for="nascimento">Nascimento</label>
                     <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento" (keyup)="escrevendoData($event)"
                         maxlength="10" minlength="10" mask="99/99/9999"></p-inputMask>
                 </div>
-                <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                     <label for="sexo">Sexo</label>
                     <p-dropdown id="sexo" [options]="listaSexo" optionValue="id" optionLabel="value"
                         [(ngModel)]="dadosCliente.Sexo"></p-dropdown>

@@ -1,1 +1,92 @@
-<p>cep-dialog works!</p>
+<div class="container" [ngClass]="{'carregando': carregando}">
+    <h5>Busca de CEP</h5>
+    <div class="p-col-12 p-px-0">
+        <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-d-xl-inline-flex p-fluid 
+                p-formgrid p-grid p-lg-12 p-mx-0 p-px-0 p-py-0 p-xl-12">
+            <div class="p-col-12 p-field p-lg-2 p-md-2 p-sm-2 p-xl-2">
+                <label>UF</label>
+                <p-dropdown [options]="lstUfs" placeholder="Selecione" inputId="ufs" optionValue="value"
+                    optionLabel="value" [(ngModel)]="uf" [showClear]="true" (onChange)="buscarCidades()">
+                </p-dropdown>
+            </div>
+
+            <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
+                <label>Localidade</label>
+                <p-autoComplete [(ngModel)]="cidade" [suggestions]="lstFiltradaCidades"
+                    (completeMethod)="filtrarCidades($event)" field="value" [dropdown]="true">
+                    <ng-template let-cidade pTemplate="item">
+                        <div class="cidade-item">
+                            <div>{{cidade.value}}</div>
+                        </div>
+                    </ng-template>
+                </p-autoComplete>
+                
+            </div>
+            <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
+                <label>Endereço</label>
+                <input pInputText placeholder="Endereço" [(ngModel)]="endereco" />
+            </div>
+
+            <div class="p-text-center">
+                <button type="text" pButton label="Buscar Cep" (click)="buscarCepPorEndereco()" style="width: auto"></button>
+            </div>
+        </div>
+        <div class="tabela" style="max-height: 250px; overflow-y: auto;">
+            <p-table #dt1 [value]="lstEnderecos" [responsive]="true" responsiveLayout="stack"
+                styleClass="p-datatable-customers p-datatable-striped" [rows]="10" autoLayout="true"
+                [(selection)]="endereco" [paginator]="true" [filterDelay]="0">
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td class="p-text-center" colspan="3">
+                            Não Nenhum endereço encontrado
+                        </td>
+                    </tr>
+
+                </ng-template>
+                <ng-template pTemplate="header" class="p-text-center" let-p>
+                    <tr>
+                        <th class="p-text-center p-col-1 p-py-0"></th>
+                        <th class="p-text-left p-py-0">CEP</th>
+                        <th class="p-text-left p-py-0">UF</th>
+                        <th class="p-text-left p-py-0">Cidade</th>
+                        <th class="p-text-left p-py-0">Bairro</th>
+                        <th class="p-text-left p-py-0">Lougradouro</th>
+                        <th class="p-text-left p-py-0">Complemento</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-p>
+                    <tr class="" [pSelectableRow]="p">
+                        <td class="p-text-center p-col-1">
+                            <span>
+                                <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
+                            </span>
+                        </td>
+                        <td class="p-text-left p-py-2">
+                            {{formatarEndereco.cep_formata(p.Cep)}}
+                        </td>
+                        <td class="p-text-left p-py-0">
+                            {{p.Uf}}
+                        </td>
+                        <td class="p-text-left p-py-0">
+                            {{p.Cidade}}
+                        </td>
+                        <td class="p-text-left p-py-0">
+                            {{p.Bairro}}
+                        </td>
+                        <td class="p-text-left p-py-0">
+                            {{p.Endereco}}
+                        </td>
+                        <td class="p-text-left p-py-0">
+                            {{p.LogradouroComplemento}}
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+
+    </div>
+    <div class="footer">
+        <div class="p-col-12 p-text-center">
+            <button type="text" pButton label="Ok" (click)="addEndereco()" style="width: auto"></button>
+        </div>
+    </div>
