@@ -16,7 +16,7 @@ export class ProdutoCatalogoService {
 
 
     constructor(private http: HttpClient, private env: environment) {
-        this.urlUpload = `${this.env.apiUrl}produtocatalogo/imagem`;
+        this.urlUpload = `${this.env.apiUrl()}produtocatalogo/imagem`;
         this.imgUrl = `${this.env.imgUrl()}`;
     }
 
@@ -25,31 +25,31 @@ export class ProdutoCatalogoService {
 
     buscarTodosProdutos(): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
-            `${this.env.apiUrl}produtocatalogo`
+            `${this.env.apiUrl()}produtocatalogo`
         );
     }
 
     buscarProdutosAtivos(): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
-            `${this.env.apiUrl}produtocatalogo/ativos`
+            `${this.env.apiUrl()}produtocatalogo/ativos`
         );
     }
 
     buscarPorCodigo(codigo): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
-            `${this.env.apiUrl}produtocatalogo/codigo/${codigo}`
+            `${this.env.apiUrl()}produtocatalogo/codigo/${codigo}`
         );
     }
 
     buscarProdutoDetalhe(id: any): Observable<ProdutoCatalogo> {
         return this.http.get<ProdutoCatalogo>(
-            `${this.env.apiUrl}produtocatalogo/${id}/detalhes`
+            `${this.env.apiUrl()}produtocatalogo/${id}/detalhes`
         );
     }
 
     buscarProdutoPropriedades(id: string): Observable<ProdutoCatalogoItem> {
         return this.http.get<ProdutoCatalogoItem>(
-            `${this.env.apiUrl}produto/itens/${id}`
+            `${this.env.apiUrl()}produto/itens/${id}`
         );
     }
 
@@ -57,47 +57,47 @@ export class ProdutoCatalogoService {
         id: string
     ): Observable<ProdutoCatalogoItem> {
         return this.http.get<ProdutoCatalogoItem>(
-            `${this.env.apiUrl}produto/opcoes/${id}`
+            `${this.env.apiUrl()}produto/opcoes/${id}`
         );
     }
 
     excluirProduto(id: string): Observable<boolean> {
         return this.http.delete<boolean>(
-            `${this.env.apiUrl}produtocatalogo/${id}`
+            `${this.env.apiUrl()}produtocatalogo/${id}`
         );
     }
 
     criarProduto(formData: FormData): Observable<any> {
         return this.http.post<any>(
-            `${this.env.apiUrl}produtocatalogo/criar`,
+            `${this.env.apiUrl()}produtocatalogo/criar`,
             formData
         );
     }
 
     criarProdutoCatalogoItem(produtoCatalogoItem: any): Observable<any> {
         return this.http.post<any>(
-            `${this.env.apiUrl}produtocatalogo/item`,
+            `${this.env.apiUrl()}produtocatalogo/item`,
             produtoCatalogoItem
         );
     }
 
     atualizarProduto(formData: FormData): Observable<any> {
         return this.http.put<any>(
-            `${this.env.apiUrl}produtocatalogo`,
+            `${this.env.apiUrl()}produtocatalogo`,
             formData
         );
     }
 
     excluirImagem(idProduto: string, idImagem: string): Observable<string> {
         return this.http.delete<string>(
-            `${this.env.apiUrl}produtocatalogo/imagem?idProduto=${idProduto}&idImagem=${idImagem}`
+            `${this.env.apiUrl()}produtocatalogo/imagem?idProduto=${idProduto}&idImagem=${idImagem}`
         );
     }
 
     /* Propriedades do Produto */
     buscarPropriedades(): Observable<ProdutoCatalogoPropriedade[]> {
         return this.http.get<ProdutoCatalogoPropriedade[]>(
-            `${this.env.apiUrl}produto/propriedades`
+            `${this.env.apiUrl()}produto/propriedades`
         );
     }
 
@@ -105,7 +105,7 @@ export class ProdutoCatalogoService {
         ProdutoCatalogoItemProdutosAtivosDados[]
     > {
         return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.env.apiUrl}produto/listar-produtos-propriedades-ativos`
+            `${this.env.apiUrl()}produto/listar-produtos-propriedades-ativos`
         );
     }
 
@@ -115,26 +115,26 @@ export class ProdutoCatalogoService {
         propriedadeOcultaItem: boolean
     ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
         return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.env.apiUrl}produto/buscar-produtos-opcoes-ativos/${idProduto}&${propriedadeOculta}&${propriedadeOcultaItem}`
+            `${this.env.apiUrl()}produto/buscar-produtos-opcoes-ativos/${idProduto}&${propriedadeOculta}&${propriedadeOcultaItem}`
         );
     }
 
     buscarPropriedadesEOpcoesProdutosAtivos(): Observable<any[]> {
         return this.http.get<any[]>(
-            `${this.env.apiUrl}produto/listar-propriedades-opcoes-produtos-ativos`
+            `${this.env.apiUrl()}produto/listar-propriedades-opcoes-produtos-ativos`
         );
     }
 
     /* Propriedades do Produto */
     buscarFabricantes(): Observable<ProdutoCatalogoFabricante[]> {
         return this.http.get<ProdutoCatalogoFabricante[]>(
-            `${this.env.apiUrl}produto/fabricantes`
+            `${this.env.apiUrl()}produto/fabricantes`
         );
     }
 
     buscarOpcoes(): Observable<ProdutoCatalogoPropriedadeOpcao[]> {
         return this.http.get<ProdutoCatalogoPropriedadeOpcao[]>(
-            `${this.env.apiUrl}produto/opcoes`
+            `${this.env.apiUrl()}produto/opcoes`
         );
     }
 
@@ -142,20 +142,20 @@ export class ProdutoCatalogoService {
         id: string
     ): Observable<ProdutoCatalogoPropriedade> {
         return this.http.get<ProdutoCatalogoPropriedade>(
-            `${this.env.apiUrl}produto/propriedades/${id}`
+            `${this.env.apiUrl()}produto/propriedades/${id}`
         );
     }
 
     criarPropriedades(produto: any): Observable<any> {
         return this.http.post<any>(
-            `${this.env.apiUrl}produto/propriedades`,
+            `${this.env.apiUrl()}produto/propriedades`,
             produto
         );
     }
 
     atualizarPropriedades(produto: any): Observable<any> {
         return this.http.put<any>(
-            `${this.env.apiUrl}produto/propriedades`,
+            `${this.env.apiUrl()}produto/propriedades`,
             produto
         );
     }
@@ -165,13 +165,13 @@ export class ProdutoCatalogoService {
         propriedadeOcultaItem: boolean
     ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
         return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.env.apiUrl}produtocatalogo/listar-produtos-propriedades/${propriedadeOculta}&${propriedadeOcultaItem}`
+            `${this.env.apiUrl()}produtocatalogo/listar-produtos-propriedades/${propriedadeOculta}&${propriedadeOcultaItem}`
         );
     }
 
     buscarProdutosAtivosLista(): Observable<any> {
         return this.http.get<any>(
-            `${this.env.apiUrl}produto/listar-produtos-ativos`
+            `${this.env.apiUrl()}produto/listar-produtos-ativos`
         );
     }
 }
