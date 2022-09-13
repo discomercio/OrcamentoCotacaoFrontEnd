@@ -70,6 +70,9 @@ import { NovoPrepedidoModule } from '../views/prepedido/novo-prepedido/novo-prep
 import { ProdutosCatalogoClonarComponent } from '../views/produtos-catalogo/clonar/clonar.component';
 import { ClienteModule } from '../views/prepedido/cliente/cliente.module';
 import { SenhaMeusdadosComponent } from '../views/senha/senha-meusdados.component';
+import { CepComponent } from '../views/cep/cep/cep.component';
+import { CepDialogComponent } from '../views/cep/cep-dialog/cep-dialog.component';
+import { EnderecoEntregaComponent } from '../views/cliente/endereco-entrega/endereco-entrega.component';
 
 @NgModule({
     imports: [
@@ -121,7 +124,10 @@ import { SenhaMeusdadosComponent } from '../views/senha/senha-meusdados.componen
         PrepedidoDetalhesComponent,
         PedidoDetalhesComponent,
         ProdutosCatalogoClonarComponent,
-        SenhaMeusdadosComponent
+        SenhaMeusdadosComponent,
+        CepComponent,
+        CepDialogComponent,
+        EnderecoEntregaComponent
     ],
     providers: [
         {

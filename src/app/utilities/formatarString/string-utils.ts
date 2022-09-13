@@ -34,4 +34,8 @@ export class StringUtils {
             }
         }
     }
+
+    static mascaraCep(): string {
+        return "99999-999";
+    }
 }

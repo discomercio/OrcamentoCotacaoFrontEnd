@@ -51,6 +51,7 @@ import { ProdutosCatalogoClonarComponent } from 'src/app/views/produtos-catalogo
 import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/cliente.component';
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
+import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-cliente/cadastro-cliente.component';
 
 @NgModule({
     imports: [
@@ -61,6 +62,7 @@ import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.com
                     { path: 'account/login', component: LoginComponent, },
                     { path: 'orcamentos/aprovacao-orcamento-cliente', component: AprovacaoOrcamentoClienteComponent },
                     { path: 'publico/orcamento/:guid', component: PublicoOrcamentoComponent },
+                    { path: 'publico/cadastro-cliente/:guid', component: PublicoCadastroClienteComponent },
                     { path: 'publico/cadastro-cliente-sucesso', component: PublicoCadastroClienteSucessoComponent },
                     {
                         path: '', component: AppMainComponent, canActivate: [AuthGuard], children: [

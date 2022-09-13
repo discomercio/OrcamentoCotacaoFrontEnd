@@ -26,6 +26,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
 
   buscarClienteServiceJustificativaEndEntregaComboTemporario: EnderecoEntregaJustificativaDto[];
   ngOnInit() {
+    debugger;
     //se OutroEndereco for undefined, precisamos inicializar
     if (!this.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.enderecoEntregaDtoClienteCadastro.OutroEndereco = false;
@@ -104,6 +105,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
   //dados
   @Input() enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   @Input() tipoPf: boolean;
+  @Input() origem:string;
 
   //utilitários
   public clienteCadastroUtils = new ClienteCadastroUtils();

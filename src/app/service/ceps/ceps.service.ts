@@ -10,13 +10,13 @@ import { CepDto } from 'src/app/dto/ceps/CepDto';
 })
 export class CepsService {
 
-  constructor(private http:HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  buscarEstados():Observable<Estado[]>{
+  buscarEstados(): Observable<Estado[]> {
     return this.http.get<Estado[]>('assets/demo/data/banco/estados.json');
   }
 
-  public buscarCep(cep: string, endereco: string, uf: string, cidade: string): Observable<CepDto[]> {
+  public buscarCep(cep: string, endereco: string, uf: string, cidade: string, origem: string = null): Observable<CepDto[]> {
     //adiciona todos os parametros por nome
     let params = new HttpParams();
     params = params.append('cep', cep);
@@ -24,24 +24,37 @@ export class CepsService {
     params = params.append('uf', uf);
     params = params.append('cidade', cidade);
 
+    if (origem == "publico")
+      return this.http.get<CepDto[]>(`${environment.apiUrl}publico/buscarCep/`, { params: params });
+
     return this.http.get<CepDto[]>(environment.apiUrl + 'api/cep/buscarCep/', { params: params });
   }
 
-  public BuscarUfs(): Observable<string[]> {
+  public BuscarUfs(origem: string = null): Observable<string[]> {
+    if (origem == "publico")
+      return this.http.get<string[]>(environment.apiUrl + 'publico/buscarUfs');
+
     return this.http.get<string[]>(environment.apiUrl + 'api/cep/buscarUfs');
   }
 
-  public BuscarLocalidades(uf: string): Observable<string[]> {
+  public BuscarLocalidades(uf: string, origem: string = null): Observable<string[]> {
     let params = new HttpParams();
     params = params.append('uf', uf);
+    if (origem == "publico")
+      return this.http.get<string[]>(environment.apiUrl + 'publico/buscarLocalidades', { params: params });
+
     return this.http.get<string[]>(environment.apiUrl + 'api/cep/buscarLocalidades', { params: params });
   }
 
-  public buscarCepPorEndereco(endereco: string, localidade: string, uf: string): Observable<CepDto[]> {
+  public buscarCepPorEndereco(endereco: string, localidade: string, uf: string, origem: string = null): Observable<CepDto[]> {
     let params = new HttpParams();
     params = params.append('endereco', endereco);
     params = params.append('localidade', localidade);
     params = params.append('uf', uf);
+
+    if (origem == "publico")
+      return this.http.get<CepDto[]>(environment.apiUrl + 'publico/buscarCepPorEndereco', { params: params });
+
     return this.http.get<CepDto[]>(environment.apiUrl + 'api/cep/buscarCepPorEndereco', { params: params });
   }
 }

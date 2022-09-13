@@ -1,7 +1,6 @@
 import { AutenticacaoService } from './../../../service/autenticacao/autenticacao.service';
-import { PublicoService } from './../../../service/publico/publico.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/OrcamentoCotacaoDto';
@@ -17,6 +16,8 @@ import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cliente.component';
 import { PublicoHeaderComponent } from '../header/header.component';
+import { PublicoService } from 'src/app/service/publico/publico.service';
+import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 
 @Component({
   selector: 'app-orcamento',
@@ -32,6 +33,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly alertaService: AlertaService,
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService,
+    private readonly router: Router,
+    private readonly aprovacaoPublicoService: AprovacaoPublicoService
   ) {
     super(telaDesktopService);
   }
@@ -44,7 +47,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   dataUtils: DataUtils = new DataUtils();
   stringUtils = StringUtils;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
-  @ViewChild(PublicoCadastroClienteComponent) child;
   display: boolean = false;
   validado: boolean = false;
   desabiltarBotoes: boolean;
@@ -52,7 +54,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
-    
+this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
     });
@@ -99,47 +101,76 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         break;
     }
   }
+
+  paramGuid:any;
   buscarOrcamentoPorGuid(param) {
-    
+
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
+          
           this.validado = true;
+          
           this.orcamento = r;
+          this.aprovacaoPublicoService.orcamento = r;
+          this.aprovacaoPublicoService.paramGuid = param.guid;
+          this.paramGuid = param.guid;
           this.publicHeader.imagemLogotipo = 'assets/layout/images/' + this.orcamento.lojaViewModel.imagemLogotipo;
 
-          this.mensagemComponente.permiteEnviarMensagem = true;
+          if (this.mensagemComponente != undefined) {
+            this.mensagemComponente.permiteEnviarMensagem = true;
 
 
-          if (r.status == 3) {
-            this.desabiltarBotoes = true;
-            this.mensagemComponente.permiteEnviarMensagem = false;
+            if (r.status == 3) {
+              this.desabiltarBotoes = true;
+              this.mensagemComponente.permiteEnviarMensagem = false;
+            }
+
+            this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
+            this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
+            this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
+            this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
+            this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
+            this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
-          this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
-          this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
-          this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
-          this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
-          this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
-          this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
           this.autenticacaoService.setarToken(r.token);
+          this.carregando = false;
         } else {
+          this.carregando = false;
           this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         }
       });
     }
   }
 
-  salvar() {
-    this.child.salvar();
-  }
-
   aprovar(opcao) {
-    // if (!this.opcaoPagto) {
+    /*
+    aprovar orçamento
+        seleciona uma forma de pagto de uma opção => gravar o id da forma de pagto.
+        aprovar orçamento click => navegar para a tela de cliente se baseando pelo tipo do cliente, 
+          então temos somente tipo do cliente.
+    
+    */
+
+    // if (!this.formaPagto) {
+    //   this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
+    //   return;
     // }
-    //   this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
+    this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
+    // this.sweetalertService.confirmarSemMostrar("Deseja realmente aprovar essa opção?", "").subscribe(result => {
+    //   if (result) {
+    //     this.router.navigate([`publico/cliente/cadastro/${this.paramGuid}`], {
+    //       queryParams: {
+    //         opcaoPagto: this.opcaoPagto,
+    //         formaPagto: this.formaPagto,
+    //         tipoPagto: this.tipoPagto
+    //       }
+    //     });
+    //   }
     // });
+
   }
 
 
