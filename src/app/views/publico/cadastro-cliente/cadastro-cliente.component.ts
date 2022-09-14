@@ -291,5 +291,15 @@ export class PublicoCadastroClienteComponent implements OnInit {
     //  this.form.controls.produtorRural.setValue('1');
   }
 
+  cadastrar(){
+    /*
+    bloquear botão para não reenviar
+    separar os ddd's do telefone 
+    validar os dados 
+      se falhar => voltar os valores de telefone???? analisar
+
+    enviar para API - publico => cadastrarCliente
+    */
+  }
 }
 
