@@ -1,123 +1,292 @@
 <div class="p-col-12 p-d-inline-flex p-jc-center">
-    <div class="card p-col-12 p-lg-10 p-md-10 p-sm-10">
+    <div class="p-col-12">
+        <form [formGroup]="formPJ" *ngIf="TipoCliente == constantes.ID_PJ" class="p-grid p-jc-around">
+            <div class="card p-col-12 p-lg-8 p-md-8 p-sm-10">
+                <!-- CLIENTE PJ -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <!-- Cliente PJ => razão social | cnpj -->
+                        <div class="p-field p-col-12 p-lg-8 p-md-8 p-sm-8 p-as-baseline p-py-0">
+                            <label for="razao">Razão social</label>
+                            <input id="razao" type="text" formControlName="razao" [(ngModel)]="dadosCliente.Nome"
+                                pInputText>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'razao')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.razao.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline p-py-0">
+                            <label for="cpfCnpj">CNPJ</label>
+                            <p-inputMask id="cpfCnpj" type="text" [(ngModel)]="dadosCliente.Cnpj_Cpf"
+                                mask="{{mascaraCNPJ}}" formControlName="cnpj">
+                            </p-inputMask>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'cnpj')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.cnpj.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- CEP cadastro -->
+                <div class="p-col-12 p-py-0">
+                    <app-cep #cepComponente></app-cep>
+                </div>
+                <!-- Email | Emailxml -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                            <label for="email">E-mail</label>
+                            <input id="email" type="text" formControlName="email" [(ngModel)]="dadosCliente.Email"
+                                pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'email')">
+                                <small class="p-error" *ngIf="formPJ.controls.email.errors?.email">E-mail
+                                    inválido</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                            <label for="emailXml">E-mail (XML)</label>
+                            <input id="emailXml" type="text" formControlName="emailXml"
+                                [(ngModel)]="dadosCliente.EmailXml" pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'emailXml')">
+                                <small class="p-error" *ngIf="formPJ.controls.emailXml.errors?.email">E-mail
+                                    inválido</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- PJ => Telefone 1 | Ramal | Telefone 2 | Ramal -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid">
+                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="fone1">Telefone 1</label>
+                            <input id="fone1" type="text" formControlName="tel1" [(ngModel)]="dadosCliente.TelComercial"
+                                pInputText mask="{{mascaraTelefone}}" maxlength="16">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'tel1')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.tel1.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                            <label for="ramal">Ramal</label>
+                            <input id="ramal" type="text" pInputText maxlength="4" formControlName="ramal1"
+                                [(ngModel)]="dadosCliente.Ramal">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal1')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.ramal1.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="fone2">Telefone 2</label>
+                            <input id="fone2" type="text" formControlName="tel2"
+                                [(ngModel)]="dadosCliente.TelComercial2" pInputText mask="{{mascaraTelefone}}"
+                                maxlength="16">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'tel2')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.tel2.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                            <label for="ramal2">Ramal</label>
+                            <input id="ramal2" type="text" pInputText maxlength="4" formControlName="ramal2"
+                                [(ngModel)]="dadosCliente.Ramal2">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal2')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.ramal2.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Contribuinte ICMS | IE -->
+                <div class="p-col-12 p-py-0">
+                    <div class="fluid p-grid">
+                        <div class="p-field p-fluid p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline">
+                            <label for="icmsPJ">Contribuinte ICMS</label>
+                            <p-dropdown id="icmsPJ" [options]="listaContribuinteICMS" placeholder="Selecione"
+                                [showClear]="true" formControlName="icms" optionValue="value" optionLabel="label"
+                                [(ngModel)]="dadosCliente.Contribuinte_Icms_Status">
+                            </p-dropdown>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'icms')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.icms.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
 
-        <!-- CLIENTE PF -->
-        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
-            <div class="p-fluid p-grid p-py-2">
-                <!-- Cliente PF => nome | cpf | rg | nascimento | sexo -->
-                <div class="p-field p-col-12 p-as-end p-py-0">
-                    <label for="nome">Nome</label>
-                    <input id="nome" type="text" [(ngModel)]="dadosCliente.Nome" pInputText>
-                    <!-- <div *ngIf="validacaoFormularioService.verificaCampo(form,'nome')">
-                         <small class="p-error" *ngIf="form.controls.nome.errors?.required">{{mensagemErro}}</small>
-                         <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">
-                             Quantidade de caracteres excede a o limite de
-                             {{form.controls.nome.errors.maxlength.requiredLength}}
-                         </small>
-                         </div> -->
-                </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="cpfCnpj">CPF</label>
-                    <p-inputMask id="cpfCnpj" type="text" [(ngModel)]="dadosCliente.Cnpj_Cpf" mask="{{mascaraCPF}}">
-                    </p-inputMask>
-                    <!-- <div *ngIf="validacaoFormularioService.verificaCampo(form,'cpfCnpj')">
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.maxlength">
-                                 Quantidade de caracteres excede a o limite de
-                                {{form.controls.cpfCnpj.errors.maxlength.requiredLength}}
-                          </small>
-                        </div> -->
-                </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="rg">RG</label>
-                    <input id="rg" [(ngModel)]="dadosCliente.Rg" pInputText>
-                </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="nascimento">Nascimento</label>
-                    <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento" (keyup)="escrevendoData($event)"
-                        maxlength="10" minlength="10" mask="99/99/9999"></p-inputMask>
-                </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="sexo">Sexo</label>
-                    <p-dropdown id="sexo" [options]="listaSexo" optionValue="id" optionLabel="value"
-                        [(ngModel)]="dadosCliente.Sexo"></p-dropdown>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-baseline">
+                            <label for="iePJ">IE</label>
+                            <input id="iePJ" type="text" pInputText maxlength="20" formControlName="inscricaoEstadual"
+                                [disabled]="dadosCliente.Contribuinte_Icms_Status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
+                                [(ngModel)]="dadosCliente.Ie">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'inscricaoEstadual')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.inscricaoEstadual.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </form>
 
-        <!-- CEP cadastro -->
-        <div class="p-col-12">
-            <app-cep #cepComponente></app-cep>
-        </div>
-
-        <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
-        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
-            <div class="p-fluid p-grid p-py-2">
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="foneResidencial">Fone Residencial</label>
-                    <input id="foneResidencial" type="text" [(ngModel)]="dadosCliente.TelefoneResidencial" pInputText
-                        mask="{{mascaraTelefone}}">
+        <form [formGroup]="formPF" *ngIf="TipoCliente == constantes.ID_PF" class="p-grid p-jc-around">
+            <div class="card p-col-12 p-lg-10 p-md-10 p-sm-10">
+                <!-- CLIENTE PF -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <!-- Cliente PF => nome | cpf | rg | nascimento | sexo -->
+                        <div class="p-field p-col-12 p-as-end p-py-0">
+                            <label for="nome">Nome</label>
+                            <input id="nome" type="text" formControlName="nome" [(ngModel)]="dadosCliente.Nome"
+                                pInputText>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'nome')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.nome.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="cpfCnpj">CPF</label>
+                            <p-inputMask id="cpfCnpj" type="text" formControlName="cpf"
+                                [(ngModel)]="dadosCliente.Cnpj_Cpf" mask="{{mascaraCPF}}">
+                            </p-inputMask>
+                            <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(formPF,'cpf')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.cpf.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="rg">RG</label>
+                            <input id="rg" [(ngModel)]="dadosCliente.Rg" pInputText>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="nascimento">Nascimento</label>
+                            <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento"
+                                (keyup)="escrevendoData($event)" maxlength="10" minlength="10" mask="99/99/9999">
+                            </p-inputMask>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="sexo">Sexo</label>
+                            <p-dropdown id="sexo" [options]="listaSexo" formControlName="sexo" optionValue="id"
+                                optionLabel="value" [(ngModel)]="dadosCliente.Sexo"></p-dropdown>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'sexo')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.sexo.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="celular">Celular</label>
-                    <input id="celular" type="text" [(ngModel)]="dadosCliente.Celular" pInputText
-                        mask="{{mascaraTelefone}}">
+                <!-- CEP cadastro -->
+                <div class="p-col-12 p-py-0">
+                    <app-cep #cepComponente></app-cep>
                 </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="foneComercial">Fone Comercial</label>
-                    <input id="foneComercial" type="text" [(ngModel)]="dadosCliente.TelComercial" pInputText
-                        mask="{{mascaraTelefone}}">
+                <!-- Email | Emailxml -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
+                            <label for="email">E-mail</label>
+                            <input id="email" type="text" [(ngModel)]="dadosCliente.Email" pInputText maxlength="60">
+                        </div>
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
+                            <label for="emailXml">E-mail (XML)</label>
+                            <input id="emailXml" type="text" [(ngModel)]="dadosCliente.EmailXml" pInputText
+                                maxlength="60">
+                        </div>
+                    </div>
                 </div>
-                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                    <label for="ramal">Ramal</label>
-                    <input id="ramal" type="text" [(ngModel)]="dadosCliente.Ramal" pInputText>
+                <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="foneResidencial">Fone Residencial</label>
+                            <input id="foneResidencial" type="text" formControlName="telResidencial"
+                                [(ngModel)]="dadosCliente.TelefoneResidencial" pInputText mask="{{mascaraTelefone}}">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'telResidencial')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.telResidencial.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="celular">Celular</label>
+                            <input id="celular" type="text" formControlName="celular" [(ngModel)]="dadosCliente.Celular"
+                                pInputText mask="{{mascaraTelefone}}">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'celular')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.celular.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="foneComercial">Fone Comercial</label>
+                            <input id="foneComercial" type="text" formControlName="telComercial"
+                                [(ngModel)]="dadosCliente.TelComercial" pInputText mask="{{mascaraTelefone}}">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'telComercial')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.telComercial.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="ramal">Ramal</label>
+                            <input id="ramal" type="text" formControlName="ramal" [(ngModel)]="dadosCliente.Ramal"
+                                pInputText>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'ramal')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.ramal.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- PF => Observação -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-as-end p-py-0">
+                            <label for="observacao">Observação</label>
+                            <input id="observacao" type="text" [(ngModel)]="dadosCliente.Observacao_Filiacao" pInputText
+                                maxlength="60">
+                        </div>
+                    </div>
+                </div>
+                <!-- PF => Produtor Rural -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-4 p-as-end p-py-0">
+                            <label for="produtorRural">Produtor Rural</label>
+                            <p-dropdown id="produtorRural" [showClear]="true" [autoDisplayFirst]="false"
+                                [(ngModel)]="dadosCliente.ProdutorRural" formControlName="produtor"
+                                [options]="listaProdutorRural" optionValue="value" optionLabel="label"></p-dropdown>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'produtor')">
+                                <small class="p-error"
+                                    *ngIf="formPF.controls.produtor.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-
-        <!-- PF => Observação -->
-        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
-            <div class="p-fluid p-grid p-py-2">
-                <div class="p-field p-col-12 p-as-end p-py-0">
-                    <label for="observacao">Observação</label>
-                    <input id="observacao" type="text" [(ngModel)]="dadosCliente.Observacao_Filiacao" pInputText
-                        maxlength="60">
-                </div>
-            </div>
-        </div>
-
-        <!-- Email | Emailxml -->
-        <div class="p-col-12">
-            <div class="p-fluid p-grid p-py-2">
-                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
-                    <label for="email">E-mail</label>
-                    <input id="email" type="text" [(ngModel)]="dadosCliente.Email" pInputText maxlength="60">
-                </div>
-                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
-                    <label for="emailXml">E-mail (XML)</label>
-                    <input id="emailXml" type="text" [(ngModel)]="dadosCliente.EmailXml" pInputText maxlength="60">
-                </div>
-            </div>
-        </div>
-
-        <!-- PF => Produtor Rural -->
-        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
-            <div class="p-fluid p-grid p-py-2">
-                <div class="p-field p-col-4 p-as-end p-py-0">
-                    <label for="produtorRural">Produtor Rural</label>
-                    <p-dropdown id="produtorRural" [showClear]="true" [autoDisplayFirst]="false"
-                        [(ngModel)]="dadosCliente.ProdutorRural" [options]="listaProdutorRural" optionValue="value"
-                        optionLabel="label"></p-dropdown>
-                </div>
-            </div>
-        </div>
+        </form>
 
         <!-- endereço de entrega -->
-        <div class="p-col-12">
-            <app-endereco-entrega [tipoPf]="clientePF()" [origem]="'publico'"
+        <div>
+            <app-endereco-entrega [tipoPf]="clientePF()" [origem]="'publico'" class="p-grid p-jc-around"
                 [loja]="aprovacaoPubicoService.orcamento.loja"
                 [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro" #confirmarEndereco>
             </app-endereco-entrega>
         </div>
+
+        <div>
+            <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="salvar()"></button>
+        </div>
     </div>
+
 </div>

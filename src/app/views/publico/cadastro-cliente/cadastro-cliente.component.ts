@@ -1,6 +1,6 @@
 import { AlertaService } from './../../../components/alert-dialog/alerta.service';
 import { MensagemService } from './../../../utilities/mensagem/mensagem.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CadastroDto } from 'src/app/dto/orcamentos/CadastroDto';
 import { ClienteService } from 'src/app/service/cliente/cliente.service';
@@ -17,6 +17,7 @@ import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-c
 import { EnderecoEntregaJustificativaDto } from 'src/app/dto/clientes/EnderecoEntregaJustificativaDto';
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
+import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -38,36 +39,41 @@ export class PublicoCadastroClienteComponent implements OnInit {
     private readonly aprovacaoPubicoService: AprovacaoPublicoService
   ) { }
 
+  @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
+  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: CepComponent;
+
+  formPF: FormGroup;
+  formPJ: FormGroup;
+
   listaSexo: any[];
   listaProdutorRural: any[];
   listaIE: any[];
   listaContribuinteICMS: any[];
-  mesmoEndereco: string = "mesmo";
-  clienteDto: ClienteDto = new ClienteDto();
-  cadastroDto: CadastroDto = new CadastroDto();
-  public form: FormGroup;
-  mensagemErro: string = ''; //'Campo obrigatório!';
-  dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto()
-  TipoCliente: string;
   mascaraTelefone: string;
   mascaraCPF: string;
+  mascaraCNPJ: string;
+  mensagemErro: string = '*Campo obrigatório'; //'Campo obrigatório!';
+  constantes: Constantes = new Constantes();
+
+
+  clienteDto: ClienteDto = new ClienteDto();
+  cadastroDto: CadastroDto = new CadastroDto();
+  dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto()
+  TipoCliente: string;
+  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   // @Input() NomeCliente: string;
   // @Input() UF: string;
   // @Input() Telefone: string;
   // @Input() Email: string;
   // @Input() StEntregaImediata: string;
   // @Input() DtEntregaImediata: Date;
-  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-
-  constantes: Constantes = new Constantes();
-  @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
-  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: CepComponent;
 
   ngOnInit(): void {
     this.mascaraCPF = "999.999.999-99";
+    this.mascaraCNPJ = "99.999.999/9999-99";
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
 
-    if (this.aprovacaoPubicoService.orcamento == undefined){
+    if (this.aprovacaoPubicoService.orcamento == undefined) {
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
     }
@@ -75,13 +81,12 @@ export class PublicoCadastroClienteComponent implements OnInit {
     this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
 
     this.criarListas();
-
-
     this.criarForm();
+
   }
 
-  clientePF():boolean{
-    if(this.TipoCliente == this.constantes.ID_PF) return true;
+  clientePF(): boolean {
+    if (this.TipoCliente == this.constantes.ID_PF) return true;
 
     return false;
   }
@@ -107,63 +112,66 @@ export class PublicoCadastroClienteComponent implements OnInit {
   }
 
   criarForm() {
-    this.form = this.fb.group({
-      nome: [this.cadastroDto.nome_razaoSocial, [Validators.required, Validators.maxLength(50)]],
-      cpfCnpj: [this.cadastroDto.cpf_cnpj, [Validators.required]],
-      rg: [],
-      nascimento: [],
-      sexo: [this.cadastroDto.sexo, [Validators.required]],
-      cep: [],
-      endereco: [],
-      numero: [],
-      complemento: [],
-      bairro: [],
-      cidade: [],
-      uf: [],
-      foneResidencial: [],
-      foneCelular: [],
-      foneComercial: [],
-      foneRamal: [],
-      texto: [],
-      email: [this.cadastroDto.email, [Validators.email, Validators.maxLength(60)]],
+
+    if (this.clientePF()) {
+      //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
+      this.formPF = this.fb.group({
+        nome: ["", [Validators.required]],
+        cpf: ["", [Validators.required]],
+        sexo: ["", [Validators.required]],
+        telResidencial: ["", [Validators.required]],
+        celular: ["", [Validators.required]],
+        telComercial: ["", [Validators.required]],
+        ramal: [],
+        email: ["", [Validators.required, Validators.email]],
+        emailxml: [],
+        produtor: ["", [Validators.required]],
+      });
+      return;
+    }
+
+    //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
+    this.formPJ = this.fb.group({
+      razao: ["", [Validators.required]],
+      cnpj: ["", [Validators.required]],
+      tel1: ["", [Validators.required]],
+      ramal1: ["", [Validators.required]],
+      tel2: ["", [Validators.required]],
+      ramal2: ["", [Validators.required]],
+      email: ["", [Validators.email]],
       emailXml: [],
-      produtorRural: [this.cadastroDto.produtoRural, [Validators.required]],
-      fone1: [],
-      fone1Ramal: [],
-      fone2: [],
-      fone2Ramal: [],
-      icms: [],
-      inscricaoEstadual: [],
-      justifique: [],
-      cep2: [],
-      endereco2: [],
-      numero2: [],
-      complemento2: [],
-      bairro2: [],
-      cidade2: [],
-      uf2: [],
-      city1: [],
-      city2: [],
-      campos: this.fb.array([])
+      icms: ["", [Validators.required]],
+      inscricaoEstadual: []
     });
   }
 
-
-
+  //vamos deixar aqui para o caso de precisar voltar o campo para calendário
   escrevendoData(e: Event) {
     let data = (e.target as HTMLInputElement).value;
 
     if (data.length == 2) this.dadosCliente.Nascimento = data + "/";
     if (data.length == 5) this.dadosCliente.Nascimento = data + "/";
   }
+
   salvar() {
-    if (!this.validacaoFormularioService.validaForm(this.form)) {
-      this.alertaService.mostrarMensagem('Verifique os campos obrigatórios, destacados em vermelho.');
-      return;
+
+    if (this.clientePF()) {
+      if (!this.validacaoFormularioService.validaForm(this.formPF) &&
+        !this.cepComponente.validarForm()) {
+        return;
+      }
     }
+    else {
+      if (!this.validacaoFormularioService.validaForm(this.formPJ) &&
+        !this.cepComponente.validarForm()) {
+        return;
+      }
+    }
+
+    alert("passou")
     // this.populaTela();
 
-    let cpfCnpj = this.form.controls.cpfCnpj.value?.replaceAll('.', '').replaceAll('-', '');
+    // let cpfCnpj = this.form.controls.cpfCnpj.value?.replaceAll('.', '').replaceAll('-', '');
 
     // let cadastro = 
     //   {
@@ -252,25 +260,25 @@ export class PublicoCadastroClienteComponent implements OnInit {
 
   }
 
-  mesmoEndereco_click(mesmoEndereco: string) {
-    if (mesmoEndereco == 'mesmo') {
-      this.form.controls.cep2.setValue(this.clienteDto.DadosCliente.Cep);
-      this.form.controls.endereco2.setValue(this.clienteDto.DadosCliente.Endereco);
-      this.form.controls.numero2.setValue(this.clienteDto.DadosCliente.Numero);
-      this.form.controls.complemento2.setValue(this.clienteDto.DadosCliente.Complemento);
-      this.form.controls.bairro2.setValue(this.clienteDto.DadosCliente.Bairro);
-      this.form.controls.cidade2.setValue(this.clienteDto.DadosCliente.Cidade);
-      this.form.controls.uf2.setValue(this.clienteDto.DadosCliente.Uf);
-    } else if (mesmoEndereco == 'outro') {
-      this.form.controls.cep2.setValue('');
-      this.form.controls.endereco2.setValue('');
-      this.form.controls.numero2.setValue('');
-      this.form.controls.complemento2.setValue('');
-      this.form.controls.bairro2.setValue('');
-      this.form.controls.cidade2.setValue('');
-      this.form.controls.uf2.setValue('');
-    }
-  }
+  // mesmoEndereco_click(mesmoEndereco: string) {
+  //   if (mesmoEndereco == 'mesmo') {
+  //     this.form.controls.cep2.setValue(this.clienteDto.DadosCliente.Cep);
+  //     this.form.controls.endereco2.setValue(this.clienteDto.DadosCliente.Endereco);
+  //     this.form.controls.numero2.setValue(this.clienteDto.DadosCliente.Numero);
+  //     this.form.controls.complemento2.setValue(this.clienteDto.DadosCliente.Complemento);
+  //     this.form.controls.bairro2.setValue(this.clienteDto.DadosCliente.Bairro);
+  //     this.form.controls.cidade2.setValue(this.clienteDto.DadosCliente.Cidade);
+  //     this.form.controls.uf2.setValue(this.clienteDto.DadosCliente.Uf);
+  //   } else if (mesmoEndereco == 'outro') {
+  //     this.form.controls.cep2.setValue('');
+  //     this.form.controls.endereco2.setValue('');
+  //     this.form.controls.numero2.setValue('');
+  //     this.form.controls.complemento2.setValue('');
+  //     this.form.controls.bairro2.setValue('');
+  //     this.form.controls.cidade2.setValue('');
+  //     this.form.controls.uf2.setValue('');
+  //   }
+  // }
 
   populaTela() { //PARA TESTES RAPIDOS
 
@@ -297,7 +305,7 @@ export class PublicoCadastroClienteComponent implements OnInit {
     //  this.form.controls.produtorRural.setValue('1');
   }
 
-  cadastrar(){
+  cadastrar() {
     /*
     bloquear botão para não reenviar
     separar os ddd's do telefone 

@@ -31,6 +31,7 @@ export class EnderecoEntregaComponent implements OnInit {
   mascaraCPF: string;
   mascaraCNPJ: string;
   mascaraTelefone:string;
+  mensagemErro: string = '*Campo obrigatório'; 
 
   ngOnInit(): void {
     this.mascaraCPF = "000.000.000-00";

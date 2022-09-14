@@ -1,332 +1,153 @@
-<div class="p-py-3">
-    <div class="p-fluid p-formgrid p-grid">
-        <div class="p-field-checkbox">
-            <label>Endereço de entrega</label>
+<div class="card p-col-12 p-lg-8 p-md-8 p-sm-10 p-px-3">
+    <div class="p-py-3">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field-checkbox">
+                <label>Endereço de entrega</label>
+            </div>
+            <div class="p-col-12">
+                <p-radioButton [inputId]="1" [value]="false" label="O mesmo endereço do cadastro"
+                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco">
+                </p-radioButton>
+                &nbsp;
+                <p-radioButton [inputId]="2" [value]="true" label="Outro endereço"
+                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco"></p-radioButton>
+            </div>
         </div>
-        <div class="p-col-12">
-            <p-radioButton [inputId]="1" [value]="false" label="O mesmo endereço do cadastro"
-                [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco">
-            </p-radioButton>
-            &nbsp;
-            <p-radioButton [inputId]="2" [value]="true" label="Outro endereço"
-                [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco"></p-radioButton>
+    </div>
+
+    <div *ngIf="enderecoEntregaDtoClienteCadastro"
+        [ngClass]="{'desab':!enderecoEntregaDtoClienteCadastro.OutroEndereco}">
+        <!-- Justificativa endereço de entrega aqui -->
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field p-col-12 p-col-12 p-field p-lg-6 p-md-7 p-sm-9">
+                <label for="justifique">Justifique o endereço</label>
+                <p-dropdown id="justifique" [autoDisplayFirst]="false" [options]="listaOutroEndereco"
+                    optionValue="EndEtg_cod_justificativa" optionLabel="EndEtg_descricao_justificativa"></p-dropdown>
+            </div>
+        </div>
+
+        <div class="p-fluid p-formgrid p-grid" *ngIf="!tipoPf">
+            <div class="p-field p-col-12">
+                <p-radioButton [inputId]="3" [value]="true" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Física"
+                    (click)="PJ()">
+                </p-radioButton>
+                &nbsp;
+                <p-radioButton [inputId]="4" [value]="false" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Jurídica"
+                    (click)="PF()">
+                </p-radioButton>
+            </div>
+            <div class="p-col-12">
+                <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
+                    <label for="nomeEndEntrega">Nome</label>
+                    <input id="nomeEndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome"
+                        pInputText maxlength="60">
+                </div>
+                <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
+                    <label for="razaoSocialEndEntrega">Razão Social</label>
+                    <input id="razaoSocialEndEntrega" type="text"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
+                </div>
+            </div>
+            <!-- CPF | CNPJ  -->
+            <div class="p-grid p-col-12">
+                <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                    <label for="cpfEndEntrega">CPF</label>
+                    <input id="cpfEndEntrega" type="text"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" pInputText maxlength="15"
+                        mask="{{mascaraCPF}}">
+                </div>
+                <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                    <label for="cnpjEndEntrega">CNPJ</label>
+                    <input id="cnpjEndEntrega" type="text" mask="{{mascaraCNPJ}}"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" pInputText maxlength="19">
+                </div>
+            </div>
+            <!-- telefones PF -->
+            <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
+                    <label for="foneResidencialEndEntrega">Fone Residencial</label>
+                    <input id="foneResidencialEndEntrega" type="text" maxlength="16"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_res" pInputText
+                        mask="{{mascaraTelefone}}">
+                </div>
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
+                    <label for="celularEndEntrega">Celular</label>
+                    <input id="celularEndEntrega" type="text"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel" pInputText
+                        mask="{{mascaraTelefone}}" maxlength="16">
+                </div>
+            </div>
+            <!-- telefones PJ -->
+            <div class="p-col-12 p-d-inline-flex p-fluid p-grid" *ngIf="!pessoaEntregaEhPF">
+                <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                    <label for="fone1EndEntrega">Telefone 1</label>
+                    <input id="fone1EndEntrega" type="text"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com" pInputText
+                        mask="{{mascaraTelefone}}" maxlength="16">
+                </div>
+                <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                    <label for="ramal1EndEntrega">Ramal</label>
+                    <input id="ramal1EndEntrega" type="text" pInputText maxlength="4"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com">
+                </div>
+                <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                    <label for="fone2EndEntrega">Telefone 2</label>
+                    <input id="fone2EndEntrega" type="text"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2" pInputText
+                        mask="{{mascaraTelefone}}" maxlength="16">
+                </div>
+                <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                    <label for="ramal2EndEntrega">Ramal</label>
+                    <input id="ramal2EndEntrega" type="text" pInputText maxlength="4"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com_2">
+                </div>
+            </div>
+            <!-- PF => Produtor Rural | Contribuinte ICMS | IE -->
+            <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
+                <div class="p-field p-col-4 p-as-end p-py-0">
+                    <label for="produtorRuralEndEntrega">Produtor Rural</label>
+                    <p-dropdown id="produtorRuralEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status"
+                        [options]="listaProdutorRural" optionValue="value" optionLabel="label"></p-dropdown>
+                </div>
+
+                <div class="p-field p-col-4 p-as-end p-py-0"
+                    *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
+                    <label for="contribuinteEndEntrega">Contribuinte ICMS</label>
+                    <p-dropdown id="contribuinteEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
+                        [options]="listaContribuinteICMS" optionValue="value" optionLabel="label"></p-dropdown>
+                </div>
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0"
+                    *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
+                    <label for="ieEndEntrega">IE</label>
+                    <input id="ieEndEntrega" type="text" pInputText maxlength="20"
+                        [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie">
+                </div>
+            </div>
+            <!-- PJ => Contribuinte ICMS | IE -->
+            <div class="p-grid p-col-12" *ngIf="!pessoaEntregaEhPF">
+                <div class="p-field p-col-4 p-as-end p-py-0"
+                    *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
+
+                    <label for="contribuinteEndEntrega">Contribuinte ICMS</label>
+                    <p-dropdown id="contribuinteEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
+                        [options]="listaContribuinteICMS" optionValue="value" optionLabel="label"></p-dropdown>
+                </div>
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0"
+                    *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
+                    <label for="ieEndEntrega">IE</label>
+                    <input id="ieEndEntrega" type="text" pInputText maxlength="20"
+                        [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie">
+                </div>
+            </div>
+        </div>
+
+        <div class="p-py-2">
+            <app-cep #componenteCep></app-cep>
         </div>
     </div>
 </div>
-
-
-<div *ngIf="enderecoEntregaDtoClienteCadastro" [ngClass]="{'desab':!enderecoEntregaDtoClienteCadastro.OutroEndereco}">
-    <!-- Justificativa endereço de entrega aqui -->
-    <div class="p-fluid p-formgrid p-grid">
-        <div class="p-field p-col-12 p-col-12 p-field p-lg-6 p-md-7 p-sm-9">
-            <label for="justifique">Justifique o endereço</label>
-            <p-dropdown id="justifique" [autoDisplayFirst]="false" [options]="listaOutroEndereco"
-                optionValue="EndEtg_cod_justificativa" optionLabel="EndEtg_descricao_justificativa"></p-dropdown>
-        </div>
-    </div>
-
-    <div class="p-fluid p-formgrid p-grid" *ngIf="!tipoPf">
-        <div class="p-field p-col-12">
-            <p-radioButton [inputId]="3" [value]="true" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Física"
-                (click)="PJ()">
-            </p-radioButton>
-            &nbsp;
-            <p-radioButton [inputId]="4" [value]="false" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Jurídica"
-                (click)="PF()">
-            </p-radioButton>
-        </div>
-        <div class="p-col-12">
-            <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
-                <label for="nomeEndEntrega">Nome</label>
-                <input id="nomeEndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome"
-                    pInputText maxlength="60">
-            </div>
-            <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
-                <label for="razaoSocialEndEntrega">Razão Social</label>
-                <input id="razaoSocialEndEntrega" type="text"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
-            </div>
-        </div>
-        <!-- CPF | CNPJ  -->
-        <div class="p-grid p-col-12">
-            <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
-                <label for="cpfEndEntrega">CPF</label>
-                <input id="cpfEndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf"
-                    pInputText maxlength="15" mask="{{mascaraCPF}}">
-            </div>
-            <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
-                <label for="cnpjEndEntrega">CNPJ</label>
-                <input id="cnpjEndEntrega" type="text" mask="{{mascaraCNPJ}}"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" pInputText maxlength="19">
-            </div>
-        </div>
-        <!-- telefones PF -->
-        <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
-            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
-                <label for="foneResidencialEndEntrega">Fone Residencial</label>
-                <input id="foneResidencialEndEntrega" type="text" maxlength="16"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_res" pInputText
-                    mask="{{mascaraTelefone}}">
-            </div>
-            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
-                <label for="celularEndEntrega">Celular</label>
-                <input id="celularEndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel"
-                    pInputText mask="{{mascaraTelefone}}" maxlength="16">
-            </div>
-        </div>
-        <!-- telefones PJ -->
-        <div class="p-col-12 p-d-inline-flex p-fluid p-grid" *ngIf="!pessoaEntregaEhPF">
-            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
-                <label for="fone1EndEntrega">Telefone 1</label>
-                <input id="fone1EndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com"
-                    pInputText mask="{{mascaraTelefone}}" maxlength="16">
-            </div>
-            <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
-                <label for="ramal1EndEntrega">Ramal</label>
-                <input id="ramal1EndEntrega" type="text" pInputText maxlength="4"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com">
-            </div>
-            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
-                <label for="fone2EndEntrega">Telefone 2</label>
-                <input id="fone2EndEntrega" type="text" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2"
-                    pInputText mask="{{mascaraTelefone}}" maxlength="16">
-            </div>
-            <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
-                <label for="ramal2EndEntrega">Ramal</label>
-                <input id="ramal2EndEntrega" type="text" pInputText maxlength="4"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com_2">
-            </div>
-        </div>
-        <!-- PF => Produtor Rural | Contribuinte ICMS | IE -->
-        <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
-            <div class="p-field p-col-4 p-as-end p-py-0">
-                <label for="produtorRuralEndEntrega">Produtor Rural</label>
-                <p-dropdown id="produtorRuralEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status"
-                    [options]="listaProdutorRural" optionValue="value" optionLabel="label"></p-dropdown>
-            </div>
-
-            <div class="p-field p-col-4 p-as-end p-py-0"
-                *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
-                <label for="contribuinteEndEntrega">Contribuinte ICMS</label>
-                <p-dropdown id="contribuinteEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
-                    [options]="listaContribuinteICMS" optionValue="value" optionLabel="label"></p-dropdown>
-            </div>
-            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0"
-                *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
-                <label for="ieEndEntrega">IE</label>
-                <input id="ieEndEntrega" type="text" pInputText maxlength="20"
-                    [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie">
-            </div>
-        </div>
-        <!-- PJ => Contribuinte ICMS | IE -->
-        <div class="p-grid p-col-12" *ngIf="!pessoaEntregaEhPF">
-            <div class="p-field p-col-4 p-as-end p-py-0"
-                *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
-
-                <label for="contribuinteEndEntrega">Contribuinte ICMS</label>
-                <p-dropdown id="contribuinteEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
-                    [options]="listaContribuinteICMS" optionValue="value" optionLabel="label"></p-dropdown>
-            </div>
-            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0"
-                *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">
-                <label for="ieEndEntrega">IE</label>
-                <input id="ieEndEntrega" type="text" pInputText maxlength="20"
-                    [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
-                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie">
-            </div>
-        </div>
-    </div>
-
-    <div class="p-py-2">
-        <app-cep #componenteCep></app-cep>
-    </div>
-</div>
-<!-- ************   JUSTIFIQUE O ENDEREÇO   ************ -->
-
-<!-- <mat-form-field floatLabel="floatLabel()" style="width: 25ch;">
-        <mat-label>JUSTIFIQUE O ENDEREÇO</mat-label>
-        <mat-select [required]="required" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cod_justificativa">
-            <mat-option>Selecione</mat-option>
-            <mat-option *ngFor="let i of buscarClienteServiceJustificativaEndEntregaComboTemporario"
-                style="white-space: pre-line; height: auto;" [(value)]="i.EndEtg_cod_justificativa">
-                {{i.EndEtg_descricao_justificativa}}
-            </mat-option>
-        </mat-select>
-    </mat-form-field> -->
-
-<!-- vamos incluir os novos campo -->
-<!-- incluir um radio buton para saber selecionar se tipo é PF ou PJ -->
-<!-- <div *ngIf="tipoPf">
-        <div> -->
-<!-- <mat-radio-group required aria-labelledby="endereco-radio-group-label" style="display: inline-flex"
-                [(ngModel)]="RbTipoPessoa">
-                <mat-radio-button class="enderecoradio" [value]="pessoaEntregaEhPJ" (click)="PJ()">Pessoa Jurídica
-                    &nbsp;
-                </mat-radio-button>
-
-                <mat-radio-button class="enderecoradio" [value]="pessoaEntregaEhPF" (click)="PF()">Pessoa Física
-                </mat-radio-button>
-            </mat-radio-group> -->
-<!-- <br /><br /> -->
-<!-- NOME / RAZÃO SOCIAL -->
-<!-- <div>
-                <mat-form-field floatLabel="floatLabel()" class="largura-maxima-campo-formulario"
-                    *ngIf="!pessoaEntregaEhPJ">
-                    <input matInput type="text" placeholder="NOME"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" [required]="required"
-                        maxlength="60">
-                </mat-form-field>
-
-                <mat-form-field floatLabel="floatLabel()" class="largura-maxima-campo-formulario"
-                    *ngIf="pessoaEntregaEhPJ">
-                    <input matInput type="text" placeholder="RAZÃO SOCIAL"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" [required]="required"
-                        maxlength="60">
-                </mat-form-field>
-            </div> -->
-<!-- CPF / CNPJ -->
-<!-- <span> -->
-<!-- CPF e CNPJ não estão ligados ao model pq não são editados -->
-<!-- <mat-form-field floatLabel="floatLabel()" style="width: 22ch;" class="edicao-telefone"
-                    *ngIf="pessoaEntregaEhPJ">
-                    <input matInput type="text" placeholder="CNPJ" [textMask]="{mask: mascaraCnpj}" maxlength="19"
-                        size="19" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" [required]="required">
-                </mat-form-field>
-
-                <mat-form-field floatLabel="floatLabel()" style="width: 22ch;" class="edicao-telefone"
-                    *ngIf="!pessoaEntregaEhPJ">
-                    <input matInput type="text" placeholder="CPF" [textMask]="{mask: mascaraCpf}" maxlength="15"
-                        size="15" [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" [required]="required">
-                </mat-form-field>
-            </span> -->
-
-<!-- telefones PF -->
-<!-- <div *ngIf="!pessoaEntregaEhPJ">
-                <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
-                    <input [textMask]="{mask: mascaraTelefone}"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_res" type="text" matInput
-                        placeholder="FONE RESIDENCIAL" maxlength="16" size="16" />
-                </mat-form-field>
-
-                <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
-                    <input [textMask]="{mask: mascaraTelefone}"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel" type="text" matInput
-                        placeholder="CELULAR" maxlength="16" size="16" />
-                </mat-form-field>
-            </div> -->
-
-<!-- telefones PJ -->
-<!-- <div *ngIf="pessoaEntregaEhPJ"> -->
-<!-- editamos na variável telefone e quem chamar precisa separar o DDD -->
-<!-- <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
-                    <input [textMask]="{mask: mascaraTelefone}"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com" type="text" matInput
-                        placeholder="TELEFONE 1" maxlength="16" size="16" />
-                </mat-form-field>
-                <mat-form-field floatLabel="floatLabel()" class="edicao-ramal">
-                    <input matInput type="text" placeholder="RAMAL"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com" maxlength="4" size="6">
-                </mat-form-field>
-
-
-                <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
-                    <input [textMask]="{mask: mascaraTelefone}"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2" type="text" matInput
-                        placeholder="TELEFONE 2" maxlength="16" size="16" />
-                </mat-form-field>
-                <mat-form-field floatLabel="floatLabel()" class="edicao-ramal">
-                    <input matInput type="text" placeholder="RAMAL"
-                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com_2" maxlength="4" size="6">
-                </mat-form-field>
-
-            </div> -->
-
-
-<!-- ************   PRODUTOR RURAL / CONTRIBUINTE ICMS / IE ************  -->
-<!-- <span *ngIf="!pessoaEntregaEhPJ">
-                <span>
-                    <div> -->
-<!-- se está confirando, precisa de um espaço maior em cima -->
-<!-- <div style="padding-top: 1.5em;"></div>
-                        <mat-form-field floatLabel="floatLabel()" id="selectProdutorRural">
-                            <mat-label>PRODUTOR RURAL</mat-label> -->
-<!-- produtor rural sempre é editável -->
-<!-- <mat-select [required]="required" (keydown)="keydownSelectProdutor($event);"
-                                #mySelectProdutor
-                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status">
-                                <mat-option>Selecione</mat-option>
-                                <mat-option [(value)]="constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO">Não</mat-option>
-                                <mat-option [(value)]="constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM">Sim</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field floatLabel="floatLabel()"
-                            *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM"
-                            style="width: 22ch;">
-                            <mat-label>CONTRIBUINTE ICMS</mat-label>
-                            <mat-select [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
-                                [required]="required">
-                                <mat-option>Selecione</mat-option>
-                                <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO">Não</mat-option>
-                                <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM">Sim</mat-option>
-                                <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO">Isento
-                                </mat-option>
-                            </mat-select>
-                        </mat-form-field>
-
-                        <mat-form-field floatLabel="floatLabel()"
-                            *ngIf="enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status == constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM"
-                            style="width: 25ch;">
-                            <input matInput type="text" placeholder="IE"
-                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie"
-                                [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == 3"
-                                maxlength="20"
-                                [required]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM">
-                        </mat-form-field>
-                    </div>
-                </span>
-
-            </span>
-
-            <span *ngIf="pessoaEntregaEhPJ">
-                <span> -->
-<!-- se está confirando, precisa de um espaço maior em cima -->
-<!-- <div style="padding-top: 1.5em;"></div>
-
-                    <mat-form-field floatLabel="floatLabel()" style="width: 22ch;">
-                        <mat-label>CONTRIBUINTE ICMS </mat-label>
-                        <mat-select [required]="enderecoEntregaDtoClienteCadastro.OutroEndereco"
-                            [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status">
-                            <mat-option>Selecione</mat-option>
-                            <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO">Não
-                            </mat-option>
-                            <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM">Sim
-                            </mat-option>
-                            <mat-option [(value)]="constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO">
-                                Isento</mat-option>
-                        </mat-select>
-                    </mat-form-field> -->
-
-<!-- IE sempre é editável -->
-<!-- [disabled]="dadosClienteCadastroDto?.Contribuinte_Icms_Status != 2" -->
-<!-- <mat-form-field floatLabel="floatLabel()" style="width: 25ch;">
-                        <input matInput type="text" placeholder="IE"
-                            [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie" maxlength="20"
-                            [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == 3">
-                    </mat-form-field>
-
-                </span>
-
-
-
-            </span>
-        </div>
-    </div> -->
-<!-- quebrar a linha -->
-<!-- <div></div>
-            
-        </div> -->

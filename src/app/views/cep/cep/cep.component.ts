@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { CepDto } from 'src/app/dto/ceps/CepDto';
@@ -6,6 +7,7 @@ import { CepsService } from 'src/app/service/ceps/ceps.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { CepDialogComponent } from '../cep-dialog/cep-dialog.component';
 
 @Component({
@@ -15,10 +17,13 @@ import { CepDialogComponent } from '../cep-dialog/cep-dialog.component';
 })
 export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
-  constructor(telaDesktopService: TelaDesktopService,
+  constructor(
+    public fb: FormBuilder,
+    telaDesktopService: TelaDesktopService,
     public readonly cepService: CepsService,
     private readonly alertaService: AlertaService,
-    private readonly dialogService: DialogService) {
+    private readonly dialogService: DialogService,
+    public readonly validacaoFormularioService: ValidacaoFormularioService) {
     super(telaDesktopService);
   }
 
@@ -37,9 +42,25 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   temUf: boolean;
   cep_retorno: string;
 
+  form: FormGroup;
   mascaraCep: string;
+  mensagemErro: string = '*Campo obrigatório';
+
   ngOnInit(): void {
     this.mascaraCep = StringUtils.mascaraCep();
+    this.criarForm();
+  }
+
+  criarForm(){
+    this.form = this.fb.group({
+      cep:["",[Validators.required]],
+      endereco:["", [Validators.required]],
+      numero:["",[Validators.required]],
+      complemento:[],
+      bairro:["",[Validators.required]],
+      cidade:["",[Validators.required]],
+      uf:["",[Validators.required]],
+    });
   }
 
   saiuCep() {
@@ -148,7 +169,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       options);
 
     ref.onClose.subscribe((resultado: CepDto) => {
-      debugger;
       if (resultado) {
         let end: CepDto = resultado;
 
@@ -178,5 +198,11 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
         this.cep_retorno = end.Cep;
       }
     });
+  }
+
+  validarForm():boolean{
+    if (!this.validacaoFormularioService.validaForm(this.form)) return false;
+
+    return true;
   }
 }

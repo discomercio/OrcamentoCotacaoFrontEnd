@@ -1,37 +1,60 @@
 <div [ngClass]="{'carregando': carregando}">
-    <div class="p-fluid p-grid">
-        <div class="p-field p-col-8 p-lg-2 p-md-2 p-sm-3 p-as-end p-py-0">
-            <label for="cep">Cep</label>
-            <p-inputMask type="text" id="cep" [(ngModel)]="Cep" (blur)="saiuCep()" placeholder="CEP" mask="{{mascaraCep}}"></p-inputMask>
+    <form [formGroup]="form">
+        <div class="p-fluid p-grid">
+            <div class="p-field p-col-8 p-lg-2 p-md-2 p-sm-3 p-as-baseline p-py-0">
+                <label for="cep">Cep</label>
+                <p-inputMask type="text" id="cep" formControlName="cep" [(ngModel)]="Cep" (onBlur)="saiuCep()"
+                    placeholder="CEP" mask="{{mascaraCep}}"></p-inputMask>
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'cep')">
+                    <small class="p-error" *ngIf="form.controls.cep.errors.required">{{mensagemErro}}</small>
+                </div>
+            </div>
+            <div class="p-as-end p-field">
+                <button pButton pRipple label="Não sei o Cep" icon="pi pi-search" (click)="buscarCep()"></button>
+            </div>
+            <div class="p-field p-col-12 p-lg-5 p-md-7 p-sm-5 p-as-baseline p-py-0">
+                <label for="endereco">Endereço</label>
+                <input id="endereco" pInputText formControlName="endereco" [(ngModel)]="Endereco"
+                    placeholder="Endereço" />
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'endereco')">
+                    <small class="p-error" *ngIf="form.controls.endereco.errors?.required">{{mensagemErro}}</small>
+                </div>
+            </div>
+            <div class="p-field p-col-2 p-sm-2 p-as-baseline p-py-0">
+                <label for="numero">Nº</label>
+                <input id="numero" pInputText formControlName="numero" [(ngModel)]="Numero" placeholder="Nº" />
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'numero')">
+                    <small class="p-error" *ngIf="form.controls.numero.errors?.required">{{mensagemErro}}</small>
+                </div>
+            </div>
+            <div class="p-field p-col-10 p-lg-3 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                <label for="complemento">Complemento</label>
+                <input id="complemento" pInputText formControlName="complemento" [(ngModel)]="Complemento"
+                    placeholder="Complemento" />
+            </div>
         </div>
-        <div class="p-as-end p-field">
-            <button pButton pRipple label="Não sei o Cep" icon="pi pi-search" (click)="buscarCep()"></button>
+        <div class="p-fluid p-grid">
+            <div class="p-field p-as-baseline p-py-0 p-col-12 p-lg-5 p-md-5 p-sm-5">
+                <label for="bairro">Bairro</label>
+                <input id="bairro" pInputText formControlName="bairro" [(ngModel)]="Bairro" placeholder="Bairro" />
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'bairro')">
+                    <small class="p-error" *ngIf="form.controls.bairro.errors?.required">{{mensagemErro}}</small>
+                </div>
+            </div>
+            <div class="p-field p-col-10 p-lg-5 p-md-5 p-sm-5 p-as-baseline p-py-0">
+                <label for="cidade">Cidade</label>
+                <input id="cidade" pInputText formControlName="cidade" [(ngModel)]="Cidade" placeholder="Cidade" />
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'cidade')">
+                    <small class="p-error" *ngIf="form.controls.cidade.errors?.required">{{mensagemErro}}</small>
+                </div>
+            </div>
+            <div class="p-field p-col-2 p-as-baseline p-py-0">
+                <label for="uf">UF</label>
+                <input id="uf" pInputText formControlName="uf" [(ngModel)]="Uf" placeholder="UF" />
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'uf')">
+                    <small class="p-error" *ngIf="form.controls.uf.errors?.required">{{mensagemErro}}</small>
+                </div>
+            </div>
         </div>
-        <div class="p-field p-col-12 p-lg-5 p-md-7 p-sm-5 p-as-end p-py-0">
-            <label for="endereco">Endereço</label>
-            <input id="endereco" pInputText [(ngModel)]="Endereco" placeholder="Endereço" />
-        </div>
-        <div class="p-field p-col-2 p-sm-2 p-as-end p-py-0">
-            <label for="numero">Nº</label>
-            <input id="numero" pInputText [(ngModel)]="Numero" placeholder="Nº" />
-        </div>
-        <div class="p-field p-col-10 p-lg-3 p-md-6 p-sm-6 p-as-end p-py-0">
-            <label for="complemento">Complemento</label>
-            <input id="complemento" pInputText [(ngModel)]="Complemento" placeholder="Complemento" />
-        </div>
-    </div>
-    <div class="p-fluid p-grid">
-        <div class="p-field p-as-end p-py-0 p-col-12 p-lg-5 p-md-5 p-sm-5">
-            <label for="bairro">Bairro</label>
-            <input id="bairro" pInputText [(ngModel)]="Bairro" placeholder="Bairro" />
-        </div>
-        <div class="p-field p-col-10 p-lg-5 p-md-5 p-sm-5 p-as-end p-py-0">
-            <label for="cidade">Cidade</label>
-            <input id="cidade" pInputText [(ngModel)]="Cidade" placeholder="Cidade" />
-        </div>
-        <div class="p-field p-col-2 p-as-end p-py-0">
-            <label for="uf">UF</label>
-            <input id="uf" pInputText [(ngModel)]="Uf" placeholder="UF" />
-        </div>
-    </div>
+    </form>
 </div>
