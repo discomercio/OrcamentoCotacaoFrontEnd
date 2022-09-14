@@ -2,8 +2,8 @@
     <div class="card p-col-12 p-lg-10 p-md-10 p-sm-10">
 
         <!-- CLIENTE PF -->
-        <div class="p-col-12">
-            <div class="p-fluid p-grid p-py-2" *ngIf="TipoCliente == constantes.ID_PF">
+        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
+            <div class="p-fluid p-grid p-py-2">
                 <!-- Cliente PF => nome | cpf | rg | nascimento | sexo -->
                 <div class="p-field p-col-12 p-as-end p-py-0">
                     <label for="nome">Nome</label>
@@ -44,18 +44,15 @@
                 </div>
             </div>
         </div>
+
+        <!-- CEP cadastro -->
         <div class="p-col-12">
             <app-cep #cepComponente></app-cep>
         </div>
 
-        <!-- Cliente PF
-            Fone Residencial
-            Celular
-            Fone comercial
-            Ramal
-         -->
-        <div class="p-col-12">
-            <div class="p-fluid p-grid p-py-2" *ngIf="TipoCliente == constantes.ID_PF">
+        <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
+        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
+            <div class="p-fluid p-grid p-py-2">
                 <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                     <label for="foneResidencial">Fone Residencial</label>
                     <input id="foneResidencial" type="text" [(ngModel)]="dadosCliente.TelefoneResidencial" pInputText
@@ -77,12 +74,10 @@
                 </div>
             </div>
         </div>
-        <!-- Cliente PF
-            Observação
 
-          -->
-        <div class="p-col-12">
-            <div class="p-fluid p-grid p-py-2" *ngIf="TipoCliente == constantes.ID_PF">
+        <!-- PF => Observação -->
+        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
+            <div class="p-fluid p-grid p-py-2">
                 <div class="p-field p-col-12 p-as-end p-py-0">
                     <label for="observacao">Observação</label>
                     <input id="observacao" type="text" [(ngModel)]="dadosCliente.Observacao_Filiacao" pInputText
@@ -90,10 +85,8 @@
                 </div>
             </div>
         </div>
-        <!-- 
-            Email
-            Emailxml
-           -->
+
+        <!-- Email | Emailxml -->
         <div class="p-col-12">
             <div class="p-fluid p-grid p-py-2">
                 <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
@@ -107,11 +100,9 @@
             </div>
         </div>
 
-        <!-- Cliente PF
-            Produtor Rural
-          -->
-        <div class="p-col-12">
-            <div class="p-fluid p-grid p-py-2" *ngIf="TipoCliente == constantes.ID_PF">
+        <!-- PF => Produtor Rural -->
+        <div class="p-col-12" *ngIf="TipoCliente == constantes.ID_PF">
+            <div class="p-fluid p-grid p-py-2">
                 <div class="p-field p-col-4 p-as-end p-py-0">
                     <label for="produtorRural">Produtor Rural</label>
                     <p-dropdown id="produtorRural" [showClear]="true" [autoDisplayFirst]="false"
@@ -120,362 +111,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- endereço de entrega -->
         <div class="p-col-12">
-            <app-endereco-entrega [tipoPf]=true [origem]="'publico'" [loja]="aprovacaoPubicoService.orcamento.loja"
+            <app-endereco-entrega [tipoPf]="clientePF()" [origem]="'publico'"
+                [loja]="aprovacaoPubicoService.orcamento.loja"
                 [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro" #confirmarEndereco>
             </app-endereco-entrega>
         </div>
-    </div>
-</div>
-
-<div [formGroup]="form">
-    <div>
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-12">
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PF'">
-                    <input id="nome" formControlName="nome" type="text" [ngModel]="nome" pInputText [required]="true">
-                    <label for="nome">NOME*</label>
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'nome')">
-                        <small class="p-error" *ngIf="form.controls.nome.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">
-                            Quantidade de caracteres excede a o limite de
-                            {{form.controls.nome.errors.maxlength.requiredLength}}
-                        </small>
-                    </div>
-                </span>
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PJ'">
-                    <input id="nome" formControlName="nome" type="text" [ngModel]="nome" pInputText [required]="true">
-                    <label for="nome" *ngIf="this.TipoCliente=='PJ'">RAZÃO SOCIAL*</label>
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'nome')">
-                        <small class="p-error" *ngIf="form.controls.nome.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.nome.errors?.maxlength">
-                            Quantidade de caracteres excede a o limite de
-                            {{form.controls.nome.errors.maxlength.requiredLength}}
-                        </small>
-                    </div>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-3">
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PF'">
-                    <input id="cpfCnpj" formControlName="cpfCnpj" type="text" pInputText>
-                    <label for="cpfCnpj">CPF*</label>
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'cpfCnpj')">
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.maxlength">
-                            Quantidade de caracteres excede a o limite de
-                            {{form.controls.cpfCnpj.errors.maxlength.requiredLength}}
-                        </small>
-                    </div>
-                </span>
-            </div>
-
-            <div class="p-col-12">
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PJ'">
-                    <input id="cpfCnpj" formControlName="cpfCnpj" type="text" pInputText>
-                    <label for="cpfCnpj">CNPJ*</label>
-                    <div *ngIf="validacaoFormularioService.verificaCampo(form,'cpfCnpj')">
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
-                        <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.maxlength">
-                            Quantidade de caracteres excede a o limite de
-                            {{form.controls.cpfCnpj.errors.maxlength.requiredLength}}
-                        </small>
-                    </div>
-                </span>
-            </div>
-
-            <div class="p-col-3" *ngIf="this.TipoCliente=='PF'">
-                <span class="p-float-label">
-                    <input id="rg" formControlName="rg" pInputText>
-                    <label for="rg">RG</label>
-                </span>
-            </div>
-            <div class="p-col-3" *ngIf="this.TipoCliente=='PF'">
-                <span class="p-float-label">
-                    <!-- <input id="nascimento" type="text" pInputText> -->
-                    <p-calendar id="nascimento" formControlName="nascimento" [(ngModel)]="value" showIcon="true">
-                    </p-calendar>
-                    <label for="nascimento">NASCIMENTO</label>
-                </span>
-            </div>
-            <div class="p-col-3" *ngIf="this.TipoCliente=='PF'">
-                <span class="p-float-label">
-                    <p-dropdown id="sexo" formControlName="sexo" [autoDisplayFirst]="false" [options]="listaSexo"
-                        optionValue="id" optionLabel="value"></p-dropdown>
-                    <label for="sexo">SEXO*</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-2">
-                <div class="p-inputgroup">
-                    <input id="cep" formControlName="cep" pInputText placeholder="CEP">
-                    <button type="button" pButton pRipple icon="pi pi-search" styleClass="p-button-warn"></button>
-                </div>
-            </div>
-
-            <div class="p-col-6">
-                <span class="p-float-label">
-                    <input id="endereco" formControlName="endereco" pInputText>
-                    <label for="endereco">ENDREÇO</label>
-                </span>
-            </div>
-            <div class="p-col-1">
-                <span class="p-float-label">
-                    <input id="numero" formControlName="numero" pInputText>
-                    <label for="numero">Nº</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="complemento" formControlName="complemento" pInputText>
-                    <label for="complemento">COMPLEMENTO</label>
-                </span>
-            </div>
-        </div>
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="bairro" formControlName="bairro" pInputText>
-                    <label for="bairro">BAIRRO</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="cidade" formControlName="cidade" pInputText>
-                    <label for="cidade">CIDADE</label>
-                </span>
-            </div>
-            <div class="p-col-1">
-                <span class="p-float-label">
-                    <input id="uf" formControlName="uf" pInputText>
-                    <label for="uf">UF</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid" *ngIf="this.TipoCliente=='PF'">
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-inputMask id="foneResidencial" formControlName="foneResidencial" mask="(99) 99999-9999">
-                    </p-inputMask>
-                    <label for="foneResidencial">FONE RESIDENCIAL</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-inputMask id="foneCelular" formControlName="foneCelular" mask="(99) 99999-9999"></p-inputMask>
-                    <label for="foneCelular">CELULAR</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-inputMask id="foneComercial" formControlName="foneComercial" mask="(99) 99999-9999">
-                    </p-inputMask>
-                    <label for="foneComercial">COMERCIAL</label>
-                </span>
-            </div>
-            <div class="p-col-2">
-                <span class="p-float-label">
-                    <input id="foneRamal" formControlName="foneRamal" pInputText>
-                    <label for="foneRamal">RAMAL</label>
-                </span>
-            </div>
-        </div>
-        <!-- ROW -->
-        <div class="p-grid p-fluid" *ngIf="this.TipoCliente=='PJ'">
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-inputMask id="fone1" formControlName="fone1" mask="(99) 99999-9999"></p-inputMask>
-                    <label for="fone1">TELEFONE 1*</label>
-                </span>
-            </div>
-            <div class="p-col-2">
-                <span class="p-float-label">
-                    <input id="fone1Ramal" formControlName="fone1Ramal" type="text" pInputText>
-                    <label for="fone1Ramal">RAMAL</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-inputMask id="fone2" formControlName="fone2" mask="(99) 99999-9999"></p-inputMask>
-                    <label for="fone2">TELEFONE 2*</label>
-                </span>
-            </div>
-            <div class="p-col-2">
-                <span class="p-float-label">
-                    <input id="fone2Ramal" formControlName="fone2Ramal" pInputText>
-                    <label for="fone2Ramal">RAMAL</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-12" *ngIf="this.TipoCliente=='PF'">
-                <span class="p-float-label">
-                    <input id="texto" formControlName="texto" pInputText class="p-col-12">
-                    <label for="texto">OBSERVACAO</label>
-                </span>
-            </div>
-            <div class="p-col-12" *ngIf="this.TipoCliente=='PJ'">
-                <span class="p-float-label">
-                    <input id="texto" formControlName="texto" pInputText class="p-col-12">
-                    <label for="texto">NOME DA PESSOA PARA CONTATO NA EMPRESA*</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-12">
-                <span class="p-float-label">
-                    <input id="email" formControlName="email" pInputText class="p-col-12">
-                    <label for="email">EMAIL</label>
-                </span>
-            </div>
-        </div>
-
-
-
-        <div class="p-grid p-fluid">
-            <div class="p-col-12">
-                <span class="p-float-label">
-                    <input id="emailXml" formControlName="emailXml" pInputText class="p-col-12">
-                    <label for="emailXml">EMAIL (XML)</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-3">
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PF'">
-                    <p-dropdown id="produtorRural" formControlName="produtorRural" [autoDisplayFirst]="false"
-                        [options]="listaProdutorRural" optionValue="id" optionLabel="value"></p-dropdown>
-                    <label for="produtorRural">PRODUTOR RURAL* (XML)</label>
-                </span>
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PJ'">
-                    <p-dropdown id="icms" formControlName="icms" [options]="listaContribuinteICMS" optionValue="value"
-                        optionLabel="label"></p-dropdown>
-                    <label for="icms">CONTRIBUINTE ICMS*</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label" *ngIf="this.TipoCliente=='PJ'">
-                    <p-dropdown formControlName="inscricaoEstadual" id="inscricaoEstadual" [autoDisplayFirst]="false"
-                        [options]="listaIE" optionValue="id" optionLabel="value"></p-dropdown>
-                    <label for="inscricaoEstadual">IE</label>
-                </span>
-            </div>
-        </div>
-
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-12">
-                <span>Endereço de entrega</span>
-            </div>
-            <div class="p-col-12">
-                <p-radioButton value="mesmo" label="O mesmo endereco do cadastro" [(ngModel)]="mesmoEndereco"
-                    formControlName="city1" selected="true" (onClick)="mesmoEndereco_click('mesmo')"></p-radioButton>
-                &nbsp;
-                <p-radioButton value="outro" label="Outro endereço" [(ngModel)]="mesmoEndereco" formControlName="city2"
-                    (onClick)="mesmoEndereco_click('outro')"></p-radioButton>
-            </div>
-        </div>
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <p-dropdown id="justifique" formControlName="justifique" [autoDisplayFirst]="false"
-                        [options]="listaOutroEndereco" optionValue="id" optionLabel="value"
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false"></p-dropdown>
-                    <label for="justifique">JUSTIFIQUE O ENDREÇO</label>
-                </span>
-            </div>
-        </div>
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-2">
-                <div class="p-inputgroup">
-                    <input id="cep2" formControlName="cep2" pInputText placeholder="CEP"
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <button type="button" pButton pRipple icon="pi pi-search" styleClass="p-button-warn"></button>
-                </div>
-            </div>
-
-            <div class="p-col-6">
-                <span class="p-float-label">
-                    <input id="endereco2" formControlName="endereco2" type="text" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="endereco2">ENDREÇO</label>
-                </span>
-            </div>
-            <div class="p-col-1">
-                <span class="p-float-label">
-                    <input id="numero2" formControlName="numero2" type="text" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="numero2">Nº</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="complemento2" formControlName="complemento2" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="complemento2">COMPLEMENTO</label>
-                </span>
-            </div>
-        </div>
-
-        <!-- ROW -->
-        <div class="p-grid p-fluid">
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="bairro2" formControlName="bairro2" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="bairro2">BAIRRO</label>
-                </span>
-            </div>
-            <div class="p-col-3">
-                <span class="p-float-label">
-                    <input id="cidade2" formControlName="cidade2" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="cidade2">CIDADE</label>
-                </span>
-            </div>
-            <div class="p-col-1">
-                <span class="p-float-label">
-                    <input id="uf2" formControlName="uf2" pInputText
-                        [disabled]="mesmoEndereco == 'mesmo' ? true : false">
-                    <label for="uf2">UF</label>
-                </span>
-            </div>
-        </div>
-
-        <!-- <div style="position: relative; float: right;">
-            <button type="button" pButton pRipple label="..." (click)="populaTela()"></button>&nbsp;
-            <button type="button" pButton pRipple icon="pi pi-arrow-left" label="Voltar" (click)="display=false"></button>&nbsp;
-            <button type="submit" pButton pRipple icon="pi pi-save" label="Salvar" (click)="salvar()"></button>
-        </div> -->
-
     </div>
 </div>

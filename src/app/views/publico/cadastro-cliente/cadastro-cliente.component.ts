@@ -80,6 +80,12 @@ export class PublicoCadastroClienteComponent implements OnInit {
     this.criarForm();
   }
 
+  clientePF():boolean{
+    if(this.TipoCliente == this.constantes.ID_PF) return true;
+
+    return false;
+  }
+
   criarListas() {
     this.listaContribuinteICMS = [
       { label: "Não", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO },

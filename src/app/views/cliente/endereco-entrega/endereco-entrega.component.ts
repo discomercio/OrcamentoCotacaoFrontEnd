@@ -4,6 +4,7 @@ import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/Endereco
 import { EnderecoEntregaJustificativaDto } from 'src/app/dto/clientes/EnderecoEntregaJustificativaDto';
 import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-cliente.service';
 import { Constantes } from 'src/app/utilities/constantes';
+import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { CepComponent } from '../../cep/cep/cep.component';
 
 @Component({
@@ -20,14 +21,39 @@ export class EnderecoEntregaComponent implements OnInit {
 
   @Input() enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   @Input() tipoPf: boolean;
-  @Input() loja:string;
+  @Input() loja: string;
   @Input() origem: string;
   pessoaEntregaEhPF: boolean = false;
   constantes: Constantes = new Constantes();
   listaOutroEndereco: EnderecoEntregaJustificativaDto[];
+  listaContribuinteICMS: any[];
+  listaProdutorRural: any[];
+  mascaraCPF: string;
+  mascaraCNPJ: string;
+  mascaraTelefone:string;
 
   ngOnInit(): void {
+    this.mascaraCPF = "000.000.000-00";
+    this.mascaraCNPJ = "00.000.000/0000-00";
+    this.mascaraTelefone = FormataTelefone.mascaraTelefone();
+
+    this.criarListas();
     this.buscarJustificativaEndEntregaCombo();
+  }
+
+  criarListas() {
+    this.listaContribuinteICMS = [
+      { label: "Não", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO },
+      { label: "Sim", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM },
+      { label: "Isento", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO },
+    ];
+
+    this.listaProdutorRural = [
+      { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM, label: 'Sim' },
+      { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO, label: 'Não' }
+    ];
+
+    // this.buscarJustificativaEndEntregaCombo();
   }
 
   buscarJustificativaEndEntregaCombo() {
@@ -49,7 +75,7 @@ export class EnderecoEntregaComponent implements OnInit {
     this.componenteCep.zerarCamposEndEntrega();
     this.componenteCep.cep_retorno = "";
     this.componenteCep.Cep = "";
-    this.pessoaEntregaEhPF = true;
+    // this.pessoaEntregaEhPF = true;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PF;
   }
 
@@ -58,7 +84,7 @@ export class EnderecoEntregaComponent implements OnInit {
     this.componenteCep.zerarCamposEndEntrega();
     this.componenteCep.cep_retorno = "";
     this.componenteCep.Cep = "";
-    this.pessoaEntregaEhPF = false;
+    // this.pessoaEntregaEhPF = false;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PJ;
   }
 
