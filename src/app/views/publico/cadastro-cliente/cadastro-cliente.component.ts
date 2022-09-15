@@ -18,6 +18,8 @@ import { EnderecoEntregaJustificativaDto } from 'src/app/dto/clientes/EnderecoEn
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -25,7 +27,7 @@ import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
   styleUrls: ['./cadastro-cliente.component.scss']
 })
 
-export class PublicoCadastroClienteComponent implements OnInit {
+export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -36,8 +38,9 @@ export class PublicoCadastroClienteComponent implements OnInit {
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly aprovacaoPubicoService: AprovacaoPublicoService
-  ) { }
+    private readonly aprovacaoPubicoService: AprovacaoPublicoService,
+    telaDesktopService: TelaDesktopService,
+  ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
   @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: CepComponent;
@@ -67,8 +70,8 @@ export class PublicoCadastroClienteComponent implements OnInit {
   // @Input() Email: string;
   // @Input() StEntregaImediata: string;
   // @Input() DtEntregaImediata: Date;
-
   ngOnInit(): void {
+
     this.mascaraCPF = "999.999.999-99";
     this.mascaraCNPJ = "99.999.999/9999-99";
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -118,14 +121,17 @@ export class PublicoCadastroClienteComponent implements OnInit {
       this.formPF = this.fb.group({
         nome: ["", [Validators.required]],
         cpf: ["", [Validators.required]],
+        rg: [],
+        nascimento: ["", []],
         sexo: ["", [Validators.required]],
+        email: ["", [Validators.required, Validators.email]],
+        emailXml: [],
         telResidencial: ["", [Validators.required]],
         celular: ["", [Validators.required]],
         telComercial: ["", [Validators.required]],
         ramal: [],
-        email: ["", [Validators.required, Validators.email]],
-        emailxml: [],
-        produtor: ["", [Validators.required]],
+        observacao: [],
+        produtor: [this.dadosCliente.ProdutorRural, [Validators.required, Validators.max(2), Validators.min(1)]],
       });
       return;
     }
@@ -140,7 +146,7 @@ export class PublicoCadastroClienteComponent implements OnInit {
       ramal2: ["", [Validators.required]],
       email: ["", [Validators.email]],
       emailXml: [],
-      icms: ["", [Validators.required]],
+      icms: ["", [Validators.required, Validators.max(3), Validators.min(1)]],
       inscricaoEstadual: []
     });
   }
@@ -154,15 +160,15 @@ export class PublicoCadastroClienteComponent implements OnInit {
   }
 
   salvar() {
-
+debugger;
     if (this.clientePF()) {
-      if (!this.validacaoFormularioService.validaForm(this.formPF) &&
+      if (!this.validacaoFormularioService.validaForm(this.formPF) ||
         !this.cepComponente.validarForm()) {
         return;
       }
     }
     else {
-      if (!this.validacaoFormularioService.validaForm(this.formPJ) &&
+      if (!this.validacaoFormularioService.validaForm(this.formPJ) ||
         !this.cepComponente.validarForm()) {
         return;
       }
