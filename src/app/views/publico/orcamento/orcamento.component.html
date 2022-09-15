@@ -234,8 +234,8 @@
                                                     <div class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                            <p-radioButton [inputId]="y" [value]="y" 
-                                                             [(ngModel)]="opcaoPagto">
+                                                            <p-radioButton [inputId]="y" [value]="y"
+                                                                [(ngModel)]="opcaoPagto">
                                                             </p-radioButton>
                                                         </div>
                                                         <div class="p-col-10 p-as-center">
@@ -259,17 +259,19 @@
                                         </div>
 
                                     </div>
-                                    <div class="p-col-12 p-d-lg-inline-flex">
-                                        <button pButton pRipple label="Aprovar esta opção de orçamento"
-                                            class="{{!telaDesktop ? 'p-text-bold font-size p-col-12 p-button-success' : 'p-text-bold p-col-12 p-button-success'}}"
-                                            icon="pi pi-check" (click)="aprovar()">
-                                        </button>
+                                    <div class="p-col-12 p-d-inline-flex p-jc-around">
+                                        <div>
+                                            <button pButton pRipple label="Aprovar esta opção de orçamento"
+                                                class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
+                                                icon="pi pi-check" (click)="aprovar()">
+                                            </button>
+                                        </div>
                                     </div>
                                 </ng-template>
                             </p-accordionTab>
                         </p-accordion>
 
-                        
+
 
                     </div>
 
@@ -303,22 +305,3 @@
 
     </div>
 </div>
-
-
-<!-- <p-dialog [(visible)]="display" [style]="{width: '50vw'}">
-    <ng-template pTemplate="header">
-        <h4>Confirmação de dados</h4>
-        <div style="margin-left: auto; margin-right: 0;">
-            <button type="button" pButton pRipple icon="pi pi-arrow-left" label="Voltar"
-                (click)="display=false"></button>&nbsp;
-            <button type="button" pButton pRipple icon="pi pi-save" label="Salvar" (click)="salvar()"></button>
-        </div>
-    </ng-template>
-    <div>
-        <app-cadastro-cliente id="cadastro" TipoCliente="{{this.orcamento?.tipoCliente}}"
-            NomeCliente="{{this.orcamento?.nomeCliente}}" UF="{{this.orcamento?.uf}}"
-            Telefone="{{this.orcamento?.telefone}}" Email="{{this.orcamento?.email}}"
-            StEntregaImediata="{{this.orcamento?.stEntregaImediata}}"
-            DtEntregaImediata="{{this.orcamento?.dataEntregaImediata}}"></app-cadastro-cliente>
-    </div>
-</p-dialog> -->
