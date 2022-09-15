@@ -20,6 +20,7 @@ import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -40,6 +41,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     private readonly activatedRoute: ActivatedRoute,
     private readonly aprovacaoPubicoService: AprovacaoPublicoService,
     telaDesktopService: TelaDesktopService,
+    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService
   ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
@@ -120,9 +122,9 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
       this.formPF = this.fb.group({
         nome: ["", [Validators.required]],
-        cpf: ["", [Validators.required]],
+        cpfCnpj: ["", [Validators.required]],
         rg: [],
-        nascimento: ["", []],
+        nascimento: [],
         sexo: ["", [Validators.required]],
         email: ["", [Validators.required, Validators.email]],
         emailXml: [],
@@ -132,6 +134,11 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         ramal: [],
         observacao: [],
         produtor: [this.dadosCliente.ProdutorRural, [Validators.required, Validators.max(2), Validators.min(1)]],
+      }, {
+        validators: [
+          this.validacaoCustomizadaService.cnpj_cpf_ok(),
+          this.validacaoCustomizadaService.validarNascimento()
+        ]
       });
       return;
     }
@@ -139,7 +146,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
     this.formPJ = this.fb.group({
       razao: ["", [Validators.required]],
-      cnpj: ["", [Validators.required]],
+      cpfCnpj: ["", [Validators.required]],
       tel1: ["", [Validators.required]],
       ramal1: ["", [Validators.required]],
       tel2: ["", [Validators.required]],
@@ -148,7 +155,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       emailXml: [],
       icms: ["", [Validators.required, Validators.max(3), Validators.min(1)]],
       inscricaoEstadual: []
-    });
+    }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
   }
 
   //vamos deixar aqui para o caso de precisar voltar o campo para calendário
@@ -160,7 +167,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   salvar() {
-debugger;
+    debugger;
     if (this.clientePF()) {
       if (!this.validacaoFormularioService.validaForm(this.formPF) ||
         !this.cepComponente.validarForm()) {

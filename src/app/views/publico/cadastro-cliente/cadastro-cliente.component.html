@@ -19,12 +19,14 @@
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline p-py-0">
                             <label for="cpfCnpj">CNPJ</label>
                             <p-inputMask id="cpfCnpj" type="text" [(ngModel)]="dadosCliente.Cnpj_Cpf"
-                                mask="{{mascaraCNPJ}}" formControlName="cnpj">
+                                mask="{{mascaraCNPJ}}" formControlName="cpfCnpj">
                             </p-inputMask>
                             <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'cnpj')">
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'cpfCnpj')">
                                 <small class="p-error"
-                                    *ngIf="formPJ.controls.cnpj.errors?.required">{{mensagemErro}}</small>
+                                    *ngIf="formPJ.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                    <small class="p-error" *ngIf="formPJ.controls.cpfCnpj.errors?.cpfCnpj">
+                                        *CNPJ inválido</small>
                             </div>
                         </div>
                     </div>
@@ -116,6 +118,10 @@
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'icms')">
                                 <small class="p-error"
+                                    *ngIf="formPJ.controls.icms.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                                <small class="p-error"
                                     *ngIf="formPJ.controls.icms.errors?.max || formPJ.controls.icms.errors?.min">
                                     {{mensagemErro}}
                                 </small>
@@ -156,12 +162,15 @@
                         </div>
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                             <label for="cpfCnpj">CPF</label>
-                            <p-inputMask id="cpfCnpj" type="text" formControlName="cpf"
+                            <p-inputMask id="cpfCnpj" type="text" formControlName="cpfCnpj"
                                 [(ngModel)]="dadosCliente.Cnpj_Cpf" mask="{{mascaraCPF}}">
                             </p-inputMask>
-                            <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(formPF,'cpf')">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'cpfCnpj')">
                                 <small class="p-error"
-                                    *ngIf="formPF.controls.cpf.errors?.required">{{mensagemErro}}</small>
+                                    *ngIf="formPF.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPF.controls.cpfCnpj.errors?.cpfCnpj">
+                                    *CPF inválido</small>
                             </div>
                         </div>
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
@@ -173,6 +182,11 @@
                             <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento" formControlName="nascimento"
                                 (keyup)="escrevendoData($event)" maxlength="10" minlength="10" mask="99/99/9999">
                             </p-inputMask>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'nascimento')">
+                                <small class="p-error" *ngIf="formPF.controls.nascimento.errors?.nascimento">
+                                    *Data inválida</small>
+                            </div>
                         </div>
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                             <label for="sexo">Sexo</label>
