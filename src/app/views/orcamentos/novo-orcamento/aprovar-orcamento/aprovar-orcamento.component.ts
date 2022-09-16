@@ -136,6 +136,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))) {
       this.exibeBotaoCancelar = false;
+      this.exibeBotaoReenviar = false;
       this.desabiltarBotoes = true;
     }
 
@@ -168,7 +169,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         command: () => this.clonarOrcamento()
       },
       {
-        label: 'Re-enviar',
+        label: 'Reenviar',
         icon: 'pi pi-fw pi-send',
         visible: this.exibeBotaoReenviar,
         command: () => this.reenviarOrcamento()
