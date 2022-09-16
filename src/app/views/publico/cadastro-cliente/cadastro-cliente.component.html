@@ -1,5 +1,13 @@
 <div class="p-col-12 p-d-inline-flex p-jc-center">
     <div class="p-col-12">
+        <div class=" p-grid p-jc-around">
+            <div class="p-col-12 p-lg-8 p-md-10 p-sm-10">
+                <h5>
+                    <i class="pi pi-user"></i>&nbsp;Cadastro de Cliente
+                </h5>
+            </div>
+        </div>       
+
         <form [formGroup]="formPJ" *ngIf="TipoCliente == constantes.ID_PJ" class="p-grid p-jc-around">
             <div class="card p-col-12 p-lg-8 p-md-10 p-sm-10">
                 <!-- CLIENTE PJ -->
@@ -25,8 +33,8 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'cpfCnpj')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
-                                    <small class="p-error" *ngIf="formPJ.controls.cpfCnpj.errors?.cpfCnpj">
-                                        *CNPJ inválido</small>
+                                <small class="p-error" *ngIf="formPJ.controls.cpfCnpj.errors?.cpfCnpj">
+                                    *CNPJ inválido</small>
                             </div>
                         </div>
                     </div>
@@ -34,6 +42,21 @@
                 <!-- CEP cadastro -->
                 <div class="p-col-12 p-py-0">
                     <app-cep #cepComponente></app-cep>
+                </div>
+                <!-- Contato na empresa -->
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                            <label for="contato">Nome da pessoa para contato na empresa</label>
+                            <input id="contato" type="text" formControlName="contato" [(ngModel)]="dadosCliente.Contato"
+                                pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'contato')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.contato.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <!-- Email | Emailxml -->
                 <div class="p-col-12 p-py-0">
@@ -44,6 +67,8 @@
                                 pInputText maxlength="60">
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'email')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.email.errors?.required">{{mensagemErro}}</small>
                                 <small class="p-error" *ngIf="formPJ.controls.email.errors?.email">E-mail
                                     inválido</small>
                             </div>
@@ -117,8 +142,7 @@
                             </p-dropdown>
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'icms')">
-                                <small class="p-error"
-                                    *ngIf="formPJ.controls.icms.errors?.required">
+                                <small class="p-error" *ngIf="formPJ.controls.icms.errors?.required">
                                     {{mensagemErro}}
                                 </small>
                                 <small class="p-error"
@@ -191,7 +215,8 @@
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
                             <label for="sexo">Sexo</label>
                             <p-dropdown id="sexo" [options]="listaSexo" formControlName="sexo" optionValue="id"
-                                optionLabel="value" [(ngModel)]="dadosCliente.Sexo"></p-dropdown>
+                                [autoDisplayFirst]="false" optionLabel="value" [(ngModel)]="dadosCliente.Sexo">
+                            </p-dropdown>
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'sexo')">
                                 <small class="p-error"
@@ -211,11 +236,21 @@
                             <label for="email">E-mail</label>
                             <input id="email" type="text" [(ngModel)]="dadosCliente.Email" formControlName="email"
                                 pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'email')">
+                                <small class="p-error" *ngIf="formPF.controls.email.errors?.email">E-mail
+                                    inválido</small>
+                            </div>
                         </div>
                         <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
                             <label for="emailXml">E-mail (XML)</label>
                             <input id="emailXml" type="text" [(ngModel)]="dadosCliente.EmailXml" pInputText
                                 maxlength="60" formControlName="emailXml">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'emailXml')">
+                                <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.emailXml">E-mail
+                                    inválido</small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -274,39 +309,22 @@
                         </div>
                     </div>
                 </div>
-                <!-- PF => Produtor Rural -->
-                <div class="p-col-12 p-py-0">
-                    <div class="p-fluid p-grid p-py-2">
-                        <div class="p-field p-col-4 p-as-end p-py-0">
-                            <label for="produtorRural">Produtor Rural</label>
-                            <p-dropdown id="produtorRural" [autoDisplayFirst]="false"
-                                [(ngModel)]="dadosCliente.ProdutorRural" formControlName="produtor"
-                                [options]="listaProdutorRural" optionValue="value" optionLabel="label"></p-dropdown>
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'produtor')">
-                                <small class="p-error"
-                                    *ngIf="formPF.controls.produtor.errors?.max || formPF.controls.produtor.errors?.min">
-                                    {{mensagemErro}}
-                                </small>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </form>
 
         <!-- endereço de entrega -->
         <div>
             <app-endereco-entrega [tipoPf]="clientePF()" [origem]="'publico'" class="p-grid p-jc-around"
-                [loja]="aprovacaoPubicoService.orcamento.loja"
-                [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro" #confirmarEndereco>
+                [loja]="aprovacaoPubicoService?.orcamento?.loja"
+                [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro" #enderecoEntrega>
             </app-endereco-entrega>
         </div>
 
         <div class="p-grid p-jc-around">
             <div class="card p-col-12 p-lg-8 p-md-10 p-sm-10">
                 <div class="p-text-center">
-                    <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="salvar()"></button>
+                    <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="salvar()"
+                        [disabled]="desabilitaBotao"></button>
                 </div>
             </div>
         </div>

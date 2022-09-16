@@ -55,7 +55,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     this.form = this.fb.group({
       cep:["",[Validators.required]],
       endereco:["", [Validators.required]],
-      numero:["",[Validators.required]],
+      numero:[,[Validators.required]],
       complemento:[],
       bairro:["",[Validators.required]],
       cidade:["",[Validators.required]],
@@ -64,9 +64,11 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   saiuCep() {
-
+debugger;
     //se vazio, não damos nenhuma mensagem
+    this.Cep = StringUtils.retorna_so_digitos(this.Cep);
     if (this.Cep == "" || this.Cep == 'undefined') {
+      
       //nao avisamos
       this.Endereco = "";
       this.Numero = "";
@@ -75,6 +77,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       this.Cidade = "";
       this.Uf = "";
       this.cep_retorno = "";
+      this.criarForm();
       return false;
     }
 

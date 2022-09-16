@@ -1,10 +1,15 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { EnderecoEntregaJustificativaDto } from 'src/app/dto/clientes/EnderecoEntregaJustificativaDto';
 import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-cliente.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
+import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
+import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { ValidacoesClienteUtils } from 'src/app/utilities/validacoesClienteUtils';
 import { CepComponent } from '../../cep/cep/cep.component';
 
 @Component({
@@ -15,7 +20,10 @@ import { CepComponent } from '../../cep/cep/cep.component';
 export class EnderecoEntregaComponent implements OnInit {
 
   constructor(private readonly alertaService: AlertaService,
-    private readonly buscarClienteService: BuscarClienteService) { }
+    private readonly buscarClienteService: BuscarClienteService,
+    private fb: FormBuilder,
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
+    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService) { }
 
   @ViewChild("componenteCep", { static: false }) componenteCep: CepComponent;
 
@@ -23,23 +31,46 @@ export class EnderecoEntregaComponent implements OnInit {
   @Input() tipoPf: boolean;
   @Input() loja: string;
   @Input() origem: string;
-  pessoaEntregaEhPF: boolean = false;
+  pessoaEntregaEhPF: boolean;
   constantes: Constantes = new Constantes();
   listaOutroEndereco: EnderecoEntregaJustificativaDto[];
   listaContribuinteICMS: any[];
   listaProdutorRural: any[];
   mascaraCPF: string;
   mascaraCNPJ: string;
-  mascaraTelefone:string;
-  mensagemErro: string = '*Campo obrigatório'; 
+  mascaraTelefone: string;
+  mensagemErro: string = '*Campo obrigatório';
+
+  form: FormGroup;
 
   ngOnInit(): void {
-    this.mascaraCPF = "000.000.000-00";
-    this.mascaraCNPJ = "00.000.000/0000-00";
+    this.criarForm();
+    this.mascaraCPF = StringUtils.inputMaskCPF();
+    this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
-
     this.criarListas();
     this.buscarJustificativaEndEntregaCombo();
+  }
+
+  criarForm() {
+    this.form = this.fb.group({
+      justificativa: ["", [Validators.required]],
+      endTipoPessoa: [null, this.tipoPf ? [] : [Validators.required]],
+      endNome: [this.enderecoEntregaDtoClienteCadastro.EndEtg_nome, [Validators.required]],
+      cpfCnpj: [this.enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf, [Validators.required]],
+      endTelResidencial: [""],
+      endCelular: [""],
+      endTel1: [""],
+      endRamal1: [""],
+      endTel2: [""],
+      endRamal2: [""],
+      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [ Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      ieEndEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_ie]
+    }, {
+      validators: [
+        this.validacaoCustomizadaService.cnpj_cpf_ok()
+      ]
+    });
   }
 
   criarListas() {
@@ -71,6 +102,21 @@ export class EnderecoEntregaComponent implements OnInit {
       });
   }
 
+  limparCampos() {
+    this.criarForm();
+    // this.componenteCep.zerarCamposEndEntrega();
+    // this.componenteCep.cep_retorno = "";
+    // this.componenteCep.Cep = "";
+
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_cep = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_numero = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_complemento = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_bairro = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_cidade = "";
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_uf = "";
+  }
+
   PF() {
     this.inicializarCamposEndereco(this.enderecoEntregaDtoClienteCadastro);
     this.componenteCep.zerarCamposEndEntrega();
@@ -87,6 +133,7 @@ export class EnderecoEntregaComponent implements OnInit {
     this.componenteCep.Cep = "";
     // this.pessoaEntregaEhPF = false;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PJ;
+
   }
 
   inicializarCamposEndereco(enderecoEntrega: EnderecoEntregaDtoClienteCadastro) {
@@ -117,6 +164,44 @@ export class EnderecoEntregaComponent implements OnInit {
     enderecoEntrega.EndEtg_tipo_pessoa = "";
     enderecoEntrega.EndEtg_email = "";
     enderecoEntrega.EndEtg_email_xml = "";
-    enderecoEntrega.EndEtg_cod_justificativa = "";
+    if (!enderecoEntrega.EndEtg_cod_justificativa)
+      enderecoEntrega.EndEtg_cod_justificativa = "";
+  }
+
+  validarForm(): boolean {
+    if (!this.validacaoFormularioService.validaForm(this.form))
+      return false;
+
+    if (!this.componenteCep.validarForm()) {
+      return false;
+    }
+    return true;
+  }
+
+
+  validarEnderecoEntrega(lstCidadeIBGE: string[]): string[] {
+
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_cep = this.componenteCep.Cep;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco = this.componenteCep.Endereco;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_numero = this.componenteCep.Numero;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_complemento = this.componenteCep.Complemento;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_bairro = this.componenteCep.Bairro;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_cidade = this.componenteCep.Cidade;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_uf = this.componenteCep.Uf;
+
+    let validacoes: string[] = [];
+    let tipoCliente = this.tipoPf ? this.constantes.ID_PF : this.constantes.ID_PJ;
+
+    if (this.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      validacoes = validacoes.concat(ValidacoesClienteUtils.validarEnderecoEntrega(this.enderecoEntregaDtoClienteCadastro,
+        tipoCliente, lstCidadeIBGE));
+    }
+
+    //Apenas para consistir que a opção da entrega foi selecionada
+    if (this.enderecoEntregaDtoClienteCadastro.OutroEndereco == undefined) {
+      validacoes = validacoes.concat("Informe se o endereço de entrega será o mesmo endereço do cadastro ou não!");
+    }
+
+    return validacoes;
   }
 }
