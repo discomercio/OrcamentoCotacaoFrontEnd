@@ -131,7 +131,7 @@ export class AutenticacaoService {
   }
 
   public alterarSenha(usuario: string, senha: string, senhaNova: string, senhaNovaConfirma: string): Observable<any> {
-    return this.http.post(this.env.apiUrl + 'acesso/alterarSenha', {
+    return this.http.post(this.env.apiUrl() + 'acesso/alterarSenha', {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
@@ -193,7 +193,7 @@ export class AutenticacaoService {
   }
 
   public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl + 'Account/AtualzarSenha', 
+    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/AtualzarSenha', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario,

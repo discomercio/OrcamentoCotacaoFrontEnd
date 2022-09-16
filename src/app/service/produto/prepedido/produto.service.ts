@@ -17,7 +17,7 @@ export class ProdutoService {
     params = params.append('loja', loja); //temporario
     params = params.append('id_cliente', idCliente);
 
-    return this.http.get<ProdutoComboDto>(this.env.apiUrl + 'api/produto/buscarProduto', { params: params });
+    return this.http.get<ProdutoComboDto>(this.env.apiUrl() + 'api/produto/buscarProduto', { params: params });
 
   }
 

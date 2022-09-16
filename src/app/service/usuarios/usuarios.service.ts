@@ -18,17 +18,17 @@ export class UsuariosService {
 
 
   buscarTodosUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.env.apiUrl + 'Usuario');
+    return this.http.get<Usuario[]>(this.env.apiUrl() + 'Usuario');
   }
 
   buscarVendedores(loja: string): Observable<Usuario[]> {
     let params = new HttpParams();
     params = params.append('loja', loja);
-    return this.http.get<Usuario[]>(this.env.apiUrl + 'Usuario/vendedores', { params: params });
+    return this.http.get<Usuario[]>(this.env.apiUrl() + 'Usuario/vendedores', { params: params });
   }
 
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.env.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.post<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {
