@@ -12,22 +12,22 @@ import { map } from 'rxjs/operators';
 export class OrcamentistaIndicadorVendedorService {
 
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   buscarVendedoresParceiros(parceiro:string): Observable<OrcamentistaIndicadorVendedorDto[]> {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
 
-    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
     .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
   }
   buscarVendedoresParceirosPorId(id:string): Observable<Usuario> {
-    return this.http.get<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
+    return this.http.get<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
   }
   cadastrar(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.post<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
   atualizar(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(environment.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.put<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 }

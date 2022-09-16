@@ -1,4 +1,4 @@
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpEvent, HttpHeaders } from '@angular/common/http';
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpEvent, HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
@@ -8,8 +8,11 @@ import { Router } from '@angular/router';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+  env: environment;
 
-  constructor(private readonly autenticacaoService: AutenticacaoService, private router: Router) {  }
+  constructor(private readonly autenticacaoService: AutenticacaoService, private router: Router, private http: HttpClient, private envir: environment) { 
+    this.env = envir
+   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
@@ -20,7 +23,7 @@ export class TokenInterceptor implements HttpInterceptor {
     if (this.autenticacaoService.authEstaLogado()) {
       headers = new HttpHeaders({
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
-        'X-API-Version': environment.versaoApi
+        'X-API-Version': this.env.versaoApi()
       });
     }
     else {

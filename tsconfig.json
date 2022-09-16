@@ -17,7 +17,7 @@
         ],
         "skipLibCheck": true
     },
-    "exclude":[
-        "**/appsettings.json"
-    ]
+    // "exclude":[
+    //     "**/appsettings.json"
+    // ]
 }

@@ -10,14 +10,14 @@ import { ProdutoComboDto } from 'src/app/dto/prepedido/Produto/ProdutoComboDto';
 })
 export class ProdutoService {
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private env: environment) { }
 
   public listarProdutosCombo(loja: string, idCliente: string): Observable<ProdutoComboDto> {
     let params = new HttpParams();
     params = params.append('loja', loja); //temporario
     params = params.append('id_cliente', idCliente);
 
-    return this.http.get<ProdutoComboDto>(environment.apiUrl + 'api/produto/buscarProduto', { params: params });
+    return this.http.get<ProdutoComboDto>(this.env.apiUrl() + 'api/produto/buscarProduto', { params: params });
 
   }
 

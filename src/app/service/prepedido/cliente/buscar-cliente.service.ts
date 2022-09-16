@@ -14,30 +14,30 @@ import { EnderecoEntregaJustificativaDto } from 'src/app/dto/prepedido/ClienteCa
 })
 export class BuscarClienteService {
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private env: environment) { }
 
   public buscar(cpfCnpj: string): Observable<ClienteCadastroDto> {
     //adiciona todos os parametros por nome
     let params = new HttpParams();
     params = params.append('cnpj_cpf', cpfCnpj);
 
-    return this.http.get<ClienteCadastroDto>(environment.apiUrl + 'api/cliente/buscarCliente/' + StringUtils.retorna_so_digitos(cpfCnpj));
+    return this.http.get<ClienteCadastroDto>(this.env.apiUrl() + 'api/cliente/buscarCliente/' + StringUtils.retorna_so_digitos(cpfCnpj));
   }
 
   public cadastrarCliente(clienteCadastroDto: ClienteCadastroDto) {
-    return this.http.post<string[]>(environment.apiUrl + 'api/cliente/cadastrarCliente', clienteCadastroDto);
+    return this.http.post<string[]>(this.env.apiUrl() + 'api/cliente/cadastrarCliente', clienteCadastroDto);
   }
 
   public atualizarCliente(dadosClienteCadastroDto: DadosClienteCadastroDto) {
-    return this.http.post<string[]>(environment.apiUrl + 'api/cliente/atualizarClienteparcial', dadosClienteCadastroDto);
+    return this.http.post<string[]>(this.env.apiUrl() + 'api/cliente/atualizarClienteparcial', dadosClienteCadastroDto);
   }
 
   public listaBancosCombo(): Observable<ListaBancoDto[]> {
-    return this.http.get<ListaBancoDto[]>(environment.apiUrl + 'api/cliente/listarBancosCombo');
+    return this.http.get<ListaBancoDto[]>(this.env.apiUrl() + 'api/cliente/listarBancosCombo');
   }
 
   public JustificativaEndEntregaComboTemporario(): Observable<EnderecoEntregaJustificativaDto[]> {
-    return this.http.get<EnderecoEntregaJustificativaDto[]>(environment.apiUrl + 'api/cliente/listarComboJustificaEndereco');
+    return this.http.get<EnderecoEntregaJustificativaDto[]>(this.env.apiUrl() + 'api/cliente/listarComboJustificaEndereco');
   }
 
 }

@@ -8,7 +8,7 @@
   </div> -->
   <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
     <input [id]="'inputRoot'+id" type="type" pInputText [(ngModel)]="value" (change)="returnValue()"
-      [attr.disabled]="disabled == 'true' ? '' : null" [placeholder]="placeholder" autocomplete="new-password">
+      [attr.disabled]="disabled == true ? '' : null" [placeholder]="placeholder" autocomplete="new-password">
     <!-- <p-inputMask [id]="'inputRoot'+id" class="p-col-4" [(ngModel)]="value"
       (change)="returnValue()" [placeholder]="placeholder" [mask]="mask" *ngIf="mask.length" autocomplete="new-password"
       [unmask]="true" [attr.disabled]="disabled == 'true' ? '' : null"></p-inputMask> -->

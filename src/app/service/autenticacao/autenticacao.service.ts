@@ -19,13 +19,16 @@ import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse'
   providedIn: 'root'
 })
 export class AutenticacaoService {
+  env: environment;
 
   constructor(private readonly http: HttpClient,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
-    private titleService: Title
+    private titleService: Title,
+    private envir : environment
   ) {
+    this.env = envir
   }
 
   salvar: boolean = false;
@@ -45,7 +48,7 @@ export class AutenticacaoService {
   public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(environment.apiUrl + 'Account/Login', { login: usuario, senha: senha });
+    return this.http.post<LoginResponse>(this.env.apiUrl() + 'Account/Login', { login: usuario, senha: senha });
   }
 
   readToken(token: string): boolean {
@@ -128,7 +131,7 @@ export class AutenticacaoService {
   }
 
   public alterarSenha(usuario: string, senha: string, senhaNova: string, senhaNovaConfirma: string): Observable<any> {
-    return this.http.post(environment.apiUrl + 'acesso/alterarSenha', {
+    return this.http.post(this.env.apiUrl() + 'acesso/alterarSenha', {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
@@ -190,7 +193,7 @@ export class AutenticacaoService {
   }
 
   public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(environment.apiUrl + 'Account/AtualzarSenha', 
+    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/AtualzarSenha', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario,

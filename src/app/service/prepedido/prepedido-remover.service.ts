@@ -10,9 +10,9 @@ import { Observable } from 'rxjs';
 })
 export class PrepedidoRemoverService {
 
-  constructor(private readonly http: HttpClient) { }
+  constructor(private readonly http: HttpClient, private env: environment) { }
   public remover(numeroPrepedido): Observable<any> {
-    return this.http.post(environment.apiUrl + 'prepedido/removerPrePedido/' + numeroPrepedido, numeroPrepedido);
+    return this.http.post(this.env.apiUrl() + 'prepedido/removerPrePedido/' + numeroPrepedido, numeroPrepedido);
   }
 
 }

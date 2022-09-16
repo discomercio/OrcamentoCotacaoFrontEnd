@@ -11,27 +11,27 @@ import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
 })
 export class LojasService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   public buscarTodasLojas(): Observable<Lojas[]> {
-    return this.http.get<Lojas[]>(`${environment.apiUrl}Loja`);
+    return this.http.get<Lojas[]>(`${this.env.apiUrl()}Loja`);
   }
 
   buscarPercentualComissao(loja: string, tipoCliente:string): Observable<PercMaxDescEComissaoResponseViewModel> {
     let params = new HttpParams();
     params = params.append('loja', loja);
     params = params.append('tipoCliente', tipoCliente);
-    return this.http.get<PercMaxDescEComissaoResponseViewModel>(environment.apiUrl + "Loja/buscarPercMaxPorLoja", { params: params });
+    return this.http.get<PercMaxDescEComissaoResponseViewModel>(this.env.apiUrl() + "Loja/buscarPercMaxPorLoja", { params: params });
   }
 
   public buscarLojaEstilo(loja: string): Observable<lojaEstilo> {
-    return this.http.get<lojaEstilo>(`${environment.apiUrl}loja/${loja}/estilo`);
+    return this.http.get<lojaEstilo>(`${this.env.apiUrl()}loja/${loja}/estilo`);
   }
 
   public buscarPercentualAlcada(loja:string, tipoCliente:string):Observable<PercMaxDescEComissaoResponseViewModel>{
     let params = new HttpParams();
     params = params.append('loja', loja);
     params = params.append('tipoCliente', tipoCliente);
-    return this.http.get<PercMaxDescEComissaoResponseViewModel>(environment.apiUrl + "Loja/buscarPercMaxPorLojaAlcada", { params: params });
+    return this.http.get<PercMaxDescEComissaoResponseViewModel>(this.env.apiUrl() + "Loja/buscarPercMaxPorLojaAlcada", { params: params });
   }
 }
