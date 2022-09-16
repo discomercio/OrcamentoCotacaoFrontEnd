@@ -332,6 +332,10 @@ export class SelecionarCepArClubeComponent {
 		});
 	}
 
+	onSubmit(input){
+		
+	}
+
 	returnValue() {
 		this._loading = true;
 		this.cepService.buscarCep(this.value, null, null, null).toPromise().then(x => {

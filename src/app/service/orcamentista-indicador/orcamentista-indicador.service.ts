@@ -9,22 +9,22 @@ import { Observable } from 'rxjs';
 })
 export class OrcamentistaIndicadorService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   buscarParceirosPorLoja(loja:string): Observable<OrcamentistaIndicadorDto[]> {
     let params = new HttpParams();
     params = params.append('loja', loja);
-    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEindicador/BuscarParceirosPorLoja', { params: params });
+    return this.http.get<OrcamentistaIndicadorDto[]>(this.env.apiUrl() + 'OrcamentistaEindicador/BuscarParceirosPorLoja', { params: params });
   }
 
   buscarParceirosPorVendedor(vendedor:string, loja: string): Observable<OrcamentistaIndicadorDto[]> {
     let params = new HttpParams();
     params = params.append('vendedorId', vendedor);
     params = params.append('loja', loja);
-    return this.http.get<OrcamentistaIndicadorDto[]>(environment.apiUrl + 'OrcamentistaEindicador/BuscarParceiros', { params: params });
+    return this.http.get<OrcamentistaIndicadorDto[]>(this.env.apiUrl() + 'OrcamentistaEindicador/BuscarParceiros', { params: params });
   }
 
   buscarParceiroPorApelido(apelido:string):Observable<OrcamentistaIndicadorDto>{
-      return this.http.get<OrcamentistaIndicadorDto>(`${environment.apiUrl}OrcamentistaEindicador/parceiro-por-apelido/${apelido}`);
+      return this.http.get<OrcamentistaIndicadorDto>(`${this.env.apiUrl()}OrcamentistaEindicador/parceiro-por-apelido/${apelido}`);
   }
 }

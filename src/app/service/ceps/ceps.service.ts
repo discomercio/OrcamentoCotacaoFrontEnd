@@ -10,7 +10,8 @@ import { CepDto } from 'src/app/dto/ceps/CepDto';
 })
 export class CepsService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) {
+  }
 
   buscarEstados(): Observable<Estado[]> {
     return this.http.get<Estado[]>('assets/demo/data/banco/estados.json');
@@ -25,25 +26,25 @@ export class CepsService {
     params = params.append('cidade', cidade);
 
     if (origem == "publico")
-      return this.http.get<CepDto[]>(`${environment.apiUrl}publico/buscarCep/`, { params: params });
+      return this.http.get<CepDto[]>(`${this.env}publico/buscarCep/`, { params: params });
 
-    return this.http.get<CepDto[]>(environment.apiUrl + 'api/cep/buscarCep/', { params: params });
+    return this.http.get<CepDto[]>(this.env.apiUrl() + 'api/cep/buscarCep/', { params: params });
   }
 
   public BuscarUfs(origem: string = null): Observable<string[]> {
     if (origem == "publico")
-      return this.http.get<string[]>(environment.apiUrl + 'publico/buscarUfs');
+      return this.http.get<string[]>(this.env + 'publico/buscarUfs');
 
-    return this.http.get<string[]>(environment.apiUrl + 'api/cep/buscarUfs');
+    return this.http.get<string[]>(this.env.apiUrl() + 'api/cep/buscarUfs');
   }
 
   public BuscarLocalidades(uf: string, origem: string = null): Observable<string[]> {
     let params = new HttpParams();
     params = params.append('uf', uf);
     if (origem == "publico")
-      return this.http.get<string[]>(environment.apiUrl + 'publico/buscarLocalidades', { params: params });
+      return this.http.get<string[]>(this.env + 'publico/buscarLocalidades', { params: params });
 
-    return this.http.get<string[]>(environment.apiUrl + 'api/cep/buscarLocalidades', { params: params });
+    return this.http.get<string[]>(this.env.apiUrl() + 'api/cep/buscarLocalidades', { params: params });
   }
 
   public buscarCepPorEndereco(endereco: string, localidade: string, uf: string, origem: string = null): Observable<CepDto[]> {
@@ -53,8 +54,8 @@ export class CepsService {
     params = params.append('uf', uf);
 
     if (origem == "publico")
-      return this.http.get<CepDto[]>(environment.apiUrl + 'publico/buscarCepPorEndereco', { params: params });
+      return this.http.get<CepDto[]>(this.env + 'publico/buscarCepPorEndereco', { params: params });
 
-    return this.http.get<CepDto[]>(environment.apiUrl + 'api/cep/buscarCepPorEndereco', { params: params });
+    return this.http.get<CepDto[]>(this.env.apiUrl() + 'api/cep/buscarCepPorEndereco', { params: params });
   }
 }

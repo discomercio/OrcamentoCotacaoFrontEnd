@@ -13,14 +13,14 @@ import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
 })
 export class ProdutoService {
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private env: environment) { }
 
   buscarProdutosCompostosXSimples(produtoRequest: ProdutoRequest): Observable<ProdutoComboDto> {
-    return this.http.post<ProdutoComboDto>(environment.apiUrl + "Produto/buscarProdutos", produtoRequest);
+    return this.http.post<ProdutoComboDto>(this.env.apiUrl() + "Produto/buscarProdutos", produtoRequest);
   }
 
   buscarCoeficientes(coeficienteRequest:CoeficienteRequest):Observable<CoeficienteDto[]>{
-    return this.http.post<CoeficienteDto[]>(environment.apiUrl + "Produto/buscarCoeficientes", coeficienteRequest);
+    return this.http.post<CoeficienteDto[]>(this.env.apiUrl() + "Produto/buscarCoeficientes", coeficienteRequest);
   }
 
   

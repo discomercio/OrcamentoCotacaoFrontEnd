@@ -11,7 +11,7 @@ export class PrepedidoService {
   public carregando: boolean = false;
   private pedidos$: Observable<any> = new Observable();
 
-  constructor(private readonly http: HttpClient) { }    
+  constructor(private readonly http: HttpClient, private env: environment) { }    
     
   public carregar(numeroPrePedido: string): Observable<any> {
 
@@ -23,7 +23,7 @@ export class PrepedidoService {
     this.carregando = true;
 
     this.pedidos$ = Observable.create(observer => {
-      this.http.get<any>(environment.apiUrl + 'api/prepedido/buscarPrePedido', { params: params }).toPromise()
+      this.http.get<any>(this.env.apiUrl() + 'api/prepedido/buscarPrePedido', { params: params }).toPromise()
         .then(response => {          
           if (response)
             this.carregando = false;
@@ -38,11 +38,11 @@ export class PrepedidoService {
   }
 
   public removerPrePedido(idPedido: string):Observable<any>{
-    return this.http.post(`${environment.apiUrl}api/prepedido/removerPrePedido/${idPedido}`, idPedido);
+    return this.http.post(`${this.env.apiUrl()}api/prepedido/removerPrePedido/${idPedido}`, idPedido);
   }  
 
   public cadastrarPrePedido(prePedidoDto: any):Observable<any>{
-    return this.http.post(`${environment.apiUrl}api/prepedido/cadastrarPrePedido`, prePedidoDto);
+    return this.http.post(`${this.env.apiUrl()}api/prepedido/cadastrarPrePedido`, prePedidoDto);
   }
 
 }

@@ -8,10 +8,11 @@ import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/OrcamentoCotacaoDto'
 })
 export class PublicoService {
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient,
+    private env : environment) {}
 
   buscarOrcamentoPorGuid(guid: string) {
-    return this.http.get<OrcamentoCotacaoDto>(`${environment.apiUrl}publico/orcamentoporguid/${guid}`);
+    return this.http.get<OrcamentoCotacaoDto>(`${this.env.apiUrl() }publico/orcamentoporguid/${guid}`);
   }
 
 }
