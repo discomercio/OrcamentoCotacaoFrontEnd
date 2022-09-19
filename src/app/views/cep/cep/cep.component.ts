@@ -64,7 +64,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   saiuCep() {
-debugger;
+
     //se vazio, não damos nenhuma mensagem
     this.Cep = StringUtils.retorna_so_digitos(this.Cep);
     if (this.Cep == "" || this.Cep == 'undefined') {

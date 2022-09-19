@@ -37,14 +37,14 @@ export class BuscarClienteService {
   }
 
   public JustificativaEndEntregaComboTemporario(origem: string = null, loja: string = null): Observable<EnderecoEntregaJustificativaDto[]> {
-
+    
     if (origem == "publico") {
       let params = new HttpParams();
       params = params.append('loja', loja);
-      return this.http.get<EnderecoEntregaJustificativaDto[]>(`${this.env}publico/listarComboJustificaEndereco/${loja}`);
+      return this.http.get<EnderecoEntregaJustificativaDto[]>(`${this.env.apiUrl()}publico/listarComboJustificaEndereco/${loja}`);
     }
 
-    return this.http.get<EnderecoEntregaJustificativaDto[]>(this.env + 'api/cliente/listarComboJustificaEndereco');
+    return this.http.get<EnderecoEntregaJustificativaDto[]>(this.env.apiUrl() + 'api/cliente/listarComboJustificaEndereco');
   }
 
 }

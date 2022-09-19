@@ -26,14 +26,14 @@ export class CepsService {
     params = params.append('cidade', cidade);
 
     if (origem == "publico")
-      return this.http.get<CepDto[]>(`${this.env}publico/buscarCep/`, { params: params });
+      return this.http.get<CepDto[]>(`${this.env.apiUrl()}publico/buscarCep/`, { params: params });
 
     return this.http.get<CepDto[]>(this.env.apiUrl() + 'api/cep/buscarCep/', { params: params });
   }
 
   public BuscarUfs(origem: string = null): Observable<string[]> {
     if (origem == "publico")
-      return this.http.get<string[]>(this.env + 'publico/buscarUfs');
+      return this.http.get<string[]>(this.env.apiUrl() + 'publico/buscarUfs');
 
     return this.http.get<string[]>(this.env.apiUrl() + 'api/cep/buscarUfs');
   }
@@ -42,7 +42,7 @@ export class CepsService {
     let params = new HttpParams();
     params = params.append('uf', uf);
     if (origem == "publico")
-      return this.http.get<string[]>(this.env + 'publico/buscarLocalidades', { params: params });
+      return this.http.get<string[]>(this.env.apiUrl() + 'publico/buscarLocalidades', { params: params });
 
     return this.http.get<string[]>(this.env.apiUrl() + 'api/cep/buscarLocalidades', { params: params });
   }
@@ -54,7 +54,7 @@ export class CepsService {
     params = params.append('uf', uf);
 
     if (origem == "publico")
-      return this.http.get<CepDto[]>(this.env + 'publico/buscarCepPorEndereco', { params: params });
+      return this.http.get<CepDto[]>(this.env.apiUrl() + 'publico/buscarCepPorEndereco', { params: params });
 
     return this.http.get<CepDto[]>(this.env.apiUrl() + 'api/cep/buscarCepPorEndereco', { params: params });
   }
