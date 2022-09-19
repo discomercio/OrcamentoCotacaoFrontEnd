@@ -200,6 +200,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   desabilitaBotao: boolean = false;
   salvar() {
+    debugger;
     this.desabilitaBotao = true;
     if (this.clientePF()) {
       if (!this.validacaoFormularioService.validaForm(this.formPF) ||
@@ -261,7 +262,11 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
 
     //vamos passar os dados para o modelo para seguir para back end
-
+    // id orcamento
+    // id da opção selecionada
+    // id da forma de pagto selecionada
+    // DadosClienteCadastroDto
+    // EnderecoEntregaDtoClienteCadastro
     alert("passou");
 
     this.desabilitaBotao = false;

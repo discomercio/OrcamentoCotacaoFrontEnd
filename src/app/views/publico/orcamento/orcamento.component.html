@@ -234,8 +234,8 @@
                                                     <div class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                            <p-radioButton [inputId]="y" [value]="y"
-                                                                [(ngModel)]="opcaoPagto">
+                                                            <p-radioButton [inputId]="y" [value]="fp"
+                                                                [(ngModel)]="opcaoPagtoSelecionada">
                                                             </p-radioButton>
                                                         </div>
                                                         <div class="p-col-10 p-as-center">
@@ -263,7 +263,7 @@
                                         <div>
                                             <button pButton pRipple label="Aprovar esta opção de orçamento"
                                                 class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
-                                                icon="pi pi-check" (click)="aprovar()">
+                                                icon="pi pi-check" (click)="aprovar(opcao)">
                                             </button>
                                         </div>
                                     </div>

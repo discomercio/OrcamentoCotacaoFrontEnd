@@ -18,6 +18,8 @@ import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cl
 import { PublicoHeaderComponent } from '../header/header.component';
 import { PublicoService } from 'src/app/service/publico/publico.service';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
+import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 
 @Component({
   selector: 'app-orcamento',
@@ -50,11 +52,12 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   display: boolean = false;
   validado: boolean = false;
   desabiltarBotoes: boolean;
+  opcaoPagtoSelecionada: FormaPagtoCriacao;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
-this.carregando = true;
+    this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
     });
@@ -102,15 +105,15 @@ this.carregando = true;
     }
   }
 
-  paramGuid:any;
+  paramGuid: any;
   buscarOrcamentoPorGuid(param) {
 
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
-          
+
           this.validado = true;
-          
+
           this.orcamento = r;
           this.aprovacaoPublicoService.orcamento = r;
           this.aprovacaoPublicoService.paramGuid = param.guid;
@@ -145,35 +148,40 @@ this.carregando = true;
     }
   }
 
-  aprovar(opcao) {
-    /*
-    aprovar orçamento
-        seleciona uma forma de pagto de uma opção => gravar o id da forma de pagto.
-        aprovar orçamento click => navegar para a tela de cliente se baseando pelo tipo do cliente, 
-          então temos somente tipo do cliente.
-    
-    */
+  aprovar(opcao: OrcamentoOpcaoDto) {
 
-    // if (!this.formaPagto) {
-    //   this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
-    //   return;
-    // }
+    //Não precisamos validar isso, pois essa validação esta sendo feita ao buscar o orçamento
+    // estou deixando comentado para o caso de precisar mudar o fluxo de verificação dessa regra
+    // if(!this.verificarStatusEExpiracao()) return;
+    if(!this.opcaoPagtoSelecionada){
+      this.alertaService.mostrarMensagem("Favor selecionar uma forma de pagamento!");
+      return;
+    }
+
+    //aprovar forma de pagto
+    opcao.formaPagto.forEach(x =>{
+      if(x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
+    });
+
     this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
-    // this.sweetalertService.confirmarSemMostrar("Deseja realmente aprovar essa opção?", "").subscribe(result => {
-    //   if (result) {
-    //     this.router.navigate([`publico/cliente/cadastro/${this.paramGuid}`], {
-    //       queryParams: {
-    //         opcaoPagto: this.opcaoPagto,
-    //         formaPagto: this.formaPagto,
-    //         tipoPagto: this.tipoPagto
-    //       }
-    //     });
-    //   }
-    // });
-
   }
 
+verificarStatusEExpiracao():boolean{
+  if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+    return false;
+  }
+  if (this.orcamento.validade < new Date()) {
+    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+    return false;
+  }
+  if (!this.opcaoPagtoSelecionada) {
+    this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
+    return false;
+  }
 
+  return true;
+}
 
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {
@@ -183,20 +191,6 @@ this.carregando = true;
       if (i == index) this.activeState[i] = true;
       else this.activeState[i] = false;
     }
-  }
-
-  showDialog() {
-    if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
-      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
-      return;
-    }
-
-    if (this.orcamento.validade < new Date()) {
-      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
-      return;
-    }
-
-    this.display = true;
   }
 
   formatarFormaPagamento(orcamento, opcao: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
