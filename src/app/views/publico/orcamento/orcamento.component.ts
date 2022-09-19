@@ -163,7 +163,15 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       if(x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
     });
 
-    this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
+    this.sweetalertService.dialogo("Deseja realmente aprovar essa opção?", "").subscribe(result => {
+      if(result) {
+        this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], { queryParams: { 
+          idOpcao: this.opcaoPagtoSelecionada.idOpcao, 
+          idFormaPagto: this.opcaoPagtoSelecionada.id
+        } });
+      }
+    });
+    // this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
   }
 
 verificarStatusEExpiracao():boolean{

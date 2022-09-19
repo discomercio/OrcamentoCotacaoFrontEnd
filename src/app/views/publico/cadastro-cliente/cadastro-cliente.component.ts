@@ -25,6 +25,8 @@ import { ValidacoesClienteUtils } from 'src/app/utilities/validacoesClienteUtils
 import { FormatarTelefone } from 'src/app/utilities/formatarTelefone';
 import { EnderecoEntregaComponent } from '../../cliente/endereco-entrega/endereco-entrega.component';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
+import { AprovarOrcamentoComponent } from '../../orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -56,7 +58,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase1 = true;
   fase2 = false;
   fase1e2juntas = true;
-
+  desabilitaBotao: boolean = false;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -68,20 +70,15 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   mensagemErro: string = '*Campo obrigatório'; //'Campo obrigatório!';
   constantes: Constantes = new Constantes();
 
-
   clienteDto: ClienteDto = new ClienteDto();
   cadastroDto: CadastroDto = new CadastroDto();
   dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto()
   TipoCliente: string;
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-  // @Input() NomeCliente: string;
-  // @Input() UF: string;
-  // @Input() Telefone: string;
-  // @Input() Email: string;
-  // @Input() StEntregaImediata: string;
-  // @Input() DtEntregaImediata: Date;
-  ngOnInit(): void {
+  idOpcao:number;
+  idFormaPagto:number;
 
+  ngOnInit(): void {
     this.mascaraCPF = StringUtils.inputMaskCPF();
     this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
@@ -90,6 +87,11 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
     }
+
+    this.activatedRoute.queryParams.subscribe(params => {
+      this.idOpcao = parseInt(params.idOpcao);
+      this.idFormaPagto = parseInt(params.idFormaPagto);
+    });
 
     this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
     this.inicializarDadosClienteCadastroDto();
@@ -198,44 +200,34 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     if (data.length == 5) this.dadosCliente.Nascimento = data + "/";
   }
 
-  desabilitaBotao: boolean = false;
-  salvar() {
-    debugger;
-    this.desabilitaBotao = true;
+  validarForms():boolean{
     if (this.clientePF()) {
       if (!this.validacaoFormularioService.validaForm(this.formPF) ||
         !this.cepComponente.validarForm()) {
         this.desabilitaBotao = false;
-        return;
+        return false;;
       }
     }
     else {
       if (!this.validacaoFormularioService.validaForm(this.formPJ) ||
         !this.cepComponente.validarForm()) {
         this.desabilitaBotao = false;
-        return;
+        return false;
       }
     }
 
-    this.converterTelefonesParaDadosClienteCadastroDto();
-    this.dadosCliente.Cep = this.cepComponente.Cep;
-    this.dadosCliente.Endereco = this.cepComponente.Endereco;
-    this.dadosCliente.Numero = this.cepComponente.Numero;
-    this.dadosCliente.Complemento = this.cepComponente.Complemento;
-    this.dadosCliente.Bairro = this.cepComponente.Bairro;
-    this.dadosCliente.Cidade = this.cepComponente.Cidade;
-    this.dadosCliente.Uf = this.cepComponente.Uf;
-    this.dadosCliente.ProdutorRural = this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO;//Sempre será não, não utiliza mais!
+    return true;
+  }
 
+  validarDadosClienteCadastro():boolean{
     let validacoes = ValidacoesClienteUtils.ValidarDadosClienteCadastroDto(this.dadosCliente, null, this.clientePF(), this.cepComponente.lstCidadeIBGE);
-
 
     if (validacoes.length > 0) {
       if (validacoes.length == 1) {
         this.desconverterTelefones();
         this.desabilitaBotao = false;
         this.alertaService.mostrarMensagem("Lista de erros: <br>" + validacoes.join("<br>"));
-        return;
+        return false;
       }
     }
 
@@ -247,7 +239,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       //validar endereço de entrega
       if (!this.enderecoEntrega.validarForm()) {
         this.desabilitaBotao = false;
-        return;
+        return false;
       }
 
       let validacoes: string[] = [];
@@ -256,17 +248,38 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         // this.desconverterTelefones();
         this.desabilitaBotao = false;
         this.alertaService.mostrarMensagem(validacoes.join("<br>"));
-        return;
+        return false;
       }
     }
 
+    return true;
+  }
 
-    //vamos passar os dados para o modelo para seguir para back end
-    // id orcamento
-    // id da opção selecionada
-    // id da forma de pagto selecionada
-    // DadosClienteCadastroDto
-    // EnderecoEntregaDtoClienteCadastro
+  salvar() {
+    this.desabilitaBotao = true;
+
+    if(!this.validarForms()) return;
+    
+    this.converterTelefonesParaDadosClienteCadastroDto();
+    this.dadosCliente.Cep = this.cepComponente.Cep;
+    this.dadosCliente.Endereco = this.cepComponente.Endereco;
+    this.dadosCliente.Numero = this.cepComponente.Numero;
+    this.dadosCliente.Complemento = this.cepComponente.Complemento;
+    this.dadosCliente.Bairro = this.cepComponente.Bairro;
+    this.dadosCliente.Cidade = this.cepComponente.Cidade;
+    this.dadosCliente.Uf = this.cepComponente.Uf;
+    this.dadosCliente.ProdutorRural = this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO;//Sempre será não, não utiliza mais!
+
+    if(!this.validarDadosClienteCadastro()) return;
+
+    let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
+    aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
+    aprovacaoOrcamento.idOpcao = this.idOpcao;
+    aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
+    aprovacaoOrcamento.dadosClienteDto = this.dadosCliente;
+    aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
+    
+    // mandar para api cadastrar e transformar 
     alert("passou");
 
     this.desabilitaBotao = false;
@@ -315,42 +328,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Celular = this.dadosCliente.DddCelular + this.dadosCliente.Celular;
     this.dadosCliente.TelComercial = this.dadosCliente.DddComercial + this.dadosCliente.TelComercial;
     this.dadosCliente.TelComercial2 = this.dadosCliente.DddComercial2 + this.dadosCliente.TelComercial2;
-  }
-
-  populaTela() { //PARA TESTES RAPIDOS
-
-    // let numero = Math.floor(Math.random()*(9999-1000+1)+1000);
-
-    // this.form.controls.nome.setValue(this.NomeCliente);
-    // //  this.form.controls.cpfCnpj.setValue(cpf);
-    //  this.form.controls.rg.setValue('1782702');
-    //  this.form.controls.sexo.setValue('M');
-    //  this.form.controls.cep.setValue('72125060');
-    //  this.form.controls.endereco.setValue('QNE 1 Lote 6');
-    //  this.form.controls.numero.setValue('1');
-    //  this.form.controls.complemento.setValue('N/A');
-    //  this.form.controls.bairro.setValue('Taguatinga Norte');
-    //  this.form.controls.cidade.setValue('Brasilia');
-    //  this.form.controls.uf.setValue('DF');
-    //  this.form.controls.foneResidencial.setValue(this.Telefone);
-    //  this.form.controls.foneCelular.setValue('61 9' + numero + '-' + numero);
-    //  this.form.controls.foneComercial.setValue('61 9' + numero + '-' + numero);
-    //  this.form.controls.foneRamal.setValue('130');
-    //  this.form.controls.texto.setValue('Obs...');
-    //  this.form.controls.email.setValue('mauro.lima@itssolucoes.com.br');
-    //  this.form.controls.emailXml.setValue('<node>mauro.lima@itssolucoes.com.br</node>');
-    //  this.form.controls.produtorRural.setValue('1');
-  }
-
-  cadastrar() {
-    /*
-    bloquear botão para não reenviar
-    separar os ddd's do telefone 
-    validar os dados 
-      se falhar => voltar os valores de telefone???? analisar
-
-    enviar para API - publico => cadastrarCliente
-    */
   }
 }
 
