@@ -27,6 +27,7 @@ import { EnderecoEntregaComponent } from '../../cliente/endereco-entrega/enderec
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 import { AprovarOrcamentoComponent } from '../../orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -47,7 +48,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     private readonly activatedRoute: ActivatedRoute,
     private readonly aprovacaoPubicoService: AprovacaoPublicoService,
     telaDesktopService: TelaDesktopService,
-    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService
+    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
+    private readonly orcamentoService: OrcamentosService
   ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
@@ -75,8 +77,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto()
   TipoCliente: string;
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-  idOpcao:number;
-  idFormaPagto:number;
+  idOpcao: number;
+  idFormaPagto: number;
 
   ngOnInit(): void {
     this.mascaraCPF = StringUtils.inputMaskCPF();
@@ -200,7 +202,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     if (data.length == 5) this.dadosCliente.Nascimento = data + "/";
   }
 
-  validarForms():boolean{
+  validarForms(): boolean {
     if (this.clientePF()) {
       if (!this.validacaoFormularioService.validaForm(this.formPF) ||
         !this.cepComponente.validarForm()) {
@@ -219,7 +221,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     return true;
   }
 
-  validarDadosClienteCadastro():boolean{
+  validarDadosClienteCadastro(): boolean {
     let validacoes = ValidacoesClienteUtils.ValidarDadosClienteCadastroDto(this.dadosCliente, null, this.clientePF(), this.cepComponente.lstCidadeIBGE);
 
     if (validacoes.length > 0) {
@@ -258,8 +260,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   salvar() {
     this.desabilitaBotao = true;
 
-    if(!this.validarForms()) return;
-    
+    if (!this.validarForms()) return;
+
     this.converterTelefonesParaDadosClienteCadastroDto();
     this.dadosCliente.Cep = this.cepComponente.Cep;
     this.dadosCliente.Endereco = this.cepComponente.Endereco;
@@ -270,7 +272,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Uf = this.cepComponente.Uf;
     this.dadosCliente.ProdutorRural = this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO;//Sempre será não, não utiliza mais!
 
-    if(!this.validarDadosClienteCadastro()) return;
+    if (!this.validarDadosClienteCadastro()) return;
 
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
@@ -278,9 +280,23 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
     aprovacaoOrcamento.dadosClienteDto = this.dadosCliente;
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
-    
+
     // mandar para api cadastrar e transformar 
-    alert("passou");
+    this.alertaService.mostrarMensagem("Passou nas validações!<br>Não fizemos a chamada para API!<br>Calma que estamos implementando");
+    this.desabilitaBotao = false;
+    return;
+    this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
+      //tem mensagem de erro ?
+      debugger;
+      if (!r) {
+        debugger;
+        //salvou o cliente???
+      }
+    }).catch((e) => {
+      this.desabilitaBotao = false;
+      this.alertaService.mostrarErroInternet(e);
+      return;
+    })
 
     this.desabilitaBotao = false;
   }

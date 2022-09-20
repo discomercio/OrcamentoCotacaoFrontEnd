@@ -11,6 +11,7 @@ import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamen
 import { RemetenteDestinatarioResponse } from '../mensageria/remetenteDestinatarioResponse';
 import { MensagemDto } from 'src/app/dto/MensagemDto';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 @Injectable({
   providedIn: 'root'
 })
@@ -34,13 +35,13 @@ export class OrcamentosService {
     return this.http.post<number>(`${this.env.apiUrl()}Orcamento`, model);
   }
 
-  atualizarDadosOrcamento(orcamento:OrcamentoCotacaoResponse): Observable<any> {
+  atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<any> {
     return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
   }
 
 
 
-  buscarConfigValidade(loja:string): Observable<ValidadeOrcamento> {
+  buscarConfigValidade(loja: string): Observable<ValidadeOrcamento> {
     return this.http.get<ValidadeOrcamento>(`${this.env.apiUrl()}Orcamento/validade?lojaLogada=${loja}`);
   }
 
@@ -53,22 +54,29 @@ export class OrcamentosService {
   }
 
   cancelarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/status/2`,id);
+    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/status/2`, id);
   }
 
   reenviarOrcamento(id: number): Observable<MensagemDto> {
-    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/reenviar`,id);
-  }  
+    return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/reenviar`, id);
+  }
 
-  buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {    
+  buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {
     return this.http.get<any>(`${this.env.apiUrl()}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
-  }    
+  }
 
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
     return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarOrcamentoOpcao`, opcao);
   }
 
-  verificarUsoDeAlcada(idOrcamento:number):Observable<number>{
+  verificarUsoDeAlcada(idOrcamento: number): Observable<number> {
     return this.http.get<number>(`${this.env.apiUrl()}Orcamento/verificarUsoDeAlcada?idOrcamento=${idOrcamento}`);
+  }
+
+  aprovarOrcamento(aprovacaoDto: AprovacaoOrcamentoDto, origem: string): Observable<string[]> {
+    if (origem == "publico")
+      return this.http.post<string[]>(`${this.env.apiUrl()}publico/aprovarOrcamento`, aprovacaoDto);
+
+    //aqui podemos incluir a chamada com token
   }
 }
