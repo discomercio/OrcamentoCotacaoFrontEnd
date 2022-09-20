@@ -278,13 +278,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
-    aprovacaoOrcamento.dadosClienteDto = this.dadosCliente;
+    aprovacaoOrcamento.clienteCadastroDto.DadosCliente = this.dadosCliente;
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
 
-    // mandar para api cadastrar e transformar 
-    this.alertaService.mostrarMensagem("Passou nas validações!<br>Não fizemos a chamada para API!<br>Calma que estamos implementando");
-    this.desabilitaBotao = false;
-    return;
+    // // mandar para api cadastrar e transformar 
+    // this.alertaService.mostrarMensagem("Passou nas validações!<br>Não fizemos a chamada para API!<br>Calma que estamos implementando");
+    // this.desabilitaBotao = false;
+    // return;
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
       debugger;
