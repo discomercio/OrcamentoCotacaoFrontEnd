@@ -34,4 +34,16 @@ export class StringUtils {
             }
         }
     }
+
+    static mascaraCep(): string {
+        return "99999-999";
+    }
+
+    static inputMaskCPF(): string {
+        return "999.999.999-99";
+    }
+
+    static inputMaskCNPJ(): string {
+        return "99.999.999/9999-99";
+    }
 }

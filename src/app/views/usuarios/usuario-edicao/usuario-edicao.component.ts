@@ -11,6 +11,7 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
 @Component({
   selector: 'app-usuario-edicao',
   templateUrl: './usuario-edicao.component.html',
@@ -29,6 +30,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
     private readonly alertaService: AlertaService,
+    private readonly validacaoCustomizadaService:ValidacaoCustomizadaService
   ) { }
 
   public form: FormGroup;
@@ -83,7 +85,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required]
     },
-      { validators: compararSenha() });
+      { validators: this.validacaoCustomizadaService.compararSenha() });
 
   }
 
@@ -139,26 +141,4 @@ export class UsuarioEdicaoComponent implements OnInit {
   celular = false;
   celular2 = false;
   celular3 = false;
-}
-
-export function compararSenha(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    if (control.get('senha') && control.get('confirmacao')) {
-      let senha: string = control.get('senha').value;
-      const confirmacao: string = control.get('confirmacao').value;
-
-      if ((!!senha && !!confirmacao) && (senha.length >= 8 && confirmacao.length >= 8)) {
-        if (senha === confirmacao) {
-          control.get('confirmacao').setErrors(null);
-          return null;
-        }
-        else {
-          control.get('confirmacao').setErrors({ confirmacao: true });
-          return { teste: true };
-        }
-      }
-
-    }
-    return null;
-  }
 }

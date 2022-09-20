@@ -7,168 +7,150 @@
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" *ngIf="orcamento">
 
                 <h5>&nbsp;&nbsp;Orçamento Nº {{orcamento.id}}</h5>
-                <!-- <p>****</p>
-                <app-cadastro-cliente></app-cadastro-cliente>
-                <p>****</p> -->
-  
+
                 <div class="p-col-12">
-                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0">
-                        
+                    <div
+                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0">
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
                             <div>
                                 <h5>&nbsp;</h5>
                             </div>
-                            
-                                <div>
-                                    <span class="p-text-bold">Status:</span>
-                                    <span>
-                                        {{orcamento.statusDescricao}}</span>
-                                </div>
-                                <div>
-                                    <span class="p-text-bold">Data Criação:</span>
-                                    <span>
-                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataCadastro)}}</span>
-                                </div>
-                                <div>
-                                    <span class="p-text-bold">Validade:</span>
-                                    <span>
-                                        {{dataUtils.formata_data_DDMMYYY(orcamento.validade)}}
-                                    </span>
-                                </div>
-                                <br>
-                            
+
+                            <div>
+                                <span class="p-text-bold">Status:</span>
+                                <span>
+                                    {{orcamento.statusDescricao}}</span>
+                            </div>
+                            <div>
+                                <span class="p-text-bold">Data Criação:</span>
+                                <span>
+                                    {{dataUtils.formata_data_DDMMYYY(orcamento.dataCadastro)}}</span>
+                            </div>
+                            <div>
+                                <span class="p-text-bold">Validade:</span>
+                                <span>
+                                    {{dataUtils.formata_data_DDMMYYY(orcamento.validade)}}
+                                </span>
+                            </div>
+                            <br>
+
                         </div>
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
                             <div>
                                 <h5><i class="pi pi-users"></i>&nbsp;Dados do Vendedor/Parceiro</h5>
                             </div>
-                            
-                                <div *ngIf="!orcamento.parceiro">
-                                    <span class="p-text-bold">Vendedor:</span>
-                                    <span>
-                                        {{orcamento.vendedor}}</span>
-                                </div>
-                                <div *ngIf="orcamento.parceiro">
-                                    <span class="p-text-bold">Parceiro:</span>
-                                    <span>
-                                        {{orcamento.parceiro}}</span>
-                                </div>
-                                <div *ngIf="orcamento.vendedorParceiro">
-                                    <span class="p-text-bold">Vendedor Parceiro:</span>
-                                    <span>
-                                        {{orcamento.vendedorParceiro}}</span>
-                                </div>
-                                <div>
-                                    <span class="p-text-bold">Cadastrado Por:</span>
-                                    <span>
-                                        {{orcamento.usuarioCadastro}}</span>
-                                </div>
-                                
-                            
+
+                            <div *ngIf="!orcamento.parceiro">
+                                <span class="p-text-bold">Vendedor:</span>
+                                <span>
+                                    {{orcamento.vendedor}}</span>
+                            </div>
+                            <div *ngIf="orcamento.parceiro">
+                                <span class="p-text-bold">Parceiro:</span>
+                                <span>
+                                    {{orcamento.parceiro}}</span>
+                            </div>
+                            <div *ngIf="orcamento.vendedorParceiro">
+                                <span class="p-text-bold">Vendedor Parceiro:</span>
+                                <span>
+                                    {{orcamento.vendedorParceiro}}</span>
+                            </div>
+                            <div>
+                                <span class="p-text-bold">Cadastrado Por:</span>
+                                <span>
+                                    {{orcamento.usuarioCadastro}}</span>
+                            </div>
                         </div>
                     </div>
                     <br><br>
-                    <!-- SEGUNDO BLOCO-->
+
                     <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0"
                         *ngIf="orcamento">
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
                             <h5><i class="pi pi-user"></i>&nbsp;Dados do Cliente</h5>
-                            
-                                <div>
 
-                                    <span class="p-text-bold">Cliente:</span>
-                                    <span>
-                                        {{orcamento.nomeCliente}}</span>
-                                </div>
-                                <div
-                                    *ngIf="orcamento.nomeObra">
-                                    <span class="p-text-bold">Obra:</span>
-                                    <span>
-                                        {{orcamento.nomeObra}}</span>
-                                </div>
+                            <div>
 
-                                <div *ngIf="orcamento.tipoCliente">
-                                    <span class="p-text-bold">Tipo:</span>
-                                    <span>
-                                        {{retornarTipoPessoa(orcamento.tipoCliente)}}</span>
-                                </div>
+                                <span class="p-text-bold">Cliente:</span>
+                                <span>
+                                    {{orcamento.nomeCliente}}</span>
+                            </div>
+                            <div *ngIf="orcamento.nomeObra">
+                                <span class="p-text-bold">Obra:</span>
+                                <span>
+                                    {{orcamento.nomeObra}}</span>
+                            </div>
 
-                                <div *ngIf="orcamento.contribuinteIcms">                                    
-                                    <span class="p-text-bold">Contribuinte ICMS:</span>
-                                    <span>
-                                        {{retornarContibuinteICMS(orcamento.contribuinteIcms)}}</span>
-                                </div>
+                            <div *ngIf="orcamento.tipoCliente">
+                                <span class="p-text-bold">Tipo:</span>
+                                <span>
+                                    {{retornarTipoPessoa(orcamento.tipoCliente)}}</span>
+                            </div>
 
-                                <div>
-                                    <span class="p-text-bold">E-mail:</span>
-                                    <span>
-                                        {{orcamento.email}}</span>
-                                </div>
-                                <div>
-                                    <span class="p-text-bold">Telefone:</span>
-                                    <span>
-                                        {{stringUtils.formataTextoTelefone(orcamento.telefone)}}
-                                    </span>
-                                </div>
+                            <div *ngIf="orcamento.contribuinteIcms">
+                                <span class="p-text-bold">Contribuinte ICMS:</span>
+                                <span>
+                                    {{retornarContibuinteICMS(orcamento.contribuinteIcms)}}</span>
+                            </div>
 
-                                <div *ngIf="orcamento.concordaWhatsapp == false">
-                                    <span class="p-text-bold">Cliente autoriza contado via WhatsApp:</span>
-                                    <span>
-                                        {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
-                                </div>
+                            <div>
+                                <span class="p-text-bold">E-mail:</span>
+                                <span>
+                                    {{orcamento.email}}</span>
+                            </div>
+                            <div>
+                                <span class="p-text-bold">Telefone:</span>
+                                <span>
+                                    {{stringUtils.formataTextoTelefone(orcamento.telefone)}}
+                                </span>
+                            </div>
 
-                                <div *ngIf="orcamento.concordaWhatsapp == true">
-                                    <span class="p-text-bold">Cliente concorda Unis pode enviar Whatsapp:</span>
-                                    <span>
-                                        {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
-                                </div>
+                            <div *ngIf="orcamento.concordaWhatsapp == false">
+                                <span class="p-text-bold">Cliente autoriza contado via WhatsApp:</span>
+                                <span>
+                                    {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
+                            </div>
 
-                                <div *ngIf="orcamento.observacao">
-                                    <br>
-                                    <span class="p-text-bold">Observações gerais:</span>
-                                    <textarea id="textarea" pInputTextarea
-                                        [(ngModel)]="orcamento.observacao"
-                                        style="width: 100%; height:100%" autoResize="autoResize"
-                                        disabled="true"></textarea>
-                                </div>
-                                <br><br>
-                            
+                            <div *ngIf="orcamento.concordaWhatsapp == true">
+                                <span class="p-text-bold">Cliente concorda Unis pode enviar Whatsapp:</span>
+                                <span>
+                                    {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
+                            </div>
+
+                            <div *ngIf="orcamento.observacao">
+                                <br>
+                                <span class="p-text-bold">Observações gerais:</span>
+                                <textarea id="textarea" pInputTextarea [(ngModel)]="orcamento.observacao"
+                                    style="width: 100%; height:100%" autoResize="autoResize" disabled="true"></textarea>
+                            </div>
+                            <br><br>
+
                         </div>
                         <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
                             <h5><i class="pi pi-send"></i>&nbsp;Dados de Entrega</h5>
-                            
-                                <div>
-                                    <span class="p-text-bold">UF (Entrega):</span>
-                                    <span>
-                                        {{orcamento.uf}}</span>
-                                </div>
-                                <div *ngIf="orcamento.dataEntregaImediata">
-                                    <span class="p-text-bold">Data prevista de entrega:</span>
-                                    <span>
-                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
-                                </div>
-                                <div *ngIf="orcamento.stEntregaImediata">
-                                    <span class="p-text-bold">Entrega Imediata:</span>
-                                    <span>
-                                        {{retornarSimOuNao(orcamento.stEntregaImediata)}}</span>
-                                </div>                                                              
-                            
+
+                            <div>
+                                <span class="p-text-bold">UF (Entrega):</span>
+                                <span>
+                                    {{orcamento.uf}}</span>
+                            </div>
+                            <div *ngIf="orcamento.dataEntregaImediata">
+                                <span class="p-text-bold">Data prevista de entrega:</span>
+                                <span>
+                                    {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
+                            </div>
+                            <div *ngIf="orcamento.stEntregaImediata">
+                                <span class="p-text-bold">Entrega Imediata:</span>
+                                <span>
+                                    {{retornarSimOuNao(orcamento.stEntregaImediata)}}</span>
+                            </div>
+
                         </div>
-                        
                     </div>
 
-                    <!-- SEGUNDO BLOCO FIM -->                    
-
-
-                    <!-- <button type="button" pButton pRipple (click)="showDialog()" icon="pi pi-info-circle" label="Show"></button> -->
-
-                    
                     <div class="p-col-12 p-px-0 p-pt-2" *ngFor="let opcao of orcamento?.listaOpcoes; let i = index">
-                        
-                        <p-accordion *ngIf="orcamento.statusDescricao == 'Aprovado' 
-                        && opcao.formaPagto[0]?.aprovado ==true 
-                        || opcao.formaPagto[1]?.aprovado ==true 
-                        || opcao.formaPagto[2]?.aprovado ==true">
+
+                        <p-accordion>
                             <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
                                 <ng-template pTemplate="header">
                                     Opção {{i + 1}}
@@ -252,8 +234,8 @@
                                                     <div class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                            <p-radioButton [inputId]="y" [value]="y"
-                                                                [disabled]="desabiltarBotoes" [(ngModel)]="opcaoPagto">
+                                                            <p-radioButton [inputId]="y" [value]="fp"
+                                                                [(ngModel)]="opcaoPagtoSelecionada">
                                                             </p-radioButton>
                                                         </div>
                                                         <div class="p-col-10 p-as-center">
@@ -277,143 +259,26 @@
                                         </div>
 
                                     </div>
-                                    <div class="p-col-12 p-d-lg-inline-flex">
-                                        <button pButton pRipple label="Aprovar esta opção de orçamento"
-                                            (click)="showDialog()" [disabled]="desabiltarBotoes"
-                                            class="{{!telaDesktop ? 'p-text-bold font-size p-col-12 p-button-success' : 'p-text-bold p-col-12 p-button-success'}}"
-                                            icon="pi pi-check" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        </button>
+                                    <div class="p-col-12 p-d-inline-flex p-jc-around">
+                                        <div>
+                                            <button pButton pRipple label="Aprovar esta opção de orçamento"
+                                                class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
+                                                icon="pi pi-check" (click)="aprovar(opcao)">
+                                            </button>
+                                        </div>
                                     </div>
                                 </ng-template>
                             </p-accordionTab>
                         </p-accordion>
 
-                        <p-accordion *ngIf="orcamento.statusDescricao != 'Aprovado'">
-                            <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
-                                <ng-template pTemplate="header">
-                                    Opção {{i + 1}}
-                                    <div class="p-ml-auto p-p-0 p-text-right">
-                                        <span>{{moedaUtils.formatarMoedaComPrefixo(opcao.vlTotal)}}</span>
-                                    </div>
-                                </ng-template>
-                                <ng-template pTemplate="content">
-                                    <div class="p-col-12 p-p-0">
-                                        <div class="p-col-12">
-                                            <p-table #dataTable [value]="opcao.listaProdutos" [responsive]="true"
-                                                responsiveLayout="stack" [ngClass]="{'carregando': carregando}"
-                                                autoLayout="true" styleClass="p-datatable-customers p-datatable-sm"
-                                                [rows]="10" [filterDelay]="0">
-                                                <ng-template *ngIf="telaDesktop" pTemplate="header">
-                                                    <tr class="font-size">
-                                                        <th style="width: 15%"></th>
-                                                        <th class="p-col-4">Produto</th>
-                                                        <th class="p-col-1 p-text-center">Qtde</th>
-                                                        <th class="p-col-1 p-text-center">Desc</th>
-                                                        <th class="p-col-2 p-text-center">Preço</th>
-                                                    </tr>
-                                                </ng-template>
-                                                <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
-                                                    <tr class="{{telaDesktop ? '' : 'font-size'}}">
-                                                        <td class="p-d-inline-flex"
-                                                            [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                            <img src="assets/demo/images/produtos/cond_ve09_ecoTurbo_frio.jpg"
-                                                                [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
 
-                                                            <p *ngIf="!telaDesktop"
-                                                                [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
-                                                            </p>
-                                                        </td>
-                                                        <td *ngIf="telaDesktop">
-                                                            <p
-                                                                [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
-                                                            </p>
-                                                        </td>
-                                                        <td
-                                                            class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
-                                                            <span class="p-column-title"
-                                                                [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                Quantidade
-                                                            </span>
-                                                            <p>{{produto.qtde}}</p>
-                                                        </td>
-                                                        <td
-                                                            class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
-                                                            <span class="p-column-title"
-                                                                [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                Preço
-                                                            </span>
-                                                            <p>
-                                                                {{moedaUtils.formatarValorDuasCasaReturnZero(produto.descDado)}}
-                                                            </p>
-                                                        </td>
-                                                        <td
-                                                            class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
-                                                            <span class="p-column-title"
-                                                                [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                Preço
-                                                            </span>
-                                                            <p>
-                                                                {{moedaUtils.formatarMoedaSemPrefixo(produto.precoNF)}}
-                                                            </p>
-                                                        </td>
-                                                        <div *ngIf="!telaDesktop && opcao.listaProdutos.length -1 > rowIndex "
-                                                            class="p-col-12">
-                                                            <p-divider class="p-col-12 p-py-0"></p-divider>
-                                                        </div>
-                                                    </tr>
-                                                </ng-template>
-                                            </p-table>
-                                        </div>
-
-                                        <div class="p-col-12 p-d-inline-flex p-px-0" style="background-color: #efefef;">
-                                            <div class="p-col-12 p-d-inline-flex p-jc-between p-jc-sm-end p-px-0">
-                                                <div class="p-col-6 p-px-0"
-                                                    *ngFor="let fp of opcao.formaPagto; let y = index">
-                                                    <div class="p-col-12 p-d-inline-flex"
-                                                        style="min-height: calc(100% - 45px);">
-                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                            <p-radioButton [inputId]="y" [value]="y"
-                                                                [disabled]="desabiltarBotoes" [(ngModel)]="opcaoPagto">
-                                                            </p-radioButton>
-                                                        </div>
-                                                        <div class="p-col-10 p-as-center">
-                                                            <div
-                                                                [innerHtml]="formatarFormaPagamento(orcamento, opcao, fp)">
-                                                            </div>
-                                                        </div>
-
-                                                    </div>
-                                                    <div class="p-col-12 p-d-inline-flex">
-                                                        <div class="p-col-2 p-m-1 p-text-center">
-                                                            <span class="p-text-bold">OBS:</span>
-                                                        </div>
-                                                        <div class="p-col-10">
-                                                            <span>{{fp.observacoesGerais}}</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                    <div class="p-col-12 p-d-lg-inline-flex">
-                                        <button pButton pRipple label="Aprovar esta opção de orçamento"
-                                            (click)="showDialog()" [disabled]="desabiltarBotoes"
-                                            class="{{!telaDesktop ? 'p-text-bold font-size p-col-12 p-button-success' : 'p-text-bold p-col-12 p-button-success'}}"
-                                            icon="pi pi-check" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
-                                        </button>
-                                    </div>
-                                </ng-template>
-                            </p-accordionTab>
-                        </p-accordion>
 
                     </div>
 
                 </div>
             </div>
         </div>
-        
+
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-2">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
                 <div class="p-col-12">
@@ -440,22 +305,3 @@
 
     </div>
 </div>
-
-
-<p-dialog [(visible)]="display" [style]="{width: '50vw'}">
-    <ng-template pTemplate="header">
-        <h4>Confirmação de dados</h4>
-        <div style="margin-left: auto; margin-right: 0;">
-            <button type="button" pButton pRipple icon="pi pi-arrow-left" label="Voltar"
-                (click)="display=false"></button>&nbsp;
-            <button type="button" pButton pRipple icon="pi pi-save" label="Salvar" (click)="salvar()"></button>
-        </div>
-    </ng-template>
-    <div>
-        <app-cadastro-cliente id="cadastro" TipoCliente="{{this.orcamento?.tipoCliente}}"
-            NomeCliente="{{this.orcamento?.nomeCliente}}" UF="{{this.orcamento?.uf}}"
-            Telefone="{{this.orcamento?.telefone}}" Email="{{this.orcamento?.email}}"
-            StEntregaImediata="{{this.orcamento?.stEntregaImediata}}"
-            DtEntregaImediata="{{this.orcamento?.dataEntregaImediata}}"></app-cadastro-cliente>
-    </div>
-</p-dialog>

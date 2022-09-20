@@ -36,7 +36,14 @@ export class BuscarClienteService {
     return this.http.get<ListaBancoDto[]>(this.env.apiUrl() + 'api/cliente/listarBancosCombo');
   }
 
-  public JustificativaEndEntregaComboTemporario(): Observable<EnderecoEntregaJustificativaDto[]> {
+  public JustificativaEndEntregaComboTemporario(origem: string = null, loja: string = null): Observable<EnderecoEntregaJustificativaDto[]> {
+    
+    if (origem == "publico") {
+      let params = new HttpParams();
+      params = params.append('loja', loja);
+      return this.http.get<EnderecoEntregaJustificativaDto[]>(`${this.env.apiUrl()}publico/listarComboJustificaEndereco/${loja}`);
+    }
+
     return this.http.get<EnderecoEntregaJustificativaDto[]>(this.env.apiUrl() + 'api/cliente/listarComboJustificaEndereco');
   }
 

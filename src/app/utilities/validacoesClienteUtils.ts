@@ -59,20 +59,21 @@ export class ValidacoesClienteUtils {
 
         //validar referências bancárias
         //não exigimos um número de referências, mas as que foram criadas devem estar preenchidas
-
-        for (let i = 0; i < clienteCadastroDto.RefBancaria.length; i++) {
-            let este = clienteCadastroDto.RefBancaria[i];
-            validacoes = validacoes.concat(this.validarRefBancaria(este));
+        if(clienteCadastroDto){
+            for (let i = 0; i < clienteCadastroDto.RefBancaria.length; i++) {
+                let este = clienteCadastroDto.RefBancaria[i];
+                validacoes = validacoes.concat(this.validarRefBancaria(este));
+            }
+    
+            //validar referências comerciais
+            //não exigimos um número de referências, mas as que foram criadas devem estar preenchidas    
+            for (let i = 0; i < clienteCadastroDto.RefComercial.length; i++) {
+                let este = clienteCadastroDto.RefComercial[i];
+                validacoes = validacoes.concat(this.validarRefComerial(este));
+            }
+    
+            validacoes = validacoes.concat(this.verificarRefComercialDuplicada(clienteCadastroDto.RefComercial));
         }
-
-        //validar referências comerciais
-        //não exigimos um número de referências, mas as que foram criadas devem estar preenchidas    
-        for (let i = 0; i < clienteCadastroDto.RefComercial.length; i++) {
-            let este = clienteCadastroDto.RefComercial[i];
-            validacoes = validacoes.concat(this.validarRefComerial(este));
-        }
-
-        validacoes = validacoes.concat(this.verificarRefComercialDuplicada(clienteCadastroDto.RefComercial));
 
         return validacoes;
     }
@@ -249,9 +250,16 @@ export class ValidacoesClienteUtils {
         //nao validamos a data dessa forma, ela já é uma data no formulário: if (!isDate(f.dt_nasc)) {
         //e ela é opcional, então não validamos nada!
         
+        ret.concat(this.validarNascimento(dadosClienteCadastroDto.Nascimento));
+
+        return ret;
+    }
+
+    public static validarNascimento(nascimento: string | Date): string[] {
+        let ret: string[] = new Array();
         let dataAtual = new Date();
-        if (!!dadosClienteCadastroDto.Nascimento) {
-            let data = dadosClienteCadastroDto.Nascimento.toString().split('-');
+        if (!!nascimento) {
+            let data = nascimento.toString().split('-');
             if (data.length == 3) {
                 if (data[1].substring(0, 1) == "0")
                     data[1] = data[1].replace("0", "");
@@ -276,7 +284,6 @@ export class ValidacoesClienteUtils {
             }
 
         }
-
         return ret;
     }
 
@@ -345,7 +352,7 @@ export class ValidacoesClienteUtils {
         let ret: string[] = new Array();
 
         if (ehObrigatorio) {
-            if (dadosClienteCadastroDto.TelefoneResidencial.trim() == "" && dadosClienteCadastroDto.DddResidencial == "" &&
+            if (dadosClienteCadastroDto.TelefoneResidencial == "" && dadosClienteCadastroDto.DddResidencial == "" &&
                 dadosClienteCadastroDto.Celular == "" && dadosClienteCadastroDto.DddCelular == "" &&
                 dadosClienteCadastroDto.TelComercial == "" && dadosClienteCadastroDto.DddComercial == "") {
                 ret.push('Preencha pelo menos um telefone!');
@@ -353,11 +360,11 @@ export class ValidacoesClienteUtils {
             }
         }
 
-        if (dadosClienteCadastroDto.TelefoneResidencial.trim() != "" &&
+        if (dadosClienteCadastroDto.TelefoneResidencial != "" &&
             dadosClienteCadastroDto.DddResidencial == "") {
             ret.push('Preencha o DDD residencial!');
         }
-        if (dadosClienteCadastroDto.TelefoneResidencial.trim() == "" &&
+        if (dadosClienteCadastroDto.TelefoneResidencial == "" &&
             dadosClienteCadastroDto.DddResidencial != "") {
             ret.push('Preencha o telefone residencial!');
         }
@@ -496,32 +503,32 @@ export class ValidacoesClienteUtils {
     private static validarEndereco(dadosClienteCadastroDto: DadosClienteCadastroDto, lstCidadesIBGE: string[]): string[] {
         let ret: string[] = new Array();
 
-        if (dadosClienteCadastroDto.Endereco.trim() === "") {
+        if (!dadosClienteCadastroDto.Endereco && dadosClienteCadastroDto.Endereco.trim() === "") {
             ret.push('Preencha o endereço!');
         }
 
-        if (dadosClienteCadastroDto.Numero.trim() === "") {
+        if (!dadosClienteCadastroDto.Numero && dadosClienteCadastroDto.Numero.trim() === "") {
             ret.push('Preencha o número do endereço!');
         }
 
-        if (dadosClienteCadastroDto.Bairro.trim() === "") {
+        if (!dadosClienteCadastroDto.Bairro && dadosClienteCadastroDto.Bairro.trim() === "") {
             ret.push('Preencha o bairro!');
         }
 
-        if (dadosClienteCadastroDto.Cidade.trim() === "") {
+        if (!dadosClienteCadastroDto.Cidade && dadosClienteCadastroDto.Cidade.trim() === "") {
             ret.push('Preencha a cidade!');
         }
 
-        let s = dadosClienteCadastroDto.Uf.trim();
-        if ((s === "") || (!ValidacoesUtils.uf_ok(s))) {
+        let s = dadosClienteCadastroDto.Uf?.trim();
+        if ((!s && s === "") || (!ValidacoesUtils.uf_ok(s))) {
             ret.push('UF inválida!');
         }
 
-        if (dadosClienteCadastroDto.Cep.toString().trim() === "") {
+        if (!dadosClienteCadastroDto.Cep && dadosClienteCadastroDto.Cep.toString().trim() === "") {
             ret.push('Informe o CEP!');
         }
 
-        if (!new FormatarEndereco().cep_ok(dadosClienteCadastroDto.Cep.toString())) {
+        if (!dadosClienteCadastroDto.Cep && !new FormatarEndereco().cep_ok(dadosClienteCadastroDto.Cep.toString())) {
             ret.push('CEP inválido!');
         }
 
@@ -539,7 +546,7 @@ export class ValidacoesClienteUtils {
         return ret;
     }
 
-    private static validarEnderecoEntrega(end: EnderecoEntregaDtoClienteCadastro, tipoCliente: string, lstCidadesIBGE: string[]): string[] {
+    public static validarEnderecoEntrega(end: EnderecoEntregaDtoClienteCadastro, tipoCliente: string, lstCidadesIBGE: string[]): string[] {
         let ret: string[] = new Array();
         let retorno = true;
         if (end.OutroEndereco) {

@@ -27,4 +27,5 @@ export class FormaPagtoCriacao{
     descricao_meio_pagto: string;
     tipo_parcelamento: number;
     observacoesGerais:string;
+    aprovado:boolean;
 }

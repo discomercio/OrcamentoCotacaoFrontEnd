@@ -1,0 +1,189 @@
+<div class="card p-col-12 p-lg-8 p-md-10 p-sm-10 p-px-3">
+
+    <div class="p-py-3">
+        <div class="p-fluid p-formgrid p-grid">
+            <div class="p-field-checkbox">
+                <label>Endereço de entrega</label>
+            </div>
+            <div class="p-col-12">
+                <p-radioButton [inputId]="1" [value]="false" label="O mesmo endereço do cadastro"
+                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco" (click)="limparCampos()">
+                </p-radioButton>
+                &nbsp;
+                <p-radioButton [inputId]="2" [value]="true" label="Outro endereço"
+                    [(ngModel)]="enderecoEntregaDtoClienteCadastro.OutroEndereco"></p-radioButton>
+            </div>
+        </div>
+    </div>
+
+    <div *ngIf="enderecoEntregaDtoClienteCadastro"
+        [ngClass]="{'desab':!enderecoEntregaDtoClienteCadastro.OutroEndereco}">
+        <form [formGroup]="form">
+            <!-- Justificativa endereço de entrega aqui -->
+            <div class="p-fluid p-formgrid p-grid">
+                <div class="p-field p-col-12 p-col-12 p-field p-lg-6 p-md-7 p-sm-9">
+                    <label for="justifique">Justifique o endereço</label>
+                    <p-dropdown id="justifique" [autoDisplayFirst]="false" [options]="listaOutroEndereco"
+                        optionValue="EndEtg_cod_justificativa" optionLabel="EndEtg_descricao_justificativa"
+                        formControlName="justificativa"
+                        [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cod_justificativa">
+                    </p-dropdown>
+                    <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'justificativa')">
+                        <small class="p-error"
+                            *ngIf="form.controls.justificativa.errors.required">{{mensagemErro}}</small>
+                    </div>
+                </div>
+            </div>
+            <!-- PJ -->
+            <div class="p-fluid p-formgrid p-grid" *ngIf="!tipoPf && enderecoEntregaDtoClienteCadastro.OutroEndereco">
+                <div class="p-field p-col-12">
+                    <p-radioButton [inputId]="3" [value]="true" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Física"
+                        (click)="PF()" formControlName="endTipoPessoa">
+                    </p-radioButton>
+                    &nbsp;
+                    <p-radioButton [inputId]="4" [value]="false" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Jurídica"
+                        (click)="PJ()" formControlName="endTipoPessoa">
+                    </p-radioButton>
+                    <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'endTipoPessoa')">
+                        <small class="p-error"
+                            *ngIf="form.controls.endTipoPessoa.errors?.required">{{mensagemErro}}</small>
+                    </div>
+                </div>
+                <div *ngIf="pessoaEntregaEhPF != undefined">
+                    <div class="p-col-12">
+                        <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
+                            <label for="nomeEndEntrega">Nome</label>
+                            <input id="nomeEndEntrega" type="text" formControlName="endNome"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.endNome.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                        <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
+                            <label for="endNome">Razão Social</label>
+                            <input id="endNome" type="text" formControlName="endNome"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.endNome.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- CPF | CNPJ  -->
+                    <div class="p-grid p-col-12">
+                        <!-- PF -->
+                        <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                            <label for="cpfEndEntrega">CPF</label>
+                            <p-inputMask id="cpfEndEntrega" type="text" formControlName="cpfCnpj"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" mask="{{mascaraCPF}}">
+                            </p-inputMask>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'cpfCnpj')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.cpfCnpj">
+                                    *CPF inválido</small>
+                            </div>
+                        </div>
+                        <!-- PJ -->
+                        <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                            <label for="cnpjEndEntrega">CNPJ</label>
+                            <p-inputMask id="cnpjEndEntrega" type="text" formControlName="cpfCnpj"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" mask="{{mascaraCNPJ}}">
+                            </p-inputMask>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'cpfCnpj')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.cpfCnpj.errors?.cpfCnpj">
+                                    *CNPJ inválido</small>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- telefones PF -->
+                    <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
+                            <label for="foneResidencialEndEntrega">Fone Residencial</label>
+                            <input id="foneResidencialEndEntrega" type="text" maxlength="16"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_res" pInputText
+                                mask="{{mascaraTelefone}}" formControlName="endTelResidencial">
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
+                            <label for="celularEndEntrega">Celular</label>
+                            <input id="celularEndEntrega" type="text"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel" pInputText
+                                mask="{{mascaraTelefone}}" maxlength="16" formControlName="endCelular">
+                        </div>
+                    </div>
+                    <!-- telefones PJ -->
+                    <div class="p-col-12 p-d-inline-flex p-fluid p-grid" *ngIf="!pessoaEntregaEhPF">
+                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="fone1EndEntrega">Telefone 1</label>
+                            <input id="fone1EndEntrega" type="text"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com" pInputText
+                                mask="{{mascaraTelefone}}" maxlength="16" formControlName="endTel1">
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                            <label for="ramal1EndEntrega">Ramal</label>
+                            <input id="ramal1EndEntrega" type="text" pInputText maxlength="4"
+                                formControlName="endRamal1"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com">
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="fone2EndEntrega">Telefone 2</label>
+                            <input id="fone2EndEntrega" type="text" formControlName="endTel2"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2" pInputText
+                                mask="{{mascaraTelefone}}" maxlength="16">
+                        </div>
+                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                            <label for="ramal2EndEntrega">Ramal</label>
+                            <input id="ramal2EndEntrega" type="text" pInputText maxlength="4"
+                                formControlName="endRamal2"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com_2">
+                        </div>
+                    </div>
+                    <!-- PJ => Contribuinte ICMS | IE -->
+                    <div class="p-grid p-col-12" *ngIf="!pessoaEntregaEhPF">
+                        <div class="p-field p-col-4 p-as-end p-py-0">
+                            <label for="contribuinteEndEntrega">Contribuinte ICMS</label>
+                            <p-dropdown id="contribuinteEndEntrega" [showClear]="true" [autoDisplayFirst]="false"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status"
+                                [options]="listaContribuinteICMS" optionValue="value" optionLabel="label"
+                                formControlName="icmsEntrega"></p-dropdown>
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'icmsEntrega')">
+                                <small class="p-error" *ngIf="form.controls.icmsEntrega.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                                <small class="p-error"
+                                    *ngIf="form.controls.icmsEntrega.errors?.max || form.controls.icmsEntrega.errors?.min">
+                                    {{mensagemErro}}
+                                </small>
+                            </div>
+                        </div>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                            <label for="ieEndEntrega">IE</label>
+                            <input id="ieEndEntrega" type="text" pInputText maxlength="20"
+                                formControlName="ieEndEntrega"
+                                [disabled]="enderecoEntregaDtoClienteCadastro?.EndEtg_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
+                                [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ie">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(form,'ieEndEntrega')">
+                                <small class="p-error"
+                                    *ngIf="form.controls.ieEndEntrega.errors?.required">{{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </form>
+
+        <div class="p-py-2" *ngIf="enderecoEntregaDtoClienteCadastro.OutroEndereco && (pessoaEntregaEhPF != undefined || tipoPf)">
+            <app-cep #componenteCep></app-cep>
+        </div>
+    </div>
+</div>

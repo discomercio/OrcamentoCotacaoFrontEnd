@@ -74,6 +74,9 @@ import { ProdutosCatalogoClonarComponent } from "../views/produtos-catalogo/clon
 import { ClienteModule } from "../views/prepedido/cliente/cliente.module";
 import { SenhaMeusdadosComponent } from "../views/senha/senha-meusdados.component";
 import { environment } from "src/environments/environment";
+import { CepComponent } from '../views/cep/cep/cep.component';
+import { CepDialogComponent } from '../views/cep/cep-dialog/cep-dialog.component';
+import { EnderecoEntregaComponent } from '../views/cliente/endereco-entrega/endereco-entrega.component';
 
 @NgModule({
     imports: [
@@ -126,6 +129,9 @@ import { environment } from "src/environments/environment";
         PedidoDetalhesComponent,
         ProdutosCatalogoClonarComponent,
         SenhaMeusdadosComponent,
+        CepComponent,
+        CepDialogComponent,
+        EnderecoEntregaComponent
     ],
     providers: [
         // {

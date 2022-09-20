@@ -1,7 +1,6 @@
 import { AutenticacaoService } from './../../../service/autenticacao/autenticacao.service';
-import { PublicoService } from './../../../service/publico/publico.service';
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { OrcamentoCotacaoDto } from 'src/app/dto/orcamentos/OrcamentoCotacaoDto';
@@ -17,6 +16,10 @@ import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cliente.component';
 import { PublicoHeaderComponent } from '../header/header.component';
+import { PublicoService } from 'src/app/service/publico/publico.service';
+import { AprovacaoPublicoService } from '../aprovacao-publico.service';
+import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
+import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 
 @Component({
   selector: 'app-orcamento',
@@ -32,6 +35,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly alertaService: AlertaService,
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService,
+    private readonly router: Router,
+    private readonly aprovacaoPublicoService: AprovacaoPublicoService
   ) {
     super(telaDesktopService);
   }
@@ -44,15 +49,15 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   dataUtils: DataUtils = new DataUtils();
   stringUtils = StringUtils;
   @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
-  @ViewChild(PublicoCadastroClienteComponent) child;
   display: boolean = false;
   validado: boolean = false;
   desabiltarBotoes: boolean;
+  opcaoPagtoSelecionada: FormaPagtoCriacao;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
-    
+    this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
     });
@@ -99,50 +104,92 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         break;
     }
   }
+
+  paramGuid: any;
   buscarOrcamentoPorGuid(param) {
-    
+
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
+
           this.validado = true;
+
           this.orcamento = r;
+          this.aprovacaoPublicoService.orcamento = r;
+          this.aprovacaoPublicoService.paramGuid = param.guid;
+          this.paramGuid = param.guid;
           this.publicHeader.imagemLogotipo = 'assets/layout/images/' + this.orcamento.lojaViewModel.imagemLogotipo;
 
-          this.mensagemComponente.permiteEnviarMensagem = true;
+          if (this.mensagemComponente != undefined) {
+            this.mensagemComponente.permiteEnviarMensagem = true;
 
 
-          if (r.status == 3) {
-            this.desabiltarBotoes = true;
-            this.mensagemComponente.permiteEnviarMensagem = false;
+            if (r.status == 3) {
+              this.desabiltarBotoes = true;
+              this.mensagemComponente.permiteEnviarMensagem = false;
+            }
+
+            this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
+            this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
+            this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
+            this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
+            this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
+            this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
-          this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
-          this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
-          this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
-          this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
-          this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
-          this.mensagemComponente.obterListaMensagem(this.orcamento.id);
 
           this.autenticacaoService.setarToken(r.token);
+          this.carregando = false;
         } else {
+          this.carregando = false;
           this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         }
       });
     }
   }
 
-  salvar() {
-    this.child.salvar();
+  aprovar(opcao: OrcamentoOpcaoDto) {
+
+    //Não precisamos validar isso, pois essa validação esta sendo feita ao buscar o orçamento
+    // estou deixando comentado para o caso de precisar mudar o fluxo de verificação dessa regra
+    // if(!this.verificarStatusEExpiracao()) return;
+    if(!this.opcaoPagtoSelecionada){
+      this.alertaService.mostrarMensagem("Favor selecionar uma forma de pagamento!");
+      return;
+    }
+
+    //aprovar forma de pagto
+    opcao.formaPagto.forEach(x =>{
+      if(x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
+    });
+
+    this.sweetalertService.dialogo("Deseja realmente aprovar essa opção?", "").subscribe(result => {
+      if(result) {
+        this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], { queryParams: { 
+          idOpcao: this.opcaoPagtoSelecionada.idOpcao, 
+          idFormaPagto: this.opcaoPagtoSelecionada.id
+        } });
+      }
+    });
+    // this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
   }
 
-  aprovar(opcao) {
-    // if (!this.opcaoPagto) {
-    // }
-    //   this.sweetalertService.confirmarAprovacao("Deseja aprovar essa opção?", "").subscribe(result => {
-    // });
+verificarStatusEExpiracao():boolean{
+  if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+    return false;
+  }
+  if (this.orcamento.validade < new Date()) {
+    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+    return false;
+  }
+  if (!this.opcaoPagtoSelecionada) {
+    this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
+    return false;
   }
 
-
+  return true;
+}
 
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {
@@ -152,20 +199,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       if (i == index) this.activeState[i] = true;
       else this.activeState[i] = false;
     }
-  }
-
-  showDialog() {
-    if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
-      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
-      return;
-    }
-
-    if (this.orcamento.validade < new Date()) {
-      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
-      return;
-    }
-
-    this.display = true;
   }
 
   formatarFormaPagamento(orcamento, opcao: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
