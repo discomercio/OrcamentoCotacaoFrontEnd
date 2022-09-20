@@ -15,5 +15,7 @@ export enum ePermissao {
     CadastroVendedorParceiroIncluirEditar ="100320",
     ProrrogarVencimentoOrcamento = "100500",
     AprovarOrcamento = "100550",
-    ArquivosDownloadIncluirEditarPastasArquivos = "102800"
+    ArquivosDownloadIncluirEditarPastasArquivos = "102800",
+    VisualizarOrcamento = "103000",
+    AcessoUniversalOrcamentoEditar = "103100"
 }

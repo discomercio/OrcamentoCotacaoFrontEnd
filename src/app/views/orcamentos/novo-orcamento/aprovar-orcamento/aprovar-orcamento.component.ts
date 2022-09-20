@@ -29,6 +29,8 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { MenuModule } from 'primeng/menu';
 import { MenuItem } from 'primeng/api';
 import { CardModule } from 'primeng/card';
+import { PermissaoService } from 'src/app/service/permissao/permissao.service';
+import { PermissaoOrcamentoResponse } from 'src/app/dto/permissao/PermissaoOrcamentoResponse';
 
 
 @Component({
@@ -49,6 +51,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private location: Location,
     private readonly formaPagtoService: FormaPagtoService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
+    private readonly permissaoService: PermissaoService,
     private readonly autenticacaoService: AutenticacaoService,
     private router: Router) {
     super(telaDesktopService);
@@ -82,9 +85,42 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   condicoesGerais: string;
   statusOrcamento: string;
   habilitaBotaoAprovar: boolean;
+  permissaoOrcamentoResponse: PermissaoOrcamentoResponse;
+  editar: boolean = false;
 
   ngOnInit(): void {
+
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
+
+    this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise().then(response => {
+
+        this.permissaoOrcamentoResponse = response;
+
+        if (!this.permissaoOrcamentoResponse.Sucesso) {
+          this.alertaService.mostrarMensagem(this.permissaoOrcamentoResponse.Mensagem);
+          this.router.navigate(['orcamentos/listar/orcamentos']);
+          return;
+        }
+
+        if (!this.permissaoOrcamentoResponse.VizualizarOrcamento) {
+          this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+          this.router.navigate(['orcamentos/listar/orcamentos']);
+          return;
+        }
+      
+        this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
+        this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
+        this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
+        this.editar =this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
+        this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.AprovarOpcaoOrcamento;
+        this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
+        this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
+        this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
+        this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
+
+        this.carrregarBotoneira();
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+    
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
@@ -93,56 +129,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarOrcamento(this.idOrcamentoCotacao);
 
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
-    //this.carrregarBotoneira();    
   }
 
   ngAfterViewInit() {
     this.mensagemComponente.obterListaMensagem(this.idOrcamentoCotacao);
     this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
     this.buscarParametros(12);
-
   }
 
   carrregarBotoneira() {
-
-    //Precisa definir regras para exibição do clonar
-    this.exibeBotaoClonar = true;
-    this.exibeBotaoNenhumaOpcao = false;
-
-    //Regras para Edição
-    if (this.novoOrcamentoService.orcamentoCotacaoDto && this.editarDadosCadastrais) {
-      this.exibeBotaoEditar = true;
-    } else {
-      this.exibeBotaoEditar = false;
-    }
-
-    //Regras para Cancelamento [2] = cancelado [3] = aprovado
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.status != 2 &&
-      this.novoOrcamentoService.orcamentoCotacaoDto.status != 3) {
-      this.exibeBotaoCancelar = true;
-      this.exibeBotaoReenviar = true;
-      this.exibeBotaoProrrogar = this.autenticacaoService.verificarPermissoes(ePermissao.ProrrogarVencimentoOrcamento);
-      this.desabiltarBotoes = false;
-
-      //se tiver permissão e é dono do orçamento retornamos "false" para "disabled" do botão de aprovação das opções
-      this.habilitaBotaoAprovar = !this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento);
-
-    } else {
-      this.exibeBotaoReenviar = false;
-      this.exibeBotaoCancelar = false;
-      this.exibeBotaoProrrogar = false;
-      this.desabiltarBotoes = true;
-    }
-
-    if (!this.novoOrcamentoService.validarExpiracao((this.novoOrcamentoService.orcamentoCotacaoDto.validade))) {
-      this.exibeBotaoCancelar = false;
-      this.exibeBotaoReenviar = false;
-      this.desabiltarBotoes = true;
-    }
-
-    if (!this.exibeBotaoCancelar && !this.exibeBotaoProrrogar && !this.exibeBotaoEditar && !this.exibeBotaoClonar) {
-      this.exibeBotaoNenhumaOpcao = true;
-    }
 
     this.items = [
       {
@@ -187,8 +182,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.idOrcamentoCotacao;
     this.router.navigate(["orcamentos/cadastrar-cliente", "clone"]);
   }
-
-
 
   retornarSimOuNao(data: any) {
     if (data == true) {
@@ -292,8 +285,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
 
         this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
-        this.verificarEdicao();
-        this.carrregarBotoneira();
         if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro) {
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
@@ -306,27 +297,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);
   }
 
-  editarDadosCadastrais: boolean = false;
-  verificarEdicaoDadosCadastraris(): boolean {
-    if (this.editar) {
-      if (this.verificarUsuarioLogadoEDonoOrcamento()) return true;
-    }
-    return false;
-  }
-
-  verificarUsuarioLogadoEDonoOrcamento() {
-    //pega o dono do orçamento
-    let donoOrcamento = this.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-    if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
-
-    return false;
-  }
-
-  editar: boolean = false;
-  verificarEdicao() {
-    this.editar = this.novoOrcamentoService.verificarEdicao();
-    this.editarDadosCadastrais = this.verificarEdicaoDadosCadastraris();
-  }
+  
 
   buscarParceiro(apelido) {
     this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) => {
