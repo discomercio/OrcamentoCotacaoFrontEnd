@@ -200,11 +200,13 @@
                                                         <th class="p-col-2 p-text-center">Preço</th>
                                                     </tr>
                                                 </ng-template>
+                                                
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
+                                                    
                                                     <tr class="{{telaDesktop ? '' : 'font-size'}}">
                                                         <td class="p-d-inline-flex"
-                                                            [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                            <img src="assets/demo/images/produtos/cond_ve09_ecoTurbo_frio.jpg"
+                                                            [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">                                                            
+                                                            <img src="{{imgUrl}}{{produto.urlImagem}}"
                                                                 [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
 
                                                             <p *ngIf="!telaDesktop"
@@ -328,9 +330,10 @@
                                                 </ng-template>
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
                                                     <tr class="{{telaDesktop ? '' : 'font-size'}}">
+                                                        
                                                         <td class="p-d-inline-flex"
                                                             [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                            <img src="assets/demo/images/produtos/cond_ve09_ecoTurbo_frio.jpg"
+                                                            <img src="{{imgUrl}}{{produto.urlImagem}}"
                                                                 [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
 
                                                             <p *ngIf="!telaDesktop"
