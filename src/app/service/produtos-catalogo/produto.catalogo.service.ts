@@ -8,6 +8,7 @@ import { HttpClient } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ProdutoCatalogoFabricante } from "src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante";
 import { ProdutoCatalogoItemProdutosAtivosDados } from "src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos";
+import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCatalogoImagem";
 
 @Injectable({
     providedIn: "root",
@@ -28,6 +29,12 @@ export class ProdutoCatalogoService {
             `${this.env.apiUrl()}produtocatalogo`
         );
     }
+
+    buscarDadosImagemPorProduto(produto): Observable<ProdutoCatalogoImagem[]> {
+        return this.http.get<ProdutoCatalogoImagem[]>(
+            `${this.env.apiUrl()}produtocatalogo/imagem/${produto}`
+        );
+    }    
 
     buscarProdutosAtivos(): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
