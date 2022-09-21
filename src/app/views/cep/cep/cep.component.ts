@@ -51,16 +51,28 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     this.criarForm();
   }
 
-  criarForm(){
+  criarForm() {
     this.form = this.fb.group({
-      cep:["",[Validators.required]],
-      endereco:["", [Validators.required]],
-      numero:[,[Validators.required]],
-      complemento:[],
-      bairro:["",[Validators.required]],
-      cidade:["",[Validators.required]],
-      uf:["",[Validators.required]],
+      cep: ["", [Validators.required]],
+      endereco: ["", [Validators.required]],
+      numero: [, [Validators.required]],
+      complemento: [],
+      bairro: ["", [Validators.required]],
+      cidade: ["", [Validators.required]],
+      uf: ["", [Validators.required]],
     });
+  }
+
+  limparCampos() {
+    //nao avisamos
+    this.Endereco = "";
+    this.Numero = "";
+    this.Complemento = "";
+    this.Bairro = "";
+    this.Cidade = "";
+    this.Uf = "";
+    this.cep_retorno = "";
+    this.criarForm();
   }
 
   saiuCep() {
@@ -68,16 +80,8 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     //se vazio, não damos nenhuma mensagem
     this.Cep = StringUtils.retorna_so_digitos(this.Cep);
     if (this.Cep == "" || this.Cep == 'undefined') {
-      
-      //nao avisamos
-      this.Endereco = "";
-      this.Numero = "";
-      this.Complemento = "";
-      this.Bairro = "";
-      this.Cidade = "";
-      this.Uf = "";
-      this.cep_retorno = "";
-      this.criarForm();
+      this.limparCampos();
+
       return false;
     }
 
@@ -90,6 +94,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       // this.zerarCamposEndEntrega();
       //vamos fazer a busca
       this.carregando = true;
+      this.limparCampos();
 
       this.cepService.buscarCep(this.Cep, null, null, null, "publico").toPromise()
         .then((r) => {
@@ -97,19 +102,19 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
           if (!r || r.length !== 1) {
             this.cep_retorno = "";
-            // this.mostrarCepNaoEncontrado();
+            this.alertaService.mostrarMensagem("CEP inválido ou não encontrado.")
             return;
           }
           const end = r[0];
-
-          this.cep_retorno = this.Cep;
+          this.cep_retorno = end.Cep;
+          this.Cep = end.Cep;
           if (!!end.Bairro) {
             this.Bairro = end.Bairro;
           }
           if (!!end.Cidade) {
             if (!!end.ListaCidadeIBGE && end.ListaCidadeIBGE.length > 0) {
               this.temCidade = false;
-              debugger;
+              
               this.lstCidadeIBGE = end.ListaCidadeIBGE;
             }
             else {
@@ -203,7 +208,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     });
   }
 
-  validarForm():boolean{
+  validarForm(): boolean {
     if (!this.validacaoFormularioService.validaForm(this.form)) return false;
 
     return true;
