@@ -28,6 +28,10 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 import { AprovarOrcamentoComponent } from '../../orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
+import { AprovacaoOrcamentoClienteComponent } from '../../orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
+import { NovoOrcamentoService } from '../../orcamentos/novo-orcamento/novo-orcamento.service';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -233,8 +237,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       }
     }
 
-    this.desconverterTelefones();
-
     if (this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       if (this.clientePF()) this.passarDadosPF()
 
@@ -270,7 +272,12 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Bairro = this.cepComponente.Bairro;
     this.dadosCliente.Cidade = this.cepComponente.Cidade;
     this.dadosCliente.Uf = this.cepComponente.Uf;
-    this.dadosCliente.ProdutorRural = this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO;//Sempre será não, não utiliza mais!
+    this.dadosCliente.ProdutorRural = this.TipoCliente == this.constantes.ID_PF ?
+      this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
+    this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
+    this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
+    if (this.TipoCliente == this.constantes.ID_PF)
+      this.dadosCliente.Nascimento = DataUtils.formata_dataString_para_formato_data(this.dadosCliente.Nascimento.toLocaleString("pt-br"));
 
     if (!this.validarDadosClienteCadastro()) return;
 
@@ -278,23 +285,25 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
-    aprovacaoOrcamento.clienteCadastroDto.DadosCliente = this.dadosCliente;
+    aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
+    aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosCliente));
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
 
-    // // mandar para api cadastrar e transformar 
-    // this.alertaService.mostrarMensagem("Passou nas validações!<br>Não fizemos a chamada para API!<br>Calma que estamos implementando");
-    // this.desabilitaBotao = false;
-    // return;
+    this.desconverterTelefones();
+
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
       debugger;
       if (!r) {
-        debugger;
-        //salvou o cliente???
+        this.alertaService.mostrarMensagem(r.join("<br>"));
+        return;
       }
+
+      this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
-      this.alertaService.mostrarErroInternet(e);
+      debugger;
+      this.alertaService.mostrarErroInternet(e.errors);
       return;
     })
 

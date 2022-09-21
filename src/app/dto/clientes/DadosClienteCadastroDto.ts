@@ -41,6 +41,7 @@ export class DadosClienteCadastroDto {
     Email: string;
     EmailXml: string;
     Contato: string;
+    UsuarioCadastro:string;
 
     public static DadosClienteCadastroDtoDeEnderecoEntregaDtoClienteCadastro(end: EnderecoEntregaDtoClienteCadastro): DadosClienteCadastroDto {
         let dados: DadosClienteCadastroDto = new DadosClienteCadastroDto();
