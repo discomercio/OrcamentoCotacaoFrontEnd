@@ -64,7 +64,7 @@ export class EnderecoEntregaComponent implements OnInit {
       endRamal1: [""],
       endTel2: [FormataTelefone.mascaraTelefone()],
       endRamal2: [""],
-      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [ Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       ieEndEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_ie]
     }, {
       validators: [
@@ -171,12 +171,12 @@ export class EnderecoEntregaComponent implements OnInit {
   }
 
   validarForm(): boolean {
-    if (!this.validacaoFormularioService.validaForm(this.form))
-      return false;
+    let form = this.validacaoFormularioService.validaForm(this.form);
+    let formCep = this.tipoPf ?
+      this.componenteCep.validarForm() : !this.tipoPf && this.componenteCep ? this.componenteCep.validarForm() : false;
 
-    if (!this.componenteCep.validarForm()) {
-      return false;
-    }
+    if (!form || !formCep) return false;
+
     return true;
   }
 

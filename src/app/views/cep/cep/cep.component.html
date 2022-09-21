@@ -2,7 +2,7 @@
     <form [formGroup]="form">
         <div class="p-fluid p-grid">
             <div class="p-field p-col-7 p-lg-2 p-md-2 p-sm-3 p-as-baseline p-py-0">
-                <label for="cep">Cep</label>
+                <label for="cep">CEP</label>
                 <p-inputMask type="text" id="cep" formControlName="cep" [(ngModel)]="Cep" (onBlur)="saiuCep()"
                     mask="{{mascaraCep}}"></p-inputMask>
                 <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'cep')">
@@ -11,7 +11,7 @@
             </div>
             <div>
                 <div class="p-col-12 p-message">
-                    <button class="p-mt-1" pButton pRipple label="Não sei o Cep" icon="pi pi-search"
+                    <button class="p-mt-1" pButton pRipple label="Não sei o CEP" icon="pi pi-search"
                         (click)="buscarCep()"></button>
                 </div>
             </div>

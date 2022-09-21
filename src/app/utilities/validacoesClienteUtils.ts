@@ -59,19 +59,19 @@ export class ValidacoesClienteUtils {
 
         //validar referências bancárias
         //não exigimos um número de referências, mas as que foram criadas devem estar preenchidas
-        if(clienteCadastroDto){
+        if (clienteCadastroDto) {
             for (let i = 0; i < clienteCadastroDto.RefBancaria.length; i++) {
                 let este = clienteCadastroDto.RefBancaria[i];
                 validacoes = validacoes.concat(this.validarRefBancaria(este));
             }
-    
+
             //validar referências comerciais
             //não exigimos um número de referências, mas as que foram criadas devem estar preenchidas    
             for (let i = 0; i < clienteCadastroDto.RefComercial.length; i++) {
                 let este = clienteCadastroDto.RefComercial[i];
                 validacoes = validacoes.concat(this.validarRefComerial(este));
             }
-    
+
             validacoes = validacoes.concat(this.verificarRefComercialDuplicada(clienteCadastroDto.RefComercial));
         }
 
@@ -249,7 +249,7 @@ export class ValidacoesClienteUtils {
         }
         //nao validamos a data dessa forma, ela já é uma data no formulário: if (!isDate(f.dt_nasc)) {
         //e ela é opcional, então não validamos nada!
-        
+
         ret.concat(this.validarNascimento(dadosClienteCadastroDto.Nascimento));
 
         return ret;
@@ -257,7 +257,6 @@ export class ValidacoesClienteUtils {
 
     public static validarNascimento(nascimento: string | Date): string[] {
         let ret: string[] = new Array();
-        let dataAtual = new Date();
         if (!!nascimento) {
             let data = nascimento.toString().split('-');
             if (data.length == 3) {
@@ -266,20 +265,19 @@ export class ValidacoesClienteUtils {
                 if (data[2].substring(0, 1) == "0")
                     data[2] = data[2].replace("0", "");
 
-                let nascimento: Date = new Date(data[0] + "/" + data[1] + "/" + data[2]);
+                let nascimentoDate: Date = new Date(data[0] + "/" + data[1] + "/" + data[2]);
                 let nascIsValid: boolean = true;
                 //verificamos o ano
                 if (parseInt(data[0]) < 1900)
                     nascIsValid = false;
-                if (!DataUtils.validarData(nascimento))
+                if (!DataUtils.validarData(nascimentoDate))
                     nascIsValid = false;
 
                 if (!nascIsValid)
                     ret.push("Data de nascimento inválida!");
 
-                if (nascimento.getDate() >= dataAtual.getDate() &&
-                    nascimento.getMonth() >= dataAtual.getMonth() &&
-                    nascimento.getFullYear() >= dataAtual.getFullYear())
+                let dataAtual = new Date();
+                if (nascimento >= DataUtils.formataParaFormulario(dataAtual))
                     ret.push("Data de nascimento não pode ser igual ou maior que a data atual!");
             }
 

@@ -32,7 +32,7 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
   lstEnderecos: CepDto[] = [];
   endereco: any;
   carregando: boolean;
-  origem:string;
+  origem: string;
 
   ngOnInit(): void {
     this.origem = this.option.data.origem;
@@ -116,39 +116,40 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
   buscarCepPorEndereco() {
 
     this.lstEnderecos = [];
-
-    if (!this.endereco && !this.cidade.value) {
+    
+    if (!this.endereco && this.cidade && !this.cidade.value) {
       this.alertaService.mostrarMensagem("Favor digitar o endereco ou a localidade!");
+      return;
     }
     if (!this.uf) {
       this.alertaService.mostrarMensagem("Favor selecionar um Estado!");
+      return;
     }
-    else if (this.uf && !this.cidade.value) {
+    if (this.uf && !this.cidade.value) {
       this.alertaService.mostrarMensagem("Favor digitar uma localidade!");
+      return;
     }
-    else {
 
-      this.carregando = true;
+    this.carregando = true;
 
-      let achou = this.lstCidades.filter(x => x.value == this.cidade.value);
+    let achou = this.lstCidades.filter(x => x.value == this.cidade.value);
 
-      if (achou.length > 0) {
-        this.cepService.buscarCepPorEndereco(this.endereco, this.cidade.value, this.uf, this.origem).toPromise().then((r) => {
-          if (!!r) {
-            if (r.length > 0) {
-              this.lstEnderecos = r;
-              this.endereco = "";
-            }
-            else {
-              this.alertaService.mostrarMensagem("Erro ao carregar a lista de Endereços!")
-            }
+    if (achou.length > 0) {
+      this.cepService.buscarCepPorEndereco(this.endereco, this.cidade.value, this.uf, this.origem).toPromise().then((r) => {
+        if (!!r) {
+          if (r.length > 0) {
+            this.lstEnderecos = r;
+            this.endereco = "";
           }
-          this.carregando = false;
-        }).catch((e) => {
-          this.carregando = false;
-          this.alertaService.mostrarErroInternet(e);
-        })
-      }
+          else {
+            this.alertaService.mostrarMensagem("Erro ao carregar a lista de Endereços!")
+          }
+        }
+        this.carregando = false;
+      }).catch((e) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      });
     }
   }
 
@@ -163,10 +164,10 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
     }
   }
   addEndereco() {
-      if (this.endereco != null) {
-        this.ref.close(this.endereco);
-      }
-      return;
+    if (this.endereco != null) {
+      this.ref.close(this.endereco);
+    }
+    return;
   }
 
   marcarLinha(e: Event) {

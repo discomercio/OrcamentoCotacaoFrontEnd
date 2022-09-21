@@ -1,4 +1,4 @@
-<div class="p-col-12 p-d-inline-flex p-jc-center">
+<div class="p-col-12 p-d-inline-flex p-jc-center" [ngClass]="{'carregando': carregando}">
     <div class="p-col-12">
         <div class=" p-grid p-jc-around">
             <div class="p-col-12 p-lg-8 p-md-10 p-sm-10">
@@ -88,7 +88,7 @@
                 <!-- PJ => Telefone 1 | Ramal | Telefone 2 | Ramal -->
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid">
-                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                        <div class="p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="fone1">Telefone 1</label>
                             <input id="fone1" type="text" formControlName="tel1" [(ngModel)]="dadosCliente.TelComercial"
                                 pInputText mask="{{mascaraTelefone}}" maxlength="16">
@@ -98,7 +98,7 @@
                                     *ngIf="formPJ.controls.tel1.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                        <div class="p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
                             <label for="ramal">Ramal</label>
                             <input id="ramal" type="text" pInputText maxlength="4" formControlName="ramal1"
                                 [(ngModel)]="dadosCliente.Ramal">
@@ -108,7 +108,7 @@
                                     *ngIf="formPJ.controls.ramal1.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                        <div class="p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="fone2">Telefone 2</label>
                             <input id="fone2" type="text" formControlName="tel2"
                                 [(ngModel)]="dadosCliente.TelComercial2" pInputText mask="{{mascaraTelefone}}"
@@ -119,7 +119,7 @@
                                     *ngIf="formPJ.controls.tel2.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-as-end p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                        <div class="p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
                             <label for="ramal2">Ramal</label>
                             <input id="ramal2" type="text" pInputText maxlength="4" formControlName="ramal2"
                                 [(ngModel)]="dadosCliente.Ramal2">
@@ -134,7 +134,7 @@
                 <!-- Contribuinte ICMS | IE -->
                 <div class="p-col-12 p-py-0">
                     <div class="fluid p-grid">
-                        <div class="p-field p-fluid p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline">
+                        <div class="p-field p-fluid p-col-12 p-lg-4 p-md-4 p-sm-6">
                             <label for="icmsPJ">Contribuinte ICMS</label>
                             <p-dropdown id="icmsPJ" [options]="listaContribuinteICMS" placeholder="Selecione"
                                 [showClear]="true" formControlName="icms" optionValue="value" optionLabel="label"
@@ -152,7 +152,7 @@
                             </div>
                         </div>
 
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-baseline">
+                        <div class="p-field p-fluid p-col-6 p-lg-3 p-md-3 p-sm-6">
                             <label for="iePJ">IE</label>
                             <input id="iePJ" type="text" pInputText maxlength="20" formControlName="inscricaoEstadual"
                                 [disabled]="dadosCliente.Contribuinte_Icms_Status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
@@ -184,7 +184,7 @@
                                     *ngIf="formPF.controls.nome.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="cpfCnpj">CPF</label>
                             <p-inputMask id="cpfCnpj" type="text" formControlName="cpfCnpj"
                                 [(ngModel)]="dadosCliente.Cnpj_Cpf" mask="{{mascaraCPF}}">
@@ -197,11 +197,11 @@
                                     *CPF inválido</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="rg">RG</label>
                             <input id="rg" [(ngModel)]="dadosCliente.Rg" formControlName="rg" pInputText>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="nascimento">Nascimento</label>
                             <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento" formControlName="nascimento"
                                 (keyup)="escrevendoData($event)" maxlength="10" minlength="10" mask="99/99/9999">
@@ -212,7 +212,7 @@
                                     *Data inválida</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="sexo">Sexo</label>
                             <p-dropdown id="sexo" [options]="listaSexo" formControlName="sexo" optionValue="id"
                                 [autoDisplayFirst]="false" optionLabel="value" [(ngModel)]="dadosCliente.Sexo">
@@ -232,7 +232,7 @@
                 <!-- Email | Emailxml -->
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid p-py-2">
-                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
                             <label for="email">E-mail</label>
                             <input id="email" type="text" [(ngModel)]="dadosCliente.Email" formControlName="email"
                                 pInputText maxlength="60">
@@ -242,13 +242,13 @@
                                     inválido</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
                             <label for="emailXml">E-mail (XML)</label>
                             <input id="emailXml" type="text" [(ngModel)]="dadosCliente.EmailXml" pInputText
                                 maxlength="60" formControlName="emailXml">
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'emailXml')">
-                                <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.emailXml">E-mail
+                                <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.email">E-mail
                                     inválido</small>
                             </div>
                         </div>
@@ -257,8 +257,8 @@
                 <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid">
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                            <label for="foneResidencial">Fone Residencial</label>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="foneResidencial">Fone residencial</label>
                             <input id="foneResidencial" type="text" formControlName="telResidencial"
                                 [(ngModel)]="dadosCliente.TelefoneResidencial" pInputText mask="{{mascaraTelefone}}">
                             <div class="p-text-truncate"
@@ -267,7 +267,7 @@
                                     *ngIf="formPF.controls.telResidencial.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="celular">Celular</label>
                             <input id="celular" type="text" formControlName="celular" [(ngModel)]="dadosCliente.Celular"
                                 pInputText mask="{{mascaraTelefone}}">
@@ -277,8 +277,8 @@
                                     *ngIf="formPF.controls.celular.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
-                            <label for="foneComercial">Fone Comercial</label>
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                            <label for="foneComercial">Fone comercial</label>
                             <input id="foneComercial" type="text" formControlName="telComercial"
                                 [(ngModel)]="dadosCliente.TelComercial" pInputText mask="{{mascaraTelefone}}">
                             <div class="p-text-truncate"
@@ -287,7 +287,7 @@
                                     *ngIf="formPF.controls.telComercial.errors?.required">{{mensagemErro}}</small>
                             </div>
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end p-py-0">
+                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="ramal">Ramal</label>
                             <input id="ramal" type="text" formControlName="ramal" [(ngModel)]="dadosCliente.Ramal"
                                 pInputText>

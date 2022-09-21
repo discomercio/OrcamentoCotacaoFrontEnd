@@ -65,6 +65,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase2 = false;
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
+  carregando:boolean = false;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -84,12 +85,14 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   idOpcao: number;
   idFormaPagto: number;
 
-  ngOnInit(): void {
+  ngOnInit(): void { 
+    this.carregando = true;
     this.mascaraCPF = StringUtils.inputMaskCPF();
     this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
 
     if (this.aprovacaoPubicoService.orcamento == undefined) {
+      this.carregando = false;
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
     }
@@ -103,7 +106,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
     this.criarForm();
-
+     this.carregando = false;
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -207,16 +210,23 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   validarForms(): boolean {
+    let formEntrega = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco ?
+      this.enderecoEntrega.validarForm() : true;
     if (this.clientePF()) {
-      if (!this.validacaoFormularioService.validaForm(this.formPF) ||
-        !this.cepComponente.validarForm()) {
+      let formPf = this.validacaoFormularioService.validaForm(this.formPF);
+      let formCep = this.cepComponente.validarForm();
+
+
+      if (!formPf || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
-        return false;;
+        return false;
       }
     }
     else {
-      if (!this.validacaoFormularioService.validaForm(this.formPJ) ||
-        !this.cepComponente.validarForm()) {
+      let formPj = this.validacaoFormularioService.validaForm(this.formPJ);
+      let formCep = this.cepComponente.validarForm();
+
+      if (!formPj || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
         return false;
       }
@@ -239,12 +249,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       if (this.clientePF()) this.passarDadosPF()
-
-      //validar endereço de entrega
-      if (!this.enderecoEntrega.validarForm()) {
-        this.desabilitaBotao = false;
-        return false;
-      }
 
       let validacoes: string[] = [];
       validacoes = validacoes.concat(this.enderecoEntrega.validarEnderecoEntrega(this.cepComponente.lstCidadeIBGE))
@@ -290,20 +294,19 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
 
     this.desconverterTelefones();
-
+    
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
-      debugger;
-      if (!r) {
+      if(r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
+        this.desconverterTelefones();
         return;
       }
 
       this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
-      debugger;
-      this.alertaService.mostrarErroInternet(e.errors);
+      this.alertaService.mostrarErroInternet(e.error.errors.join("<br>"));
       return;
     })
 
