@@ -65,7 +65,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase2 = false;
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
-  carregando:boolean = false;
+  carregando: boolean = false;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -85,7 +85,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   idOpcao: number;
   idFormaPagto: number;
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.carregando = true;
     this.mascaraCPF = StringUtils.inputMaskCPF();
     this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
@@ -106,7 +106,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
     this.criarForm();
-     this.carregando = false;
+    this.carregando = false;
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -281,7 +281,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
     this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     if (this.TipoCliente == this.constantes.ID_PF)
-      this.dadosCliente.Nascimento = DataUtils.formata_dataString_para_formato_data(this.dadosCliente.Nascimento.toLocaleString("pt-br"));
+      this.dadosCliente.Nascimento = this.dadosCliente.Nascimento ?
+        DataUtils.formata_dataString_para_formato_data(this.dadosCliente.Nascimento.toLocaleString("pt-br")) : null;
 
     if (!this.validarDadosClienteCadastro()) return;
 
@@ -294,10 +295,10 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
 
     this.desconverterTelefones();
-    
+
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
-      if(r != null) {
+      if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
         this.desconverterTelefones();
         return;

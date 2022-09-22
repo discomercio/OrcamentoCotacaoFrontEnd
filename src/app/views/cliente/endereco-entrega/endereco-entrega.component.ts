@@ -56,8 +56,8 @@ export class EnderecoEntregaComponent implements OnInit {
     this.form = this.fb.group({
       justificativa: ["", [Validators.required]],
       endTipoPessoa: [null, this.tipoPf ? [] : [Validators.required]],
-      endNome: [this.enderecoEntregaDtoClienteCadastro.EndEtg_nome, [Validators.required]],
-      cpfCnpj: [this.enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf, [Validators.required]],
+      endNome: [this.enderecoEntregaDtoClienteCadastro.EndEtg_nome, this.tipoPf ? [] : [Validators.required]],
+      cpfCnpj: [this.enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf, this.tipoPf ? [] : [Validators.required]],
       endTelResidencial: [FormataTelefone.mascaraTelefone()],
       endCelular: [FormataTelefone.mascaraTelefone()],
       endTel1: [FormataTelefone.mascaraTelefone()],
