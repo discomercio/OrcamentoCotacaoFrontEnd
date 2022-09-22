@@ -7,6 +7,7 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { NovoOrcamentoService } from '../novo-orcamento.service';
+import { ProdutoCatalogoService } from '../../../../service/produtos-catalogo/produto.catalogo.service'
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -53,6 +54,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly permissaoService: PermissaoService,
     private readonly autenticacaoService: AutenticacaoService,
+    private readonly produtoCatalogoService: ProdutoCatalogoService,
     private router: Router) {
     super(telaDesktopService);
   }
@@ -87,8 +89,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   habilitaBotaoAprovar: boolean;
   permissaoOrcamentoResponse: PermissaoOrcamentoResponse;
   editar: boolean = false;
+  imgUrl: string;
 
   ngOnInit(): void {
+
+    this.imgUrl = this.produtoCatalogoService.imgUrl;  
 
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
 
@@ -292,6 +297,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }
     });
   }
+
 
   verificarAlcadaUsuario(idOpcao: number): boolean {
     return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);

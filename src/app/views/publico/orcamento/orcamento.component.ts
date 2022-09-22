@@ -20,6 +20,7 @@ import { PublicoService } from 'src/app/service/publico/publico.service';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
+import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produto.catalogo.service'
 
 @Component({
   selector: 'app-orcamento',
@@ -36,7 +37,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-    private readonly aprovacaoPublicoService: AprovacaoPublicoService
+    private readonly aprovacaoPublicoService: AprovacaoPublicoService,
+    private readonly produtoCatalogoService: ProdutoCatalogoService,
+
   ) {
     super(telaDesktopService);
   }
@@ -53,10 +56,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   validado: boolean = false;
   desabiltarBotoes: boolean;
   opcaoPagtoSelecionada: FormaPagtoCriacao;
+  imgUrl: string;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
+    this.imgUrl = this.produtoCatalogoService.imgUrl;  
+
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);

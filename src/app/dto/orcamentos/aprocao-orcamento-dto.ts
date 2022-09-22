@@ -1,3 +1,4 @@
+import { ClienteCadastroDto } from "../clientes/ClienteCadastroDto";
 import { DadosClienteCadastroDto } from "../clientes/DadosClienteCadastroDto";
 import { EnderecoEntregaDtoClienteCadastro } from "../clientes/EnderecoEntregaDTOClienteCadastro";
 
@@ -5,6 +6,6 @@ export class AprovacaoOrcamentoDto{
     idOrcamento:number;
     idOpcao:number;
     idFormaPagto:number;
-    dadosClienteDto:DadosClienteCadastroDto;
+    clienteCadastroDto:ClienteCadastroDto;
     enderecoEntregaDto:EnderecoEntregaDtoClienteCadastro;
 }

@@ -66,10 +66,10 @@ export class FormatarTelefone {
     static SepararTelefone(s_tel: string): TelefoneSeparado {
         let numeros = StringUtils.retorna_so_digitos(s_tel);
         let ret = new TelefoneSeparado();
-        ret.Ddd = numeros.substr(0, 2);
+        ret.Ddd = numeros.substring(0, 2);
         ret.Telefone = "";
         if (numeros.length > 2) {
-            ret.Telefone = numeros.substr(2);
+            ret.Telefone = numeros.substring(2);
         }
         return ret;
     }
