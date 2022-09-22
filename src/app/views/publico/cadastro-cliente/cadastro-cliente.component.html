@@ -203,8 +203,8 @@
                         </div>
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="nascimento">Nascimento</label>
-                            <p-inputMask type="text" [(ngModel)]="dadosCliente.Nascimento" formControlName="nascimento"
-                                (keyup)="escrevendoData($event)" maxlength="10" minlength="10" mask="99/99/9999">
+                            <p-inputMask type="text" [(ngModel)]="nasc" formControlName="nascimento"
+                                maxlength="10" minlength="10" mask="99/99/9999">
                             </p-inputMask>
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'nascimento')">
@@ -290,7 +290,7 @@
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="ramal">Ramal</label>
                             <input id="ramal" type="text" formControlName="ramal" [(ngModel)]="dadosCliente.Ramal"
-                                pInputText>
+                                pInputText maxlength="4">
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'ramal')">
                                 <small class="p-error"
