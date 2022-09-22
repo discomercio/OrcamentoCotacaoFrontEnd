@@ -2,7 +2,7 @@ import { StringUtils } from '../formatarString/string-utils';
 
 export class ValidacoesUtils {
     public static email_ok(email: string): boolean {
-        let filtro_regex = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z][_]*)*@([0-9a-zA-Z][-\w]*\.)+[a-zA-Z]{2,9})$/;
+        let filtro_regex = /^([0-9a-zA-Z]([-.+\w]*[0-9a-zA-Z][_]*)*@([0-9a-zA-Z][-\w]*\.)+[a-zA-Z]{2,9})$/;
         if (!filtro_regex.test(email)) return false;
         return true;
     }

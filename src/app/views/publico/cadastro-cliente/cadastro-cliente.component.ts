@@ -65,7 +65,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase2 = false;
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
-  carregando:boolean = false;
+  carregando: boolean = false;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -84,8 +84,9 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
+  nasc: string|Date;
 
-  ngOnInit(): void { 
+  ngOnInit(): void {
     this.carregando = true;
     this.mascaraCPF = StringUtils.inputMaskCPF();
     this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
@@ -106,7 +107,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
     this.criarForm();
-     this.carregando = false;
+    this.carregando = false;
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -280,10 +281,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
     this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
     this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
-    if (this.TipoCliente == this.constantes.ID_PF)
-      this.dadosCliente.Nascimento = DataUtils.formata_dataString_para_formato_data(this.dadosCliente.Nascimento.toLocaleString("pt-br"));
+    if (this.TipoCliente == this.constantes.ID_PF) {
+      this.dadosCliente.Nascimento = this.nasc ?
+        DataUtils.formata_dataString_para_formato_data(this.nasc.toLocaleString("pt-br")) : null;
+    }
 
     if (!this.validarDadosClienteCadastro()) return;
+
 
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
@@ -294,10 +298,10 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
 
     this.desconverterTelefones();
-    
+
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
-      if(r != null) {
+      if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
         this.desconverterTelefones();
         return;
@@ -306,7 +310,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
-      this.alertaService.mostrarErroInternet(e.error.errors.join("<br>"));
+      this.alertaService.mostrarErroInternet(e);
       return;
     })
 
