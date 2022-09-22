@@ -112,7 +112,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
         this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
         this.editar =this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
-        this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.AprovarOpcaoOrcamento;
+        this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
         this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
         this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
         this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
