@@ -310,7 +310,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
-      this.alertaService.mostrarErroInternet(e.error.errors.join("<br>"));
+      this.alertaService.mostrarErroInternet(e);
       return;
     })
 
