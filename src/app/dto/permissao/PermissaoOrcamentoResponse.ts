@@ -7,7 +7,7 @@ export class PermissaoOrcamentoResponse {
     ClonarOrcamento: boolean;
     ReenviarOrcamento: boolean;
     EditarOpcaoOrcamento: boolean;
-    AprovarOpcaoOrcamento: boolean;
+    DesabilitarAprovarOpcaoOrcamento: boolean;
     NenhumaOpcaoOrcamento: boolean;
     DesabilitarBotoes: boolean;
 

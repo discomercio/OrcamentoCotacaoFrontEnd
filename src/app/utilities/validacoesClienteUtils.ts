@@ -270,10 +270,14 @@ export class ValidacoesClienteUtils {
                 //verificamos o ano
                 if (parseInt(data[0]) < 1900)
                     nascIsValid = false;
+
                 if (!DataUtils.validarData(nascimentoDate))
                     nascIsValid = false;
 
                 if (!nascIsValid)
+                    ret.push("Data de nascimento inválida!");
+
+                if (nascimento != DataUtils.formataParaFormulario(nascimentoDate))
                     ret.push("Data de nascimento inválida!");
 
                 let dataAtual = new Date();
