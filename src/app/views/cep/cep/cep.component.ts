@@ -94,10 +94,11 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       // this.zerarCamposEndEntrega();
       //vamos fazer a busca
       this.carregando = true;
-      this.limparCampos();
 
       this.cepService.buscarCep(this.Cep, null, null, null, "publico").toPromise()
         .then((r) => {
+          this.limparCampos();
+
           this.carregando = false;
 
           if (!r || r.length !== 1) {
@@ -114,7 +115,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
           if (!!end.Cidade) {
             if (!!end.ListaCidadeIBGE && end.ListaCidadeIBGE.length > 0) {
               this.temCidade = false;
-              
+
               this.lstCidadeIBGE = end.ListaCidadeIBGE;
             }
             else {
@@ -134,6 +135,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
         }).catch((r) => {
           //deu erro na busca
           //ou não achou nada...
+          this.limparCampos();
 
           this.carregando = false;
           this.alertaService.mostrarErroInternet(r);
@@ -155,7 +157,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
   buscarCep() {
 
-    this.zerarCamposEndEntrega();
+    
 
     let options: any = {
       autoFocus: false,
@@ -178,6 +180,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: CepDto) => {
       if (resultado) {
+        this.zerarCamposEndEntrega();
         let end: CepDto = resultado;
 
         if (!!end.Uf) {
