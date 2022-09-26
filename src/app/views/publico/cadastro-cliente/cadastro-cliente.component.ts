@@ -64,7 +64,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase2 = false;
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
-  carregando: boolean = false;
+  carregando: boolean;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -295,15 +295,20 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (!this.validarDadosClienteCadastro()) return;
 
+
+    this.converterTelefonesEnderecoEntrega();
+
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
     aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
     aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosCliente));
-    aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
+    aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
 
     this.desconverterTelefones();
+    this.desconverterTelefonesEnderecoEntrega();
+
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
@@ -319,7 +324,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       return;
     });
 
-    this.desabilitaBotao = false;
     this.carregando = false;
   }
 
@@ -367,5 +371,44 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.TelComercial = this.dadosCliente.DddComercial + this.dadosCliente.TelComercial;
     this.dadosCliente.TelComercial2 = this.dadosCliente.DddComercial2 + this.dadosCliente.TelComercial2;
   }
+
+  converterTelefonesEnderecoEntrega() {
+
+    let s1 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res = s1.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res = s1.Ddd;
+
+    let s2 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel = s2.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel = s2.Ddd;
+
+    let s3 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com = s3.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com = s3.Ddd;
+
+    let s4 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 = s4.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 = s4.Ddd;
+
+  }
+
+  desconverterTelefonesEnderecoEntrega() {
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2;
+  }
+
 }
 

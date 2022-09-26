@@ -64,7 +64,7 @@ export class EnderecoEntregaComponent implements OnInit {
       endRamal1: [""],
       endTel2: [FormataTelefone.mascaraTelefone()],
       endRamal2: [""],
-      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL)]],
       ieEndEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_ie]
     }, {
       validators: [
@@ -124,8 +124,10 @@ export class EnderecoEntregaComponent implements OnInit {
     this.componenteCep.Cep = "";
     // this.pessoaEntregaEhPF = true;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PF;
-    this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status = this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO;
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status = this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL;
     this.form.controls.icmsEntrega.setValue(this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status);
+    this.enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status = this.pessoaEntregaEhPF ?
+    this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
   }
 
   PJ() {
