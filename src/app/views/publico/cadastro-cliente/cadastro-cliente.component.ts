@@ -32,6 +32,7 @@ import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
 import { AprovacaoOrcamentoClienteComponent } from '../../orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { NovoOrcamentoService } from '../../orcamentos/novo-orcamento/novo-orcamento.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -45,15 +46,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     private router: Router,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly clienteService: ClienteService,
-    private readonly prepedidoService: PrepedidoService,
-    private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly aprovacaoPubicoService: AprovacaoPublicoService,
     telaDesktopService: TelaDesktopService,
     private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
-    private readonly orcamentoService: OrcamentosService
+    private readonly orcamentoService: OrcamentosService,
+    private readonly sweetalertService: SweetalertService
   ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
@@ -65,7 +64,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase2 = false;
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
-  carregando: boolean = false;
+  carregando: boolean;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -84,7 +83,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
-  nasc: string|Date;
+  nasc: string | Date;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -97,7 +96,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
     }
-
     this.activatedRoute.queryParams.subscribe(params => {
       this.idOpcao = parseInt(params.idOpcao);
       this.idFormaPagto = parseInt(params.idFormaPagto);
@@ -220,6 +218,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
       if (!formPf || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
+        this.carregando = false;
         return false;
       }
     }
@@ -229,6 +228,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
       if (!formPj || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
+        this.carregando = false;
         return false;
       }
     }
@@ -243,6 +243,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       if (validacoes.length == 1) {
         this.desconverterTelefones();
         this.desabilitaBotao = false;
+        this.carregando = false;
         this.alertaService.mostrarMensagem("Lista de erros: <br>" + validacoes.join("<br>"));
         return false;
       }
@@ -256,6 +257,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       if (validacoes.length > 0) {
         // this.desconverterTelefones();
         this.desabilitaBotao = false;
+        this.carregando = false;
         this.alertaService.mostrarMensagem(validacoes.join("<br>"));
         return false;
       }
@@ -266,6 +268,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   salvar() {
     this.desabilitaBotao = true;
+    this.carregando = true;
 
     if (!this.validarForms()) return;
 
@@ -280,6 +283,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.ProdutorRural = this.TipoCliente == this.constantes.ID_PF ?
       this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
     this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
+    this.dadosCliente.Vendedor = this.aprovacaoPubicoService.orcamento.vendedor;
+    this.dadosCliente.Loja = this.aprovacaoPubicoService.orcamento.loja;
 
     // this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     this.dadosCliente.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
@@ -290,32 +295,36 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (!this.validarDadosClienteCadastro()) return;
 
+
+    this.converterTelefonesEnderecoEntrega();
+
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
     aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
     aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosCliente));
-    aprovacaoOrcamento.enderecoEntregaDto = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro;
+    aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
 
     this.desconverterTelefones();
+    this.desconverterTelefonesEnderecoEntrega();
+
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
-        this.desconverterTelefones();
         return;
       }
-
-      this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
+      this.sweetalertService.sucesso("Orçamento aprovado com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
       return;
-    })
+    });
 
-    this.desabilitaBotao = false;
+    this.carregando = false;
   }
 
   passarDadosPF() {
@@ -362,5 +371,44 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.TelComercial = this.dadosCliente.DddComercial + this.dadosCliente.TelComercial;
     this.dadosCliente.TelComercial2 = this.dadosCliente.DddComercial2 + this.dadosCliente.TelComercial2;
   }
+
+  converterTelefonesEnderecoEntrega() {
+
+    let s1 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res = s1.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res = s1.Ddd;
+
+    let s2 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel = s2.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel = s2.Ddd;
+
+    let s3 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com = s3.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com = s3.Ddd;
+
+    let s4 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 = s4.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 = s4.Ddd;
+
+  }
+
+  desconverterTelefonesEnderecoEntrega() {
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2;
+  }
+
 }
 
