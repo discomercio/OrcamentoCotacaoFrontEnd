@@ -84,7 +84,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
-  nasc: string|Date;
+  nasc: string | Date;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -97,7 +97,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
     }
-
     this.activatedRoute.queryParams.subscribe(params => {
       this.idOpcao = parseInt(params.idOpcao);
       this.idFormaPagto = parseInt(params.idFormaPagto);
@@ -280,7 +279,9 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.ProdutorRural = this.TipoCliente == this.constantes.ID_PF ?
       this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
     this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
-
+    this.dadosCliente.Vendedor = this.aprovacaoPubicoService.orcamento.vendedor;
+    this.dadosCliente.Loja = this.aprovacaoPubicoService.orcamento.loja;
+    
     // this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     this.dadosCliente.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
     if (this.TipoCliente == this.constantes.ID_PF) {
