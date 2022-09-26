@@ -61,7 +61,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
-    this.imgUrl = this.produtoCatalogoService.imgUrl;  
+    this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
@@ -156,46 +156,57 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   aprovar(opcao: OrcamentoOpcaoDto) {
 
+    if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+      this.sweetalertService.aviso("Esse orçamento já foi aprovado!");
+      return;
+    }
+    if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) {
+      this.sweetalertService.aviso("Esse orçamento não pode ser aprovado!");
+      return;
+    }
+
     //Não precisamos validar isso, pois essa validação esta sendo feita ao buscar o orçamento
     // estou deixando comentado para o caso de precisar mudar o fluxo de verificação dessa regra
     // if(!this.verificarStatusEExpiracao()) return;
-    if(!this.opcaoPagtoSelecionada){
+    if (!this.opcaoPagtoSelecionada) {
       this.alertaService.mostrarMensagem("Favor selecionar uma forma de pagamento!");
       return;
     }
 
     //aprovar forma de pagto
-    opcao.formaPagto.forEach(x =>{
-      if(x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
+    opcao.formaPagto.forEach(x => {
+      if (x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
     });
 
     this.sweetalertService.dialogo("Deseja realmente aprovar essa opção?", "").subscribe(result => {
-      if(result) {
-        this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], { queryParams: { 
-          idOpcao: this.opcaoPagtoSelecionada.idOpcao, 
-          idFormaPagto: this.opcaoPagtoSelecionada.id
-        } });
+      if (result) {
+        this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], {
+          queryParams: {
+            idOpcao: this.opcaoPagtoSelecionada.idOpcao,
+            idFormaPagto: this.opcaoPagtoSelecionada.id
+          }
+        });
       }
     });
     // this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
   }
 
-verificarStatusEExpiracao():boolean{
-  if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
-    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
-    return false;
-  }
-  if (this.orcamento.validade < new Date()) {
-    this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
-    return false;
-  }
-  if (!this.opcaoPagtoSelecionada) {
-    this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
-    return false;
-  }
+  verificarStatusEExpiracao(): boolean {
+    if (this.orcamento.status == 2 || this.orcamento.status == 3) { //APROVADO ou CANCELADO 
+      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos aprovados ou cancelados!");
+      return false;
+    }
+    if (this.orcamento.validade < new Date()) {
+      this.alertaService.mostrarMensagem("Não é possível aprovar, orçamentos com validade expirada!");
+      return false;
+    }
+    if (!this.opcaoPagtoSelecionada) {
+      this.alertaService.mostrarMensagem("Escolha uma forma de pagamento!");
+      return false;
+    }
 
-  return true;
-}
+    return true;
+  }
 
   activeState: boolean[] = [false, false, false];
   toggle(index: number) {

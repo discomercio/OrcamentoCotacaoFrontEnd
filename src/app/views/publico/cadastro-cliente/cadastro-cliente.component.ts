@@ -32,6 +32,7 @@ import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
 import { AprovacaoOrcamentoClienteComponent } from '../../orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { NovoOrcamentoService } from '../../orcamentos/novo-orcamento/novo-orcamento.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -45,15 +46,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     private router: Router,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly clienteService: ClienteService,
-    private readonly prepedidoService: PrepedidoService,
-    private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly aprovacaoPubicoService: AprovacaoPublicoService,
     telaDesktopService: TelaDesktopService,
     private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
-    private readonly orcamentoService: OrcamentosService
+    private readonly orcamentoService: OrcamentosService,
+    private readonly sweetalertService: SweetalertService
   ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
@@ -219,6 +218,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
       if (!formPf || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
+        this.carregando = false;
         return false;
       }
     }
@@ -228,6 +228,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
       if (!formPj || !formCep || !formEntrega) {
         this.desabilitaBotao = false;
+        this.carregando = false;
         return false;
       }
     }
@@ -242,6 +243,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       if (validacoes.length == 1) {
         this.desconverterTelefones();
         this.desabilitaBotao = false;
+        this.carregando = false;
         this.alertaService.mostrarMensagem("Lista de erros: <br>" + validacoes.join("<br>"));
         return false;
       }
@@ -255,6 +257,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       if (validacoes.length > 0) {
         // this.desconverterTelefones();
         this.desabilitaBotao = false;
+        this.carregando = false;
         this.alertaService.mostrarMensagem(validacoes.join("<br>"));
         return false;
       }
@@ -265,6 +268,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   salvar() {
     this.desabilitaBotao = true;
+    this.carregando = true;
 
     if (!this.validarForms()) return;
 
@@ -281,7 +285,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
     this.dadosCliente.Vendedor = this.aprovacaoPubicoService.orcamento.vendedor;
     this.dadosCliente.Loja = this.aprovacaoPubicoService.orcamento.loja;
-    
+
     // this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     this.dadosCliente.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
     if (this.TipoCliente == this.constantes.ID_PF) {
@@ -305,18 +309,18 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       //tem mensagem de erro ?
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
-        this.desconverterTelefones();
         return;
       }
-
-      this.alertaService.mostrarMensagem("Cliente Salvou com sucesso!");
+      this.sweetalertService.sucesso("Orçamento aprovado com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
       return;
-    })
+    });
 
     this.desabilitaBotao = false;
+    this.carregando = false;
   }
 
   passarDadosPF() {
