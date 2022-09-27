@@ -295,8 +295,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (!this.validarDadosClienteCadastro()) return;
 
-
-    this.converterTelefonesEnderecoEntrega();
+    if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco)
+      this.converterTelefonesEnderecoEntrega();
 
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
@@ -307,15 +307,20 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
 
     this.desconverterTelefones();
-    this.desconverterTelefonesEnderecoEntrega();
+    if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco)
+      this.desconverterTelefonesEnderecoEntrega();
 
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
+        this.carregando = false;
+        this.desabilitaBotao = false;
         return;
       }
+      this.carregando = false;
+      this.desabilitaBotao = false;
       this.sweetalertService.sucesso("Orçamento aprovado com sucesso!");
     }).catch((e) => {
       this.desabilitaBotao = false;
@@ -324,7 +329,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       return;
     });
 
-    this.carregando = false;
   }
 
   passarDadosPF() {
