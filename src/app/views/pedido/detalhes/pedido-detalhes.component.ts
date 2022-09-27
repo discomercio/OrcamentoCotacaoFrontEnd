@@ -10,7 +10,8 @@ import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-endereco';
 import { Constantes } from 'src/app/utilities/constantes';
-
+import { PermissaoService } from 'src/app/service/permissao/permissao.service';
+import { PermissaoPedidoResponse } from 'src/app/dto/permissao/PermissaoPedidoResponse';
 
 @Component({
   selector: 'app-pedido-detalhes',
@@ -23,7 +24,8 @@ export class PedidoDetalhesComponent implements OnInit {
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
     private location: Location,  
-    private router: Router
+    private router: Router,
+    private readonly permissaoService: PermissaoService
   ) { }
 
   
@@ -39,6 +41,7 @@ export class PedidoDetalhesComponent implements OnInit {
   constantes: Constantes = new Constantes();
   public enderecoEntregaFormatado: string;
   public qtdeLinhaEndereco: number;
+  permissaoPedidoResponse: PermissaoPedidoResponse;
 
   montarEnderecoEntrega(enderecoEntregaDto: any) {
     
@@ -122,6 +125,24 @@ export class PedidoDetalhesComponent implements OnInit {
 
   ngOnInit() {
     this.numeroPedido = this.activatedRoute.snapshot.params.numeroPedido;
+
+     this.permissaoService.buscarPermissaoPedido(this.numeroPedido).toPromise().then(response => {
+
+       this.permissaoPedidoResponse = response;
+
+      if (!this.permissaoPedidoResponse.Sucesso) {
+        this.alertaService.mostrarMensagem(this.permissaoPedidoResponse.Mensagem);
+        this.router.navigate(['orcamentos/listar/pedidos']);
+        return;
+      }
+
+      if (!this.permissaoPedidoResponse.VisualizarPedido) {
+        this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+        this.router.navigate(['orcamentos/listar/pedidos']);
+        return;
+      }
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+
     this.carregar();
     setTimeout(() => {
       this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);

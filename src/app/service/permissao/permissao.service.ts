@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { PermissaoOrcamentoResponse } from './../../dto/permissao/PermissaoOrcamentoResponse';
+import { PermissaoPrePedidoResponse } from './../../dto/permissao/PermissaoPrePedidoResponse';
+import { PermissaoPedidoResponse } from './../../dto/permissao/PermissaoPedidoResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +13,15 @@ export class PermissaoService {
 
     constructor(private http: HttpClient, private env: environment) { }
 
-    buscarPermissaoOrcamento(idOrcamento: number,): Observable<PermissaoOrcamentoResponse> {
+    buscarPermissaoOrcamento(idOrcamento: number): Observable<PermissaoOrcamentoResponse> {
         return this.http.get<PermissaoOrcamentoResponse>(`${this.env.apiUrl()}Permissao/RetornarPermissaoOrcamento?idOrcamento=${idOrcamento}`);
-      }
+      };
+
+      buscarPermissaoPrePedido(idPrePedido: string): Observable<PermissaoPrePedidoResponse> {
+        return this.http.get<PermissaoPrePedidoResponse>(`${this.env.apiUrl()}Permissao/RetornarPermissaoPrePedido?idPrePedido=${idPrePedido}`);
+      };
+
+      buscarPermissaoPedido(idPedido: string): Observable<PermissaoPedidoResponse> {
+        return this.http.get<PermissaoPedidoResponse>(`${this.env.apiUrl()}Permissao/RetornarPermissaoPedido?idPedido=${idPedido}`);
+      };
 }
