@@ -11,6 +11,8 @@ import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-ender
 import { Constantes } from 'src/app/utilities/constantes';
 import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
 import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrePedidoDto';
+import { PermissaoService } from 'src/app/service/permissao/permissao.service';
+import { PermissaoPrePedidoResponse } from 'src/app/dto/permissao/PermissaoPrePedidoResponse';
 
 @Component({
   selector: 'app-prepedido-detalhes',
@@ -23,7 +25,8 @@ export class PrepedidoDetalhesComponent implements OnInit {
     private readonly prepedidoService : PrepedidoService,
     private readonly alertaService: AlertaService,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private readonly permissaoService: PermissaoService
   ) { }
 
   numeroPrepedido = "";
@@ -36,6 +39,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
   constantes: Constantes = new Constantes();
   public enderecoEntregaFormatado: string;
   public qtdeLinhaEndereco: number;
+  permissaoPrePedidoResponse: PermissaoPrePedidoResponse;
 
   montarEnderecoEntrega(enderecoEntregaDto: any): void {  
     
@@ -132,6 +136,24 @@ export class PrepedidoDetalhesComponent implements OnInit {
 
   ngOnInit() {
     this.numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
+
+    this.permissaoService.buscarPermissaoPrePedido(this.numeroPrepedido).toPromise().then(response => {
+
+      this.permissaoPrePedidoResponse = response;
+
+      if (!this.permissaoPrePedidoResponse.Sucesso) {
+        this.alertaService.mostrarMensagem(this.permissaoPrePedidoResponse.Mensagem);
+        this.router.navigate(['orcamentos/listar/pendentes']);
+        return;
+      }
+
+      if (!this.permissaoPrePedidoResponse.VisualizarPrePedido) {
+        this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+        this.router.navigate(['orcamentos/listar/pendentes']);
+        return;
+      }
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+
     this.carregar();        
     setTimeout(() => {
       this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);

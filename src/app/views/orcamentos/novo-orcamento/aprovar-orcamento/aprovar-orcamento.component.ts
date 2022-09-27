@@ -107,7 +107,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           return;
         }
 
-        if (!this.permissaoOrcamentoResponse.VizualizarOrcamento) {
+        if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
           this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
           this.router.navigate(['orcamentos/listar/orcamentos']);
           return;
@@ -298,12 +298,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
-
   verificarAlcadaUsuario(idOpcao: number): boolean {
     return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);
   }
-
-  
 
   buscarParceiro(apelido) {
     this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) => {
@@ -395,8 +392,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
             }
           }
         }
+        this.ngOnInit();
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
-
     });
   }
 

@@ -1,6 +1,6 @@
 export class PermissaoOrcamentoResponse {
     
-    VizualizarOrcamento: boolean;
+    VisualizarOrcamento: boolean;
     ProrrogarOrcamento: boolean;
     EditarOrcamento: boolean; 
     CancelarOrcamento: boolean;

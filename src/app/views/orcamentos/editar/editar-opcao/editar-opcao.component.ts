@@ -32,7 +32,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-
+    
   }
 
   async ngAfterViewInit() {
@@ -48,20 +48,21 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
+    
+
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
+      
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
 
-
-    let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-
-    if (donoOrcamento.toLocaleLowerCase() != this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-      if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
-        this.router.navigate(["/orcamentos/listar/orcamentos"]);
-    }
+    // let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+    // if (donoOrcamento.toLocaleLowerCase() != this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+    //   if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
+    //     this.router.navigate(["/orcamentos/listar/orcamentos"]);
+    // }
 
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
