@@ -266,23 +266,28 @@ export class ValidacoesClienteUtils {
                     data[2] = data[2].replace("0", "");
 
                 let nascimentoDate: Date = new Date(data[0] + "/" + data[1] + "/" + data[2]);
-                let nascIsValid: boolean = true;
                 //verificamos o ano
-                if (parseInt(data[0]) < 1900)
-                    nascIsValid = false;
-
-                if (!DataUtils.validarData(nascimentoDate))
-                    nascIsValid = false;
-
-                if (!nascIsValid)
+                if (parseInt(data[0]) < 1900) {
                     ret.push("Data de nascimento inválida!");
+                    return ret;
+                }
 
-                if (nascimento != DataUtils.formataParaFormulario(nascimentoDate))
+                if (!DataUtils.validarData(nascimentoDate)) {
                     ret.push("Data de nascimento inválida!");
+                    return ret;
+                }
+
+                if (nascimento != DataUtils.formataParaFormulario(nascimentoDate)){
+                    ret.push("Data de nascimento inválida!");
+                    return ret;
+                }
 
                 let dataAtual = new Date();
-                if (nascimento >= DataUtils.formataParaFormulario(dataAtual))
+                if (nascimento >= DataUtils.formataParaFormulario(dataAtual)){
                     ret.push("Data de nascimento não pode ser igual ou maior que a data atual!");
+                    return ret;
+                }
+                    
             }
 
         }

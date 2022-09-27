@@ -36,7 +36,7 @@ export class ValidacaoCustomizadaService extends Validators {
   cnpj_cpf_ok(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       let cpfCnpj: string = control.get("cpfCnpj").value;
-      if(!cpfCnpj) return null;
+      if (!cpfCnpj) return null;
       if (!CpfCnpjUtils.cnpj_cpf_ok(cpfCnpj)) {
         control.get('cpfCnpj').setErrors({ cpfCnpj: true });
         return { retorno: true };
@@ -47,14 +47,16 @@ export class ValidacaoCustomizadaService extends Validators {
     }
   }
 
-  validarNascimento():ValidatorFn{
+  validarNascimento(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       let data: string = control.get("nascimento")?.value;
-      if(!data) return null;
-      
+      if (!data) return null;
+
       data = DataUtils.formata_dataString_para_formato_data(data);
       let validacao = ValidacoesClienteUtils.validarNascimento(data);
-      if (validacao.length > 0) {
+      
+      if (validacao && validacao.length > 0) {
+
         control.get('nascimento').setErrors({ nascimento: true });
         return { retorno: true };
       } else {
