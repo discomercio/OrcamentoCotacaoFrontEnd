@@ -33,6 +33,7 @@ import { AprovacaoOrcamentoClienteComponent } from '../../orcamentos/aprovacao-o
 import { NovoOrcamentoService } from '../../orcamentos/novo-orcamento/novo-orcamento.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { enumParametros } from '../../orcamentos/enumParametros';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -84,6 +85,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   idOpcao: number;
   idFormaPagto: number;
   nasc: string | Date;
+  orientacaoPreenchimento: string;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -101,7 +103,10 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.idFormaPagto = parseInt(params.idFormaPagto);
     });
 
+
     this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
+    let idParam = this.clientePF() ? 29 : 30;
+    this.buscarParametros(idParam, this.aprovacaoPubicoService.orcamento.loja);
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
     this.criarForm();
@@ -135,6 +140,16 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     if (this.TipoCliente == this.constantes.ID_PF) return true;
 
     return false;
+  }
+
+  buscarParametros(idParam: number, loja: string) {
+    this.orcamentoService.buscarParametros(idParam, loja, "publico").toPromise().then((r) => {
+      if (r != null) {
+        this.orientacaoPreenchimento = r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   criarListas() {

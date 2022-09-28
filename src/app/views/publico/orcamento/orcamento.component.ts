@@ -39,8 +39,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
-    private readonly produtoCatalogoService: ProdutoCatalogoService,
-    private readonly orcamentoService: OrcamentosService
+    private readonly produtoCatalogoService: ProdutoCatalogoService
   ) {
     super(telaDesktopService);
   }
@@ -67,16 +66,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
-    });
-  }
-
-  buscarParametros(id: number) {
-    this.orcamentoService.buscarParametros(id, this.autenticacaoService._lojaLogado, "publico").toPromise().then((r) => {
-      if (r != null) {
-        // this.condicoesGerais = r[0]['Valor'];
-      }
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
     });
   }
 
