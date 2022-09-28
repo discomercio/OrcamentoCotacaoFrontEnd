@@ -76,6 +76,10 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   idFormaPagto: number;
   nasc: string | Date;
   orientacaoPreenchimento: string;
+  termoPrivacidade: string;
+  privacidade:boolean = false;
+  condicoesAnaliseCredito: string;
+  condicoes:boolean = false;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -96,11 +100,12 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
 
-    let idParam = this.clientePF() ? 29 : 30;
-    this.buscarParametros(idParam, this.aprovacaoPubicoService.orcamento.loja);
 
     this.verificarContribuinteICMS();
 
+    this.buscarOrientacaoPreenchimento(this.aprovacaoPubicoService.orcamento.loja);
+    this.buscarCondicoesAnaliseCredito(this.aprovacaoPubicoService.orcamento.loja);
+    this.buscarTermoPrivacidade(this.aprovacaoPubicoService.orcamento.loja);
 
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
@@ -109,7 +114,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   ngAfterViewInit(): void {
-    this.verificarUF();
+    this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -137,13 +142,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   verificarContribuinteICMS() {
     if (!this.clientePF()) {
-      //verificar se tem alçada nos produtos
       this.bloqueioIcms = this.verificarAlcadaDescontoSuperior();
     }
-  }
-
-  verificarUF() {
-    this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
   }
 
   verificarAlcadaDescontoSuperior(): boolean {
@@ -164,7 +164,9 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     return false;
   }
 
-  buscarParametros(idParam: number, loja: string) {
+  buscarOrientacaoPreenchimento(loja: string): string {
+    let idParam = this.clientePF() ? 29 : 30
+
     this.orcamentoService.buscarParametros(idParam, loja, "publico").toPromise().then((r) => {
       if (r != null) {
         this.orientacaoPreenchimento = r[0]['Valor'];
@@ -172,6 +174,29 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
     });
+    return;
+  }
+
+  buscarCondicoesAnaliseCredito(loja: string): string {
+    this.orcamentoService.buscarParametros(27, loja, "publico").toPromise().then((r) => {
+      if (r != null) {
+        this.condicoesAnaliseCredito = r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
+    return;
+  }
+
+  buscarTermoPrivacidade(loja: string): string {
+    this.orcamentoService.buscarParametros(28, loja, "publico").toPromise().then((r) => {
+      if (r != null) {
+        this.termoPrivacidade = r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
+    return;
   }
 
   criarListas() {
@@ -304,6 +329,12 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   salvar() {
+
+    if(!this.privacidade || !this.condicoes){
+      this.alertaService.mostrarMensagem("É necessário aceitar os termos e condições!");
+      return;
+    }
+
     this.desabilitaBotao = true;
     this.carregando = true;
 
@@ -344,8 +375,18 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
 
     this.desconverterTelefones();
-    if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco)
+    if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      if (this.cepComponente.bloqueioUf) {
+        if (this.cepComponente.Uf.toLocaleLowerCase() != this.enderecoEntrega.componenteCep.Uf.toLocaleLowerCase()) {
+          this.alertaService.mostrarMensagem("A UF de entrega não pode ser diferente do cadastro!");
+          this.carregando = false;
+          this.desabilitaBotao = false;
+          return;
+        }
+      }
       this.desconverterTelefonesEnderecoEntrega();
+
+    }
 
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
