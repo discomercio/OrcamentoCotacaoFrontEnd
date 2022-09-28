@@ -225,7 +225,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   buscarParametros(id: number) {
 
     if (this.autenticacaoService._usuarioLogado) {
-      this.orcamentoService.buscarParametros(id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+      this.orcamentoService.buscarParametros(id, this.autenticacaoService._lojaLogado, null).toPromise().then((r) => {
         if (r != null) {
           this.condicoesGerais = r[0]['Valor'];
         }

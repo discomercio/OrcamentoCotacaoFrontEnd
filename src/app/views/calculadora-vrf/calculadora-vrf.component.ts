@@ -121,7 +121,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     let IdCfgParametro = 21;
 
-    this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+    this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise().then((r) => {
       if (r != null) {
         this.logo = "assets/layout/images/" + r[0]['Valor'];
       }
@@ -134,7 +134,7 @@ export class CalculadoraVrfComponent implements OnInit {
   buscarTextoRodapePDF(lojaLogada: string) {
     let IdCfgParametro = 22
 
-    this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada).toPromise().then((r) => {
+    this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada, null).toPromise().then((r) => {
       if (r != null) {
         this.textoRodape = r[0]['Valor'];
         this.buscarLogoPDF(lojaLogada);

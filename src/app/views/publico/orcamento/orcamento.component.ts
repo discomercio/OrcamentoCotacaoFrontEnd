@@ -21,6 +21,7 @@ import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produto.catalogo.service'
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 @Component({
   selector: 'app-orcamento',
@@ -39,7 +40,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
     private readonly produtoCatalogoService: ProdutoCatalogoService,
-
+    private readonly orcamentoService: OrcamentosService
   ) {
     super(telaDesktopService);
   }
@@ -66,6 +67,16 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
+    });
+  }
+
+  buscarParametros(id: number) {
+    this.orcamentoService.buscarParametros(id, this.autenticacaoService._lojaLogado, "publico").toPromise().then((r) => {
+      if (r != null) {
+        // this.condicoesGerais = r[0]['Valor'];
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
     });
   }
 
