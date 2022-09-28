@@ -95,13 +95,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   retornarContibuinteICMS(data: any) {
     switch (data) {
-      case 1:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM:
         return 'Sim';
         break;
-      case 2:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO:
         return 'Não';
         break;
-      case 3:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO:
         return 'Isento';
         break;
 

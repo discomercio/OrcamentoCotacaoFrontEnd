@@ -1,23 +1,16 @@
 import { AlertaService } from './../../../components/alert-dialog/alerta.service';
-import { MensagemService } from './../../../utilities/mensagem/mensagem.service';
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CadastroDto } from 'src/app/dto/orcamentos/CadastroDto';
-import { ClienteService } from 'src/app/service/cliente/cliente.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ClienteDto } from 'src/app/dto/clientes/cliente-dto';
 import { ActivatedRoute, Router } from "@angular/router"
-import { PrepedidoBuscarService } from 'src/app/service/prepedido/prepedido-buscar.service';
-import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { CepComponent } from '../../cep/cep/cep.component';
 import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
-import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-cliente.service';
-import { EnderecoEntregaJustificativaDto } from 'src/app/dto/clientes/EnderecoEntregaJustificativaDto';
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
-import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
@@ -26,14 +19,10 @@ import { FormatarTelefone } from 'src/app/utilities/formatarTelefone';
 import { EnderecoEntregaComponent } from '../../cliente/endereco-entrega/endereco-entrega.component';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
-import { AprovarOrcamentoComponent } from '../../orcamentos/novo-orcamento/aprovar-orcamento/aprovar-orcamento.component';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
-import { AprovacaoOrcamentoClienteComponent } from '../../orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
-import { NovoOrcamentoService } from '../../orcamentos/novo-orcamento/novo-orcamento.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { enumParametros } from '../../orcamentos/enumParametros';
 
 @Component({
   selector: 'app-cadastro-cliente',
@@ -41,7 +30,7 @@ import { enumParametros } from '../../orcamentos/enumParametros';
   styleUrls: ['./cadastro-cliente.component.scss']
 })
 
-export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent implements OnInit {
+export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
 
   constructor(
     private router: Router,
@@ -66,6 +55,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   fase1e2juntas = true;
   desabilitaBotao: boolean = false;
   carregando: boolean;
+  bloqueioIcms: boolean;
 
   listaSexo: any[];
   listaProdutorRural: any[];
@@ -105,12 +95,21 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
 
     this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
+
     let idParam = this.clientePF() ? 29 : 30;
     this.buscarParametros(idParam, this.aprovacaoPubicoService.orcamento.loja);
+
+    this.verificarContribuinteICMS();
+
+
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
     this.criarForm();
     this.carregando = false;
+  }
+
+  ngAfterViewInit(): void {
+    this.verificarUF();
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -134,6 +133,29 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Ramal2 = "";
     this.dadosCliente.Observacao_Filiacao = "";
     this.dadosCliente.ProdutorRural = 0;
+  }
+
+  verificarContribuinteICMS() {
+    if (!this.clientePF()) {
+      //verificar se tem alçada nos produtos
+      this.bloqueioIcms = this.verificarAlcadaDescontoSuperior();
+    }
+  }
+
+  verificarUF() {
+    this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
+  }
+
+  verificarAlcadaDescontoSuperior(): boolean {
+    let retorno = false;
+    let opcao = this.aprovacaoPubicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
+    if (opcao && opcao.id != 0) {
+      let produtos = opcao.listaProdutos.filter(x => x.idOperacaoAlcadaDescontoSuperior != null && x.idOperacaoAlcadaDescontoSuperior != 0);
+      if (produtos.length > 0) {
+        retorno = true;
+      }
+    }
+    return retorno;
   }
 
   clientePF(): boolean {
@@ -210,7 +232,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       contato: ["", [Validators.required]],
       email: ["", [Validators.required, Validators.email]],
       emailXml: ["", [Validators.email]],
-      icms: ["", [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPubicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: [""]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
   }

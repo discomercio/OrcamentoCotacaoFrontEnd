@@ -138,7 +138,7 @@
                             <label for="icmsPJ">Contribuinte ICMS</label>
                             <p-dropdown id="icmsPJ" [options]="listaContribuinteICMS" placeholder="Selecione"
                                 [showClear]="true" formControlName="icms" optionValue="value" optionLabel="label"
-                                [(ngModel)]="dadosCliente.Contribuinte_Icms_Status">
+                                [(ngModel)]="dadosCliente.Contribuinte_Icms_Status" [disabled]="bloqueioIcms">
                             </p-dropdown>
                             <div class="p-text-truncate"
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'icms')">
