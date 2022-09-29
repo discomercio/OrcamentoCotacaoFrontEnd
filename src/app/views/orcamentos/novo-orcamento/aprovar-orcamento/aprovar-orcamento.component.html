@@ -197,7 +197,7 @@
                                                         <th class="p-col-4">Produto</th>
                                                         <th class="p-col-1 p-text-center">Qtde</th>
                                                         <th class="p-col-1 p-text-center">Desc</th>
-                                                        <th class="p-col-2 p-text-center">Preço</th>
+                                                        <th class="p-col-2 p-text-center">Preço</th>                                                        
                                                     </tr>
                                                 </ng-template>
 
@@ -265,11 +265,13 @@
                                                     *ngFor="let fp of orcamento.formaPagto; let y = index">
                                                     <div class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
-                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                            <p-radioButton [inputId]="y" [value]="y"
-                                                                [disabled]="desabiltarBotoes" [(ngModel)]="opcaoPagto">
-                                                            </p-radioButton>
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center" *ngIf="fp.aprovado">
+                                                            <i class="pi pi-check" style="color: green;"></i>
                                                         </div>
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center" *ngIf="!fp.aprovado">
+                                                            <i class="pi pi-circle-off"></i>
+                                                        </div>
+
                                                         <div class="p-col-10 p-as-center">
                                                             <div
                                                                 [innerHtml]="novoOrcamentoService.formatarFormaPagamento(orcamento, fp)">
@@ -290,6 +292,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <!--
                                     <div class="p-col-12 p-d-inline-flex p-jc-around">
                                         <div class="">
                                             <button pButton pRipple label="Aprovar esta opção de orçamento"
@@ -298,6 +301,7 @@
                                                 icon="pi pi-check"></button>
                                         </div>
                                     </div>
+                                    -->
                                 </ng-template>
                             </p-accordionTab>
                         </p-accordion>
