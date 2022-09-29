@@ -3,7 +3,9 @@ import { ProdutoOrcamentoDto } from '../produtos/ProdutoOrcamentoDto';
 
 export class OrcamentoOpcaoDto {
     listaProdutos: ProdutoOrcamentoDto[];
-    VlTotal: number | null;    
-    formaPagto:FormaPagtoCriacao[];
-    percRT:number;
+    VlTotal: number | null;
+    formaPagto: FormaPagtoCriacao[];
+    percRT: number;
+    id: number;
+    idOrcamentoCotacao: number;
 }

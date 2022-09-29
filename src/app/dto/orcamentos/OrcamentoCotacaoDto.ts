@@ -26,7 +26,7 @@ export class OrcamentoCotacaoDto {
     status: number;
     token: string;
     condiCoesGerais: string;
-
+    contribuinteIcms:number;
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];
     mensageria: MensageriaDadosDto;

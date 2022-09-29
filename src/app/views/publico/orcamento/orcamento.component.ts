@@ -21,6 +21,7 @@ import { AprovacaoPublicoService } from '../aprovacao-publico.service';
 import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produto.catalogo.service'
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 @Component({
   selector: 'app-orcamento',
@@ -38,8 +39,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
-    private readonly produtoCatalogoService: ProdutoCatalogoService,
-
+    private readonly produtoCatalogoService: ProdutoCatalogoService
   ) {
     super(telaDesktopService);
   }
@@ -95,13 +95,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   retornarContibuinteICMS(data: any) {
     switch (data) {
-      case 1:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM:
         return 'Sim';
         break;
-      case 2:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO:
         return 'Não';
         break;
-      case 3:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO:
         return 'Isento';
         break;
 

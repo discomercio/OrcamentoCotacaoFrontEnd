@@ -51,7 +51,7 @@
             </div>
             <div class="p-as-baseline p-col-3 p-field p-py-0 p-sm-2">
                 <label for="uf">UF</label>
-                <input id="uf" pInputText formControlName="uf" [(ngModel)]="Uf" />
+                <input pInputText type="text" formControlName="uf" [(ngModel)]="Uf" maxlength="2">
                 <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'uf')">
                     <small class="p-error" *ngIf="form.controls.uf.errors?.required">{{mensagemErro}}</small>
                 </div>

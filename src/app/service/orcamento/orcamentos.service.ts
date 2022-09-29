@@ -61,8 +61,11 @@ export class OrcamentosService {
     return this.http.put<MensagemDto>(`${this.env.apiUrl()}Orcamento/${id}/reenviar`, id);
   }
 
-  buscarParametros(idCfgParametro: any, lojaLogada: string): Observable<any> {
-    return this.http.get<any>(`${this.env.apiUrl()}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
+  buscarParametros(idCfgParametro: any, lojaLogada: string, origem: string): Observable<any> {
+    if (origem == "publico")
+      return this.http.get<any>(`${this.env.apiUrl()}publico/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
+    
+      return this.http.get<any>(`${this.env.apiUrl()}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
   }
 
   atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DialogService } from 'primeng/dynamicdialog';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -23,7 +23,8 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     public readonly cepService: CepsService,
     private readonly alertaService: AlertaService,
     private readonly dialogService: DialogService,
-    public readonly validacaoFormularioService: ValidacaoFormularioService) {
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
+    public cdref: ChangeDetectorRef) {
     super(telaDesktopService);
   }
 
@@ -35,7 +36,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   Complemento: string;
   Bairro: string;
   Cidade: string;
-  Uf: string;
+  Uf: string = "";
   Cep: string;
 
   temCidade: boolean;
@@ -59,8 +60,9 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       complemento: [],
       bairro: ["", [Validators.required]],
       cidade: ["", [Validators.required]],
-      uf: ["", [Validators.required]],
+      uf: ["", []],
     });
+    // Validators.required
   }
 
   limparCampos() {
@@ -76,7 +78,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   saiuCep() {
-
     //se vazio, não damos nenhuma mensagem
     this.Cep = StringUtils.retorna_so_digitos(this.Cep);
     if (this.Cep == "" || this.Cep == 'undefined') {
@@ -97,7 +98,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
       this.cepService.buscarCep(this.Cep, null, null, null, "publico").toPromise()
         .then((r) => {
-          this.limparCampos();
 
           this.carregando = false;
 
@@ -106,31 +106,16 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
             this.alertaService.mostrarMensagem("CEP inválido ou não encontrado.")
             return;
           }
-          const end = r[0];
-          this.cep_retorno = end.Cep;
-          this.Cep = end.Cep;
-          if (!!end.Bairro) {
-            this.Bairro = end.Bairro;
-          }
-          if (!!end.Cidade) {
-            if (!!end.ListaCidadeIBGE && end.ListaCidadeIBGE.length > 0) {
-              this.temCidade = false;
 
-              this.lstCidadeIBGE = end.ListaCidadeIBGE;
+          if (this.bloqueioUf) {
+            if (this.Uf != r[0].Uf){
+              this.alertaService.mostrarMensagem("A UF não pode ser alterada!");
+              return;
             }
-            else {
-              this.Cidade = end.Cidade;
-              this.temCidade = true;
-            }
-
           }
-          if (!!end.Endereco) {
-            this.Endereco = end.Endereco;
-          }
-          if (!!end.Uf) {
-            this.Uf = end.Uf;
-            this.temUf = true;
-          }
+          
+          this.limparCampos();
+          this.passarValores(r[0]);
 
         }).catch((r) => {
           //deu erro na busca
@@ -156,9 +141,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   buscarCep() {
-
-    
-
     let options: any = {
       autoFocus: false,
       width: "60em",
@@ -180,40 +162,59 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: CepDto) => {
       if (resultado) {
+        if (this.bloqueioUf) {
+          if (this.Uf != resultado.Uf){
+            this.alertaService.mostrarMensagem("A UF não pode ser alterada!");
+            return;
+          }
+        }
         this.zerarCamposEndEntrega();
         let end: CepDto = resultado;
-
-        if (!!end.Uf) {
-          this.Uf = end.Uf;
-          this.temUf = true;
-        }
-        if (!!end.Cidade) {
-          if (!!end.ListaCidadeIBGE && end.ListaCidadeIBGE.length > 0) {
-            this.temCidade = false;
-            this.lstCidadeIBGE = end.ListaCidadeIBGE;
-          }
-          else {
-            this.Cidade = end.Cidade;
-            this.temCidade = true;
-          }
-
-        }
-        if (!!end.Bairro) {
-          this.Bairro = end.Bairro;
-        }
-        if (!!end.Endereco) {
-          this.Endereco = end.Endereco;
-        }
-
-        this.Cep = end.Cep;
-        this.cep_retorno = end.Cep;
+        this.passarValores(end);
       }
     });
+  }
+
+  passarValores(end: CepDto) {
+    if (!!end.Uf) {
+      this.Uf = end.Uf;
+      this.temUf = true;
+      this.form.controls.uf.setValue(end.Uf);
+    }
+    if (!!end.Cidade) {
+      if (!!end.ListaCidadeIBGE && end.ListaCidadeIBGE.length > 0) {
+        this.temCidade = false;
+        this.lstCidadeIBGE = end.ListaCidadeIBGE;
+      }
+      else {
+        this.Cidade = end.Cidade;
+        this.temCidade = true;
+      }
+
+    }
+    if (!!end.Bairro) {
+      this.Bairro = end.Bairro;
+    }
+    if (!!end.Endereco) {
+      this.Endereco = end.Endereco;
+    }
+
+    this.Cep = end.Cep;
+    this.cep_retorno = end.Cep;
   }
 
   validarForm(): boolean {
     if (!this.validacaoFormularioService.validaForm(this.form)) return false;
 
     return true;
+  }
+
+  bloqueioUf: boolean;
+  verificarUF(bloqueio: boolean, uf: string) {
+    if (bloqueio) {
+      this.bloqueioUf = bloqueio;
+      this.Uf = uf;
+      this.form.get("uf").disable();
+    }
   }
 }
