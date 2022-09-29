@@ -33,6 +33,9 @@ export class MensageriaComponent implements AfterViewInit {
   @Input('permiteEnviarMensagem')
   public permiteEnviarMensagem: boolean;   
 
+  @Input('rotaPublica')
+  public rotaPublica: boolean;     
+
   listaMensagens: MensageriaDto[];
 
   constructor(
@@ -45,7 +48,6 @@ export class MensageriaComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {    
     this.obterListaMensagem(this.idOrcamentoCotacao);
-    this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
   }
 
   obterListaMensagem(idOrcamentoCotacao: number) { 
@@ -53,16 +55,17 @@ export class MensageriaComponent implements AfterViewInit {
       this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
         if (r != null) {      
           this.listaMensagens = r;
-          this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
+
+          if (!this.rotaPublica){
+            this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
+          }
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
   enviarMensagem() {
-    this.validar();
-    
-    this.marcarMensagemComoLida(this.idOrcamentoCotacao); 
+    this.validar();  
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();

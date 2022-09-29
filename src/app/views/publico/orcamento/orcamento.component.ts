@@ -140,6 +140,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
             this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
             this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
+            this.mensagemComponente.rotaPublica = true;
             this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
