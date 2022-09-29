@@ -400,6 +400,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.carregando = false;
       this.desabilitaBotao = false;
       this.sweetalertService.sucesso("Orçamento aprovado com sucesso!");
+      this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
     }).catch((e) => {
       this.desabilitaBotao = false;
       this.carregando = false;
