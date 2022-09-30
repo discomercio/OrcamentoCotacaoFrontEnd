@@ -8,4 +8,5 @@ export class OrcamentoOpcaoDto {
     percRT: number;
     id: number;
     idOrcamentoCotacao: number;
+    aprovado:boolean;
 }

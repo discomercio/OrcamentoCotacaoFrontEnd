@@ -22,6 +22,7 @@ import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produto.catalogo.service'
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { enumParametros } from '../../orcamentos/enumParametros';
 
 @Component({
   selector: 'app-orcamento',
@@ -78,11 +79,18 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   retornarSimOuNao(data: any) {
+    
     if (data == true) {
       return "Sim";
     } else {
       return "Não";
     }
+  }
+
+  retornarEntregaImediata(data:any){
+    if(data == 0 ) return;
+    if(data == 2) return "Sim";
+    if(data == 1) return "Não";
   }
 
   retornarTipoPessoa(data: any) {
@@ -119,21 +127,39 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         if (r != null) {
 
           this.validado = true;
-
           this.orcamento = r;
-          this.aprovacaoPublicoService.orcamento = r;
-          this.aprovacaoPublicoService.paramGuid = param.guid;
-          this.paramGuid = param.guid;
+          if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+            let opcaoAprovado: OrcamentoOpcaoDto;
+            this.orcamento.listaOpcoes.forEach(e => {
+              let pagtoAprovado = e.formaPagto.filter(x => x.aprovado)[0];
+              if (!!pagtoAprovado) {
+                opcaoAprovado = new OrcamentoOpcaoDto();
+                opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
+                opcaoAprovado.aprovado = true;
+                return;
+              }
+              if(!!opcaoAprovado){
+                this.orcamento.listaOpcoes = new Array();
+                this.orcamento.listaOpcoes.push(opcaoAprovado);
+              }
+            });
+          }
+          else {
+            this.aprovacaoPublicoService.orcamento = r;
+            this.aprovacaoPublicoService.paramGuid = param.guid;
+            this.paramGuid = param.guid;
+          }
+
           this.publicHeader.imagemLogotipo = 'assets/layout/images/' + this.orcamento.lojaViewModel.imagemLogotipo;
 
           if (this.mensagemComponente != undefined) {
             this.mensagemComponente.permiteEnviarMensagem = true;
 
-
-            if (r.status == 3) {
+            if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
               this.desabiltarBotoes = true;
               this.mensagemComponente.permiteEnviarMensagem = false;
             }
+
 
             this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
             this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();

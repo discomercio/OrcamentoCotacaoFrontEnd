@@ -8,7 +8,7 @@ export class Usuario {
     parceiro: string = "";
     telefone: string = "";
     celular: string = "";
-    ativo: boolean = false;
+    ativo: boolean = true;
     permissoes: Array<string> = new Array();
     usuarioCadastro: string = "";
     dataCadastro: Date;
