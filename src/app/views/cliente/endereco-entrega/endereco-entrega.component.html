@@ -37,11 +37,11 @@
             <!-- PJ -->
             <div class="p-fluid p-formgrid p-grid" *ngIf="!tipoPf && enderecoEntregaDtoClienteCadastro.OutroEndereco">
                 <div class="p-field p-col-12">
-                    <p-radioButton [inputId]="3" [value]="true" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Física"
+                    <p-radioButton [inputId]="3" [value]="true" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa física"
                         (click)="PF()" formControlName="endTipoPessoa">
                     </p-radioButton>
                     &nbsp;
-                    <p-radioButton [inputId]="4" [value]="false" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa Jurídica"
+                    <p-radioButton [inputId]="4" [value]="false" [(ngModel)]="pessoaEntregaEhPF" label="Pessoa jurídica"
                         (click)="PJ()" formControlName="endTipoPessoa">
                     </p-radioButton>
                     <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'endTipoPessoa')">
@@ -49,8 +49,8 @@
                             *ngIf="form.controls.endTipoPessoa.errors?.required">{{mensagemErro}}</small>
                     </div>
                 </div>
-                <div *ngIf="pessoaEntregaEhPF != undefined">
-                    <div class="p-col-12">
+                <div *ngIf="pessoaEntregaEhPF != undefined" class="p-col-12 p-grid p-d-inline-flex">
+                    <div class="p-col-12 p-lg-7 p-md-7 p-sm-7">
                         <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
                             <label for="nomeEndEntrega">Nome</label>
                             <input id="nomeEndEntrega" type="text" formControlName="endNome"
@@ -62,7 +62,7 @@
                             </div>
                         </div>
                         <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
-                            <label for="endNome">Razão Social</label>
+                            <label for="endNome">Razão social</label>
                             <input id="endNome" type="text" formControlName="endNome"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
                             <div class="p-text-truncate"
@@ -73,9 +73,9 @@
                         </div>
                     </div>
                     <!-- CPF | CNPJ  -->
-                    <div class="p-grid p-col-12">
+                    <div class="p-col-12 p-lg-5 p-md-5 p-sm-5">
                         <!-- PF -->
-                        <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                        <div *ngIf="pessoaEntregaEhPF" class="p-field p-col-12">
                             <label for="cpfEndEntrega">CPF</label>
                             <p-inputMask id="cpfEndEntrega" type="text" formControlName="cpfCnpj"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" mask="{{mascaraCPF}}">
@@ -89,7 +89,7 @@
                             </div>
                         </div>
                         <!-- PJ -->
-                        <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-end">
+                        <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12">
                             <label for="cnpjEndEntrega">CNPJ</label>
                             <p-inputMask id="cnpjEndEntrega" type="text" formControlName="cpfCnpj"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf" mask="{{mascaraCNPJ}}">
@@ -105,13 +105,13 @@
                     </div>
                     <!-- telefones PF -->
                     <div class="p-grid p-col-12" *ngIf="pessoaEntregaEhPF">
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
-                            <label for="foneResidencialEndEntrega">Fone Residencial</label>
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-6 p-as-end">
+                            <label for="foneResidencialEndEntrega">Fone residencial</label>
                             <input id="foneResidencialEndEntrega" type="text" maxlength="16"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_res" pInputText
                                 mask="{{mascaraTelefone}}" formControlName="endTelResidencial">
                         </div>
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-as-end">
+                        <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-6 p-as-end">
                             <label for="celularEndEntrega">Celular</label>
                             <input id="celularEndEntrega" type="text"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel" pInputText
@@ -120,7 +120,7 @@
                     </div>
                     <!-- telefones PJ -->
                     <div class="p-col-12 p-d-inline-flex p-fluid p-grid" *ngIf="!pessoaEntregaEhPF">
-                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                        <div class="p-as-end p-col-6 p-field p-lg-4 p-md-4 p-sm-6 p-py-0">
                             <label for="fone1EndEntrega">Telefone 1</label>
                             <input id="fone1EndEntrega" type="text"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com" pInputText
@@ -132,7 +132,7 @@
                                 formControlName="endRamal1"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_ramal_com">
                         </div>
-                        <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                        <div class="p-as-end p-col-6 p-field p-lg-4 p-md-4 p-sm-6 p-py-0">
                             <label for="fone2EndEntrega">Telefone 2</label>
                             <input id="fone2EndEntrega" type="text" formControlName="endTel2"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2" pInputText
