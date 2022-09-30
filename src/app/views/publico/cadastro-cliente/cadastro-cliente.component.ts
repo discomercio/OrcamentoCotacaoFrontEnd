@@ -379,13 +379,14 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       if (this.cepComponente.bloqueioUf) {
         if (this.cepComponente.Uf.toLocaleLowerCase() != this.enderecoEntrega.componenteCep.Uf.toLocaleLowerCase()) {
           this.alertaService.mostrarMensagem("A UF de entrega não pode ser diferente do cadastro!");
+          this.enderecoEntrega.componenteCep.form.controls.uf.markAsDirty();
           this.carregando = false;
           this.desabilitaBotao = false;
+          this.desconverterTelefonesEnderecoEntrega();
           return;
         }
       }
       this.desconverterTelefonesEnderecoEntrega();
-
     }
 
 
