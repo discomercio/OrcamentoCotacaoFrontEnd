@@ -79,11 +79,18 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   retornarSimOuNao(data: any) {
+    
     if (data == true) {
       return "Sim";
     } else {
       return "Não";
     }
+  }
+
+  retornarEntregaImediata(data:any){
+    if(data == 0 ) return;
+    if(data == 2) return "Sim";
+    if(data == 1) return "Não";
   }
 
   retornarTipoPessoa(data: any) {
