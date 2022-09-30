@@ -231,7 +231,23 @@
                                             <div class="p-col-12 p-d-inline-flex p-jc-between p-jc-sm-end p-px-0">
                                                 <div class="p-col-6 p-px-0"
                                                     *ngFor="let fp of opcao.formaPagto; let y = index">
-                                                    <div class="p-col-12 p-d-inline-flex"
+                                                    <div *ngIf="opcao.aprovado" class="p-col-12 p-d-inline-flex"
+                                                        style="min-height: calc(100% - 45px);">
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
+                                                            *ngIf="fp.aprovado">
+                                                            <i class="pi pi-check" style="color: green;"></i>
+                                                        </div>
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
+                                                            *ngIf="!fp.aprovado">
+                                                            <i class="pi pi-circle-off"></i>
+                                                        </div>
+                                                        <div class="p-col-10 p-as-center">
+                                                            <div
+                                                                [innerHtml]="formatarFormaPagamento(orcamento, opcao, fp)">
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div *ngIf="!opcao.aprovado"  class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
                                                             <p-radioButton [inputId]="y" [value]="fp"
@@ -243,7 +259,6 @@
                                                                 [innerHtml]="formatarFormaPagamento(orcamento, opcao, fp)">
                                                             </div>
                                                         </div>
-
                                                     </div>
                                                     <div class="p-col-12 p-d-inline-flex">
                                                         <div class="p-col-2 p-m-1 p-text-center">
@@ -259,7 +274,7 @@
                                         </div>
 
                                     </div>
-                                    <div class="p-col-12 p-d-inline-flex p-jc-around">
+                                    <div *ngIf="!opcao.aprovado" class="p-col-12 p-d-inline-flex p-jc-around">
                                         <div>
                                             <button pButton pRipple label="Aprovar esta opção de orçamento"
                                                 class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
