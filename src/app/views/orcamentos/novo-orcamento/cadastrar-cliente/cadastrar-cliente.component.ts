@@ -443,7 +443,8 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacao;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCotacaoDto.id;
-    this.novoOrcamentoService.orcamentoCotacaoDto.validade = new Date(this.form.controls.Validade.value);
+    
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = DataUtils.formata_dataString_para_formato_data(DataUtils.formatarTela(this.form.controls.Validade.value));
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
