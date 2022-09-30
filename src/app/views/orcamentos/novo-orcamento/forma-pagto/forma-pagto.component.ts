@@ -149,7 +149,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   habilitar: boolean = true;
 
   selectAprazo() {
-    debugger;
+    
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
