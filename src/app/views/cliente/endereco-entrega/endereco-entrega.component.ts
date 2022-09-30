@@ -64,7 +64,7 @@ export class EnderecoEntregaComponent implements OnInit {
       endRamal1: [""],
       endTel2: [FormataTelefone.mascaraTelefone()],
       endRamal2: [""],
-      icmsEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status, this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL)]],
+      icmsEntrega: [this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL)]],
       ieEndEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_ie]
     }, {
       validators: [
@@ -127,7 +127,7 @@ export class EnderecoEntregaComponent implements OnInit {
     this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status = this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL;
     this.form.controls.icmsEntrega.setValue(this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status);
     this.enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status = this.pessoaEntregaEhPF ?
-    this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
+      this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
   }
 
   PJ() {
@@ -137,7 +137,6 @@ export class EnderecoEntregaComponent implements OnInit {
     this.componenteCep.Cep = "";
     // this.pessoaEntregaEhPF = false;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PJ;
-
   }
 
   inicializarCamposEndereco(enderecoEntrega: EnderecoEntregaDtoClienteCadastro) {
@@ -177,6 +176,12 @@ export class EnderecoEntregaComponent implements OnInit {
     let formCep = this.tipoPf ?
       this.componenteCep.validarForm() : !this.tipoPf && this.componenteCep ? this.componenteCep.validarForm() : false;
 
+    if(!this.tipoPf && !this.pessoaEntregaEhPF){
+      if(this.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status == this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL){
+        // this.form.controls.icmsEntrega.markAsDirty();
+        this.form.controls.icmsEntrega.setErrors({required : true});
+      }
+    }
     if (!form || !formCep) return false;
 
     return true;
