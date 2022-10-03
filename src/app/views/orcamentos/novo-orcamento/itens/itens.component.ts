@@ -115,7 +115,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       //ainda não carregou, vamos esperar....
       return false;
     }
-    
+
     if (this.novoOrcamentoService.lstProdutosSelecionados.length > 0) {
       this.sweetalertService.dialogo("Atenção", "Ao clonar uma opção a lista de produtos e formas de pagamentos serão sobrepostas!")
         .subscribe(retorno => {
@@ -210,18 +210,18 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     await this.formaPagto.buscarFormasPagto(this.param);
 
     // if (this.param != undefined) {
-      this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
-        if (r != null) {
-          this.formaPagto.qtdeMaxParcelas = r;
-          this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
+    this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
+      if (r != null) {
+        this.formaPagto.qtdeMaxParcelas = r;
+        this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
 
-          this.formaPagto.setarTipoPagto();
-          this.inscreveProdutoComboDto();
-        }
-      }).catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
-        this.carregandoProds = false;
-      });
+        this.formaPagto.setarTipoPagto();
+        this.inscreveProdutoComboDto();
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregandoProds = false;
+    });
     // }
 
     if (this.editando) this.formaPagto.editando = true;
@@ -380,11 +380,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
       if (r != null) {
+        
         if (!this.editando) {
           this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
           if (this.novoOrcamentoService.qtdeParcelas) {
             this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
             this.formaPagto.calcularValorAvista();
+            this.novoOrcamentoService.coeficientes = r;
           }
         }
         if (this.editando) {
@@ -488,8 +490,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   aplicarDescontoGeral(e: Event) {
 
     if (!this.novoOrcamentoService.verificarDescontoGeral()) return;
-
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
+      let valor = ((e.target) as HTMLInputElement).value;
+      let v: any = valor.replace(/,/g, '');
+      v = (v / 100).toFixed(2) + '';
+      x.descDado = parseFloat(v);
+      
       this.digitouDesc(e, x);
     });
   }

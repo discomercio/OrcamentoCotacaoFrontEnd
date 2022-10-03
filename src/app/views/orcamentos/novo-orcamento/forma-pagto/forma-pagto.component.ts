@@ -149,7 +149,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   habilitar: boolean = true;
 
   selectAprazo() {
-
+    
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
@@ -464,7 +464,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         "é necessário que seja selecionado a opção para pagamento á vista!");
       return false;
     }
-    if (pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+    
+    if (this.checkedAvista && pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
       if (!pagtoAvista.op_av_forma_pagto) {
         this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
         return false;

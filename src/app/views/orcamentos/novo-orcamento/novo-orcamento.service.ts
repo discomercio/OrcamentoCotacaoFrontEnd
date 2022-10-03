@@ -179,7 +179,7 @@ export class NovoOrcamentoService {
   calcularParcelas(qtdeParcelas: number) {
     if (!qtdeParcelas || qtdeParcelas <= 0)
       return;
-
+    
     this.qtdeParcelas = qtdeParcelas;
     this.recalcularProdutosComCoeficiente(qtdeParcelas, this.coeficientes);
   }
