@@ -324,24 +324,24 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
 
 
-    orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
-      opcao.formaPagto.forEach(p => {
+    // orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
+    //   opcao.formaPagto.forEach(p => {
+    //     formaPagtoOrcamento.push(p);
+    //     // Se aprovado, retorna somente opções aprovadas
+    //     // if (orcamento.status == 3) {
 
-        // Se aprovado, retorna somente opções aprovadas
-        if (orcamento.status == 3) {
+    //     //   if (p['aprovado'] == true) {
+    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
+    //     //     formaPagtoOrcamento.push(p);
+    //     //   } else {
+    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
+    //     //   }
+    //     // } else {
+    //     //   formaPagtoOrcamento.push(p);
+    //     // }
 
-          if (p['aprovado'] == true) {
-            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
-            formaPagtoOrcamento.push(p);
-          } else {
-            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
-          }
-        } else {
-          formaPagtoOrcamento.push(p);
-        }
-
-      })
-    });
+    //   })
+    // });
 
     this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
       comIndicacao, tipoUsuario, apelido)

@@ -167,10 +167,7 @@
                         *ngFor="let orcamento of novoOrcamentoService.orcamentoCotacaoDto?.listaOrcamentoCotacaoDto; let i = index">
 
 
-                        <p-accordion *ngIf="statusOrcamento == 'Aprovado' 
-                            && orcamento.formaPagto[0]?.aprovado ==true 
-                            || orcamento.formaPagto[1]?.aprovado ==true 
-                            || orcamento.formaPagto[2]?.aprovado ==true">
+                        <p-accordion *ngIf="statusOrcamento == 'Aprovado'">
 
                             <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
                                 <ng-template pTemplate="header">
