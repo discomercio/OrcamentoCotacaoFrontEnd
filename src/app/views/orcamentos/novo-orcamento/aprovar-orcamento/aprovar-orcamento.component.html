@@ -150,7 +150,7 @@
                                 <span>
                                     {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata)}}</span>
                             </div>
-                            <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata">
+                            <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata != undefined">
                                 <span class="p-text-bold">Entrega Imediata:</span>
                                 <span>
                                     {{retornarSimOuNao(novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata)}}</span>
