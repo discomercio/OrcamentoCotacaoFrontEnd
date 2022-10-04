@@ -43,12 +43,12 @@
                             <div *ngIf="!orcamento.parceiro">
                                 <span class="p-text-bold">Vendedor:</span>
                                 <span>
-                                    {{orcamento.vendedor}}</span>
+                                    {{orcamento.nomeIniciaisEmMaiusculasVendedor}}</span>
                             </div>
                             <div *ngIf="orcamento.parceiro">
                                 <span class="p-text-bold">Parceiro:</span>
                                 <span>
-                                    {{orcamento.parceiro}}</span>
+                                    {{orcamento.razaoSocialNomeIniciaisEmMaiusculasParceiro}}</span>
                             </div>
                             <div *ngIf="orcamento.vendedorParceiro">
                                 <span class="p-text-bold">Vendedor Parceiro:</span>
@@ -58,7 +58,7 @@
                             <div>
                                 <span class="p-text-bold">Cadastrado Por:</span>
                                 <span>
-                                    {{orcamento.usuarioCadastro}}</span>
+                                    {{orcamento.amigavelUsuarioCadastro}}</span>
                             </div>
                         </div>
                     </div>
