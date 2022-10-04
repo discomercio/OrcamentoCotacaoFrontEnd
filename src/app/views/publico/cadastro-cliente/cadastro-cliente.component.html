@@ -332,16 +332,16 @@
         <div class="p-grid p-jc-around">
             <div class="card p-col-12 p-lg-8 p-md-10 p-sm-10">
                 <div class="p-col-12 p-d-inline-flex">
-                    <div class="field-checkbox p-col-1">
+                    <div class="field-checkbox">
                         <p-checkbox [(ngModel)]="privacidade" [binary]="true"></p-checkbox>
                     </div>
-                    <span [innerHtml]="termoPrivacidade"></span>
+                    <span class="p-ml-2" [innerHtml]="termoPrivacidade"></span>
                 </div>
                 <div class="p-col-12 p-d-inline-flex">
-                    <div class="field-checkbox p-col-1">
+                    <div class="field-checkbox">
                         <p-checkbox [(ngModel)]="condicoes" [binary]="true"></p-checkbox>
                     </div>
-                    <span [innerHtml]="condicoesAnaliseCredito"></span>
+                    <span class="p-ml-2" [innerHtml]="condicoesAnaliseCredito"></span>
                 </div>
             </div>
         </div>

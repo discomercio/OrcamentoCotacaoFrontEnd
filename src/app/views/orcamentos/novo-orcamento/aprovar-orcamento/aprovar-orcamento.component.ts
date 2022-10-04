@@ -206,13 +206,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   retornarContibuinteICMS(data: any) {
     switch (data) {
-      case 1:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_SIM:
         return 'Sim';
         break;
-      case 2:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO:
         return 'Não';
         break;
-      case 3:
+      case this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO:
         return 'Isento';
         break;
 
@@ -324,24 +324,24 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
 
 
-    orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
-      opcao.formaPagto.forEach(p => {
+    // orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
+    //   opcao.formaPagto.forEach(p => {
+    //     formaPagtoOrcamento.push(p);
+    //     // Se aprovado, retorna somente opções aprovadas
+    //     // if (orcamento.status == 3) {
 
-        // Se aprovado, retorna somente opções aprovadas
-        if (orcamento.status == 3) {
+    //     //   if (p['aprovado'] == true) {
+    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
+    //     //     formaPagtoOrcamento.push(p);
+    //     //   } else {
+    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
+    //     //   }
+    //     // } else {
+    //     //   formaPagtoOrcamento.push(p);
+    //     // }
 
-          if (p['aprovado'] == true) {
-            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
-            formaPagtoOrcamento.push(p);
-          } else {
-            this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
-          }
-        } else {
-          formaPagtoOrcamento.push(p);
-        }
-
-      })
-    });
+    //   })
+    // });
 
     this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
       comIndicacao, tipoUsuario, apelido)

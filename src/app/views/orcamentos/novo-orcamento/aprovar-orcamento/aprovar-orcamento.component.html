@@ -50,12 +50,12 @@
                             <div *ngIf="!novoOrcamentoService.orcamentoCotacaoDto.parceiro">
                                 <span class="p-text-bold">Vendedor:</span>
                                 <span>
-                                    {{novoOrcamentoService.orcamentoCotacaoDto?.vendedor}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto?.nomeIniciaisEmMaiusculasVendedor}}</span>
                             </div>
                             <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto.parceiro">
                                 <span class="p-text-bold">Parceiro:</span>
                                 <span>
-                                    {{razaoSocialParceiro}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto?.razaoSocialNomeIniciaisEmMaiusculasParceiro}}</span>
                             </div>
                             <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro">
                                 <span class="p-text-bold">Vendedor Parceiro:</span>
@@ -65,7 +65,7 @@
                             <div>
                                 <span class="p-text-bold">Cadastrado Por:</span>
                                 <span>
-                                    {{novoOrcamentoService.orcamentoCotacaoDto?.cadastradoPor}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto.amigavelCadastradoPor}}</span>
                             </div>
 
 
@@ -150,7 +150,7 @@
                                 <span>
                                     {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata)}}</span>
                             </div>
-                            <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata">
+                            <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata != undefined">
                                 <span class="p-text-bold">Entrega Imediata:</span>
                                 <span>
                                     {{retornarSimOuNao(novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata)}}</span>
@@ -167,10 +167,7 @@
                         *ngFor="let orcamento of novoOrcamentoService.orcamentoCotacaoDto?.listaOrcamentoCotacaoDto; let i = index">
 
 
-                        <p-accordion *ngIf="statusOrcamento == 'Aprovado' 
-                            && orcamento.formaPagto[0]?.aprovado ==true 
-                            || orcamento.formaPagto[1]?.aprovado ==true 
-                            || orcamento.formaPagto[2]?.aprovado ==true">
+                        <p-accordion *ngIf="statusOrcamento == 'Aprovado'">
 
                             <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
                                 <ng-template pTemplate="header">

@@ -10,7 +10,9 @@ export class OrcamentoCotacaoDto {
     tipoCliente: string;
     nomeObra: string;
     vendedor: string;
+    nomeIniciaisEmMaiusculasVendedor: string;
     parceiro: string;
+    razaoSocialNomeIniciaisEmMaiusculasParceiro: string;
     vendedorParceiro: string;
     validade: Date;
     qtdeRenovacao: number;
@@ -20,17 +22,18 @@ export class OrcamentoCotacaoDto {
     stEntregaImediata: number;
     dataEntregaImediata: Date;
     usuarioCadastro: string;
+    amigavelUsuarioCadastro: string;
     uf: string;
     telefone: string;
     email: string;
     status: number;
     token: string;
     condiCoesGerais: string;
-    contribuinteIcms:number;
+    contribuinteIcms: number;
     listaFormasPagto: FormaPagto[];
     listaOpcoes: OrcamentoOpcaoDto[];
     mensageria: MensageriaDadosDto;
 
-    lojaViewModel:lojaEstilo;
+    lojaViewModel: lojaEstilo;
 }
 
