@@ -33,9 +33,13 @@ export class MensageriaService {
         return this.http.post<any>(`${this.env.apiUrl()}Mensagem/`, msg);
     }
 
-    marcarMensagemComoLida(idOrcamentoCotacao: string): Observable<any> {      
+    marcarMensagemComoLida(idOrcamentoCotacao: string): Observable<any> {           
       return this.http.put<any>(`${this.env.apiUrl()}Mensagem/marcar/lida?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
-    }        
+    }    
+    
+    marcarMensagemComoLidaRotaPublica(idOrcamentoCotacao: string): Observable<any> {      
+      return this.http.put<any>(`${this.env.apiUrl()}Mensagem/marcar/lida/publica?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    }       
     
     marcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
       return this.http.put<any>(`${this.env.apiUrl()}Mensagem/marcar/pendencia?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
