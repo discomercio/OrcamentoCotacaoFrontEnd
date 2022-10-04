@@ -50,12 +50,12 @@
                             <div *ngIf="!novoOrcamentoService.orcamentoCotacaoDto.parceiro">
                                 <span class="p-text-bold">Vendedor:</span>
                                 <span>
-                                    {{novoOrcamentoService.orcamentoCotacaoDto?.vendedor}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto?.nomeIniciaisEmMaiusculasVendedor}}</span>
                             </div>
                             <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto.parceiro">
                                 <span class="p-text-bold">Parceiro:</span>
                                 <span>
-                                    {{razaoSocialParceiro}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto?.razaoSocialNomeIniciaisEmMaiusculasParceiro}}</span>
                             </div>
                             <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro">
                                 <span class="p-text-bold">Vendedor Parceiro:</span>
@@ -65,7 +65,7 @@
                             <div>
                                 <span class="p-text-bold">Cadastrado Por:</span>
                                 <span>
-                                    {{novoOrcamentoService.orcamentoCotacaoDto?.cadastradoPor}}</span>
+                                    {{novoOrcamentoService.orcamentoCotacaoDto.amigavelCadastradoPor}}</span>
                             </div>
 
 

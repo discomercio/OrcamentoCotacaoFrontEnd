@@ -4,7 +4,9 @@ import { OrcamentosOpcaoResponse } from "./OrcamentosOpcaoResponse";
 export class OrcamentoCotacaoResponse {
     id: number;
     vendedor: string;
+    nomeIniciaisEmMaiusculasVendedor: string;
     parceiro: string;
+    razaoSocialNomeIniciaisEmMaiusculasParceiro:string;
     vendedorParceiro: string;
     loja: string;
     validade: string|Date;
@@ -17,6 +19,7 @@ export class OrcamentoCotacaoResponse {
     clienteOrcamentoCotacaoDto: ClienteOrcamentoCotacaoDto;
     listaOrcamentoCotacaoDto: OrcamentosOpcaoResponse[];
     cadastradoPor:string;
+    amigavelCadastradoPor:string;
     dataCadastro:string;
     idIndicador:number;
     idIndicadorVendedor:number;
