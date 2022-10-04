@@ -48,19 +48,21 @@ export class MensageriaComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {    
     this.obterListaMensagem(this.idOrcamentoCotacao);
+
+    setTimeout(() => {
+      this.marcarMensagemComoLida(this.idOrcamentoCotacao);  
+    }, 5000);
+    
   }
 
   obterListaMensagem(idOrcamentoCotacao: number) { 
     if(idOrcamentoCotacao) {
       this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
         if (r != null) {      
-          this.listaMensagens = r;
-
-          if (!this.rotaPublica){
-            this.marcarMensagemComoLida(this.idOrcamentoCotacao);    
-          }
+          this.listaMensagens = r;            
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+
     }
   }
 
@@ -109,21 +111,19 @@ export class MensageriaComponent implements AfterViewInit {
   }  
 
   marcarMensagemComoLida(idOrcamentoCotacao: number) {   
+
     var url = window.location.href;
 
-    var acessoExterno = url.includes("publico/orcamento");
+    var acessoExterno = url.includes("publico/orcamento");    
 
-    if (this.donoOrcamento){         
-      this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+    if (acessoExterno){
+      this.mensageriaService.marcarMensagemComoLidaRotaPublica(idOrcamentoCotacao.toString()).toPromise().then((r) => {
       }).catch((r) => this.alertaService.mostrarErroInternet(r));      
-    }else{
+    }else{      
+      this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));  
+    }    
 
-      if (acessoExterno){
-        this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));      
-      }
-
-    }
   }    
 
   validar(){    
