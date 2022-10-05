@@ -149,7 +149,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   habilitar: boolean = true;
 
   selectAprazo() {
-    
+
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
@@ -326,7 +326,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return this.formaPagtoCriacaoAprazo.c_pc_valor = valorParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
-      return this.formaPagtoCriacaoAprazo.c_pce_prestacao_valor = valorParcelas;
+      let entrada = this.formaPagtoCriacaoAprazo.o_pce_entrada_valor ? this.formaPagtoCriacaoAprazo.o_pce_entrada_valor : 0;
+      return this.formaPagtoCriacaoAprazo.c_pce_prestacao_valor = (this.novoOrcamentoService.totalPedido() - entrada) / this.novoOrcamentoService.qtdeParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
       return this.formaPagtoCriacaoAprazo.c_pse_demais_prest_valor = valorParcelas;
@@ -352,9 +353,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   digitouVlEntrada() {
-    let entrada = this.formaPagtoCriacaoAprazo.o_pce_entrada_valor ? this.formaPagtoCriacaoAprazo.o_pce_entrada_valor : 0;
-    let valorParcela = (this.novoOrcamentoService.totalPedido() - entrada) / this.novoOrcamentoService.qtdeParcelas;
-    this.setarValorParcela(valorParcela);
+    this.setarValorParcela(0);
   }
 
   formatarPrimPrest(e: Event): void {
@@ -402,23 +401,23 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-        if(this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)){
-          let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
-          let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
+      if (this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)) {
+        let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
+        let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
           ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
-          this.sweetalertService.dialogo("",pergunta).subscribe(result => {
-            if (!result) return;
+        this.sweetalertService.dialogo("", pergunta).subscribe(result => {
+          if (!result) return;
 
-            this.gravarOpcao();
+          this.gravarOpcao();
 
-          });
-        }
-        else this.gravarOpcao();
+        });
+      }
+      else this.gravarOpcao();
     }
     else this.gravarOpcao();
   }
 
-  gravarOpcao(){
+  gravarOpcao() {
     this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
@@ -464,7 +463,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         "é necessário que seja selecionado a opção para pagamento á vista!");
       return false;
     }
-    
+
     if (this.checkedAvista && pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
       if (!pagtoAvista.op_av_forma_pagto) {
         this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
