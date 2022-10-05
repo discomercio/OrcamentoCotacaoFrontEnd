@@ -77,9 +77,10 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   nasc: string | Date;
   orientacaoPreenchimento: string;
   termoPrivacidade: string;
-  privacidade:boolean = false;
+  privacidade: boolean = false;
   condicoesAnaliseCredito: string;
-  condicoes:boolean = false;
+  condicoes: boolean = false;
+  alcadaSuperior: boolean;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -114,7 +115,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   ngAfterViewInit(): void {
-    this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
+    // this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
+    this.alcadaSuperior = this.verificarAlcadaDescontoSuperior();
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -330,7 +332,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   salvar() {
 
-    if(!this.privacidade || !this.condicoes){
+    if (!this.privacidade || !this.condicoes) {
       this.alertaService.mostrarMensagem("É necessário aceitar os termos e condições!");
       return;
     }
@@ -339,6 +341,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.carregando = true;
 
     if (!this.validarForms()) return;
+
+    if(!this.validarAlcadaEUf()) return;
 
     this.converterTelefonesParaDadosClienteCadastroDto();
     this.dadosCliente.Cep = this.cepComponente.Cep;
@@ -376,16 +380,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     this.desconverterTelefones();
     if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
-      if (this.cepComponente.bloqueioUf) {
-        if (this.cepComponente.Uf.toLocaleLowerCase() != this.enderecoEntrega.componenteCep.Uf.toLocaleLowerCase()) {
-          this.alertaService.mostrarMensagem("A UF de entrega não pode ser diferente do cadastro!");
-          this.enderecoEntrega.componenteCep.form.controls.uf.markAsDirty();
-          this.carregando = false;
-          this.desabilitaBotao = false;
-          this.desconverterTelefonesEnderecoEntrega();
-          return;
-        }
-      }
       this.desconverterTelefonesEnderecoEntrega();
     }
 
@@ -409,6 +403,27 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       return;
     });
 
+  }
+
+  validarAlcadaEUf():boolean{
+    if (this.alcadaSuperior && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      if (this.enderecoEntrega.componenteCep.Uf != this.aprovacaoPubicoService.orcamento.uf) {
+        this.alertaService.mostrarMensagem("A UF de endereço de entrega deve ser a mesma informada no orçamento!");
+        this.carregando = false;
+        this.desabilitaBotao = false;
+        return false;
+      }
+    }
+    if (this.alcadaSuperior && !this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco){
+      if (this.cepComponente.Uf != this.aprovacaoPubicoService.orcamento.uf) {
+        this.alertaService.mostrarMensagem("A UF do cadastro de cliente deve ser a mesma informada no orçamento!");
+        this.carregando = false;
+        this.desabilitaBotao = false;
+        return false;
+      }
+    }
+
+    return true;
   }
 
   passarDadosPF() {
