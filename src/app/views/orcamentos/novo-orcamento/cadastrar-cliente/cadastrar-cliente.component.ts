@@ -316,7 +316,6 @@ export class CadastrarClienteComponent implements OnInit {
 
     if (parceiro == null || parceiro == "" || parceiro == undefined) {
       this.form.controls.Parceiro.setValue(null);
-
       return;
     }
 
@@ -494,6 +493,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala = this.form.controls.instaladorInstala.value == 0? this.constantes.COD_INSTALADOR_INSTALA_NAO : this.form.controls.instaladorInstala.value;
   }
 
   dataEntrega = true;
