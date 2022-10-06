@@ -11,6 +11,8 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { NovoPrepedidoDadosService } from '../novo-prepedido-dados.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { PermissaoService } from 'src/app/service/permissao/permissao.service';
+import { PermissaoIncluirPrePedidoResponse } from 'src/app/dto/permissao/PermissaoIncluirPrePedidoResponse';
 
 @Component({
   selector: 'app-selecionar-cliente',
@@ -32,9 +34,12 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
     private readonly alertaService: AlertaService,
     private readonly buscarClienteService: BuscarClienteService, 
     private readonly sweetalertService: SweetalertService,
-    private readonly novoPrepedidoDadosService: NovoPrepedidoDadosService) {
+    private readonly novoPrepedidoDadosService: NovoPrepedidoDadosService,
+    private readonly permissaoService: PermissaoService) {
     super(telaDesktopService);
   }
+
+  permissaoIncluirPrePedidoResponse: PermissaoIncluirPrePedidoResponse;
 
   ngOnInit() {
     
@@ -44,36 +49,52 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
 
   buscar() {
     
-    //dá erro se não tiver nenhum dígito
-    if (StringUtils.retorna_so_digitos(this.clienteBusca).trim() === "") {
-      this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido ou vazio.`, '250px', null);
-      return;
-    }
+    this.permissaoService.buscarPermissaoIncluirPrePedido().toPromise().then(response => {
 
-    //valida
-    if (!CpfCnpjUtils.cnpj_cpf_ok(this.clienteBusca)) {
-      this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido.`, '250px', null);
-      return;
-    }
+        this.permissaoIncluirPrePedidoResponse = response;
 
-    //vamos fazer a busca
-    this.carregando = true;
-    this.buscarClienteService.buscar(this.clienteBusca).toPromise()
-      .then((r) => {
-        this.carregando = false;
-        if (r === null) {
-          this.mostrarNaoCadastrado();
+        if (!this.permissaoIncluirPrePedidoResponse.Sucesso) {
+          this.alertaService.mostrarMensagem(this.permissaoIncluirPrePedidoResponse.Mensagem);
           return;
         }
-        //cliente já existe
-        //verificar se daqui conseguimos zerar o 
-        this.router.navigate(['confirmar-cliente', StringUtils.retorna_so_digitos(r.DadosCliente.Cnpj_Cpf)], { relativeTo: this.activatedRoute, state: r })
-      }).catch((r) => {
-        //deu erro na busca
-        //ou não achou nada...
-        this.carregando = false;
-        this.alertaService.mostrarErroInternet(r);
-      });
+
+        if (!this.permissaoIncluirPrePedidoResponse.IncluirPrePedido) {
+          this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+          return;
+        }
+
+        //dá erro se não tiver nenhum dígito
+        if (StringUtils.retorna_so_digitos(this.clienteBusca).trim() === "") {
+          this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido ou vazio.`, '250px', null);
+          return;
+        }
+
+        //valida
+        if (!CpfCnpjUtils.cnpj_cpf_ok(this.clienteBusca)) {
+          this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido.`, '250px', null);
+          return;
+        }
+
+        //vamos fazer a busca
+        this.carregando = true;
+        this.buscarClienteService.buscar(this.clienteBusca).toPromise()
+          .then((r) => {
+            this.carregando = false;
+            if (r === null) {
+              this.mostrarNaoCadastrado();
+              return;
+            }
+            //cliente já existe
+            //verificar se daqui conseguimos zerar o 
+            this.router.navigate(['confirmar-cliente', StringUtils.retorna_so_digitos(r.DadosCliente.Cnpj_Cpf)], { relativeTo: this.activatedRoute, state: r })
+          }).catch((r) => {
+            //deu erro na busca
+            //ou não achou nada...
+            this.carregando = false;
+            this.alertaService.mostrarErroInternet(r);
+          });
+
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
   //cliente ainda não está cadastrado
