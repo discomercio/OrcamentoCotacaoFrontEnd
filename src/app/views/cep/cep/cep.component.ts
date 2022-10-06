@@ -107,13 +107,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
             return;
           }
 
-          if (this.bloqueioUf) {
-            if (this.Uf != r[0].Uf){
-              this.alertaService.mostrarMensagem("A UF não pode ser alterada!");
-              return;
-            }
-          }
-          
           this.limparCampos();
           this.passarValores(r[0]);
 
@@ -162,12 +155,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
     ref.onClose.subscribe((resultado: CepDto) => {
       if (resultado) {
-        if (this.bloqueioUf) {
-          if (this.Uf != resultado.Uf){
-            this.alertaService.mostrarMensagem("A UF não pode ser alterada!");
-            return;
-          }
-        }
         this.zerarCamposEndEntrega();
         let end: CepDto = resultado;
         this.passarValores(end);
@@ -207,14 +194,5 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) return false;
 
     return true;
-  }
-
-  bloqueioUf: boolean;
-  verificarUF(bloqueio: boolean, uf: string) {
-    if (bloqueio) {
-      this.bloqueioUf = bloqueio;
-      this.Uf = uf;
-      this.form.get("uf").disable();
-    }
   }
 }

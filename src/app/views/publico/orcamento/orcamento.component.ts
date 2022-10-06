@@ -136,7 +136,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
                 opcaoAprovado = new OrcamentoOpcaoDto();
                 opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
                 opcaoAprovado.aprovado = true;
-                return;
               }
               if(!!opcaoAprovado){
                 this.orcamento.listaOpcoes = new Array();
