@@ -25,5 +25,5 @@ export class OrcamentoCotacaoResponse {
     idIndicadorVendedor:number;
     statusEmail:string;
     instaladorInstala:number;
-    Erro:string;
+    erro:string;
 }

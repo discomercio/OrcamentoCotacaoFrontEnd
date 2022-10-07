@@ -35,8 +35,8 @@ export class OrcamentosService {
     return this.http.post<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento`, model);
   }
 
-  atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<any> {
-    return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
+  atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<OrcamentoCotacaoResponse> {
+    return this.http.post<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
   }
 
 

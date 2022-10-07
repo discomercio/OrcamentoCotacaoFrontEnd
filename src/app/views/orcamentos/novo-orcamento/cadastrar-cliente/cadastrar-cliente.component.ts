@@ -62,8 +62,8 @@ export class CadastrarClienteComponent implements OnInit {
   lstInstaladorInstala: SelectItem[];
   mostrarInstaladorInstala: boolean;
   limiteDataEntrega: number;
-  maxDataEntrega :Date = new Date();
-  minDataEntrega :Date = new Date();
+  maxDataEntrega: Date = new Date();
+  minDataEntrega: Date = new Date();
 
   //controle de campos
   public desabilitado: boolean = true;
@@ -107,7 +107,7 @@ export class CadastrarClienteComponent implements OnInit {
       }
       this.habilitarVoltar = true;
 
-      if(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null){
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
         this.mostrarInstaladorInstala = true;
       }
     }
@@ -495,7 +495,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala = this.form.controls.instaladorInstala.value == 0? this.constantes.COD_INSTALADOR_INSTALA_NAO : this.form.controls.instaladorInstala.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala = this.form.controls.instaladorInstala.value == 0 ? this.constantes.COD_INSTALADOR_INSTALA_NAO : this.form.controls.instaladorInstala.value;
   }
 
   dataEntrega = true;
@@ -519,19 +519,24 @@ export class CadastrarClienteComponent implements OnInit {
   carregando: boolean = false;
   atualizarDadosCadastrais() {
     this.carregando = true;
-    if (!this.validacaoFormularioService.validaForm(this.form))
+    if (!this.validacaoFormularioService.validaForm(this.form)){
+      this.carregando = false;
       return;
-
+    }
 
     this.atribuirDados();
 
-    //enviar para api
     this.orcamentoService.atualizarDadosOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
-      if (r == null) {
+      if (r.erro != null) {
+        this.alertaService.mostrarMensagem(r.erro);
         this.carregando = false;
-        this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
-        this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+        return;
       }
+
+      this.carregando = false;
+      this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
+      this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;
