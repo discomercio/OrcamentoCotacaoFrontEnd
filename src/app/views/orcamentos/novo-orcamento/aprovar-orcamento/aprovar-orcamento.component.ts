@@ -90,6 +90,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   permissaoOrcamentoResponse: PermissaoOrcamentoResponse;
   editar: boolean = false;
   imgUrl: string;
+  mostrarInstaladorInstala:boolean;
 
   ngOnInit(): void {
 
@@ -222,6 +223,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
+  retornarInstaldorInstala(instaladorInstala:number){
+    if(instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_NAO) return "Não";
+    if(instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_SIM) return "Sim";
+  }
+
   buscarParametros(id: number) {
 
     if (this.autenticacaoService._usuarioLogado) {
@@ -306,6 +312,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.orcamentistaIndicadorService.buscarParceiroPorApelido(apelido).toPromise().then((r) => {
       if (r != null) {
         this.razaoSocialParceiro = r.razaoSocial;
+        this.mostrarInstaladorInstala = true;
       }
     })
   }
