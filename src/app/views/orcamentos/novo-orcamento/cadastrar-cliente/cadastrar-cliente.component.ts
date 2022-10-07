@@ -106,6 +106,10 @@ export class CadastrarClienteComponent implements OnInit {
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.constantes.SEM_INDICADOR;
       }
       this.habilitarVoltar = true;
+
+      if(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null){
+        this.mostrarInstaladorInstala = true;
+      }
     }
 
     if (param.filtro == "novo") {
@@ -126,8 +130,6 @@ export class CadastrarClienteComponent implements OnInit {
         this.router.navigate(["/orcamentos/listar/orcamentos"]);
         return;
       }
-
-
 
       if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined) {
         this.novoOrcamentoService.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
