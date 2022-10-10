@@ -65,9 +65,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.carregando = true;
-     this.sub = this.activatedRoute.params.subscribe((param: any) => {
-       this.buscarOrcamentoPorGuid(param);
-     });
+
   }
 
   ngAfterViewInit(): void {
@@ -79,7 +77,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   retornarSimOuNao(data: any) {
-    
+
     if (data == true) {
       return "Sim";
     } else {
@@ -87,10 +85,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  retornarEntregaImediata(data:any){
-    if(data == 0 ) return;
-    if(data == 2) return "Sim";
-    if(data == 1) return "Não";
+  retornarEntregaImediata(data: any) {
+    if (data == 0) return;
+    if (data == 2) return "Sim";
+    if (data == 1) return "Não";
   }
 
   retornarTipoPessoa(data: any) {
