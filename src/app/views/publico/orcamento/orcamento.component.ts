@@ -125,7 +125,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
-
           this.validado = true;
           this.orcamento = r;
           if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
@@ -137,10 +136,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
                 opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
                 opcaoAprovado.aprovado = true;
               }
-              if(!!opcaoAprovado){
-                this.orcamento.listaOpcoes = new Array();
-                this.orcamento.listaOpcoes.push(opcaoAprovado);
-              }
+              // if(!!opcaoAprovado){
+              //   this.orcamento.listaOpcoes = new Array();
+              //   this.orcamento.listaOpcoes.push(opcaoAprovado);
+              // }
             });
           }
           else {
