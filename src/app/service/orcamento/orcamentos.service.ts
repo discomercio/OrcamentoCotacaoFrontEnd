@@ -31,12 +31,12 @@ export class OrcamentosService {
     return this.http.get<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento?id=${id}`);
   }
 
-  enviarOrcamento(model: OrcamentoCotacaoResponse): Observable<number> {
-    return this.http.post<number>(`${this.env.apiUrl()}Orcamento`, model);
+  enviarOrcamento(model: OrcamentoCotacaoResponse): Observable<OrcamentoCotacaoResponse> {
+    return this.http.post<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento`, model);
   }
 
-  atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<any> {
-    return this.http.post<any>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
+  atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<OrcamentoCotacaoResponse> {
+    return this.http.post<OrcamentoCotacaoResponse>(`${this.env.apiUrl()}Orcamento/atualizarDados`, orcamento);
   }
 
 

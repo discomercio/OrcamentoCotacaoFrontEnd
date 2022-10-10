@@ -380,7 +380,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
     this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
       if (r != null) {
-        
+
         if (!this.editando) {
           this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
           if (this.novoOrcamentoService.qtdeParcelas) {
@@ -495,7 +495,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       let v: any = valor.replace(/,/g, '');
       v = (v / 100).toFixed(2) + '';
       x.descDado = parseFloat(v);
-      
+
       this.digitouDesc(e, x);
     });
   }
@@ -710,12 +710,16 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.desabilitarEnvio = true;
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
-      if (r != null) {
-        this.sweetalertService.sucesso("Orçamento salvo!");
-        this.novoOrcamentoService.criarNovo();
-        this.novoOrcamentoService.descontoGeral = 0;
-        this.router.navigate(["orcamentos/listar/orcamentos"]);
+      if (r.erro != null) {
+        this.alertaService.mostrarMensagem(r.erro);
+        this.desabilitarEnvio = false;
+        return;
       }
+
+      this.sweetalertService.sucesso("Orçamento salvo!");
+      this.novoOrcamentoService.criarNovo();
+      this.novoOrcamentoService.descontoGeral = 0;
+      this.router.navigate(["orcamentos/listar/orcamentos"]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.desabilitarEnvio = false;

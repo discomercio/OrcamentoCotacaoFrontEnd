@@ -59,6 +59,11 @@ export class CadastrarClienteComponent implements OnInit {
   lojasUsuario: SelectItem[] = [];
   lstTipo: SelectItem[];
   lstContribuinteICMS: SelectItem[];
+  lstInstaladorInstala: SelectItem[];
+  mostrarInstaladorInstala: boolean;
+  limiteDataEntrega: number;
+  maxDataEntrega: Date = new Date();
+  minDataEntrega: Date = new Date();
 
   //controle de campos
   public desabilitado: boolean = true;
@@ -75,6 +80,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.buscarConfigValidade();
+    this.buscarLimiteDiasEntregaImediata();
     this.desabilitarCampos();
     this.desabiltarCamposParaEdicao();
     this.setarCamposDoForm();
@@ -82,6 +88,8 @@ export class CadastrarClienteComponent implements OnInit {
     this.buscarEstados();
     this.buscarTiposCliente();
     this.buscarContribuinteICMS();
+    this.buscarInstaladorInstala();
+
   }
 
   filtro: string;
@@ -98,6 +106,10 @@ export class CadastrarClienteComponent implements OnInit {
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.constantes.SEM_INDICADOR;
       }
       this.habilitarVoltar = true;
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
+        this.mostrarInstaladorInstala = true;
+      }
     }
 
     if (param.filtro == "novo") {
@@ -118,8 +130,6 @@ export class CadastrarClienteComponent implements OnInit {
         this.router.navigate(["/orcamentos/listar/orcamentos"]);
         return;
       }
-
-
 
       if (this.novoOrcamentoService.orcamentoCotacaoDto.status != undefined) {
         this.novoOrcamentoService.orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
@@ -174,7 +184,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.form.controls.Validade.disable();
   }
 
-  formataData(e: Event){
+  formataData(e: Event) {
     let valor = ((e.target) as HTMLInputElement).value;
     if (valor != "") {
       // const maskDate = value => {
@@ -185,10 +195,10 @@ export class CadastrarClienteComponent implements OnInit {
       //     .replace(/(\d{4})(\d)/, "$1");
       // };
       return valor
-          .replace(/\D/g, "")
-          .replace(/(\d{2})(\d)/, "$1/$2")
-          .replace(/(\d{2})(\d)/, "$1/$2")
-          .replace(/(\d{4})(\d)/, "$1");
+        .replace(/\D/g, "")
+        .replace(/(\d{2})(\d)/, "$1/$2")
+        .replace(/(\d{2})(\d)/, "$1/$2")
+        .replace(/(\d{4})(\d)/, "$1");
     }
   }
 
@@ -219,9 +229,26 @@ export class CadastrarClienteComponent implements OnInit {
         this.setarOrcamentoValidade();
       }
     }).catch((e) => {
-      console.log("erro");
       this.alertaService.mostrarErroInternet(e);
     });
+  }
+
+  buscarLimiteDiasEntregaImediata() {
+    this.orcamentoService.buscarParametros(37, this.usuario.loja, null).toPromise().then((r) => {
+      if (!r) {
+        this.alertaService.mostrarMensagem("Ops! Não encontramos o limite de dias para data de entrega!");
+        return;
+      }
+
+      this.limiteDataEntrega = parseInt(r[0]['Valor']);
+
+      let dataAtual = new Date();
+      this.minDataEntrega = dataAtual;
+      this.maxDataEntrega.setDate(dataAtual.getDate() + this.limiteDataEntrega)
+
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    })
   }
 
   setarCamposDoForm(): void {
@@ -291,17 +318,24 @@ export class CadastrarClienteComponent implements OnInit {
 
     if (parceiro == null || parceiro == "" || parceiro == undefined) {
       this.form.controls.Parceiro.setValue(null);
-
       return;
     }
 
-    if (parceiro == this.constantes.SEM_INDICADOR) return;
+    if (parceiro == this.constantes.SEM_INDICADOR) {
+      this.mostrarInstaladorInstala = false;
+      this.form.controls.instaladorInstala.clearValidators();
+      this.form.controls.instaladorInstala.updateValueAndValidity();
+      return;
+    }
 
     this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise().then((r) => {
       if (r != null) {
         this.lstVendedoresParceiros = this.montarListaParaSelectItem(r);
         this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro);
       }
+      this.mostrarInstaladorInstala = true;
+      this.form.controls.instaladorInstala.setValidators([Validators.required, Validators.max(this.constantes.COD_INSTALADOR_INSTALA_SIM), Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]);
+      this.form.controls.instaladorInstala.updateValueAndValidity();
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
@@ -368,6 +402,13 @@ export class CadastrarClienteComponent implements OnInit {
     ]
   }
 
+  buscarInstaladorInstala(): void {
+    this.lstInstaladorInstala = [
+      { label: "Sim", value: this.constantes.COD_INSTALADOR_INSTALA_SIM },
+      { label: "Não", value: this.constantes.COD_INSTALADOR_INSTALA_NAO }
+    ]
+  }
+
   criarForm(): void {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined)
       this.novoOrcamentoService.criarNovo();
@@ -388,7 +429,8 @@ export class CadastrarClienteComponent implements OnInit {
       Tipo: [clienteOrcamentoCotacao.tipo, [Validators.required, Validators.maxLength(2)]],
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
-      ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS]
+      ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS],
+      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == undefined ? [] : [Validators.required]]
     });
   }
 
@@ -443,7 +485,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = clienteOrcamentoCotacao;
 
     this.novoOrcamentoService.orcamentoCotacaoDto.id = this.novoOrcamentoService.orcamentoCotacaoDto.id;
-    
+
     this.novoOrcamentoService.orcamentoCotacaoDto.validade = DataUtils.formata_dataString_para_formato_data(DataUtils.formatarTela(this.form.controls.Validade.value));
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
@@ -453,6 +495,7 @@ export class CadastrarClienteComponent implements OnInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala = this.form.controls.instaladorInstala.value == 0 ? this.constantes.COD_INSTALADOR_INSTALA_NAO : this.form.controls.instaladorInstala.value;
   }
 
   dataEntrega = true;
@@ -476,19 +519,24 @@ export class CadastrarClienteComponent implements OnInit {
   carregando: boolean = false;
   atualizarDadosCadastrais() {
     this.carregando = true;
-    if (!this.validacaoFormularioService.validaForm(this.form))
+    if (!this.validacaoFormularioService.validaForm(this.form)){
+      this.carregando = false;
       return;
-
+    }
 
     this.atribuirDados();
 
-    //enviar para api
     this.orcamentoService.atualizarDadosOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
-      if (r == null) {
+      if (r.erro != null) {
+        this.alertaService.mostrarMensagem(r.erro);
         this.carregando = false;
-        this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
-        this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+        return;
       }
+
+      this.carregando = false;
+      this.sweetalertService.sucesso("Cadastro atualizado com sucesso!");
+      this.router.navigate(["orcamentos/aprovar-orcamento", this.novoOrcamentoService.orcamentoCotacaoDto.id]);
+
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;

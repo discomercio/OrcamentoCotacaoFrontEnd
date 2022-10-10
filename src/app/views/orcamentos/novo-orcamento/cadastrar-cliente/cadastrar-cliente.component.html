@@ -94,7 +94,7 @@
                 class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="parceiro">Parceiro</label>
                 <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione" formControlName="Parceiro"
-                    (onChange)="buscarVendedoresDoParceiro()" [showClear]="true">
+                    (onChange)="buscarVendedoresDoParceiro()">
                 </p-dropdown>
                 <small class="p-error"
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
@@ -105,6 +105,21 @@
                 <p-dropdown id="vendedorParceiro" [options]="lstVendedoresParceiros" placeholder="Selecione"
                     [showClear]="true" formControlName="VendedorParceiro">
                 </p-dropdown>
+            </div>
+            <div *ngIf="mostrarInstaladorInstala" class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+                <label for="instaladorInstala">Instalador instala</label>
+                <p-dropdown id="instaladorInstala" [options]="lstInstaladorInstala" placeholder="Selecione"
+                    [showClear]="true" formControlName="instaladorInstala">
+                </p-dropdown>
+                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'instaladorInstala')">
+                    <small class="p-error" *ngIf="form.controls.instaladorInstala.errors?.required">
+                        {{mensagemErro}}
+                    </small>
+                    <small class="p-error"
+                        *ngIf="form.controls.instaladorInstala.errors?.max || form.controls.instaladorInstala.errors?.min">
+                        {{mensagemErro}}
+                    </small>
+                </div>
             </div>
         </div>
 
@@ -123,7 +138,8 @@
             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4">
                 <label for="dataEntregaImediata">Data Entrega</label>
                 <p-calendar dateFormat="dd/mm/yy" formControlName="DataEntregaImediata" [showIcon]="true"
-                    [disabled]="form.controls.EntregaImediata.value != false"></p-calendar>
+                    [readonlyInput]="true" [disabled]="form.controls.EntregaImediata.value != false"
+                    [minDate]="minDataEntrega" [maxDate]="maxDataEntrega"></p-calendar>
                 <small class="p-error" *ngIf="!ValidaDataEntrega()">Informe a data para entrega</small>
             </div>
         </div>
@@ -139,7 +155,7 @@
         <!-- <div *ngIf="filtro == 'novo' || filtro == 'iniciar'" class="p-d-flex p-jc-center">
             <button pButton pRipple label="Salvar" icon="pi pi-arrow-right" (click)="salvarOrcamento()"></button>
         </div> -->
-        <div  class="p-d-flex p-jc-around">
+        <div class="p-d-flex p-jc-around">
             <div *ngIf="habilitarVoltar">
                 <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" (click)="voltar()"></button>
             </div>
