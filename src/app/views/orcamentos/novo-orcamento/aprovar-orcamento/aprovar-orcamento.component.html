@@ -151,12 +151,15 @@
                                     {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.dataEntregaImediata)}}</span>
                             </div>
                             <div *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata != undefined">
-                                <span class="p-text-bold">Entrega Imediata:</span>
+                                <span class="p-text-bold">Entrega mediata:</span>
                                 <span>
                                     {{retornarSimOuNao(novoOrcamentoService.orcamentoCotacaoDto?.entregaImediata)}}</span>
                             </div>
-
-
+                            <div *ngIf="mostrarInstaladorInstala">
+                                <span class="p-text-bold">Instalador Instala:</span>
+                                <span>
+                                    {{retornarInstaldorInstala(novoOrcamentoService.orcamentoCotacaoDto?.instaladorInstala)}}</span>
+                            </div>
                         </div>
 
                     </div>
