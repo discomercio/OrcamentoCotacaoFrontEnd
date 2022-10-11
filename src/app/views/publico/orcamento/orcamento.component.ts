@@ -65,7 +65,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.carregando = true;
-
+    this.sub = this.activatedRoute.params.subscribe((param: any) => {
+      this.buscarOrcamentoPorGuid(param);
+    });
   }
 
   ngAfterViewInit(): void {
