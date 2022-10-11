@@ -144,14 +144,18 @@
                                 <span>
                                     {{retornarEntregaImediata(orcamento.stEntregaImediata)}}</span>
                             </div>
-
+                            <br>
+                            <div>
+                                <span>Mediante confirmação de estoque</span>
+                            </div>
                         </div>
                     </div>
 
                     <div class="p-col-12 p-px-0 p-pt-2" *ngFor="let opcao of orcamento?.listaOpcoes; let i = index">
 
                         <p-accordion>
-                            <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
+                            <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)" 
+                            *ngIf="orcamento.status == constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ? opcao.aprovado: opcao">
                                 <ng-template pTemplate="header">
                                     Opção {{i + 1}}
                                     <div class="p-ml-auto p-p-0 p-text-right">

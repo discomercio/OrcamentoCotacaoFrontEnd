@@ -65,9 +65,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.carregando = true;
-     this.sub = this.activatedRoute.params.subscribe((param: any) => {
-       this.buscarOrcamentoPorGuid(param);
-     });
+    this.sub = this.activatedRoute.params.subscribe((param: any) => {
+      this.buscarOrcamentoPorGuid(param);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -79,7 +79,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   retornarSimOuNao(data: any) {
-    
+
     if (data == true) {
       return "Sim";
     } else {
@@ -87,10 +87,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  retornarEntregaImediata(data:any){
-    if(data == 0 ) return;
-    if(data == 2) return "Sim";
-    if(data == 1) return "Não";
+  retornarEntregaImediata(data: any) {
+    if (data == 0) return;
+    if (data == 2) return "Sim";
+    if (data == 1) return "Não";
   }
 
   retornarTipoPessoa(data: any) {
@@ -125,7 +125,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
         if (r != null) {
-
           this.validado = true;
           this.orcamento = r;
           if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
@@ -137,10 +136,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
                 opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
                 opcaoAprovado.aprovado = true;
               }
-              if(!!opcaoAprovado){
-                this.orcamento.listaOpcoes = new Array();
-                this.orcamento.listaOpcoes.push(opcaoAprovado);
-              }
+              // if(!!opcaoAprovado){
+              //   this.orcamento.listaOpcoes = new Array();
+              //   this.orcamento.listaOpcoes.push(opcaoAprovado);
+              // }
             });
           }
           else {
