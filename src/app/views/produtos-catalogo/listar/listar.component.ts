@@ -50,9 +50,12 @@ export class ProdutosCatalogoListarComponent implements OnInit {
         this.listaProdutoDto = r;
         this.listaProdutoDtoApoio = this.listaProdutoDto;
         this.montarCampoTexto();
-        this.carregando = false;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      this.carregando = false;
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregando = false;
+    });
   }
 
   montarCampoTexto() {
@@ -73,7 +76,7 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     this.router.navigate(["/produtos-catalogo/editar", id]);
   }
 
-  clonarClick(id:any){
+  clonarClick(id: any) {
     this.router.navigate(["/produtos-catalogo/clonar", id]);
   }
 
