@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
   autenticou: boolean = false;
   lembrar = false;
   carregando: boolean;
+  tokenUsuarioInterno:string;
 
   login() {
 
@@ -56,6 +57,7 @@ export class LoginComponent implements OnInit {
       return;
     }
     if (!!this.loja && this.mostrarLoja) {
+      this.autenticacaoService.setarToken(this.tokenUsuarioInterno);
       sessionStorage.setItem("lojaLogada", this.loja);
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       this.autenticacaoService._lojaLogado = this.loja;
@@ -68,7 +70,6 @@ export class LoginComponent implements OnInit {
 
     this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
       if (r != null) {
-
         if (!this.autenticacaoService.readToken(r.AccessToken)) {
           this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
           this.button.disabled = false;
@@ -79,7 +80,7 @@ export class LoginComponent implements OnInit {
         if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
           this.mostrarLoja = true;
           this.montarSelectLoja();
-          this.autenticacaoService.setarToken(r.AccessToken);
+          this.tokenUsuarioInterno = r.AccessToken;
           this.autenticou = true;
           this.mensagemService.showSuccessViaToast("Precisamos que selecione uma loja!");
           this.button.disabled = false;
