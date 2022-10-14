@@ -33,24 +33,25 @@ export class AppMenuComponent implements OnInit {
     ngOnInit() {
         this.usuario = this.autenticacaoService.getUsuarioDadosToken();
         this.tipoUsuario = this.autenticacaoService._tipoUsuario;
+
         this.menuService.buscar().toPromise().then((r) => {
             if (r != null) {
                 this.model = r;
-                
+
                 this.model.forEach((x) => {
-                    for(let i = 0; i<x.items.length;i++){
+                    for (let i = 0; i < x.items.length; i++) {
 
-                        if(!this.usuario.permissoes.includes(ePermissao.PrePedido)){
-                            if(x.items[i].label == eMenu.Pedidos){
+                        if (!this.usuario.permissoes.includes(ePermissao.PrePedido)) {
+                            if (x.items[i].label == eMenu.Pedidos) {
                                 x.items.splice(i, 1);
                             }
                         }
 
-                        if(!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarEditar)){
-                            if(x.items[i].label == eMenu.Catalogos){
-                                for(let y = 0; y< x.items[i].items.length;y++){
-                                    
-                                    if(x.items[i].items[y].label == eMenu.CaradastrarEditar){
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarEditar)) {
+                            if (x.items[i].label == eMenu.Catalogos) {
+                                for (let y = 0; y < x.items[i].items.length; y++) {
+
+                                    if (x.items[i].items[y].label == eMenu.CaradastrarEditar) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
                                     }
@@ -58,10 +59,10 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if(!this.usuario.permissoes.includes(ePermissao.CatalogoPropriedade)){
-                            if(x.items[i].label == eMenu.Catalogos){
-                                for(let y = 0; y< x.items[i].items.length;y++){                                    
-                                    if(x.items[i].items[y].label == eMenu.Propriedades){
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoPropriedade)) {
+                            if (x.items[i].label == eMenu.Catalogos) {
+                                for (let y = 0; y < x.items[i].items.length; y++) {
+                                    if (x.items[i].items[y].label == eMenu.Propriedades) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
                                     }
@@ -69,16 +70,18 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if(!this.usuario.permissoes.includes(ePermissao.UsuarioVendedorParceiro)){
-                            if(x.items[i].label == eMenu.Usuarios){
+                        if (!this.usuario.permissoes.includes(ePermissao.UsuarioVendedorParceiro)) {
+                            if (x.items[i].label == eMenu.Usuarios) {
                                 x.items.splice(i, 1);
                             }
 
-                        }   
+                        }
                     }
                 });
             }
-        }).catch(e => this.alertaService.mostrarMensagem("Ops! Tivemos problemas ao carregar o menu."));
+        }).catch((e) => {
+            this.alertaService.mostrarMensagem("Ops! Tivemos problemas ao carregar o menu.")
+        });
     }
 
     montarMenu() {
@@ -87,30 +90,30 @@ export class AppMenuComponent implements OnInit {
             return;
         }
         this.model.forEach((x) => {
-            for(let i = 0; i<x.items.length;i++){
-                if(x.items[i].label== eMenu.Dashboards){
+            for (let i = 0; i < x.items.length; i++) {
+                if (x.items[i].label == eMenu.Dashboards) {
                     x.items.splice(i, 1);
                 }
-                
-                if(!this.usuario.permissoes.includes(ePermissao.AdministradorDoModulo)){
 
-                    if(x.items[i].label == eMenu.Catalogos){
+                if (!this.usuario.permissoes.includes(ePermissao.AdministradorDoModulo)) {
 
-                        for(let y = 0; y< x.items[i].items.length;y++){
+                    if (x.items[i].label == eMenu.Catalogos) {
 
-                            if(x.items[i].items[y].label == eMenu.Propriedades){
+                        for (let y = 0; y < x.items[i].items.length; y++) {
+
+                            if (x.items[i].items[y].label == eMenu.Propriedades) {
                                 x.items[i].items.splice(y, 1);
                                 y--;
                             }
 
-                            if(x.items[i].items[y].label == eMenu.CaradastrarEditar){
+                            if (x.items[i].items[y].label == eMenu.CaradastrarEditar) {
                                 x.items[i].items.splice(y, 1);
                                 y--;
                             }
                         }
                     }
                 }
-                if(this.tipoUsuario != this.constantes.PARCEIRO && x.items[i].label == eMenu.Usuarios){
+                if (this.tipoUsuario != this.constantes.PARCEIRO && x.items[i].label == eMenu.Usuarios) {
                     x.items.splice(i, 1);
                     i--;
                 }
