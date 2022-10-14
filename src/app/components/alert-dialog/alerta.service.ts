@@ -3,6 +3,7 @@ import { AlertDialogComponent } from './alert-dialog.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +11,8 @@ import { Router } from '@angular/router';
 export class AlertaService {
 
   constructor(public dialogService: DialogService,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    private readonly sweetalertService: SweetalertService) { }
 
 
   public mostrarMensagemComLargura(msg: string, largura: string, aposOk: () => void): void {
@@ -131,6 +133,7 @@ export class AlertaService {
 
 
   public mostrarErro412(error: HttpErrorResponse): boolean {
+    
     if (error.status == 412) {
       let versao = error.headers.get("X-API-Version");
       if (versao == null) {
@@ -139,7 +142,7 @@ export class AlertaService {
       if (versao.trim() != "") {
         versao = " (" + versao + ")";
       }
-      this.mostrarMensagemComLargura("Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.", "250px", () => {
+      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {
         window.location.reload();
       });
       return true;
