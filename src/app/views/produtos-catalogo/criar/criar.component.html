@@ -13,17 +13,17 @@
         <div class="p-col-12">
             <div class="card">
                 <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3"
-                    *ngIf="produto.imagens != null">
+                    *ngIf="produto.imagem != null">
                     <div class="product-item">
                         <div class="product-item-content">
                             <div class="p-mb-12">
-                                <img src="{{imgUrl}}{{produto.imagens[0].Caminho}}" class="product-image"
+                                <img src="{{imgUrl}}{{produto.imagem.Caminho}}" class="product-image"
                                     style="max-width: 300px; max-height: 200px;" />
                             </div>
                             <div class="p-mb-12">
                                 <center>
                                     <p-button type="button" styleClass="p-button-help p-button-rounded"
-                                        icon="pi pi-trash" (click)="excluirImagemClick(produto.imagens[0].Id)"
+                                        icon="pi pi-trash" (click)="excluirImagemClick(produto.imagem.Id)"
                                         pTooltip="Excluir imagem"></p-button>
                                 </center>
                             </div>
@@ -31,7 +31,7 @@
                     </div>
                 </div>
 
-                <p-fileUpload id="arquivo" name="arquivo" *ngIf="produto.imagens == null" accept="image/*"
+                <p-fileUpload id="arquivo" name="arquivo" *ngIf="produto.imagem == null" accept="image/*"
                     [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block" fileLimit="1"
                     chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false [showCancelButton]=false
                     uploadIcon="fa fa-send" [customUpload]="true" (onSelect)="onSelectFile($event)">

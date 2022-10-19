@@ -91,10 +91,10 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
       if (r != null) {
         this.produtoDetalhe = r;
         this.produtoDetalhe.Fabricante = this.produtoDetalhe.Fabricante.split('-')[0].trim();
-        if (this.produtoDetalhe.imagens && this.produtoDetalhe.imagens.length > 0) {
+        if (this.produtoDetalhe.imagem) {
           this.imagem = new ProdutoCatalogoImagem();
-          this.imagem.Caminho = this.produtoDetalhe.imagens[0].Caminho;
-          this.imagem.Ordem = this.produtoDetalhe.imagens[0].Ordem;
+          this.imagem.Caminho = this.produtoDetalhe.imagem.Caminho;
+          this.imagem.Ordem = this.produtoDetalhe.imagem.Ordem;
         }
         this.criarForm();
       }
@@ -248,8 +248,8 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     produto.campos = campos;
     debugger;
     if (this.imagem != null) {
-      produto.imagens = new Array<ProdutoCatalogoImagem>();
-      produto.imagens.push(this.imagem);
+      produto.imagem = new ProdutoCatalogoImagem();
+      produto.imagem = this.imagem;
     }
 
     this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
@@ -295,7 +295,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   excluirImagemClick(idImagem) {
     
     this.imagem = null;
-    this.produtoDetalhe.imagens = [];
+    this.produtoDetalhe.imagem = null;
 
     this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }

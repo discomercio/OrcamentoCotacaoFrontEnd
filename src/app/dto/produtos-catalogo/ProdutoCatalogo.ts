@@ -12,5 +12,5 @@ export class ProdutoCatalogo{
     Ativo: boolean;
     IdProdutoCatalogoImagem: string;
     campos: ProdutoCatalogoItem[];
-    imagens: ProdutoCatalogoImagem[];
+    imagem: ProdutoCatalogoImagem;
 }

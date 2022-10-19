@@ -201,14 +201,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.alertaService.mostrarMensagem(r);
         return;
       }
+      
+      // for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
+      //   if (this.produtoDetalhe.imagens[x].Id == idImagem) {
+      //     this.produtoDetalhe.imagens.splice(x, 1);
+      //   }
+      // }
 
-      for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
-        if (this.produtoDetalhe.imagens[x].Id == idImagem) {
-          this.produtoDetalhe.imagens.splice(x, 1);
-        }
-      }
-
-      this.produtoDetalhe.imagens = [];
+      this.produtoDetalhe.imagem = null;
       this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r)
@@ -249,8 +249,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     produto.Ativo = this.produtoDetalhe.Ativo;
     produto.campos = campos;
     if (!!this.imagem) {
-      produto.imagens = new Array<ProdutoCatalogoImagem>();
-      produto.imagens.push(this.imagem);
+      produto.imagem = new ProdutoCatalogoImagem();
+      produto.imagem = this.imagem;
     }
 
     let formData = new FormData();
