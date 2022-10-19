@@ -5,12 +5,13 @@ import { environment } from 'src/environments/environment';
 import { AutenticacaoService } from './autenticacao.service';
 import { tap } from 'rxjs/internal/operators/tap';
 import { Router } from '@angular/router';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   env: environment;
 
-  constructor(private readonly autenticacaoService: AutenticacaoService, private router: Router, private http: HttpClient, private envir: environment) {
+  constructor(private readonly autenticacaoService: AutenticacaoService, private readonly alertaService: AlertaService, private router: Router, private http: HttpClient, private envir: environment) {
     this.env = envir
   }
 
@@ -29,20 +30,27 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     else {
       if (!this.router.url.startsWith('/publico/')) {
-        this.router.navigate(['account/login']);
+        this.router.navigate(['account/login']);        
       }
+    }
+    
+    if (sessionStorage.getItem("versaoApi") != this.env.versaoApi()) {
+      this.alertaService.mostrarErroAtualizandoVersao();
     }
 
     req = req.clone({ setHeaders: headers });
+    
 
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
+
         if (event instanceof HttpResponse) {
           let resp: HttpResponse<any> = event;
           let respOk = false;
-          if (resp.headers.get('X-API-Version') == this.env.versaoApi()) {
+
+          if (sessionStorage.getItem("versaoApi") == this.env.versaoApi()) {
             respOk = true;
-          }
+          }        
           
           //Fizemos isso pq não é realizado a chamada na API
           let apiUrl = this.env.apiUrl();
@@ -53,6 +61,7 @@ export class TokenInterceptor implements HttpInterceptor {
             (resp as any).status = 412;
             throw resp;
           }
+
         }
 
       }));
