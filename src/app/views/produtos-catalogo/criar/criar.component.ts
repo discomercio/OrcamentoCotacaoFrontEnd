@@ -148,7 +148,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    this.produto.imagens = null;
+    this.produto.imagem = null;
 
     this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
   }
@@ -178,10 +178,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         prod.Descricao = this.form.controls.descricao.value;
         prod.Ativo = this.produto.Ativo;
         prod.campos = [];
-        // prod.imagens = this.produto.imagens == null ? [] : this.produto.imagens;
+        
         if (!!this.imagem) {
-          prod.imagens = new Array<ProdutoCatalogoImagem>();
-          prod.imagens.push(this.imagem);
+          prod.imagem = new ProdutoCatalogoImagem();
+          prod.imagem = this.imagem;
         }
         var listaInput = document.getElementsByTagName("input");
 

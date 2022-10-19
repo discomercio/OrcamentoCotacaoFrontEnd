@@ -12,15 +12,15 @@
         <div class="card">
             <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3">
                 <div class="product-item">
-                    <div class="product-item-content" *ngIf="produtoDetalhe.imagens?.length > 0">
+                    <div class="product-item-content" *ngIf="produtoDetalhe.imagem!= null">
                         <div class="p-mb-12">
-                            <img src="{{imgUrl}}{{produtoDetalhe.imagens[0].Caminho}}" class="product-image"
+                            <img src="{{imgUrl}}{{produtoDetalhe.imagem.Caminho}}" class="product-image"
                                 style="max-width: 300px; max-height: 200px;" />
                         </div>
                         <div class="p-mb-12">
                             <center>
                                 <p-button type="button" styleClass="p-button-help p-button-rounded" icon="pi pi-trash"
-                                    (click)="excluirImagemClick(produtoDetalhe.imagens[0].Id)"
+                                    (click)="excluirImagemClick(produtoDetalhe.imagem.Id)"
                                     pTooltip="Excluir imagem">
                                 </p-button>
                             </center>
@@ -28,7 +28,7 @@
                     </div>
                 </div>
             </div>
-            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagens?.length == 0" accept="image/*"
+            <p-fileUpload id="arquivo" name="arquivo" *ngIf="produtoDetalhe.imagem == null" accept="image/*"
                 [maxFileSize]="52428800" label="Import" chooseLabel="Upload" class="mr-2 inline-block"
                 chooseLabel="Selecionar" chooseIcon="pi pi-upload" [showUploadButton]=false uploadIcon="fa fa-send"
                 [customUpload]="true" [showCancelButton]=false (onSelect)="onSelectFile($event)">
