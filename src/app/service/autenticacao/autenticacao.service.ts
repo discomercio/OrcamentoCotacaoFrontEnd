@@ -59,12 +59,13 @@ export class AutenticacaoService {
     this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
     this._permissoes = (user && user.Permissoes) ? user.Permissoes.split(",") : null;
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
-    this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;
+    this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;        
+
     if (!this._lojaLogado) {
       if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
         this._lojaLogado = this._lojasUsuarioLogado[0];
       }
-      else {
+      else {        
         this._lojaLogado = sessionStorage.getItem("lojaLogada");
       }
     }
