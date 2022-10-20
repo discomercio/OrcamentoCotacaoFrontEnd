@@ -68,9 +68,92 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   buscarPastas() {
-    this.downloadsService.buscarToTree().then(files => {
-      this.files2 = files
-    });
+    this.downloadsService.buscarToTree().toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      this.files2 = response.Childs
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+  }
+
+  // downloadClick() {
+  //   if (!!this.selectedFiles2 == false) {
+  //     this.mensagemService.showWarnViaToast("Selecione um arquivo!");
+  //     return;
+  //   }
+
+  //   if (!!this.selectedFiles2) {
+  //     // this.downloadsService.download(this.selectedFiles2.data.key).subscribe((response: any) => {
+  //     //   let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
+  //     //   const url = window.URL.createObjectURL(blob);
+  //     //   fileSaver.saveAs(blob, this.selectedFiles2.data.name);
+  //     //   this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+  //     //   this.edicao = false;
+  //     //   this.novaPasta = false;
+  //     //   this.ehUpload = false;
+  //     // }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
+  //     // return;
+
+  //     var id = this.selectedFiles2.data.key;
+  //     this.downloadsService.download(id).toPromise().then(response => {
+
+  //       console.log("downloadClick " + response);
+
+  //       if (!response.Sucesso) {
+  //         this.alertaService.mostrarMensagem(response.Mensagem);
+  //         return;
+  //       }
+
+  //       // let blob: any = new Blob([response.ByteArray], { type: 'application/pdf; charset=utf-8' });
+  //       // const url = window.URL.createObjectURL(blob);
+  //       // fileSaver.saveAs(blob, this.selectedFiles2.data.name);
+  //       // this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
+  //       // this.edicao = false;
+  //       // this.novaPasta = false;
+  //       // this.ehUpload = false;
+  //     }).catch((response) => this.alertaService.mostrarErroInternet(response));
+  //     return;
+  //   }
+  // }
+
+  downloadSelecionado(event) {
+    
+     this.downloadsService.download(event.key).toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      let vb64Data = response.ByteArray;
+      let contentType = 'application/pdf; charset=utf-8';
+      const byteCharacters = atob(vb64Data.toString());
+      const byteArrays = [];
+  
+      for (let offset = 0; offset < byteCharacters.length; offset += 512) {
+        const slice = byteCharacters.slice(offset, offset + 512);
+  
+        const byteNumbers = new Array(slice.length);
+        for (let i = 0; i < slice.length; i++) {
+          byteNumbers[i] = slice.charCodeAt(i); 
+        }
+  
+        const byteArray = new Uint8Array(byteNumbers);
+        byteArrays.push(byteArray);
+      }
+  
+      const blob = new Blob(byteArrays, {type: contentType});
+      const url = window.URL.createObjectURL(blob);
+      fileSaver.saveAs(blob, this.selectedFiles2.data.name);
+      this.mensagemService.showSuccessViaToast(response.Mensagem);
+      this.edicao = false;
+      this.novaPasta = false;
+      this.ehUpload = false;
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+    return;
   }
 
   montarPastas() {
@@ -138,8 +221,18 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   editarSalvarClick() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
-    this.downloadsService.editar(this.selectedFiles2.data.key, this.form.controls.txtNome.value, this.form.controls.txtDescricao.value).toPromise().then((r) => {
-      this.mensagemService.showSuccessViaToast("Salvo com sucesso");
+    let id = this.selectedFiles2.data.key;
+    let nome = this.form.controls.txtNome.value;
+    let descricao = this.form.controls.txtDescricao.value;
+
+    this.downloadsService.editar(id, nome, descricao).toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      this.mensagemService.showSuccessViaToast(response.Mensagem);
       this.editarItem();
       this.edicao = false;
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
@@ -170,26 +263,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         }
       }
       this.files2 = [...this.files2];
-    }
-  }
-
-  downloadClick() {
-    if (!!this.selectedFiles2 == false) {
-      this.mensagemService.showWarnViaToast("Selecione um arquivo!");
-      return;
-    }
-
-    if (!!this.selectedFiles2) {
-      this.downloadsService.download(this.selectedFiles2.data.key).subscribe((response: any) => {
-        let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
-        const url = window.URL.createObjectURL(blob);
-        fileSaver.saveAs(blob, this.selectedFiles2.data.name);
-        this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
-        this.edicao = false;
-        this.novaPasta = false;
-        this.ehUpload = false;
-      }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
-      return;
     }
   }
 
@@ -227,8 +300,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       return;
     }
 
-    this.downloadsService.excluir(this.selectedFiles2.data.key).toPromise().then(r => {
-      if (r != null) {
+    this.downloadsService.excluir(this.selectedFiles2.data.key).toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      if (response != null) {
         if (this.ehArquivo) {
           this.mensagemService.showWarnViaToast("Arquivo excluído!");
           this.editarClick();
@@ -238,7 +317,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.remove();
       }
     }).catch(e => this.alertaService.mostrarErroInternet(e));
-
   }
 
   remove() {
@@ -261,35 +339,47 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   addPastaTable() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
-    this.downloadsService.novaPasta(this.form.controls.pasta.value, this.selectedFiles2.data.key).toPromise().then(r => {
-      if (r != null) {
+    let nome = this.form.controls.pasta.value;
+    let idPai = this.selectedFiles2.data.key;
+    let descricao = this.form.controls.descricaoPasta.value;
 
-        let novaPastaTree: TreeNode = {
-          data: {
-            "name": "",
-            "size": "",
-            "descricao": "",
-            "type": "Folder"
-          },
-          children: [],
-          parent: null
-        };
+    this.downloadsService.novaPasta(nome, idPai).toPromise().then(response => {
 
-        novaPastaTree.data.key = r["id"];
-        novaPastaTree.data.name = this.form.controls.pasta.value;
-        novaPastaTree.data.size = "";
-        novaPastaTree.data.descricao = this.form.controls.descricaoPasta.value;
+      console.log(response);
 
-        if (this.selectedFiles2)
-          this.selectedFiles2.children.push(novaPastaTree);
-        else
-          this.files2.push(novaPastaTree);
-
-        this.files2 = [...this.files2];
-        this.novaPasta = false;
-        this.form.reset();
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+      if (response != null) {
+  
+          let novaPastaTree: TreeNode = {
+            data: {
+              "name": "",
+              "size": "",
+              "descricao": "",
+              "type": "Folder"
+            },
+            children: [],
+            parent: null
+          };
+  
+          novaPastaTree.data.key = response.Id;
+          novaPastaTree.data.name = nome;
+          novaPastaTree.data.size = "";
+          novaPastaTree.data.descricao = descricao;
+  
+          if (this.selectedFiles2)
+            this.selectedFiles2.children.push(novaPastaTree);
+          else
+            this.files2.push(novaPastaTree);
+  
+          this.files2 = [...this.files2];
+          this.novaPasta = false;
+          this.form.reset();
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   addArquivoTable(id, nome, tamanho, descricao) {
@@ -359,17 +449,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     return sOut;
   }
 
-  downloadSelecionado(event) {
-    this.downloadsService.download(event.key).subscribe((response: any) => {
-      let blob: any = new Blob([response], { type: 'application/pdf; charset=utf-8' });
-      const url = window.URL.createObjectURL(blob);
-      fileSaver.saveAs(blob, event.name);
-      this.mensagemService.showSuccessViaToast("Download efetuado com sucesso");
-      this.edicao = false;
-      this.novaPasta = false;
-      this.ehUpload = false;
-    }), (error: any) => this.mensagemService.showErrorViaToast(["Erro ao fazer o download."]);
-    return;
-  }
+  
 
 }
