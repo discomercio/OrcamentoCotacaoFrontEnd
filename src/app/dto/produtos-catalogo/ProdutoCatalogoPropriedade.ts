@@ -1,8 +1,8 @@
 export class ProdutoCatalogoPropriedade{
     id:string;
-    IdCfgTipoPropriedade:string;
-    IdCfgTipoPermissaoEdicaoCadastro:string;
-    IdCfgDataType:string;
+    IdCfgTipoPropriedade:string; //t_CFG_TIPO_PROPRIEDADE_PRODUTO_CATALOGO.id
+    IdCfgTipoPermissaoEdicaoCadastro:string;//t_CFG_TIPO_PERMISSAO_EDICAO_CADASTRO.id
+    IdCfgDataType:string; //t_CFG_DATA_TYPE.id
     descricao: string;
     oculto: boolean;
     ordem: string;
