@@ -69,9 +69,11 @@
                 </div>
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
-                <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
+                <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
                     (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event)" fileLimit="1" accept=".pdf"
-                    maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar">
+                    maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar"> -->
+                <p-fileUpload  class="p-col-12" id="arquivo" name="arquivo" [customUpload]="true" (uploadHandler)="myUploader($event)"
+                    fileLimit="1" accept=".pdf" maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">
                             <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
@@ -79,7 +81,7 @@
                     </ng-template>
                 </p-fileUpload>
             </div>
-
+            
             <p-treeTable [value]="files2" [columns]="cols" selectionMode="single" [(selection)]="selectedFiles2"
                 dataKey="key">
                 <ng-template pTemplate="header" let-columns>

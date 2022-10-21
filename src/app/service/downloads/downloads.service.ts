@@ -8,6 +8,7 @@ import { DownloadResponse } from './../../dto/arquivo/DownloadResponse';
 import { ArquivoExcluirResponse } from './../../dto/arquivo/ArquivoExcluirResponse';
 import { ArquivoEditarResponse  } from './../../dto/arquivo/ArquivoEditarResponse';
 import { ArquivoNovaPastaResponse  } from './../../dto/arquivo/ArquivoNovaPastaResponse';
+import { ArquivoUploadResponse  } from './../../dto/arquivo/ArquivoUploadResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +35,20 @@ export class DownloadsService {
     return this.http.put<ArquivoEditarResponse >(`${this.env.apiUrl()}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
   
-  public novaPasta(nome:string, idpai:string):Observable<ArquivoNovaPastaResponse>{
-    return this.http.post<ArquivoNovaPastaResponse>(`${this.env.apiUrl()}arquivo/criarpasta?nome=${nome}&idpai=${idpai}`, nome);
+  public novaPasta(idpai:string, nome:string, descricao:string):Observable<ArquivoNovaPastaResponse> {
+      return this.http.post<ArquivoNovaPastaResponse>(`${this.env.apiUrl()}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao });
+  }
+
+  public upload(idpai:string, arquivo: any): Observable<ArquivoUploadResponse> {
+
+    const formData = new FormData();
+    formData.append(arquivo.files[0].name, arquivo.files[0]);
+
+    return this.http.post<ArquivoUploadResponse>(`${this.env.apiUrl()}arquivo/upload/${idpai}`,  
+    formData,
+    {
+      reportProgress: true,
+    });
   }
 }
 
