@@ -34,7 +34,7 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     }
     
-    if (sessionStorage.getItem("versaoApi") != this.env.versaoApi()) {
+    if (localStorage.getItem("versaoApi") != this.env.versaoApi()) {
       this.alertaService.mostrarErroAtualizandoVersao();
     }
 
@@ -48,7 +48,7 @@ export class TokenInterceptor implements HttpInterceptor {
           let resp: HttpResponse<any> = event;
           let respOk = false;
 
-          if (sessionStorage.getItem("versaoApi") == this.env.versaoApi()) {
+          if (localStorage.getItem("versaoApi") == this.env.versaoApi()) {
             respOk = true;
           }        
           
