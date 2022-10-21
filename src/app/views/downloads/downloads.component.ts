@@ -13,6 +13,8 @@ import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { CdkTreeNode } from '@angular/cdk/tree';
+import { Console } from 'console';
 
 
 
@@ -46,6 +48,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   public ehUpload: boolean = false;
   public urlUpload: string = this.downloadsService.urlUpload;
   public constantes: Constantes = new Constantes();
+  public pastaRaizInserida: boolean = false;
   exibeBotaoUpload: boolean;
   exibeBotaoNovaPasta: boolean;
   exibeBotaoEditarArquivoPasta: boolean;
@@ -74,8 +77,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
-
-      this.files2 = response.Childs
+      this.files2 = response.Childs;
     }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
@@ -180,7 +182,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       else this.ehArquivo = false;
     }
 
-
   }
 
   criarForm() {
@@ -193,10 +194,12 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   novaPastaClick() {
-
-    if (!!this.selectedFiles2 == false) {
-      this.mensagemService.showWarnViaToast("Selecione uma pasta raiz onde queira criar a nova pasta!");
-      return;
+    
+    if(this.pastaRaizInserida) {
+      if (!!this.selectedFiles2 == false) {
+        this.mensagemService.showWarnViaToast("Selecione uma pasta raiz onde queira criar a nova pasta!");
+        return;
+      }
     }
 
     this.novaPasta = !this.novaPasta;
@@ -312,7 +315,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
           this.mensagemService.showWarnViaToast("Arquivo excluído!");
           this.editarClick();
         } else {
-          this.mensagemService.showWarnViaToast("Pasta excluída!");
+            this.mensagemService.showWarnViaToast("Pasta excluída!");
         }
         this.remove();
       }
@@ -332,23 +335,41 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       }
     }
     this.edicao = false;
-    this.files2 = [...this.files2];
+
+    if(this.files2.length <=1){
+      this.files2 = null;
+    }
+    else {
+      this.files2 = [...this.files2];
+    }
+
     this.buscarPastas();
   }
 
   addPastaTable() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
+    let idPai = "";
+
+    if(this.selectedFiles2 != undefined){
+      idPai = this.selectedFiles2.data.key;
+    }
+
     let nome = this.form.controls.pasta.value;
-    let idPai = this.selectedFiles2.data.key;
     let descricao = this.form.controls.descricaoPasta.value;
 
-    this.downloadsService.novaPasta(nome, idPai).toPromise().then(response => {
-
-      console.log(response);
+    this.downloadsService.novaPasta(idPai, nome, descricao).toPromise().then(response => {
 
       if (!response.Sucesso) {
         this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      if(idPai === "") {
+        this.pastaRaizInserida = true;
+        this.novaPasta = false;
+        this.form.reset();
+        this.buscarPastas();
         return;
       }
 
@@ -369,12 +390,12 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
           novaPastaTree.data.name = nome;
           novaPastaTree.data.size = "";
           novaPastaTree.data.descricao = descricao;
-  
-          if (this.selectedFiles2)
-            this.selectedFiles2.children.push(novaPastaTree);
-          else
-            this.files2.push(novaPastaTree);
-  
+          
+           if (this.selectedFiles2)
+             this.selectedFiles2.children.push(novaPastaTree);
+           else
+             this.files2.push(novaPastaTree);
+
           this.files2 = [...this.files2];
           this.novaPasta = false;
           this.form.reset();
@@ -382,73 +403,92 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  addArquivoTable(id, nome, tamanho, descricao) {
-    let novoArquivoTree: TreeNode = {
-      data: {
-        "name": "",
-        "size": "",
-        "descricao": "",
-        "type": "File"
-      },
-      children: [],
-      parent: null
-    };
+  // addArquivoTable(id, nome, tamanho, descricao) {
+  //   let novoArquivoTree: TreeNode = {
+  //     data: {
+  //       "name": "",
+  //       "size": "",
+  //       "descricao": "",
+  //       "type": "File"
+  //     },
+  //     children: [],
+  //     parent: null,
+  //     expanded: true
+  //   };
 
-    novoArquivoTree.data.key = id;
-    novoArquivoTree.data.name = nome;
-    novoArquivoTree.data.size = this.calculaTamanho(tamanho);
-    novoArquivoTree.data.descricao = descricao;
+  //   novoArquivoTree.data.key = id;
+  //   novoArquivoTree.data.name = nome;
+  //   novoArquivoTree.data.size = this.calculaTamanho(tamanho);
+  //   novoArquivoTree.data.descricao = descricao;
 
-    if (this.selectedFiles2)
-      this.selectedFiles2.children.push(novoArquivoTree);
-    else
-      this.files2.push(novoArquivoTree);
+  //   if (this.selectedFiles2)
+  //     this.selectedFiles2.children.push(novoArquivoTree);
+  //   else
+  //     this.files2.push(novoArquivoTree);
 
-    this.files2 = [...this.files2];
-    this.ehArquivo = false;
-    this.form.reset();
+  //   this.files2 = [...this.files2];
+  //   this.ehArquivo = false;
+  //   this.form.reset();
+  // }
+
+  // onBeforeUpload(event) {
+  //   if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
+  //   event.formData.append('idPai', this.selectedFiles2.data.key);
+  //   event.formData.append('descricao', this.form.controls.descricaoPasta.value);
+  // }
+
+  // onUpload(event) {
+  //   if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
+  //   this.ehUpload = false;
+  //   this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
+
+  //   for (let file of event.files) {
+  //     this.addArquivoTable(event.originalEvent.body.id, file.name, file.size, '');
+  //   }
+
+  //   this.files2 = [...this.files2];
+  //   this.buscarPastas();
+  // }
+
+  myUploader(event) {
+
+    let idPai = this.selectedFiles2.data.key;
+    let arquivo = event;
+
+    this.downloadsService.upload(idPai, arquivo).toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+      this.ehUpload = false;
+      this.mensagemService.showSuccessViaToast(response.Mensagem);
+
+      // for (let file of event.files) {
+      //   this.addArquivoTable(event.originalEvent.body.id, file.name, file.size, '');
+      // }
+      
+      this.buscarPastas();
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
-
-
-
-  onBeforeUpload(event) {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
-
-    event.formData.append('idPai', this.selectedFiles2.data.key);
-    event.formData.append('descricao', this.form.controls.descricaoPasta.value);
-  }
-
-  onUpload(event) {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
-
-    this.ehUpload = false;
-    this.mensagemService.showSuccessViaToast("Upload efetuado com sucesso.");
-
-    for (let file of event.files) {
-      this.addArquivoTable(event.originalEvent.body.id, file.name, file.size, '');
-    }
-
-    this.files2 = [...this.files2];
-  }
-
 
   //AUX
-  calculaTamanho(tamanhoBytes) {
-    var sOut = "";
-    var saida = 0;
+  // calculaTamanho(tamanhoBytes) {
+  //   var sOut = "";
+  //   var saida = 0;
 
-    if ((tamanhoBytes / 1024) <= 1024) {
-      saida = tamanhoBytes / 1024;
-      sOut = `${Math.round(saida)}kb`;
-    }
-    else {
-      saida = tamanhoBytes / 1024 / 1024;
-      sOut = `${Math.round(saida)}mb`;
-    }
+  //   if ((tamanhoBytes / 1024) <= 1024) {
+  //     saida = tamanhoBytes / 1024;
+  //     sOut = `${Math.round(saida)}kb`;
+  //   }
+  //   else {
+  //     saida = tamanhoBytes / 1024 / 1024;
+  //     sOut = `${Math.round(saida)}mb`;
+  //   }
 
-    return sOut;
-  }
-
-  
+  //   return sOut;
+  // }  
 
 }
