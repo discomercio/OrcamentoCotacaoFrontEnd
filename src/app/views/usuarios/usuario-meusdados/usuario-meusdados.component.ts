@@ -10,11 +10,13 @@ import { Component, OnInit } from '@angular/core';
 export class UsuarioMeusdadosComponent implements OnInit {
 
     public usuario: Usuario;
+    public versaoApi: string;
 
   constructor(public readonly autenticacaoService: AutenticacaoService) { }
 
     ngOnInit(): void {
         this.usuario = new Usuario();
+        this.versaoApi = localStorage.getItem('versaoApi');
 
         if(this.autenticacaoService._usuarioLogado) {
             this.usuario.nome = this.autenticacaoService._usuarioLogado;
