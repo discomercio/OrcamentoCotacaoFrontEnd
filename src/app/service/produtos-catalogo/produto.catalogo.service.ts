@@ -147,7 +147,7 @@ export class ProdutoCatalogoService {
     }
 
     buscarPropriedadesPorId(
-        id: string
+        id: number
     ): Observable<ProdutoCatalogoPropriedade> {
         return this.http.get<ProdutoCatalogoPropriedade>(
             `${this.env.apiUrl()}produto/propriedades/${id}`

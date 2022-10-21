@@ -9,6 +9,7 @@ import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/Produt
 import { DataType } from 'src/app/dto/produtos-catalogo/DataType';
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -24,6 +25,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
+    private readonly autenticacaoService:AutenticacaoService
   ) { }
 
   public form: FormGroup;
@@ -107,12 +109,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     });
   }
 
-  buscarPermissaoEdicaoCadastro() {
-
-  }
-
   inserirClick() {
-
     if (this.valorValido.trim() == "") {
       this.alertaService.mostrarMensagem("Favor informar um valor!");
       return;
@@ -135,7 +132,6 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
         this.mensagemService.showErrorViaToast(["Esse valor já existe!"]);
         return;
       }
-
     }
 
     let item = new ProdutoCatalogoPropriedadeOpcao();
@@ -197,10 +193,18 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) {
       return;
     }
+    
     let prod = new ProdutoCatalogoPropriedade();
-    //prod.Id = this.form.controls.id.value;
+    prod.IdCfgDataType = this.idCfgDataType;
+    prod.IdCfgTipoPropriedade = this.idTipoPropriedade
     prod.descricao = this.form.controls.descricao.value;
-    prod.usuario_cadastro = 'SISTEMA';
+    prod.usuario_cadastro = this.autenticacaoService._usuarioLogado;
+    prod.oculto = this.ocultoPropriedade;
+    debugger;
+    //fazer a parte no caso de propriedade limitada
+    if(this.idTipoPropriedade == 1){
+      
+    }
 
     // this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
     //   if (r != null) {
