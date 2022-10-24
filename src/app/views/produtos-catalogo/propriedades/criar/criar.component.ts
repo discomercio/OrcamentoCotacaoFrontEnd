@@ -69,7 +69,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     let dataType: string;
     dataType = this.form.controls.idCfgDataType.value;
 
-    if (this.lstValoresValidos.length > 0) {
+    if (this.idTipoPropriedade == 1 && this.lstValoresValidos.length > 0) {
 
       if (this.produtoPropriedade.IdCfgDataType != this.idCfgDataType) {
         this.mensagemService.showWarnViaToast("Não é permitido alterar o tipo de dado da propriedade com itens na lista de valores válidos!");
@@ -119,7 +119,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       if(!this.form.controls.descricao.invalid) return;
     }
 
-    if (this.lstValoresValidos.length > 0) {
+    if (this.idTipoPropriedade == 1 && this.lstValoresValidos.length > 0) {
       if (this.produtoPropriedade.IdCfgDataType != this.idCfgDataType) {
         this.mensagemService.showErrorViaToast(["Não é permitido alterar o tipo de dado da propriedade com intens na lista de valores válidos!"]);
         this.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
@@ -137,6 +137,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     let item = new ProdutoCatalogoPropriedadeOpcao();
     item.oculto = this.ocultoOpcao;
     item.valor = this.valorValido;
+    item.usuario_cadastro = this.autenticacaoService._usuarioLogado;
 
     this.lstValoresValidos = [...this.lstValoresValidos, item];
     this.produtoPropriedade.IdCfgDataType = this.idCfgDataType;
@@ -196,23 +197,29 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     
     let prod = new ProdutoCatalogoPropriedade();
     prod.IdCfgDataType = this.idCfgDataType;
-    prod.IdCfgTipoPropriedade = this.idTipoPropriedade
+    prod.IdCfgTipoPropriedade = this.idTipoPropriedade;
+    prod.IdCfgTipoPermissaoEdicaoCadastro = 0;
     prod.descricao = this.form.controls.descricao.value;
     prod.usuario_cadastro = this.autenticacaoService._usuarioLogado;
     prod.oculto = this.ocultoPropriedade;
-    debugger;
-    //fazer a parte no caso de propriedade limitada
+
     if(this.idTipoPropriedade == 1){
-      
+      if(this.lstValoresValidos.length == 0){
+        this.mensagemService.showErrorViaToast(["É necessário informar ao menos um item na lista de valores válido!"]);
+        return  
+      }
+      prod.produtoCatalogoPropriedadeOpcao = new Array();
+      prod.produtoCatalogoPropriedadeOpcao = this.lstValoresValidos;
     }
 
-    // this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
-    //   if (r != null) {
-    //     this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
-    //     this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
-    //     //this.router.navigate([`//produtos-catalogo-propriedades/editar/${prod.Id}`]);
-    //   }
-    // }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    debugger;
+    this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
+      if (r != null) {
+        this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
+        this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+        //this.router.navigate([`//produtos-catalogo-propriedades/editar/${prod.Id}`]);
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
 }

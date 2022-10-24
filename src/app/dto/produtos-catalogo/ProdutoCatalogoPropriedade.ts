@@ -1,3 +1,5 @@
+import { ProdutoCatalogoPropriedadeOpcao } from "./ProdutoCatalogoPropriedadeOpcao";
+
 export class ProdutoCatalogoPropriedade{
     id:number;
     IdCfgTipoPropriedade:number; //t_CFG_TIPO_PROPRIEDADE_PRODUTO_CATALOGO.id
@@ -8,4 +10,5 @@ export class ProdutoCatalogoPropriedade{
     ordem: string;
     dt_cadastro: string;
     usuario_cadastro: string;
+    produtoCatalogoPropriedadeOpcao:ProdutoCatalogoPropriedadeOpcao[]
 }

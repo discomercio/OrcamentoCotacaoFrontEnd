@@ -69,8 +69,8 @@
                                     </div>
                                 </div>
                                 <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
-                                    <label class="p-d-block" for="ativo">Ativo</label>
-                                    <p-inputSwitch id="ativo" [(ngModel)]="ocultoOpcao" formControlName="ocultoOpcao">
+                                    <label class="p-d-block" for="ocultoOpcao">Ativo</label>
+                                    <p-inputSwitch id="ocultoOpcao" [(ngModel)]="ocultoOpcao" formControlName="ocultoOpcao">
                                     </p-inputSwitch>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                     <div>
                                         <div style="font-size:14px;float:right;margin:15px 5px 0 0">
                                             <span><b>Valor: </b> {{valido.valor}} - <b>Ativo:
-                                                </b>{{retornarSimOuNao(valido.ocultoOpcao)}} </span>
+                                                </b>{{retornarSimOuNao(valido.oculto)}} </span>
                                         </div>
                                     </div>
                                 </ng-template>

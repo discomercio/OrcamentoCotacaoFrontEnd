@@ -154,7 +154,7 @@ export class ProdutoCatalogoService {
         );
     }
 
-    criarPropriedades(produto: any): Observable<any> {
+    criarPropriedades(produto: ProdutoCatalogoPropriedade): Observable<any> {
         return this.http.post<any>(
             `${this.env.apiUrl()}produto/propriedades`,
             produto
