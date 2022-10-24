@@ -10,6 +10,7 @@ export class Usuario {
     celular: string = "";
     ativo: boolean = true;
     permissoes: Array<string> = new Array();
+    permissoesDescricao: Array<string> = new Array();
     usuarioCadastro: string = "";
     dataCadastro: Date;
     usuarioUltimaAlteracao: string = "";
