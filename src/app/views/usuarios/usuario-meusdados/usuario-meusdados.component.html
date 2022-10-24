@@ -36,18 +36,19 @@
                     <br><br>
                     <label><b>Versão frontend:</b> {{versaoApi}}</label>
                     <br>
-                    <label><b>Versão backend:</b> {{versaoApi}}</label>                    
-                </div>                
+                    <label><b>Versão backend:</b> {{versaoApi}}</label>
+                </div>
 
-                <div class="p-field p-col-12 p-lg-4 p-md-6 p-sm-6">
+                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                     <label><b>Permissões:</b>
-                        <div *ngFor="let p of usuario.permissoes">
-                            <label>{{p}} - </label>
-                            <label *ngIf="p == 100100">Acesso Ao Módulo</label>
-                            <label *ngIf="p == 100200">Administrador Do Módulo</label>
-                            <label *ngIf="p == 100300">Parceiro Indicador Usuário Master</label>
-                            <label *ngIf="p == 100400">Selecionar Qualquer Indicador Da Loja</label>
-                            <label *ngIf="p == 100500">Prorrogar Vencimento Do Orçamento</label>
+
+                        <div *ngFor="let p of usuario.permissoes;let i = index">
+                            <div *ngFor="let o of operacao;let z = index">
+                                <div *ngIf="p == o.Id">
+                                <label>{{p}} - </label>
+                                <label>{{operacao[z].Descricao}}</label>
+                                </div>
+                            </div>
                         </div>
                     </label>
                 </div>

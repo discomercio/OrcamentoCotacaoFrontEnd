@@ -1,5 +1,5 @@
 export class Operacao {
-    id : number;
+    id : string;
     modulo: string;
     tipo_operacao: string;
     ordenacao: string;
