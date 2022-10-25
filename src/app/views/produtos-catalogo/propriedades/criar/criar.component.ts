@@ -25,7 +25,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly autenticacaoService:AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService
   ) { }
 
   public form: FormGroup;
@@ -116,7 +116,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     if (!this.validacaoFormularioService.validaForm(this.form)) {
-      if(!this.form.controls.descricao.invalid) return;
+      if (!this.form.controls.descricao.invalid) return;
     }
 
     if (this.idTipoPropriedade == 1 && this.lstValoresValidos.length > 0) {
@@ -135,7 +135,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     let item = new ProdutoCatalogoPropriedadeOpcao();
-    item.oculto = this.ocultoOpcao;
+    item.oculto = this.ocultoOpcao ? false : true;
     item.valor = this.valorValido;
     item.usuario_cadastro = this.autenticacaoService._usuarioLogado;
 
@@ -159,6 +159,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       descricao: ['', [Validators.required]],
       idCfgDataType: ['', [Validators.required, Validators.min(0), Validators.max(2)]],
       idTipoPropriedade: ['', [Validators.required]],
+      ordem: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],//'^-?[0-9]\\d*(d{1,2})?$'
       valorValido: [''],
       ocultoPropriedade: ['', [Validators.required]],
       ocultoOpcao: [''],
@@ -183,9 +184,9 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
 
   retornarSimOuNao(oculto: any) {
     if (oculto == true) {
-      return "Sim";
-    } else {
       return "Não";
+    } else {
+      return "Sim";
     }
   }
 
@@ -194,33 +195,31 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) {
       return;
     }
-    
+
     let prod = new ProdutoCatalogoPropriedade();
     prod.IdCfgDataType = this.idCfgDataType;
     prod.IdCfgTipoPropriedade = this.idTipoPropriedade;
     prod.IdCfgTipoPermissaoEdicaoCadastro = 0;
     prod.descricao = this.form.controls.descricao.value;
     prod.usuario_cadastro = this.autenticacaoService._usuarioLogado;
-    prod.oculto = this.ocultoPropriedade;
+    prod.oculto = this.ocultoPropriedade ? false : true;
+    prod.ordem = this.form.controls.ordem.value;
 
-    if(this.idTipoPropriedade == 1){
-      if(this.lstValoresValidos.length == 0){
+    if (this.idTipoPropriedade == 1) {
+      if (this.lstValoresValidos.length == 0) {
         this.mensagemService.showErrorViaToast(["É necessário informar ao menos um item na lista de valores válido!"]);
-        return  
+        return
       }
       prod.produtoCatalogoPropriedadeOpcao = new Array();
       prod.produtoCatalogoPropriedadeOpcao = this.lstValoresValidos;
     }
 
-    debugger;
     this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
-      if (r != null) {
+      if (r == null) {
         this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
         this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
-        //this.router.navigate([`//produtos-catalogo-propriedades/editar/${prod.Id}`]);
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
-
 }
 

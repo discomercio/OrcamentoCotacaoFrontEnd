@@ -218,15 +218,15 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
 
     this.produtosParaTela.forEach(x => {
       if (
-        x.idTipoCampo == "0" && x.valorPropriedade != null && x.valorPropriedade != "" ||
-        x.idTipoCampo == "1" && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
+        x.idTipoCampo == 0 && x.valorPropriedade != null && x.valorPropriedade != "" ||
+        x.idTipoCampo == 1 && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
       ) {
         let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
         itemModelo.IdProdutoCatalogo = '-1';
         itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
 
 
-        if (x.idTipoCampo == "1") {
+        if (x.idTipoCampo == 1) {
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = x.idValorPropriedadeOpcao == 0 ? x.valorPropriedade : x.idValorPropriedadeOpcao.toString();
           itemModelo.Valor = "";
         } else {

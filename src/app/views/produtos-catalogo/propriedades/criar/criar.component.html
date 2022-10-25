@@ -26,6 +26,21 @@
                         </p-inputSwitch>
                     </div>
                 </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
+                    <div class="p-field p-col-12 p-lg-8 p-md-8 p-sm-8">
+                        <label for="ordem">Ordem da prioridade</label>
+                        <input id="ordem" type="number" pInputText placeholder="Prioridade"
+                            formControlName="ordem" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'ordem')">
+                            <small class="p-error" *ngIf="form.controls.ordem.errors?.required">
+                                {{mensagemErro}}
+                            </small>
+                            <small class="p-error" *ngIf="form.controls.ordem.errors?.pattern">
+                                Somente números
+                            </small>
+                        </div>
+                    </div>
+                </div>
                 <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-col-12 p-d-inline-flex">
                         <div *ngFor="let prop of lstTipoPropriedadeCatalogo">
@@ -44,14 +59,12 @@
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label for="dataTypes">Tipo de dado</label>
                         <p-dropdown id="dataTypes" [options]="lstDataTypes" placeholder="Selecione"
-                            formControlName="idCfgDataType" (onChange)="changeDataType()"
-                            [(ngModel)]="idCfgDataType">
+                            formControlName="idCfgDataType" (onChange)="changeDataType()" [(ngModel)]="idCfgDataType">
                         </p-dropdown>
                         <small class="p-error"
                             *ngIf="validacaoFormularioService.verificaCampo(form,'idCfgDataType')">{{mensagemErro}}</small>
                     </div>
-                    <div class="p-col-12"
-                        *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
+                    <div class="p-col-12" *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
                         <div class="p-grid">
                             <div class="p-grid p-col-12 p-py-0 p-pr-0">
                                 <div class="p-col-12 p-field p-lg-4 p-md-6 p-pr-0 p-py-0 p-sm-6">
@@ -70,7 +83,8 @@
                                 </div>
                                 <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
                                     <label class="p-d-block" for="ocultoOpcao">Ativo</label>
-                                    <p-inputSwitch id="ocultoOpcao" [(ngModel)]="ocultoOpcao" formControlName="ocultoOpcao">
+                                    <p-inputSwitch id="ocultoOpcao" [(ngModel)]="ocultoOpcao"
+                                        formControlName="ocultoOpcao">
                                     </p-inputSwitch>
                                 </div>
                             </div>
@@ -83,8 +97,7 @@
                         </div>
 
                     </div>
-                    <div
-                        *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
+                    <div *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
                         <div class="p-field p-col-12 p-lg-7">
                             <label for="valido">Lista de valores válidos</label>
                             <p-orderList [value]="lstValoresValidos" controlsPosition="right" [dragdrop]="true"
@@ -104,12 +117,12 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>&nbsp;
-                <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
-
+                <div class="p-col-12 p-d-inline-flex p-jc-around">
+                    <button pButton type="button" label="Voltar" icon="fa fa-reply"
+                        (click)="voltarClick()"></button>&nbsp;
+                    <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
+                </div>
             </form>
 
         </div>

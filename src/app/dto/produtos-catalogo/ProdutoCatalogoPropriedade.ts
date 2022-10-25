@@ -7,7 +7,7 @@ export class ProdutoCatalogoPropriedade{
     IdCfgDataType:number; //t_CFG_DATA_TYPE.id
     descricao: string;
     oculto: boolean;
-    ordem: string;
+    ordem: number;
     dt_cadastro: string;
     usuario_cadastro: string;
     produtoCatalogoPropriedadeOpcao:ProdutoCatalogoPropriedadeOpcao[]
