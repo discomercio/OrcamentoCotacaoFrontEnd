@@ -97,10 +97,15 @@ export class AlertaService {
       }
       if (error.status == 500) {
         //erro 500
-        this.mostrarMensagemComLargura(
-            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-            "250px", null);
-
+        if (error.error.Mensagem != undefined) {
+          this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
+        }
+        else
+        {
+          this.mostrarMensagemComLargura(
+              "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+              "250px", null);
+         }
         return;
       }
 
@@ -117,7 +122,14 @@ export class AlertaService {
         //   //   mensagens.push(listaErros[erro]);
         //   // }
         // }
-        this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
+
+        if (error.error.Mensagem != undefined) {
+          this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
+        }
+        else {
+          this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
+        }
+        
         return
       }
 
@@ -154,7 +166,7 @@ export class AlertaService {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
-        sessionStorage.setItem('versaoApi', this.env.versaoApi());
+        localStorage.setItem('versaoApi', this.env.versaoApi());
 
         window.location.reload();
 
@@ -175,7 +187,7 @@ export class AlertaService {
         versao = " (" + versao + ")";
       }
       this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
-        sessionStorage.setItem('versaoApi', this.env.versaoApi());
+        localStorage.setItem('versaoApi', this.env.versaoApi());
         window.location.reload();
 
       });

@@ -12,5 +12,6 @@ export class MensageriaDto {
     Mensagem: string;
     DataCadastro: string;
     DataHoraCadastro: string;
+    PendenciaTratada: boolean;
 }
 
