@@ -31,12 +31,33 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   private id: number;
   public boolAtivo: boolean;
   carregando: boolean = false;
-  @ViewChild("criarProduto") criarProduto: ProdutosCatalogoPropriedadesCriarComponent;
+  @ViewChild("criarPropriedade") criarPropriedade: ProdutosCatalogoPropriedadesCriarComponent;
 
   ngOnInit(): void {
-
+    this.carregando = true;
+    this.id = this.activatedRoute.snapshot.params.id;
+    this.buscarPropriedadesPorId();
   }
 
+  buscarPropriedadesPorId() {
+
+    this.produtoService.buscarPropriedadesPorId(this.id).toPromise().then((r) => {
+      if (r != null) {
+        this.produtoPropriedade = r[0];
+        this.criarPropriedade.produtoPropriedade = r[0];
+        this.criarPropriedade.criarForm();
+        this.criarPropriedade.form.controls.idTipoPropriedade.setValue(this.produtoPropriedade.IdCfgTipoPropriedade);
+        this.criarPropriedade.idTipoPropriedade = this.produtoPropriedade.IdCfgTipoPropriedade;
+        this.criarPropriedade.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
+        this.criarPropriedade.lstValoresValidos = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
+        this.criarPropriedade.changeDataType();
+      }
+      this.carregando = false;
+    }).catch((r) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(r);
+    });
+  }
 
 }
 

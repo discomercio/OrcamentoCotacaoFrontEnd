@@ -150,7 +150,7 @@ export class ProdutoCatalogoService {
         id: number
     ): Observable<ProdutoCatalogoPropriedade> {
         return this.http.get<ProdutoCatalogoPropriedade>(
-            `${this.env.apiUrl()}produto/propriedades/${id}`
+            `${this.env.apiUrl()}produtocatalogo/propriedades/${id}`
         );
     }
 

@@ -1,7 +1,10 @@
 <div class="p-grid">
     <div class="p-col-12">
-        <div class="card">
-            <h4>Criação de Propriedades</h4>
+        <div *ngIf="!edicao" class="card">
+            <h4>Criação de Propriedade</h4>
+        </div>
+        <div *ngIf="edicao" class="card">
+            <h4>Edição de Propriedade</h4>
         </div>
     </div>
 </div>
@@ -46,7 +49,7 @@
                 <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-pt-0">
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-py-0">
                         <label for="dataTypes">Tipo de dado</label>
-                        <p-dropdown id="dataTypes" [options]="lstDataTypes" placeholder="Selecione"
+                        <p-dropdown id="dataTypes" [options]="lstDataTypes" placeholder="Selecione" [disabled]="edicao"
                             formControlName="idCfgDataType" (onChange)="changeDataType()" [(ngModel)]="idCfgDataType">
                         </p-dropdown>
                         <small class="p-error"
@@ -54,7 +57,7 @@
                     </div>
                     <div class="p-col-12 p-d-inline-flex">
                         <div *ngFor="let prop of lstTipoPropriedadeCatalogo">
-                            <p-radioButton [inputId]="prop.value" [value]="prop.value" label="{{prop.label}}"
+                            <p-radioButton [inputId]="prop.value" [value]="prop.value" [label]="prop.label" [disabled]="edicao"
                                 formControlName="idTipoPropriedade" [(ngModel)]="idTipoPropriedade">
                             </p-radioButton>
                             &nbsp;&nbsp;
@@ -95,9 +98,18 @@
                                         </p-inputSwitch>
                                     </div>
 
-                                    <div class="p-as-center">
+                                    <div *ngIf="!editando" class="p-as-center">
                                         <button pButton type="button" icon="fa fa-save" label="Inserir"
                                             (click)="inserirClick()"></button>
+                                    </div>
+
+                                    <div *ngIf="edicao && editando" class="p-as-center">
+                                        <button pButton type="button" icon="fa fa-save" label="Salvar edição"
+                                            (click)="salvarEdicaoClick()"></button>
+                                    </div>
+                                    <div *ngIf="edicao && editando" class="p-as-center p-pl-2">
+                                        <button pButton type="button" icon="pi pi-times" class="p-button-danger"
+                                            (click)="cancelarEdicaoClick()"></button>
                                     </div>
                                 </div>
                             </div>
@@ -114,7 +126,7 @@
                                             <span style="line-break: anywhere;">
                                                 {{valido.valor}}</span>
                                             <span>
-                                                <b>Ativo:</b>{{retornarSimOuNao(valido.oculto)}}
+                                                <b>Ativo: </b>{{retornarSimOuNao(valido.oculto)}}
                                             </span>
                                         </div>
                                     </div>
@@ -123,7 +135,11 @@
                             <div class="p-col-11 p-d-inline-flex p-jc-end p-p-0">
                                 <div class="p-col-3 p-mr-3">
                                     <button pButton type="button" label="Remover" icon="fa fa-trash"
-                                        (click)="removeClick()"></button>
+                                        (click)="removeClick()" [disabled]="editando"></button>
+                                </div>
+                                <div *ngIf="edicao" class="p-col-3 p-mr-3">
+                                    <button pButton type="button" label="Editar" icon="pi pi-user-edit"
+                                        (click)="editarClick()" [disabled]="editando"></button>
                                 </div>
                             </div>
 

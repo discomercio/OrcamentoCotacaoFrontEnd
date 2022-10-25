@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -10,9 +10,10 @@ import { DataType } from 'src/app/dto/produtos-catalogo/DataType';
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
-  selector: 'app-criar-produto',
+  selector: 'app-criar-propriedade-produto',
   templateUrl: './criar.component.html',
   styleUrls: ['./criar.component.scss']
 })
@@ -25,7 +26,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly autenticacaoService: AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService: SweetalertService
   ) { }
 
   public form: FormGroup;
@@ -42,6 +44,9 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   ocultoPropriedade: boolean = false;
   idCfgDataType: number;
   idTipoPropriedade: number;
+  itemApoioEdicao = new ProdutoCatalogoPropriedadeOpcao();
+  editando: boolean = false;
+  @Input() edicao: boolean;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -102,6 +107,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     this.produtoService.buscarTipoPropriedades().toPromise().then((r) => {
       if (r != null) {
         this.lstTipoPropriedadeCatalogo = this.montarListaParaSelectItem(r);
+        // this.lstTipoPropriedadeCatalogo = r;
+
       }
       else this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de propriedade.")
     }).catch((e) => {
@@ -150,19 +157,83 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       this.alertaService.mostrarMensagem("Para remover um item, é necessário selecionar algum item da lista de valores válidos!");
       return;
     }
+    
+    if(this.selectedValorValido[0].id <= 10000 && this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1){
+      this.mensagemService.showErrorViaToast(["Desculpe! Esse item não pode ser removido."]);
+      return;
+    }
 
-    this.lstValoresValidos = this.lstValoresValidos.filter(x => x.valor != this.selectedValorValido[0].valor);
-    this.lstValoresValidos = [...this.lstValoresValidos];
+    this.sweetAlertService
+      .dialogo("", `Tem certeza que deseja remover o item "${this.selectedValorValido[0].valor}" da lista de valores válido?`)
+      .subscribe(result => {
+        if (!result) return;
+
+        this.lstValoresValidos = this.lstValoresValidos.filter(x => x.valor != this.selectedValorValido[0].valor);
+        this.lstValoresValidos = [...this.lstValoresValidos];
+      });
+  }
+
+
+  editarClick() {
+    if (this.selectedValorValido == undefined) {
+      this.alertaService.mostrarMensagem("Para editar um item, é necessário selecionar algum item da lista de valores válidos!");
+      return;
+    }
+
+    if(this.selectedValorValido[0].id <= 10000 && this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1){
+      this.mensagemService.showErrorViaToast(["Desculpe! Esse item não pode ser editado."]);
+      return;
+    }
+
+    this.valorValido = this.selectedValorValido[0].valor;
+    this.ocultoOpcao = !this.selectedValorValido[0].oculto
+
+    this.itemApoioEdicao = new ProdutoCatalogoPropriedadeOpcao();
+    this.itemApoioEdicao.oculto = !this.selectedValorValido[0].oculto
+    this.itemApoioEdicao.valor = this.selectedValorValido[0].valor;
+    this.itemApoioEdicao.usuario_cadastro = this.selectedValorValido[0].usuarioLogado;
+    this.itemApoioEdicao.dt_cadastro = this.selectedValorValido[0].dt_cadastro;
+    this.itemApoioEdicao.id = this.selectedValorValido[0].id;
+    this.itemApoioEdicao.id_produto_catalogo_propriedade = this.selectedValorValido[0].id_produto_catalogo_propriedade;
+    this.itemApoioEdicao.ordem = this.selectedValorValido[0].ordem;
+
+    this.editando = true;
+  }
+
+  salvarEdicaoClick() {
+    if (this.valorValido.trim() == "") {
+      this.alertaService.mostrarMensagem("Favor informar um valor!");
+      return;
+    }
+
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      if (!this.form.controls.descricao.invalid) return;
+    }
+
+    let propExiste = this.lstValoresValidos.filter(x => x.id == this.itemApoioEdicao.id);
+    propExiste[0].valor = this.valorValido;
+    propExiste[0].oculto = this.ocultoOpcao ? false : true;
+
+    this.cancelarEdicaoClick();
+    this.selectedValorValido = null;
+  }
+
+  cancelarEdicaoClick() {
+    this.itemApoioEdicao = new ProdutoCatalogoPropriedadeOpcao();
+    this.valorValido = "";
+    this.ocultoOpcao = false;
+    this.editando = false;
+    this.selectedValorValido = null;
   }
 
   criarForm() {
     this.form = this.fb.group({
-      descricao: ['', [Validators.required, Validators.maxLength(100)]],
-      idCfgDataType: ['', [Validators.required, Validators.min(0), Validators.max(2)]],
-      idTipoPropriedade: ['', [Validators.required]],
-      ordem: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],//'^-?[0-9]\\d*(d{1,2})?$'
+      descricao: [this.produtoPropriedade.descricao, [Validators.required, Validators.maxLength(100)]],
+      idCfgDataType: [this.produtoPropriedade.IdCfgDataType, [Validators.required, Validators.min(0), Validators.max(2)]],
+      idTipoPropriedade: [this.produtoPropriedade.IdCfgTipoPropriedade, [Validators.required]],
+      ordem: [this.produtoPropriedade.ordem, [Validators.required, Validators.pattern("^[0-9]*$")]],//'^-?[0-9]\\d*(d{1,2})?$'
       valorValido: [''],
-      ocultoPropriedade: ['', [Validators.required]],
+      ocultoPropriedade: [!this.produtoPropriedade.oculto, [Validators.required]],
       ocultoOpcao: [''],
     });
   }
