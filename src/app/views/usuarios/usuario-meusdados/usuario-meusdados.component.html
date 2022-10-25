@@ -32,11 +32,50 @@
                 </div>
 
                 <div class="p-field p-col-12 p-lg-4 p-md-6 p-sm-6">
+
                     <label><b>Unidade Negócio:</b> {{usuario.unidadeNegocio}}</label>
                     <br><br>
-                    <label><b>Versão frontend:</b> {{versaoApi}}</label>
+                    <label><b>Status do Frontend &nbsp;</b></label>
+                    <div *ngIf="versaoFront == versaoFrontCache; then versaoFrontOK else versaoFrontErro"></div>
+                    <ng-template #versaoFrontOK>
+                        <label> <i class="pi pi-check-square" style="color:green;"></i></label><br>
+                    </ng-template>
+                    <ng-template #versaoFrontErro>
+                        <label> <i class="pi pi-times" style="color:red;"></i></label><br>
+                    </ng-template>
+                    <label><b>Versão do Pacote :</b> {{versaoFront}}</label>
                     <br>
-                    <label><b>Versão backend:</b> {{versaoApi}}</label>
+                    <label><b>Versão em Execução :</b> {{versaoFrontCache}}</label>
+                    <br><br>
+
+                    <label><b>Status do Backend&nbsp; </b></label>
+
+                    <div *ngIf="versaoApi == versaoApiCache; then versaoApiOK else versaoApiErro"></div>
+
+                    <ng-template #versaoApiOK>
+                        <label> <i class="pi pi-check-square" style="color:green;"></i></label><br>
+                    </ng-template>
+
+                    <ng-template #versaoApiErro>
+                        <label> <i class="pi pi-times" style="color:red;"></i></label><br>
+                    </ng-template>
+
+                    <label><b>Versão do Pacote:</b> {{versaoApi}}</label>
+                    <br>
+                    <label><b>Versão em Execução:</b> {{versaoApiCache}}</label>
+                    <br><br>
+
+                    <label><b>Frontend x Backend:</b></label>
+                    <div
+                        *ngIf="versaoFront == versaoFrontCache && versaoApi == versaoApiCache && versaoFront == versaoApi && versaoApiCache == versaoFrontCache ; then confrontoOK else confrontoErro">
+                    </div>
+                    <ng-template #confrontoOK>
+                        <label> <i class="pi pi-check-square" style="color:green;"></i></label><br>
+                    </ng-template>
+
+                    <ng-template #confrontoErro>
+                        <label> <i class="pi pi-times" style="color:red;"></i></label><br>
+                    </ng-template>
                 </div>
 
                 <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
@@ -45,8 +84,8 @@
                         <div *ngFor="let p of usuario.permissoes;let i = index">
                             <div *ngFor="let o of operacao;let z = index">
                                 <div *ngIf="p == o.Id">
-                                <label>{{p}} - </label>
-                                <label>{{operacao[z].Descricao}}</label>
+                                    <label>{{p}} - </label>
+                                    <label>{{operacao[z].Descricao}}</label>
                                 </div>
                             </div>
                         </div>

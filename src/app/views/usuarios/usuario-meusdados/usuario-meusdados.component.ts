@@ -3,6 +3,9 @@ import { Operacao } from '../../../dto/operacao/operacao';
 import { AutenticacaoService } from '../../../service/autenticacao/autenticacao.service';
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../../../service/usuarios/usuarios.service';
+import { SistemaService } from '../../../service/Sistema/sistema.service';
+import { SistemaResponse } from 'src/app/service/sistema/sistemaResponse';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-usuario-meusdados',
@@ -10,21 +13,35 @@ import { UsuariosService } from '../../../service/usuarios/usuarios.service';
   styleUrls: ['./usuario-meusdados.component.scss']
 })
 export class UsuarioMeusdadosComponent implements OnInit {
+    
+    env: environment;
 
     public usuario: Usuario;
-    public versaoApi: string;
+    public versaoFrontCache: string;    
+    public versaoFront: string;  
+    
+    public versaoApi: SistemaResponse;
+    public versaoApiCache: SistemaResponse;
+
     public operacao: Operacao[];
 
-  constructor(public readonly autenticacaoService: AutenticacaoService, public readonly usuariosService: UsuariosService) { }
+  constructor(public readonly autenticacaoService: AutenticacaoService, 
+    public readonly sistemaService: SistemaService,
+    private envir: environment,
+    public readonly usuariosService: UsuariosService) { 
+      this.env = envir;
+    }
 
     ngOnInit(): void {
         this.usuario = new Usuario();
-        this.versaoApi = localStorage.getItem('versaoApi');
+        this.versaoFrontCache = localStorage.getItem('versaoApi');
+        this.versaoFront = this.env.versaoApi();
+        
         this.usuariosService.buscarOperacaoUsuarioPorModuloCotac().toPromise().then((r) => {
           if (r != null) { 
             this.operacao = r;     
           }
-        })
+        })   
         
         if(this.autenticacaoService._usuarioLogado) {
             this.usuario.nome = this.autenticacaoService._usuarioLogado;
@@ -36,5 +53,17 @@ export class UsuarioMeusdadosComponent implements OnInit {
             this.usuario.permissoes = this.autenticacaoService._permissoes;
             
         }
+
+        this.sistemaService.retornarVersao().toPromise().then((r) => {
+          if (r != null) { 
+            this.versaoApi = r;
+          }
+        })     
+
+        this.sistemaService.retornarVersaoCache().toPromise().then((r) => {
+          if (r != null) { 
+            this.versaoApiCache = r;
+          }
+        })           
     }
 }

@@ -11,8 +11,15 @@ export class SistemaService {
 
     constructor(private http: HttpClient, private env: environment) { }
 
-      versaoApi(): Observable<SistemaResponse> {        
+      
+      retornarVersao(): Observable<SistemaResponse> {        
         let response = this.http.get<SistemaResponse>(this.env.apiUrl() + 'Sistema/versao');
         return response;
-      }      
+      } 
+       
+      retornarVersaoCache(): Observable<SistemaResponse> {        
+        let response = this.http.get<SistemaResponse>(this.env.apiUrl() + 'Sistema/cache');
+        return response;
+      }       
+
 }
