@@ -6,6 +6,10 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { DataType } from 'src/app/dto/produtos-catalogo/DataType';
+import { SelectItem } from 'primeng/api';
+import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -21,45 +25,202 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    ) { }
+    private readonly autenticacaoService: AutenticacaoService
+  ) { }
 
-    public form: FormGroup;
-    public mensagemErro: string = "*Campo obrigatório.";
-    public produtoPropriedade: ProdutoCatalogoPropriedade = new ProdutoCatalogoPropriedade();
-    carregando: boolean = false;
+  public form: FormGroup;
+  public mensagemErro: string = "*Campo obrigatório.";
+  public produtoPropriedade: ProdutoCatalogoPropriedade = new ProdutoCatalogoPropriedade();
+  carregando: boolean = false;
+  lstDataTypes: SelectItem[] = new Array();
+  lstTipoPropriedadeCatalogo: SelectItem[] = new Array();
+  lstValoresValidos: ProdutoCatalogoPropriedadeOpcao[] = new Array();
+  valorValido: string;
+  selectedValorValido: any;
+  alertaTipoProp: string;
+  ocultoOpcao: boolean = false;
+  ocultoPropriedade: boolean = false;
+  idCfgDataType: number;
+  idTipoPropriedade: number;
 
-    ngOnInit(): void {
-      this.carregando = true;
-      this.criarForm();
+  ngOnInit(): void {
+    this.carregando = true;
+    this.criarForm();
+    this.buscargDataTypes();
+    this.buscarTipoPropriedades();
+    //buscar t_CFG_TIPO_PERMISSAO_EDICAO_CADASTRO
+  }
+
+  buscargDataTypes() {
+    this.produtoService.buscarDataTypes().toPromise().then((r) => {
+
+      if (r != null) {
+        this.lstDataTypes = this.montarListaParaSelectItem(r);
+      }
+      else {
+        this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de dado.");
+      }
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
+  }
+
+  changeDataType() {
+    let dataType: string;
+    dataType = this.form.controls.idCfgDataType.value;
+
+    if (this.idTipoPropriedade == 1 && this.lstValoresValidos.length > 0) {
+
+      if (this.produtoPropriedade.IdCfgDataType != this.idCfgDataType) {
+        this.mensagemService.showWarnViaToast("Não é permitido alterar o tipo de dado da propriedade com itens na lista de valores válidos!");
+        this.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
+        this.form.controls.idCfgDataType.setValue(this.idCfgDataType);
+        return;
+      }
     }
 
-    criarForm() {
-      this.form = this.fb.group({
-        id: ['', [Validators.required]],
-        descricao: ['', [Validators.required]],
-        ativo: [''],
-      });
+    if (dataType == "0")//texto
+    {
+      this.form.controls["valorValido"].clearValidators();
+      this.form.controls["valorValido"].setValidators([Validators.maxLength(255)]);
+    }
+    if (dataType == "1")//inteiro
+    {
+      this.form.controls["valorValido"].setValidators([Validators.pattern("^[0-9]*$")]);
+      this.alertaTipoProp = "Informe somente números";
+    }
+    if (dataType == "2")//real
+    {
+      this.form.controls["valorValido"].setValidators([Validators.pattern("^[0-9]+(,[0-9]+)?$")]);
+      this.alertaTipoProp = "Esperamos vírgula";
     }
 
-    voltarClick(): void {
-      this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+    this.form.controls["valorValido"].updateValueAndValidity();
+  }
+
+  buscarTipoPropriedades() {
+    this.produtoService.buscarTipoPropriedades().toPromise().then((r) => {
+      if (r != null) {
+        this.lstTipoPropriedadeCatalogo = this.montarListaParaSelectItem(r);
+      }
+      else this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de propriedade.")
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
+  }
+
+  inserirClick() {
+
+    if (this.valorValido.trim() == "") {
+      this.alertaService.mostrarMensagem("Favor informar um valor!");
+      return;
     }
 
-    salvarClick() {       
-      
-        let prod = new ProdutoCatalogoPropriedade();
-        //prod.Id = this.form.controls.id.value;
-        prod.descricao = this.form.controls.descricao.value;
-        prod.usuario_cadastro = 'SISTEMA';
-        
-      this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
-        if (r != null) {
-          this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
-            this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
-            //this.router.navigate([`//produtos-catalogo-propriedades/editar/${prod.Id}`]);
-        }
-      }).catch((r)=> this.alertaService.mostrarErroInternet(r));
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      if (!this.form.controls.descricao.invalid) return;
     }
 
+    if (this.idTipoPropriedade == 1 && this.lstValoresValidos.length > 0) {
+      if (this.produtoPropriedade.IdCfgDataType != this.idCfgDataType) {
+        this.mensagemService.showErrorViaToast(["Não é permitido alterar o tipo de dado da propriedade com intens na lista de valores válidos!"]);
+        this.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
+        this.form.controls.idCfgDataType.setValue(this.idCfgDataType);
+        return;
+      }
+
+      let propExiste = this.lstValoresValidos.filter(x => x.valor == this.valorValido);
+      if (propExiste.length > 0) {
+        this.mensagemService.showErrorViaToast(["Esse valor já existe!"]);
+        return;
+      }
+    }
+
+    let item = new ProdutoCatalogoPropriedadeOpcao();
+    item.oculto = this.ocultoOpcao ? false : true;
+    item.valor = this.valorValido;
+    item.usuario_cadastro = this.autenticacaoService._usuarioLogado;
+
+    this.lstValoresValidos = [...this.lstValoresValidos, item];
+    this.produtoPropriedade.IdCfgDataType = this.idCfgDataType;
+    this.valorValido = "";
+  }
+
+  removeClick() {
+    if (this.selectedValorValido == undefined) {
+      this.alertaService.mostrarMensagem("Para remover um item, é necessário selecionar algum item da lista de valores válidos!");
+      return;
+    }
+
+    this.lstValoresValidos = this.lstValoresValidos.filter(x => x.valor != this.selectedValorValido[0].valor);
+    this.lstValoresValidos = [...this.lstValoresValidos];
+  }
+
+  criarForm() {
+    this.form = this.fb.group({
+      descricao: ['', [Validators.required, Validators.maxLength(100)]],
+      idCfgDataType: ['', [Validators.required, Validators.min(0), Validators.max(2)]],
+      idTipoPropriedade: ['', [Validators.required]],
+      ordem: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],//'^-?[0-9]\\d*(d{1,2})?$'
+      valorValido: [''],
+      ocultoPropriedade: ['', [Validators.required]],
+      ocultoOpcao: [''],
+    });
+  }
+
+  montarListaParaSelectItem(lista: Array<any>): SelectItem[] {
+    let listaResponse: SelectItem[] = [];
+    lista.forEach(x => {
+      if (x != null) {
+        let item: SelectItem = { label: x.Descricao, value: x.Id };
+        listaResponse.push(item);
+      }
+    });
+
+    return listaResponse;
+  }
+
+  voltarClick(): void {
+    this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+  }
+
+  retornarSimOuNao(oculto: any) {
+    if (oculto == true) {
+      return "Não";
+    } else {
+      return "Sim";
+    }
+  }
+
+  salvarClick() {
+
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      return;
+    }
+
+    let prod = new ProdutoCatalogoPropriedade();
+    prod.IdCfgDataType = this.idCfgDataType;
+    prod.IdCfgTipoPropriedade = this.idTipoPropriedade;
+    prod.IdCfgTipoPermissaoEdicaoCadastro = 0;
+    prod.descricao = this.form.controls.descricao.value;
+    prod.usuario_cadastro = this.autenticacaoService._usuarioLogado;
+    prod.oculto = this.ocultoPropriedade ? false : true;
+    prod.ordem = this.form.controls.ordem.value;
+
+    if (this.idTipoPropriedade == 1) {
+      if (this.lstValoresValidos.length == 0) {
+        this.mensagemService.showErrorViaToast(["É necessário informar ao menos um item na lista de valores válido!"]);
+        return
+      }
+      prod.produtoCatalogoPropriedadeOpcao = new Array();
+      prod.produtoCatalogoPropriedadeOpcao = this.lstValoresValidos;
+    }
+
+    this.produtoService.criarPropriedades(prod).toPromise().then((r) => {
+      if (r == null) {
+        this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
+        this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
 }
 

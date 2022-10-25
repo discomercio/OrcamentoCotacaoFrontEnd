@@ -27,7 +27,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
     public form: FormGroup;
     public mensagemErro: string = "*Campo obrigatório.";
     public produtoPropriedade: ProdutoCatalogoPropriedade = new ProdutoCatalogoPropriedade();
-    private id: string;
+    private id: number;
     public boolAtivo: boolean;
     carregando: boolean = false;
     @ViewChild("descricao") descricao: ElementRef;

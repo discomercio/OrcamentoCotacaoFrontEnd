@@ -9,6 +9,7 @@ import { Observable } from "rxjs";
 import { ProdutoCatalogoFabricante } from "src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante";
 import { ProdutoCatalogoItemProdutosAtivosDados } from "src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos";
 import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCatalogoImagem";
+import { DataType } from "src/app/dto/produtos-catalogo/DataType";
 
 @Injectable({
     providedIn: "root",
@@ -34,7 +35,7 @@ export class ProdutoCatalogoService {
         return this.http.get<ProdutoCatalogoImagem[]>(
             `${this.env.apiUrl()}produtocatalogo/imagem/${produto}`
         );
-    }    
+    }
 
     buscarProdutosAtivos(): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
@@ -146,16 +147,16 @@ export class ProdutoCatalogoService {
     }
 
     buscarPropriedadesPorId(
-        id: string
+        id: number
     ): Observable<ProdutoCatalogoPropriedade> {
         return this.http.get<ProdutoCatalogoPropriedade>(
             `${this.env.apiUrl()}produto/propriedades/${id}`
         );
     }
 
-    criarPropriedades(produto: any): Observable<any> {
+    criarPropriedades(produto: ProdutoCatalogoPropriedade): Observable<any> {
         return this.http.post<any>(
-            `${this.env.apiUrl()}produto/propriedades`,
+            `${this.env.apiUrl()}produtocatalogo/propriedades`,
             produto
         );
     }
@@ -180,5 +181,13 @@ export class ProdutoCatalogoService {
         return this.http.get<any>(
             `${this.env.apiUrl()}produto/listar-produtos-ativos`
         );
+    }
+
+    buscarDataTypes(): Observable<Array<DataType>> {
+        return this.http.get<Array<DataType>>(`${this.env.apiUrl()}produtocatalogo/buscarDataTypes`);
+    }
+
+    buscarTipoPropriedades():Observable<Array<any>>{
+        return this.http.get<Array<any>>(`${this.env.apiUrl()}produtocatalogo/buscarTipoPropriedades`);
     }
 }

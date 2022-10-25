@@ -5,12 +5,12 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     fabricanteNome: string;
     descricao: string;
     descricaoCompleta: string;
-    idPropriedade: string;
+    idPropriedade: number;
     nomePropriedade: string;
     idValorPropriedadeOpcao:number;
     valorPropriedade: string;
     ordem:number;
     propriedadeOculta:boolean;
     propriedadeOcultaItem:boolean;
-    idTipoCampo: string;
+    idTipoCampo: number;
 }

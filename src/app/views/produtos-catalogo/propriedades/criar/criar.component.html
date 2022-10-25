@@ -9,20 +9,132 @@
     <div class="p-col-12">
         <div class="card">
             <form [formGroup]="form">
-                <div class="p-d-lg-flex p-d-md-flex">
-                    <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-mx-0 p-px-0">
-
-                        <div class="p-text-bold">Descrição:</div>
-                        <div class="p-field p-col-12">
-                            <input id="descricao" type="text" pInputText placeholder="Descrição" formControlName="descricao" />
-                            <small class="p-error" *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
+                    <div class="p-field p-col-12 p-lg-5 p-md-5 p-sm-5">
+                        <label for="descricao">Descrição</label>
+                        <input id="descricao" type="text" pInputText placeholder="Descrição"
+                            formControlName="descricao" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">
+                            <small class="p-error" *ngIf="form.controls.descricao.errors?.required">
+                                {{mensagemErro}}
+                            </small>
+                            <small class="p-error" *ngIf="form.controls.descricao.errors?.maxlength">
+                                Valor excede o máximo permitido
+                            </small>
                         </div>
                     </div>
-                </div> 
+                    <div class="p-field p-col-6 p-lg-2 p-md-2 p-sm-3 p-py-0">
+                        <label class="p-d-block" for="ocultoOpcao">Ativo</label>
+                        <p-inputSwitch id="ativo" [(ngModel)]="ocultoPropriedade" formControlName="ocultoPropriedade">
+                        </p-inputSwitch>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pt-0">
+                    <div class="p-field p-col-5 p-field p-lg-3 p-md-3 p-sm-5">
+                        <label for="ordem">Ordem</label>
+                        <input id="ordem" type="number" pInputText placeholder="Prioridade" formControlName="ordem" />
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'ordem')">
+                            <small class="p-error" *ngIf="form.controls.ordem.errors?.required">
+                                {{mensagemErro}}
+                            </small>
+                            <small class="p-error" *ngIf="form.controls.ordem.errors?.pattern">
+                                Somente números
+                            </small>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-pt-0">
+                    <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-py-0">
+                        <label for="dataTypes">Tipo de dado</label>
+                        <p-dropdown id="dataTypes" [options]="lstDataTypes" placeholder="Selecione"
+                            formControlName="idCfgDataType" (onChange)="changeDataType()" [(ngModel)]="idCfgDataType">
+                        </p-dropdown>
+                        <small class="p-error"
+                            *ngIf="validacaoFormularioService.verificaCampo(form,'idCfgDataType')">{{mensagemErro}}</small>
+                    </div>
+                    <div class="p-col-12 p-d-inline-flex">
+                        <div *ngFor="let prop of lstTipoPropriedadeCatalogo">
+                            <p-radioButton [inputId]="prop.value" [value]="prop.value" label="{{prop.label}}"
+                                formControlName="idTipoPropriedade" [(ngModel)]="idTipoPropriedade">
+                            </p-radioButton>
+                            &nbsp;&nbsp;
+                        </div>
+                    </div>
+                    <div class="p-text-truncate p-col-12 p-pt-0"
+                        *ngIf="validacaoFormularioService.verificaCampo(form,'idTipoPropriedade')">
+                        <small class="p-error" *ngIf="form.controls.idTipoPropriedade.errors?.required">
+                            {{mensagemErro}}
+                        </small>
+                    </div>
 
-                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltarClick()"></button>&nbsp;
-                <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
+                    <div class="p-col-12" *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
+                        <div class="p-col-12 p-d-inline-flex p-grid p-py-0">
+                            <div class="p-col-12 p-p-0">
+                                <div class="p-col-12 p-d-inline-flex p-grid p-pr-0 p-px-0 p-py-0">
+                                    <div class="p-field p-lg-6 p-md-6 p-pr-0 p-py-0">
+                                        <label for="valorValido">Valor válido</label>
+                                        <input id="valorValido" type="text" formControlName="valorValido"
+                                            [(ngModel)]="valorValido" pInputText>
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(form,'valorValido')">
+                                            <small class="p-error" *ngIf="form.controls.valorValido.errors?.required">
+                                                {{mensagemErro}}
+                                            </small>
+                                            <small class="p-error" *ngIf="form.controls.valorValido.errors?.pattern">
+                                                {{alertaTipoProp}}
+                                            </small>
+                                            <small class="p-error" *ngIf="form.controls.valorValido.errors?.maxlength">
+                                                Valor excede o máximo permitido
+                                            </small>
+                                        </div>
+                                    </div>
+                                    <div class="p-col-1 p-field p-py-0">
+                                        <label class="p-d-block" for="ocultoOpcao">Ativo</label>
+                                        <p-inputSwitch id="ocultoOpcao" [(ngModel)]="ocultoOpcao"
+                                            formControlName="ocultoOpcao">
+                                        </p-inputSwitch>
+                                    </div>
 
+                                    <div class="p-as-center">
+                                        <button pButton type="button" icon="fa fa-save" label="Inserir"
+                                            (click)="inserirClick()"></button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
+                        <div class="p-field p-col-12 p-lg-8 p-py-0 p-pr-0">
+                            <label for="valido">Lista de valores válidos</label>
+                            <p-orderList [value]="lstValoresValidos" controlsPosition="right" [dragdrop]="true"
+                                [(selection)]="selectedValorValido">
+                                <ng-template let-valido pTemplate="item">
+                                    <div class="p-col-12 p-py-0">
+                                        <div class="p-col-12 p-d-inline-flex p-jc-between">
+                                            <span style="line-break: anywhere;">
+                                                {{valido.valor}}</span>
+                                            <span>
+                                                <b>Ativo:</b>{{retornarSimOuNao(valido.oculto)}}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </ng-template>
+                            </p-orderList>
+                            <div class="p-col-11 p-d-inline-flex p-jc-end p-p-0">
+                                <div class="p-col-3 p-mr-3">
+                                    <button pButton type="button" label="Remover" icon="fa fa-trash"
+                                        (click)="removeClick()"></button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-d-inline-flex p-jc-around">
+                    <button pButton type="button" label="Voltar" icon="fa fa-reply"
+                        (click)="voltarClick()"></button>&nbsp;
+                    <button pButton type="button" label="Salvar" icon="fa fa-save" (click)="salvarClick()"></button>
+                </div>
             </form>
 
         </div>

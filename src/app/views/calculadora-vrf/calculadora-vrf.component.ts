@@ -341,7 +341,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   filtrarProdutosVrf() {
-    this.produtosVrf = this.produtosDados.filter(x => Number.parseInt(x.idPropriedade) == 1 && x.idValorPropriedadeOpcao == 12);
+    this.produtosVrf = this.produtosDados.filter(x => x.idPropriedade == 1 && x.idValorPropriedadeOpcao == 12);
 
     this.buscarEvaporadoras();
     this.buscarFabricantes();
@@ -351,7 +351,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
   buscarCondensadoras() {
     this.produtosVrf.forEach(x => {
-      let cond = this.produtosDados.filter(e => e.produto == x.produto && Number.parseInt(e.idPropriedade) == 2 && e.idValorPropriedadeOpcao == 21);
+      let cond = this.produtosDados.filter(e => e.produto == x.produto && e.idPropriedade == 2 && e.idValorPropriedadeOpcao == 21);
 
       if (cond.length > 0) {
         let lista = this.produtosDados.filter(p => p.produto == x.produto);
@@ -375,37 +375,37 @@ export class CalculadoraVrfComponent implements OnInit {
 
           produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
 
-          if (Number.parseInt(l.idPropriedade) == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+          if (l.idPropriedade == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
             produtoTabela.voltagem = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
 
-          if (Number.parseInt(l.idPropriedade) == 3) {
+          if (l.idPropriedade == 3) {
             descarga = true;
             produtoTabela.descarga = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
 
-          if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+          if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kw = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
           }
 
-          if (Number.parseInt(l.idPropriedade) == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+          if (l.idPropriedade == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kcal = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
           }
 
-          if (Number.parseInt(l.idPropriedade) == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+          if (l.idPropriedade == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.hp = l.valorPropriedade;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
           }
 
-          if (Number.parseInt(l.idPropriedade) == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+          if (l.idPropriedade == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
             produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
           }
@@ -419,13 +419,14 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarEvaporadoras() {
+    debugger;
     this.produtosVrf.forEach(x => {
-      let evap = this.produtosDados.filter(e => e.produto == x.produto && Number.parseInt(e.idPropriedade) == 2 && e.idValorPropriedadeOpcao == 22);
+      let evap = this.produtosDados.filter(e => e.produto == x.produto && e.idPropriedade == 2 && e.idValorPropriedadeOpcao == 22);
 
       if (evap.length > 0) {
         let lista = this.produtosDados.filter(p => p.produto == x.produto);
 
-        let temKw = lista.filter(t => Number.parseInt(t.idPropriedade) == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
+        let temKw = lista.filter(t => t.idPropriedade == 7 && (t.valorPropriedade != null && t.valorPropriedade != ''));
 
         if (temKw.length > 0) {
           let produtoTabela = new ProdutoTabela();
@@ -438,13 +439,13 @@ export class CalculadoraVrfComponent implements OnInit {
           produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.descricao;
 
           lista.forEach(l => {
-            if (Number.parseInt(l.idPropriedade) == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
+            if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
               produtoTabela.kw = l.valorPropriedade;
             }
-            if (Number.parseInt(l.idPropriedade) == 5) {
+            if (l.idPropriedade == 5) {
               produtoTabela.btu = l.valorPropriedade;
             }
-            if (Number.parseInt(l.idPropriedade) == 10) {
+            if (l.idPropriedade == 10) {
               produtoTabela.kcal = l.valorPropriedade;
             }
 

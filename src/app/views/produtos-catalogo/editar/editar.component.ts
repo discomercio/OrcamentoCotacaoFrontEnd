@@ -221,15 +221,15 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
     this.produtosParaTela.forEach(x => {
       if (
-        x.idTipoCampo == "0" && x.valorPropriedade != null && x.valorPropriedade != "" ||
-        x.idTipoCampo == "1" && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
+        x.idTipoCampo == 0 && x.valorPropriedade != null && x.valorPropriedade != "" ||
+        x.idTipoCampo == 1 && x.idValorPropriedadeOpcao != null && x.idValorPropriedadeOpcao != 0
       ) {
         let itemModelo: ProdutoCatalogoItem = new ProdutoCatalogoItem();
         itemModelo.IdProdutoCatalogo = this.produtoDetalhe.Id;
         itemModelo.IdProdutoCatalogoPropriedade = x.idPropriedade.toString();
         itemModelo.Oculto = x.propriedadeOcultaItem ? "true" : "false";
 
-        if (x.idTipoCampo == "0") { //TextBox
+        if (x.idTipoCampo == 0) { //TextBox
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = null;
           itemModelo.Valor = x.valorPropriedade;
         } else {
