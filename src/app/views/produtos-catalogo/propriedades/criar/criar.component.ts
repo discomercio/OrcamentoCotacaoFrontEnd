@@ -82,7 +82,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     if (dataType == "0")//texto
     {
       this.form.controls["valorValido"].clearValidators();
-
+      this.form.controls["valorValido"].setValidators([Validators.maxLength(255)]);
     }
     if (dataType == "1")//inteiro
     {
@@ -110,6 +110,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   inserirClick() {
+
     if (this.valorValido.trim() == "") {
       this.alertaService.mostrarMensagem("Favor informar um valor!");
       return;
@@ -156,7 +157,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
 
   criarForm() {
     this.form = this.fb.group({
-      descricao: ['', [Validators.required]],
+      descricao: ['', [Validators.required, Validators.maxLength(100)]],
       idCfgDataType: ['', [Validators.required, Validators.min(0), Validators.max(2)]],
       idTipoPropriedade: ['', [Validators.required]],
       ordem: ['', [Validators.required, Validators.pattern("^[0-9]*$")]],//'^-?[0-9]\\d*(d{1,2})?$'
