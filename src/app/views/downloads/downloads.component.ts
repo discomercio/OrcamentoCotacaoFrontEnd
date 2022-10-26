@@ -23,6 +23,7 @@ import { Console } from 'console';
   templateUrl: './downloads.component.html',
   styleUrls: ['./downloads.component.scss']
 })
+
 export class DownloadsComponent extends TelaDesktopBaseComponent implements OnInit {
   constructor(private readonly downloadsService: DownloadsService,
     public readonly activatedRoute: ActivatedRoute,
@@ -62,12 +63,13 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.verificarPermissoes();
   }
 
-  verificarPermissoes() {
-    this.exibeBotaoUpload = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
-    this.exibeBotaoNovaPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
-    this.exibeBotaoEditarArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
-    this.exibeBotaoExcluirArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
-
+  criarForm() {
+    this.form = this.fb.group({
+      pasta: ['', [Validators.required]],
+      descricaoPasta: [''],
+      txtNome: ['', [Validators.required]],
+      txtDescricao: [''],
+    });
   }
 
   buscarPastas() {
@@ -77,8 +79,98 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
+
       this.files2 = response.Childs;
     }).catch((response) => this.alertaService.mostrarErroInternet(response));
+  }
+
+  montarPastas() {
+    this.cols = [
+      { field: 'name', header: 'Nome' },
+      { field: 'size', header: 'Tamanho' },
+      { field: 'descricao', header: 'Descrição' },
+      { field: 'key', header: 'Id', visible: 'none' },
+      { field: 'acoes', header: 'Ações' }
+    ];
+  }
+
+  verificarPermissoes() {
+    this.exibeBotaoUpload = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoNovaPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoEditarArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+    this.exibeBotaoExcluirArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
+  }
+
+  novaPastaClick() {
+    
+    if(this.pastaRaizInserida) {
+      if (!!this.selectedFiles2 == false) {
+        this.mensagemService.showWarnViaToast("Selecione uma pasta raiz onde queira criar a nova pasta!");
+        return;
+      }
+    }
+
+    this.novaPasta = !this.novaPasta;
+    this.ehUpload = false;
+    this.edicao = false;
+  }
+
+  addPastaTable() {
+    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+
+    let idPai = "";
+
+    if(this.selectedFiles2 != undefined){
+      idPai = this.selectedFiles2.data.key;
+    }
+
+    let nome = this.form.controls.pasta.value;
+    let descricao = this.form.controls.descricaoPasta.value;
+
+    this.downloadsService.novaPasta(idPai, nome, descricao).toPromise().then(response => {
+
+      if (!response.Sucesso) {
+        this.alertaService.mostrarMensagem(response.Mensagem);
+        return;
+      }
+
+      if(idPai === "") {
+        this.pastaRaizInserida = true;
+        this.novaPasta = false;
+        this.form.reset();
+        this.buscarPastas();
+        return;
+      }
+
+      if (response != null) {
+  
+          let novaPastaTree: TreeNode = {
+            data: {
+              "name": "",
+              "size": "",
+              "descricao": "",
+              "type": "Folder"
+            },
+            children: [],
+            parent: null
+          };
+  
+          novaPastaTree.data.key = response.Id;
+          novaPastaTree.data.name = nome;
+          novaPastaTree.data.size = "";
+          novaPastaTree.data.descricao = descricao;
+          
+           if (this.selectedFiles2)
+             this.selectedFiles2.children.push(novaPastaTree);
+           else
+             this.files2.push(novaPastaTree);
+
+          this.files2 = [...this.files2];
+          this.novaPasta = false;
+          this.form.reset();
+          this.buscarPastas();
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   // downloadClick() {
@@ -158,53 +250,18 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     return;
   }
 
-  montarPastas() {
-    this.cols = [
-      { field: 'name', header: 'Nome' },
-      { field: 'size', header: 'Tamanho' },
-      { field: 'descricao', header: 'Descrição' },
-      { field: 'key', header: 'Id', visible: 'none' },
-      { field: 'acoes', header: 'Ações' }
-    ];
-  }
-
   public controlaBotoes(rowData: any) {
-
     if (!this.selectedFiles2) {
       this.edicao = false;
     }
 
     if (!!this.selectedFiles2) {
-      if (this.selectedFiles2.data.name.indexOf(".") > -1) {
+      if (this.selectedFiles2.data.type== "File") {
         this.ehArquivo = true;
         this.novaPasta = false;
       }
       else this.ehArquivo = false;
     }
-
-  }
-
-  criarForm() {
-    this.form = this.fb.group({
-      pasta: ['', [Validators.required]],
-      descricaoPasta: [''],
-      txtNome: ['', [Validators.required]],
-      txtDescricao: [''],
-    });
-  }
-
-  novaPastaClick() {
-    
-    if(this.pastaRaizInserida) {
-      if (!!this.selectedFiles2 == false) {
-        this.mensagemService.showWarnViaToast("Selecione uma pasta raiz onde queira criar a nova pasta!");
-        return;
-      }
-    }
-
-    this.novaPasta = !this.novaPasta;
-    this.ehUpload = false;
-    this.edicao = false;
   }
 
   editarClick() {
@@ -344,63 +401,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     }
 
     this.buscarPastas();
-  }
-
-  addPastaTable() {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
-
-    let idPai = "";
-
-    if(this.selectedFiles2 != undefined){
-      idPai = this.selectedFiles2.data.key;
-    }
-
-    let nome = this.form.controls.pasta.value;
-    let descricao = this.form.controls.descricaoPasta.value;
-
-    this.downloadsService.novaPasta(idPai, nome, descricao).toPromise().then(response => {
-
-      if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
-        return;
-      }
-
-      if(idPai === "") {
-        this.pastaRaizInserida = true;
-        this.novaPasta = false;
-        this.form.reset();
-        this.buscarPastas();
-        return;
-      }
-
-      if (response != null) {
-  
-          let novaPastaTree: TreeNode = {
-            data: {
-              "name": "",
-              "size": "",
-              "descricao": "",
-              "type": "Folder"
-            },
-            children: [],
-            parent: null
-          };
-  
-          novaPastaTree.data.key = response.Id;
-          novaPastaTree.data.name = nome;
-          novaPastaTree.data.size = "";
-          novaPastaTree.data.descricao = descricao;
-          
-           if (this.selectedFiles2)
-             this.selectedFiles2.children.push(novaPastaTree);
-           else
-             this.files2.push(novaPastaTree);
-
-          this.files2 = [...this.files2];
-          this.novaPasta = false;
-          this.form.reset();
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   // addArquivoTable(id, nome, tamanho, descricao) {
