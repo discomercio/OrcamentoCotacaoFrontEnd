@@ -161,9 +161,9 @@ export class ProdutoCatalogoService {
         );
     }
 
-    atualizarPropriedades(produto: any): Observable<any> {
+    atualizarPropriedades(produto: ProdutoCatalogoPropriedade): Observable<any> {
         return this.http.put<any>(
-            `${this.env.apiUrl()}produto/propriedades`,
+            `${this.env.apiUrl()}produtocatalogo/propriedades`,
             produto
         );
     }
