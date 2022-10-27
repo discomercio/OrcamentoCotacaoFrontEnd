@@ -40,6 +40,6 @@ export class UsuariosService {
     let params = new HttpParams();
     params = params.append('modulo', 'COTAC');
     return this.http.get<Operacao[]>(this.env.apiUrl() + 'Operacao/modulo', { params: params });
-  }
+  } 
 
 }

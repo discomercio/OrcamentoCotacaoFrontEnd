@@ -31,7 +31,7 @@
                 <ng-template pTemplate="body" let-lista>
 
                     <li class="clearfix message-from"
-                        *ngIf="lista.IdUsuarioRemetente == idUsuarioRemetente;else outra_visao">
+                        *ngIf="lista.IdUsuarioRemetente != 0;else outra_visao">
                         <div style="text-align:center">
                             {{formatarData(lista.DataCadastro)}} - Mensagem enviada <br />
                         </div>
