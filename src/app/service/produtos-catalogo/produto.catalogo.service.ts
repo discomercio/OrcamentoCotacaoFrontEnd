@@ -10,6 +10,7 @@ import { ProdutoCatalogoFabricante } from "src/app/dto/produtos-catalogo/Produto
 import { ProdutoCatalogoItemProdutosAtivosDados } from "src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos";
 import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCatalogoImagem";
 import { DataType } from "src/app/dto/produtos-catalogo/DataType";
+import { ProdutoCatalogoPropriedadeOpcaoResponse } from "src/app/dto/produtos-catalogo/produtoCatalogoPropriedadeOpcaoResponse";
 
 @Injectable({
     providedIn: "root",
@@ -161,8 +162,8 @@ export class ProdutoCatalogoService {
         );
     }
 
-    atualizarPropriedades(produto: ProdutoCatalogoPropriedade): Observable<any> {
-        return this.http.put<any>(
+    atualizarPropriedades(produto: ProdutoCatalogoPropriedade): Observable<ProdutoCatalogoPropriedadeOpcaoResponse> {
+        return this.http.put<ProdutoCatalogoPropriedadeOpcaoResponse>(
             `${this.env.apiUrl()}produtocatalogo/propriedades`,
             produto
         );

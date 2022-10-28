@@ -138,11 +138,11 @@
                             <div class="p-col-11 p-d-inline-flex p-jc-end p-p-0">
                                 <div class="p-col-3 p-mr-3">
                                     <button pButton type="button" label="Remover" icon="fa fa-trash"
-                                        (click)="removeClick()" [disabled]="editando"></button>
+                                        (click)="removeClick()" [disabled]="!selectedValorValido"></button>
                                 </div>
                                 <div *ngIf="edicao" class="p-col-3 p-mr-3">
                                     <button pButton type="button" label="Editar" icon="pi pi-user-edit"
-                                        (click)="editarClick()" [disabled]="editando"></button>
+                                        (click)="editarClick()" [disabled]="!selectedValorValido"></button>
                                 </div>
                             </div>
 

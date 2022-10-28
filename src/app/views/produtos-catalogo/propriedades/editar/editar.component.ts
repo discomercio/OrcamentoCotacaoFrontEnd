@@ -50,6 +50,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
         this.criarPropriedade.idTipoPropriedade = this.produtoPropriedade.IdCfgTipoPropriedade;
         this.criarPropriedade.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
         this.criarPropriedade.lstValoresValidos = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
+        this.criarPropriedade.lstValoresValidosApoioExclusao = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
         this.criarPropriedade.changeDataType();
       }
       this.carregando = false;
