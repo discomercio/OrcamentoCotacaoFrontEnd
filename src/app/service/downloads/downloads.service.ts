@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { TreeNode } from 'primeng/api/treenode';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { ObterEstruturaResponse } from './../../dto/arquivo/ObterEstruturaResponse';
@@ -19,71 +18,33 @@ export class DownloadsService {
 
   public urlUpload: string = `${this.env.apiUrl()}arquivo/upload`;
 
-  public createGuid() 
-  {  
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {  
-        var r = Math.random()*16|0, v = c === 'x' ? r : (r&0x3|0x8);  
-        return v.toString(16);  
-    });  
-  }
-
   public buscarToTree(): Observable<ObterEstruturaResponse> {
-
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
-
-    return this.http.get<ObterEstruturaResponse>(`${this.env.apiUrl()}arquivo/ObterEstrutura`, { 'headers': headers });
-    //return this.http.get<ObterEstruturaResponse>(`${this.env.apiUrl()}arquivo/ObterEstrutura`);
+    return this.http.get<ObterEstruturaResponse>(`${this.env.apiUrl()}arquivo/ObterEstrutura`);
   }
   
   public download(id: any) : Observable<DownloadResponse> {
-
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
-
-    return this.http.get<DownloadResponse>(`${this.env.apiUrl()}arquivo/download/${id}`, { 'headers': headers });
+    return this.http.get<DownloadResponse>(`${this.env.apiUrl()}arquivo/download/${id}`);
   }
   
   public excluir(id: any):Observable<ArquivoExcluirResponse>{
-
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
-
-     return this.http.post<ArquivoExcluirResponse>(`${this.env.apiUrl()}arquivo/excluir/${id}`, { id: id }, { 'headers': headers });
+     return this.http.post<ArquivoExcluirResponse>(`${this.env.apiUrl()}arquivo/excluir/${id}`, { id: id });
    }
   
   public editar(id:string, nome:string, descricao:string):Observable<ArquivoEditarResponse>{
-
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
-
-    return this.http.put<ArquivoEditarResponse >(`${this.env.apiUrl()}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id, { 'headers': headers });
+    return this.http.put<ArquivoEditarResponse >(`${this.env.apiUrl()}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
   
   public novaPasta(idpai:string, nome:string, descricao:string):Observable<ArquivoNovaPastaResponse> {
-    
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
-
-    return this.http.post<ArquivoNovaPastaResponse>(`${this.env.apiUrl()}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao }, { 'headers': headers });
+    return this.http.post<ArquivoNovaPastaResponse>(`${this.env.apiUrl()}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao });
   }
 
   public upload(idpai:string, arquivo: any): Observable<ArquivoUploadResponse> {
-
-    let headers: { [name: string]: string | string[]; } = {
-      'x-correlation-Id': this.createGuid()
-    };
 
     const formData = new FormData();
     formData.append(arquivo.files[0].name, arquivo.files[0]);
 
     return this.http.post<ArquivoUploadResponse>(`${this.env.apiUrl()}arquivo/upload/${idpai}`,  
-    formData, { 'headers': headers, reportProgress: true });
+    formData, { reportProgress: true });
   }
 }
 
