@@ -161,7 +161,7 @@ export class AlertaService {
       if (versao.trim() != "") {
         versao = " (" + versao + ")";
       }
-      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
+      this.sweetalertService.dialogoVersao("", "Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.").subscribe(result => {        
         
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
