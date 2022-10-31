@@ -122,7 +122,7 @@
                         <div class="p-field p-col-12 p-lg-8 p-py-0 p-pr-0">
                             <label for="valido">Lista de valores válidos</label>
                             <p-orderList [value]="lstValoresValidos" controlsPosition="right" [dragdrop]="true"
-                                [(selection)]="selectedValorValido">
+                                [(selection)]="selectedValorValido" (click)="onSelectionChange()" (onReorder)="onReorder()">
                                 <ng-template let-valido pTemplate="item">
                                     <div class="p-col-12 p-py-0">
                                         <div class="p-col-12 p-d-inline-flex p-jc-between">

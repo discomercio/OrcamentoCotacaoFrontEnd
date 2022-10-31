@@ -26,7 +26,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly sweetAlertService:SweetalertService
+    private readonly sweetAlertService: SweetalertService
   ) { }
 
   public form: FormGroup;
@@ -126,9 +126,14 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   inserirClick() {
-
-    if (this.valorValido.trim() == "") {
+    if (this.valorValido == undefined || this.valorValido.trim() == "") {
       this.alertaService.mostrarMensagem("Favor informar um valor!");
+      return;
+    }
+
+    if (this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
+      this.alertaService.mostrarMensagem("Não é permitido inserir itens na lista de valores válidos para essa propriedade!");
+      this.valorValido = "";
       return;
     }
 
@@ -163,6 +168,11 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   removeClick() {
+    if (this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
+      this.alertaService.mostrarMensagem("Não é permitido remover itens da lista de valores válidos para essa propriedade!");
+      return;
+    }
+
     if (this.selectedValorValido == undefined) {
       this.alertaService.mostrarMensagem("Para remover um item, é necessário selecionar algum item da lista de valores válidos!");
       return;
@@ -186,6 +196,10 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
 
 
   editarClick() {
+    if (this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
+      this.alertaService.mostrarMensagem("Não é permitido editar a de valores válidos para essa propriedade!");
+      return;
+    }
     if (this.selectedValorValido == undefined) {
       this.alertaService.mostrarMensagem("Para editar um item, é necessário selecionar algum item da lista de valores válidos!");
       return;
@@ -271,9 +285,9 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   voltarClick(): void {
-    this.sweetAlertService.dialogo("","Tem certeza que deseja cancelar essa operção?").subscribe(result => {
-      if(result) this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
-      
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja cancelar essa operção?").subscribe(result => {
+      if (result) this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+
       if (!result) {
         this.carregando = false;
         return;
@@ -300,7 +314,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     prop.id = this.produtoPropriedade.id;
     prop.IdCfgDataType = this.idCfgDataType;
     prop.IdCfgTipoPropriedade = this.idTipoPropriedade;
-    prop.IdCfgTipoPermissaoEdicaoCadastro = 0;
+    prop.IdCfgTipoPermissaoEdicaoCadastro = this.edicao ? this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro : 0;
     prop.descricao = this.form.controls.descricao.value;
     prop.usuario_cadastro = this.autenticacaoService._usuarioLogado;
     prop.oculto = this.form.controls.ocultoPropriedade.value ? false : true;
@@ -361,6 +375,23 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
     });
+  }
+
+  onSelectionChange() {
+    if (this.produtoPropriedade.id <= 10000 && this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
+      this.selectedValorValido = null;
+      return false;
+    }
+  }
+
+  onReorder() {
+    if (this.produtoPropriedade.id <= 10000 && this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
+      this.selectedValorValido = null;
+      this.lstValoresValidos = new Array();
+      this.lstValoresValidos = [...this.lstValoresValidosApoioExclusao];
+      this.alertaService.mostrarMensagem("Não é permitido reordenar a lista de valores válidos dessa propriedade!");
+      return;
+    }
   }
 }
 
