@@ -182,7 +182,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   buscarCondicoesAnaliseCredito(loja: string): string {
     this.orcamentoService.buscarParametros(27, loja, "publico").toPromise().then((r) => {
       if (r != null) {
-        this.condicoesAnaliseCredito = r[0]['Valor'];
+        this.condicoesAnaliseCredito = r[0]['Valor'].replace("<a href=","<a target=_blank href=");
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
@@ -193,7 +193,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   buscarTermoPrivacidade(loja: string): string {
     this.orcamentoService.buscarParametros(28, loja, "publico").toPromise().then((r) => {
       if (r != null) {
-        this.termoPrivacidade = r[0]['Valor'];
+        this.termoPrivacidade = r[0]['Valor'].replace("<a href=","<a target=_blank href=");
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
@@ -510,4 +510,3 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
 }
-
