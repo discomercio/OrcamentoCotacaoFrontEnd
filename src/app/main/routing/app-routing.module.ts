@@ -83,7 +83,7 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
                             },
 
                             // Dashboard
-                            { path: 'dashboards/generic', canActivate: [AuthGuard], component: DashboardDemoComponent },
+                            { path: 'dashboards', canActivate: [AuthGuard], component: DashboardDemoComponent },
                             {
                                 path: 'novoprepedido',
                                 canActivate: [AuthGuard],

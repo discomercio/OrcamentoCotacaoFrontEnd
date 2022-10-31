@@ -9,10 +9,10 @@
                 ],
                 "items": [
                     {
-                        "label": "Generic",
+                        "label": "Visão Geral",
                         "icon": "pi pi-fw pi-home",
                         "routerLink": [
-                            "/dashboards/generic"
+                            "/dashboards"
                         ]
                     }
                 ]
