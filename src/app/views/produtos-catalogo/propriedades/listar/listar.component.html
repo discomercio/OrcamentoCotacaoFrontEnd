@@ -28,7 +28,7 @@
                         <td style="text-align: left" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.descricao}}</td>
                         <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.oculto == true ? 'Não': 'Sim'}}</td>
                         <td style="text-align: right">
-                            <button *ngIf="lista.id > 10000" pButton style="align-content: flex-end;" icon="fa fa-edit" (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
+                            <button  pButton style="align-content: flex-end;" icon="fa fa-edit" (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
                         </td>
                     </tr>
                 </ng-template>
