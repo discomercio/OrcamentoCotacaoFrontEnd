@@ -62,7 +62,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       this.autenticacaoService._lojaLogado = this.loja;
 
-      this.router.navigate(['orcamentos/listar/orcamentos']);
+      this.router.navigate(['dashboards']);
       return;
     }
     this.carregando = true;
@@ -92,7 +92,7 @@ export class LoginComponent implements OnInit {
         this.carregando = false;
 
         this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
-        this.router.navigate(['orcamentos/listar/orcamentos']);
+        this.router.navigate(['dashboards']);
       }
     }).catch((e) => {
       this.button.disabled = false;
