@@ -77,6 +77,7 @@ import { environment } from "src/environments/environment";
 import { CepComponent } from '../views/cep/cep/cep.component';
 import { CepDialogComponent } from '../views/cep/cep-dialog/cep-dialog.component';
 import { EnderecoEntregaComponent } from '../views/cliente/endereco-entrega/endereco-entrega.component';
+import { OrderListModule } from "primeng/orderlist";
 
 @NgModule({
     imports: [
@@ -100,6 +101,7 @@ import { EnderecoEntregaComponent } from '../views/cliente/endereco-entrega/ende
         OrcamentosModule,
         NovoPrepedidoModule,
         ClienteModule,
+        OrderListModule
     ],
     declarations: [
         DownloadsComponent,
