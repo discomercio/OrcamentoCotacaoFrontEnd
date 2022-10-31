@@ -10,6 +10,7 @@ import { DataType } from 'src/app/dto/produtos-catalogo/DataType';
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -25,7 +26,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly autenticacaoService: AutenticacaoService
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService:SweetalertService
   ) { }
 
   public form: FormGroup;
@@ -180,7 +182,14 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   voltarClick(): void {
-    this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+    this.sweetAlertService.dialogo("","Tem certeza que deseja cancelar essa operção?").subscribe(result => {
+      if(result) this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
+      
+      if (!result) {
+        this.carregando = false;
+        return;
+      }
+    });
   }
 
   retornarSimOuNao(oculto: any) {
