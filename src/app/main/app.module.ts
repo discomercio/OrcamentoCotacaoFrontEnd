@@ -74,9 +74,9 @@ import { ProdutosCatalogoClonarComponent } from "../views/produtos-catalogo/clon
 import { ClienteModule } from "../views/prepedido/cliente/cliente.module";
 import { SenhaMeusdadosComponent } from "../views/senha/senha-meusdados.component";
 import { environment } from "src/environments/environment";
-import { CepComponent } from '../views/cep/cep/cep.component';
-import { CepDialogComponent } from '../views/cep/cep-dialog/cep-dialog.component';
-import { EnderecoEntregaComponent } from '../views/cliente/endereco-entrega/endereco-entrega.component';
+import { CepComponent } from "../views/cep/cep/cep.component";
+import { CepDialogComponent } from "../views/cep/cep-dialog/cep-dialog.component";
+import { EnderecoEntregaComponent } from "../views/cliente/endereco-entrega/endereco-entrega.component";
 import { OrderListModule } from "primeng/orderlist";
 
 @NgModule({
@@ -101,7 +101,7 @@ import { OrderListModule } from "primeng/orderlist";
         OrcamentosModule,
         NovoPrepedidoModule,
         ClienteModule,
-        OrderListModule
+        OrderListModule,
     ],
     declarations: [
         DownloadsComponent,
@@ -133,7 +133,7 @@ import { OrderListModule } from "primeng/orderlist";
         SenhaMeusdadosComponent,
         CepComponent,
         CepDialogComponent,
-        EnderecoEntregaComponent
+        EnderecoEntregaComponent,
     ],
     providers: [
         // {
@@ -164,11 +164,17 @@ import { OrderListModule } from "primeng/orderlist";
         ValidacaoFormularioService,
         AutenticacaoService,
         AuthGuard,
-        environment
+        environment,
+        AppComponent,
     ],
     bootstrap: [AppComponent],
 })
-export class AppModule {}
+export class AppModule {
+    constructor(private app: AppComponent, private env: environment) {
+        app._apiURL = env.apiUrl();
+        //this.appComponent._apiURL
+    }
+}
 
 // export function initConfig(appConfigService: AppSettingsService) {
 //     return () => appConfigService.loadAppConfig();

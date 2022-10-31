@@ -2,6 +2,7 @@ import { HttpClient } from "@angular/common/http";
 import { AppSettingsService } from "src/app/utilities/appsettings/appsettings.service";
 
 export class environment {
+    public static _apiURL: string;
     production(): any {
         const fetch = require("sync-fetch");
 
@@ -32,7 +33,7 @@ export class environment {
         }).json().esperaErros;
         return metadata;
     }
-    apiUrl(): any {
+    public apiUrl(){
         const fetch = require("sync-fetch");
 
         const metadata = fetch("/assets/config/appsettings.json", {

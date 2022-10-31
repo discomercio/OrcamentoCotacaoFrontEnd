@@ -6,13 +6,15 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { environment } from 'src/environments/environment';
 import { stream } from 'xlsx';
 import { Operacao } from 'src/app/dto/operacao/operacao';
+import { AppComponent } from 'src/app/main/app.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UsuariosService {
   constructor(private http: HttpClient,
-    private env: environment
+    private env: environment,
+    private appComponent: AppComponent
     ) { 
 
   }
@@ -29,7 +31,7 @@ export class UsuariosService {
   }
 
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.post<Usuario>(this.appComponent._apiURL + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {

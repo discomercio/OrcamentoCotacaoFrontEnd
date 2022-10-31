@@ -14,21 +14,23 @@ import { LojasService } from '../lojas/lojas.service';
 import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
+import { AppComponent } from 'src/app/main/app.component';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutenticacaoService {
-  env: environment;
+  //env: environment;
 
   constructor(private readonly http: HttpClient,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
     private titleService: Title,
-    private envir : environment
+    private appComponent: AppComponent
+    // private envir : environment
   ) {
-    this.env = envir
+    // this.env = envir
   }
 
   salvar: boolean = false;
@@ -48,7 +50,7 @@ export class AutenticacaoService {
   public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.env.apiUrl() + 'Account/Login', { login: usuario, senha: senha });
+    return this.http.post<LoginResponse>(this.appComponent._apiURL + 'Account/Login', { login: usuario, senha: senha });
   }
 
   readToken(token: string): boolean {
@@ -132,7 +134,7 @@ export class AutenticacaoService {
   }
 
   public alterarSenha(usuario: string, senha: string, senhaNova: string, senhaNovaConfirma: string): Observable<any> {
-    return this.http.post(this.env.apiUrl() + 'acesso/alterarSenha', {
+    return this.http.post(this.appComponent._apiURL + 'acesso/alterarSenha', {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
@@ -194,7 +196,7 @@ export class AutenticacaoService {
   }
 
   public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/AtualzarSenha', 
+    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/AtualzarSenha', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario,
