@@ -375,9 +375,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (!this.opcaoPagto) {
     }
-    this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
+    this.sweetalertService.aviso("Essa funcionalidade está em desenvolvimento. Tente novamente mais tarde!");
+    /*this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
 
-    });
+    });*/
   }
 
   prorrogar() {
