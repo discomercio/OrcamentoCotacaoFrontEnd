@@ -44,14 +44,14 @@
 
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtNome">Nome</label>
-                            <input id="txtNome" type="text" pInputText value="{{this.selectedFiles2.data.name}}"
+                            <input id="txtNome" type="text" pInputText value="{{this.estruturaSelecionada.data.name}}"
                                 formControlName="txtNome" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtDescricao">Descrição</label>
-                            <input id="txtDescricao" type="text" pInputText value={{this.selectedFiles2.data.descricao}}
+                            <input id="txtDescricao" type="text" pInputText value={{this.estruturaSelecionada.data.descricao}}
                                 formControlName="txtDescricao" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
@@ -69,9 +69,6 @@
                 </div>
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
-                <!-- <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" url="{{urlUpload}}"
-                    (onBeforeUpload)="onBeforeUpload($event)" (onUpload)="onUpload($event)" fileLimit="1" accept=".pdf"
-                    maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar"> -->
                 <p-fileUpload  class="p-col-12" id="arquivo" name="arquivo" [customUpload]="true" (uploadHandler)="myUploader($event)"
                     fileLimit="1" accept=".pdf" maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar">
                     <ng-template pTemplate="content">
@@ -82,8 +79,7 @@
                 </p-fileUpload>
             </div>
             
-            <p-treeTable [value]="files2" [columns]="cols" selectionMode="single" [(selection)]="selectedFiles2"
-                dataKey="key">
+            <p-treeTable [value]="estrutura" [columns]="cols" selectionMode="single" [(selection)]="estruturaSelecionada" dataKey="key">
                 <ng-template pTemplate="header" let-columns>
                     <tr *ngIf="telaDesktop">
                         <th *ngFor="let col of columns" [ngStyle]="{'display': col.visible}"
