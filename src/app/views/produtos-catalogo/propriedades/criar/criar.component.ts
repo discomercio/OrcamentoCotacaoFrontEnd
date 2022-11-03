@@ -351,7 +351,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
           texto = texto.concat(`${p.Produto} - ${p.Descricao}<br>`);
           lista.push(`${p.Produto} - ${p.Descricao}`);
         });
-        this.alertaService.mostrarMensagem(`<b>Erro ao remover valor válido da lista!</b><br>Existe produtos que utilizam essa opção: <br> ${texto}`);
+        this.alertaService.mostrarMensagem(`<b>Erro ao remover valor válido da lista!</b><br>Existem produtos que utilizam essa opção: <br> ${texto}`);
         this.lstValoresValidos = [...this.lstValoresValidosApoioExclusao];
         return;
       }
