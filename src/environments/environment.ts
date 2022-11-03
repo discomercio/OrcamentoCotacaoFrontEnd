@@ -59,7 +59,7 @@ export class environment {
             //   headers: {
             //     Accept: 'application/vnd.citationstyles.csl+json'
             //   }
-        }).json().versao;
+        }).json().versaoApi;
         return metadata;
     }
     temporizadorSininho(): any {

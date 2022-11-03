@@ -55,7 +55,7 @@ export class environment {
     versaoApi(): any {
         const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
+        const metadata = fetch("/assets/config/version.json", {
             //   headers: {
             //     Accept: 'application/vnd.citationstyles.csl+json'
             //   }
