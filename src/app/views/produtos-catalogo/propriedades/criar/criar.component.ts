@@ -340,7 +340,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     this.produtoService.atualizarPropriedades(propriedade).toPromise().then((r) => {
       this.carregando = false;
       if (!!r.Mensagem) {
-        this.alertaService.mostrarMensagem(`Erro ao salvar!<br>${r.Mensagem}`);
+        this.sweetAlertService.aviso(`Erro ao salvar!<br>${r.Mensagem}`);
         return;
       }
       if (r.produtosCatalogo != null && r.produtosCatalogo.length > 0) {
@@ -351,7 +351,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
           texto = texto.concat(`${p.Produto} - ${p.Descricao}<br>`);
           lista.push(`${p.Produto} - ${p.Descricao}`);
         });
-        this.alertaService.mostrarMensagem(`<b>Erro ao remover valor válido da lista!</b><br>Existem produtos que utilizam essa opção: <br> ${texto}`);
+        this.sweetAlertService.aviso(`<b>Erro ao remover valor válido da lista!</b><br>Existem produtos que utilizam essa opção: <br> ${texto}`);
         this.lstValoresValidos = [...this.lstValoresValidosApoioExclusao];
         return;
       }
