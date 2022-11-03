@@ -44,7 +44,7 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td style="text-align: left">{{('000000' + lista.Produto).slice(-6)}}</td>
+                        <td style="text-align: left">{{lista.Produto}}</td>
                         <td style="text-align: left">{{lista.Fabricante}}</td>
                         <td style="text-align: left">{{lista.Nome}}</td>
                         <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
