@@ -15,6 +15,7 @@ import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
 import { AppComponent } from 'src/app/main/app.component';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +28,8 @@ export class AutenticacaoService {
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
     private titleService: Title,
-    private appComponent: AppComponent
+    private appComponent: AppComponent,
+    private appSettingsService: AppSettingsService
     // private envir : environment
   ) {
     // this.env = envir
@@ -50,7 +52,7 @@ export class AutenticacaoService {
   public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.appComponent._apiURL + 'Account/Login', { login: usuario, senha: senha });
+    return this.http.post<LoginResponse>(this.appSettingsService.apiBaseUrl() + 'Account/Login', { login: usuario, senha: senha });
   }
 
   readToken(token: string): boolean {

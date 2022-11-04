@@ -38,6 +38,6 @@ export class AppComponent implements OnInit {
             dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
         });
         this.primengConfig.ripple = true;
-        environment._apiURL = this.env.apiUrl()
+        // environment._apiURL = this.env.apiUrl()
     }
 }

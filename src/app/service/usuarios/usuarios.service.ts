@@ -21,13 +21,13 @@ export class UsuariosService {
 
 
   buscarTodosUsuarios(): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(this.env.apiUrl() + 'Usuario');
+    return this.http.get<Usuario[]>(this.appComponent._apiURL + 'Usuario');
   }
 
   buscarVendedores(loja: string): Observable<Usuario[]> {
     let params = new HttpParams();
     params = params.append('loja', loja);
-    return this.http.get<Usuario[]>(this.env.apiUrl() + 'Usuario/vendedores', { params: params });
+    return this.http.get<Usuario[]>(this.appComponent._apiURL + 'Usuario/vendedores', { params: params });
   }
 
   cadastrarUsuario(usuario: Usuario): Observable<Usuario> {
@@ -35,13 +35,13 @@ export class UsuariosService {
   }
 
   alterarUsuario(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.put<Usuario>(this.appComponent._apiURL + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
   buscarOperacaoUsuarioPorModuloCotac(): Observable<Operacao[]> {
     let params = new HttpParams();
     params = params.append('modulo', 'COTAC');
-    return this.http.get<Operacao[]>(this.env.apiUrl() + 'Operacao/modulo', { params: params });
+    return this.http.get<Operacao[]>(this.appComponent._apiURL + 'Operacao/modulo', { params: params });
   } 
 
 }

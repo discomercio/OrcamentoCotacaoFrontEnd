@@ -78,6 +78,9 @@ import { CepComponent } from "../views/cep/cep/cep.component";
 import { CepDialogComponent } from "../views/cep/cep-dialog/cep-dialog.component";
 import { EnderecoEntregaComponent } from "../views/cliente/endereco-entrega/endereco-entrega.component";
 import { OrderListModule } from "primeng/orderlist";
+import { StoreModule } from "@ngrx/store";
+import { IndexReducer } from "../dto/index.store";
+import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
 
 @NgModule({
     imports: [
@@ -102,6 +105,7 @@ import { OrderListModule } from "primeng/orderlist";
         NovoPrepedidoModule,
         ClienteModule,
         OrderListModule,
+        StoreModule.forRoot(IndexReducer),
     ],
     declarations: [
         DownloadsComponent,
@@ -155,6 +159,7 @@ import { OrderListModule } from "primeng/orderlist";
         IconService,
         NodeService,
         PhotoService,
+        AppSettingsService,
         ProductService,
         MenuService,
         MessageService,
@@ -171,7 +176,7 @@ import { OrderListModule } from "primeng/orderlist";
 })
 export class AppModule {
     constructor(private app: AppComponent, private env: environment) {
-        app._apiURL = env.apiUrl();
+        // app._apiURL = env.apiUrl();
         //this.appComponent._apiURL
     }
 }
