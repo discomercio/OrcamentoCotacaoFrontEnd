@@ -69,14 +69,14 @@ export class environment {
         // return metadata;
     }
     versaoApi(): any {
-        // const fetch = require("sync-fetch");
+        const fetch = require("sync-fetch");
 
-        // const metadata = fetch("/assets/config/version.json", {
-        //     //   headers: {
-        //     //     Accept: 'application/vnd.citationstyles.csl+json'
-        //     //   }
-        // }).json().versao;
-        // return metadata;
+        const metadata = fetch("/assets/config/version.json", {
+            //   headers: {
+            //     Accept: 'application/vnd.citationstyles.csl+json'
+            //   }
+        }).json().versaoApi;
+        return metadata;
     }
     temporizadorSininho(): any {
         // const fetch = require("sync-fetch");

@@ -63,7 +63,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.form = this.fb.group({
       descricao: ['', [Validators.required]],
       nome_produto: ['', [Validators.required]],
-      produto: ['', [Validators.required]],
+      produto: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(8)]],
       fabricante: ['', [Validators.required]],
       ativo: [''],
     });
@@ -147,6 +147,32 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
+  digitouCodigo(event: Event) {
+    let valor = ((event.target) as HTMLInputElement).value;
+
+    if (isNaN(Number(valor))) {
+      let limpando = valor.replace(/[^0-9]/g, '');
+      this.form.controls.produto.setValue(limpando);
+      return;
+    }
+
+    if (valor == "0") {
+      this.form.controls.produto.setValue("");
+      return;
+    }
+
+    let valorInteiro = Number.parseInt(valor);
+    if (valorInteiro.toString().length > 6) return;
+
+    valor = ("00000" + valor).slice(-6);
+    if(Number.parseInt(valor) == 0){
+      this.form.controls.produto.setValue("");
+      return
+    }
+
+    this.form.controls.produto.setValue(valor.toString());
+  }
+
   excluirImagemClick(idImagem) {
     this.produto.imagem = null;
 
@@ -161,9 +187,14 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
 
     return null;
+    
   }
 
   salvarClick() {
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      return;
+    }
+
     this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
       if (r != null) {
         this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
@@ -178,7 +209,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         prod.Descricao = this.form.controls.descricao.value;
         prod.Ativo = this.produto.Ativo;
         prod.campos = [];
-        
+
         if (!!this.imagem) {
           prod.imagem = new ProdutoCatalogoImagem();
           prod.imagem = this.imagem;

@@ -18,19 +18,23 @@ export class SweetalertService {
     });
 
     sucesso(mensagem: string): void {
-        Swal.fire(
-            'Sucesso!',
-            mensagem,
-            'success'
-        );
+        Swal.fire({
+            title: 'Sucesso!',
+            html: mensagem,
+            icon: 'success',
+            buttonsStyling: false,
+            customClass: { confirmButton: "p-button p-component", }
+        });
     }
 
     aviso(mensagem: string): void {
-        Swal.fire(
-            'Aviso!',
-            mensagem,
-            'warning'
-        );
+        Swal.fire({
+            title: 'Aviso',
+            html: mensagem,
+            icon: 'warning',
+            buttonsStyling: false,
+            customClass: { confirmButton: "p-button p-component", }
+        });
     }
 
     dialogo(titulo: string, texto: string): Observable<any> {
