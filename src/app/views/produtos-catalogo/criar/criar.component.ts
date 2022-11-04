@@ -187,6 +187,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
 
     return null;
+    
   }
 
   salvarClick() {
