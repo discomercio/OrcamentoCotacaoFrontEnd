@@ -21,6 +21,7 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { Observable } from 'rxjs';
+import { ProdutoCalculadoraVrfRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -329,7 +330,10 @@ export class CalculadoraVrfComponent implements OnInit {
 
   buscarProduto() {
     this.carregando = true;
-    this.produtoService.listarProdutosPropriedadesAtivos(false, false).toPromise().then((r) => {
+    let request:ProdutoCalculadoraVrfRequestViewModel = new ProdutoCalculadoraVrfRequestViewModel();
+    request.propriedadeOculta = null;
+    request.propriedadeOcultaItem = null;
+    this.produtoService.listarProdutosPropriedadesAtivos(request).toPromise().then((r) => {
       if (r != null) {
         this.produtosDados = r;
         this.filtrarProdutosVrf();
@@ -419,7 +423,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarEvaporadoras() {
-    debugger;
+    
     this.produtosVrf.forEach(x => {
       let evap = this.produtosDados.filter(e => e.produto == x.produto && e.idPropriedade == 2 && e.idValorPropriedadeOpcao == 22);
 
