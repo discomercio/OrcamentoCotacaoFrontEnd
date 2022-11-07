@@ -175,9 +175,6 @@ export class ProdutoCatalogoService {
     listarProdutosPropriedadesAtivos(
         request:ProdutoCalculadoraVrfRequestViewModel
     ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
-        // return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-        //     `${this.env.apiUrl()}produtocatalogo/listarProdutosCatalogosParaCalculadora`
-        // );
         return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
             `${this.appSettingsService.config.apiUrl}produtocatalogo/listar-produtos-propriedades`, request
         );
