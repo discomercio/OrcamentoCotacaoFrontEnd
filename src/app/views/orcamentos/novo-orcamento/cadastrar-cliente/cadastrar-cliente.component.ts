@@ -76,9 +76,9 @@ export class CadastrarClienteComponent implements OnInit {
 
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.criarForm();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.buscarConfigValidade();
     this.buscarLimiteDiasEntregaImediata();
     this.desabilitarCampos();
@@ -115,7 +115,7 @@ export class CadastrarClienteComponent implements OnInit {
     if (param.filtro == "novo") {
       this.filtro = param.filtro;
     }
-
+    
     if (param.filtro == "iniciar") {
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
@@ -430,8 +430,17 @@ export class CadastrarClienteComponent implements OnInit {
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
       ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS],
-      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, this.novoOrcamentoService.orcamentoCotacaoDto.parceiro == undefined ? [] : [Validators.required]]
+      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]]
     });
+  }
+
+  verificarInstaladorInstala(){
+    if(this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR){
+      this.mostrarInstaladorInstala = true;
+      return true;
+    }
+
+    return false;
   }
 
   setarOrcamentoValidade() {

@@ -160,8 +160,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     item.oculto = this.ocultoOpcao ? false : true;
     item.valor = this.valorValido;
     item.usuario_cadastro = this.autenticacaoService._usuarioLogado;
-
     this.lstValoresValidos = [...this.lstValoresValidos, item];
+    this.lstValoresValidosApoioExclusao = this.lstValoresValidos.slice();
     this.produtoPropriedade.IdCfgDataType = this.idCfgDataType;
     this.valorValido = "";
     this.ocultoOpcao = true;
@@ -184,7 +184,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     this.sweetAlertService
-      .dialogo("", `Tem certeza que deseja remover o item "${this.selectedValorValido[0].valor}" da lista de valores válido?`)
+      .dialogo("", `Tem certeza que deseja remover o item "${this.selectedValorValido[0].valor}" da lista de valores válidos?`)
       .subscribe(result => {
         if (!result) return;
 
