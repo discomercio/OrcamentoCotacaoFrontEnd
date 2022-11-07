@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,9 @@ export class PrepedidoService {
   public carregando: boolean = false;
   private pedidos$: Observable<any> = new Observable();
 
-  constructor(private readonly http: HttpClient, private env: environment) { }    
+  constructor(
+    private readonly http: HttpClient, 
+    private appSettingsService: AppSettingsService) { }
     
   public carregar(numeroPrePedido: string): Observable<any> {
 
@@ -23,7 +25,7 @@ export class PrepedidoService {
     this.carregando = true;
 
     this.pedidos$ = Observable.create(observer => {
-      this.http.get<any>(this.env.apiUrl() + 'api/prepedido/buscarPrePedido', { params: params }).toPromise()
+      this.http.get<any>(this.appSettingsService.config.apiUrl + 'api/prepedido/buscarPrePedido', { params: params }).toPromise()
         .then(response => {          
           if (response)
             this.carregando = false;
@@ -38,11 +40,11 @@ export class PrepedidoService {
   }
 
   public removerPrePedido(idPedido: string):Observable<any>{
-    return this.http.post(`${this.env.apiUrl()}api/prepedido/removerPrePedido/${idPedido}`, idPedido);
+    return this.http.post(`${this.appSettingsService.config.apiUrl}api/prepedido/removerPrePedido/${idPedido}`, idPedido);
   }  
 
   public cadastrarPrePedido(prePedidoDto: any):Observable<any>{
-    return this.http.post(`${this.env.apiUrl()}api/prepedido/cadastrarPrePedido`, prePedidoDto);
+    return this.http.post(`${this.appSettingsService.config.apiUrl}api/prepedido/cadastrarPrePedido`, prePedidoDto);
   }
 
 }

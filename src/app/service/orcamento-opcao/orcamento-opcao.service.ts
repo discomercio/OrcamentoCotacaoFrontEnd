@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 
 import { Observable } from 'rxjs';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
-
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OrcamentoOpcaoService {
 
-  constructor(private http: HttpClient, private env: environment) { }
+  constructor(
+    private http: HttpClient, 
+    private appSettingsService: AppSettingsService) { }
+
   enviarOrcamentoOpcao(orcamentoOpcao: OrcamentosOpcaoResponse): Observable<OrcamentosOpcaoResponse> {
-    return this.http.post<OrcamentosOpcaoResponse>(this.env.apiUrl() + "OrcamentoOpcao", orcamentoOpcao);
+    return this.http.post<OrcamentosOpcaoResponse>(this.appSettingsService.config.apiUrl + "OrcamentoOpcao", orcamentoOpcao);
   }
 
   removerOrcamentoOpcao(): Observable<any> {
-    return this.http.delete<OrcamentosOpcaoResponse>(this.env.apiUrl() + "OrcamentoOpcao");
+    return this.http.delete<OrcamentosOpcaoResponse>(this.appSettingsService.config.apiUrl + "OrcamentoOpcao");
   }
 
   buscarOpcoesOrcamento(id: string): Observable<OrcamentosOpcaoResponse[]> {

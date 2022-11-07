@@ -21,7 +21,6 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
   providedIn: 'root'
 })
 export class AutenticacaoService {
-  //env: environment;
 
   constructor(private readonly http: HttpClient,
     private readonly alertaService: AlertaService,
@@ -29,11 +28,7 @@ export class AutenticacaoService {
     private readonly lojaService: LojasService,
     private titleService: Title,
     private appComponent: AppComponent,
-    private appSettingsService: AppSettingsService
-    // private envir : environment
-  ) {
-    // this.env = envir
-  }
+    private appSettingsService: AppSettingsService) { }
 
   salvar: boolean = false;
   usuario: Usuario;
@@ -52,7 +47,7 @@ export class AutenticacaoService {
   public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.appSettingsService.apiBaseUrl() + 'Account/Login', { login: usuario, senha: senha });
+    return this.http.post<LoginResponse>(this.appSettingsService.config.apiUrl + 'Account/Login', { login: usuario, senha: senha });
   }
 
   readToken(token: string): boolean {

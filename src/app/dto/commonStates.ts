@@ -1,12 +1,12 @@
 import { createAction, props } from "@ngrx/store"
 
 export interface CommonStates {
-    listAppSettings: any[]
+    AppSettings: any[]
    
   }
   
   export const common_states: CommonStates = {
-    listAppSettings: []    
+    AppSettings: []    
   }
 
   export const setAppSettings = createAction (

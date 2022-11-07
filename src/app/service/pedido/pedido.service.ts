@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { CommonModule } from "@angular/common";
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,10 @@ import { CommonModule } from "@angular/common";
 export class PedidoService {
   public carregando: boolean = false;
   private pedidos$: Observable<any> = new Observable();
-  constructor(private http:HttpClient, private env: environment) { }
+
+  constructor(
+    private http:HttpClient, 
+    private appSettingsService: AppSettingsService) { }
 
   carregar(numeroPedido:any){
 
@@ -22,7 +25,7 @@ export class PedidoService {
     this.carregando = true;
     
     this.pedidos$ = Observable.create(observer => {
-      this.http.get<any>(this.env.apiUrl() + 'api/pedido/buscarPedido', { params: params }).toPromise()
+      this.http.get<any>(this.appSettingsService.config.apiUrl + 'api/pedido/buscarPedido', { params: params }).toPromise()
         .then(response => {
           if(response)
             this.carregando = false;
