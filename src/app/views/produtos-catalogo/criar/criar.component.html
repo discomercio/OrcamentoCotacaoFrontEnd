@@ -12,8 +12,7 @@
     <div class="p-grid p-d-lg-flex">
         <div class="p-col-12">
             <div class="card">
-                <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3"
-                    *ngIf="produto.imagem != null">
+                <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3" *ngIf="produto.imagem != null">
                     <div class="product-item">
                         <div class="product-item-content">
                             <div class="p-mb-12">
@@ -60,13 +59,29 @@
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
                             <input id="id" type="text" formControlName="produto" pInputText value="{{produto.Codigo}}"
-                                maxlength="8" />
+                                (keyup)="digitouCodigo($event)"/>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'produto')">
+                                <small class="p-error" *ngIf="form.controls.produto.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                                <small class="p-error" *ngIf="form.controls.produto.errors?.maxlength">
+                                    Valor excede o máximo permitido
+                                </small>
+                                <small class="p-error" *ngIf="form.controls.produto.errors?.minlength">
+                                    Valor mínimo de 6 caracteres
+                                </small>
+                            </div>
                         </div>
 
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field p-col-12">
                             <p-dropdown id="dpdFabricante" [options]="lstFabricantes" formControlName="fabricante"
                                 placeholder="Selecione"></p-dropdown>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">
+                                <small class="p-error" *ngIf="form.controls.fabricante.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                            </div>
                         </div>
 
                         <div class="p-text-bold">Nome do Produto:</div>
@@ -74,8 +89,11 @@
                             <input id="descricao" name="nome_produto" type="text" pInputText
                                 placeholder="Nome do Produto" formControlName="nome_produto"
                                 value="{{produto.Descricao}}" />
-                            <small class="p-error"
-                                *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'nome_produto')">
+                                <small class="p-error" *ngIf="form.controls.nome_produto.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                            </div>
                         </div>
 
                         <div class="p-text-bold">Descrição:</div>
@@ -83,8 +101,11 @@
                             <input id="descricao" name="descricao" type="text" pInputText
                                 placeholder="Descrição completa" formControlName="descricao"
                                 value="{{produto.Descricao}}" />
-                            <small class="p-error"
-                                *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">{{mensagemErro}}</small>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'descricao')">
+                                <small class="p-error" *ngIf="form.controls.descricao.errors?.required">
+                                    {{mensagemErro}}
+                                </small>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -109,7 +130,8 @@
     <div class="p-col-12">
         <div class="card">
             <div class="p-col-12 p-px-0">
-                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0" *ngFor="let lista of propriedades; let i=index">
+                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0"
+                    *ngFor="let lista of propriedades; let i=index">
                     <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                     <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
                         <div class="p-col-3 p-md-1 p-sm-2" style="display: inline-block;vertical-align: middle;">
