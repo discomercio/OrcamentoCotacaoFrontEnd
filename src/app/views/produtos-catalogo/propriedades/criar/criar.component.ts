@@ -184,7 +184,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     this.sweetAlertService
-      .dialogo("", `Tem certeza que deseja remover o item "${this.selectedValorValido[0].valor}" da lista de valores válido?`)
+      .dialogo("", `Tem certeza que deseja remover o item "${this.selectedValorValido[0].valor}" da lista de valores válidos?`)
       .subscribe(result => {
         if (!result) return;
 
