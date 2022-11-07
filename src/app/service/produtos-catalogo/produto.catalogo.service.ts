@@ -4,13 +4,14 @@ import { ProdutoCatalogoItem } from "src/app/dto/produtos-catalogo/ProdutoCatalo
 import { ProdutoCatalogoPropriedade } from "src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade";
 import { ProdutoCatalogoPropriedadeOpcao } from "src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao";
 import { Injectable } from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { Observable } from "rxjs";
 import { ProdutoCatalogoFabricante } from "src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante";
 import { ProdutoCatalogoItemProdutosAtivosDados } from "src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos";
 import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCatalogoImagem";
 import { DataType } from "src/app/dto/produtos-catalogo/DataType";
 import { ProdutoCatalogoPropriedadeOpcaoResponse } from "src/app/dto/produtos-catalogo/produtoCatalogoPropriedadeOpcaoResponse";
+import { ProdutoCalculadoraVrfRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel";
 
 @Injectable({
     providedIn: "root",
@@ -170,11 +171,13 @@ export class ProdutoCatalogoService {
     }
 
     listarProdutosPropriedadesAtivos(
-        propriedadeOculta: boolean,
-        propriedadeOcultaItem: boolean
+        request:ProdutoCalculadoraVrfRequestViewModel
     ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
-        return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.env.apiUrl()}produtocatalogo/listar-produtos-propriedades/${propriedadeOculta}&${propriedadeOcultaItem}`
+        // return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
+        //     `${this.env.apiUrl()}produtocatalogo/listarProdutosCatalogosParaCalculadora`
+        // );
+        return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
+            `${this.env.apiUrl()}produtocatalogo/listar-produtos-propriedades`, request
         );
     }
 
