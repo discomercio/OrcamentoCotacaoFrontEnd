@@ -34,49 +34,4 @@ export class AppSettingsService {
 
         return metadata;
     }
-
-    // loadAppConfig() {
-        
-
-    //     const fetch = require("sync-fetch");
-
-    //     const metadata = fetch("/assets/config/appsettings.json", {
-    //         //   headers: {
-    //         //     Accept: 'application/vnd.citationstyles.csl+json'
-    //         //   }
-    //     }).json();
-    //     this.store.dispatch(setAppSettings({ payload: metadata }));
-
-    //     return metadata;
-    //     // return this.http
-    //     //     .get("/assets/config/appsettings.json")
-    //     //     .toPromise()
-    //     //     .then((config) => {
-    //     //         this.appConfig = config;
-    //     //     });
-    // }
-
-    // apiBaseUrl(): string {
-    //     debugger;
-    //     return this.loadAppConfig().apiUrl;
-    //     //return this.appConfig.apiBaseUrl;
-    // }
-    // get production(): string {
-    //     return this.appConfig.production;
-    // }
-    // get esperaAvisos(): string {
-    //     return this.appConfig.esperaAvisos;
-    // }
-    // get esperaErros(): string {
-    //     return this.appConfig.esperaErros;
-    // }
-    // get imgUrl(): string {
-    //     return this.appConfig.imgUrl;
-    // }
-    // get versaoApi(): string {
-    //     return this.appConfig.versaoApi;
-    // }
-    // get temporizadorSininho(): string {
-    //     return this.appConfig.temporizadorSininho;
-    // }
 }
