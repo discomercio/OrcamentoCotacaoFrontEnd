@@ -12,6 +12,7 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
+import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 
 @Component({
   selector: 'app-editar-produto',
@@ -77,9 +78,11 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   buscarProdutoDetalhe() {
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
+    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
+    obj.idProduto = this.id;
+    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
 
-      this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
+      this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((y) => {
         if (r != null) {
           //   this.produto = r;
           this.consolidarLista(r);
@@ -170,7 +173,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           while (y < r.length) {
             var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
 
-            if (indice == listaId[x]) {
+            if (indice == listaId[x] && r[y]['oculto'] == false) {
               lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
             }
             y++;

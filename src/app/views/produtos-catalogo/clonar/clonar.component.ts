@@ -10,6 +10,7 @@ import { ProdutoCatalogoItem } from 'src/app/dto/produtos-catalogo/ProdutoCatalo
 import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
+import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
@@ -72,9 +73,11 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   }
 
   buscarProdutoDetalhe() {
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
+    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
+    obj.idProduto = this.id;
+    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
 
-      this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
+      this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((y) => {
         if (r != null) {
           this.consolidarLista(r);
           this.consolidarLista(y);

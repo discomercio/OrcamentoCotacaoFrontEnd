@@ -12,6 +12,7 @@ import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCata
 import { DataType } from "src/app/dto/produtos-catalogo/DataType";
 import { ProdutoCatalogoPropriedadeOpcaoResponse } from "src/app/dto/produtos-catalogo/produtoCatalogoPropriedadeOpcaoResponse";
 import { ProdutoCalculadoraVrfRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel";
+import { ProdutosAtivosRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel";
 
 @Injectable({
     providedIn: "root",
@@ -119,13 +120,10 @@ export class ProdutoCatalogoService {
         );
     }
 
-    buscarPropriedadesProdutoAtivo(
-        idProduto: number,
-        propriedadeOculta: boolean,
-        propriedadeOcultaItem: boolean
-    ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
-        return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.env.apiUrl()}produto/buscar-produtos-opcoes-ativos/${idProduto}&${propriedadeOculta}&${propriedadeOcultaItem}`
+    buscarPropriedadesProdutoAtivo(obj:ProdutosAtivosRequestViewModel): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
+        
+        return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
+            `${this.env.apiUrl()}produto/buscar-produtos-opcoes-ativos`, obj
         );
     }
 
