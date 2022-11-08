@@ -51,7 +51,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-    this.buscarOpcoes();
+    // this.buscarOpcoes();
   }
 
   criarForm() {
@@ -129,6 +129,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.produtosParaTela.push(prod);
       }
     });
+
+    this.buscarOpcoes();
   }
 
   buscarPropriedades() {
@@ -137,6 +139,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.propriedades = r;
         this.montarListaProdutoParaTela();
         this.carregando = false;
+
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -173,7 +177,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           while (y < r.length) {
             var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
 
-            if (indice == listaId[x] && r[y]['oculto'] == false) {
+            if (r[y]["oculto"] == true) {
+              let propriedadeProduto = this.produtosParaTela
+                .filter(x => x.idPropriedade == indice && x.idValorPropriedadeOpcao == Number.parseInt(r[y]["id"]));
+              if (propriedadeProduto.length > 0) {
+                lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+              }
+            }
+            else if (indice == listaId[x] && r[y]['oculto'] == false) {
               lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
             }
             y++;
@@ -183,6 +194,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
           x++;
         }
+
+
 
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
@@ -204,7 +217,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.alertaService.mostrarMensagem(r);
         return;
       }
-      
+
       // for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
       //   if (this.produtoDetalhe.imagens[x].Id == idImagem) {
       //     this.produtoDetalhe.imagens.splice(x, 1);
