@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
@@ -13,6 +12,7 @@ import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
 import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-editar-produto',
@@ -26,7 +26,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     private fb: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoCatalogoService,
-    private readonly alertaService: AlertaService,
+    private readonly sweetAlertService: SweetalertService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService) { }
 
@@ -100,7 +100,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       if (r != null) {
         this.produtoDetalhe = r;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   propriedadesItem: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>();
@@ -142,63 +142,51 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
 
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   buscarOpcoes(): void {
 
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
-
-      var x = 0;
-      var y = 0;
-
       if (r != null) {
         this.opcoes = r;
         this.carregando = false;
-
-        let lstOpcoesPorId = [];
         let listaId = [];
 
-        while (x < r.length) {
+        r.forEach(x => {
+          listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
+        });
 
-          if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
-            listaId.push(r[x]['id_produto_catalogo_propriedade']);
-          }
-          x++;
-        }
+        listaId.forEach(x => {
+          let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
 
-        x = 0;
+          let lstOpcoesPorId = [];
+          if (opcao.length > 0) {
+            opcao.forEach(o => {
+              if (o.oculto) {
+                let propriedadeProduto = this.produtosParaTela
+                  .filter(p => p.idPropriedade == Number.parseInt(o.id_produto_catalogo_propriedade) &&
+                    p.idValorPropriedadeOpcao == Number.parseInt(o.id));
 
-        while (x < listaId.length) {
-          var y = 0;
-
-          lstOpcoesPorId = [];
-
-          while (y < r.length) {
-            var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
-
-            if (r[y]["oculto"] == true) {
-              let propriedadeProduto = this.produtosParaTela
-                .filter(x => x.idPropriedade == indice && x.idValorPropriedadeOpcao == Number.parseInt(r[y]["id"]));
-              if (propriedadeProduto.length > 0) {
-                lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+                if (propriedadeProduto.length > 1) {
+                  let pErro = this.propriedades.filter(prop => prop.id == propriedadeProduto[0].idPropriedade);
+                  this.sweetAlertService.aviso(`Ops! existe uma inconsistência na propriedade: <br> <b>${pErro[0].descricao}</b>`);
+                }
+                if (propriedadeProduto.length > 0) {
+                  lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+                }
               }
+              else {
+                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+              }
+            });
+            if (lstOpcoesPorId.length > 0) {
+              this.lstOpcoes[x] = lstOpcoesPorId;
             }
-            else if (indice == listaId[x] && r[y]['oculto'] == false) {
-              lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
-            }
-            y++;
           }
-
-          this.lstOpcoes[listaId[x]] = lstOpcoesPorId;
-
-          x++;
-        }
-
-
-
+        });
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   voltarClick(): void {
@@ -214,7 +202,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   excluirImagemClick(idImagem) {
     this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
-        this.alertaService.mostrarMensagem(r);
+        this.sweetAlertService.aviso(r);
         return;
       }
 
@@ -227,7 +215,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       this.produtoDetalhe.imagem = null;
       this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
     }).catch((r) => {
-      this.alertaService.mostrarErroInternet(r)
+      this.sweetAlertService.aviso(r)
     });
   }
 
@@ -283,7 +271,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
       this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
       this.router.navigate(["//produtos-catalogo/listar"]);
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
 
 
   }
