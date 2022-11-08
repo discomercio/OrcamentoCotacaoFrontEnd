@@ -72,6 +72,8 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   buscarProduto() {
     let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
     obj.idProduto = this.id;
+    obj.propriedadeOculta= false;
+    obj.propriedadeOcultaItem = false;
     this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
       if (r != null) {
         this.produtoDados = r;
