@@ -6,6 +6,7 @@ import { Product } from 'src/app/demo/domain/product';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
+import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 
 @Component({
   selector: 'app-visualizar-produto',
@@ -69,7 +70,9 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];
 
   buscarProduto() {
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((r) => {
+    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
+    obj.idProduto = this.id;
+    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
       if (r != null) {
         this.produtoDados = r;
       }

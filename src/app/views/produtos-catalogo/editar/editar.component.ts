@@ -12,6 +12,7 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
+import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 
 @Component({
   selector: 'app-editar-produto',
@@ -50,7 +51,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-    this.buscarOpcoes();
+    // this.buscarOpcoes();
   }
 
   criarForm() {
@@ -77,9 +78,11 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   buscarProdutoDetalhe() {
-    this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, true).toPromise().then((r) => {
+    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
+    obj.idProduto = this.id;
+    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
 
-      this.produtoService.buscarPropriedadesProdutoAtivo(this.id, false, false).toPromise().then((y) => {
+      this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((y) => {
         if (r != null) {
           //   this.produto = r;
           this.consolidarLista(r);
@@ -126,6 +129,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.produtosParaTela.push(prod);
       }
     });
+
+    this.buscarOpcoes();
   }
 
   buscarPropriedades() {
@@ -134,6 +139,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.propriedades = r;
         this.montarListaProdutoParaTela();
         this.carregando = false;
+
+
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
@@ -170,7 +177,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
           while (y < r.length) {
             var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
 
-            if (indice == listaId[x]) {
+            if (r[y]["oculto"] == true) {
+              let propriedadeProduto = this.produtosParaTela
+                .filter(x => x.idPropriedade == indice && x.idValorPropriedadeOpcao == Number.parseInt(r[y]["id"]));
+              if (propriedadeProduto.length > 0) {
+                lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+              }
+            }
+            else if (indice == listaId[x] && r[y]['oculto'] == false) {
               lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
             }
             y++;
@@ -180,6 +194,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
           x++;
         }
+
+
 
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
@@ -201,7 +217,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.alertaService.mostrarMensagem(r);
         return;
       }
-      
+
       // for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
       //   if (this.produtoDetalhe.imagens[x].Id == idImagem) {
       //     this.produtoDetalhe.imagens.splice(x, 1);

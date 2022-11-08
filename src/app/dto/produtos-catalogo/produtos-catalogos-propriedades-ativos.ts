@@ -13,4 +13,5 @@ export class ProdutoCatalogoItemProdutosAtivosDados {
     propriedadeOculta:boolean;
     propriedadeOcultaItem:boolean;
     idTipoCampo: number;
+    clicou:boolean = false;
 }
