@@ -1,8 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HasElementRef } from '@angular/material/core/typings/common-behaviors/color';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SelectItem } from 'primeng/api';
-import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { Dropdown } from 'primeng/dropdown';
 import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
@@ -13,6 +14,7 @@ import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-cat
 import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 
 @Component({
@@ -20,11 +22,11 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
   templateUrl: './clonar.component.html',
   styleUrls: ['./clonar.component.scss']
 })
-export class ProdutosCatalogoClonarComponent implements OnInit {
+export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
 
   constructor(private fb: FormBuilder,
     private readonly produtoService: ProdutoCatalogoService,
-    private readonly alertaService: AlertaService,
+    private readonly sweetAlertService: SweetalertService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly activatedRoute: ActivatedRoute,
@@ -45,22 +47,29 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   lstFabricantes: SelectItem[] = [];
   fabricantes: ProdutoCatalogoFabricante[];
 
+  @ViewChild("codigo") codigo: ElementRef;
+  
   ngOnInit(): void {
     this.carregando = true;
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-    this.buscarOpcoes();
     this.buscarFabricantes();
     this.urlUpload = this.produtoService.urlUpload;
     this.imgUrl = this.produtoService.imgUrl;
+  }
+
+  ngAfterViewInit(){
+    setTimeout(() => {
+    this.codigo.nativeElement.focus();
+    }, 500);
   }
 
   criarForm() {
     this.form = this.fb.group({
       descricao: [this.produtoDetalhe.Descricao, [Validators.required]],
       nome_produto: [this.produtoDetalhe.Nome, [Validators.required]],
-      produto: [('000000' + this.produtoDetalhe.Produto).slice(-6), [Validators.required]],
+      produto: ['', [Validators.required]],
       fabricante: [this.produtoDetalhe.Fabricante, [Validators.required]],
       ativo: [''],
     });
@@ -93,6 +102,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
       if (r != null) {
         this.produtoDetalhe = r;
+        this.produtoDetalhe.Produto = "";
         this.produtoDetalhe.Fabricante = this.produtoDetalhe.Fabricante.split('-')[0].trim();
         if (this.produtoDetalhe.imagem) {
           this.imagem = new ProdutoCatalogoImagem();
@@ -101,54 +111,50 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
         }
         this.criarForm();
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   buscarOpcoes(): void {
-
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
-
-      var x = 0;
-      var y = 0;
-
       if (r != null) {
         this.opcoes = r;
         this.carregando = false;
-
-        let lstOpcoesPorId = [];
         let listaId = [];
 
-        while (x < r.length) {
+        r.forEach(x => {
+          listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
+        });
 
-          if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
-            listaId.push(r[x]['id_produto_catalogo_propriedade']);
-          }
-          x++;
-        }
+        listaId.forEach(x => {
+          let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
 
-        x = 0;
+          let lstOpcoesPorId = [];
+          if (opcao.length > 0) {
+            opcao.forEach(o => {
+              if (o.oculto) {
+                let propriedadeProduto = this.produtosParaTela
+                  .filter(p => p.idPropriedade == Number.parseInt(o.id_produto_catalogo_propriedade) &&
+                    p.idValorPropriedadeOpcao == Number.parseInt(o.id));
 
-        while (x < listaId.length) {
-          var y = 0;
-
-          lstOpcoesPorId = [];
-
-          while (y < r.length) {
-            var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
-
-            if (indice == listaId[x]) {
-              lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+                if (propriedadeProduto.length > 1) {
+                  let pErro = this.propriedades.filter(prop => prop.id == propriedadeProduto[0].idPropriedade);
+                  this.sweetAlertService.aviso(`Ops! existe uma inconsistência na propriedade: <br> <b>${pErro[0].descricao}</b>`);
+                }
+                if (propriedadeProduto.length > 0) {
+                  lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+                }
+              }
+              else {
+                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+              }
+            });
+            if (lstOpcoesPorId.length > 0) {
+              this.lstOpcoes[x] = lstOpcoesPorId;
             }
-            y++;
           }
-
-          this.lstOpcoes[listaId[x]] = lstOpcoesPorId;
-
-          x++;
-        }
-
+        });
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   consolidarLista(produtoCat: ProdutoCatalogoItemProdutosAtivosDados[]) {
@@ -164,7 +170,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
         this.montarListaProdutoParaTela();
         this.carregando = false;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   montarListaProdutoParaTela() {
@@ -176,6 +182,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
       let prod = new ProdutoCatalogoItemProdutosAtivosDados();
       prod.idPropriedade = x.id;
       prod.idTipoCampo = x.IdCfgTipoPropriedade;
+      
 
       if (item.length == 0) {
         prod.idValorPropriedadeOpcao = 0;
@@ -190,6 +197,8 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
         this.produtosParaTela.push(prod);
       }
     });
+
+    this.buscarOpcoes();
   }
 
   buscarFabricantes() {
@@ -208,7 +217,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
         this.fabricantes = r;
         this.carregando = false;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   salvarClick() {
@@ -271,11 +280,11 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
             this.router.navigate(["//produtos-catalogo/listar"]);
           }
         }).catch((r) => {
-          this.alertaService.mostrarErroInternet(r);
+          this.sweetAlertService.aviso(r);
         });
       }
     }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
+      this.sweetAlertService.aviso(e);
     });
 
   }
@@ -296,7 +305,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    
+
     this.imagem = null;
     this.produtoDetalhe.imagem = null;
 
@@ -308,5 +317,31 @@ export class ProdutosCatalogoClonarComponent implements OnInit {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);
+  }
+
+  digitouCodigo(event: Event) {
+    let valor = ((event.target) as HTMLInputElement).value;
+
+    if (isNaN(Number(valor))) {
+      let limpando = valor.replace(/[^0-9]/g, '');
+      this.form.controls.produto.setValue(limpando);
+      return;
+    }
+
+    if (valor == "0") {
+      this.form.controls.produto.setValue("");
+      return;
+    }
+
+    let valorInteiro = Number.parseInt(valor);
+    if (valorInteiro.toString().length > 6) return;
+
+    valor = ("00000" + valor).slice(-6);
+    if(Number.parseInt(valor) == 0){
+      this.form.controls.produto.setValue("");
+      return
+    }
+
+    this.form.controls.produto.setValue(valor.toString());
   }
 }
