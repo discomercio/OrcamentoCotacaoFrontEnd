@@ -36,6 +36,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   codigo: string;
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
   stringUtils = StringUtils;
+  first: number = 0;
 
   ngOnInit(): void {
     this.displayModal = true;
@@ -71,6 +72,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     ProdutoTela.AtualizarVisiveis(this.prodsArray, this.digitado);
 
     this.prodsTela = this.prodsArray.filter(f => f.visivel == true);
+    this.setarPaginacao();
+  }
+
+  setarPaginacao() {
+    this.first = 0;
   }
 
   addProduto() {

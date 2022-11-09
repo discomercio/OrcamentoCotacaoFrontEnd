@@ -16,7 +16,7 @@
         </div>
         <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
             autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
-            [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true">
+            [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true" [(first)]="first">
             <ng-template pTemplate="body" let-p>
                 <ng-container *ngIf="p.visivel">
 
