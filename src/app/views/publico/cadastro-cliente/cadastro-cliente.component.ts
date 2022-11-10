@@ -373,6 +373,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
     aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
+    aprovacaoOrcamento.guid = this.activatedRoute.snapshot.params.guid;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
     aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
     aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosCliente));
@@ -382,7 +383,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();
     }
-
+    
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?
