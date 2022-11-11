@@ -20,8 +20,7 @@
                         <div class="p-mb-12">
                             <center>
                                 <p-button type="button" styleClass="p-button-help p-button-rounded" icon="pi pi-trash"
-                                    (click)="excluirImagemClick(produtoDetalhe.imagem.Id)"
-                                    pTooltip="Excluir imagem">
+                                    (click)="excluirImagemClick(produtoDetalhe.imagem.Id)" pTooltip="Excluir imagem">
                                 </p-button>
                             </center>
                         </div>
@@ -116,8 +115,9 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <div class="p-col-12 p-px-0" >
-                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0" *ngFor="let lista of propriedades; let i=index">
+            <div class="p-col-12 p-px-0">
+                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0"
+                    *ngFor="let lista of propriedades; let i=index">
                     <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                     <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
                         <div class="p-col-3 p-md-1 p-sm-2" style="display: inline-block;vertical-align: middle;">
@@ -137,6 +137,13 @@
                                 [(ngModel)]="!produtosParaTela[i].propriedadeOcultaItem">
                             </p-inputSwitch>
                         </div>
+                        <!-- pensar
+                                mostrar valor selecionado no input e ao clicar esconder e mostrar o dropdown
+                            -->
+                        <!-- <div *ngIf="!produtosParaTela[i].clicou" class="p-col-9 p-sm-5" style="display: inline-block;vertical-align: middle;">
+                            <input id="campo-{{lista.id}}" type="text" pInputText placeholder="Selecione"
+                                [(ngModel)]="produtosParaTela[i].valorPropriedade" (click)="mudarValorLista(produtosParaTela[i], 'campo-'+lista.id)" />
+                        </div> -->
                         <div class="p-col-9 p-sm-5" style="display: inline-block;vertical-align: middle;">
                             <p-dropdown id="campo-{{lista.id}}" [options]="lstOpcoes[lista.id]" optionValue="value"
                                 optionLabel="label" placeholder="Selecione"

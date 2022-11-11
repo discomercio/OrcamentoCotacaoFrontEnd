@@ -13,10 +13,17 @@ export class MensageriaService {
 
     obterListaMensagem(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
     
+      let params = new HttpParams();    
+          params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
+          return this.http.get<MensageriaDto[]>(this.env.apiUrl() + "Mensagem/?IdOrcamentoCotacao=" + idOrcamentoCotacao);
+      }
+
+    obterListaMensagemRotaPublica(guid: string): Observable<MensageriaDto[]> {
+
     let params = new HttpParams();    
-        params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
-        return this.http.get<MensageriaDto[]>(this.env.apiUrl() + "Mensagem/?IdOrcamentoCotacao=" + idOrcamentoCotacao);
-    }
+        params = params.append("guid", guid);
+        return this.http.get<MensageriaDto[]>(this.env.apiUrl() + "Mensagem/publico/?guid=" + guid);
+    }      
 
     obterListaMensagemPendente(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
     
@@ -33,12 +40,19 @@ export class MensageriaService {
         return this.http.post<any>(`${this.env.apiUrl()}Mensagem/`, msg);
     }
 
+    enviarMensagemRotaPublica(msg: any, guid: string): Observable<any> {    
+
+      return this.http.post<any>(`${this.env.apiUrl()}Mensagem/publico?msg=${msg}&guid=${guid}`,msg);
+      //return this.http.post<any>(`${this.env.apiUrl()}Mensagem/publico/`, params);
+    }
+
+
     marcarMensagemComoLida(idOrcamentoCotacao: string): Observable<any> {           
       return this.http.put<any>(`${this.env.apiUrl()}Mensagem/marcar/lida?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
     }    
     
-    marcarMensagemComoLidaRotaPublica(idOrcamentoCotacao: string): Observable<any> {      
-      return this.http.put<any>(`${this.env.apiUrl()}Mensagem/marcar/lida/publica?idOrcamentoCotacao=${idOrcamentoCotacao}`, idOrcamentoCotacao);
+    marcarMensagemComoLidaRotaPublica(guid: string): Observable<any> {      
+      return this.http.put<any>(`${this.env.apiUrl()}Mensagem/publico/marcar/lida?guid=${guid}`, guid);
     }       
     
     marcarPendenciaTratada(idOrcamentoCotacao: string): Observable<any> {
