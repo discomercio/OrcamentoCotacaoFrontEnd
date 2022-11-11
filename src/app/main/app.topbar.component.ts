@@ -62,6 +62,7 @@ export class AppTopBarComponent {
       this.mensageriaService.obterQuantidadeMensagemPendente().toPromise().then((r) => {
         if (r != null) {               
           this.qtdMensagem = r;
+          debugger;
         }
       })
     } 
