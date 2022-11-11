@@ -79,7 +79,7 @@ export class ProdutoTela {
         if (!fabricante || !produto) {
             return "";
         }
-        return fabricante + "/" + fabricante_nome + "/" + produto;
+        return fabricante + "/" + produto + " - " + fabricante_nome;
     }
 
 
