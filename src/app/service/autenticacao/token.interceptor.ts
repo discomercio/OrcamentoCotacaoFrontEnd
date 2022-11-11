@@ -35,7 +35,12 @@ export class TokenInterceptor implements HttpInterceptor {
     }
     
     if (localStorage.getItem("versaoApi") != this.env.versaoApi()) {
-      this.alertaService.mostrarErroAtualizandoVersao();
+      if (!this.router.url.startsWith('/publico/')) {
+        this.alertaService.mostrarErroAtualizandoVersao();
+      }else{
+        localStorage.setItem('versaoApi', this.env.versaoApi());
+        window.location.reload();
+      }
     }
 
     req = req.clone({ setHeaders: headers });
