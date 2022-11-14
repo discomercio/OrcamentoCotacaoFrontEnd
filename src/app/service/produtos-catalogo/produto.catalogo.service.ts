@@ -192,4 +192,12 @@ export class ProdutoCatalogoService {
     buscarTipoPropriedades():Observable<Array<any>>{
         return this.http.get<Array<any>>(`${this.env.apiUrl()}produtocatalogo/buscarTipoPropriedades`);
     }
+
+    buscarPropriedadesUtilizadas(id: number) : Observable<any> {
+        return this.http.get<any>(`${this.env.apiUrl()}produtocatalogo/ObterPropriedadesUtilizadosPorProdutos/${id}`);
+    }
+
+    excluirPropriedades(id: number) : Observable<any> {
+        return this.http.post<any>(`${this.env.apiUrl()}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id });
+    }
 }
