@@ -29,6 +29,7 @@
                         <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">{{lista.oculto == true ? 'Não': 'Sim'}}</td>
                         <td style="text-align: right">
                             <button  pButton style="align-content: flex-end;" icon="fa fa-edit" (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
+                            <button  pButton style="align-content: flex-end;" icon="pi pi-trash ng-star-inserted" (click)=excluirClick(this.lista.id) pTooltip="Exlcuir"></button>&nbsp;
                         </td>
                     </tr>
                 </ng-template>

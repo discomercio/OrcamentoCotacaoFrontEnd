@@ -4,9 +4,9 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
-
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-listar-produtos',
@@ -15,11 +15,13 @@ import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/Produt
 })
 export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
-  constructor(private readonly service: ProdutoCatalogoService,
+  constructor(
+    private readonly service: ProdutoCatalogoService,
     private fb: FormBuilder,
     private readonly router: Router,
     private readonly mensagemService: MensagemService,
-    private readonly alertaService: AlertaService) { }
+    private readonly alertaService: AlertaService,
+    private readonly sweetalertService: SweetalertService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -54,10 +56,30 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
       this.router.navigate(["/produtos-catalogo/propriedades/editar", id]);
   }
 
-
   criarClick() {
     this.router.navigate(["/produtos-catalogo/propriedades/criar"]);
   }
 
-}
+  excluirClick(id: any) {
 
+    this.service.buscarPropriedadesUtilizadas(id).toPromise().then((response) => {
+
+      if (response) {
+        this.sweetalertService.aviso("Existem produtos do catálogo utilizando a propriedade.");
+        return;
+      }
+      else {
+        this.service.excluirPropriedades(id).toPromise().then((resp) => {
+
+          if(resp) {
+            this.sweetalertService.sucesso("Propriedade excluída com sucesso.");  
+            this.carregando = true;
+            this.buscarTodosProdutos();
+          }
+
+        }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      }
+
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
+}
