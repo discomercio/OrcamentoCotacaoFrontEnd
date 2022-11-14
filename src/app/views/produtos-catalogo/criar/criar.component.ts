@@ -14,6 +14,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogoItem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoItem';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-criar-produto',
@@ -27,6 +28,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     private readonly produtoService: ProdutoCatalogoService,
+    private readonly sweetAlertService: SweetalertService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
@@ -104,47 +106,32 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
   buscarOpcoes(): void {
     this.produtoService.buscarOpcoes().toPromise().then((r) => {
-
-      var x = 0;
-      var y = 0;
-
       if (r != null) {
         this.opcoes = r;
         this.carregando = false;
-
-        let lstOpcoesPorId = [];
         let listaId = [];
 
-        while (x < r.length) {
-          if (listaId.indexOf(r[x]['id_produto_catalogo_propriedade']) === -1) {
-            listaId.push(r[x]['id_produto_catalogo_propriedade']);
-          }
-          x++;
-        }
+        r.forEach(x => {
+          listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
+        });
 
-        x = 0;
+        listaId.forEach(x => {
+          let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
 
-        while (x < listaId.length) {
-          var y = 0;
-
-          lstOpcoesPorId = [];
-
-          while (y < r.length) {
-            var indice = parseInt(r[y]['id_produto_catalogo_propriedade']);
-
-            if (indice == listaId[x]) {
-              lstOpcoesPorId.push({ label: r[y]['valor'], value: r[y]['id'] });
+          let lstOpcoesPorId = [];
+          if (opcao.length > 0) {
+            opcao.forEach(o => {
+              if(!o.oculto){
+                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+              }
+            });
+            if (lstOpcoesPorId.length > 0) {
+              this.lstOpcoes[x] = lstOpcoesPorId;
             }
-            y++;
           }
-
-          this.lstOpcoes[listaId[x]] = lstOpcoesPorId;
-
-          x++;
-        }
-
+        });
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   digitouCodigo(event: Event) {
