@@ -246,6 +246,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = '-1';
           itemModelo.Valor = x.valorPropriedade;
         }
+        debugger;
         itemModelo.Oculto = x.propriedadeOcultaItem ? true : false;
         campos.push(itemModelo);
       }
@@ -343,5 +344,9 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     }
 
     this.form.controls.produto.setValue(valor.toString());
+  }
+
+  onChangeAtivo(idPropriedade: number, index: number) {
+    this.produtosParaTela[index].propriedadeOcultaItem = !this.produtosParaTela[index].propriedadeOcultaItem;
   }
 }
