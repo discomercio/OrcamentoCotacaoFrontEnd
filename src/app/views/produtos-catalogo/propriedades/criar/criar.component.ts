@@ -209,7 +209,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       this.mensagemService.showErrorViaToast(["Desculpe! Esse item não pode ser editado."]);
       return;
     }
-
+    
     this.valorValido = this.selectedValorValido[0].valor;
     this.ocultoOpcao = !this.selectedValorValido[0].oculto
 
@@ -235,10 +235,12 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       if (!this.form.controls.descricao.invalid) return;
     }
 
-    let propExiste = this.lstValoresValidos.filter(x => x.id == this.itemApoioEdicao.id);
-    propExiste[0].valor = this.valorValido;
-    propExiste[0].oculto = this.ocultoOpcao ? false : true;
-
+    let propExiste = this.lstValoresValidos.filter(x => x.valor == this.itemApoioEdicao.valor);
+    if(propExiste[0].valor == this.valorValido){
+      propExiste[0].valor = this.valorValido;
+      propExiste[0].oculto = this.ocultoOpcao ? false : true;
+    }
+    
     this.cancelarEdicaoClick();
     this.selectedValorValido = null;
   }
