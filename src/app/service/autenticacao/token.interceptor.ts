@@ -6,12 +6,19 @@ import { AutenticacaoService } from './autenticacao.service';
 import { tap } from 'rxjs/internal/operators/tap';
 import { Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
   env: environment;
 
-  constructor(private readonly autenticacaoService: AutenticacaoService, private readonly alertaService: AlertaService, private router: Router, private http: HttpClient, private envir: environment) {
+  constructor(
+    private readonly autenticacaoService: AutenticacaoService, 
+    private readonly alertaService: AlertaService, 
+    private router: Router, 
+    private http: HttpClient, 
+    private envir: environment,
+    private appSettingsService: AppSettingsService) {
     this.env = envir
   }
 
@@ -53,7 +60,7 @@ export class TokenInterceptor implements HttpInterceptor {
           }        
           
           //Fizemos isso pq não é realizado a chamada na API
-          let apiUrl = this.env.apiUrl();
+          let apiUrl = this.appSettingsService.config.apiUrl;
           if (event.url != apiUrl + "assets/demo/data/banco/menu.json") return;
 
           if (!respOk) {

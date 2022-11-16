@@ -3,54 +3,54 @@ import { AppSettingsService } from "src/app/utilities/appsettings/appsettings.se
 
 export class environment {
     production(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().production;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().production;
+        // return metadata;
     }
     esperaAvisos(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().esperaAvisos;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().esperaAvisos;
+        // return metadata;
     }
     esperaErros(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().esperaErros;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().esperaErros;
+        // return metadata;
     }
     apiUrl(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().apiUrl;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().apiUrl;
+        // return metadata;
     }
     imgUrl(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().imgUrl;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().imgUrl;
+        // return metadata;
     }
     versaoApi(): any {
         const fetch = require("sync-fetch");
@@ -63,14 +63,14 @@ export class environment {
         return metadata;
     }
     temporizadorSininho(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().temporizadorSininho;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().temporizadorSininho;
+        // return metadata;
     }
 
 }

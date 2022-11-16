@@ -17,7 +17,7 @@ export class DownloadsService {
 
   constructor(private readonly http: HttpClient, private env: environment, private appSettingsService: AppSettingsService) { }
 
-  public urlUpload: string = `${this.env.apiUrl()}arquivo/upload`;
+  public urlUpload: string = `${this.appSettingsService.config.apiUrl}arquivo/upload`;
 
   public buscarToTree(): Observable<ObterEstruturaResponse> {
     return this.http.get<ObterEstruturaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/ObterEstrutura`);
