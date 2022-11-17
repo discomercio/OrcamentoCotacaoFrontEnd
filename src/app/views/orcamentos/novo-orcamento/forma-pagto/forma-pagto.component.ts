@@ -323,20 +323,20 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   setarValorParcela(valorParcelas: number) {
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
 
-      return this.formaPagtoCriacaoAprazo.c_pc_valor = valorParcelas;
+      return this.formaPagtoCriacaoAprazo.c_pc_valor = this.novoOrcamentoService.moedaUtils.formatarDecimal(valorParcelas);
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
       let entrada = this.formaPagtoCriacaoAprazo.o_pce_entrada_valor ? this.formaPagtoCriacaoAprazo.o_pce_entrada_valor : 0;
-      return this.formaPagtoCriacaoAprazo.c_pce_prestacao_valor = (this.novoOrcamentoService.totalPedido() - entrada) / this.novoOrcamentoService.qtdeParcelas;
+      return this.formaPagtoCriacaoAprazo.c_pce_prestacao_valor = this.novoOrcamentoService.moedaUtils.formatarDecimal((this.novoOrcamentoService.totalPedido() - entrada) / this.novoOrcamentoService.qtdeParcelas);
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
-      return this.formaPagtoCriacaoAprazo.c_pse_demais_prest_valor = valorParcelas;
+      return this.formaPagtoCriacaoAprazo.c_pse_demais_prest_valor = this.novoOrcamentoService.moedaUtils.formatarDecimal(valorParcelas);
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
-      return this.formaPagtoCriacaoAprazo.c_pu_valor = valorParcelas;
+      return this.formaPagtoCriacaoAprazo.c_pu_valor = this.novoOrcamentoService.moedaUtils.formatarDecimal(valorParcelas);
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-      return this.formaPagtoCriacaoAprazo.c_pc_maquineta_valor = valorParcelas;
+      return this.formaPagtoCriacaoAprazo.c_pc_maquineta_valor = this.novoOrcamentoService.moedaUtils.formatarDecimal(valorParcelas);
     }
   }
 
@@ -404,7 +404,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)) {
         let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
         let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
-          ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+          ${this.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
         this.sweetalertService.dialogo("", pergunta).subscribe(result => {
           if (!result) return;
 
@@ -419,7 +419,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   gravarOpcao() {
     this.atribuirFormasPagto();
-
+    debugger;
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();

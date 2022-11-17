@@ -123,14 +123,15 @@
                                         <span
                                             *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
                                             Comissão:
-                                            {{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
+                                            {{moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                                             %
                                         </span>
                                         <div class="p-d-inline-flex p-jc-end"
                                             *ngIf="novoOrcamentoService.editarComissao">
+
                                             <div class="p-col-7 p-inputgroup">
                                                 <input type="text" pInputText class="p-text-right"
-                                                    [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
+                                                    [value]="moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
                                                     (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
                                                 <span class="p-inputgroup-addon">%</span>
                                             </div>

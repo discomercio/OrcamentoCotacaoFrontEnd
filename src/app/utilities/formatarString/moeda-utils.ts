@@ -44,7 +44,6 @@ export class MoedaUtils {
         return this.formatter1casa.format(nro);
     }    
 
-
     public formatarParaFloatUmaCasaReturnZero(nro: number) {
 
         if (!!!nro)
