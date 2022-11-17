@@ -62,7 +62,7 @@
                 <li #settings [ngClass]="{'active-top-menu':appMain.activeTopbarItem === settings}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,settings)">
                         <i class="topbar-icon pi pi-cog"></i>
-                        <span class="topbar-item-name">Settings</span>
+                        <span class="topbar-item-name">Configurações</span>
                     </a>
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                         <!--
@@ -155,7 +155,8 @@
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
                         <i class="topbar-icon pi pi-fw pi-bell"></i>
                         <span class="topbar-badge animated rubberBand">{{qtdMensagem}}</span>
-                        <span class="topbar-item-name">Notifications</span>
+                        <span class="topbar-item-name" *ngIf="qtdMensagem > 1">Notificações</span>
+                        <span class="topbar-item-name" *ngIf="qtdMensagem < 2">Notificação</span>
                     </a>
                     
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}" *ngIf="qtdMensagem>0">

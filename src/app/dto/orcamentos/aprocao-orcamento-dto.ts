@@ -8,4 +8,5 @@ export class AprovacaoOrcamentoDto{
     idFormaPagto:number;
     clienteCadastroDto:ClienteCadastroDto;
     enderecoEntregaDto:EnderecoEntregaDtoClienteCadastro;
+    guid: string;
 }

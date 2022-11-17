@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -28,7 +28,7 @@ import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotaca
   styleUrls: ['./cadastrar-cliente.component.scss']
 })
 
-export class CadastrarClienteComponent implements OnInit {
+export class CadastrarClienteComponent implements OnInit, AfterViewInit {
 
   constructor(private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
@@ -71,6 +71,7 @@ export class CadastrarClienteComponent implements OnInit {
   tipoUsuario: number;//usar o do Usuario
   habilitarClone: boolean = false;
   habilitarVoltar: boolean = false;
+  @ViewChild("nome") nome: ElementRef;
 
   ngOnInit(): void {
 
@@ -90,6 +91,10 @@ export class CadastrarClienteComponent implements OnInit {
     this.buscarContribuinteICMS();
     this.buscarInstaladorInstala();
 
+  }
+
+  ngAfterViewInit(): void {
+    this.nome.nativeElement.focus();
   }
 
   filtro: string;

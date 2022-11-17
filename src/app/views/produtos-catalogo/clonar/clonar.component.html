@@ -68,15 +68,15 @@
                         </div>
                         <div class="p-text-bold">Nome do Fabricante:</div>
                         <div class="p-field p-col-12">
-                            <p-dropdown id="dpdFabricante" [options]="lstFabricantes" formControlName="fabricante"
+                            <p-dropdown #dropFabricante id="dpdFabricante" [options]="lstFabricantes" formControlName="fabricante"
                                 placeholder="Selecione"></p-dropdown>
                             <small class="p-error"
                                 *ngIf="validacaoFormularioService.verificaCampo(form,'fabricante')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
-                            <input id="id" type="text" formControlName="produto" pInputText
-                                value="{{('000000' + this.produtoDetalhe.Produto).slice(-6)}}" maxlength="8" />
+                            <input #codigo id="id" type="text" formControlName="produto" pInputText
+                                value="{{produtoDetalhe.Produto}}" maxlength="8" (keyup)="digitouCodigo($event)" />
                             <small class="p-error"
                                 *ngIf="validacaoFormularioService.verificaCampo(form,'produto')">{{mensagemErro}}</small>
                         </div>

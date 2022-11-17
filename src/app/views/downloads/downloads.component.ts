@@ -339,7 +339,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   
       const blob = new Blob(byteArrays, {type: contentType});
       const url = window.URL.createObjectURL(blob);
-      fileSaver.saveAs(blob, this.estruturaSelecionada.data.name);
+      fileSaver.saveAs(blob, response.Nome);
       this.mensagemService.showSuccessViaToast(response.Mensagem);
       this.edicao = false;
       this.novaPasta = false;

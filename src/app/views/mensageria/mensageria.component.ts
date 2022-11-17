@@ -28,13 +28,16 @@ export class MensageriaComponent implements AfterViewInit {
   public idTipoUsuarioContextoDestinatario: string;
 
   @Input('donoOrcamento')
-  public donoOrcamento: boolean;  
+  public donoOrcamento: boolean;
 
   @Input('permiteEnviarMensagem')
-  public permiteEnviarMensagem: boolean;   
+  public permiteEnviarMensagem: boolean;
 
   @Input('rotaPublica')
-  public rotaPublica: boolean;     
+  public rotaPublica: boolean;
+
+  @Input('guid')
+  public guid: string;
 
   listaMensagens: MensageriaDto[];
 
@@ -46,25 +49,41 @@ export class MensageriaComponent implements AfterViewInit {
 
   @ViewChild("mensagem") mensagem: ElementRef;
 
-  ngAfterViewInit(): void {    
-    this.obterListaMensagem(this.idOrcamentoCotacao);    
+  ngAfterViewInit(): void {
+    this.obterListaMensagem(this.idOrcamentoCotacao);
   }
 
-  obterListaMensagem(idOrcamentoCotacao: number) { 
-    if(idOrcamentoCotacao) {
-      this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-        if (r != null) {      
-          this.listaMensagens = r;   
-          
-          this.marcarMensagemComoLida(idOrcamentoCotacao);  
+  obterListaMensagem(idOrcamentoCotacao: number) {
+
+    //Rota Pública
+    if (this.rotaPublica && this.guid) {
+
+      this.mensageriaService.obterListaMensagemRotaPublica(this.guid).toPromise().then((r) => {
+        if (r != null) {
+          this.listaMensagens = r;
+
+          this.marcarMensagemComoLida(idOrcamentoCotacao);
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+    } else {
+
+      //Interno
+      if (idOrcamentoCotacao) {
+        this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
+          if (r != null) {
+            this.listaMensagens = r;
+
+            this.marcarMensagemComoLida(idOrcamentoCotacao);
+          }
+        }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      }
 
     }
   }
 
   enviarMensagem() {
-    this.validar();  
+    this.validar();
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
@@ -74,60 +93,72 @@ export class MensageriaComponent implements AfterViewInit {
     msg.IdUsuarioRemetente = this.idUsuarioRemetente;
     msg.IdUsuarioDestinatario = this.idUsuarioDestinatario;
 
-    this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
-      if (r != null) {
-        this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-        this.obterListaMensagem(this.idOrcamentoCotacao);
-        this.mensagem.nativeElement.value = '';
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    if (this.rotaPublica && this.guid) {
+
+      this.mensageriaService.enviarMensagemRotaPublica(msg, this.guid).toPromise().then((r) => {
+        if (r != null) {
+          this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
+          this.obterListaMensagem(this.idOrcamentoCotacao);
+          this.mensagem.nativeElement.value = '';
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+    } else {
+      this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
+        if (r != null) {
+          this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
+          this.obterListaMensagem(this.idOrcamentoCotacao);
+          this.mensagem.nativeElement.value = '';
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }
   }
 
   marcarPendenciaTratada() {
 
     this.mensageriaService.obterListaMensagem(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
 
-      if (r != null && r.length>0) {
-        if (r[0]['PendenciaTratada'] == true){
+      if (r != null && r.length > 0) {
+        if (r[0]['PendenciaTratada'] == true) {
           this.mensageriaService.desmarcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
             if (r != null) {
               this.mensagemService.showSuccessViaToast("Mensagens marcadas como não tratadas!");
             }
-          }).catch((r) => this.alertaService.mostrarErroInternet(r));  
-        }else{
+          }).catch((r) => this.alertaService.mostrarErroInternet(r));
+        } else {
           this.mensageriaService.marcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
             if (r != null) {
               this.mensagemService.showSuccessViaToast("Mensagens marcadas como tratadas!");
             }
-          }).catch((r) => this.alertaService.mostrarErroInternet(r));                
+          }).catch((r) => this.alertaService.mostrarErroInternet(r));
         }
-      }else{
+      } else {
         this.mensagemService.showWarnViaToast("Não há mensagens para marcar como tratadas!");
-      }      
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));        
-  }  
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  }
 
-  marcarMensagemComoLida(idOrcamentoCotacao: number) {   
-    
+  marcarMensagemComoLida(idOrcamentoCotacao: number) {
+
     var url = window.location.href;
 
-    var acessoExterno = url.includes("publico/orcamento");    
+    var acessoExterno = url.includes("publico/orcamento");
 
-    if (acessoExterno){
-      this.mensageriaService.marcarMensagemComoLidaRotaPublica(idOrcamentoCotacao?.toString()).toPromise().then((r) => {
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));      
-    }else{      
+    if (acessoExterno) {
+      this.mensageriaService.marcarMensagemComoLidaRotaPublica(this.guid).toPromise().then((r) => {
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    } else {
       this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));  
-    }    
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }
 
-  }    
+  }
 
-  validar(){    
+  validar() {
 
-    if (this.mensagem.nativeElement.value == ""){      
+    if (this.mensagem.nativeElement.value == "") {
       throw this.mensagemService.showWarnViaToast("Ops...você não informou nenhuma mensagem!");
-    } 
+    }
   }
 
   formatarData(dateString) {

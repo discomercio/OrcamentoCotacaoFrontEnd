@@ -11,6 +11,7 @@ import { ProdutoCatalogoImagem } from "src/app/dto/produtos-catalogo/ProdutoCata
 import { DataType } from "src/app/dto/produtos-catalogo/DataType";
 import { ProdutoCatalogoPropriedadeOpcaoResponse } from "src/app/dto/produtos-catalogo/produtoCatalogoPropriedadeOpcaoResponse";
 import { ProdutoCalculadoraVrfRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel";
+import { ProdutosAtivosRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
@@ -121,13 +122,10 @@ export class ProdutoCatalogoService {
         );
     }
 
-    buscarPropriedadesProdutoAtivo(
-        idProduto: number,
-        propriedadeOculta: boolean,
-        propriedadeOcultaItem: boolean
-    ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
-        return this.http.get<ProdutoCatalogoItemProdutosAtivosDados[]>(
-            `${this.appSettingsService.config.apiUrl}produto/buscar-produtos-opcoes-ativos/${idProduto}&${propriedadeOculta}&${propriedadeOcultaItem}`
+    buscarPropriedadesProdutoAtivo(obj:ProdutosAtivosRequestViewModel): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
+        
+        return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
+            `${this.appSettingsService.config.apiUrl}produto/buscar-produtos-opcoes-ativos`, obj
         );
     }
 
@@ -192,5 +190,13 @@ export class ProdutoCatalogoService {
 
     buscarTipoPropriedades():Observable<Array<any>>{
         return this.http.get<Array<any>>(`${this.appSettingsService.config.apiUrl}produtocatalogo/buscarTipoPropriedades`);
+    }
+
+    buscarPropriedadesUtilizadas(id: number) : Observable<any> {
+        return this.http.get<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ObterPropriedadesUtilizadosPorProdutos/${id}`);
+    }
+
+    excluirPropriedades(id: number) : Observable<any> {
+        return this.http.post<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id });
     }
 }
