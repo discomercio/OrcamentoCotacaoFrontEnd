@@ -14,54 +14,58 @@
                 <input id="fabricante" type="text" pInputText /> -->
             </div>
         </div>
-        <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
-            autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
-            [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true" [(first)]="first">
-            <ng-template pTemplate="body" let-p>
-                <ng-container *ngIf="p.visivel">
+        <div class="tabela">
+            <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"
+                autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
+                [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true" [(first)]="first">
+                <ng-template pTemplate="body" let-p>
+                    <ng-container *ngIf="p.visivel">
 
-                    <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
-                        [pSelectableRow]="p">
-                        <td class="p-d-inline-flex" style="width: 100%">
-                            <span>
-                                <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
-                            </span>
-                            <p class="p-ml-2"
-                                [innerHtml]="stringUtils.formatarDescricao(p.produtoDto.fabricante, p.produtoDto.fabricante_Nome, p.produtoDto.produto, p.produtoDto.descricaoHtml)">
-                            </p>
-                        </td>
-                        <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                            <span class="p-column-title p-ml-4">VL Lista:</span>
-                            <div class="p-text-right">
-                                {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.precoLista)}}
-                            </div>
-                        </td>
-                    </tr>
-                    <tr *ngFor="let f of p.Filhos">
-                        <ng-container *ngIf="telaDesktop">
-                            <td class="p-pl-6">
-                                <span class="p-column-title">Produto</span>
-                                {{f.qtde}} x {{ProdutoTelaFabrProd(f.fabricante, f.fabricante_Nome, f.produto)}} -
-                                <span [innerHTML]="produtoDescr(f.fabricante, f.produto).descricaoHtml"></span>
+                        <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
+                            [pSelectableRow]="p">
+                            <td class="p-d-inline-flex" style="width: 100%">
+                                <span>
+                                    <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
+                                </span>
+                                <p class="p-ml-2"
+                                    [innerHtml]="stringUtils.formatarDescricao(p.produtoDto.fabricante, p.produtoDto.fabricante_Nome, p.produtoDto.produto, p.produtoDto.descricaoHtml)">
+                                </p>
                             </td>
-                            <td class="p-pl-6">
-                                <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
-                                <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right">
-                                    <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
-                                        pTooltip="{{f.alertas}}"
-                                        [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
-                                    </p-avatar>
-                                </div>
-                                <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null" class="p-text-right"
-                                    style="color:red">
-                                    {{f.alertas}}
+                            <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                                <span class="p-column-title p-ml-4">VL Lista:</span>
+                                <div class="p-text-right">
+                                    {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.precoLista)}}
                                 </div>
                             </td>
-                        </ng-container>
-                    </tr>
-                </ng-container>
-            </ng-template>
-        </p-table>
+                        </tr>
+                        <tr *ngFor="let f of p.Filhos">
+                            <ng-container *ngIf="telaDesktop">
+                                <td class="p-pl-6">
+                                    <span class="p-column-title">Produto</span>
+                                    {{f.qtde}} x {{ProdutoTelaFabrProd(f.fabricante, f.fabricante_Nome, f.produto)}} -
+                                    <span [innerHTML]="produtoDescr(f.fabricante, f.produto).descricaoHtml"></span>
+                                </td>
+                                <td class="p-pl-6">
+                                    <span class="p-column-title" *ngIf="f.alertas != null">Alerta:</span>
+                                    <div *ngIf="!novoOrcamentoService.onResize() && f.alertas != null"
+                                        class="p-text-right">
+                                        <p-avatar label="!" styleClass="p-mr-2" size="small" shape="circle"
+                                            pTooltip="{{f.alertas}}"
+                                            [style]="{'background-color':'red', 'color': '#ffffff', 'width':'1rem', 'height':'1rem'}">
+                                        </p-avatar>
+                                    </div>
+                                    <div *ngIf="novoOrcamentoService.onResize() && f.alertas != null"
+                                        class="p-text-right" style="color:red">
+                                        {{f.alertas}}
+                                    </div>
+                                </td>
+                            </ng-container>
+                        </tr>
+                    </ng-container>
+                </ng-template>
+            </p-table>
+        </div>
+
     </div>
 </div>
 <div class="footer">
