@@ -742,21 +742,21 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   antigoPercRT: number;
   formataComissao(e: Event) {
+    
     let valor = ((e.target) as HTMLInputElement).value;
-    let v: any = valor.replace(/,/g, '');
-    v = Number.parseFloat((v / 100).toFixed(2) + '');
-
+    let v: any = valor.replace(/,/g, '').replace(/\./g, "");
+    v = Number.parseFloat((v * 0.1) + '');
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
   }
 
   editarComissao(e: Event) {
     let valor = ((e.target) as HTMLInputElement).value;
-    let v: any = valor.replace(/,/g, '');
-    v = Number.parseFloat((v / 100).toFixed(2) + '');
+    let v: any = valor.replace(/,/g, '').replace(/\./g, "");
+    v = Number.parseFloat((v * 0.1) + '');
 
     if (!this.novoOrcamentoService.validarComissao(v)) {
       v = this.antigoPercRT;
-      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(this.antigoPercRT);
+      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.antigoPercRT);
       this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
     }
 

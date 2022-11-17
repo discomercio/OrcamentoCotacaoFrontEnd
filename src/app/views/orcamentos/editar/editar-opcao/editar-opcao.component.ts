@@ -210,7 +210,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         (this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
       let pergunta = `Para manter o desconto médio de ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
-        ${this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
+        ${this.itens.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
       //fazer uma pergunta se quer arredondar para o valor máximo de desconto
       this.itens.formaPagto.sweetalertService.dialogo("",pergunta).subscribe(result => {
         //se não => return;
