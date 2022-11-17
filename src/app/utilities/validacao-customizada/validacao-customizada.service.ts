@@ -46,23 +46,4 @@ export class ValidacaoCustomizadaService extends Validators {
       }
     }
   }
-
-  validarNascimento(): ValidatorFn {
-    return (control: AbstractControl): ValidationErrors | null => {
-      let data: string = control.get("nascimento")?.value;
-      if (!data) return null;
-
-      data = DataUtils.formata_dataString_para_formato_data(data);
-      let validacao = ValidacoesClienteUtils.validarNascimento(data);
-      
-      if (validacao && validacao.length > 0) {
-
-        control.get('nascimento').setErrors({ nascimento: true });
-        return { retorno: true };
-      } else {
-        control.get('nascimento').setErrors(null);
-        return null;
-      }
-    }
-  }
 }

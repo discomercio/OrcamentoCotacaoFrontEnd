@@ -299,7 +299,6 @@ e são usados desta forma:
     obj.Ie = "";
     obj.Tipo = "";
     obj.Observacao_Filiacao = "";
-    obj.Nascimento = "";
     obj.Sexo = "";
     obj.Nome = "";
     obj.Endereco = "";

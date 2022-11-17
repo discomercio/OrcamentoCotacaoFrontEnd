@@ -55,17 +55,12 @@ para não dar erro no console
         </span>
     </span>
 
-    <!-- ************   CNPJ/IE OU CPF/RG/NASCIMENTO/SEXO  ************  -->
+    <!-- ************   CNPJ/IE OU CPF/RG/SEXO  ************  -->
     <!-- campos específicos da pessoa física -->
     <span *ngIf="cadastrando">
         <span *ngIf="ehPf()">
             <mat-form-field floatLabel="floatLabel()" style="width: 22ch;">
                 <input matInput type="text" placeholder="RG" [(ngModel)]="dadosClienteCadastroDto.Rg" maxlength="20">
-            </mat-form-field>
-
-            <mat-form-field floatLabel="floatLabel()" style="width: 10em;">
-                <input matInput type="date" placeholder="NASCIMENTO" [(ngModel)]="dadosClienteCadastroDto.Nascimento"
-                    id="nasc" mask>
             </mat-form-field>
 
             <mat-form-field floatLabel="floatLabel()" style="width: 8em;">
@@ -81,12 +76,7 @@ para não dar erro no console
     </span>
 
     <span *ngIf="!cadastrando">
-        <span class="caixa" *ngIf="ehPf()">
-            <!-- <span class="rotulo">RG:</span> <span class="dado">{{dadosClienteCadastroDto.Rg}}</span> -->
-            <span class="rotulo">Nascimento:</span> <span
-                class="dado">{{DataUtilsFormatarTela(dadosClienteCadastroDto.Nascimento)}}</span>
-
-        </span>
+        
         <span class="caixa" *ngIf="ehPf()">
             <span class="rotulo">Sexo:</span> <span class="dado">{{dadosClienteCadastroDto.Sexo}}</span>
         </span>

@@ -247,50 +247,7 @@ export class ValidacoesClienteUtils {
         if ((s == "") || (!ValidacoesUtils.sexo_ok(s))) {
             ret.push('Indique qual o sexo!');
         }
-        //nao validamos a data dessa forma, ela já é uma data no formulário: if (!isDate(f.dt_nasc)) {
-        //e ela é opcional, então não validamos nada!
 
-        ret.concat(this.validarNascimento(dadosClienteCadastroDto.Nascimento));
-
-        return ret;
-    }
-
-    public static validarNascimento(nascimento: string | Date): string[] {
-        let ret: string[] = new Array();
-        if (!!nascimento) {
-            let data = nascimento.toString().split('-');
-            if (data.length == 3) {
-                if (data[1].substring(0, 1) == "0")
-                    data[1] = data[1].replace("0", "");
-                if (data[2].substring(0, 1) == "0")
-                    data[2] = data[2].replace("0", "");
-
-                let nascimentoDate: Date = new Date(data[0] + "/" + data[1] + "/" + data[2]);
-                //verificamos o ano
-                if (parseInt(data[0]) < 1900) {
-                    ret.push("Data de nascimento inválida!");
-                    return ret;
-                }
-
-                if (!DataUtils.validarData(nascimentoDate)) {
-                    ret.push("Data de nascimento inválida!");
-                    return ret;
-                }
-
-                if (nascimento != DataUtils.formataParaFormulario(nascimentoDate)){
-                    ret.push("Data de nascimento inválida!");
-                    return ret;
-                }
-
-                let dataAtual = new Date();
-                if (nascimento >= DataUtils.formataParaFormulario(dataAtual)){
-                    ret.push("Data de nascimento não pode ser igual ou maior que a data atual!");
-                    return ret;
-                }
-                    
-            }
-
-        }
         return ret;
     }
 

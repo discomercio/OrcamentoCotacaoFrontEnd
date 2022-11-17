@@ -25,7 +25,6 @@ export class ClienteComponent implements OnInit {
   public comercial : any;
   public comercial2 : any;
   public celular: any;
-  public nascimento: any;
 
   ngOnInit(): void {
 
@@ -99,9 +98,6 @@ export class ClienteComponent implements OnInit {
       this.cliente.DadosCliente.DddResidencial = this.residencial.substring(0, 2);
       this.cliente.DadosCliente.TelefoneResidencial = this.residencial.substring(2);
     }
-    this.cliente.DadosCliente.Nascimento = this.nascimento.toString().substring(0,2) + "/" +
-    this.nascimento.toString().substring(2,4) + "/" + 
-    this.nascimento.toString().substring(4,8)
     this._ClienteService.cadastrarCliente(this.cliente).toPromise().then(x => {
       if(x.length > 0){
         let erros = "";
