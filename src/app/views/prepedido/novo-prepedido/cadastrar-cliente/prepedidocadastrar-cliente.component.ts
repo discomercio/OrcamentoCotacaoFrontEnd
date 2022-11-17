@@ -54,12 +54,8 @@ export class PrePedidoCadastrarClienteComponent extends TelaDesktopBaseComponent
 
             for (let i2 = 0; i2 < lista.length; i2++) {
               if (lista[i2] === src && i2 + 1 < lista.length) {
-                if (lista[i2] == document.getElementById("nasc")) {
-                  mySelect2.mySelectSexo.focus();
-                  //ele não perde o foco
-
-                }
-                else if (lista[i2] == document.getElementById("cep")) {
+                
+                if (lista[i2] == document.getElementById("cep")) {
                   (lista[i2 + 2] as HTMLInputElement).focus();
                 }
                 else if (lista[i2] == document.getElementById("emailXml")) {

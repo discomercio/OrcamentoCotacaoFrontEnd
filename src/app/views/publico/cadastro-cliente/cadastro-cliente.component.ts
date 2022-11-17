@@ -57,7 +57,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   carregando: boolean;
   bloqueioIcms: boolean;
 
-  listaSexo: any[];
   listaProdutorRural: any[];
   listaIE: any[];
   listaContribuinteICMS: any[];
@@ -74,7 +73,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
-  nasc: string | Date;
   orientacaoPreenchimento: string;
   termoPrivacidade: string;
   privacidade: boolean = false;
@@ -124,8 +122,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Tipo = this.TipoCliente;
     this.dadosCliente.Cnpj_Cpf = "";
     this.dadosCliente.Rg = "";
-    this.dadosCliente.Nascimento = "";
-    this.dadosCliente.Sexo = "";
     this.dadosCliente.Email = "";
     this.dadosCliente.EmailXml = "";
     this.dadosCliente.DddResidencial = "";
@@ -208,11 +204,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       { label: "Isento", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO },
     ];
 
-    this.listaSexo = [
-      { id: 'M', value: 'Masculino' },
-      { id: 'F', value: 'Feminino' }
-    ];
-
     this.listaProdutorRural = [
       { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM, label: 'Sim' },
       { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO, label: 'Não' }
@@ -230,8 +221,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         nome: ["", [Validators.required]],
         cpfCnpj: ["", [Validators.required]],
         rg: [""],
-        nascimento: [],
-        sexo: ["", [Validators.required]],
         email: ["", [Validators.email]],
         emailXml: ["", [Validators.email]],
         telResidencial: [""],
@@ -241,8 +230,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         observacao: [""]
       }, {
         validators: [
-          this.validacaoCustomizadaService.cnpj_cpf_ok(),
-          this.validacaoCustomizadaService.validarNascimento()
+          this.validacaoCustomizadaService.cnpj_cpf_ok()
         ]
       });
       return;
@@ -262,14 +250,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPubicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: [""]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
-  }
-
-  //vamos deixar aqui para o caso de precisar voltar o campo para calendário
-  escrevendoData(e: Event) {
-    let data = (e.target as HTMLInputElement).value;
-
-    if (data.length == 2) this.dadosCliente.Nascimento = data + "/";
-    if (data.length == 5) this.dadosCliente.Nascimento = data + "/";
   }
 
   validarForms(): boolean {
@@ -360,10 +340,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     // this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     this.dadosCliente.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
-    if (this.TipoCliente == this.constantes.ID_PF) {
-      this.dadosCliente.Nascimento = this.nasc ?
-        DataUtils.formata_dataString_para_formato_data(this.nasc.toLocaleString("pt-br")) : null;
-    }
 
     if (!this.validarDadosClienteCadastro()) return;
 
