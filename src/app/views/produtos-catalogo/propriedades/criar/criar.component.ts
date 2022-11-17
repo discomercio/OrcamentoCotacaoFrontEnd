@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -47,6 +47,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   itemApoioEdicao = new ProdutoCatalogoPropriedadeOpcao();
   editando: boolean = false;
   @Input() edicao: boolean;
+  @ViewChild("inputValorValido") inputValorValido: ElementRef;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -159,12 +160,15 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     let item = new ProdutoCatalogoPropriedadeOpcao();
     item.oculto = this.ocultoOpcao ? false : true;
     item.valor = this.valorValido;
+    item.id = (this.lstValoresValidos.length + 1).toString();
     item.usuario_cadastro = this.autenticacaoService._usuarioLogado;
     this.lstValoresValidos = [...this.lstValoresValidos, item];
     this.lstValoresValidosApoioExclusao = this.lstValoresValidos.slice();
     this.produtoPropriedade.IdCfgDataType = this.idCfgDataType;
     this.valorValido = "";
     this.ocultoOpcao = true;
+
+    this.inputValorValido.nativeElement.focus();
   }
 
   removeClick() {
@@ -234,15 +238,18 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) {
       if (!this.form.controls.descricao.invalid) return;
     }
-
-    let propExiste = this.lstValoresValidos.filter(x => x.valor == this.itemApoioEdicao.valor);
-    if(propExiste[0].valor == this.valorValido){
+    
+    let propExiste = this.lstValoresValidos.filter(x => x.id == this.itemApoioEdicao.id);
+    
+    if(propExiste.length == 1){
       propExiste[0].valor = this.valorValido;
       propExiste[0].oculto = this.ocultoOpcao ? false : true;
     }
     
     this.cancelarEdicaoClick();
     this.selectedValorValido = null;
+
+    this.inputValorValido.nativeElement.focus();
   }
 
   cancelarEdicaoClick() {
@@ -251,6 +258,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     this.ocultoOpcao = true;
     this.editando = false;
     this.selectedValorValido = null;
+
+    this.inputValorValido.nativeElement.focus();
   }
 
   changeOrdem(event: Event) {
