@@ -29,7 +29,6 @@ export class ClienteCorpoComponent implements OnInit, OnChanges {
   }
 
   @Input() mostrarEndereco = true; //ao confrimar o cliente para um pre-pedido, não queremos mostrar o endereço aqui
-  @ViewChild('mySelectSexo', { static: false }) mySelectSexo: MatSelect;
   @ViewChild('mySelectProdutor', { static: false }) mySelectProdutor: MatSelect;
 
 
@@ -72,17 +71,6 @@ export class ClienteCorpoComponent implements OnInit, OnChanges {
 
 
   public ignorarProximoEnter = false;
-  keydownSelectSexo(event: KeyboardEvent): void {
-    if (event.which == 13) {
-      event.cancelBubble = true;
-      event.stopPropagation();
-      event.stopImmediatePropagation();
-
-      this.mySelectSexo.toggle();
-      this.ignorarProximoEnter = true;
-      document.getElementById("cep").focus();
-    }
-  }
 
   keydownSelectProdutor(event: KeyboardEvent): void {
     if (event.which == 13) {

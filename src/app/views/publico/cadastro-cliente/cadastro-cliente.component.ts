@@ -57,7 +57,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   carregando: boolean;
   bloqueioIcms: boolean;
 
-  listaSexo: any[];
   listaProdutorRural: any[];
   listaIE: any[];
   listaContribuinteICMS: any[];
@@ -123,7 +122,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Tipo = this.TipoCliente;
     this.dadosCliente.Cnpj_Cpf = "";
     this.dadosCliente.Rg = "";
-    this.dadosCliente.Sexo = "";
     this.dadosCliente.Email = "";
     this.dadosCliente.EmailXml = "";
     this.dadosCliente.DddResidencial = "";
@@ -206,11 +204,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       { label: "Isento", value: this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO },
     ];
 
-    this.listaSexo = [
-      { id: 'M', value: 'Masculino' },
-      { id: 'F', value: 'Feminino' }
-    ];
-
     this.listaProdutorRural = [
       { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_SIM, label: 'Sim' },
       { value: this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO, label: 'Não' }
@@ -228,7 +221,6 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         nome: ["", [Validators.required]],
         cpfCnpj: ["", [Validators.required]],
         rg: [""],
-        sexo: ["", [Validators.required]],
         email: ["", [Validators.email]],
         emailXml: ["", [Validators.email]],
         telResidencial: [""],

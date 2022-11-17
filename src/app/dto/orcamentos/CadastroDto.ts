@@ -3,7 +3,6 @@ export class CadastroDto {
     nome_razaoSocial: number;
     cpf_cnpj: string;
     rg: string;
-    sexo: string;
     cep: string;
     endereco: string;
     endereco_numero: string;

@@ -181,7 +181,7 @@
                 <br>
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid p-py-2">
-                        <!-- Cliente PF => nome | cpf | rg | sexo -->
+                        <!-- Cliente PF => nome | cpf | rg -->
                         <div class="p-field p-col-12 p-as-end p-py-0">
                             <label for="nome">Nome</label>
                             <input id="nome" type="text" formControlName="nome" [(ngModel)]="dadosCliente.Nome"
@@ -208,18 +208,6 @@
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
                             <label for="rg">RG</label>
                             <input id="rg" [(ngModel)]="dadosCliente.Rg" formControlName="rg" pInputText>
-                        </div>
-                        
-                        <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
-                            <label for="sexo">Sexo</label>
-                            <p-dropdown id="sexo" [options]="listaSexo" formControlName="sexo" optionValue="id"
-                                [autoDisplayFirst]="false" optionLabel="value" [(ngModel)]="dadosCliente.Sexo">
-                            </p-dropdown>
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'sexo')">
-                                <small class="p-error"
-                                    *ngIf="formPF.controls.sexo.errors?.required">{{mensagemErro}}</small>
-                            </div>
                         </div>
                     </div>
                 </div>

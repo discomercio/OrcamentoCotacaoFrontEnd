@@ -46,7 +46,7 @@ para não dar erro no console
         <span class="caixa" *ngIf="ehPf()">
             <span class="rotulo">CPF:</span>
             <span class="dado">{{cnpj_cpf_formatado()}}</span>
-            <!-- incluimos o RG aqui, pois o campo "Sexo" estava ficando fora da tela -->
+            
 
         </span>
         <span class="caixa" *ngIf="ehPf()">
@@ -55,30 +55,13 @@ para não dar erro no console
         </span>
     </span>
 
-    <!-- ************   CNPJ/IE OU CPF/RG/SEXO  ************  -->
+    <!-- ************   CNPJ/IE OU CPF/RG  ************  -->
     <!-- campos específicos da pessoa física -->
     <span *ngIf="cadastrando">
         <span *ngIf="ehPf()">
             <mat-form-field floatLabel="floatLabel()" style="width: 22ch;">
                 <input matInput type="text" placeholder="RG" [(ngModel)]="dadosClienteCadastroDto.Rg" maxlength="20">
             </mat-form-field>
-
-            <mat-form-field floatLabel="floatLabel()" style="width: 8em;">
-                <mat-label>SEXO</mat-label>
-                <mat-select (keydown)="keydownSelectSexo($event);" #mySelectSexo
-                    [(ngModel)]="dadosClienteCadastroDto.Sexo" required [(disabled)]="!cadastrando">
-                    <mat-option>Selecione</mat-option>
-                    <mat-option value="M">Masculino</mat-option>
-                    <mat-option value="F">Feminino</mat-option>
-                </mat-select>
-            </mat-form-field>
-        </span>
-    </span>
-
-    <span *ngIf="!cadastrando">
-        
-        <span class="caixa" *ngIf="ehPf()">
-            <span class="rotulo">Sexo:</span> <span class="dado">{{dadosClienteCadastroDto.Sexo}}</span>
         </span>
     </span>
 

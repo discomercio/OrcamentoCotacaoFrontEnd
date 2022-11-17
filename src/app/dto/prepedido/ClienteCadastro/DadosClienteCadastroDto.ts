@@ -12,7 +12,6 @@ export class DadosClienteCadastroDto {
     Contribuinte_Icms_Status: number;
     Tipo: string;
     Observacao_Filiacao: string;
-    Sexo: string;
     Nome: string;
     ProdutorRural: number;
     Endereco: string;

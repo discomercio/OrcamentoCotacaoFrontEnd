@@ -27,7 +27,7 @@ export class ValidacoesClienteUtils {
         let validacoes: string[] = new Array();
         /*
         campos obrigatórios para PF:
-        CPF / sexo / produtor rural / ENDEREÇO / nro / BAIRRO / CIDADE / UF / CEP / algum telefone
+        CPF / produtor rural / ENDEREÇO / nro / BAIRRO / CIDADE / UF / CEP / algum telefone
     
         campos obrigatórios para PJ:
         CNPJ / CONTRIBUINTE ICMS / RAZÃO SOCIAL / TELEFONE / NOME DA PESSOA PARA CONTATO NA EMPRESA / ENDEREÇO /
@@ -38,10 +38,7 @@ export class ValidacoesClienteUtils {
         validacoes = validacoes.concat(this.validarGeral(dadosClienteCadastroDto, true));
 
         //validações específicas para PF e PJ
-        if (ehPf) {
-            validacoes = validacoes.concat(this.validarGeralPf(dadosClienteCadastroDto));
-        }
-        else {
+        if (!ehPf) {
             validacoes = validacoes.concat(this.validarGeralPj(dadosClienteCadastroDto, true));
         }
 
@@ -235,17 +232,6 @@ export class ValidacoesClienteUtils {
             if (s === "") {
                 ret.push('Informe o nome da pessoa para contato!');
             }
-        }
-
-        return ret;
-    }
-
-    private static validarGeralPf(dadosClienteCadastroDto: DadosClienteCadastroDto): string[] {
-        let ret: string[] = new Array();
-
-        let s = dadosClienteCadastroDto.Sexo;
-        if ((s == "") || (!ValidacoesUtils.sexo_ok(s))) {
-            ret.push('Indique qual o sexo!');
         }
 
         return ret;

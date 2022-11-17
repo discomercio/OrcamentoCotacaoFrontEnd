@@ -19,7 +19,6 @@ export class ClienteComponent implements OnInit {
   public cliente = new ClienteCadastroDto()
   public estados: SelectItem[] = [];
   public produtorRural: SelectItem[] = [];
-  public sexo: SelectItem[] = [];
 
   public residencial : any;
   public comercial : any;
@@ -40,8 +39,6 @@ export class ClienteComponent implements OnInit {
     this.produtorRural.push({ label: "NÃO", value: "1" });
     this.produtorRural.push({ label: "SIM", value: "2" });
 
-    this.sexo.push({ label: "FEMININO", value: "F"})
-    this.sexo.push({ label: "MASCULINO", value: "M"})
 
     /*       COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL = 0,
                 COD_ST_CLIENTE_PRODUTOR_RURAL_NAO = 1,
