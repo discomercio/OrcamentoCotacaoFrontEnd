@@ -14,6 +14,7 @@ import { LojasService } from '../lojas/lojas.service';
 import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
+import { expiracaoSenhaResponse } from 'src/app/dto/usuarios/expiracaoSenhaResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -203,4 +204,13 @@ export class AutenticacaoService {
       confirmacaoSenha: confirmacaSenha
     });
   }
+
+  public verificarExpiracao(tipoUsuario: number, usuario: string): Observable<expiracaoSenhaResponse> {
+    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/expiracao', 
+    { 
+      tipoUsuario: tipoUsuario, 
+      apelido: usuario
+    });
+  }
+
 }
