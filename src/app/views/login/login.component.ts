@@ -106,6 +106,7 @@ export class LoginComponent implements OnInit {
               this.router.navigate(['senha/senha-meusdados']);
             }else{
               sessionStorage.setItem("senhaExpirada", "N");
+              this.router.navigate(['dashboards']);
             }
           })
 
