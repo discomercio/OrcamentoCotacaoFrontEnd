@@ -13,6 +13,7 @@ import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-cat
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
 import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-editar-produto',
@@ -28,6 +29,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     private readonly produtoService: ProdutoCatalogoService,
     private readonly sweetAlertService: SweetalertService,
     private readonly mensagemService: MensagemService,
+    private readonly alertaService: AlertaService,
     public readonly validacaoFormularioService: ValidacaoFormularioService) { }
 
   public form: FormGroup;
@@ -271,7 +273,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
       this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
       this.router.navigate(["//produtos-catalogo/listar"]);
-    }).catch((r) => this.sweetAlertService.aviso(r));
+    }).catch((r) => {
+      if (r.error.message == undefined) {
+        this.alertaService.mostrarErroInternet(r);
+        return;
+      }
+
+      this.sweetAlertService.aviso(r.error.message);
+    });
 
 
   }
