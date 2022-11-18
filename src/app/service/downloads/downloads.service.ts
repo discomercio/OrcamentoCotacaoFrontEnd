@@ -8,34 +8,35 @@ import { ArquivoExcluirResponse } from './../../dto/arquivo/ArquivoExcluirRespon
 import { ArquivoEditarResponse  } from './../../dto/arquivo/ArquivoEditarResponse';
 import { ArquivoNovaPastaResponse  } from './../../dto/arquivo/ArquivoNovaPastaResponse';
 import { ArquivoUploadResponse  } from './../../dto/arquivo/ArquivoUploadResponse';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DownloadsService {
 
-  constructor(private readonly http: HttpClient, private env: environment) { }
+  constructor(private readonly http: HttpClient, private env: environment, private appSettingsService: AppSettingsService) { }
 
-  public urlUpload: string = `${this.env.apiUrl()}arquivo/upload`;
+  public urlUpload: string = `${this.appSettingsService.config.apiUrl}arquivo/upload`;
 
   public buscarToTree(): Observable<ObterEstruturaResponse> {
-    return this.http.get<ObterEstruturaResponse>(`${this.env.apiUrl()}arquivo/ObterEstrutura`);
+    return this.http.get<ObterEstruturaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/ObterEstrutura`);
   }
   
   public download(id: any) : Observable<DownloadResponse> {
-    return this.http.get<DownloadResponse>(`${this.env.apiUrl()}arquivo/download/${id}`);
+    return this.http.get<DownloadResponse>(`${this.appSettingsService.config.apiUrl}arquivo/download/${id}`);
   }
   
   public excluir(id: any):Observable<ArquivoExcluirResponse>{
-     return this.http.post<ArquivoExcluirResponse>(`${this.env.apiUrl()}arquivo/excluir/${id}`, { id: id });
+     return this.http.post<ArquivoExcluirResponse>(`${this.appSettingsService.config.apiUrl}arquivo/excluir/${id}`, { id: id });
    }
   
   public editar(id:string, nome:string, descricao:string):Observable<ArquivoEditarResponse>{
-    return this.http.put<ArquivoEditarResponse >(`${this.env.apiUrl()}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
+    return this.http.put<ArquivoEditarResponse >(`${this.appSettingsService.config.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
   
   public novaPasta(idpai:string, nome:string, descricao:string):Observable<ArquivoNovaPastaResponse> {
-    return this.http.post<ArquivoNovaPastaResponse>(`${this.env.apiUrl()}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao });
+    return this.http.post<ArquivoNovaPastaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao });
   }
 
   public upload(idpai:string, arquivo: any): Observable<ArquivoUploadResponse> {
@@ -43,7 +44,7 @@ export class DownloadsService {
     const formData = new FormData();
     formData.append(arquivo.files[0].name, arquivo.files[0]);
 
-    return this.http.post<ArquivoUploadResponse>(`${this.env.apiUrl()}arquivo/upload/${idpai}`,  
+    return this.http.post<ArquivoUploadResponse>(`${this.appSettingsService.config.apiUrl}arquivo/upload/${idpai}`,  
     formData, { reportProgress: true });
   }
 }

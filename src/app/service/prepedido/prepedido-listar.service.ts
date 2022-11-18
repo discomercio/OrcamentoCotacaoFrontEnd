@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { ParamsBuscaPrepedido } from './paramsBuscaPrepedido';
 import { BehaviorSubject } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { PrepedidosCadastradosDtoPrepedido } from 'src/app/dto/prepedido/prepedido/prepedidosCadastradosDtoPrepedido';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +16,9 @@ export class PrepedidoListarService {
   public paramsBuscaPrepedido: ParamsBuscaPrepedido = new ParamsBuscaPrepedido();
   // public paramsBuscaPrepedido: ParamsBuscaPrepedido;
 
-  constructor(private readonly http: HttpClient, private env: environment) {
+  constructor(
+    private readonly http: HttpClient, 
+    private appSettingsService: AppSettingsService) {
     this.limpar(false);
   }
 
@@ -107,7 +108,7 @@ export class PrepedidoListarService {
     params = params.append('tipoBusca', tipoBusca.toString());
 
     this.carregando = true;
-    this.http.get<PrepedidosCadastradosDtoPrepedido[]>(this.env.apiUrl() + 'prepedido/listarPrePedidos', { params: params }).subscribe(
+    this.http.get<PrepedidosCadastradosDtoPrepedido[]>(this.appSettingsService.config.apiUrl + 'prepedido/listarPrePedidos', { params: params }).subscribe(
       {
         next: (r) => {
           this.carregando = false;

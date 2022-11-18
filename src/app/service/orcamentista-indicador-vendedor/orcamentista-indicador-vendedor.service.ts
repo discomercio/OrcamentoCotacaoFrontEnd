@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
 import { Observable } from 'rxjs';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { map } from 'rxjs/operators';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,22 +12,24 @@ import { map } from 'rxjs/operators';
 export class OrcamentistaIndicadorVendedorService {
 
 
-  constructor(private http: HttpClient, private env: environment) { }
+  constructor(
+    private http: HttpClient, 
+    private appSettingsService: AppSettingsService) { }
 
   buscarVendedoresParceiros(parceiro:string): Observable<OrcamentistaIndicadorVendedorDto[]> {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
 
-    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
     .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
   }
   buscarVendedoresParceirosPorId(id:string): Observable<Usuario> {
-    return this.http.get<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
+    return this.http.get<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
   }
   cadastrar(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.post<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
   atualizar(usuario: Usuario): Observable<Usuario> {
-    return this.http.put<Usuario>(this.env.apiUrl() + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
+    return this.http.put<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 }

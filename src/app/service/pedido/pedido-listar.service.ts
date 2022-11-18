@@ -2,12 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { ParamsBuscaPedido } from './paramsBuscaPedido';
 import { BehaviorSubject } from 'rxjs';
-
-import { environment } from 'src/environments/environment';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { PedidoDtoPedido } from 'src/app/dto/prepedido/pedido/pedidosDtoPedido';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +16,9 @@ export class PedidoListarService {
   public paramsBuscaPedido: ParamsBuscaPedido = new ParamsBuscaPedido();
 
 
-  constructor(private readonly http: HttpClient) {
+  constructor(
+    private readonly http: HttpClient,
+    private appSettingsService: AppSettingsService) {
     this.limpar(false);
   }
 
@@ -96,7 +96,7 @@ export class PedidoListarService {
 
     this.carregando = true;
 
-    this.http.get<PedidoDtoPedido[]>(environment.apiUrl + 'pedido/listarPedidos', { params: params }).subscribe(
+    this.http.get<PedidoDtoPedido[]>(this.appSettingsService.config.apiUrl + 'pedido/listarPedidos', { params: params }).subscribe(
       {
         next: (r) => {
           this.carregando = false;

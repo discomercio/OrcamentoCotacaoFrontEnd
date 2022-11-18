@@ -1,56 +1,72 @@
 import { HttpClient } from "@angular/common/http";
+import { Store } from "@ngrx/store";
+import { CommonStates, setAppSettings } from "src/app/dto/commonStates";
 import { AppSettingsService } from "src/app/utilities/appsettings/appsettings.service";
 
 export class environment {
+    public static _apiURL: string;
+    constructor(){
+        
+    }
     production(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().production;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().production;
+        // return metadata;
     }
     esperaAvisos(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().esperaAvisos;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().esperaAvisos;
+        // return metadata;
     }
     esperaErros(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().esperaErros;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().esperaErros;
+        // return metadata;
     }
-    apiUrl(): any {
-        const fetch = require("sync-fetch");
+    public apiUrl(){
+    //    return new AppSettingsService().apiBaseUrl();
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().apiUrl;
-        return metadata;
+        // return this.http
+        //     .get<Array<NotaEmpresa>>(
+        //         this.env.API.Gerais +
+        //             "api/EmpresasFiliais/ObterEmpresasFiliais",
+        //         { params: this.utils.getParams(filter) }
+        //     )
+        //     .toPromise()
+        //     .then((response: any) => {
+        //         let filiais = new Array<NotaEmpresa>();
+        //         filiais = [...response.Content];
+
+        //         this.store.dispatch(setListFiliais({ payload: filiais }));
+
+        //         return filiais;
+        //     });
+
     }
     imgUrl(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().imgUrl;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().imgUrl;
+        // return metadata;
     }
     versaoApi(): any {
         const fetch = require("sync-fetch");
@@ -63,14 +79,14 @@ export class environment {
         return metadata;
     }
     temporizadorSininho(): any {
-        const fetch = require("sync-fetch");
+        // const fetch = require("sync-fetch");
 
-        const metadata = fetch("/assets/config/appsettings.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-        }).json().temporizadorSininho;
-        return metadata;
+        // const metadata = fetch("/assets/config/appsettings.json", {
+        //     //   headers: {
+        //     //     Accept: 'application/vnd.citationstyles.csl+json'
+        //     //   }
+        // }).json().temporizadorSininho;
+        // return metadata;
     }    
 
 }
