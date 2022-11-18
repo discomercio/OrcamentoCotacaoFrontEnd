@@ -43,10 +43,10 @@
                                 </p-dropdown>
                             </div>
                             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end"
-                                *ngIf="parametro == 'ORCAMENTOS' && tipoUsuario != constantes.PARCEIRO_VENDEDOR">
+                                *ngIf="parametro != 'PEDIDOS' && tipoUsuario != constantes.PARCEIRO_VENDEDOR">
                                 <label for="filtroLoja">Vendedor do Parceiro</label>
                                 <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros"
-                                    [(ngModel)]="filtro.VendedorParceiro" [showClear]="true" optionValue="Value"
+                                    [(ngModel)]="filtro.VendedorParceiro" [showClear]="true" optionValue="Id"
                                     (onChange)="cboVendedoresParceiro_onChange($event)" optionLabel="Value"
                                     placeholder="Selecione">
                                 </p-dropdown>

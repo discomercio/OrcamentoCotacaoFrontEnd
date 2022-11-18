@@ -4,6 +4,7 @@ export class Filtro {
     Nome_numero: string;
     Vendedor: string;
     Parceiro: string;
+    IdIndicadorVendedor:number;
     VendedorParceiro:string;
     Loja: string;
     Mensagem: string;
