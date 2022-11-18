@@ -7,14 +7,6 @@ export class ValidacoesUtils {
         return true;
     }
 
-    public static sexo_ok(sexo: string): boolean {
-        let s_sexo;
-        s_sexo = "" + sexo;
-        s_sexo = s_sexo.toUpperCase();
-        if ((s_sexo == "M") || (s_sexo == "F")) return true;
-        return false;
-    }
-
     public static uf_ok(uf: string): boolean {
         //     não vamos fazer pqoue isso será feito pela rotina de preenchimento do CEP
         //mas faemos por enquanto...

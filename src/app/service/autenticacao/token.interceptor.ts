@@ -41,6 +41,10 @@ export class TokenInterceptor implements HttpInterceptor {
       }
     }
     
+    if (sessionStorage.getItem("senhaExpirada") =="S"){
+      this.router.navigate(['senha/senha-meusdados']);
+    }
+
     if (localStorage.getItem("versaoApi") != this.env.versaoApi()) {
       if (!this.router.url.startsWith('/publico/')) {
         this.alertaService.mostrarErroAtualizandoVersao();

@@ -44,8 +44,7 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'senha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve
-                                    possuir no mínimo 8 caracteres!</small>
+                                <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.senha.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de {{form.controls.senha.errors.maxlength.requiredLength}}</small>
@@ -64,8 +63,7 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'confirmacao')">
                                 <small class="p-error"
                                     *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
-                                    possuir no mínimo 8 caracteres!</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de

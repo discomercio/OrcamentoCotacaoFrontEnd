@@ -14,6 +14,7 @@ import { LojasService } from '../lojas/lojas.service';
 import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
+import { expiracaoSenhaResponse } from 'src/app/dto/usuarios/expiracaoSenhaResponse';
 import { AppComponent } from 'src/app/main/app.component';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
@@ -202,4 +203,13 @@ export class AutenticacaoService {
       confirmacaoSenha: confirmacaSenha
     });
   }
+
+  public verificarExpiracao(tipoUsuario: number, usuario: string): Observable<expiracaoSenhaResponse> {
+    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/expiracao', 
+    { 
+      tipoUsuario: tipoUsuario, 
+      apelido: usuario
+    });
+  }
+
 }

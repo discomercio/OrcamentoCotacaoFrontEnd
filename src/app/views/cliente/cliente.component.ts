@@ -19,13 +19,11 @@ export class ClienteComponent implements OnInit {
   public cliente = new ClienteCadastroDto()
   public estados: SelectItem[] = [];
   public produtorRural: SelectItem[] = [];
-  public sexo: SelectItem[] = [];
 
   public residencial : any;
   public comercial : any;
   public comercial2 : any;
   public celular: any;
-  public nascimento: any;
 
   ngOnInit(): void {
 
@@ -41,8 +39,6 @@ export class ClienteComponent implements OnInit {
     this.produtorRural.push({ label: "NÃO", value: "1" });
     this.produtorRural.push({ label: "SIM", value: "2" });
 
-    this.sexo.push({ label: "FEMININO", value: "F"})
-    this.sexo.push({ label: "MASCULINO", value: "M"})
 
     /*       COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL = 0,
                 COD_ST_CLIENTE_PRODUTOR_RURAL_NAO = 1,
@@ -99,9 +95,6 @@ export class ClienteComponent implements OnInit {
       this.cliente.DadosCliente.DddResidencial = this.residencial.substring(0, 2);
       this.cliente.DadosCliente.TelefoneResidencial = this.residencial.substring(2);
     }
-    this.cliente.DadosCliente.Nascimento = this.nascimento.toString().substring(0,2) + "/" +
-    this.nascimento.toString().substring(2,4) + "/" + 
-    this.nascimento.toString().substring(4,8)
     this._ClienteService.cadastrarCliente(this.cliente).toPromise().then(x => {
       if(x.length > 0){
         let erros = "";
