@@ -132,7 +132,7 @@ export class AutenticacaoService {
   }
 
   public alterarSenha(usuario: string, senha: string, senhaNova: string, senhaNovaConfirma: string): Observable<any> {
-    return this.http.post(this.appComponent._apiURL + 'acesso/alterarSenha', {
+    return this.http.post(this.appSettingsService.config.apiUrl + 'acesso/alterarSenha', {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
@@ -194,7 +194,7 @@ export class AutenticacaoService {
   }
 
   public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/AtualzarSenha', 
+    return this.http.post<usuarioSenhaResponse>(this.appSettingsService.config.apiUrl + 'Account/AtualzarSenha', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario,
@@ -205,7 +205,7 @@ export class AutenticacaoService {
   }
 
   public verificarExpiracao(tipoUsuario: number, usuario: string): Observable<expiracaoSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/expiracao', 
+    return this.http.post<usuarioSenhaResponse>(this.appSettingsService.config.apiUrl + 'Account/expiracao', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario
