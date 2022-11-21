@@ -12,7 +12,7 @@
 
             <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Localidade</label>
-                <p-autoComplete [(ngModel)]="cidade" [suggestions]="lstFiltradaCidades"
+                <p-autoComplete [(ngModel)]="cidade" [suggestions]="lstFiltradaCidades" [forceSelection]="true"
                     (completeMethod)="filtrarCidades($event)" field="value" [dropdown]="true">
                     <ng-template let-cidade pTemplate="item">
                         <div class="cidade-item">
