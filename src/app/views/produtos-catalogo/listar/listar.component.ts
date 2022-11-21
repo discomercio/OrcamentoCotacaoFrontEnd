@@ -27,22 +27,15 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   listaProdutoDtoApoio: ProdutoCatalogo[];
   cols: any[];
   carregando: boolean = false;
+  produtoFiltro: string;
+  fabricanteFiltro: string;
+  nomeFiltro: string;
+  descriacaoFiltro: string;
 
   ngOnInit(): void {
     this.carregando = true;
-    // this.criarTabela();
     this.buscarTodosProdutos();
   }
-
-  // criarTabela() {
-  //   this.cols = [
-  //     { field: "linhaBusca", header: "LinhaBusca", visible: true },
-  //     { field: "Codigo", header: "Código", visible: true },
-  //     { field: "Descricao", header: "Descrição", visible: true },
-  //     { field: "Ativo", header: "Ativo", visible: true },
-  //     { field: "Acoes", header: "Ações", visible: true }
-  //   ]
-  // }
 
   buscarTodosProdutos() {
     this.service.buscarTodosProdutos().toPromise().then((r) => {
@@ -99,10 +92,6 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     this.router.navigate(["/produtos-catalogo/criar"]);
   }
 
-  produtoFiltro: string;
-  fabricanteFiltro: string;
-  nomeFiltro: string;
-  descriacaoFiltro: string;
   filtrar() {
     this.listaProdutoDto = this.listaProdutoDtoApoio;
 
