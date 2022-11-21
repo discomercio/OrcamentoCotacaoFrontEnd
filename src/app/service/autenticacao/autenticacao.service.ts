@@ -15,22 +15,21 @@ import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
 import { expiracaoSenhaResponse } from 'src/app/dto/usuarios/expiracaoSenhaResponse';
+import { AppComponent } from 'src/app/main/app.component';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AutenticacaoService {
-  env: environment;
 
   constructor(private readonly http: HttpClient,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
     private titleService: Title,
-    private envir : environment
-  ) {
-    this.env = envir
-  }
+    private appComponent: AppComponent,
+    private appSettingsService: AppSettingsService) { }
 
   salvar: boolean = false;
   usuario: Usuario;
@@ -49,7 +48,7 @@ export class AutenticacaoService {
   public _tipoUsuario:number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.env.apiUrl() + 'Account/Login', { login: usuario, senha: senha });
+    return this.http.post<LoginResponse>(this.appSettingsService.config.apiUrl + 'Account/Login', { login: usuario, senha: senha });
   }
 
   readToken(token: string): boolean {
@@ -133,7 +132,7 @@ export class AutenticacaoService {
   }
 
   public alterarSenha(usuario: string, senha: string, senhaNova: string, senhaNovaConfirma: string): Observable<any> {
-    return this.http.post(this.env.apiUrl() + 'acesso/alterarSenha', {
+    return this.http.post(this.appComponent._apiURL + 'acesso/alterarSenha', {
       apelido: usuario, senha: senha, senhaNova: senhaNova,
       senhaNovaConfirma: senhaNovaConfirma
     });
@@ -195,7 +194,7 @@ export class AutenticacaoService {
   }
 
   public AtualzarSenha(tipoUsuario: number, usuario: string, senha: string, novaSenha: string, confirmacaSenha: string): Observable<usuarioSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/AtualzarSenha', 
+    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/AtualzarSenha', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario,
@@ -206,7 +205,7 @@ export class AutenticacaoService {
   }
 
   public verificarExpiracao(tipoUsuario: number, usuario: string): Observable<expiracaoSenhaResponse> {
-    return this.http.post<usuarioSenhaResponse>(this.env.apiUrl() + 'Account/expiracao', 
+    return this.http.post<usuarioSenhaResponse>(this.appComponent._apiURL + 'Account/expiracao', 
     { 
       tipoUsuario: tipoUsuario, 
       apelido: usuario

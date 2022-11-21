@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { PrimeNGConfig } from 'primeng/api';
 import { Router } from '@angular/router';
 import { AppSettingsService } from '../utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 @Component({
     selector: 'app-root',
     templateUrl: './app.component.html',
@@ -16,10 +17,11 @@ export class AppComponent implements OnInit {
     ripple = true;
 
     inputStyle = 'outlined';
-
+    _apiURL = ""
     constructor(
         private primengConfig: PrimeNGConfig,
         private readonly router: Router,
+        private env : environment
         ) {
             // private appSettings: AppSettingsService
             // console.log(appSettings.apiBaseUrl)
@@ -36,5 +38,6 @@ export class AppComponent implements OnInit {
             dayNamesShort: ["Dom", "Seg", "Ter", "Qua", "Qui", "Sex", "Sáb"],
         });
         this.primengConfig.ripple = true;
+        // environment._apiURL = this.env.apiUrl()
     }
 }

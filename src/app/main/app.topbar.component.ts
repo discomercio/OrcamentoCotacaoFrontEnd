@@ -11,7 +11,7 @@ import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import {Title} from "@angular/platform-browser";
-import { environment } from 'src/environments/environment';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Component({
     selector: 'app-topbar',
@@ -28,10 +28,8 @@ export class AppTopBarComponent {
         private fb: FormBuilder,
         private readonly lojaService: LojasService,
         private readonly alertaService:AlertaService,
-        private titleService:Title,    
-        private env: environment  
-        
-        
+        private titleService:Title,
+        private appSettingsService: AppSettingsService
     ) {}
     public lojaLogada : any;
     parametro: string;
@@ -52,7 +50,7 @@ export class AppTopBarComponent {
                         
         setInterval(() => {
           this.obterQuantidadeMensagemPendente();
-        }, Number(this.env.temporizadorSininho()));   
+        }, Number(this.appSettingsService.config.temporizadorSininho));   
         
         this.buscarEstilo();
     }
