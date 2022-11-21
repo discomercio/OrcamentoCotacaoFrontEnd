@@ -102,7 +102,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarForm();
     this.criarTabela();
     this.criarCbExpirado();
-    this.buscarRegistros();
+    // this.buscarRegistros();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
@@ -114,10 +114,19 @@ export class OrcamentosListarComponent implements OnInit {
       { value: false, label: "Não" }
     ]
   }
+
   iniciarFiltro(param: any) {
     this.parametro = param.filtro.toUpperCase();
     this.filtro.DtInicio = this.minDate;
     this.filtro.DtFim = this.maxDate;
+
+    if(this.parametro == "MSGPENDENTES"){
+      this.parametro = "ORCAMENTOS";
+      this.filtro
+      this.filtro.Mensagem = "Sim";
+    }
+
+    this.buscarRegistros();
   }
 
   minExpiracao = new Date();
@@ -182,24 +191,25 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   criarTabela() {
-    this.activatedRoute.params.subscribe((param: any) => {
-      this.parametro = param.filtro.toUpperCase();
-      this.cols = [
-        { field: 'NumeroOrcamento', header: 'Orçamento' },
-        { field: 'NumPedido', header: 'Pedido', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
-        { field: 'Cliente_Obra', header: 'Cliente' },
-        { field: 'Vendedor', header: 'Vendedor' },
-        { field: 'Parceiro', header: 'Parceiro' },
-        { field: 'VendedorParceiro', header: 'Vendedor do Parceiro' },
-        { field: 'Valor', header: 'Valor', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : '') },
-        { field: 'Status', header: 'Status' },
-        { field: 'Mensagem', header: 'Msg. Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
-        { field: 'DtExpiracao', header: 'Expiração', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
-        { field: 'DtCadastro', header: 'Data' },
-        { field: 'Editar', header: " ", visible: 'none' },
-        { field: 'St_Orc_Virou_Pedido', header: 'St_Orc_Virou_Pedido', visible: 'none' }
-      ];
-    });
+    this.cols = [
+      { field: 'NumeroOrcamento', header: 'Orçamento' },
+      { field: 'NumPedido', header: 'Pedido', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : ' ') },
+      { field: 'Cliente_Obra', header: 'Cliente' },
+      { field: 'Vendedor', header: 'Vendedor' },
+      { field: 'Parceiro', header: 'Parceiro' },
+      { field: 'VendedorParceiro', header: 'Vendedor do Parceiro' },
+      { field: 'Valor', header: 'Valor', visible: (this.parametro == enumParametros.ORCAMENTOS ? 'none' : '') },
+      { field: 'Status', header: 'Status' },
+      { field: 'Mensagem', header: 'Msg. Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
+      { field: 'DtExpiracao', header: 'Expiração', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
+      { field: 'DtCadastro', header: 'Data' },
+      { field: 'Editar', header: " ", visible: 'none' },
+      { field: 'St_Orc_Virou_Pedido', header: 'St_Orc_Virou_Pedido', visible: 'none' }
+    ];
+    // this.activatedRoute.params.subscribe((param: any) => {
+    //   this.parametro = param.filtro.toUpperCase();
+      
+    // });
   }
 
   btnDelete_onClick(idPedido) {
@@ -331,7 +341,7 @@ export class OrcamentosListarComponent implements OnInit {
 
     let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
     let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
-
+    
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
