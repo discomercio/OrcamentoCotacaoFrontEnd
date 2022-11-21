@@ -59,7 +59,7 @@
                         <div class="p-text-bold">Código:<br></div>
                         <div class="p-field p-col-12">
                             <input id="id" type="text" formControlName="produto" pInputText value="{{produto.Codigo}}"
-                                (keyup)="digitouCodigo($event)"/>
+                                (keyup)="digitouCodigo($event)" />
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'produto')">
                                 <small class="p-error" *ngIf="form.controls.produto.errors?.required">
                                     {{mensagemErro}}
@@ -138,8 +138,7 @@
                             <p-inputSwitch id="chk-{{lista.id}}"></p-inputSwitch>
                         </div>
                         <div class="p-col-9 p-sm-5" style="display: inline-block;vertical-align: middle;">
-                            <input id="txt-{{lista.id}}" type="text" pInputText placeholder="{{lista.descricao}}"
-                                value="" />
+                            <input id="txt-{{lista.id}}" type="text" pInputText value="" />
                         </div>
                     </div>
                     <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 1" class="p-col-12">

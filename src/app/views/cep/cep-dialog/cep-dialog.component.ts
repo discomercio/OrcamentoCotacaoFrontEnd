@@ -33,6 +33,7 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
   endereco: any;
   carregando: boolean;
   origem: string;
+  paginacao:number = 0;
 
   ngOnInit(): void {
     this.origem = this.option.data.origem;
@@ -151,6 +152,8 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
         this.alertaService.mostrarErroInternet(e);
       });
     }
+
+    this.paginacao = 0;
   }
 
   filtrarPorUf(uf: string) {

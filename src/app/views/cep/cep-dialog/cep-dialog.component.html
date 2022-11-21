@@ -12,7 +12,7 @@
 
             <div class="p-col-12 p-field p-lg-4 p-md-4 p-sm-4 p-xl-4">
                 <label>Localidade</label>
-                <p-autoComplete [(ngModel)]="cidade" [suggestions]="lstFiltradaCidades"
+                <p-autoComplete [(ngModel)]="cidade" [suggestions]="lstFiltradaCidades" [forceSelection]="true"
                     (completeMethod)="filtrarCidades($event)" field="value" [dropdown]="true">
                     <ng-template let-cidade pTemplate="item">
                         <div class="cidade-item">
@@ -34,7 +34,7 @@
         <div class="tabela" style="max-height: 250px; overflow-y: auto;">
             <p-table #dt1 [value]="lstEnderecos" [responsive]="true" responsiveLayout="stack"
                 styleClass="p-datatable-customers p-datatable-striped" [rows]="10" autoLayout="true"
-                [(selection)]="endereco" [paginator]="true" [filterDelay]="0">
+                [(selection)]="endereco" [paginator]="true" [filterDelay]="0" [(first)]="paginacao">
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td class="p-text-center" colspan="7">

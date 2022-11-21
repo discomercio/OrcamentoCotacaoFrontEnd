@@ -44,8 +44,9 @@ export class AutenticacaoService {
   public constantes: Constantes = new Constantes();
   public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null);
   public _lojaEstilo: lojaEstilo = new lojaEstilo();
+  public _idUsuarioLogado: number;
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
-  public _tipoUsuario:number;
+  public _tipoUsuario: number;
 
   public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
     return this.http.post<LoginResponse>(this.appSettingsService.config.apiUrl + 'Account/Login', { login: usuario, senha: senha });
@@ -59,13 +60,14 @@ export class AutenticacaoService {
     this._vendedor = (user && user.Vendedor) ? user.Vendedor : null;
     this._permissoes = (user && user.Permissoes) ? user.Permissoes.split(",") : null;
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
-    this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;        
-
+    this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;
+    this._idUsuarioLogado = (user && user.Id) ? user.Id : 0;
+    
     if (!this._lojaLogado) {
       if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
         this._lojaLogado = this._lojasUsuarioLogado[0];
       }
-      else {        
+      else {
         this._lojaLogado = sessionStorage.getItem("lojaLogada");
       }
     }
@@ -98,6 +100,8 @@ export class AutenticacaoService {
     if (this.readToken(this.obterToken())) {
       this.usuario = new Usuario();
       if (this._usuarioLogado) {
+        
+        this.usuario.id = this._idUsuarioLogado;
         this.usuario.nome = this._usuarioLogado;
         this.usuario.permissoes = this._permissoes;
         this.usuario.idVendedor = this._vendedor;
@@ -186,9 +190,9 @@ export class AutenticacaoService {
     return true;
   }
 
-  verificarPermissoes(permissao:ePermissao):boolean{
+  verificarPermissoes(permissao: ePermissao): boolean {
 
-    if(!this.usuario.permissoes.includes(permissao)) return false;
+    if (!this.usuario.permissoes.includes(permissao)) return false;
 
     return true;
   }
