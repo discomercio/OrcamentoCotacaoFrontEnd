@@ -50,7 +50,6 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   setarCampos() {
     this.imgUrl = this.produtoService.imgUrl;
     this.id = this.activatedRoute.snapshot.params.id;
-    console.log(this.id);
     this.form.controls.ativo.setValue(this.produto.Ativo);
   }
 
@@ -64,7 +63,6 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
 
   voltarClick(): void {
     window.history.back();
-    // this.router.navigate(["//produtos-catalogo/listar"]);
   }
 
   produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];

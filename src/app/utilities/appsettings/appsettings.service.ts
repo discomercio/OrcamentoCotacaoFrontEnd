@@ -16,8 +16,7 @@ export class AppSettingsService {
         let response;
 
         if(localStorage.getItem("appsettings")) {
-            console.log(JSON.parse(localStorage.getItem("appsettings")));
-
+            
             response = JSON.parse(localStorage.getItem("appsettings"));
         }
         else {
