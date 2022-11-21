@@ -166,6 +166,7 @@ export class OrcamentosListarComponent implements OnInit {
       this.filtro.Vendedor = this.usuario.idVendedor;
       this.filtro.Parceiro = this.usuario.idParceiro;
       this.filtro.VendedorParceiro = this.usuario.nome;
+      this.filtro.IdIndicadorVendedor = this.usuario.id;
     }
   }
 
@@ -278,8 +279,10 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (lstFiltrada.length > 0) {
       lstFiltrada.forEach(x => {
-        if (!this.cboParceiros.find(f => f.Value == x.Parceiro))
-          this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.Parceiro });
+        if (!!x.Parceiro) {
+          if (!this.cboParceiros.find(f => f.Value == x.Parceiro))
+            this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.Parceiro });
+        }
       });
     }
 
@@ -294,7 +297,7 @@ export class OrcamentosListarComponent implements OnInit {
       lstFiltrada.forEach(x => {
         if (x.VendedorParceiro != null) {
           if (!this.cboVendedoresParceiros.find(f => f.Value == x.VendedorParceiro))
-            this.cboVendedoresParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.VendedorParceiro });
+            this.cboVendedoresParceiros.push({ Id: x.IdIndicadorVendedor.toString(), Value: x.VendedorParceiro });
         }
       });
       this.cboVendedoresParceiros = this.cboVendedoresParceiros.sort((a, b) => (a.Value < b.Value ? -1 : 1));
@@ -360,7 +363,8 @@ export class OrcamentosListarComponent implements OnInit {
       if (lstFiltroStatus.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
       if (lstFiltroVendedor.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor); }
       if (lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Parceiro == x.Parceiro); }
-      if (this.filtro.VendedorParceiro != null) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.VendedorParceiro.toLocaleUpperCase() == x.VendedorParceiro?.toLocaleUpperCase()); }
+      if (!!this.filtro.IdIndicadorVendedor) this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.IdIndicadorVendedor == x.IdIndicadorVendedor);
+
       if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
       if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
       if (this.filtro.Expirado != undefined) {
@@ -401,11 +405,16 @@ export class OrcamentosListarComponent implements OnInit {
 
   cboParceiro_onChange(event) {
     this.form.controls.vendedorParceiro.setValue(null);
-    this.filtrar_cboVendedoresParceiro();
+    this.cboVendedoresParceiros = new Array<DropDownItem>();
+    this.filtro.IdIndicadorVendedor = null;
+    if(!!event.value) this.filtrar_cboVendedoresParceiro();
     this.Pesquisar_Click();
   }
 
   cboVendedoresParceiro_onChange(event) {
+    this.filtro.IdIndicadorVendedor = null;
+    if (!!event.value)
+      this.filtro.IdIndicadorVendedor = Number.parseInt(event.value);
     this.Pesquisar_Click();
   }
 

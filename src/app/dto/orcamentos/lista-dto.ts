@@ -11,7 +11,10 @@ export class ListaDto {
     VistoEm: string;
     Mensagem: string;
     DtCadastro: Date;
-    DtExpiracao: Date;
+    DtExpiracao: Date; 
+    Loja : string;
+    IdOrcamentoCotacao :number;
+    IdIndicadorVendedor :number;
 }
 
 export class ListaDtoExport {
