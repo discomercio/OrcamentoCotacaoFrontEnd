@@ -152,12 +152,16 @@ export class PrepedidoDetalhesComponent implements OnInit {
         this.router.navigate(['orcamentos/listar/pendentes']);
         return;
       }
+
+      this.carregar();        
+
+      setTimeout(() => {
+        this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
+      }, 7000);    
+      
     }).catch((response) => this.alertaService.mostrarErroInternet(response));
 
-    this.carregar();        
-    setTimeout(() => {
-      this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
-    }, 7000);    
+    
 
   }  
 

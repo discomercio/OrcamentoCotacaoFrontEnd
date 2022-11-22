@@ -85,7 +85,7 @@ export class PedidoDetalhesComponent implements OnInit {
     }
   }
 
-  carregar() {    
+  carregar() {
     if (this.numeroPedido) {
       this.pedidoService.carregar(this.numeroPedido).toPromise().then((r) => {
         if (r != null) {
@@ -141,12 +141,20 @@ export class PedidoDetalhesComponent implements OnInit {
         this.router.navigate(['orcamentos/listar/pedidos']);
         return;
       }
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
 
-    this.carregar();
-    setTimeout(() => {
-      this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);
-    }, 7000);   
+      if(this.permissaoPedidoResponse.PrePedidoVirouPedido) {
+        this.numeroPedido = this.permissaoPedidoResponse.IdPedido;
+      }
+
+      this.carregar();
+
+      if(this.pedido != null) {
+        setTimeout(() => {
+          this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);
+        }, 7000);
+      }
+      
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
   consultarCliente(){
