@@ -257,7 +257,8 @@ export class RecalcularComCoeficiente {
                   produto.Desc_Dado = this.moedaUtils.formatarDecimal(((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente) - produto.Preco_Venda) * 100 /
                     (produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));
                   produto.Preco_Lista = this.moedaUtils.formatarDecimal((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));//só altera se calcular coeficiente
-                  produto.TotalItem = this.moedaUtils.formatarDecimal(produto.Preco_Venda * produto.Qtde);
+                  let desc = 1 - produto.Desc_Dado / 100;
+                  produto.TotalItem = this.moedaUtils.formatarDecimal((produto.Preco_Lista * produto.Qtde) * desc);
                   produto.CustoFinancFornecCoeficiente = x.Coeficiente;
                 }
                 else {
@@ -289,7 +290,8 @@ export class RecalcularComCoeficiente {
                   produto.Desc_Dado = this.moedaUtils.formatarDecimal(((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente) - produto.Preco_Venda) * 100 /
                     (produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));
                   produto.Preco_Lista = this.moedaUtils.formatarDecimal((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));//só altera se calcular coeficiente
-                  produto.TotalItem = this.moedaUtils.formatarDecimal(produto.Preco_Venda * produto.Qtde);
+                  let desc = 1 - produto.Desc_Dado / 100;
+                  produto.TotalItem = this.moedaUtils.formatarDecimal((produto.Preco_Lista * produto.Qtde) * desc);
                   produto.CustoFinancFornecCoeficiente = x.Coeficiente;
                 }
                 else {
@@ -323,7 +325,8 @@ export class RecalcularComCoeficiente {
                   produto.Desc_Dado = this.moedaUtils.formatarDecimal(((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente) - produto.Preco_Venda) * 100 /
                     (produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));
                   produto.Preco_Lista = this.moedaUtils.formatarDecimal((produto.CustoFinancFornecPrecoListaBase * x.Coeficiente));//só altera se calcular coeficiente
-                  produto.TotalItem = this.moedaUtils.formatarDecimal(produto.Preco_Venda * produto.Qtde);
+                  let desc = 1 - produto.Desc_Dado / 100;
+                  produto.TotalItem = this.moedaUtils.formatarDecimal((produto.Preco_Lista * produto.Qtde) * desc);
                   produto.CustoFinancFornecCoeficiente = x.Coeficiente;
                 }
                 else {
