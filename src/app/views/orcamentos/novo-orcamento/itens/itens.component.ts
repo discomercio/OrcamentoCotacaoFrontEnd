@@ -576,12 +576,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     if (this.confirmaProdutoComposto(item)) {
       let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
-      // produto.filhos.forEach(i => {
-      //   if (i.estoque < item.qtde) {
-      //     excede = true;
-      //     return;
-      //   }
-      // });
+      produto.filhos.forEach(i => {
+        let produtoSimples = this.produtoComboDto?.produtosSimples.filter(f => f.produto == item.produto)[0];
+        if (produtoSimples != undefined && produtoSimples.estoque < (item.qtde * i.qtde)) {
+          excede = true;
+          return;
+        }
+      });
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {

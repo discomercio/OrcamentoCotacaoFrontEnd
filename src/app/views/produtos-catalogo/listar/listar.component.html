@@ -44,11 +44,11 @@
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td style="text-align: left">{{lista.Produto}}</td>
-                        <td style="text-align: left">{{lista.Fabricante}}</td>
+                        <td style="text-align: center">{{lista.Produto}}</td>
+                        <td style="text-align: center">{{lista.Fabricante}}</td>
                         <td style="text-align: left">{{lista.Nome}}</td>
                         <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
-                        <td style="text-align: left">{{lista.IdProdutoCatalogoImagem != null ? 'Sim' : 'Não'}}</td>
+                        <td style="text-align: center">{{lista.imagem != null ? 'Sim' : 'Não'}}</td>
                         <td style="text-align: center">{{lista.Ativo == true ? 'Sim': 'Não'}}</td>
                         <td style="text-align: center">
                             <button pButton style="align-content: flex-end;" icon="fa fa-copy"
