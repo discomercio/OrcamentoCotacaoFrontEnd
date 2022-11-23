@@ -15,6 +15,6 @@ export class OrcamentistaIndicadorVendedorDto {
     ativo: boolean = false;
     email: string = "";
     ativoLabel: string = "NÂO";
-
+    parceiro: string;
 
 }
