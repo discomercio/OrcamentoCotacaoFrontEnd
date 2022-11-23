@@ -31,7 +31,6 @@
             </div>
             <div class="p-col-12 p-lg-5 p-md-5 p-sm-6">
                 <div class="card">
-                    <h5 *ngIf="produto.imagem == null">Nenhuma Imagem</h5>
                     <div>
                         <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3">
                             <img *ngIf="produto.imagem != null" src="{{imgUrl}}{{produto.imagem?.Caminho}}" class="product-image" style="max-width: 300px; max-height: 200px;" />
