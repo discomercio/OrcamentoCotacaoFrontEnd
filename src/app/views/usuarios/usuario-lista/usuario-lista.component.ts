@@ -12,6 +12,8 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { mergeMap } from 'rxjs/operators';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { ParcSemEntradaPrimPrestDto } from 'src/app/dto/forma-pagto/ParcSemEntradaPrimPrestDto';
+import { Alert } from 'selenium-webdriver';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -45,13 +47,24 @@ export class UsuarioListaComponent implements OnInit {
     }
 
     this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
-    
+
     this.route.queryParamMap.pipe(
       mergeMap((params) => {
 
         this.tipo = params.get('tipo') as UsuarioTipo || 'todos';
-        //if(this.tipo == 'vendedor-parceiro')
-        return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(this.autenticacaoService._parceiro)
+
+        if (this.autenticacaoService._tipoUsuario != 1) {
+          return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorParceiroELoja(this.autenticacaoService._parceiro, this.autenticacaoService._lojaLogado)
+        } else {
+          if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)){
+            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorloja(this.autenticacaoService._lojaLogado)
+          }else{
+            
+            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorVendedorELoja(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado)
+          }
+          
+        }
+
       })
     ).subscribe(r => {
       if (r == null) {
@@ -70,6 +83,7 @@ export class UsuarioListaComponent implements OnInit {
       perfil: ['', [Validators.required]]
     });
     this.cols = [
+      { field: 'parceiro', header: 'Parceiro' },
       { field: 'nome', header: 'Nome' },
       { field: 'email', header: 'E-mail', width: '300px' },
       { field: 'vendedorResponsavel', header: 'Responsável' },

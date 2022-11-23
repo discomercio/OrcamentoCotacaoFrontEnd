@@ -19,10 +19,33 @@ export class OrcamentistaIndicadorVendedorService {
   buscarVendedoresParceiros(parceiro:string): Observable<OrcamentistaIndicadorVendedorDto[]> {
     let params = new HttpParams();
     params = params.append('parceiro', parceiro);
-
     return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', { params: params })
     .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
   }
+
+  buscarVendedoresParceirosPorParceiroELoja(usuario:string, loja: string): Observable<OrcamentistaIndicadorVendedorDto[]> {
+    let params = new HttpParams();
+    params = params.append('apelido', usuario);
+    params = params.append('loja', loja);
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros-apelido-loja', { params: params })
+    .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
+  }  
+
+  buscarVendedoresParceirosPorVendedorELoja(usuario:string, loja: string): Observable<OrcamentistaIndicadorVendedorDto[]> {
+    let params = new HttpParams();
+    params = params.append('vendedor', usuario);
+    params = params.append('loja', loja);
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros-vendedor-loja', { params: params })
+    .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
+  }    
+
+  buscarVendedoresParceirosPorloja(loja: string): Observable<OrcamentistaIndicadorVendedorDto[]> {
+    let params = new HttpParams();
+    params = params.append('loja', loja);
+
+    return this.http.get<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros-loja', { params: params })
+    .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
+  }  
   buscarVendedoresParceirosPorId(id:string): Observable<Usuario> {
     return this.http.get<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros/'+id);
   }
