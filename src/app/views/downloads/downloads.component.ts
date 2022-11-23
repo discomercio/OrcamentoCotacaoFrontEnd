@@ -16,8 +16,6 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { CdkTreeNode } from '@angular/cdk/tree';
 import { Console } from 'console';
 
-
-
 @Component({
   selector: 'app-downloads',
   templateUrl: './downloads.component.html',
@@ -75,7 +73,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.downloadsService.buscarToTree().toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
@@ -83,7 +81,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
       this.estrutura = response.Childs;
 
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+    }).catch((response) => this.sweetalertService.aviso(response));
   }
 
   montarPastas() {
@@ -127,7 +125,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.downloadsService.novaPasta(idPai, nome, descricao).toPromise().then(response => {
       
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
@@ -165,14 +163,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       this.form.reset();
       this.atualizarEstrutura();
 
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetalertService.aviso(r));
   }
 
   excluirClick() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
-      this.mensagemService.showWarnViaToast("Selecione uma pasta, ou arquivo!");
+      this.sweetalertService.aviso("Selecione uma pasta, ou arquivo!");
       return;
     }
 
@@ -185,29 +183,29 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.concluirExclusao();
       }
 
-     });
+    });
   }
 
   concluirExclusao() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (this.estruturaSelecionada.hasOwnProperty('children') && this.estruturaSelecionada.children.length > 0) {
-      this.mensagemService.showWarnViaToast("Não é possivel excluir pastas que possuem arquivos!");
+      this.sweetalertService.aviso("Não é possivel excluir pastas que possuem arquivos!");
       return;
     }
 
     this.downloadsService.excluir(this.estruturaSelecionada.data.key).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
       
       if (this.ehArquivo) {
-        this.mensagemService.showWarnViaToast("Arquivo excluído!");
+        this.sweetalertService.sucesso("Arquivo excluído!");
       } 
       else {
-        this.mensagemService.showWarnViaToast("Pasta excluída!");
+        this.sweetalertService.sucesso("Pasta excluída!");
       }
 
       if(this.estrutura.length == 1 && this.estrutura[0].children.length == 0) {
@@ -217,7 +215,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.atualizarEstrutura();
       }
 
-    }).catch(e => this.alertaService.mostrarErroInternet(e));
+    }).catch(e => this.sweetalertService.aviso(e));
   }
 
   limparEstrutura() {
@@ -245,7 +243,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
   editarClick() {
     if (!!this.estruturaSelecionada == false) {
-      this.mensagemService.showWarnViaToast("Selecione um arquivo ou pasta!");
+      this.sweetalertService.aviso("Selecione um arquivo ou pasta!");
       return;
     }
 
@@ -267,22 +265,22 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.downloadsService.editar(id, nome, descricao).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
-      this.mensagemService.showSuccessViaToast(response.Mensagem);
+      this.sweetalertService.sucesso(response.Mensagem);
 
       this.atualizarEstrutura();
 
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => this.sweetalertService.aviso(r));
   }
 
   uploadClick() {
     if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
-      this.mensagemService.showWarnViaToast("Selecione uma pasta!");
+      this.sweetalertService.aviso("Selecione uma pasta!");
       return;
     }
 
@@ -299,16 +297,16 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.downloadsService.upload(idPai, arquivo).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
       this.ehUpload = false;
-      this.mensagemService.showSuccessViaToast(response.Mensagem);
+      this.sweetalertService.sucesso(response.Mensagem);
       
       this.atualizarEstrutura();
 
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+    }).catch((response) => this.sweetalertService.aviso(response));
   }
 
   downloadSelecionado(event) {
@@ -316,7 +314,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.downloadsService.download(event.key).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.alertaService.mostrarMensagem(response.Mensagem);
+        this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
@@ -340,11 +338,11 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       const blob = new Blob(byteArrays, {type: contentType});
       const url = window.URL.createObjectURL(blob);
       fileSaver.saveAs(blob, response.Nome);
-      this.mensagemService.showSuccessViaToast(response.Mensagem);
+      this.sweetalertService.sucesso(response.Mensagem);
       this.edicao = false;
       this.novaPasta = false;
       this.ehUpload = false;
 
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
+    }).catch((response) => this.sweetalertService.aviso(response));
   }
 }
