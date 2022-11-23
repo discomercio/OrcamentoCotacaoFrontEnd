@@ -15,7 +15,7 @@
             <p-table #dataTable [columns]="cols" [value]="usuarios" [(selection)]="usuarioSelecionado"
                 [responsive]="true" responsiveLayout="stack" breakpoint="680px"
                 styleClass="p-datatable-customers p-datatable-striped" selectionMode="single" [rows]="10"
-                [paginator]="true" [filterDelay]="0" [globalFilterFields]="['nome','indicador','ativo','email']">
+                [paginator]="true" [filterDelay]="0" [globalFilterFields]="['parceiro','nome','indicador','ativo','email']">
                 <ng-template pTemplate="caption">
                     <div class="p-d-flex p-flex-column p-flex-md-row p-jc-md-between table-header">
                         Usuários
