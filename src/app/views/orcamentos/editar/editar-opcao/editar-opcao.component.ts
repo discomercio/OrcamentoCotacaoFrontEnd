@@ -32,7 +32,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    
+
   }
 
   async ngAfterViewInit() {
@@ -48,10 +48,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
-    
+
 
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
-      
+
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
@@ -165,7 +165,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }, 700);
   }
 
-  
+
 
   salvarOpcao() {
     this.carregando = true;
@@ -212,7 +212,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let pergunta = `Para manter o desconto médio de ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
         ${this.itens.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
       //fazer uma pergunta se quer arredondar para o valor máximo de desconto
-      this.itens.formaPagto.sweetalertService.dialogo("",pergunta).subscribe(result => {
+      this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         //se não => return;
         if (!result) {
           this.carregando = false;
@@ -249,11 +249,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   atualizarOpcao() {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
-      if (r == null) {
-        this.carregando = false;
-        this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
-        this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
+      if (!r.Sucesso) {
+        this.sweetalertService.aviso(r.Mensagem);
       }
+      this.carregando = false;
+      this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
+      this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
+
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;
