@@ -6,6 +6,11 @@
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
 
+                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="usuarioInterno">
+                        <label>Parceiro</label>
+                        <p-dropdown [options]="parceiros" [(ngModel)]="parceiro" placeholder="Selecione"  (onChange)="onChangeParceiros($event)"></p-dropdown> 
+                    </div>
+
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="nome">Nome</label>
                         <input id="nome" type="text" pInputText placeholder="" formControlName="nome" />
@@ -44,7 +49,8 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'senha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
+                                <small class="p-error" *ngIf="form.controls.senha.errors?.minlength">A senha deve ter de
+                                    8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.senha.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de {{form.controls.senha.errors.maxlength.requiredLength}}</small>
@@ -63,7 +69,8 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'confirmacao')">
                                 <small class="p-error"
                                     *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
+                                    ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de
@@ -76,14 +83,16 @@
 
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="ddd_telefone">Telefone </label>
-                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd_telefone" formControlName="ddd_telefone" mask="{{mascaraTelefone}}" />
+                        <input type="tel" pInputText placeholder="(00) 0000-0000" id="ddd_telefone"
+                            formControlName="ddd_telefone" mask="{{mascaraTelefone}}" />
                         <small class="p-error" *ngIf="form.controls.ddd_telefone.errors?.minlength">O telefone deve
                             possuir no mínimo {{form.controls.ddd_telefone.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4" *ngIf="disabled">
                         <label for="dddCel_telefoneCel">celular</label>
-                        <input type="text" pInputText id="dddCel_telefoneCel" formControlName="dddCel_telefoneCel" mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
+                        <input type="text" pInputText id="dddCel_telefoneCel" formControlName="dddCel_telefoneCel"
+                            mask="{{mascaraTelefone}}" placeholder="(00) 0000-0000" />
                         <small class="p-error" *ngIf="form.controls.dddCel_telefoneCel.errors?.minlength">O telefone
                             deve
                             possuir no mínimo {{form.controls.dddCel_telefoneCel.errors.minlength.requiredLength}}
@@ -111,7 +120,8 @@
             </form>
             <div class="p-field p-d-flex p-jc-around p-mb-0 p-mt-12">
                 <div class="p-field p-d-flex p-jc-around p-mb-0 p-mt-6">
-                    <button pButton pRipple label="Voltar" icon="pi pi-arrow-left" [routerLink]="['/usuarios/usuario-lista']"></button>&nbsp;&nbsp;
+                    <button pButton pRipple label="Voltar" icon="pi pi-arrow-left"
+                        [routerLink]="['/usuarios/usuario-lista']"></button>&nbsp;&nbsp;
                     <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="atualizar()"></button>
                 </div>
             </div>
