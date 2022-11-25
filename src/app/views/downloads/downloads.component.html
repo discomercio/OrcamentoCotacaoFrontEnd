@@ -44,14 +44,14 @@
 
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtNome">Nome</label>
-                            <input id="txtNome" type="text" pInputText value="{{this.estruturaSelecionada.data.name}}"
+                            <input id="txtNome" maxlength="255" type="text" pInputText value="{{this.estruturaSelecionada.data.name}}"
                                 formControlName="txtNome" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtDescricao">Descrição</label>
-                            <input id="txtDescricao" type="text" pInputText value={{this.estruturaSelecionada.data.descricao}}
+                            <input id="txtDescricao"  maxlength="500" type="text" pInputText value={{this.estruturaSelecionada.data.descricao}}
                                 formControlName="txtDescricao" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
