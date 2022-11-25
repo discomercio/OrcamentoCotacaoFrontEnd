@@ -6,12 +6,14 @@ import { CriptoService } from 'src/app/utilities/cripto/cripto.service';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
+import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { UsuarioTipo } from 'src/app/dto/usuarios/UsuarioTipo';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
+
 @Component({
   selector: 'app-usuario-edicao',
   templateUrl: './usuario-edicao.component.html',
@@ -24,17 +26,19 @@ export class UsuarioEdicaoComponent implements OnInit {
     private router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly mensagemService: MensagemService,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly criptoService: CriptoService,
     private readonly alertaService: AlertaService,
-    private readonly validacaoCustomizadaService:ValidacaoCustomizadaService
+    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService
   ) { }
 
   public form: FormGroup;
   public apelido: string;
+  public parceiros: any[] = [];
   public usuario = new Usuario();
   public mensagemErro: string = "*Campo obrigatório.";
   public novoUsuario: boolean = false;
@@ -42,6 +46,8 @@ export class UsuarioEdicaoComponent implements OnInit {
   public formataTelefone = FormataTelefone;
   public mascaraTelefone: string;
   tipo: UsuarioTipo = 'todos';
+  usuarioInterno: boolean;
+  parceiroSelecionado: string;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
@@ -52,6 +58,45 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
+
+    // usuário interno
+    if (this.autenticacaoService._tipoUsuario == 1) {
+      this.usuarioInterno = true;
+      if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+
+        this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+          if (r != null) {
+
+            var indice = 0;
+
+            while (indice < r.length) {
+              this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+              indice++;
+            }
+
+          }
+        })
+
+      } else {
+
+        this.orcamentistaIndicadorService.buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+          if (r != null) {
+
+            var indice = 0;
+
+            while (indice < r.length) {
+              this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+              indice++;
+            }
+
+          }
+        })
+
+      }
+
+    } else {
+      this.usuarioInterno = false;
+    }
 
     if (this.apelido == "novo") {
       this.novoUsuario = true;
@@ -75,6 +120,10 @@ export class UsuarioEdicaoComponent implements OnInit {
       }
   }
 
+  onChangeParceiros(event) {
+    this.parceiroSelecionado = event.value;
+  }
+
   criarForm() {
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
@@ -83,7 +132,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(8)]],
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
-      ativo: [this.usuario.ativo, Validators.required]
+      ativo: [this.usuario.ativo, Validators.required],
     },
       { validators: this.validacaoCustomizadaService.compararSenha() });
 
@@ -113,7 +162,12 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.usuario.senha = f.senha.value;
     this.usuario.telefone = f.ddd_telefone.value;
     this.usuario.celular = f.dddCel_telefoneCel.value;
-    this.usuario.parceiro = this.autenticacaoService._parceiro;
+
+    if (this.autenticacaoService._tipoUsuario == 1) {
+      this.usuario.parceiro = this.parceiroSelecionado;
+    } else {
+      this.usuario.parceiro = this.autenticacaoService._parceiro;
+    }
 
     if (this.usuario.id) {
       this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
@@ -126,15 +180,27 @@ export class UsuarioEdicaoComponent implements OnInit {
           this.alertaService.mostrarErroInternet(e);
         });
     } else {
-      this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
-        .toPromise()
-        .then((x) => {
-          this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
-          this.router.navigate([`/usuarios/usuario-lista`]);
-        })
-        .catch((e) => {
-          this.alertaService.mostrarErroInternet(e);
-        });
+      if (this.autenticacaoService._tipoUsuario == 1) {
+        this.orcamentistaIndicadorVendedorService.cadastrarPorUsuarioInterno(this.usuario)
+          .toPromise()
+          .then((x) => {
+            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
+            this.router.navigate([`/usuarios/usuario-lista`]);
+          })
+          .catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+          });
+      } else {
+        this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
+          .toPromise()
+          .then((x) => {
+            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
+            this.router.navigate([`/usuarios/usuario-lista`]);
+          })
+          .catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+          });
+      }
     }
   }
 
