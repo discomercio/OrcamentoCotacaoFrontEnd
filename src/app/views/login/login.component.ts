@@ -95,21 +95,6 @@ export class LoginComponent implements OnInit {
 
         this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
 
-        this.autenticacaoService.verificarExpiracao(
-          this.autenticacaoService._tipoUsuario, this.autenticacaoService._usuarioLogado)
-          .toPromise()
-          .then((x) => {
-
-            if (x.Sucesso) {
-              this.sweetalertService.aviso("É necessário alterar a sua senha!");
-              sessionStorage.setItem("senhaExpirada", "S");
-              this.router.navigate(['senha/senha-meusdados']);
-            }else{
-              sessionStorage.setItem("senhaExpirada", "N");
-              this.router.navigate(['dashboards']);
-            }
-          })
-
         this.router.navigate(['dashboards']);
 
       }

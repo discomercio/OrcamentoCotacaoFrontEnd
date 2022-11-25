@@ -17,6 +17,8 @@ import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse'
 import { expiracaoSenhaResponse } from 'src/app/dto/usuarios/expiracaoSenhaResponse';
 import { AppComponent } from 'src/app/main/app.component';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root'
@@ -29,6 +31,8 @@ export class AutenticacaoService {
     private readonly lojaService: LojasService,
     private titleService: Title,
     private appComponent: AppComponent,
+    private readonly sweetalertService: SweetalertService,    
+    private readonly router: Router,
     private appSettingsService: AppSettingsService) { }
 
   salvar: boolean = false;
@@ -108,7 +112,24 @@ export class AutenticacaoService {
         this.usuario.idParceiro = this._parceiro;
         this.usuario.loja = this._lojaLogado;
         this.usuario.lojas = this._lojasUsuarioLogado;
+
+        this.verificarExpiracao(
+          this._tipoUsuario, this._usuarioLogado)
+          .toPromise()
+          .then((x) => {
+
+            if (x.Sucesso) {
+              this.sweetalertService.aviso("É necessário alterar a sua senha!");
+              sessionStorage.setItem("senhaExpirada", "S");
+              this.router.navigate(['senha/senha-meusdados']);
+            }else{
+              sessionStorage.setItem("senhaExpirada", "N");
+              //this.router.navigate(['dashboards']);
+            }
+          })        
+
       }
+
     }
 
     return this.usuario
