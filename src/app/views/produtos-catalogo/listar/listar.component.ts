@@ -7,6 +7,8 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-listar-produtos',
@@ -19,7 +21,8 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     private fb: FormBuilder,
     private readonly router: Router,
     private readonly mensagemService: MensagemService,
-    private readonly alertaService: AlertaService) { }
+    private readonly alertaService: AlertaService,
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -38,6 +41,13 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   }
 
   buscarTodosProdutos() {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarConsultar)) {
+      this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(["/dashboards"]);
+      return;
+    }
+
     this.service.buscarTodosProdutos().toPromise().then((r) => {
       if (r != null) {
         this.listaProdutoDto = r;

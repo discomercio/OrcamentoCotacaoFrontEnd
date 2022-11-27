@@ -16,6 +16,8 @@ import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produt
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-clonar',
@@ -30,7 +32,8 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly activatedRoute: ActivatedRoute,
-    private router: Router) { }
+    private router: Router,
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   carregando: boolean = false;
   form: FormGroup;
@@ -50,6 +53,13 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
   @ViewChild("codigo") codigo: ElementRef;
   
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(["/dashboards"]);
+      return;
+    }
+
     this.carregando = true;
     this.criarForm();
     this.setarCampos();

@@ -47,10 +47,9 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarEditar)) {
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarConsultar)) {
                             if (x.items[i].label == eMenu.Catalogos) {
                                 for (let y = 0; y < x.items[i].items.length; y++) {
-
                                     if (x.items[i].items[y].label == eMenu.CaradastrarEditar) {
                                         x.items[i].items.splice(y, 1);
                                         y--;

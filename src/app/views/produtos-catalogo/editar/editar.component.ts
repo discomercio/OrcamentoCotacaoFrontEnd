@@ -14,6 +14,8 @@ import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCata
 import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-editar-produto',
@@ -30,7 +32,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     private readonly sweetAlertService: SweetalertService,
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
-    public readonly validacaoFormularioService: ValidacaoFormularioService) { }
+    public readonly validacaoFormularioService: ValidacaoFormularioService,
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
@@ -49,6 +52,13 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   lstOpcoes: SelectItem[][] = [];
 
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(["/dashboards"]);
+      return;
+    }
+
     this.carregando = true;
     this.criarForm();
     this.setarCampos();
