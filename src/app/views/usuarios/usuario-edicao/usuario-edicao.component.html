@@ -8,7 +8,7 @@
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6" *ngIf="usuarioInterno">
                         <label>Parceiro</label>
-                        <p-dropdown [options]="parceiros" [(ngModel)]="parceiro" placeholder="Selecione"  (onChange)="onChangeParceiros($event)"></p-dropdown> 
+                        <p-dropdown [options]="parceiros" [(ngModel)]="parceiro" placeholder="{{parceiroSelecionado}}"  (onChange)="onChangeParceiros($event)"></p-dropdown> 
                     </div>
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">

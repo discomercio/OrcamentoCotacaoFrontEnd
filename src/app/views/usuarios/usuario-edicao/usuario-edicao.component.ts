@@ -47,7 +47,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   public mascaraTelefone: string;
   tipo: UsuarioTipo = 'todos';
   usuarioInterno: boolean;
-  parceiroSelecionado: string;
+  parceiroSelecionado: string = 'Selecione';
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
@@ -58,6 +58,29 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
+
+
+    if (this.apelido == "novo") {
+      this.novoUsuario = true;
+    }
+
+    if (this.apelido.toLowerCase() != "")
+      if (!!this.apelido) {
+        if (this.apelido.toLowerCase() != "novo") {
+          this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
+            if (!!r) {
+              this.usuario = r;
+              this.parceiroSelecionado = r.parceiro;
+              this.criarForm();
+
+              // const datastamp = this.usuario.senha;
+              // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
+              // this.form.controls.senha.setValue(senhaConvertida);
+              // this.form.controls.confirmacao.setValue(senhaConvertida);
+            }
+          });
+        }
+      }
 
     // usuário interno
     if (this.autenticacaoService._tipoUsuario == 1) {
@@ -70,8 +93,12 @@ export class UsuarioEdicaoComponent implements OnInit {
             var indice = 0;
 
             while (indice < r.length) {
-              this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+
+              if (r[indice].nome != this.parceiroSelecionado) {
+                this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+              }
               indice++;
+
             }
 
           }
@@ -98,26 +125,6 @@ export class UsuarioEdicaoComponent implements OnInit {
       this.usuarioInterno = false;
     }
 
-    if (this.apelido == "novo") {
-      this.novoUsuario = true;
-    }
-
-    if (this.apelido.toLowerCase() != "")
-      if (!!this.apelido) {
-        if (this.apelido.toLowerCase() != "novo") {
-          this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
-            if (!!r) {
-              this.usuario = r;
-              this.criarForm();
-
-              // const datastamp = this.usuario.senha;
-              // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
-              // this.form.controls.senha.setValue(senhaConvertida);
-              // this.form.controls.confirmacao.setValue(senhaConvertida);
-            }
-          });
-        }
-      }
   }
 
   onChangeParceiros(event) {
@@ -132,7 +139,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(8)]],
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
-      ativo: [this.usuario.ativo, Validators.required],
+      ativo: [this.usuario.ativo, Validators.required]
     },
       { validators: this.validacaoCustomizadaService.compararSenha() });
 
