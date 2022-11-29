@@ -55,7 +55,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      this.router.navigate(["/dashboards"]);
+      window.history.back();
       return;
     }
 

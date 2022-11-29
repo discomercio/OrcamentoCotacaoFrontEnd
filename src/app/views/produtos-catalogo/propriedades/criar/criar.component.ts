@@ -10,6 +10,7 @@ import { SelectItem } from 'primeng/api';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-criar-propriedade-produto',
@@ -25,9 +26,8 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly autenticacaoService: AutenticacaoService,
-    private readonly sweetAlertService: SweetalertService
-  ) { }
+    private readonly sweetAlertService: SweetalertService,
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
@@ -50,6 +50,13 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   @ViewChild("inputValorValido") inputValorValido: ElementRef;
 
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      window.history.back();
+      return;
+    }
+
     this.carregando = true;
     this.criarForm();
     this.buscargDataTypes();
