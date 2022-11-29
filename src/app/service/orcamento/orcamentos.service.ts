@@ -12,6 +12,8 @@ import { MensagemDto } from 'src/app/dto/MensagemDto';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { CadastroOrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/CadastroOrcamentoCotacaoResponse';
+import { AtualizarOrcamentoOpcaoResponse } from 'src/app/dto/orcamentos/AtualizarOrcamentoOpcaoResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -34,8 +36,8 @@ export class OrcamentosService {
     return this.http.get<OrcamentoCotacaoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento?id=${id}`);
   }
 
-  enviarOrcamento(model: OrcamentoCotacaoResponse): Observable<OrcamentoCotacaoResponse> {
-    return this.http.post<OrcamentoCotacaoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento`, model);
+  enviarOrcamento(model: OrcamentoCotacaoResponse): Observable<CadastroOrcamentoCotacaoResponse> {
+    return this.http.post<CadastroOrcamentoCotacaoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento`, model);
   }
 
   atualizarDadosOrcamento(orcamento: OrcamentoCotacaoResponse): Observable<OrcamentoCotacaoResponse> {
@@ -71,8 +73,8 @@ export class OrcamentosService {
       return this.http.get<any>(`${this.appSettingsService.config.apiUrl}Orcamento/parametros?lojalogada=${lojaLogada}&idCfgParametro=${idCfgParametro}`);
   }
 
-  atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<any> {
-    return this.http.post<any>(`${this.appSettingsService.config.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);
+  atualizarOrcamentoOpcao(opcao: OrcamentosOpcaoResponse): Observable<AtualizarOrcamentoOpcaoResponse> {
+    return this.http.put<AtualizarOrcamentoOpcaoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/atualizarOrcamentoOpcao`, opcao);
   }
 
   verificarUsoDeAlcada(idOrcamento: number): Observable<number> {
