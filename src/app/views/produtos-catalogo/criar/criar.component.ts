@@ -225,9 +225,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         }
 
         var listaDrop = document.getElementsByTagName("p-dropdown");
-        for (let d = 0; d < listaDrop.length - 1; d++) {
+        for (let d = 0; d < listaDrop.length; d++) {
           var listaOpt = listaDrop[d].getElementsByTagName("span");
           for (let i = 0; i < listaOpt.length - 1; i++) {
+            debugger;
             if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
               campo = new ProdutoCatalogoItem();
               campo.IdProdutoCatalogo = '-1';
