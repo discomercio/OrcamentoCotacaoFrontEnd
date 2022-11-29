@@ -1,7 +1,8 @@
 export class LoginResponse {
     AccessToken: string;
-    Authenticated: boolean;
+    Sucesso: boolean;
     Created: string;
     Expiration: string;
-    Message: string;
+    Mensagem: string;
+    Mensagens: string[];
 }
