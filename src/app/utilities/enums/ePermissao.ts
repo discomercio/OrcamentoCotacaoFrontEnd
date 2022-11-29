@@ -8,9 +8,10 @@ export enum ePermissao {
     DescontoSuperior3 = "101000",
     
     PrePedido = "102100",
-    CatalogoCaradastrarConsultar = "102400",
+    CatalogoConsultar = "102400",
     CatalogoCaradastrarIncluirEditar = "102500",
-    CatalogoPropriedade = "102600",
+    CatalogoPropriedadeConsultar = "102600",
+    CatalogoPropriedadeIncluirEditar = "102700",
     UsuarioVendedorParceiro = "100310",
     ConsultarUsuarioLogado = "100210",
     CadastroVendedorParceiroIncluirEditar ="100320",
@@ -18,5 +19,5 @@ export enum ePermissao {
     AprovarOrcamento = "100550",
     ArquivosDownloadIncluirEditarPastasArquivos = "102800",
     VisualizarOrcamento = "103000",
-    AcessoUniversalOrcamentoEditar = "103100"
+    AcessoUniversalOrcamentoEditar = "103100",
 }

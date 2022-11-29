@@ -9,6 +9,7 @@ import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produt
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-listar-produtos',
@@ -17,12 +18,14 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 })
 export class ProdutosCatalogoListarComponent implements OnInit {
 
-  constructor(private readonly service: ProdutoCatalogoService,
+  constructor(
+    private readonly service: ProdutoCatalogoService,
     private fb: FormBuilder,
     private readonly router: Router,
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
-    private readonly autenticacaoService: AutenticacaoService) { }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -36,18 +39,18 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   descriacaoFiltro: string;
 
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      window.history.back();
+      return;
+    }
+
     this.carregando = true;
     this.buscarTodosProdutos();
   }
 
   buscarTodosProdutos() {
-
-    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarConsultar)) {
-      this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      this.router.navigate(["/dashboards"]);
-      return;
-    }
-
     this.service.buscarTodosProdutos().toPromise().then((r) => {
       if (r != null) {
         this.listaProdutoDto = r;
