@@ -8,6 +8,9 @@ import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-consultar',
@@ -16,11 +19,13 @@ import { DropDownItem } from '../../orcamentos/models/DropDownItem';
 })
 export class ProdutosCatalogoConsultarComponent implements OnInit {
 
-  constructor(private readonly produtoService: ProdutoCatalogoService,
+  constructor(
+    private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
     private readonly router: Router,
-    private fb: FormBuilder
-    ) { }
+    private fb: FormBuilder,
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -40,6 +45,13 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   cboLinhaProduto: Array<DropDownItem> = [];
 
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoConsultar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      window.history.back();
+      return;
+    }
+
     this.criarForm();
     this.buscarRegistros();
   }

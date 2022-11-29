@@ -9,5 +9,6 @@ export enum eMenu {
     Propriedades = "Propriedades",
     Downloads = "Downloads",
     Usuarios = "Usuários",
-    VendedorParceiro = "Vendedores do parceiro"
+    VendedorParceiro = "Vendedores do parceiro",
+    ProdutosConsultar = "Consultar"
 }

@@ -7,6 +7,9 @@ import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo'
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoItemProdutosAtivosDados } from 'src/app/dto/produtos-catalogo/produtos-catalogos-propriedades-ativos';
 import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-visualizar-produto',
@@ -21,7 +24,8 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
-  ) { }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService: SweetalertService) { }
 
   public form: FormGroup;
   public produto: ProdutoCatalogo = new ProdutoCatalogo();
@@ -32,6 +36,13 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   carregando: boolean = false;
 
   ngOnInit(): void {
+    
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoConsultar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      window.history.back();
+      return;
+    }
+
     this.carregando = true;
     this.criarForm();
     this.setarCampos();

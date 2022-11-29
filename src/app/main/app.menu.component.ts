@@ -47,7 +47,18 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarConsultar)) {
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoConsultar)) {
+                            if (x.items[i].label == eMenu.Catalogos) {
+                                for (let y = 0; y < x.items[i].items.length; y++) {
+                                    if (x.items[i].items[y].label == eMenu.ProdutosConsultar) {
+                                        x.items[i].items.splice(y, 1);
+                                        y--;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
                             if (x.items[i].label == eMenu.Catalogos) {
                                 for (let y = 0; y < x.items[i].items.length; y++) {
                                     if (x.items[i].items[y].label == eMenu.CaradastrarEditar) {
@@ -58,7 +69,7 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoPropriedade)) {
+                        if (!this.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeConsultar)) {
                             if (x.items[i].label == eMenu.Catalogos) {
                                 for (let y = 0; y < x.items[i].items.length; y++) {
                                     if (x.items[i].items[y].label == eMenu.Propriedades) {
