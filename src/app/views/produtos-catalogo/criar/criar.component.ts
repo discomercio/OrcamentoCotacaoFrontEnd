@@ -228,7 +228,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         for (let d = 0; d < listaDrop.length; d++) {
           var listaOpt = listaDrop[d].getElementsByTagName("span");
           for (let i = 0; i < listaOpt.length - 1; i++) {
-            debugger;
             if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
               campo = new ProdutoCatalogoItem();
               campo.IdProdutoCatalogo = '-1';
@@ -251,7 +250,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
         formData.append("produto", JSON.stringify(prod));
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
-          debugger;
           if (r != null) {
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
             this.router.navigate(["//produtos-catalogo/listar"]);
