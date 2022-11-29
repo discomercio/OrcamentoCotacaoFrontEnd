@@ -15,6 +15,8 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogoItem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoItem';
 import { ProdutoCatalogoImagem } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoImagem';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   selector: 'app-criar-produto',
@@ -32,7 +34,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-  ) { }
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
@@ -51,6 +53,13 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lstPropriedadesAtivo: any = [];
 
   ngOnInit(): void {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(["/dashboards"]);
+      return;
+    }
+
     this.carregando = true;
     this.criarForm();
     this.buscarPropriedades();

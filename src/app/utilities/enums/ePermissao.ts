@@ -8,7 +8,8 @@ export enum ePermissao {
     DescontoSuperior3 = "101000",
     
     PrePedido = "102100",
-    CatalogoCaradastrarEditar = "102500",
+    CatalogoCaradastrarConsultar = "102400",
+    CatalogoCaradastrarIncluirEditar = "102500",
     CatalogoPropriedade = "102600",
     UsuarioVendedorParceiro = "100310",
     ConsultarUsuarioLogado = "100210",
