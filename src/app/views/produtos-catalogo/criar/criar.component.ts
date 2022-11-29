@@ -140,7 +140,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
           }
         });
       }
-    }).catch((r) => this.sweetAlertService.aviso(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   digitouCodigo(event: Event) {
@@ -251,6 +251,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
         formData.append("produto", JSON.stringify(prod));
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
+          debugger;
           if (r != null) {
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
             this.router.navigate(["//produtos-catalogo/listar"]);
