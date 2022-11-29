@@ -90,7 +90,7 @@ export class UsuarioEdicaoComponent implements OnInit {
         this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
           if (r != null) {
 
-            var indice = 0;
+            var indice = 1;
 
             while (indice < r.length) {
 
@@ -109,7 +109,7 @@ export class UsuarioEdicaoComponent implements OnInit {
         this.orcamentistaIndicadorService.buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
           if (r != null) {
 
-            var indice = 0;
+            var indice = 1;
 
             while (indice < r.length) {
               this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
