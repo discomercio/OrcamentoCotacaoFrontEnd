@@ -140,7 +140,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
           }
         });
       }
-    }).catch((r) => this.sweetAlertService.aviso(r));
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
   digitouCodigo(event: Event) {
@@ -225,7 +225,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         }
 
         var listaDrop = document.getElementsByTagName("p-dropdown");
-        for (let d = 0; d < listaDrop.length - 1; d++) {
+        for (let d = 0; d < listaDrop.length; d++) {
           var listaOpt = listaDrop[d].getElementsByTagName("span");
           for (let i = 0; i < listaOpt.length - 1; i++) {
             if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
