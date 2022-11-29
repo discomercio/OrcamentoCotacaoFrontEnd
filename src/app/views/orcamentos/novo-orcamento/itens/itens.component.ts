@@ -711,8 +711,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.desabilitarEnvio = true;
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
-      if (r.erro != null) {
-        this.alertaService.mostrarMensagem(r.erro);
+      if (!r.Sucesso) {
+        this.sweetalertService.aviso(r.Mensagem);
         this.desabilitarEnvio = false;
         return;
       }
