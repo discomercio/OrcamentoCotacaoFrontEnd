@@ -90,7 +90,7 @@ export class AutenticacaoService {
         this._lojaEstilo.corCabecalho = r.corCabecalho + " !important";
         this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
         this.titleService.setTitle(r.titulo);
-        debugger;
+        
         if(this._lojaLogado != this._lojaLogadoApoio) {
           this._lojaLogado = this._lojaLogadoApoio;
           location.reload();
