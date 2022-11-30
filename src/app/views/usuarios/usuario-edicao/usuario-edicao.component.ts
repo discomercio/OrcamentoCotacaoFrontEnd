@@ -49,6 +49,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   usuarioInterno: boolean;
   parceiroSelecionado: string = 'Selecione';
 
+
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
       this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
@@ -73,6 +74,20 @@ export class UsuarioEdicaoComponent implements OnInit {
               this.parceiroSelecionado = r.parceiro;
               this.criarForm();
 
+              // Verifico se o usuário logado tem permissão para editar usuários de outro vendedor              
+              if (!this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+
+                // Verifico se está tentando editar um vendedor que é do parceiro logado
+                if (r.parceiro != this.autenticacaoService._usuarioLogado) {
+
+                  // não tem permissão e está tentando editar um vendedor cujo usuário logado não é o responsável (O.o)
+                  if (this.autenticacaoService._usuarioLogado != r.vendedorResponsavel) {
+                    this.mensagemService.showWarnViaToast("Ops...você não é responsável por este vendedor!");
+                    this.router.navigate([`/usuarios/usuario-lista`]);
+                  }
+                }
+              }
+
               // const datastamp = this.usuario.senha;
               // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
               // this.form.controls.senha.setValue(senhaConvertida);
@@ -86,41 +101,28 @@ export class UsuarioEdicaoComponent implements OnInit {
     if (this.autenticacaoService._tipoUsuario == 1) {
       this.usuarioInterno = true;
       if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
-
         this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
           if (r != null) {
-
             var indice = 1;
-
             while (indice < r.length) {
-
               if (r[indice].nome != this.parceiroSelecionado) {
                 this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
               }
               indice++;
-
             }
-
           }
         })
-
       } else {
-
         this.orcamentistaIndicadorService.buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
           if (r != null) {
-
             var indice = 1;
-
             while (indice < r.length) {
               this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
               indice++;
             }
-
           }
         })
-
       }
-
     } else {
       this.usuarioInterno = false;
     }
