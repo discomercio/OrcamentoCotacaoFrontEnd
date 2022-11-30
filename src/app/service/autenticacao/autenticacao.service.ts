@@ -45,6 +45,7 @@ export class AutenticacaoService {
   public _parceiro: string = null;
   public _vendedor: string = null;
   public _lojaLogado: string = null;
+  public _lojaLogadoApoio: string = null;
   public unidade_negocio: string = null;
   public constantes: Constantes = new Constantes();
   public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null);
@@ -71,9 +72,11 @@ export class AutenticacaoService {
     if (!this._lojaLogado) {
       if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
         this._lojaLogado = this._lojasUsuarioLogado[0];
+        this._lojaLogadoApoio = this._lojasUsuarioLogado[0];
       }
       else {
         this._lojaLogado = sessionStorage.getItem("lojaLogada");
+        this._lojaLogadoApoio = this._lojaLogado;
       }
     }
 
@@ -87,6 +90,11 @@ export class AutenticacaoService {
         this._lojaEstilo.corCabecalho = r.corCabecalho + " !important";
         this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
         this.titleService.setTitle(r.titulo);
+        
+        if(this._lojaLogado != this._lojaLogadoApoio) {
+          this._lojaLogado = this._lojaLogadoApoio;
+          location.reload();
+        }
       }
     });
   }

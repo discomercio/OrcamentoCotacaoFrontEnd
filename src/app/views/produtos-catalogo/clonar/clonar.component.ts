@@ -256,7 +256,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = '-1';
           itemModelo.Valor = x.valorPropriedade;
         }
-        debugger;
+        
         itemModelo.Oculto = x.propriedadeOcultaItem ? true : false;
         campos.push(itemModelo);
       }
@@ -269,7 +269,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     produto.Descricao = this.form.controls.descricao.value; //Descricao Completa
     produto.Ativo = this.form.controls.ativo.value;
     produto.campos = campos;
-    debugger;
+    
     if (this.imagem != null) {
       produto.imagem = new ProdutoCatalogoImagem();
       produto.imagem = this.imagem;

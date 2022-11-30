@@ -419,7 +419,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   gravarOpcao() {
     this.atribuirFormasPagto();
-    debugger;
+    
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();

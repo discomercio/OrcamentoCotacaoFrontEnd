@@ -31,6 +31,7 @@ export class AppMainComponent {
     configActive: boolean;
 
     configClick: boolean;
+    carregando:boolean;
 
     constructor(public renderer: Renderer2, private menuService: MenuService,
                 private primengConfig: PrimeNGConfig, public app: AppComponent) {}
