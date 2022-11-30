@@ -200,7 +200,7 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
             this.alertaService.mostrarMensagem("Favor preencher o valor de entrada!");
             retorno = false;
           }
-          if (this.meioPagtoEntradaPrest != 5 && this.meioPagtoEntradaPrest != 7 && !this.diasVenc) {
+          if (!this.diasVenc) {
             if (mostrarMsg) {
               this.alertaService.mostrarMensagem("Favor informar corretamente os dados para pagamento Parcelado com Entrada!");
               retorno = false;

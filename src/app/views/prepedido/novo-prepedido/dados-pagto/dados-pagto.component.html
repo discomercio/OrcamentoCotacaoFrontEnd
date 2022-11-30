@@ -150,7 +150,7 @@
                     <!-- dias para vencimento  -->
 
                     <mat-form-field class="quantidade"
-                        *ngIf="!!meioPagtoEntradaPrest && meioPagtoEntradaPrest != 5 && meioPagtoEntradaPrest != 7">
+                        >
                         <mat-label>Dias para vencimento Prest </mat-label>
                         <input [(ngModel)]="diasVenc" [ngModelOptions]="{standalone: true}" matInput type="text"
                             required [textMask]="{mask: mascaraNum}">
