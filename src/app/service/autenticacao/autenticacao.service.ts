@@ -19,6 +19,7 @@ import { AppComponent } from 'src/app/main/app.component';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { Router } from '@angular/router';
+import { LoginRequest } from 'src/app/dto/login/login-request';
 
 @Injectable({
   providedIn: 'root'
@@ -52,8 +53,8 @@ export class AutenticacaoService {
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   public _tipoUsuario: number;
 
-  public authLogin2(usuario: string, senha: string): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(this.appSettingsService.config.apiUrl + 'Account/Login', { login: usuario, senha: senha });
+  public authLogin2(request:LoginRequest): Observable<LoginResponse> {
+    return this.http.post<LoginResponse>(this.appSettingsService.config.apiUrl + 'Account/Login', request);
   }
 
   readToken(token: string): boolean {

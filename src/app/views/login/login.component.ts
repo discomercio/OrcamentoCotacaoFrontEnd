@@ -7,6 +7,7 @@ import { InputArClubeComponent } from 'src/app/components/input/input-arclube.co
 import { DropdownArClubeComponent } from 'src/app/components/dropdown/dropdown-arclube.component';
 import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { LoginRequest } from 'src/app/dto/login/login-request';
 
 //Components
 
@@ -29,7 +30,7 @@ export class LoginComponent implements OnInit {
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService,    
+    private readonly sweetalertService: SweetalertService,
     private readonly mensagemService: MensagemService,) { }
   //public toast: Toast
 
@@ -70,34 +71,42 @@ export class LoginComponent implements OnInit {
     this.carregando = true;
     this.button.disabled = true;
 
-    this.autenticacaoService.authLogin2(this.usuario, this.senha).toPromise().then((r) => {
-      if (r != null) {
-        if (!this.autenticacaoService.readToken(r.AccessToken)) {
-          this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
-          this.button.disabled = false;
-          this.carregando = false;
-          return;
-        }
+    let request = new LoginRequest();
+    request.usuario = this.usuario;
+    request.senha = this.senha;
+    this.autenticacaoService.authLogin2(request).toPromise().then((r) => {
 
-        if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
-          this.mostrarLoja = true;
-          this.montarSelectLoja();
-          this.tokenUsuarioInterno = r.AccessToken;
-          this.autenticou = true;
-          this.mensagemService.showSuccessViaToast("Precisamos que selecione uma loja!");
-          this.button.disabled = false;
-          this.carregando = false;
-          return;
-        }
-
-        this.autenticacaoService.setarToken(r.AccessToken);
+      if (!r.Sucesso) {
+        this.mensagemService.showErrorViaToast([r.Mensagem]);
+        this.button.disabled = false;
         this.carregando = false;
-
-        this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
-
-        this.router.navigate(['dashboards']);
-
+        return;
       }
+
+      if (!this.autenticacaoService.readToken(r.AccessToken)) {
+        this.mensagemService.showErrorViaToast(["Ops! Tivemos um problema!"]);
+        this.button.disabled = false;
+        this.carregando = false;
+        return;
+      }
+      
+      if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
+        this.mostrarLoja = true;
+        this.montarSelectLoja();
+        this.tokenUsuarioInterno = r.AccessToken;
+        this.autenticou = true;
+        this.mensagemService.showSuccessViaToast("Precisamos que selecione uma loja!");
+        this.button.disabled = false;
+        this.carregando = false;
+        return;
+      }
+
+      this.autenticacaoService.setarToken(r.AccessToken);
+      this.carregando = false;
+
+      this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
+
+      this.router.navigate(['dashboards']);
     }).catch((e) => {
       this.button.disabled = false;
       this.carregando = false;
