@@ -51,7 +51,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   exibeBotaoNovaPasta: boolean;
   exibeBotaoEditarArquivoPasta: boolean;
   exibeBotaoExcluirArquivoPasta: boolean;
-
+  
 
   ngOnInit(): void {
     this.criarForm();
@@ -121,8 +121,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
     let nome = this.form.controls.pasta.value;
     let descricao = this.form.controls.descricaoPasta.value;
-
-    this.downloadsService.novaPasta(idPai, nome, descricao).toPromise().then(response => {
+    let lojaLogado = this.autenticacaoService._lojaLogado;
+    this.downloadsService.novaPasta(idPai, nome, descricao, lojaLogado).toPromise().then(response => {
       
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);

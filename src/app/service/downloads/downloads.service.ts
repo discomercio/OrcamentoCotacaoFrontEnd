@@ -35,8 +35,8 @@ export class DownloadsService {
     return this.http.put<ArquivoEditarResponse >(`${this.appSettingsService.config.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
   }
   
-  public novaPasta(idpai:string, nome:string, descricao:string):Observable<ArquivoNovaPastaResponse> {
-    return this.http.post<ArquivoNovaPastaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao });
+  public novaPasta(idpai:string, nome:string, descricao:string, loja:string):Observable<ArquivoNovaPastaResponse> {
+    return this.http.post<ArquivoNovaPastaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao, loja:loja });
   }
 
   public upload(idpai:string, arquivo: any): Observable<ArquivoUploadResponse> {
