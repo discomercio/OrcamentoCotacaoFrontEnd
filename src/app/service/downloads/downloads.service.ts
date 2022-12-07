@@ -31,20 +31,22 @@ export class DownloadsService {
     return this.http.post<ArquivoExcluirResponse>(`${this.appSettingsService.config.apiUrl}arquivo/excluir/`, { id: id, loja: loja });
   }
 
-  public editar(id: string, nome: string, descricao: string): Observable<ArquivoEditarResponse> {
-    return this.http.put<ArquivoEditarResponse>(`${this.appSettingsService.config.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
+  public editar(id: string, nome: string, descricao: string, loja:string): Observable<ArquivoEditarResponse> {
+    // return this.http.put<ArquivoEditarResponse>(`${this.appSettingsService.config.apiUrl}arquivo/editar?id=${id}&nome=${nome}&descricao=${descricao}`, id);
+    return this.http.put<ArquivoEditarResponse>(`${this.appSettingsService.config.apiUrl}arquivo/editar`, {id: id, nome: nome, descricao:descricao, loja:loja});
   }
 
   public novaPasta(idpai: string, nome: string, descricao: string, loja: string): Observable<ArquivoNovaPastaResponse> {
     return this.http.post<ArquivoNovaPastaResponse>(`${this.appSettingsService.config.apiUrl}arquivo/criarpasta/`, { idPai: idpai, nome: nome, descricao: descricao, loja: loja });
   }
 
-  public upload(idpai: string, arquivo: any): Observable<ArquivoUploadResponse> {
+  public upload(idpai: string, arquivo: any, loja:string): Observable<ArquivoUploadResponse> {
 
     const formData = new FormData();
-    formData.append(arquivo.files[0].name, arquivo.files[0]);
-
-    return this.http.post<ArquivoUploadResponse>(`${this.appSettingsService.config.apiUrl}arquivo/upload/${idpai}`,
+    formData.append("arquivo", arquivo.files[0], arquivo.files[0].name);
+    formData.append("idPai", idpai);
+    formData.append("loja", loja);
+    return this.http.post<ArquivoUploadResponse>(`${this.appSettingsService.config.apiUrl}arquivo/upload`, 
       formData, { reportProgress: true });
   }
 }

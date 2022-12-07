@@ -51,7 +51,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   exibeBotaoNovaPasta: boolean;
   exibeBotaoEditarArquivoPasta: boolean;
   exibeBotaoExcluirArquivoPasta: boolean;
-  lojaLogado:string;
+  lojaLogado: string;
 
   ngOnInit(): void {
     this.criarForm();
@@ -112,32 +112,32 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
   addPastaTable() {
 
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     let idPai = "";
 
-    if(this.estruturaSelecionada != undefined){
+    if (this.estruturaSelecionada != undefined) {
       idPai = this.estruturaSelecionada.data.key;
     }
 
     let nome = this.form.controls.pasta.value;
     let descricao = this.form.controls.descricaoPasta.value;
-    
+
     this.downloadsService.novaPasta(idPai, nome, descricao, this.lojaLogado).toPromise().then(response => {
-      
+
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
         return;
       }
 
-      if(idPai === "") {
+      if (idPai === "") {
         this.pastaRaizInserida = true;
         this.novaPasta = false;
         this.form.reset();
         this.atualizarEstrutura();
         return;
-      }      
-  
+      }
+
       let novaPasta: TreeNode = {
         data: {
           "name": "",
@@ -153,7 +153,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       novaPasta.data.name = nome;
       novaPasta.data.size = "";
       novaPasta.data.descricao = descricao;
-        
+
       if (this.estruturaSelecionada)
         this.estruturaSelecionada.children.push(novaPasta);
       else
@@ -168,7 +168,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   excluirClick() {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
       this.sweetalertService.aviso("Selecione uma pasta, ou arquivo!");
@@ -180,7 +180,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       if (!result) {
         return;
       }
-      else { 
+      else {
         this.concluirExclusao();
       }
 
@@ -188,28 +188,28 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   concluirExclusao() {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (this.estruturaSelecionada.hasOwnProperty('children') && this.estruturaSelecionada.children.length > 0) {
       this.sweetalertService.aviso("Não é possivel excluir pastas que possuem arquivos!");
       return;
     }
-debugger;
+
     this.downloadsService.excluir(this.estruturaSelecionada.data.key, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
         return;
       }
-      
+
       if (this.ehArquivo) {
         this.sweetalertService.sucesso("Arquivo excluído!");
-      } 
+      }
       else {
         this.sweetalertService.sucesso("Pasta excluída!");
       }
 
-      if(this.estrutura.length == 1 && this.estrutura[0].children.length == 0) {
+      if (this.estrutura.length == 1 && this.estrutura[0].children.length == 0) {
         this.limparEstrutura();
       }
       else {
@@ -220,9 +220,9 @@ debugger;
   }
 
   limparEstrutura() {
-      this.estruturaSelecionada = null;
-      this.estrutura = null;
-      this.edicao = false;
+    this.estruturaSelecionada = null;
+    this.estrutura = null;
+    this.edicao = false;
   }
 
   public controlaBotoes(rowData: any) {
@@ -257,13 +257,13 @@ debugger;
   }
 
   editarSalvarClick() {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     let id = this.estruturaSelecionada.data.key;
     let nome = this.form.controls.txtNome.value;
     let descricao = this.form.controls.txtDescricao.value;
 
-    this.downloadsService.editar(id, nome, descricao).toPromise().then(response => {
+    this.downloadsService.editar(id, nome, descricao, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
@@ -274,11 +274,13 @@ debugger;
 
       this.atualizarEstrutura();
 
-    }).catch((r) => this.sweetalertService.aviso(r));
+    }).catch((r) => {
+      this.sweetalertService.aviso(r.error.Mensagem);
+    });
   }
 
   uploadClick() {
-    if(!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
       this.sweetalertService.aviso("Selecione uma pasta!");
@@ -294,8 +296,8 @@ debugger;
 
     let idPai = this.estruturaSelecionada.data.key;
     let arquivo = event;
-
-    this.downloadsService.upload(idPai, arquivo).toPromise().then(response => {
+    debugger;
+    this.downloadsService.upload(idPai, arquivo, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
@@ -304,14 +306,17 @@ debugger;
 
       this.ehUpload = false;
       this.sweetalertService.sucesso(response.Mensagem);
-      
+
       this.atualizarEstrutura();
 
-    }).catch((response) => this.sweetalertService.aviso(response));
+    }).catch((response) => {
+      this.sweetalertService.aviso(response);
+      this.ehUpload = false;
+    });
   }
 
   downloadSelecionado(event) {
-    
+
     this.downloadsService.download(event.key).toPromise().then(response => {
 
       if (!response.Sucesso) {
@@ -323,20 +328,20 @@ debugger;
       let contentType = 'application/pdf; charset=utf-8';
       const byteCharacters = atob(vb64Data.toString());
       const byteArrays = [];
-  
+
       for (let offset = 0; offset < byteCharacters.length; offset += 512) {
         const slice = byteCharacters.slice(offset, offset + 512);
-  
+
         const byteNumbers = new Array(slice.length);
         for (let i = 0; i < slice.length; i++) {
-          byteNumbers[i] = slice.charCodeAt(i); 
+          byteNumbers[i] = slice.charCodeAt(i);
         }
-  
+
         const byteArray = new Uint8Array(byteNumbers);
         byteArrays.push(byteArray);
       }
-  
-      const blob = new Blob(byteArrays, {type: contentType});
+
+      const blob = new Blob(byteArrays, { type: contentType });
       const url = window.URL.createObjectURL(blob);
       fileSaver.saveAs(blob, response.Nome);
       this.sweetalertService.sucesso(response.Mensagem);
