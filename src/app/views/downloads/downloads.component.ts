@@ -51,13 +51,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
   exibeBotaoNovaPasta: boolean;
   exibeBotaoEditarArquivoPasta: boolean;
   exibeBotaoExcluirArquivoPasta: boolean;
-  
+  lojaLogado:string;
 
   ngOnInit(): void {
     this.criarForm();
     this.atualizarEstrutura();
     this.montarPastas();
     this.verificarPermissoes();
+    this.lojaLogado = this.autenticacaoService._lojaLogado;
   }
 
   criarForm() {
@@ -121,8 +122,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
     let nome = this.form.controls.pasta.value;
     let descricao = this.form.controls.descricaoPasta.value;
-    let lojaLogado = this.autenticacaoService._lojaLogado;
-    this.downloadsService.novaPasta(idPai, nome, descricao, lojaLogado).toPromise().then(response => {
+    
+    this.downloadsService.novaPasta(idPai, nome, descricao, this.lojaLogado).toPromise().then(response => {
       
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
@@ -193,8 +194,8 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       this.sweetalertService.aviso("Não é possivel excluir pastas que possuem arquivos!");
       return;
     }
-
-    this.downloadsService.excluir(this.estruturaSelecionada.data.key).toPromise().then(response => {
+debugger;
+    this.downloadsService.excluir(this.estruturaSelecionada.data.key, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
