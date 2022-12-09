@@ -36,7 +36,6 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeConsultar)) {
       this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      window.history.back();
       return;
     }
 
@@ -63,10 +62,21 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
   }
 
   editarClick(id: any) {
-      this.router.navigate(["/produtos-catalogo/propriedades/editar", id]);
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
+      this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      return;
+    }
+
+    this.router.navigate(["/produtos-catalogo/propriedades/editar", id]);
   }
 
   criarClick() {
+
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
+      this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      return;
+    }
+
     this.router.navigate(["/produtos-catalogo/propriedades/criar"]);
   }
 
@@ -74,7 +84,6 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
       this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      window.history.back();
       return;
     }
 
