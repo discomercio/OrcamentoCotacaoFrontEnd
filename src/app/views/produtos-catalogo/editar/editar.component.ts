@@ -50,6 +50,8 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   propriedades: ProdutoCatalogoPropriedade[] = new Array<ProdutoCatalogoPropriedade>();
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
   lstOpcoes: SelectItem[][] = [];
+  lojaLogada: string;
+  imgSemImagem: ProdutoCatalogoImagem = new ProdutoCatalogoImagem();
 
   ngOnInit(): void {
 
@@ -63,7 +65,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
-    // this.buscarOpcoes();
+    this.lojaLogada = this.autenticacaoService._lojaLogado;
   }
 
   criarForm() {
@@ -212,6 +214,13 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
+    debugger;
+    if (this.produtoDetalhe.imagem.Caminho == "sem-imagem.png") {
+      this.imgSemImagem = this.produtoDetalhe.imagem;
+      this.produtoDetalhe.imagem = null;
+      return;
+    }
+
     this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
         this.sweetAlertService.aviso(r);
@@ -274,6 +283,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       formData.append("arquivo", this.arquivo, this.arquivo.name);
 
     formData.append("produto", JSON.stringify(produto));
+    formData.append("loja", this.lojaLogada);
 
     this.produtoService.atualizarProduto(formData).toPromise().then((r) => {
       if (r != null) {

@@ -49,6 +49,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
   produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
   lstFabricantes: SelectItem[] = [];
   fabricantes: ProdutoCatalogoFabricante[];
+  lojaLogado:string;
 
   @ViewChild("codigo") codigo: ElementRef;
   
@@ -67,6 +68,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     this.buscarFabricantes();
     this.urlUpload = this.produtoService.urlUpload;
     this.imgUrl = this.produtoService.imgUrl;
+    this.lojaLogado = this.autenticacaoService._lojaLogado;
   }
 
   ngAfterViewInit(){
@@ -285,6 +287,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
           formData.append("arquivo", this.arquivo, this.arquivo.name);
 
         formData.append("produto", JSON.stringify(produto));
+        formData.append("loja", this.lojaLogado);
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
           if (r != null) {
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
