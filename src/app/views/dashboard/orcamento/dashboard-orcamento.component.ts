@@ -27,7 +27,8 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
   public qtdOrcamentoExpirado: number;
   public qtdOrcamentoAExpirar: number;
   public parceiros: string[] = [];
-
+  public carregando: boolean = false;
+  
   data: any;
 
   chartOptions: any;
@@ -77,7 +78,6 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
   }
 
   dashboardOrcamentoVendedorInterno() {
-
     var tresDiasAtras = new Date(); tresDiasAtras.setDate(tresDiasAtras.getDate() - 3);
     var tresDiasDepois = new Date(); tresDiasDepois.setDate(tresDiasDepois.getDate() + 3);
 
@@ -85,6 +85,8 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
 
     let dataTresDiasAtras = DataUtils.formata_dataString_para_formato_data(tresDiasAtras.toLocaleString("pt-br").slice(0, 10));
     let dataTresDiasDepois = DataUtils.formata_dataString_para_formato_data(tresDiasDepois.toLocaleString("pt-br").slice(0, 10));
+    
+    this.carregando = true;
 
     this.dashboardOrcamentoService.dashboardOrcamentoParceiro().toPromise().then(response => {
       var indice = 0;
@@ -129,7 +131,13 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       this.qtdOrcamentoExpirado = qtdOrcamentoExpirado;
       this.qtdOrcamentoAExpirar = qtdOrcamentoAExpirar;
 
-    }).catch((response) => "Falha no carregamento do dashboard.");
+    }).catch((e) => {
+      this.carregando = false;
+      this.sweetalertService.aviso("Falha no carregamento do dashboard.");
+    });
+   
+    this.carregando = false;
+
   }
 
   ordenarParceiros() {
@@ -146,8 +154,6 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
     });
 
     this.parceiros = sortable;
-
-    //console.log(this.parceiros);
   }
 
   getLightTheme() {
