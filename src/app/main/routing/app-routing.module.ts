@@ -4,7 +4,7 @@ import { ClienteComponent } from '../../views/cliente/cliente.component';
 import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 
-import { DashboardDemoComponent } from '../../demo/view/dashboarddemo.component';
+import { DashboardOrcamentoComponent } from '../../views/dashboard/orcamento/dashboard-orcamento.component';
 import { DownloadsComponent } from '../../views/downloads/downloads.component';
 
 import { AppMainComponent } from '../app.main.component';
@@ -83,7 +83,7 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
                             },
 
                             // Dashboard
-                            { path: 'dashboards', canActivate: [AuthGuard], component: DashboardDemoComponent },
+                            { path: 'dashboards', canActivate: [AuthGuard], component: DashboardOrcamentoComponent },
                             {
                                 path: 'novoprepedido',
                                 canActivate: [AuthGuard],

@@ -7,6 +7,7 @@ import { BrowserModule } from "@angular/platform-browser";
 import { CommonModule } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
+import { ChartModule } from 'primeng/chart';
 import {
     MatButtonModule,
     MatIconModule,
@@ -81,6 +82,7 @@ import { OrderListModule } from "primeng/orderlist";
 import { StoreModule } from "@ngrx/store";
 import { IndexReducer } from "../dto/index.store";
 import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
+import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashboard-orcamento.component";
 
 @NgModule({
     imports: [
@@ -105,7 +107,8 @@ import { AppSettingsService } from "../utilities/appsettings/appsettings.service
         NovoPrepedidoModule,
         ClienteModule,
         OrderListModule,
-        StoreModule.forRoot(IndexReducer),
+        ChartModule,
+        StoreModule.forRoot(IndexReducer)
     ],
     declarations: [
         DownloadsComponent,
@@ -138,6 +141,7 @@ import { AppSettingsService } from "../utilities/appsettings/appsettings.service
         CepComponent,
         CepDialogComponent,
         EnderecoEntregaComponent,
+        DashboardOrcamentoComponent
     ],
     providers: [
         // {
