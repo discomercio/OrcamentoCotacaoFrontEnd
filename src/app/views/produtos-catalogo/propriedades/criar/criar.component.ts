@@ -53,7 +53,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      window.history.back();
+      this.router.navigate(["/produtos-catalogo/propriedades/listar"]);
       return;
     }
 
