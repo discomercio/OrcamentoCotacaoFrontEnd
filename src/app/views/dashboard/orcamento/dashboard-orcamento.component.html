@@ -1,4 +1,5 @@
-<div class="dashboard p-grid">
+
+<div class="dashboard p-grid">    
     <div class="p-col-12 p-md-6 p-lg-3">
         <div class="widget-overview overview-box-1">
             <div class="overview-box-title">
@@ -33,7 +34,7 @@
         <div class="widget-overview overview-box-4">
             <div class="overview-box-title">
                 <i class="pi pi-clock"></i>
-                
+
                 <span>Orçamentos à Expirar</span>
             </div>
             <div class="overview-box-count">{{qtdOrcamentoAExpirar}}</div>
@@ -41,107 +42,106 @@
         </div>
     </div>
 
-     <div class="p-col-12 p-lg-6">
+    <div class="p-col-12 p-lg-6">
         <div class="card widget-statistics">
-            
+
             <h5><i class="pi pi-globe"></i> Top Parceiro x Orçamentos</h5>
-            <table>
+            <table *ngIf="parceiros.length >=0">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>Parceiro</th>
-                    <th></th>
-                    <th>Total Orçamentos</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>Parceiro</th>
+                        <th></th>
+                        <th>Total Orçamentos</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>                    
-                    <td>{{parceiros[parceiros.length-1][0]}}</td>
-                    <td align="center">{{parceiros[parceiros.length-1][1]}}</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[parceiros.length-2][0]}}</td>
-                    <td align="center">{{parceiros[parceiros.length-2][1]}}</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[parceiros.length-3][0]}}</td>
-                    <td align="center">{{parceiros[parceiros.length-3][1]}}</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[parceiros.length-4][0]}}</td>
-                    <td align="center">{{parceiros[parceiros.length-4][1]}}</td>
-                </tr>
+
+                    <tr>
+                        <td>1</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-1][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-1][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-2][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-2][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-3][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-3][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-4][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-4][1]}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-    </div> 
+    </div>
 
     <div class="p-col-12 p-lg-6">
         <div class="card widget-statistics">
-            
             <h5><i class="pi pi-sort-numeric-down"></i> Top Down</h5>
-            <table>
+            <table *ngIf="parceiros.length >=0">
                 <thead>
-                <tr>
-                    <th></th>
-                    <th>Parceiro</th>
-                    <th></th>
-                    <th>Total Orçamentos</th>
-                </tr>
+                    <tr>
+                        <th></th>
+                        <th>Parceiro</th>
+                        <th></th>
+                        <th>Total Orçamentos</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[0][0]}}</td>
-                    <td align="center">{{parceiros[0][1]}}</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[1][0]}}</td>
-                    <td align="center">{{parceiros[1][1]}}</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[2][0]}}</td>
-                    <td align="center">{{parceiros[2][1]}}</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td class="col-overview col-wait">
-                        <div>P</div>
-                    </td>
-                    <td>{{parceiros[3][0]}}</td>
-                    <td align="center">{{parceiros[3][1]}}</td>
-                </tr>
+                    <tr>
+                        <td>1</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[0][0]}}</td>
+                        <td align="center">{{parceiros[0][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[1][0]}}</td>
+                        <td align="center">{{parceiros[1][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>3</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[2][0]}}</td>
+                        <td align="center">{{parceiros[2][1]}}</td>
+                    </tr>
+                    <tr>
+                        <td>4</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[3][0]}}</td>
+                        <td align="center">{{parceiros[3][1]}}</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
-    </div> 
-
-
+    </div>
 </div>
+<p-chart type="pie" [data]="data" [options]="chartOptions"  [style]="{'width': '40%'}"></p-chart>
