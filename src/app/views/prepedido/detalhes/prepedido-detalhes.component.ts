@@ -13,6 +13,7 @@ import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.
 import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrePedidoDto';
 import { PermissaoService } from 'src/app/service/permissao/permissao.service';
 import { PermissaoPrePedidoResponse } from 'src/app/dto/permissao/PermissaoPrePedidoResponse';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-prepedido-detalhes',
@@ -26,7 +27,8 @@ export class PrepedidoDetalhesComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private router: Router,
     private location: Location,
-    private readonly permissaoService: PermissaoService
+    private readonly permissaoService: PermissaoService,
+    private readonly sweetalertService: SweetalertService
   ) { }
 
   numeroPrepedido = "";
@@ -142,13 +144,13 @@ export class PrepedidoDetalhesComponent implements OnInit {
       this.permissaoPrePedidoResponse = response;
 
       if (!this.permissaoPrePedidoResponse.Sucesso) {
-        this.alertaService.mostrarMensagem(this.permissaoPrePedidoResponse.Mensagem);
+        this.sweetalertService.aviso(this.permissaoPrePedidoResponse.Mensagem);
         this.router.navigate(['orcamentos/listar/pendentes']);
         return;
       }
 
       if (!this.permissaoPrePedidoResponse.VisualizarPrePedido) {
-        this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+        this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
         this.router.navigate(['orcamentos/listar/pendentes']);
         return;
       }
