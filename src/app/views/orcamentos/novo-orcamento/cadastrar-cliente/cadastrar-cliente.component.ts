@@ -18,7 +18,7 @@ import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formular
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
+//import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 
