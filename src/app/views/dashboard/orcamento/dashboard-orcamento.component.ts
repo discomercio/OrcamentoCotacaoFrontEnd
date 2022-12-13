@@ -86,7 +86,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       };
     }else{
       this.basicData = {
-        labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo],
+        labels: ['Orçamentos Expirados', 'Orçamentos à Expirar'],
         datasets: [
           {
             label: 'Exibir/Ocultar',
