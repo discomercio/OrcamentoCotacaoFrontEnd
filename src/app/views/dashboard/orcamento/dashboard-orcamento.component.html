@@ -55,8 +55,8 @@
                     </tr>
                 </thead>
                 <tbody>
-
-                    <tr>
+                    
+                    <tr *ngIf="parceiros.length>=2">
                         <td>1</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -64,7 +64,7 @@
                         <td>{{parceiros[parceiros.length-1][0]}}</td>
                         <td align="center">{{parceiros[parceiros.length-1][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=3">
                         <td>2</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -72,7 +72,7 @@
                         <td>{{parceiros[parceiros.length-2][0]}}</td>
                         <td align="center">{{parceiros[parceiros.length-2][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -80,7 +80,7 @@
                         <td>{{parceiros[parceiros.length-3][0]}}</td>
                         <td align="center">{{parceiros[parceiros.length-3][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -106,7 +106,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=1">
                         <td>1</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -114,7 +114,7 @@
                         <td>{{parceiros[0][0]}}</td>
                         <td align="center">{{parceiros[0][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=2">
                         <td>2</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -122,7 +122,7 @@
                         <td>{{parceiros[1][0]}}</td>
                         <td align="center">{{parceiros[1][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
@@ -130,7 +130,7 @@
                         <td>{{parceiros[2][0]}}</td>
                         <td align="center">{{parceiros[2][1]}}</td>
                     </tr>
-                    <tr>
+                    <tr *ngIf="parceiros.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
                             <div>P</div>

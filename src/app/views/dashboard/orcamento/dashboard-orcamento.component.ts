@@ -45,9 +45,9 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-
-    this.montarGrafico();
-
+    setTimeout(() => {
+      this.montarGrafico();
+    }, 7000);  
   }
 
   montarGrafico() {
@@ -88,7 +88,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
     
     this.carregando = true;
 
-    this.dashboardOrcamentoService.dashboardOrcamentoParceiro().toPromise().then(response => {
+    this.dashboardOrcamentoService.dashboardOrcamentoVendedorInterno(this.autenticacaoService._lojaLogado).toPromise().then(response => {
       var indice = 0;
       var qtdOrcamentoSemParceiro = 0;
       var qtdOrcamentoComParceiro = 0;
