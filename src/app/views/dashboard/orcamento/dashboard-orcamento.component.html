@@ -1,22 +1,22 @@
-<div class="dashboard p-grid" [ngClass]="{'carregando': carregando}">    
-    <div class="p-col-12 p-md-6 p-lg-3">
+<div class="dashboard p-grid" [ngClass]="{'carregando': carregando}">
+    <div class="p-col-12 p-md-6 p-lg-3" *ngIf="tipoUsuario !=3">
         <div class="widget-overview overview-box-1">
             <div class="overview-box-title">
                 <i class="pi pi-circle-off"></i>
                 <span>Orçamentos sem {{titulo}}</span>
             </div>
             <div class="overview-box-count">{{caixa1}}</div>
-            <div class="overview-box-stats">Status Enviado</div>
+            <div class="overview-box-stats">Orçamentos vigentes</div>
         </div>
     </div>
-    <div class="p-col-12 p-md-6 p-lg-3">
+    <div class="p-col-12 p-md-6 p-lg-3" *ngIf="tipoUsuario !=3">
         <div class="widget-overview overview-box-2">
             <div class="overview-box-title">
                 <i class="pi pi-circle-on"></i>
                 <span>Orçamentos com {{titulo}}</span>
             </div>
             <div class="overview-box-count">{{caixa2}}</div>
-            <div class="overview-box-stats">Status Enviado</div>
+            <div class="overview-box-stats">Orçamentos vigentes</div>
         </div>
     </div>
     <div class="p-col-12 p-md-6 p-lg-3">
@@ -26,7 +26,7 @@
                 <span>Orçamentos Expirados</span>
             </div>
             <div class="overview-box-count">{{caixa3}}</div>
-            <div class="overview-box-stats">Até 3 dias</div>
+            <div class="overview-box-stats">Em até 3 dias</div>
         </div>
     </div>
     <div class="p-col-12 p-md-6 p-lg-3">
@@ -37,14 +37,14 @@
                 <span>Orçamentos à Expirar</span>
             </div>
             <div class="overview-box-count">{{caixa4}}</div>
-            <div class="overview-box-stats">Últimos 3 dias</div>
+            <div class="overview-box-stats">Em até 3 dias</div>
         </div>
     </div>
 
-    <div class="p-col-12 p-lg-6">
+    <div class="p-col-12 p-lg-6" *ngIf="tipoUsuario !=3">
         <div class="card widget-statistics">
-            
-            <h5><i class="pi pi-globe"></i> Top {{titulo}} x Orçamentos</h5>
+
+            <h5><i class="pi pi-globe"></i> Top {{titulo}}</h5>
             <table *ngIf="orcamentos.length >=0">
                 <thead>
                     <tr>
@@ -55,11 +55,11 @@
                     </tr>
                 </thead>
                 <tbody>
-                    
+
                     <tr *ngIf="orcamentos.length>=1">
                         <td>1</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[orcamentos.length-1][0]}}</td>
                         <td align="center">{{orcamentos[orcamentos.length-1][1]}}</td>
@@ -67,7 +67,7 @@
                     <tr *ngIf="orcamentos.length>=2">
                         <td>2</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[orcamentos.length-2][0]}}</td>
                         <td align="center">{{orcamentos[orcamentos.length-2][1]}}</td>
@@ -75,7 +75,7 @@
                     <tr *ngIf="orcamentos.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[orcamentos.length-3][0]}}</td>
                         <td align="center">{{orcamentos[orcamentos.length-3][1]}}</td>
@@ -83,7 +83,7 @@
                     <tr *ngIf="orcamentos.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[orcamentos.length-4][0]}}</td>
                         <td align="center">{{orcamentos[orcamentos.length-4][1]}}</td>
@@ -93,7 +93,7 @@
         </div>
     </div>
 
-    <div class="p-col-12 p-lg-6">
+    <div class="p-col-12 p-lg-6" *ngIf="tipoUsuario !=3">
         <div class="card widget-statistics">
             <h5><i class="pi pi-sort-numeric-down"></i> Top Down</h5>
             <table *ngIf="orcamentos.length >=0">
@@ -109,7 +109,7 @@
                     <tr *ngIf="orcamentos.length>=1">
                         <td>1</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[0][0]}}</td>
                         <td align="center">{{orcamentos[0][1]}}</td>
@@ -117,7 +117,7 @@
                     <tr *ngIf="orcamentos.length>=2">
                         <td>2</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[1][0]}}</td>
                         <td align="center">{{orcamentos[1][1]}}</td>
@@ -125,7 +125,7 @@
                     <tr *ngIf="orcamentos.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[2][0]}}</td>
                         <td align="center">{{orcamentos[2][1]}}</td>
@@ -133,7 +133,7 @@
                     <tr *ngIf="orcamentos.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
-                            <div>P</div>
+                            <div>{{siglaUsuario}}</div>
                         </td>
                         <td>{{orcamentos[3][0]}}</td>
                         <td align="center">{{orcamentos[3][1]}}</td>
@@ -143,4 +143,7 @@
         </div>
     </div>
 </div>
-<p-chart type="pie" [data]="data" [options]="chartOptions"  [style]="{'width': '40%'}"></p-chart>
+<div class="card">
+    <h5> <i class="pi pi-chart-bar"></i> Overview</h5>
+    <p-chart type="bar" [data]="basicData" [options]="basicOptions"></p-chart>
+</div>

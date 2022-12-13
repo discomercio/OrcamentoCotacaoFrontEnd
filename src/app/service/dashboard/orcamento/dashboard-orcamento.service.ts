@@ -15,6 +15,10 @@ export class DashboardOrcamentoService {
   public dashboardOrcamentoParceiro(): Observable<any> {
     return this.http.get<any>(`${this.appSettingsService.config.apiUrl}dashboard/orcamento/parceiro`);
   }
+
+  public dashboardOrcamentoVendedorParceiro(): Observable<any> {
+    return this.http.get<any>(`${this.appSettingsService.config.apiUrl}dashboard/orcamento/vendedor-parceiro`);
+  }  
   
   public dashboardOrcamentoVendedorInterno(loja): Observable<any> {
 

@@ -29,60 +29,82 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
   public orcamentos: string[] = [];
   public carregando: boolean = false;
   public titulo: string;
+  public siglaUsuario: string;
+  public tipoUsuario: number;
 
-  data: any;
-
-  chartOptions: any;
+  basicData: any;
+  basicOptions: any;
 
   ngOnInit(): void {
 
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
 
-    if (this.autenticacaoService._tipoUsuario == 1){
+    if (this.autenticacaoService._tipoUsuario == 1) {
+
       this.dashboardOrcamentoVendedorInterno();
       this.titulo = "Parceiro";
-    }else if (this.autenticacaoService._tipoUsuario == 2){
+      this.siglaUsuario = "P";
+    } else if (this.autenticacaoService._tipoUsuario == 2) {
       this.dashboardOrcamentoParceiro();
       this.titulo = "Vendedor";
-    }else{
-      this.router.navigate(['/']);
+      this.siglaUsuario = "V";
+    } else if (this.autenticacaoService._tipoUsuario == 3) {
+      this.dashboardOrcamentoParceiro();
+      this.titulo = "Vendedor";
+      this.siglaUsuario = "V";
     }
+
 
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      this.montarGrafico();
-    }, 7000);
   }
 
   montarGrafico() {
 
-    this.data = {
-      labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo, 'Orçamentos Expirados', 'Orçamentos à Expirar'],
-      datasets: [
-        {
-          data: [this.caixa1, this.caixa2, this.caixa3, this.caixa4],
-          backgroundColor: [
-            "#42A5F5",
-            "#66BB6A",
-            "#FFA726",
-            "#6f42c1"
-          ],
-          hoverBackgroundColor: [
-            "#64B5F6",
-            "#81C784",
-            "#FFB74D",
-            "#6f42c1"
-          ]
-        }
-      ]
-    };
 
-    this.updateChartOptions();
-
+    if (this.tipoUsuario != 3) {
+      this.basicData = {
+        labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo, 'Orçamentos Expirados', 'Orçamentos à Expirar'],
+        datasets: [
+          {
+            label: 'Exibir/Ocultar',
+            backgroundColor: [
+              "#42A5F5",
+              "#66BB6A",
+              "#FFA726",
+              "#6f42c1"
+            ],
+            data: [
+              this.caixa1,
+              this.caixa2,
+              this.caixa3,
+              this.caixa4
+            ]
+          }
+        ]
+      };
+    }else{
+      this.basicData = {
+        labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo],
+        datasets: [
+          {
+            label: 'Exibir/Ocultar',
+            backgroundColor: [
+              "#FFA726",
+              "#6f42c1"
+            ],
+            data: [
+              this.caixa3,
+              this.caixa4
+            ]
+          }
+        ]
+      };
+    }
   }
 
-  dashboardOrcamentoVendedorInterno() {
+  async dashboardOrcamentoVendedorInterno() {
     var tresDiasAtras = new Date(); tresDiasAtras.setDate(tresDiasAtras.getDate() - 3);
     var tresDiasDepois = new Date(); tresDiasDepois.setDate(tresDiasDepois.getDate() + 3);
 
@@ -93,7 +115,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
 
     this.carregando = true;
 
-    this.dashboardOrcamentoService.dashboardOrcamentoVendedorInterno(this.autenticacaoService._lojaLogado).toPromise().then(response => {
+    let data = await this.dashboardOrcamentoService.dashboardOrcamentoVendedorInterno(this.autenticacaoService._lojaLogado).toPromise().then(response => {
       var indice = 0;
       var caixa1 = 0;
       var caixa2 = 0;
@@ -115,12 +137,12 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         }
 
         // [Sem parceiro]
-        if (response[indice].Parceiro == "-") {
+        if (response[indice].Parceiro == "-" && dataExpiracaoOrcamento >= dataAtual) {
           caixa1++;
         }
 
         // [Com parceiro]
-        if (response[indice].Parceiro != "-") {
+        if (response[indice].Parceiro != "-" && dataExpiracaoOrcamento >= dataAtual) {
           this.orcamentos.push(response[indice].Parceiro);
           caixa2++;
         }
@@ -141,11 +163,12 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       this.sweetalertService.aviso("Falha no carregamento do dashboard.");
     });
 
+    this.montarGrafico();
     this.carregando = false;
 
   }
 
-  dashboardOrcamentoParceiro() {
+  async dashboardOrcamentoParceiro() {
     var tresDiasAtras = new Date(); tresDiasAtras.setDate(tresDiasAtras.getDate() - 3);
     var tresDiasDepois = new Date(); tresDiasDepois.setDate(tresDiasDepois.getDate() + 3);
 
@@ -156,14 +179,13 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
 
     this.carregando = true;
 
-    this.dashboardOrcamentoService.dashboardOrcamentoParceiro().toPromise().then(response => {
+    let data = await this.dashboardOrcamentoService.dashboardOrcamentoParceiro().toPromise().then(response => {
       var indice = 0;
       var caixa1 = 0;
       var caixa2 = 0;
       var caixa3 = 0;
       var caixa4 = 0;
 
-      console.log(response);
       while (indice < response.length) {
 
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
@@ -178,13 +200,13 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
           caixa4++;
         }
 
-        // [Sem parceiro]
-        if (response[indice].IdIndicadorVendedor == null) {
+        // [Sem Vendedor]
+        if (response[indice].IdIndicadorVendedor == null && dataExpiracaoOrcamento >= dataAtual) {
           caixa1++;
         }
 
-        // [Com parceiro]
-        if (response[indice].IdIndicadorVendedor != null) {
+        // [Com vendedor]
+        if (response[indice].IdIndicadorVendedor != null && dataExpiracaoOrcamento >= dataAtual) {
           this.orcamentos.push(response[indice].VendedorParceiro);
           caixa2++;
         }
@@ -205,6 +227,55 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       this.sweetalertService.aviso("Falha no carregamento do dashboard.");
     });
 
+    this.montarGrafico();
+    this.carregando = false;
+
+  }
+
+  async dashboardOrcamentoVendedorParceiro() {
+    var tresDiasAtras = new Date(); tresDiasAtras.setDate(tresDiasAtras.getDate() - 3);
+    var tresDiasDepois = new Date(); tresDiasDepois.setDate(tresDiasDepois.getDate() + 3);
+
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
+
+    let dataTresDiasAtras = DataUtils.formata_dataString_para_formato_data(tresDiasAtras.toLocaleString("pt-br").slice(0, 10));
+    let dataTresDiasDepois = DataUtils.formata_dataString_para_formato_data(tresDiasDepois.toLocaleString("pt-br").slice(0, 10));
+
+    this.carregando = true;
+
+    let data = await this.dashboardOrcamentoService.dashboardOrcamentoVendedorParceiro().toPromise().then(response => {
+      var indice = 0;
+      var caixa3 = 0;
+      var caixa4 = 0;
+
+      while (indice < response.length) {
+
+        var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
+
+        // [Expirados 72h]
+        if (dataExpiracaoOrcamento > dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
+          caixa3++;
+        }
+
+        // [À expirar 72h]
+        if (dataExpiracaoOrcamento < dataAtual && dataExpiracaoOrcamento >= dataTresDiasAtras) {
+          caixa4++;
+        }
+
+        indice++;
+      }
+
+      this.ordenarOrcamentos();
+
+      this.caixa3 = caixa3;
+      this.caixa4 = caixa4;
+
+    }).catch((e) => {
+      this.carregando = false;
+      this.sweetalertService.aviso("Falha no carregamento do dashboard.");
+    });
+
+    this.montarGrafico();
     this.carregando = false;
 
   }
@@ -223,34 +294,6 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
     });
 
     this.orcamentos = sortable;
-  }
-
-  getLightTheme() {
-    return {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#495057'
-          }
-        }
-      }
-    }
-  }
-
-  getDarkTheme() {
-    return {
-      plugins: {
-        legend: {
-          labels: {
-            color: '#ebedef'
-          }
-        }
-      }
-    }
-  }
-
-  updateChartOptions() {
-    this.chartOptions = this.getLightTheme();
   }
 
 }
