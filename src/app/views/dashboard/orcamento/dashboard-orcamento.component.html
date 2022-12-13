@@ -1,0 +1,146 @@
+<div class="dashboard p-grid" [ngClass]="{'carregando': carregando}">    
+    <div class="p-col-12 p-md-6 p-lg-3">
+        <div class="widget-overview overview-box-1">
+            <div class="overview-box-title">
+                <i class="pi pi-circle-off"></i>
+                <span>Orçamentos sem Parceiros</span>
+            </div>
+            <div class="overview-box-count">{{qtdOrcamentoSemParceiro}}</div>
+            <div class="overview-box-stats">Status Enviado</div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-3">
+        <div class="widget-overview overview-box-2">
+            <div class="overview-box-title">
+                <i class="pi pi-circle-on"></i>
+                <span>Orçamentos com Parceiro</span>
+            </div>
+            <div class="overview-box-count">{{qtdOrcamentoComParceiro}}</div>
+            <div class="overview-box-stats">Status Enviado</div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-3">
+        <div class="widget-overview overview-box-3">
+            <div class="overview-box-title">
+                <i class="pi pi-calendar-times"></i>
+                <span>Orçamentos Expirados</span>
+            </div>
+            <div class="overview-box-count">{{qtdOrcamentoExpirado}}</div>
+            <div class="overview-box-stats">Até 3 dias</div>
+        </div>
+    </div>
+    <div class="p-col-12 p-md-6 p-lg-3">
+        <div class="widget-overview overview-box-4">
+            <div class="overview-box-title">
+                <i class="pi pi-clock"></i>
+
+                <span>Orçamentos à Expirar</span>
+            </div>
+            <div class="overview-box-count">{{qtdOrcamentoAExpirar}}</div>
+            <div class="overview-box-stats">Últimos 3 dias</div>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-6">
+        <div class="card widget-statistics">
+
+            <h5><i class="pi pi-globe"></i> Top Parceiro x Orçamentos</h5>
+            <table *ngIf="parceiros.length >=0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Parceiro</th>
+                        <th></th>
+                        <th>Total Orçamentos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr *ngIf="parceiros.length>=2">
+                        <td>1</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-1][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-1][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=3">
+                        <td>2</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-2][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-2][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=3">
+                        <td>3</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-3][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-3][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=4">
+                        <td>4</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[parceiros.length-4][0]}}</td>
+                        <td align="center">{{parceiros[parceiros.length-4][1]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="p-col-12 p-lg-6">
+        <div class="card widget-statistics">
+            <h5><i class="pi pi-sort-numeric-down"></i> Top Down</h5>
+            <table *ngIf="parceiros.length >=0">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Parceiro</th>
+                        <th></th>
+                        <th>Total Orçamentos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngIf="parceiros.length>=1">
+                        <td>1</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[0][0]}}</td>
+                        <td align="center">{{parceiros[0][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=2">
+                        <td>2</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[1][0]}}</td>
+                        <td align="center">{{parceiros[1][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=3">
+                        <td>3</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[2][0]}}</td>
+                        <td align="center">{{parceiros[2][1]}}</td>
+                    </tr>
+                    <tr *ngIf="parceiros.length>=4">
+                        <td>4</td>
+                        <td class="col-overview col-wait">
+                            <div>P</div>
+                        </td>
+                        <td>{{parceiros[3][0]}}</td>
+                        <td align="center">{{parceiros[3][1]}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<p-chart type="pie" [data]="data" [options]="chartOptions"  [style]="{'width': '40%'}"></p-chart>

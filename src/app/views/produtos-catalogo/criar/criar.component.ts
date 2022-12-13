@@ -51,6 +51,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lstFabricantes: SelectItem[] = [];
   lstPropriedades: ProdutoCatalogoOpcao[] = [];
   lstPropriedadesAtivo: any = [];
+  lojaLogado :string;
 
   ngOnInit(): void {
 
@@ -68,6 +69,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.produto.Ativo = true
     this.urlUpload = this.produtoService.urlUpload;
     this.imgUrl = this.produtoService.imgUrl;
+    this.lojaLogado = this.autenticacaoService._lojaLogado;
   }
 
   criarForm() {
@@ -249,6 +251,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
           formData.append("arquivo", this.arquivo, this.arquivo.name);
 
         formData.append("produto", JSON.stringify(prod));
+        formData.append("loja", this.lojaLogado);
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
           if (r != null) {
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
