@@ -3,9 +3,9 @@
         <div class="widget-overview overview-box-1">
             <div class="overview-box-title">
                 <i class="pi pi-circle-off"></i>
-                <span>Orçamentos sem Parceiros</span>
+                <span>Orçamentos sem {{titulo}}</span>
             </div>
-            <div class="overview-box-count">{{qtdOrcamentoSemParceiro}}</div>
+            <div class="overview-box-count">{{caixa1}}</div>
             <div class="overview-box-stats">Status Enviado</div>
         </div>
     </div>
@@ -13,9 +13,9 @@
         <div class="widget-overview overview-box-2">
             <div class="overview-box-title">
                 <i class="pi pi-circle-on"></i>
-                <span>Orçamentos com Parceiro</span>
+                <span>Orçamentos com {{titulo}}</span>
             </div>
-            <div class="overview-box-count">{{qtdOrcamentoComParceiro}}</div>
+            <div class="overview-box-count">{{caixa2}}</div>
             <div class="overview-box-stats">Status Enviado</div>
         </div>
     </div>
@@ -25,7 +25,7 @@
                 <i class="pi pi-calendar-times"></i>
                 <span>Orçamentos Expirados</span>
             </div>
-            <div class="overview-box-count">{{qtdOrcamentoExpirado}}</div>
+            <div class="overview-box-count">{{caixa3}}</div>
             <div class="overview-box-stats">Até 3 dias</div>
         </div>
     </div>
@@ -36,57 +36,57 @@
 
                 <span>Orçamentos à Expirar</span>
             </div>
-            <div class="overview-box-count">{{qtdOrcamentoAExpirar}}</div>
+            <div class="overview-box-count">{{caixa4}}</div>
             <div class="overview-box-stats">Últimos 3 dias</div>
         </div>
     </div>
 
     <div class="p-col-12 p-lg-6">
         <div class="card widget-statistics">
-
-            <h5><i class="pi pi-globe"></i> Top Parceiro x Orçamentos</h5>
-            <table *ngIf="parceiros.length >=0">
+            
+            <h5><i class="pi pi-globe"></i> Top {{titulo}} x Orçamentos</h5>
+            <table *ngIf="orcamentos.length >=0">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Parceiro</th>
+                        <th>{{titulo}}</th>
                         <th></th>
                         <th>Total Orçamentos</th>
                     </tr>
                 </thead>
                 <tbody>
                     
-                    <tr *ngIf="parceiros.length>=2">
+                    <tr *ngIf="orcamentos.length>=1">
                         <td>1</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[parceiros.length-1][0]}}</td>
-                        <td align="center">{{parceiros[parceiros.length-1][1]}}</td>
+                        <td>{{orcamentos[orcamentos.length-1][0]}}</td>
+                        <td align="center">{{orcamentos[orcamentos.length-1][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=3">
+                    <tr *ngIf="orcamentos.length>=2">
                         <td>2</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[parceiros.length-2][0]}}</td>
-                        <td align="center">{{parceiros[parceiros.length-2][1]}}</td>
+                        <td>{{orcamentos[orcamentos.length-2][0]}}</td>
+                        <td align="center">{{orcamentos[orcamentos.length-2][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=3">
+                    <tr *ngIf="orcamentos.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[parceiros.length-3][0]}}</td>
-                        <td align="center">{{parceiros[parceiros.length-3][1]}}</td>
+                        <td>{{orcamentos[orcamentos.length-3][0]}}</td>
+                        <td align="center">{{orcamentos[orcamentos.length-3][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=4">
+                    <tr *ngIf="orcamentos.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[parceiros.length-4][0]}}</td>
-                        <td align="center">{{parceiros[parceiros.length-4][1]}}</td>
+                        <td>{{orcamentos[orcamentos.length-4][0]}}</td>
+                        <td align="center">{{orcamentos[orcamentos.length-4][1]}}</td>
                     </tr>
                 </tbody>
             </table>
@@ -96,47 +96,47 @@
     <div class="p-col-12 p-lg-6">
         <div class="card widget-statistics">
             <h5><i class="pi pi-sort-numeric-down"></i> Top Down</h5>
-            <table *ngIf="parceiros.length >=0">
+            <table *ngIf="orcamentos.length >=0">
                 <thead>
                     <tr>
                         <th></th>
-                        <th>Parceiro</th>
+                        <th>{{titulo}}</th>
                         <th></th>
                         <th>Total Orçamentos</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr *ngIf="parceiros.length>=1">
+                    <tr *ngIf="orcamentos.length>=1">
                         <td>1</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[0][0]}}</td>
-                        <td align="center">{{parceiros[0][1]}}</td>
+                        <td>{{orcamentos[0][0]}}</td>
+                        <td align="center">{{orcamentos[0][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=2">
+                    <tr *ngIf="orcamentos.length>=2">
                         <td>2</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[1][0]}}</td>
-                        <td align="center">{{parceiros[1][1]}}</td>
+                        <td>{{orcamentos[1][0]}}</td>
+                        <td align="center">{{orcamentos[1][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=3">
+                    <tr *ngIf="orcamentos.length>=3">
                         <td>3</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[2][0]}}</td>
-                        <td align="center">{{parceiros[2][1]}}</td>
+                        <td>{{orcamentos[2][0]}}</td>
+                        <td align="center">{{orcamentos[2][1]}}</td>
                     </tr>
-                    <tr *ngIf="parceiros.length>=4">
+                    <tr *ngIf="orcamentos.length>=4">
                         <td>4</td>
                         <td class="col-overview col-wait">
                             <div>P</div>
                         </td>
-                        <td>{{parceiros[3][0]}}</td>
-                        <td align="center">{{parceiros[3][1]}}</td>
+                        <td>{{orcamentos[3][0]}}</td>
+                        <td align="center">{{orcamentos[3][1]}}</td>
                     </tr>
                 </tbody>
             </table>
