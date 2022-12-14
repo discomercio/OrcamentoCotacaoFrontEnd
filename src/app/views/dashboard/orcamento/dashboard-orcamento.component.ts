@@ -127,12 +127,12 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento > dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
           caixa3++;
         }
 
         // [À expirar 72h]
-        if (dataExpiracaoOrcamento < dataAtual && dataExpiracaoOrcamento >= dataTresDiasAtras) {
+        if (dataExpiracaoOrcamento > dataTresDiasDepois) {
           caixa4++;
         }
 
@@ -174,7 +174,6 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
 
     let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
 
-    let dataTresDiasAtras = DataUtils.formata_dataString_para_formato_data(tresDiasAtras.toLocaleString("pt-br").slice(0, 10));
     let dataTresDiasDepois = DataUtils.formata_dataString_para_formato_data(tresDiasDepois.toLocaleString("pt-br").slice(0, 10));
 
     this.carregando = true;
@@ -185,18 +184,19 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       var caixa2 = 0;
       var caixa3 = 0;
       var caixa4 = 0;
-
+      
+      
       while (indice < response.length) {
 
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento > dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
           caixa3++;
         }
 
         // [À expirar 72h]
-        if (dataExpiracaoOrcamento < dataAtual && dataExpiracaoOrcamento >= dataTresDiasAtras) {
+        if (dataExpiracaoOrcamento > dataTresDiasDepois) {
           caixa4++;
         }
 
@@ -253,12 +253,12 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento > dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
           caixa3++;
         }
 
         // [À expirar 72h]
-        if (dataExpiracaoOrcamento < dataAtual && dataExpiracaoOrcamento >= dataTresDiasAtras) {
+        if (dataExpiracaoOrcamento > dataTresDiasDepois) {
           caixa4++;
         }
 
