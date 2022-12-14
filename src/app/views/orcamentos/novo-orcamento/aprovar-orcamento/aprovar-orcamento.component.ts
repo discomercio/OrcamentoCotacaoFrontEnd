@@ -103,13 +103,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.permissaoOrcamentoResponse = response;
 
         if (!this.permissaoOrcamentoResponse.Sucesso) {
-          this.alertaService.mostrarMensagem(this.permissaoOrcamentoResponse.Mensagem);
+          this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
           this.router.navigate(['orcamentos/listar/orcamentos']);
           return;
         }
 
         if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
-          this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+          this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
           this.router.navigate(['orcamentos/listar/orcamentos']);
           return;
         }

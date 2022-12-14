@@ -137,7 +137,7 @@
                                             </div>
 
                                         </div>
-                                        <div class="p-as-center" *ngIf="param != 'novo' && param != 'clone'">
+                                        <div class="p-as-center" *ngIf="param != 'novo' && param != 'clone' && habilitarComissao">
                                             <button
                                                 *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
                                                 pButton type="button" icon="pi pi-user-edit"
