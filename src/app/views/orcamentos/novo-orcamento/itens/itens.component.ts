@@ -35,6 +35,7 @@ import { SelectProdDialogComponent } from '../select-prod-dialog/select-prod-dia
 import { ProdutoTela } from '../select-prod-dialog/produto-tela';
 import { SelectCloneOpcoesDialogComponent } from '../select-clone-opcoes-dialog/select-clone-opcoes-dialog.component';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -80,12 +81,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   selecProdInfo = new SelecProdInfo();
   param: string;
   habilitarClone: boolean = false;
+  habilitarComissao: boolean = true;
 
   ngOnInit(): void {
     this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.novoOrcamentoService.descontoGeral = 0;
-
+    this.permissaoEditarComissao();
   }
   editando: boolean = false;
   verificarParam(param: any) {
@@ -108,6 +110,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
     this.iniciarNovo();
     this.buscarPercentualComissao();
+  }
+
+  permissaoEditarComissao() {
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+          this.habilitarComissao = false;
+      }
   }
 
   abriModalOpcoes() {
