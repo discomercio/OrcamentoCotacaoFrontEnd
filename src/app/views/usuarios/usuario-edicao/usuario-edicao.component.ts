@@ -13,6 +13,7 @@ import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-usuario-edicao',
@@ -24,6 +25,7 @@ export class UsuarioEdicaoComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private readonly sweetalertService: SweetalertService,
     private readonly activatedRoute: ActivatedRoute,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
@@ -52,7 +54,7 @@ export class UsuarioEdicaoComponent implements OnInit {
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
-      this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       this.router.navigate(['orcamentos/listar/orcamentos']);
       return;
     }
@@ -76,14 +78,13 @@ export class UsuarioEdicaoComponent implements OnInit {
 
               // Verifico se o usuário logado tem permissão para editar usuários de outro vendedor              
               if (!this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
-
                 // Verifico se está tentando editar um vendedor que é do parceiro logado
                 if (r.parceiro != this.autenticacaoService._usuarioLogado) {
 
                   // não tem permissão e está tentando editar um vendedor cujo usuário logado não é o responsável (O.o)
                   if (this.autenticacaoService._usuarioLogado != r.vendedorResponsavel) {
-                    this.mensagemService.showWarnViaToast("Ops...você não é responsável por este vendedor!");
-                    this.router.navigate([`/usuarios/usuario-lista`]);
+                    this.sweetalertService.aviso("Ops...você não é responsável por este vendedor!");
+                    window.history.back();
                   }
                 }
               }
