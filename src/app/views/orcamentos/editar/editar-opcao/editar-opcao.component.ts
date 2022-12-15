@@ -83,11 +83,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarCalculoComissao(): boolean {
+    
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-      let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
+      let idDonoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
 
-      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
+      if (idDonoOrcamento == this.autenticacaoService.usuario.id) {
         this.itens.novoOrcamentoService.descontaComissao = true;
         this.itens.novoOrcamentoService.editarComissao = false;
         return true;
