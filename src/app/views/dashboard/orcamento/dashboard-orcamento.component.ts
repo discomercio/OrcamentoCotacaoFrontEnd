@@ -122,12 +122,13 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       var caixa3 = 0;
       var caixa4 = 0;
 
+      console.log(response);
       while (indice < response.length) {
 
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
           caixa3++;
         }
 
@@ -191,7 +192,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
           caixa3++;
         }
 
@@ -253,7 +254,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento < dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
           caixa3++;
         }
 
