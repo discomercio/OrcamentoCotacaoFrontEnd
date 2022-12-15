@@ -120,7 +120,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.filtro.DtInicio = this.minDate;
     this.filtro.DtFim = this.maxDate;
 
-    if(this.parametro == "MSGPENDENTES"){
+    if (this.parametro == "MSGPENDENTES") {
       this.parametro = "ORCAMENTOS";
       this.filtro
       this.filtro.Mensagem = "Sim";
@@ -209,7 +209,7 @@ export class OrcamentosListarComponent implements OnInit {
     ];
     // this.activatedRoute.params.subscribe((param: any) => {
     //   this.parametro = param.filtro.toUpperCase();
-      
+
     // });
   }
 
@@ -285,10 +285,11 @@ export class OrcamentosListarComponent implements OnInit {
 
   filtrar_cboParceiros() {
     this.cboParceiros = [];
-    let lstFiltrada = this.lstDto.filter(x => x.Vendedor == this.filtro.Vendedor);
+    let lstFiltrada = this.lstDto;
 
     if (lstFiltrada.length > 0) {
       lstFiltrada.forEach(x => {
+        
         if (!!x.Parceiro) {
           if (!this.cboParceiros.find(f => f.Value == x.Parceiro))
             this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.Parceiro });
@@ -301,7 +302,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   filtrar_cboVendedoresParceiro() {
 
-    let lstFiltrada = this.lstDto.filter(x => x.Vendedor == this.filtro.Vendedor && x.Parceiro == this.filtro.Parceiro);
+    let lstFiltrada = this.lstDto.filter(x => x.Parceiro == this.filtro.Parceiro);
     if (lstFiltrada.length > 0) {
       this.cboVendedoresParceiros = new Array<DropDownItem>();
       lstFiltrada.forEach(x => {
@@ -341,10 +342,15 @@ export class OrcamentosListarComponent implements OnInit {
     let lstFiltroDatas: Array<ListaDto> = new Array();
     let lstFiltraDataExpiracao: Array<ListaDto> = new Array();
     this.lstDtoFiltrada = new Array();
+    let lstFiltroVendedor = new Array<ListaDto>();
+    let lstFiltroParceiro = new Array<ListaDto>();
 
-    let lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
-    let lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.VisualizarOrcamento)) {
+      lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
+    }
     
+    lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
+
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
@@ -417,7 +423,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.form.controls.vendedorParceiro.setValue(null);
     this.cboVendedoresParceiros = new Array<DropDownItem>();
     this.filtro.IdIndicadorVendedor = null;
-    if(!!event.value) this.filtrar_cboVendedoresParceiro();
+    if (!!event.value) this.filtrar_cboVendedoresParceiro();
     this.Pesquisar_Click();
   }
 
