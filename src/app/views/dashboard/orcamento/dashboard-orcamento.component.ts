@@ -54,7 +54,6 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       this.siglaUsuario = "V";
     }
 
-
   }
 
   ngAfterViewInit(): void {
@@ -65,7 +64,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
 
     if (this.tipoUsuario != 3) {
       this.basicData = {
-        labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo, 'Orçamentos Expirados', 'Orçamentos à Expirar'],
+        labels: ['Orçamentos sem ' + this.titulo, 'Orçamentos com ' + this.titulo, 'A expirar em até 72 horas', 'A expirar a partir de 72 horas'],
         datasets: [
           {
             label: 'Exibir/Ocultar',
@@ -86,7 +85,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       };
     }else{
       this.basicData = {
-        labels: ['Orçamentos Expirados', 'Orçamentos à Expirar'],
+        labels: ['A expirar em até 72h', 'A expirar a partir de 72 horas'],
         datasets: [
           {
             label: 'Exibir/Ocultar',
@@ -122,7 +121,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       var caixa3 = 0;
       var caixa4 = 0;
 
-      console.log(response);
+      //console.log(response);
       while (indice < response.length) {
 
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
