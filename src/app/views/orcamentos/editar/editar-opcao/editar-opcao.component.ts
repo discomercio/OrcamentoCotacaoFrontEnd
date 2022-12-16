@@ -169,6 +169,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
 
   salvarOpcao() {
+    debugger;
     this.carregando = true;
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
       this.carregando = false;
