@@ -83,16 +83,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarCalculoComissao(): boolean {
-    
+
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-      let idDonoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-
-      if (idDonoOrcamento == this.autenticacaoService.usuario.id) {
-        this.itens.novoOrcamentoService.descontaComissao = true;
-        this.itens.novoOrcamentoService.editarComissao = false;
-        return true;
-      }
+      // let idDonoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
 
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
@@ -100,6 +94,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         this.itens.novoOrcamentoService.descontaComissao = false;
         return false;
       }
+
+      let usuarioEnvolvido = this.itens.novoOrcamentoService.verificarUsuarioEnvolvido();
+      if (usuarioEnvolvido) {
+        this.itens.novoOrcamentoService.descontaComissao = true;
+        this.itens.novoOrcamentoService.editarComissao = false;
+        return true;
+      }      
     }
 
     //não tem parceiro
@@ -251,10 +252,11 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   atualizarOpcao() {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
+      this.carregando = false;
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);
+        return;
       }
-      this.carregando = false;
       this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
       this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
 

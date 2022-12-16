@@ -258,6 +258,16 @@ export class NovoOrcamentoService {
     return;
   }
 
+  verificarUsuarioEnvolvido():boolean{
+    let idUsuarioLogado = this.autenticacaoService.usuario.id;
+
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicadorVendedor) return true;
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicador) return true;
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idVendedor) return true;
+
+    return false;
+  }
+
   verificarCalculoComissao(): boolean {
     if (this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR &&
       this.orcamentoCotacaoDto?.parceiro != null) {

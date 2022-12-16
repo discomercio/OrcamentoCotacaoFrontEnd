@@ -91,6 +91,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   editar: boolean = false;
   imgUrl: string;
   mostrarInstaladorInstala: boolean;
+  carregando:boolean = true;
 
   ngOnInit(): void {
 
@@ -301,9 +302,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
         this.buscarFormasPagto();
         this.editarOpcoes = this.verificarEdicaoOpcao(r);
-        console.log(this.editarOpcoes[0]);
-        console.log(this.editarOpcoes[1]);
+        this.carregando = false;
       }
+    }).catch((e) =>{
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
     });
   }
 
