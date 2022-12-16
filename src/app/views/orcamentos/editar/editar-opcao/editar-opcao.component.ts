@@ -48,21 +48,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
-
-
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
-
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
-
-    // let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-    // if (donoOrcamento.toLocaleLowerCase() != this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-    //   if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
-    //     this.router.navigate(["/orcamentos/listar/orcamentos"]);
-    // }
 
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
@@ -86,7 +75,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-      // let idDonoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
 
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
@@ -167,10 +155,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }, 700);
   }
 
-
-
   salvarOpcao() {
-    debugger;
+    
     this.carregando = true;
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
       this.carregando = false;
@@ -236,7 +222,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (Number.parseFloat(atualPercRT) < Number.parseFloat(antigoPercRT)) {
       let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
-      ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+      ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
           this.carregando = false;
