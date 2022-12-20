@@ -1,4 +1,4 @@
-<div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
+<div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" [ngClass]="{'carregando': carregando}">
     <div class="p-grid p-jc-center">
         <div class="p-col-12 p-pb-0 p-order-1">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
@@ -315,8 +315,8 @@
                                     <div class="p-ml-auto p-p-0 p-text-right">
                                         <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotal)}}</span>
                                     </div>
-                                    <div class="p-ml-auto p-p-0 p-text-right">
-                                        <button *ngIf="editar" style="color: #fff;" pButton type="button" label="Editar"
+                                    <div class="p-col-1 p-ml-auto p-p-0 p-text-right">
+                                        <button *ngIf="editarOpcoes[i]" style="color: #fff;" pButton type="button" label="Editar"
                                             icon="pi pi-user-edit" (click)="editarOpcao(orcamento)"
                                             class="p-button-text p-p-0 p-text-bold"></button>
                                     </div>

@@ -82,7 +82,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   exibeBotaoProrrogar: boolean;
   exibeBotaoNenhumaOpcao: boolean;
   exibeBotaoClonar: boolean;
-  exibeBotaoReenviar: boolean;  
+  exibeBotaoReenviar: boolean;
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
@@ -90,43 +90,43 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   permissaoOrcamentoResponse: PermissaoOrcamentoResponse;
   editar: boolean = false;
   imgUrl: string;
-  mostrarInstaladorInstala:boolean;
+  mostrarInstaladorInstala: boolean;
+  carregando:boolean = true;
 
   ngOnInit(): void {
 
-    this.imgUrl = this.produtoCatalogoService.imgUrl;  
+    this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
 
     this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise().then(response => {
 
-        this.permissaoOrcamentoResponse = response;
+      this.permissaoOrcamentoResponse = response;
 
-        if (!this.permissaoOrcamentoResponse.Sucesso) {
-          this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
-          this.router.navigate(['orcamentos/listar/orcamentos']);
-          return;
-        }
+      if (!this.permissaoOrcamentoResponse.Sucesso) {
+        this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+        return;
+      }
 
-        if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
-          this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-          this.router.navigate(['orcamentos/listar/orcamentos']);
-          return;
-        }
+      if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
+        this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+        return;
+      }
+
+      this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
+      this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
+      this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
+      this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
+      this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
+      this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
+      this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
+      this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
       
-        this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
-        this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
-        this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
-        this.editar =this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
-        this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
-        this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
-        this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
-        this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
-        this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
-
-        this.carrregarBotoneira();
+      this.carrregarBotoneira();
     }).catch((response) => this.alertaService.mostrarErroInternet(response));
-    
+
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
@@ -174,7 +174,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         icon: 'pi pi-fw pi-send',
         visible: this.exibeBotaoReenviar,
         command: () => this.reenviarOrcamento()
-      },      
+      },
       {
         label: 'Nenhuma',
         visible: this.exibeBotaoNenhumaOpcao
@@ -223,9 +223,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  retornarInstaldorInstala(instaladorInstala:number){
-    if(instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_NAO) return "Não";
-    if(instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_SIM) return "Sim";
+  retornarInstaldorInstala(instaladorInstala: number) {
+    if (instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_NAO) return "Não";
+    if (instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_SIM) return "Sim";
   }
 
   buscarParametros(id: number) {
@@ -300,12 +300,27 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.buscarParceiro(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro);
         }
         this.buscarFormasPagto();
+        this.editarOpcoes = this.verificarEdicaoOpcao(r);
+        this.carregando = false;
       }
+    }).catch((e) =>{
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
     });
   }
 
-  verificarAlcadaUsuario(idOpcao: number): boolean {
-    return this.novoOrcamentoService.verificarAlcadaUsuario(idOpcao);
+
+  editarOpcoes = new Array<boolean>();
+  verificarEdicaoOpcao(orcamento: OrcamentoCotacaoResponse):Array<boolean> {
+    let permissaoEdicao = this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
+    let opcoes = new Array<boolean>();
+    for (let i = 0; i < orcamento.listaOrcamentoCotacaoDto.length; i++) {
+      let alcadaUsuario = this.novoOrcamentoService.verificarAlcadaUsuario(orcamento.listaOrcamentoCotacaoDto[i].id);
+      if (permissaoEdicao && alcadaUsuario) opcoes.push(true);
+      else opcoes.push(false);
+    }
+
+    return opcoes;
   }
 
   buscarParceiro(apelido) {
@@ -329,26 +344,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
-
-
-    // orcamento.listaOrcamentoCotacaoDto.forEach(opcao => {
-    //   opcao.formaPagto.forEach(p => {
-    //     formaPagtoOrcamento.push(p);
-    //     // Se aprovado, retorna somente opções aprovadas
-    //     // if (orcamento.status == 3) {
-
-    //     //   if (p['aprovado'] == true) {
-    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = true;
-    //     //     formaPagtoOrcamento.push(p);
-    //     //   } else {
-    //     //     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.aprovado = false;
-    //     //   }
-    //     // } else {
-    //     //   formaPagtoOrcamento.push(p);
-    //     // }
-
-    //   })
-    // });
 
     this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
       comIndicacao, tipoUsuario, apelido)
@@ -436,7 +431,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
           if (r.tipo == "SUCCESS") {
             this.mensagemService.showSuccessViaToast(r.mensagem);
-          }          
+          }
 
         }
         // window.location.reload();
@@ -444,7 +439,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
 
     });
-  }  
+  }
 
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();

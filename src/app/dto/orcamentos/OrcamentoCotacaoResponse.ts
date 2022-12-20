@@ -23,6 +23,7 @@ export class OrcamentoCotacaoResponse {
     dataCadastro:string;
     idIndicador:number;
     idIndicadorVendedor:number;
+    idVendedor:number;
     statusEmail:string;
     instaladorInstala:number;
     erro:string;

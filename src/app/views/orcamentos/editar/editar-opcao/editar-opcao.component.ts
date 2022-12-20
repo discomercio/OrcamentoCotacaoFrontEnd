@@ -48,21 +48,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarPermissao() {
-
-
     if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
-
       this.router.navigate(["/orcamentos/listar/orcamentos"]);
       return;
     }
-
-    // let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-    // if (donoOrcamento.toLocaleLowerCase() != this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-    //   if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-    //     !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3))
-    //     this.router.navigate(["/orcamentos/listar/orcamentos"]);
-    // }
 
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
@@ -83,15 +72,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   verificarCalculoComissao(): boolean {
+
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-      let donoOrcamento = this.itens.novoOrcamentoService.VerificarUsuarioLogadoDonoOrcamento();
-
-      if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) {
-        this.itens.novoOrcamentoService.descontaComissao = true;
-        this.itens.novoOrcamentoService.editarComissao = false;
-        return true;
-      }
 
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
@@ -99,6 +82,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         this.itens.novoOrcamentoService.descontaComissao = false;
         return false;
       }
+
+      let usuarioEnvolvido = this.itens.novoOrcamentoService.verificarUsuarioEnvolvido();
+      if (usuarioEnvolvido) {
+        this.itens.novoOrcamentoService.descontaComissao = true;
+        this.itens.novoOrcamentoService.editarComissao = false;
+        return true;
+      }      
     }
 
     //não tem parceiro
@@ -165,9 +155,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }, 700);
   }
 
-
-
   salvarOpcao() {
+    
     this.carregando = true;
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
       this.carregando = false;
@@ -233,7 +222,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (Number.parseFloat(atualPercRT) < Number.parseFloat(antigoPercRT)) {
       let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
-      ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+      ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
           this.carregando = false;
@@ -249,10 +238,11 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   atualizarOpcao() {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
+      this.carregando = false;
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);
+        return;
       }
-      this.carregando = false;
       this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
       this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
 

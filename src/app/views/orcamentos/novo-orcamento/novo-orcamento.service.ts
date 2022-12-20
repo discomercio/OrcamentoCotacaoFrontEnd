@@ -242,20 +242,30 @@ export class NovoOrcamentoService {
 
   }
 
-  VerificarUsuarioLogadoDonoOrcamento(): string {
+  VerificarUsuarioLogadoDonoOrcamento(): number {
     if (this.orcamentoCotacaoDto?.vendedorParceiro != null) {
-      return this.orcamentoCotacaoDto.vendedorParceiro;
+      return this.orcamentoCotacaoDto.idIndicadorVendedor;
     }
     if (this.orcamentoCotacaoDto?.parceiro != null && this.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR) {
       //parceiro é o dono
-      return this.orcamentoCotacaoDto.parceiro;
+      return this.orcamentoCotacaoDto.idIndicador;
     }
     if (this.orcamentoCotacaoDto?.vendedor != null) {
       //vendedor é o dono
-      return this.orcamentoCotacaoDto.vendedor;
+      return this.orcamentoCotacaoDto.idVendedor;
     }
 
     return;
+  }
+
+  verificarUsuarioEnvolvido():boolean{
+    let idUsuarioLogado = this.autenticacaoService.usuario.id;
+
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicadorVendedor) return true;
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicador) return true;
+    if(idUsuarioLogado == this.orcamentoCotacaoDto.idVendedor) return true;
+
+    return false;
   }
 
   verificarCalculoComissao(): boolean {
@@ -352,8 +362,8 @@ export class NovoOrcamentoService {
     if (validade <= dataAtual) return false;
 
     //ver se o usuário é o dono, se não for verificar se tem permissão de desconto superior
-    let donoOrcamento = this.VerificarUsuarioLogadoDonoOrcamento();
-    if (donoOrcamento.toLocaleLowerCase() == this.autenticacaoService.usuario.nome.toLocaleLowerCase()) return true;
+    let idDonoOrcamento = this.VerificarUsuarioLogadoDonoOrcamento();
+    if (idDonoOrcamento == this.autenticacaoService.usuario.id) return true;
     else {
       if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
         this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||

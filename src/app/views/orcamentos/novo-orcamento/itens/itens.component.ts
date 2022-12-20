@@ -114,10 +114,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   permissaoEditarComissao() {
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-          this.habilitarComissao = false;
-      }
+      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+      this.habilitarComissao = false;
+    }
   }
 
   abriModalOpcoes() {
@@ -278,6 +278,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
 
         if (!this.novoOrcamentoService.editando) {
+          debugger;
           this.novoOrcamentoService.setarPercentualComissao();
           return;
         }
@@ -413,6 +414,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
+    debugger;
     if (this.novoOrcamentoService.calcularComissaoAuto)
       this.novoOrcamentoService.calcularPercentualComissao();
   }
@@ -753,7 +755,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   antigoPercRT: number;
   formataComissao(e: Event) {
-    
+
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '').replace(/\./g, "");
     v = Number.parseFloat((v * 0.1) + '');
