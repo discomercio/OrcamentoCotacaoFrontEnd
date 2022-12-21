@@ -34,7 +34,7 @@
         <div class="tabela" style="max-height: 250px; overflow-y: auto;">
             <p-table #dt1 [value]="lstEnderecos" [responsive]="true" responsiveLayout="stack"
                 styleClass="p-datatable-customers p-datatable-striped" [rows]="10" autoLayout="true"
-                [(selection)]="endereco" [paginator]="true" [filterDelay]="0" [(first)]="paginacao">
+                [(selection)]="enderecoSelecionado" [paginator]="true" [filterDelay]="0" [(first)]="paginacao">
                 <ng-template pTemplate="emptymessage">
                     <tr>
                         <td class="p-text-center" colspan="7">
