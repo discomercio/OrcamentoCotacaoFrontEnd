@@ -34,6 +34,7 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
   carregando: boolean;
   origem: string;
   paginacao:number = 0;
+  enderecoSelecionado:string;
 
   ngOnInit(): void {
     this.origem = this.option.data.origem;
@@ -167,12 +168,13 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
     }
   }
   addEndereco() {
-    if (this.endereco != null) {
-      this.ref.close(this.endereco);
+    if (this.enderecoSelecionado != null) {
+      this.ref.close(this.enderecoSelecionado);
     }
     return;
   }
 
   marcarLinha(e: Event) {
+    debugger;
   }
 }
