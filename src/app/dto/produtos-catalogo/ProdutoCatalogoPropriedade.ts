@@ -10,5 +10,6 @@ export class ProdutoCatalogoPropriedade{
     ordem: number;
     dt_cadastro: string;
     usuario_cadastro: string;
+    loja:string;
     produtoCatalogoPropriedadeOpcao:ProdutoCatalogoPropriedadeOpcao[]
 }
