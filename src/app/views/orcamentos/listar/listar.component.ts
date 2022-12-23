@@ -226,6 +226,7 @@ export class OrcamentosListarComponent implements OnInit {
             }
           });
           this.popularTela();
+          window.location.reload();
         }).catch(e => this.alertaService.mostrarErroInternet("Falha ao excluir!"));
       }
     });
