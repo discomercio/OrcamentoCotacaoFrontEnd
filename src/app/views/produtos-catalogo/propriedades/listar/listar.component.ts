@@ -94,7 +94,8 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
         return;
       }
       else {
-        this.service.excluirPropriedades(id).toPromise().then((resp) => {
+        let loja = this.autenticacaoService._lojaLogado;
+        this.service.excluirPropriedades(id, loja).toPromise().then((resp) => {
 
           if(resp) {
             this.sweetalertService.sucesso("Propriedade excluída com sucesso.");  
