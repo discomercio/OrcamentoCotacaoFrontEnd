@@ -23,19 +23,19 @@ export class PedidoDetalhesComponent implements OnInit {
     public readonly pedidoService: PedidoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
-    private location: Location,  
+    private location: Location,
     private router: Router,
     private readonly permissaoService: PermissaoService
   ) { }
 
-  
+
   dataFormatarTela = DataUtils.formatarTela;
 
   numeroPedido = "";
   pedido: any = null;
-  stringUtils = new StringUtils();  
-  moedaUtils: MoedaUtils = new MoedaUtils();  
-  dataUtils: DataUtils = new DataUtils();  
+  stringUtils = new StringUtils();
+  moedaUtils: MoedaUtils = new MoedaUtils();
+  dataUtils: DataUtils = new DataUtils();
   formatarTelefone: FormataTelefone = new FormataTelefone();
   formatarEndereco: FormatarEndereco = new FormatarEndereco();
   constantes: Constantes = new Constantes();
@@ -44,13 +44,13 @@ export class PedidoDetalhesComponent implements OnInit {
   permissaoPedidoResponse: PermissaoPedidoResponse;
 
   montarEnderecoEntrega(enderecoEntregaDto: any) {
-    
+
     if (enderecoEntregaDto.OutroEndereco) {
       let retorno: string = "";
       let sEndereco: string;
       let split: string[];
       //vamos formatar conforme é feito no asp
-      
+
       sEndereco = this.formatarEndereco.formata_endereco(enderecoEntregaDto.EndEtg_endereco,
         enderecoEntregaDto.EndEtg_endereco_numero, enderecoEntregaDto.EndEtg_endereco_complemento,
         enderecoEntregaDto.EndEtg_bairro, enderecoEntregaDto.EndEtg_cidade, enderecoEntregaDto.EndEtg_uf,
@@ -69,7 +69,7 @@ export class PedidoDetalhesComponent implements OnInit {
       //     return;
       //   }
       // }
-      
+
       //memorização ativa, colocamos os campos adicionais
       if (enderecoEntregaDto.EndEtg_tipo_pessoa == this.constantes.ID_PF) {
         this.enderecoEntregaFormatado = this.formatarEndereco.montarEnderecoEntregaPF(this.pedido.EnderecoEntrega, sEndereco);
@@ -97,38 +97,41 @@ export class PedidoDetalhesComponent implements OnInit {
 
   voltar() {
     this.location.back();
-  } 
+  }
 
   editar() {
     //
   }
-  
+
   //para dizer se é PF ou PJ
   ehPf(): boolean {
     if (this.pedido && this.pedido.DadosCliente && this.pedido.DadosCliente.Tipo)
       return this.pedido.DadosCliente.Tipo == 'PF';
     //sem dados! qualquer opção serve...  
     return true;
-  }     
+  }
 
   somenteDigito(msg: string): string {
     return msg.replace(/\D/g, "");
   }
-  
+
   //status da entrega imediata
   entregaImediata(): string {
     if (!this.pedido || !this.pedido.DetalhesNF)
       return "";
 
     return this.pedido.DetalhesNF.EntregaImediata;
-  }  
+  }
 
   ngOnInit() {
+
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+
     this.numeroPedido = this.activatedRoute.snapshot.params.numeroPedido;
 
-     this.permissaoService.buscarPermissaoPedido(this.numeroPedido).toPromise().then(response => {
+    this.permissaoService.buscarPermissaoPedido(this.numeroPedido).toPromise().then(response => {
 
-       this.permissaoPedidoResponse = response;
+      this.permissaoPedidoResponse = response;
 
       if (!this.permissaoPedidoResponse.Sucesso) {
         this.alertaService.mostrarMensagem(this.permissaoPedidoResponse.Mensagem);
@@ -142,23 +145,23 @@ export class PedidoDetalhesComponent implements OnInit {
         return;
       }
 
-      if(this.permissaoPedidoResponse.PrePedidoVirouPedido) {
+      if (this.permissaoPedidoResponse.PrePedidoVirouPedido) {
         this.numeroPedido = this.permissaoPedidoResponse.IdPedido;
       }
 
       this.carregar();
 
-      if(this.pedido != null) {
+      if (this.pedido != null) {
         setTimeout(() => {
           this.montarEnderecoEntrega(this.pedido.EnderecoEntrega);
         }, 7000);
       }
-      
+
     }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
-  consultarCliente(){
+  consultarCliente() {
     let cliente = StringUtils.retorna_so_digitos(this.pedido.DadosCliente.Cnpj_Cpf);
-     this.router.navigate(["/prepedido/cliente/cliente", cliente]);
+    this.router.navigate(["/prepedido/cliente/cliente", cliente]);
   }
 }
