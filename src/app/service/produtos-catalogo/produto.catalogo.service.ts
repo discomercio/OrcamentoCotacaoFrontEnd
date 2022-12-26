@@ -21,7 +21,7 @@ export class ProdutoCatalogoService {
 
 
     constructor(
-        private http: HttpClient, 
+        private http: HttpClient,
         private appSettingsService: AppSettingsService) {
         this.urlUpload = `${this.appSettingsService.config.apiUrl}produtocatalogo/imagem`;
         this.imgUrl = `${this.appSettingsService.config.imgUrl}`;
@@ -122,8 +122,8 @@ export class ProdutoCatalogoService {
         );
     }
 
-    buscarPropriedadesProdutoAtivo(obj:ProdutosAtivosRequestViewModel): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
-        
+    buscarPropriedadesProdutoAtivo(obj: ProdutosAtivosRequestViewModel): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
+
         return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
             `${this.appSettingsService.config.apiUrl}produto/buscar-produtos-opcoes-ativos`, obj
         );
@@ -171,7 +171,7 @@ export class ProdutoCatalogoService {
     }
 
     listarProdutosPropriedadesAtivos(
-        request:ProdutoCalculadoraVrfRequestViewModel
+        request: ProdutoCalculadoraVrfRequestViewModel
     ): Observable<ProdutoCatalogoItemProdutosAtivosDados[]> {
         return this.http.post<ProdutoCatalogoItemProdutosAtivosDados[]>(
             `${this.appSettingsService.config.apiUrl}produtocatalogo/listar-produtos-propriedades`, request
@@ -188,15 +188,15 @@ export class ProdutoCatalogoService {
         return this.http.get<Array<DataType>>(`${this.appSettingsService.config.apiUrl}produtocatalogo/buscarDataTypes`);
     }
 
-    buscarTipoPropriedades():Observable<Array<any>>{
+    buscarTipoPropriedades(): Observable<Array<any>> {
         return this.http.get<Array<any>>(`${this.appSettingsService.config.apiUrl}produtocatalogo/buscarTipoPropriedades`);
     }
 
-    buscarPropriedadesUtilizadas(id: number) : Observable<any> {
+    buscarPropriedadesUtilizadas(id: number): Observable<any> {
         return this.http.get<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ObterPropriedadesUtilizadosPorProdutos/${id}`);
     }
 
-    excluirPropriedades(id: number) : Observable<any> {
-        return this.http.post<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id });
+    excluirPropriedades(id: number, loja: string): Observable<any> {
+        return this.http.post<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id, loja: loja });
     }
 }

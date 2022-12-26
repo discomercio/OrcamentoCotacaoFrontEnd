@@ -383,6 +383,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   criarPropriedade(propriedade: ProdutoCatalogoPropriedade) {
+    propriedade.loja = this.autenticacaoService._lojaLogado;
     this.produtoService.criarPropriedades(propriedade).toPromise().then((r) => {
       if (r == null) {
         this.mensagemService.showSuccessViaToast("Propriedade criada com sucesso!");
