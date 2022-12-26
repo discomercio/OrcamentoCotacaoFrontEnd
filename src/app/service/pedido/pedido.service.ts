@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import {Observable} from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { CommonModule } from "@angular/common";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
@@ -12,10 +12,10 @@ export class PedidoService {
   private pedidos$: Observable<any> = new Observable();
 
   constructor(
-    private http:HttpClient, 
+    private http: HttpClient,
     private appSettingsService: AppSettingsService) { }
 
-  carregar(numeroPedido:any){
+  carregar(numeroPedido: any) {
 
     // Initialize Params Object
     let params = new HttpParams();
@@ -23,11 +23,11 @@ export class PedidoService {
     //adiciona todos os parametros por nome
     params = params.append('numPedido', numeroPedido);
     this.carregando = true;
-    
+
     this.pedidos$ = Observable.create(observer => {
       this.http.get<any>(this.appSettingsService.config.apiUrl + 'api/pedido/buscarPedido', { params: params }).toPromise()
         .then(response => {
-          if(response)
+          if (response)
             this.carregando = false;
           observer.next(response);
           observer.complete();
@@ -36,7 +36,7 @@ export class PedidoService {
           observer.error(err);
         });
     });
-    return this.pedidos$;    
+    return this.pedidos$;
 
   }
 
