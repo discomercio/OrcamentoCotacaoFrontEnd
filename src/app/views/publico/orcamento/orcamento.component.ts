@@ -14,15 +14,14 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import { Constantes } from 'src/app/utilities/constantes';
 import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
-import { PublicoCadastroClienteComponent } from '../cadastro-cliente/cadastro-cliente.component';
 import { PublicoHeaderComponent } from '../header/header.component';
 import { PublicoService } from 'src/app/service/publico/publico.service';
 import { AprovacaoPublicoService } from '../aprovacao-publico.service';
-import { FormaPagto } from 'src/app/dto/forma-pagto/forma-pagto';
 import { OrcamentoOpcaoDto } from 'src/app/dto/orcamentos/orcamento-opcao-dto';
 import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produto.catalogo.service'
-import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
-import { enumParametros } from '../../orcamentos/enumParametros';
+import { LojasService } from 'src/app/service/lojas/lojas.service';
+import { Title } from '@angular/platform-browser';
+import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
 
 @Component({
   selector: 'app-orcamento',
@@ -40,7 +39,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
-    private readonly produtoCatalogoService: ProdutoCatalogoService
+    private readonly produtoCatalogoService: ProdutoCatalogoService,
+    private readonly lojaService: LojasService
   ) {
     super(telaDesktopService);
   }
@@ -58,6 +58,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   desabiltarBotoes: boolean;
   opcaoPagtoSelecionada: FormaPagtoCriacao;
   imgUrl: string;
+  _lojaEstilo: lojaEstilo = new lojaEstilo();
+  favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+  private titleService: Title
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
@@ -148,7 +151,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.paramGuid = param.guid;
           }
 
-          this.publicHeader.imagemLogotipo = 'assets/layout/images/' + this.orcamento.lojaViewModel.imagemLogotipo;
+          this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
+            if (!!r) {
+              this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;
+              this.publicHeader.corCabecalho = r.corCabecalho + " !important";
+              this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+              this.titleService.setTitle(r.titulo);
+            }
+          });
 
           if (this.mensagemComponente != undefined) {
             this.mensagemComponente.permiteEnviarMensagem = true;

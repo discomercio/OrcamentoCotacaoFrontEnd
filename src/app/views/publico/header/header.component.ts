@@ -13,4 +13,5 @@ export class PublicoHeaderComponent implements OnInit {
   ngOnInit(): void {
   }
   imagemLogotipo:string;
+  corCabecalho:string;
 }
