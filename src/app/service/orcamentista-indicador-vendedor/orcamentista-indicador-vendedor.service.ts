@@ -51,10 +51,7 @@ export class OrcamentistaIndicadorVendedorService {
   }
   cadastrar(usuario: Usuario): Observable<Usuario> {
     return this.http.post<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
-  }
-  cadastrarPorUsuarioInterno(usuario: Usuario): Observable<Usuario> {
-    return this.http.post<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros-usuario-interno', usuario);
-  }  
+  } 
   atualizar(usuario: Usuario): Observable<Usuario> {
     return this.http.put<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
