@@ -254,10 +254,11 @@ export class OrcamentosListarComponent implements OnInit {
 
   montarLinhaBusca() {
     this.lstDto.forEach(x => {
-      x.linhaBusca = x.NumeroOrcamento ? x.NumeroOrcamento : x.NumPedido;
+      x.linhaBusca = x.NumeroOrcamento + "/" + x.NumPedido;
       x.linhaBusca += "/" + x.Cliente_Obra.toLowerCase() + "/";
     });
   }
+  
   popularTela() {
     this.setarPaginacao();
     this.buscarStatus();
