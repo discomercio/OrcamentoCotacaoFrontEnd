@@ -233,14 +233,15 @@
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddComercial">
-                                    ({{pedido.DadosCliente.DddComercial}})
-                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;</p>
+                                    ({{pedido.DadosCliente.DddComercial}}) 
+                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;<span *ngIf="pedido.DadosCliente.Ramal">- (Ramal {{pedido.DadosCliente.Ramal}}) </span></p>
+                                    
                             </td>
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddComercial2">
-                                    ({{pedido.DadosCliente.DddComercia2l}})
-                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial2)}} &nbsp;</p>
+                                    ({{pedido.DadosCliente.DddComercial2}})
+                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial2)}} &nbsp;<span *ngIf="pedido.DadosCliente.Ramal2">- (Ramal {{pedido.DadosCliente.Ramal2}}) </span></p>
                             </td>
                         </tr>
 
