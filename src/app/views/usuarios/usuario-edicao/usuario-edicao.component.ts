@@ -190,27 +190,15 @@ export class UsuarioEdicaoComponent implements OnInit {
           this.alertaService.mostrarErroInternet(e);
         });
     } else {
-      if (this.autenticacaoService._tipoUsuario == 1) {
-        this.orcamentistaIndicadorVendedorService.cadastrarPorUsuarioInterno(this.usuario)
-          .toPromise()
-          .then((x) => {
-            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
-            this.router.navigate([`/usuarios/usuario-lista`]);
-          })
-          .catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
-          });
-      } else {
-        this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
-          .toPromise()
-          .then((x) => {
-            this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
-            this.router.navigate([`/usuarios/usuario-lista`]);
-          })
-          .catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
-          });
-      }
+      this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
+        .toPromise()
+        .then((x) => {
+          this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
+          this.router.navigate([`/usuarios/usuario-lista`]);
+        })
+        .catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
+        });
     }
   }
 
