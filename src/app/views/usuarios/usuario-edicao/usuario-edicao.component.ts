@@ -142,7 +142,8 @@ export class UsuarioEdicaoComponent implements OnInit {
       confirmacao: [this.usuario.senha, [Validators.required, Validators.minLength(8)]],
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
-      ativo: [this.usuario.ativo, Validators.required]
+      ativo: [this.usuario.ativo, Validators.required],
+      parceiro:[]
     },
       { validators: this.validacaoCustomizadaService.compararSenha() });
 
