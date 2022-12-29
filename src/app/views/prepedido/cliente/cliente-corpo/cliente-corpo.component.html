@@ -596,7 +596,7 @@ para não dar erro no console
             <div *ngIf="ehPf()">
                 <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
                     <input [textMask]="{mask: mascaraTelefone}"
-                        [(ngModel)]="enderecoCadastralClientePrepedidoDto.Endereco_tel_res" required type="text"
+                        [(ngModel)]="enderecoCadastralClientePrepedidoDto.Endereco_tel_res" type="text"
                         matInput placeholder="FONE RESIDENCIAL" maxlength="16" size="16" />
                 </mat-form-field>
 
@@ -624,7 +624,7 @@ para não dar erro no console
                 <mat-form-field floatLabel="floatLabel()" class="edicao-telefone">
                     <input [textMask]="{mask: mascaraTelefone}"
                         [(ngModel)]="enderecoCadastralClientePrepedidoDto.Endereco_tel_com" type="text" matInput
-                        placeholder="TELEFONE 1" required maxlength="16" size="16" />
+                        placeholder="TELEFONE 1" maxlength="16" size="16" />
                 </mat-form-field>
                 <mat-form-field floatLabel="floatLabel()" class="edicao-ramal">
                     <input matInput type="text" placeholder="RAMAL"
