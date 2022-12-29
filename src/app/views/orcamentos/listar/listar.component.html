@@ -178,8 +178,9 @@
                                     }}
                                 </span>                                                            
                             </td>
+                                                        
                             <td *ngIf="parametro == 'PENDENTES'">
-                                <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0'" style="color: red;"
+                                <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0' && rowData['Status'] != 'Cancelado' " style="color: red;"
                                     (click)="btnDelete_onClick(rowData['NumPedido'])"></i>
                             </td>
                         </tr>
