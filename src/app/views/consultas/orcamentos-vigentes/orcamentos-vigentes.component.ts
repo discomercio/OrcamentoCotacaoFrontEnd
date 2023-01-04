@@ -10,44 +10,8 @@ import { DropDownItem } from '../../orcamentos/models/DropDownItem';
 })
 export class OrcamentosVigentesComponent implements OnInit {
 
-  constructor(private fb: FormBuilder,
-    private readonly usuarioService: UsuariosService) { }
-
-  form: FormGroup;
-
-  //Combos
-  cboVendedores: Array<DropDownItem> = [];
-  cboLojas: Array<DropDownItem> = [];
-  cboComParceiros: Array<DropDownItem> = [];
-  cboParceiros: Array<DropDownItem> = [];
-  cboVendedoresParceiros: Array<DropDownItem> = [];
-  cboFabricantes: Array<DropDownItem> = [];
-  cboGrupos: Array<DropDownItem> = [];
+  constructor() { }
 
   ngOnInit(): void {
-    this.criarForm();
-    this.buscarTodosVendedores();
-  }
-
-  criarForm() {
-    this.form = this.fb.group({
-      vendedor: [],
-      loja: [],
-      comParceiro: [],
-      parceiro: [],
-      vendedorParceiro: [],
-      fabricante: [],
-      grupo: [],
-      dtCriacaoInicio: [],
-      dtCriacaoFim: []
-    });
-  }
-
-  buscarTodosVendedores(){
-    this.usuarioService.buscarTodosUsuarios().toPromise().then((r) =>{
-      if(r!=null){
-        
-      }
-    });
   }
 }

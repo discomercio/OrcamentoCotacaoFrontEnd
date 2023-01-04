@@ -53,6 +53,9 @@ import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-c
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-cliente/cadastro-cliente.component';
 import { OrcamentosVigentesComponent } from 'src/app/views/consultas/orcamentos-vigentes/orcamentos-vigentes.component';
+import { OrcamentosCadastradosComponent } from 'src/app/views/consultas/orcamentos-cadastrados/orcamentos-cadastrados.component';
+import { OrcamentosComMensagensPendentesComponent } from 'src/app/views/consultas/orcamentos-com-mensagens-pendentes/orcamentos-com-mensagens-pendentes.component';
+import { OrcamentosExpiradosComponent } from 'src/app/views/consultas/orcamentos-expirados/orcamentos-expirados.component';
 
 @NgModule({
     imports: [
@@ -240,6 +243,9 @@ import { OrcamentosVigentesComponent } from 'src/app/views/consultas/orcamentos-
                             {
                                 path: 'consultas', canActivate: [AuthGuard], children: [
                                     { path: "orcamentos-vigentes", canActivate: [AuthGuard], component: OrcamentosVigentesComponent },
+                                    { path: "orcamentos-cadastrados", canActivate: [AuthGuard], component: OrcamentosCadastradosComponent },
+                                    { path: "orcamentos-com-mensagens-pendentes", canActivate: [AuthGuard], component: OrcamentosComMensagensPendentesComponent },
+                                    { path: "orcamentos-expirados", canActivate: [AuthGuard], component: OrcamentosExpiradosComponent },
                                 ]
                             }
                         ]
