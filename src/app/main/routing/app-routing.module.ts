@@ -52,6 +52,7 @@ import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/clien
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-cliente/cadastro-cliente.component';
+import { OrcamentosVigentesComponent } from 'src/app/views/consultas/orcamentos-vigentes/orcamentos-vigentes.component';
 
 @NgModule({
     imports: [
@@ -236,6 +237,11 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
                                     { path: 'senha-meusdados', component: SenhaMeusdadosComponent, canActivate: [AuthGuard] },
                                 ]
                             },
+                            {
+                                path: 'consultas', canActivate: [AuthGuard], children: [
+                                    { path: "orcamentos-vigentes", canActivate: [AuthGuard], component: OrcamentosVigentesComponent },
+                                ]
+                            }
                         ]
                     }
                 ]

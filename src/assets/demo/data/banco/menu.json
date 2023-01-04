@@ -119,6 +119,22 @@
                 "routerLink": [
                     "/calculadora-vrf"
                 ]
+            },
+            {
+                "label": "Consultas",
+                "icon": "fa fa-search",
+                "routerLink": [
+                    "/consultas"
+                ],
+                "items": [
+                    {
+                        "label": "Orçamentos vigentes",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamentos-vigentes"
+                        ]
+                    }
+                ]
             }
         ]
     }

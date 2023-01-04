@@ -83,6 +83,7 @@ import { StoreModule } from "@ngrx/store";
 import { IndexReducer } from "../dto/index.store";
 import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
 import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashboard-orcamento.component";
+import { OrcamentosVigentesComponent } from "../views/consultas/orcamentos-vigentes/orcamentos-vigentes.component";
 
 @NgModule({
     imports: [
@@ -141,7 +142,8 @@ import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashbo
         CepComponent,
         CepDialogComponent,
         EnderecoEntregaComponent,
-        DashboardOrcamentoComponent
+        DashboardOrcamentoComponent,
+        OrcamentosVigentesComponent
     ],
     providers: [
         // {
