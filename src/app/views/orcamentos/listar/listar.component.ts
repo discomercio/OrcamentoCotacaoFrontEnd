@@ -255,7 +255,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   montarLinhaBusca() {
     this.lstDto.forEach(x => {
-      x.linhaBusca = x.NumeroOrcamento + "/" + x.NumPedido;
+      x.linhaBusca = x.NumeroOrcamento + "/" + x.NumPedido.toLowerCase();
       x.linhaBusca += "/" + x.Cliente_Obra.toLowerCase() + "/";
     });
   }
