@@ -1,4 +1,4 @@
-<div class="p-grid" [ngClass]="{'carregando': carregando}">
+<div class="p-grid">
     <div class="p-col-12">
         <div class="card">
             <form [formGroup]="form">
@@ -26,22 +26,18 @@
                                         placeholder="Selecione">
                                     </p-dropdown>
                                 </div>
-                            </div>
-                        </div>
-                        <div class="p-grid">
-                            <div class="p-col-12 p-d-inline-flex p-px-0">
                                 <div class="p-field p-col-6 p-lg-3 p-md-4 p-sm-4 p-as-end">
                                     <label>Parceiro</label>
                                     <p-dropdown formControlName="parceiro" [options]="cboParceiros" [showClear]="true"
                                         optionValue="Value" optionLabel="Value" placeholder="Selecione">
                                     </p-dropdown>
                                 </div>
-                                <div class="p-field p-col-6 p-lg-3 p-md-4 p-sm-4 p-as-end">
-                                    <label>Vendedor do Parceiro</label>
-                                    <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros"
-                                        [showClear]="true" optionValue="Id" optionLabel="Value" placeholder="Selecione">
-                                    </p-dropdown>
-                                </div>
+                            </div>
+                        </div>
+                        <div class="p-grid">
+                            <div class="p-col-12 p-d-inline-flex p-px-0">
+                                
+                                
                             </div>
                         </div>
                         <div class="p-grid">
@@ -73,11 +69,12 @@
 
                     </div>
                 </div>
-                <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [responsive]="true"
+                <p-table #dt1 [value]="consultaOrcamentoGerencialResponse" [responsive]="true"
                     responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
-                    styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true"
-                    [filterDelay]="0"
-                    [globalFilterFields]="['NumeroOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
+                    styleClass="p-datatable-customers p-datatable-striped" [rows]="qtdePorPaginaInicial" [paginator]="true"
+                    [showCurrentPageReport]="mostrarQtdePorPagina" [rowsPerPageOptions]="[5,10,20]" [totalRecords]="qtdeRegistros"
+                    currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}"
+                    [lazy]="true" (onLazyLoad)="buscarRegistros($event)" [loading]="carregando">
                     <ng-template pTemplate="caption">
                         <div class="p-d-flex p-jc-end">
                             <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
@@ -99,20 +96,15 @@
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-lista>
-                        <!-- <tr class="p-selectable-row">
-                            <td style="text-align: center">{{lista.Produto}}</td>
-                            <td style="text-align: center">{{lista.Fabricante}}</td>
-                            <td style="text-align: left">{{lista.Nome}}</td>
-                            <td style="text-align: left"><span innerHtml="{{lista.Descricao}}"></span></td>
-                            <td style="text-align: center">{{lista.imagem != null ? 'Sim' : 'Não'}}</td>
-                            <td style="text-align: center">{{lista.Ativo == true ? 'Sim': 'Não'}}</td>
-                            <td style="text-align: center">
-                                <button pButton style="align-content: flex-end;" icon="fa fa-copy"
-                                    (click)="clonarClick(this.lista.Id)" pTooltip="Clonar"></button>&nbsp;
-                                <button pButton style="align-content: flex-end;" icon="fa fa-edit"
-                                    (click)="editarClick(this.lista.Id)" pTooltip="Editar"></button>&nbsp;
-                            </td>
-                        </tr> -->
+                        <tr class="p-selectable-row">
+                            <td style="text-align: center">{{lista.orcamento}}</td>
+                            <td style="text-align: center">{{lista.vendedor}}</td>
+                            <td style="text-align: center">{{lista.loja}}</td>
+                            <td style="text-align: center">{{lista.parceiro}}</td>
+                            <td style="text-align: center">{{lista.uf}}</td>
+                            <td style="text-align: center">{{dataUtils.formata_data_DDMMYYY(lista.dataCriacao)}}</td>
+                            <td style="text-align: center">{{dataUtils.formata_data_DDMMYYY(lista.dataExpiracao)}}</td>
+                        </tr>
                     </ng-template>
                     <ng-template pTemplate="emptymessage" let-columns>
                         <tr>

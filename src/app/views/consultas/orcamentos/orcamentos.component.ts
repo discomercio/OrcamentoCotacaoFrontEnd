@@ -1,6 +1,12 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
+import { LazyLoadEvent } from 'primeng/api';
+import { ConsultaGerencialOrcamentoRequest } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-request';
+import { ConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-response';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { DropDownItem } from '../../orcamentos/models/DropDownItem';
 
 @Component({
@@ -11,13 +17,23 @@ import { DropDownItem } from '../../orcamentos/models/DropDownItem';
 export class OrcamentosComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
-    private readonly usuarioService: UsuariosService) { }
+    private readonly usuarioService: UsuariosService,
+    private readonly orcamentoService: OrcamentosService,
+    private readonly sweetAlertService: SweetalertService,
+    public readonly cdr: ChangeDetectorRef) { }
 
   @Input() listaNome = "";
 
   form: FormGroup;
   nomeLista: string;
-
+  consultaOrcamentoGerencialResponse = new Array<ConsultaGerencialOrcamentoResponse>();
+  consultaOrcamentoGerencialResquest: ConsultaGerencialOrcamentoRequest = new ConsultaGerencialOrcamentoRequest();
+  first: number = 0;
+  qtdeRegistros: number;
+  carregando: boolean = false;
+  qtdePorPaginaInicial: number = 10;
+  dataUtils: DataUtils = new DataUtils();
+  mostrarQtdePorPagina:boolean = true;
   //Combos
   cboVendedores: Array<DropDownItem> = [];
   cboLojas: Array<DropDownItem> = [];
@@ -28,7 +44,7 @@ export class OrcamentosComponent implements OnInit {
   cboGrupos: Array<DropDownItem> = [];
 
   ngOnInit(): void {
-    debugger;
+
     if (this.listaNome == "vigentes") this.nomeLista = "Vigentes";
     if (this.listaNome == "cadastrados") this.nomeLista = "Cadastrados";
     if (this.listaNome == "pendentes") this.nomeLista = "com Mensagens Pendentes";
@@ -52,10 +68,43 @@ export class OrcamentosComponent implements OnInit {
   }
 
   buscarTodosVendedores() {
+    //busca de vendedores por loja
+    this.usuarioService.buscarVendedores("").toPromise().then((r) => {
+
+    });
+
+
     this.usuarioService.buscarTodosUsuarios().toPromise().then((r) => {
       if (r != null) {
 
       }
     });
+  }
+
+  buscarLista(filtro: ConsultaGerencialOrcamentoRequest) {
+    this.carregando = true;
+    this.orcamentoService.consultaGerencial(filtro).toPromise().then((r) => {
+      if (!r.Sucesso) {
+        this.sweetAlertService.aviso(r.Mensagem);
+        this.mostrarQtdePorPagina = false;
+        this.carregando = false;
+        return;
+      }
+      this.consultaOrcamentoGerencialResponse = r.lstConsultaGerencialOrcamentoResponse;
+      this.qtdeRegistros = r.qtdeRegistros;
+      this.carregando = false;
+      
+    }).catch((e) => {
+      this.carregando = false;
+    });
+
+  }
+
+  buscarRegistros(event: LazyLoadEvent) {
+    if (this.consultaOrcamentoGerencialResponse.length > 0) {
+      this.consultaOrcamentoGerencialResquest.pagina = event.first / event.rows;
+      this.consultaOrcamentoGerencialResquest.qtdeItensPagina = event.rows;
+      this.buscarLista(this.consultaOrcamentoGerencialResquest);
+    }
   }
 }
