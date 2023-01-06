@@ -85,7 +85,7 @@
                         <div class="p-field p-col-12">
                             <input id="descricao" name="nome_produto" type="text" pInputText
                                 placeholder="Nome do Produto" formControlName="nome_produto"
-                                value="{{produtoDetalhe.Nome}}" />
+                                value="{{produtoDetalhe.Nome}}" maxlength="500"/>
                             <small class="p-error"
                                 *ngIf="validacaoFormularioService.verificaCampo(form,'nome_produto')">{{mensagemErro}}</small>
                         </div>

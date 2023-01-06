@@ -255,7 +255,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   montarLinhaBusca() {
     this.lstDto.forEach(x => {
-      x.linhaBusca = x.NumeroOrcamento + "/" + x.NumPedido;
+      x.linhaBusca = x.NumeroOrcamento + "/" + x.NumPedido.toLowerCase();
       x.linhaBusca += "/" + x.Cliente_Obra.toLowerCase() + "/";
     });
   }
@@ -299,7 +299,7 @@ export class OrcamentosListarComponent implements OnInit {
       });
     }
 
-    this.cboParceiros = this.cboParceiros.sort((a, b) => (a.Value < b.Value ? -1 : 1));
+    this.cboParceiros = this.cboParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
   }
 
   filtrar_cboVendedoresParceiro() {
@@ -313,7 +313,7 @@ export class OrcamentosListarComponent implements OnInit {
             this.cboVendedoresParceiros.push({ Id: x.IdIndicadorVendedor.toString(), Value: x.VendedorParceiro });
         }
       });
-      this.cboVendedoresParceiros = this.cboVendedoresParceiros.sort((a, b) => (a.Value < b.Value ? -1 : 1));
+      this.cboVendedoresParceiros = this.cboVendedoresParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
     }
     if (this.cboVendedoresParceiros && this.cboVendedoresParceiros.length == 0) this.cboVendedoresParceiros = null;
   }
