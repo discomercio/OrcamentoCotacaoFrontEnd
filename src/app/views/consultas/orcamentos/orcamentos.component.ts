@@ -30,10 +30,10 @@ export class OrcamentosComponent implements OnInit {
   consultaOrcamentoGerencialResquest: ConsultaGerencialOrcamentoRequest = new ConsultaGerencialOrcamentoRequest();
   first: number = 0;
   qtdeRegistros: number;
-  carregando: boolean = false;
+  carregando: boolean = true;
   qtdePorPaginaInicial: number = 10;
   dataUtils: DataUtils = new DataUtils();
-  mostrarQtdePorPagina:boolean = true;
+  mostrarQtdePorPagina:boolean = false;
   //Combos
   cboVendedores: Array<DropDownItem> = [];
   cboLojas: Array<DropDownItem> = [];
@@ -86,15 +86,15 @@ export class OrcamentosComponent implements OnInit {
     this.orcamentoService.consultaGerencial(filtro).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetAlertService.aviso(r.Mensagem);
-        this.mostrarQtdePorPagina = false;
         this.carregando = false;
         return;
       }
       this.consultaOrcamentoGerencialResponse = r.lstConsultaGerencialOrcamentoResponse;
       this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
-      
+      this.mostrarQtdePorPagina = true;
     }).catch((e) => {
+      this.sweetAlertService.aviso(e.error.Mensagem);
       this.carregando = false;
     });
 
