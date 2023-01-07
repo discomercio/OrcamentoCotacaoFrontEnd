@@ -143,6 +143,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       ddd_telefone: [this.usuario.telefone, [Validators.minLength(10), Validators.maxLength(11)]],
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required],
+      StLoginBloqueadoAutomatico: [this.usuario.StLoginBloqueadoAutomatico, Validators.required],
       parceiro:[]
     },
       { validators: this.validacaoCustomizadaService.compararSenha() });
@@ -169,6 +170,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
     this.usuario.ativo = (f.ativo.value == true);
+    this.usuario.StLoginBloqueadoAutomatico = (f.StLoginBloqueadoAutomatico.value == true);
     this.usuario.email = f.email.value;
     this.usuario.senha = f.senha.value;
     this.usuario.telefone = f.ddd_telefone.value;

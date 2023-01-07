@@ -20,5 +20,6 @@ export class Usuario {
     vendedorResponsavel: string;
     tipoUsuario: number;
     unidadeNegocio: string;
+    StLoginBloqueadoAutomatico: boolean;
 }
 
