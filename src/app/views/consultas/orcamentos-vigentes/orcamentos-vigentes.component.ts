@@ -4,6 +4,7 @@ import { ConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/consu
 import { ListaConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/lista-consulta-gerencial-orcamento-response';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { OrcamentosComponent } from '../orcamentos/orcamentos.component';
@@ -15,11 +16,16 @@ import { OrcamentosComponent } from '../orcamentos/orcamentos.component';
 })
 export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
 
-  constructor(private readonly autenticacaoService: AutenticacaoService) { }
+  constructor(private readonly autenticacaoService: AutenticacaoService,
+    private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild("orcamentos", { static: false }) orcamentos: OrcamentosComponent;
 
   ngOnInit(): void {
+    if (this.autenticacaoService._tipoUsuario != 1 && !this.autenticacaoService.usuario.permissoes.includes(ePermissao.ParceiroIndicadorUsuarioMaster)) {
+      this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      window.history.back();
+    }
   }
 
   ngAfterViewInit(): void {

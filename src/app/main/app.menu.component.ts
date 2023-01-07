@@ -86,6 +86,13 @@ export class AppMenuComponent implements OnInit {
                             }
 
                         }
+                        if (this.tipoUsuario != 1 &&
+                            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.ParceiroIndicadorUsuarioMaster)) {
+                            if (x.items[i].label == eMenu.ConsultasOrcamentos) {
+                                x.items.splice(i, 1);
+                            }
+
+                        }
                     }
                 });
             }
