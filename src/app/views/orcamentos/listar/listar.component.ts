@@ -167,12 +167,12 @@ export class OrcamentosListarComponent implements OnInit {
       this.filtro.Vendedor = this.usuario.nome;
     }
     if (this.tipoUsuario == this.constantes.PARCEIRO) {
-      this.filtro.Vendedor = this.usuario.idVendedor;
+      // this.filtro.Vendedor = this.usuario.idVendedor;
       this.filtro.Parceiro = this.usuario.nome;
     }
 
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      this.filtro.Vendedor = this.usuario.idVendedor;
+      // this.filtro.Vendedor = this.usuario.idVendedor;
       this.filtro.Parceiro = this.usuario.idParceiro;
       this.filtro.VendedorParceiro = this.usuario.nome;
       this.filtro.IdIndicadorVendedor = this.usuario.id;
@@ -376,6 +376,8 @@ export class OrcamentosListarComponent implements OnInit {
     ) {
       this.lstDtoFiltrada = this.lstDto;
     } else {
+      debugger;
+
       this.lstDtoFiltrada = this.lstDto;
       if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
       if (lstFiltroStatus.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
