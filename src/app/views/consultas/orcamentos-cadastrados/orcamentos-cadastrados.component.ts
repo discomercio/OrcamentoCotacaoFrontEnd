@@ -17,7 +17,7 @@ export class OrcamentosCadastradosComponent implements OnInit, AfterViewInit {
   @ViewChild("orcamentos", { static: false }) orcamentos: OrcamentosComponent;
 
   ngOnInit(): void {
-    if (this.autenticacaoService._tipoUsuario != 1 && !this.autenticacaoService.usuario.permissoes.includes(ePermissao.ParceiroIndicadorUsuarioMaster)) {
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       window.history.back();
     }

@@ -11,5 +11,9 @@ export enum eMenu {
     Usuarios = "Usuários",
     VendedorParceiro = "Vendedores do parceiro",
     ProdutosConsultar = "Consultar",
-    ConsultasOrcamentos = "Consultas"
+    ConsultasOrcamentos = "Consultas",
+    RelOrcamentosVigente = "Orçamentos vigentes",
+    RelOrcamentosExpirados = "Orçamentos expirados",
+    RelOrcamentosMensagemPendente = "Orçamentos com mensagens pendentes",
+    RelOrcamentosCadastrados = "Orçamentos cadastrados"
 }

@@ -20,4 +20,8 @@ export enum ePermissao {
     ArquivosDownloadIncluirEditarPastasArquivos = "102800",
     VisualizarOrcamento = "103000",
     AcessoUniversalOrcamentoEditar = "103100",
+    RelOrcamentosVigente = "103200",
+    RelOrcamentosExpirados = "103300",
+    RelOrcamentosMensagemPendente = "103400",
+    RelOrcamentosCadastrados = "102900"
 }
