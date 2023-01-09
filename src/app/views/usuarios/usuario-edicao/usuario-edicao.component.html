@@ -121,7 +121,20 @@
                             <label for="ativo">Inativo</label>
                         </div>
 
+                        <div class="p-field-radiobutton p-mb-1" style="margin-left: 80px;">
+                            <p-radioButton name="StLoginBloqueadoAutomatico" [disabled]="true" [value]="true" formControlName="StLoginBloqueadoAutomatico" inputId="ativoTrue">
+                            </p-radioButton>
+                            <label for="StLoginBloqueadoAutomatico">Bloqueado</label>
+                        </div>
+
+                        <div class="p-field-radiobutton p-mb-1">
+                            <p-radioButton name="StLoginBloqueadoAutomatico" [value]="false" formControlName="StLoginBloqueadoAutomatico" inputId="ativoFalse">
+                            </p-radioButton>
+                            <label for="StLoginBloqueadoAutomatico">Desbloqueado</label>
+                        </div>
+
                     </div>
+
                     <div *ngIf="validacaoFormularioService.verificaCampo(form,'ativo')">
                         <small class="p-error" *ngIf="form.controls.ativo.errors?.required">Informe se o usuário tem
                             acesso permitido ou bloqueado.</small>
