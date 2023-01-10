@@ -24,6 +24,7 @@ export class OrcamentosCadastradosComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.orcamentos.consultaOrcamentoGerencialResquest.nomeLista = "cadastrados";
     this.orcamentos.colunaOrdenacao = "orcamento"
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;

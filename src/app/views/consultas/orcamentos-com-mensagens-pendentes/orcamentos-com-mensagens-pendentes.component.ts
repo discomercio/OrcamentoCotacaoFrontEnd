@@ -24,6 +24,7 @@ export class OrcamentosComMensagensPendentesComponent implements OnInit, AfterVi
   }
 
   ngAfterViewInit(): void {
+    this.orcamentos.consultaOrcamentoGerencialResquest.nomeLista = "pendentes";
     this.orcamentos.colunaOrdenacao = "orcamento"
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;

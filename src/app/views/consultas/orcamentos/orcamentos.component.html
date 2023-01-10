@@ -6,87 +6,73 @@
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
                     <div class="p-col-12">
                         <div class="p-grid">
-                            <div class="p-col-12 p-d-inline-flex p-px-0">
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label>Loja</label>
-                                    <p-multiSelect formControlName="loja" [options]="cboLojas" placeholder="Selecione"
-                                        emptyFilterMessage="Nenhum item encontrado" [showHeader]="false"
-                                        optionValue="Value" optionLabel="Value" [(ngModel)]="lojas" (onClick)="buscarCboParceiros()"
-                                        emptyFilterMessage="Nenhum item encontrado"
-                                        selectedItemsLabel="{0} itens selecionados">
-                                    </p-multiSelect>
-                                </div>
-                                <div class="p-field p-col-6 p-lg-3 p-md-4 p-sm-4 p-as-end">
-                                    <label>Vendedor</label>
-                                    <p-autoComplete [(ngModel)]="vendedor" formControlName="vendedor"
-                                        [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
-                                        (completeMethod)="filtrarVendedores($event)" field="Value" [dropdown]="true"
-                                        (onSelect)="buscarCboParceiros()">
-                                        <ng-template let-vendedor pTemplate="item">
-                                            <div class="vendedor-item">
-                                                <div>{{vendedor.Value}}</div>
-                                            </div>
-                                        </ng-template>
-                                    </p-autoComplete>
-                                    <!-- <p-dropdown formControlName="vendedor" [options]="cboVendedores" [showClear]="true"
-                                        optionValue="Id" optionLabel="Value" placeholder="Selecione"
-                                        [disabled]="!permissaoUniversal" (onChange)="buscarCboParceiros()"
-                                        [(ngModel)]="vendedor">
-                                    </p-dropdown> -->
-                                </div>
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label>Com Parceiro</label>
-                                    <p-dropdown formControlName="comParceiro" [options]="cboComParceiros"
-                                        [showClear]="true" optionValue="Id" optionLabel="Value"
-                                        [(ngModel)]="comParceiro" placeholder="Selecione"
-                                        (onChange)="buscarCboParceiros()">
-                                    </p-dropdown>
-                                </div>
-                                <div class="p-field p-col-6 p-lg-3 p-md-4 p-sm-4 p-as-end">
-                                    <label>Parceiro</label>
-                                    <p-dropdown formControlName="parceiro" [options]="cboParceiros" [showClear]="true"
-                                        [(ngModel)]="parceiro" optionValue="Id" optionLabel="Value" placeholder="Selecione"
-                                        [disabled]="desabilitaCboParceiros">
-                                    </p-dropdown>
-                                </div>
+                            <div class="p-as-end p-col-4 p-field p-md-3 p-sm-3">
+                                <label>Loja</label>
+                                <p-multiSelect formControlName="loja" [options]="cboLojas" placeholder="Selecione"
+                                    emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
+                                    optionLabel="Value" [(ngModel)]="lojas" (onClick)="buscarCboParceiros();buscarCboVendedores()"
+                                    emptyFilterMessage="Nenhum item encontrado"
+                                    selectedItemsLabel="{0} itens selecionados">
+                                </p-multiSelect>
+                            </div>
+                            <div class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label>Vendedor</label>
+                                <p-autoComplete [(ngModel)]="vendedor" formControlName="vendedor"
+                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
+                                    (completeMethod)="filtrarVendedores($event)" field="Value" [dropdown]="true"
+                                    (onSelect)="buscarCboParceiros()">
+                                    <ng-template let-vendedor pTemplate="item">
+                                        <div class="vendedor-item">
+                                            <div>{{vendedor.Value}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
+                            </div>
+                            <div class="p-as-end p-col-4 p-field p-lg-2 p-md-2 p-sm-2">
+                                <label>Com Parceiro</label>
+                                <p-dropdown formControlName="comParceiro" [options]="cboComParceiros" [showClear]="true"
+                                    optionValue="Id" optionLabel="Value" [(ngModel)]="comParceiro"
+                                    placeholder="Selecione" (onChange)="buscarCboParceiros()">
+                                </p-dropdown>
+                            </div>
+                            <div class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label>Parceiro</label>
+                                <p-dropdown formControlName="parceiro" [options]="cboParceiros" [showClear]="true"
+                                    [(ngModel)]="parceiro" optionValue="Id" optionLabel="Value" placeholder="Selecione"
+                                    [disabled]="desabilitaCboParceiros">
+                                </p-dropdown>
                             </div>
                         </div>
                         <div class="p-grid">
-                            <div class="p-col-12 p-d-inline-flex p-px-0">
-
-
+                            <div class="p-as-end p-col-12 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label>Fabricante</label>
+                                <p-dropdown formControlName="fabricante" [options]="cboFabricantes"
+                                    [(ngModel)]="fabricante" [showClear]="true" optionValue="Id" optionLabel="Value"
+                                    placeholder="Selecione">
+                                </p-dropdown>
                             </div>
-                        </div>
-                        <div class="p-grid">
-                            <div class="p-col-12 p-d-inline-flex p-px-0">
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label>Fabricante</label>
-                                    <p-dropdown formControlName="fabricante" [options]="cboFabricantes"
-                                        [showClear]="true" optionValue="Id" optionLabel="Value" placeholder="Selecione">
-                                    </p-dropdown>
-                                </div>
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label>Grupo</label>
-                                    <p-dropdown formControlName="grupo" [options]="cboGrupos" [showClear]="true"
-                                        optionValue="Id" optionLabel="Value" placeholder="Selecione">
-                                    </p-dropdown>
-                                </div>
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label for="dataInicio">Criação início</label>
-                                    <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoInicio"
-                                        [showIcon]="true">
-                                    </p-calendar>
-                                </div>
-                                <div class="p-field p-col-6 p-lg-2 p-md-4 p-sm-4 p-as-end">
-                                    <label for="dataInicio">Criação fim</label>
-                                    <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoFim" [showIcon]="true">
-                                    </p-calendar>
-                                </div>
-                                <div class="p-as-center p-d-inline-flex p-grid p-jc-end p-lg-4 p-pb-0 p-pr-0 p-pt-4">
-                                    <div class="p-as-end">
-                                        <button pButton pRipple label="Pesquisar" icon="pi pi-search"
-                                            (click)="pesquisar()"></button>
-                                    </div>
+                            <div class="p-as-end p-col-12 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label>Grupo</label>
+                                <p-dropdown formControlName="grupo" [options]="cboGrupos" [showClear]="true"
+                                    [(ngModel)]="grupo" optionValue="Id" optionLabel="Value" placeholder="Selecione">
+                                </p-dropdown>
+                            </div>
+                            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label for="dataInicio">Criação início</label>
+                                <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoInicio" [showIcon]="true"
+                                    [(ngModel)]="dtCriacaoInicio">
+                                </p-calendar>
+                            </div>
+                            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-3">
+                                <label for="dataInicio">Criação fim</label>
+                                <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoFim" [showIcon]="true"
+                                    [(ngModel)]="dtCriacaoFim" showClear="true">
+                                </p-calendar>
+                            </div>
+                            <div class="p-col-12 p-d-inline-flex p-jc-end p-pr-0">
+                                <div class="p-col-4 p-lg-3 p-sm-3">
+                                    <button pButton pRipple label="Pesquisar" icon="pi pi-search"
+                                        (click)="pesquisar()"></button>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +117,7 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-lista>
                         <tr class="p-selectable-row">
-                            <td style="text-align: center">{{lista.orcamento}}</td>
+                            <td style="text-align: center" (click)="visualizarOrcamento(lista.orcamento)">{{lista.orcamento}}</td>
                             <td style="text-align: center">{{lista.loja}}</td>
                             <td style="text-align: center">{{lista.vendedor}}</td>
                             <td style="text-align: center">{{lista.parceiro}}</td>

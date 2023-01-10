@@ -15,4 +15,5 @@ export class ConsultaGerencialOrcamentoRequest {
     qtdeItensPagina:number;
     ordenacaoAscendente:boolean;
     nomeColunaOrdenacao:string;
+    nomeLista:string;
 }
