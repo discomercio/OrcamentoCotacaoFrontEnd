@@ -6,6 +6,8 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { stream } from 'xlsx';
 import { Operacao } from 'src/app/dto/operacao/operacao';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
+import { UsuariosPorListaLojasResponse } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-response';
 
 @Injectable({
   providedIn: 'root'
@@ -38,5 +40,9 @@ export class UsuariosService {
     let params = new HttpParams();
     params = params.append('modulo', 'COTAC');
     return this.http.get<Operacao[]>(this.appSettingsService.config.apiUrl + 'Operacao/modulo', { params: params });
+  }
+
+  buscarVendedoresPorListaLojas(request:UsuariosPorListaLojasRequest):Observable<UsuariosPorListaLojasResponse>{
+    return this.http.post<UsuariosPorListaLojasResponse>(`${this.appSettingsService.config.apiUrl}Usuario/buscarVendedoresPorListaLojas`, request);
   }
 }

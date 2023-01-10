@@ -1,4 +1,4 @@
 export class DropDownItem {
-    Id: string;
+    Id: string|number;
     Value: string;
 }

@@ -18,7 +18,7 @@ export enum ePermissao {
     ProrrogarVencimentoOrcamento = "100500",
     AprovarOrcamento = "100550",
     ArquivosDownloadIncluirEditarPastasArquivos = "102800",
-    VisualizarOrcamento = "103000",
+    AcessoUniversalOrcamentoPedidoPrepedidoConsultar = "103000",
     AcessoUniversalOrcamentoEditar = "103100",
     RelOrcamentosVigente = "103200",
     RelOrcamentosExpirados = "103300",

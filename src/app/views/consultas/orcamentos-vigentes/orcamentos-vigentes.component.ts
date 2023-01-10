@@ -29,8 +29,9 @@ export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = false;
-    this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "Id";
+    this.orcamentos.colunaOrdenacao = "orcamento"
+    this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
+    this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
     this.orcamentos.consultaOrcamentoGerencialResquest.dataCorrente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;
     this.orcamentos.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
