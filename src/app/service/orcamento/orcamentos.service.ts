@@ -94,4 +94,8 @@ export class OrcamentosService {
   consultaGerencial(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse>{
     return this.http.post<ListaConsultaGerencialOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/consultaGerencial`, filtro);
   }
+
+  exportarCSV(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse>{
+    return this.http.post<ListaConsultaGerencialOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/exportarConsultaGerencial`, filtro);
+  }
 }

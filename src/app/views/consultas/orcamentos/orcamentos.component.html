@@ -10,7 +10,8 @@
                                 <label>Loja</label>
                                 <p-multiSelect formControlName="loja" [options]="cboLojas" placeholder="Selecione"
                                     emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
-                                    optionLabel="Value" [(ngModel)]="lojas" (onClick)="buscarCboParceiros();buscarCboVendedores()"
+                                    optionLabel="Value" [(ngModel)]="lojas"
+                                    (onClick)="buscarCboParceiros();buscarCboVendedores()"
                                     emptyFilterMessage="Nenhum item encontrado"
                                     selectedItemsLabel="{0} itens selecionados">
                                 </p-multiSelect>
@@ -19,11 +20,11 @@
                                 <label>Vendedor</label>
                                 <p-autoComplete [(ngModel)]="vendedor" formControlName="vendedor"
                                     [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
-                                    (completeMethod)="filtrarVendedores($event)" field="Value" [dropdown]="true"
+                                    (completeMethod)="filtrarVendedores($event)" field="Label" [dropdown]="true"
                                     (onSelect)="buscarCboParceiros()">
                                     <ng-template let-vendedor pTemplate="item">
                                         <div class="vendedor-item">
-                                            <div>{{vendedor.Value}}</div>
+                                            <div>{{vendedor.Label}}</div>
                                         </div>
                                     </ng-template>
                                 </p-autoComplete>
@@ -91,7 +92,7 @@
                             <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
                                 class="p-button-success p-mr-2" label="Exportar para XLS"
                                 tooltipPosition="bottom"></button>
-                            <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()"
+                            <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportarCSV()"
                                 class="p-mr-2" label="Exportar para CSV" tooltipPosition="bottom"></button>
                         </div>
                     </ng-template>
@@ -117,7 +118,12 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-lista>
                         <tr class="p-selectable-row">
-                            <td style="text-align: center" (click)="visualizarOrcamento(lista.orcamento)">{{lista.orcamento}}</td>
+                            <td style="text-align: center">
+                                <span (click)="visualizarOrcamento(lista.orcamento)"
+                                    style="cursor:pointer; color:blue;text-decoration:underline">
+                                    {{lista.orcamento}}
+                                </span>
+                            </td>
                             <td style="text-align: center">{{lista.loja}}</td>
                             <td style="text-align: center">{{lista.vendedor}}</td>
                             <td style="text-align: center">{{lista.parceiro}}</td>

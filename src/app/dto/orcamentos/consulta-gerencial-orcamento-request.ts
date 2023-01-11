@@ -1,6 +1,6 @@
 export class ConsultaGerencialOrcamentoRequest {
     lojas: Array<string>;
-    vendedor: string;
+    vendedor: number;
     comParceiro: boolean;
     idParceiro: number;
     idVendedorParceiro: number;

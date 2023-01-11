@@ -4,7 +4,7 @@ import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orc
 import { Observable } from 'rxjs';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { BuscarParceiroRequest } from 'src/app/dto/orcamentista-indicador/buscar-parceiro-request';
-import { ParceirosComboResponse } from 'src/app/dto/orcamentista-indicador/parceiros-Combo-response';
+import { OrcamentistasComboResponse } from 'src/app/dto/orcamentista-indicador/orcamentistas-combo-response';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +32,7 @@ export class OrcamentistaIndicadorService {
       return this.http.get<OrcamentistaIndicadorDto>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/parceiro-por-apelido/${apelido}`);
   }
 
-  buscarParceirosPorIdVendedor(filtro:BuscarParceiroRequest):Observable<ParceirosComboResponse>{
-    return this.http.post<ParceirosComboResponse>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/buscarParceirosPorIdVendedor`, filtro);
+  buscarParceirosPorIdVendedor(filtro:BuscarParceiroRequest):Observable<OrcamentistasComboResponse>{
+    return this.http.post<OrcamentistasComboResponse>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/buscarParceirosPorIdVendedor`, filtro);
   }
 }

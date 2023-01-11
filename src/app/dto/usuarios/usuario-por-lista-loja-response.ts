@@ -1,4 +1,5 @@
-export class UsuarioPorListaLojaResponse{
-    vendedor:string;
-    nomeIniciaisMaiusculo:string;
+export class UsuarioPorListaLojaResponse {
+    id: number;
+    vendedor: string;
+    nomeIniciaisMaiusculo: string;
 }

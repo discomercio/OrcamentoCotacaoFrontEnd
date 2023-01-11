@@ -1,3 +1,4 @@
+import { JsonPipe } from '@angular/common';
 import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -7,6 +8,7 @@ import { ConsultaGerencialOrcamentoRequest } from 'src/app/dto/orcamentos/consul
 import { ConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-response';
 import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
@@ -31,6 +33,7 @@ export class OrcamentosComponent implements OnInit {
     private readonly orcamentistaService: OrcamentistaIndicadorService,
     private readonly produtoCatalogoService: ProdutoCatalogoService,
     private router: Router,
+    private readonly exportExcelService: ExportExcelService,
     public readonly cdr: ChangeDetectorRef) { }
 
   @Input() listaNome = "";
@@ -50,8 +53,8 @@ export class OrcamentosComponent implements OnInit {
   desabilitaCboParceiros: boolean = true;
   parceiro: number;
   //Combos
-  cboVendedores: Array<DropDownItem> = [];
-  cboFiltradoVendedores: Array<DropDownItem> = [];
+  cboVendedores: Array<any> = [];
+  cboFiltradoVendedores: Array<any> = [];
   cboLojas: Array<DropDownItem> = [];
   cboComParceiros: Array<DropDownItem> = [];
   cboParceiros: Array<DropDownItem> = [];
@@ -60,7 +63,7 @@ export class OrcamentosComponent implements OnInit {
   cboGrupos: Array<DropDownItem> = [];
   //filtros
   lojas: Array<string> = new Array<string>();
-  vendedor: DropDownItem;
+  vendedor: any;
   comParceiro: number;
   fabricante: string;
   grupo: string;
@@ -112,9 +115,9 @@ export class OrcamentosComponent implements OnInit {
         }
 
         r.usuarios.forEach(x => {
-          this.cboVendedores.push({ Id: x.vendedor, Value: x.nomeIniciaisMaiusculo });
+          this.cboVendedores.push({ Id: x.id, Value: x.vendedor, Label:x.nomeIniciaisMaiusculo });
         });
-        this.vendedor = { Id: "", Value: "" };
+        this.vendedor = { Id: "", Value: "", Label: "" };
         this.cboFiltradoVendedores = this.cboVendedores;
       }).catch((e) => {
         this.sweetAlertService.aviso(e.error.Mensagem);
@@ -183,8 +186,10 @@ export class OrcamentosComponent implements OnInit {
     this.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.ascendente;
     this.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = this.colunaOrdenacao;
     this.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.qtdePorPaginaInicial;
-    this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
+    this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
+    this.consultaOrcamentoGerencialResquest.pagina = 0;
     this.buscarLista(this.consultaOrcamentoGerencialResquest);
+    this.first = 0;
     this.cdr.detectChanges();
   }
 
@@ -199,7 +204,7 @@ export class OrcamentosComponent implements OnInit {
     if (this.lojas.length > 0) this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
     else this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
 
-    this.consultaOrcamentoGerencialResquest.vendedor = !!this.vendedor ? this.vendedor.Id.toString() : undefined;
+    this.consultaOrcamentoGerencialResquest.vendedor = !!this.vendedor.Id ? this.vendedor.Id.toString() : 0;
 
     if (!this.comParceiro) this.consultaOrcamentoGerencialResquest.comParceiro = undefined;
     if (this.comParceiro == 1) this.consultaOrcamentoGerencialResquest.comParceiro = true;
@@ -237,7 +242,7 @@ export class OrcamentosComponent implements OnInit {
     this.desabilitaCboParceiros = false;
 
     let filtro: BuscarParceiroRequest = new BuscarParceiroRequest();
-    filtro.vendedor = this.vendedor.Id.toString();
+    filtro.vendedor = this.vendedor.Value.toString();
     filtro.lojas = this.lojas;
 
     this.cboParceiros = new Array<DropDownItem>();
@@ -290,5 +295,43 @@ export class OrcamentosComponent implements OnInit {
 
   visualizarOrcamento(orcamento:number){
     this.router.navigate(["orcamentos/aprovar-orcamento", orcamento]);
+  }
+
+  exportarCSV(){
+    this.consultaOrcamentoGerencialResquest.pagina = 0;
+    this.consultaOrcamentoGerencialResquest.qtdeItensPagina = 0;
+    let lista = new Array<ConsultaGerencialOrcamentoResponse>();
+    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r)=>{
+      let dataUtils = new DataUtils();
+      r.lstConsultaGerencialOrcamentoResponse.forEach(x => {
+        let item = new ConsultaGerencialOrcamentoResponse();
+        item = x;
+        item.dataCriacao = dataUtils.formata_data_DDMMYYY(x.dataCriacao);
+        item.dataExpiracao = dataUtils.formata_data_DDMMYYY(x.dataExpiracao);
+        lista.push(item);
+      });
+      this.exportExcelService.exportAsCSVFile(lista, `relatorio-orçamentos-${this.consultaOrcamentoGerencialResquest.nomeLista}`);
+    }).catch((e)=>{
+      this.sweetAlertService.aviso(e.erroe.Mensagem);
+    });
+  }
+
+  exportXlsx() {
+    this.consultaOrcamentoGerencialResquest.pagina = 0;
+    this.consultaOrcamentoGerencialResquest.qtdeItensPagina = 0;
+    let lista = new Array<ConsultaGerencialOrcamentoResponse>();
+    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r)=>{
+      let dataUtils = new DataUtils();
+      r.lstConsultaGerencialOrcamentoResponse.forEach(x => {
+        let item = new ConsultaGerencialOrcamentoResponse();
+        item = x;
+        item.dataCriacao = dataUtils.formata_data_DDMMYYY(x.dataCriacao);
+        item.dataExpiracao = dataUtils.formata_data_DDMMYYY(x.dataExpiracao);
+        lista.push(item);
+      });
+      this.exportExcelService.exportAsXLSXFile(lista, `relatorio-orçamentos-${this.consultaOrcamentoGerencialResquest.nomeLista}`);
+    }).catch((e)=>{
+      this.sweetAlertService.aviso(e.erroe.Mensagem);
+    });
   }
 }
