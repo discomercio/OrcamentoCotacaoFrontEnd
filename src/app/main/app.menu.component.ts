@@ -86,31 +86,39 @@ export class AppMenuComponent implements OnInit {
                             }
 
                         }
+                        if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente) &&
+                            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados) &&
+                            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados) &&
+                            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
+                            if (x.items[i].label == eMenu.ConsultasOrcamentos) {
+                                x.items.splice(i, 1);
+                            }
+                        }
                         if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente) ||
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados) ||
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados) ||
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
                             if (x.items[i].label == eMenu.ConsultasOrcamentos) {
                                 for (let y = 0; y < x.items[i].items.length; y++) {
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosVigente && 
+                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosVigente &&
                                         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente)) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
                                         continue;
                                     }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosExpirados && 
+                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosExpirados &&
                                         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados)) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
                                         continue;
                                     }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosMensagemPendente && 
+                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosMensagemPendente &&
                                         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
                                         continue;
                                     }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosCadastrados && 
+                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosCadastrados &&
                                         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados)) {
                                         x.items[i].items.splice(y, 1);
                                         y--;
@@ -119,7 +127,7 @@ export class AppMenuComponent implements OnInit {
                                 }
                             }
                         }
-                        else x.items.splice(i, 1);
+
                     }
                 });
             }
