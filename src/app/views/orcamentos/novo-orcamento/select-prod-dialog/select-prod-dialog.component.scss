@@ -2,15 +2,12 @@
   max-height: 100% !important;
 }
 
-::ng-deep .dynamicDialog .p-dialog-content{
+::ng-deep .p-dialog-content{
     padding: 0;
     border-bottom-left-radius: 4px !important;
     border-bottom-right-radius: 4px !important;
-    overflow-y:hidden;
-}
-
-::ng-deep .p-datatable-wrapper{
-  max-height: 75vw;
+    overflow-y:auto;
+    max-height: 100%;
 }
 
 :host {
@@ -47,9 +44,4 @@
    text-align: left;
    border: 1px solid #dee2e6;
    border-width: 1px 0 0 0;
-}
-
-.tabela{
-  max-height: 450px;
-  overflow-y: auto;
 }
