@@ -119,6 +119,43 @@
                 "routerLink": [
                     "/calculadora-vrf"
                 ]
+            },
+            {
+                "label": "Consultas",
+                "icon": "fa fa-search",
+                "routerLink": [
+                    "/consultas"
+                ],
+                "items": [
+                    {
+                        "label": "Orçamentos vigentes",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamentos-vigentes"
+                        ]
+                    },
+                    {
+                        "label": "Orçamentos cadastrados",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamentos-cadastrados"
+                        ]
+                    },
+                    {
+                        "label": "Orçamentos expirados",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamentos-expirados"
+                        ]
+                    },
+                    {
+                        "label": "Orçamentos com mensagens pendentes",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamentos-com-mensagens-pendentes"
+                        ]
+                    }
+                ]
             }
         ]
     }

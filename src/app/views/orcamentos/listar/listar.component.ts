@@ -347,7 +347,7 @@ export class OrcamentosListarComponent implements OnInit {
     let lstFiltroVendedor = new Array<ListaDto>();
     let lstFiltroParceiro = new Array<ListaDto>();
 
-    if (!this.autenticacaoService.verificarPermissoes(ePermissao.VisualizarOrcamento)) {
+    if (!this.autenticacaoService.verificarPermissoes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar)) {
       lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
     }
     

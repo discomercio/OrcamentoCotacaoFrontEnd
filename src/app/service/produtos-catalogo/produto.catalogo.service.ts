@@ -13,6 +13,7 @@ import { ProdutoCatalogoPropriedadeOpcaoResponse } from "src/app/dto/produtos-ca
 import { ProdutoCalculadoraVrfRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel";
 import { ProdutosAtivosRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { ProdutosGruposResponse } from "src/app/dto/produtos/produtos-grupos-response";
 
 @Injectable({
     providedIn: "root",
@@ -198,5 +199,10 @@ export class ProdutoCatalogoService {
 
     excluirPropriedades(id: number, loja: string): Observable<any> {
         return this.http.post<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id, loja: loja });
+    }
+
+    buscarGruposProdutos():Observable<ProdutosGruposResponse>{
+        return this.http.get<ProdutosGruposResponse>(`${this.appSettingsService.config.apiUrl}produto/buscarGruposProdutos`);
+    
     }
 }
