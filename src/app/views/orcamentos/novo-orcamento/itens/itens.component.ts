@@ -278,7 +278,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
 
         if (!this.novoOrcamentoService.editando) {
-          debugger;
+          
           this.novoOrcamentoService.setarPercentualComissao();
           return;
         }
@@ -414,7 +414,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    debugger;
     if (this.novoOrcamentoService.calcularComissaoAuto)
       this.novoOrcamentoService.calcularPercentualComissao();
   }

@@ -40,6 +40,7 @@ export class SweetalertService {
     dialogo(titulo: string, texto: string): Observable<any> {
         this.subject = new Subject<any>();
         this.swalWithBootstrapButtons.fire({
+            allowOutsideClick: false,
             title: titulo,
             text: texto,
             icon: 'question',
