@@ -16,4 +16,5 @@ export class ConsultaGerencialOrcamentoRequest {
     ordenacaoAscendente:boolean;
     nomeColunaOrdenacao:string;
     nomeLista:string;
+    status:number;
 }

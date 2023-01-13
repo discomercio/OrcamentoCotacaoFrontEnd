@@ -29,7 +29,6 @@ export class OrcamentosCadastradosComponent implements OnInit, AfterViewInit {
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;
-    this.orcamentos.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
     this.orcamentos.cdr.detectChanges();
   }

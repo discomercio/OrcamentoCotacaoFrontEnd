@@ -30,7 +30,6 @@ export class OrcamentosComMensagensPendentesComponent implements OnInit, AfterVi
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
     this.orcamentos.consultaOrcamentoGerencialResquest.mensagemPendente = true;
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;
-    this.orcamentos.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
     this.orcamentos.cdr.detectChanges();
   }
