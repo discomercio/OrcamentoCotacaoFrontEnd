@@ -131,33 +131,36 @@
                     {
                         "label": "Orçamentos",
                         "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/orcamento"
+                        ],
                         "items": [
                             {
                                 "label": "Vigentes",
                                 "icon": "fa fa-list-alt",
                                 "routerLink": [
-                                    "/consultas/orcamentos-vigentes"
+                                    "/consultas/orcamento/orcamentos-vigentes"
                                 ]
                             },
                             {
                                 "label": "Cadastrados",
                                 "icon": "fa fa-list-alt",
                                 "routerLink": [
-                                    "/consultas/orcamentos-cadastrados"
+                                    "/consultas/orcamento/orcamentos-cadastrados"
                                 ]
                             },
                             {
                                 "label": "Expirados",
                                 "icon": "fa fa-list-alt",
                                 "routerLink": [
-                                    "/consultas/orcamentos-expirados"
+                                    "/consultas/orcamento/orcamentos-expirados"
                                 ]
                             },
                             {
                                 "label": "Mensagens pendentes",
                                 "icon": "fa fa-list-alt",
                                 "routerLink": [
-                                    "/consultas/orcamentos-com-mensagens-pendentes"
+                                    "/consultas/orcamento/orcamentos-com-mensagens-pendentes"
                                 ]
                             }
                         ]

@@ -1,9 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { ConsultaGerencialOrcamentoRequest } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-request';
-import { ConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-response';
-import { ListaConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/lista-consulta-gerencial-orcamento-response';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';

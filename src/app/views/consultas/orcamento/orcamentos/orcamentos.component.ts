@@ -16,7 +16,7 @@ import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+import { DropDownItem } from 'src/app/views/orcamentos/models/DropDownItem';
 
 @Component({
   selector: 'app-orcamentos',
