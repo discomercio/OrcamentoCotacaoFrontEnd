@@ -292,7 +292,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-
+        debugger;
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
 
         this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
@@ -301,7 +301,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
         this.buscarFormasPagto();
         this.editarOpcoes = this.verificarEdicaoOpcao(r);
-        this.carregando = false;
+        
       }
     }).catch((e) =>{
       this.alertaService.mostrarErroInternet(e);
@@ -352,6 +352,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         if (r != null) {
           this.formaPagamento = r;
           this.novoOrcamentoService.atribuirOpcaoPagto(formaPagtoOrcamento, this.formaPagamento);
+          this.carregando = false;
         }
       }).catch((e) => this.alertaService.mostrarErroInternet(e));
   }
