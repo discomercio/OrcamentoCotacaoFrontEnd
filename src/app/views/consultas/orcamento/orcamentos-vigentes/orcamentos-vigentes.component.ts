@@ -28,7 +28,8 @@ export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeLista = "vigentes";
     this.orcamentos.colunaOrdenacao = "orcamento"
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
-    this.orcamentos.consultaOrcamentoGerencialResquest.status = 1;
+    this.orcamentos.consultaOrcamentoGerencialResquest.status = new Array<number>();
+    this.orcamentos.consultaOrcamentoGerencialResquest.status.push(1);
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
     this.orcamentos.consultaOrcamentoGerencialResquest.dataCorrente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;

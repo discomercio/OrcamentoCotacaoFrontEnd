@@ -50,6 +50,7 @@ export class OrcamentosComponent implements OnInit {
   dataUtils: DataUtils = new DataUtils();
   mostrarQtdePorPagina: boolean = false;
   permissaoUniversal: boolean = false;
+  bloqueiaParceiro:boolean = false;
 
   //Combos
   cboVendedores: Array<any> = [];
@@ -219,6 +220,7 @@ export class OrcamentosComponent implements OnInit {
   }
 
   buscarRegistros(event: LazyLoadEvent) {
+    this.setarFiltroBusca();
     if (this.consultaOrcamentoGerencialResponse.length > 0) {
       this.consultaOrcamentoGerencialResquest.pagina = event.first / event.rows;
       this.consultaOrcamentoGerencialResquest.qtdeItensPagina = event.rows;
@@ -356,5 +358,15 @@ export class OrcamentosComponent implements OnInit {
     }).catch((e) => {
       this.sweetAlertService.aviso(e.erroe.Mensagem);
     });
+  }
+
+  verificarParceiro(){
+    if(this.comParceiro == 2){
+      this.bloqueiaParceiro = true;
+      this.parceiro = undefined;
+      return;
+    }
+
+    this.bloqueiaParceiro = false;
   }
 }

@@ -28,6 +28,9 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
     this.orcamentos.colunaOrdenacao = "orcamento"
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
+    this.orcamentos.consultaOrcamentoGerencialResquest.status = new Array<number>();
+    this.orcamentos.consultaOrcamentoGerencialResquest.status.push(1);
+    this.orcamentos.consultaOrcamentoGerencialResquest.status.push(2);
     this.orcamentos.consultaOrcamentoGerencialResquest.expirado = true;
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);

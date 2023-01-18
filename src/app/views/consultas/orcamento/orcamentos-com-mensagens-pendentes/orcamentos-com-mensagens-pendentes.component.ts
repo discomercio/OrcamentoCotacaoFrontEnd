@@ -1,6 +1,7 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { OrcamentosComponent } from '../orcamentos/orcamentos.component';
 
@@ -28,6 +29,9 @@ export class OrcamentosComMensagensPendentesComponent implements OnInit, AfterVi
     this.orcamentos.colunaOrdenacao = "orcamento"
     this.orcamentos.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = "orcamento";
     this.orcamentos.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.orcamentos.ascendente;
+    this.orcamentos.consultaOrcamentoGerencialResquest.status = new Array<number>();
+    this.orcamentos.consultaOrcamentoGerencialResquest.status.push(1);
+    this.orcamentos.consultaOrcamentoGerencialResquest.dataCorrente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     this.orcamentos.consultaOrcamentoGerencialResquest.mensagemPendente = true;
     this.orcamentos.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.orcamentos.qtdePorPaginaInicial;
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
