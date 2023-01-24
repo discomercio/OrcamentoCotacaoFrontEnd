@@ -166,6 +166,7 @@ export class AlertaService {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
+        localStorage.removeItem("appsettings");
         localStorage.setItem('versaoApi', this.env.versaoApi());
 
         window.location.reload();
@@ -188,6 +189,7 @@ export class AlertaService {
       }
       this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
         localStorage.setItem('versaoApi', this.env.versaoApi());
+        localStorage.removeItem("appsettings");
         window.location.reload();
 
       });
