@@ -11,17 +11,17 @@
                                 <p-multiSelect formControlName="loja" [options]="cboLojas" placeholder="Selecione"
                                     emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
                                     optionLabel="Value" [(ngModel)]="lojas"
-                                    (onClick)="buscarCboParceiros();buscarCboVendedores()"
+                                    (onChange)="buscarCboParceiros();buscarCboVendedores()"
                                     emptyFilterMessage="Nenhum item encontrado"
                                     selectedItemsLabel="{0} itens selecionados">
                                 </p-multiSelect>
                             </div>
-                            <div class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
+                            <div *ngIf="permissaoUniversal" class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
                                 <label>Vendedor</label>
                                 <p-autoComplete [(ngModel)]="vendedor" formControlName="vendedor"
-                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
+                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true" 
                                     (completeMethod)="filtrarVendedores($event)" field="Label" [dropdown]="true"
-                                    (onSelect)="buscarCboParceiros()">
+                                    (onSelect)="buscarCboParceiros()" (onClear)="buscarCboParceiros()">
                                     <ng-template let-vendedor pTemplate="item">
                                         <div class="vendedor-item">
                                             <div>{{vendedor.Label}}</div>
@@ -32,16 +32,21 @@
                             <div class="p-as-end p-col-4 p-field p-lg-2 p-md-2 p-sm-2">
                                 <label>Com Parceiro</label>
                                 <p-dropdown formControlName="comParceiro" [options]="cboComParceiros" [showClear]="true"
-                                    optionValue="Id" optionLabel="Value" [(ngModel)]="comParceiro"
-                                    placeholder="Selecione" (onChange)="buscarCboParceiros()">
+                                    optionValue="Id" optionLabel="Value" [(ngModel)]="comParceiro" 
+                                    placeholder="Selecione" (onChange)="verificarParceiro()">
                                 </p-dropdown>
                             </div>
                             <div class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
                                 <label>Parceiro</label>
-                                <p-dropdown formControlName="parceiro" [options]="cboParceiros" [showClear]="true"
-                                    [(ngModel)]="parceiro" optionValue="Id" optionLabel="Value" placeholder="Selecione"
-                                    [disabled]="desabilitaCboParceiros">
-                                </p-dropdown>
+                                <p-autoComplete [(ngModel)]="parceiro" formControlName="parceiro"
+                                    [suggestions]="cboFiltradoParceiros" [forceSelection]="true" [disabled]="bloqueiaParceiro"
+                                    (completeMethod)="filtrarParceiros($event)" field="Value" [dropdown]="true">
+                                    <ng-template let-parceiro pTemplate="item">
+                                        <div class="parceiro-item">
+                                            <div>{{parceiro.Value}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
                             </div>
                         </div>
                         <div class="p-grid">
@@ -61,17 +66,18 @@
                             <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-3">
                                 <label for="dataInicio">Criação início</label>
                                 <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoInicio" [showIcon]="true"
-                                    [(ngModel)]="dtCriacaoInicio">
+                                    [(ngModel)]="dtCriacaoInicio" [maxDate]="dataAtual">
                                 </p-calendar>
                             </div>
                             <div class="p-as-end p-col-6 p-field p-lg-3 p-md-3 p-sm-3">
                                 <label for="dataInicio">Criação fim</label>
                                 <p-calendar dateFormat="dd/mm/yy" formControlName="dtCriacaoFim" [showIcon]="true"
-                                    [(ngModel)]="dtCriacaoFim" showClear="true">
+                                    [(ngModel)]="dtCriacaoFim" showClear="true" 
+                                    [minDate]="dtCriacaoInicio">
                                 </p-calendar>
                             </div>
                             <div class="p-col-12 p-d-inline-flex p-jc-end p-pr-0">
-                                <div class="p-col-4 p-lg-3 p-sm-3">
+                                <div class="">
                                     <button pButton pRipple label="Pesquisar" icon="pi pi-search"
                                         (click)="pesquisar()"></button>
                                 </div>
@@ -98,20 +104,20 @@
                     </ng-template>
                     <ng-template pTemplate="header">
                         <tr class="font-size">
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-2 p-md-1 p-sm-2" [pSortableColumn]="Orcamento">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-2 p-md-1 p-sm-2 p-text-nowrap" [pSortableColumn]="Orcamento">
                                 Orçamento<p-sortIcon [field]="Orcamento" (click)="ordenar('orcamento')"></p-sortIcon>
                             </th>
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-1 p-md-3 p-sm-3" [pSortableColumn]="Loja">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-1 p-md-3 p-sm-3 p-text-nowrap" [pSortableColumn]="Loja">
                                 Loja<p-sortIcon [field]="Loja" (click)="ordenar('loja')"></p-sortIcon></th>
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-3 p-md-2 p-sm-2" [pSortableColumn]="Vendedor">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-3 p-md-2 p-sm-2 p-text-nowrap" [pSortableColumn]="Vendedor">
                                 Vendedor<p-sortIcon [field]="Vendedor" (click)="ordenar('vendedor')"></p-sortIcon></th>
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-3 p-md-3 p-sm-2" [pSortableColumn]="Parceiro">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-3 p-md-3 p-sm-2 p-text-nowrap" [pSortableColumn]="Parceiro">
                                 Parceiro<p-sortIcon [field]="Parceiro" (click)="ordenar('parceiro')"></p-sortIcon></th>
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-1 p-md-1 p-sm-1" [pSortableColumn]="UF">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-1 p-md-1 p-sm-1 p-text-nowrap" [pSortableColumn]="UF">
                                 UF<p-sortIcon [field]="UF" (click)="ordenar('uf')"></p-sortIcon></th>
-                            <th class="p-text-center p-py-1 p-px-2 p-lg-1 p-md-1 p-sm-1" [pSortableColumn]="Criacao">
+                            <th class="p-text-center p-py-1 p-px-2 p-lg-2 p-md-1 p-sm-1 p-text-nowrap" [pSortableColumn]="Criacao">
                                 Criação<p-sortIcon [field]="Criacao" (click)="ordenar('criacao')"></p-sortIcon></th>
-                            <th class="p-text-center p-py-0 p-px-2 p-lg-1 p-md-2 p-sm-1" [pSortableColumn]="Expiracao">
+                            <th class="p-text-center p-py-0 p-px-2 p-lg-2 p-md-2 p-sm-1 p-text-nowrap" [pSortableColumn]="Expiracao">
                                 Expiração<p-sortIcon [field]="Expiracao" (click)="ordenar('expiracao')"></p-sortIcon>
                             </th>
                         </tr>
