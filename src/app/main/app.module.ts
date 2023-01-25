@@ -83,11 +83,12 @@ import { StoreModule } from "@ngrx/store";
 import { IndexReducer } from "../dto/index.store";
 import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
 import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashboard-orcamento.component";
-import { OrcamentosVigentesComponent } from "../views/consultas/orcamentos-vigentes/orcamentos-vigentes.component";
-import { OrcamentosComponent } from "../views/consultas/orcamentos/orcamentos.component";
-import { OrcamentosCadastradosComponent } from "../views/consultas/orcamentos-cadastrados/orcamentos-cadastrados.component";
-import { OrcamentosExpiradosComponent } from "../views/consultas/orcamentos-expirados/orcamentos-expirados.component";
-import { OrcamentosComMensagensPendentesComponent } from "../views/consultas/orcamentos-com-mensagens-pendentes/orcamentos-com-mensagens-pendentes.component";
+import { OrcamentosComponent } from "../views/consultas/orcamento/orcamentos/orcamentos.component";
+import { OrcamentosVigentesComponent } from "../views/consultas/orcamento/orcamentos-vigentes/orcamentos-vigentes.component";
+import { OrcamentosCadastradosComponent } from "../views/consultas/orcamento/orcamentos-cadastrados/orcamentos-cadastrados.component";
+import { OrcamentosExpiradosComponent } from "../views/consultas/orcamento/orcamentos-expirados/orcamentos-expirados.component";
+import { OrcamentosComMensagensPendentesComponent } from "../views/consultas/orcamento/orcamentos-com-mensagens-pendentes/orcamentos-com-mensagens-pendentes.component";
+
 
 @NgModule({
     imports: [

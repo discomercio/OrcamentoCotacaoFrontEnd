@@ -16,7 +16,7 @@ import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+import { DropDownItem } from 'src/app/views/orcamentos/models/DropDownItem';
 
 @Component({
   selector: 'app-orcamentos',
@@ -46,29 +46,31 @@ export class OrcamentosComponent implements OnInit {
   qtdeRegistros: number;
   carregando: boolean = true;
   qtdePorPaginaInicial: number = 10;
-  qtdePorPaginaSelecionado:number = 10;
+  qtdePorPaginaSelecionado: number = 10;
   dataUtils: DataUtils = new DataUtils();
   mostrarQtdePorPagina: boolean = false;
   permissaoUniversal: boolean = false;
-  desabilitaCboParceiros: boolean = true;
-  parceiro: number;
+  bloqueiaParceiro:boolean = false;
+
   //Combos
   cboVendedores: Array<any> = [];
   cboFiltradoVendedores: Array<any> = [];
   cboLojas: Array<DropDownItem> = [];
+  cboParceiros: Array<any> = [];
+  cboFiltradoParceiros: Array<any> = [];
   cboComParceiros: Array<DropDownItem> = [];
-  cboParceiros: Array<DropDownItem> = [];
-  cboVendedoresParceiros: Array<DropDownItem> = [];
   cboFabricantes: Array<DropDownItem> = [];
   cboGrupos: Array<DropDownItem> = [];
   //filtros
   lojas: Array<string> = new Array<string>();
   vendedor: any;
+  parceiro: any;
   comParceiro: number;
   fabricante: string;
   grupo: string;
   dtCriacaoInicio: Date;
   dtCriacaoFim: Date;
+  dataAtual: Date;
 
   ngOnInit(): void {
 
@@ -79,13 +81,21 @@ export class OrcamentosComponent implements OnInit {
 
     if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar))
       this.permissaoUniversal = true;
+    else {
+      this.vendedor = { Id: this.autenticacaoService.usuario.id, Value: this.autenticacaoService._usuarioLogado, Label: "" };
+      this.consultaOrcamentoGerencialResquest.vendedor = this.vendedor.Id;
+    }
 
+    this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService._lojasUsuarioLogado;
     this.criarForm();
     this.buscarCboVendedores();
+    this.buscarCboParceiros();
     this.buscarCboLojas();
     this.buscarCboComParceiro();
     this.buscarCboFabricantes();
     this.buscarCboGrupos();
+
+    this.dataAtual = new Date();
   }
 
   criarForm() {
@@ -113,16 +123,47 @@ export class OrcamentosComponent implements OnInit {
           this.sweetAlertService.aviso(r.Mensagem);
           return;
         }
-
+        this.cboVendedores = new Array<any>();
         r.usuarios.forEach(x => {
-          this.cboVendedores.push({ Id: x.id, Value: x.vendedor, Label:x.nomeIniciaisMaiusculo });
+          this.cboVendedores.push({ Id: x.id, Value: x.vendedor, Label: x.nomeIniciaisMaiusculo });
         });
-        this.vendedor = { Id: "", Value: "", Label: "" };
+        this.vendedor = null;
         this.cboFiltradoVendedores = this.cboVendedores;
       }).catch((e) => {
         this.sweetAlertService.aviso(e.error.Mensagem);
       });
     }
+  }
+
+  buscarCboParceiros() {
+
+    if (this.comParceiro == 2) return;
+
+    let filtro: BuscarParceiroRequest = new BuscarParceiroRequest();
+
+    if (!!this.vendedor) {
+      filtro.vendedor = this.vendedor.Value.toString();
+    }
+    if (this.lojas.length <= 0)
+      filtro.lojas = this.consultaOrcamentoGerencialResquest.lojas;
+    else filtro.lojas = this.lojas;
+
+    this.cboFiltradoParceiros = new Array<any>();
+    this.cboParceiros = new Array<any>();
+    this.orcamentistaService.buscarParceirosPorIdVendedor(filtro).toPromise().then((r) => {
+      if (!r.Sucesso) {
+        this.sweetAlertService.aviso(r.Mensagem);
+        return;
+      }
+
+      r.parceiros.forEach(x => {
+        this.cboParceiros.push({ Id: x.id, Value: x.razaoSocial });
+      });
+      this.parceiro = null;
+      this.cboFiltradoParceiros = this.cboParceiros;
+    }).catch((e) => {
+      this.sweetAlertService.aviso(e.error.Mensagem);
+    });
   }
 
   filtrarVendedores(event) {
@@ -137,6 +178,19 @@ export class OrcamentosComponent implements OnInit {
     }
 
     this.cboFiltradoVendedores = filtrado;
+  }
+
+  filtrarParceiros(event) {
+    let filtrado: any[] = [];
+    let query = event.query;
+
+    for (let i = 0; i < this.cboParceiros.length; i++) {
+      let parca = this.cboParceiros[i];
+      if (parca.Value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrado.push(parca);
+      }
+    }
+    this.cboFiltradoParceiros = filtrado;
   }
 
   buscarLista(filtro: ConsultaGerencialOrcamentoRequest) {
@@ -154,7 +208,7 @@ export class OrcamentosComponent implements OnInit {
       this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
       this.mostrarQtdePorPagina = true;
-      if(this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado){
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
         this.first = 0;
         this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
       }
@@ -166,11 +220,12 @@ export class OrcamentosComponent implements OnInit {
   }
 
   buscarRegistros(event: LazyLoadEvent) {
+    this.setarFiltroBusca();
     if (this.consultaOrcamentoGerencialResponse.length > 0) {
       this.consultaOrcamentoGerencialResquest.pagina = event.first / event.rows;
       this.consultaOrcamentoGerencialResquest.qtdeItensPagina = event.rows;
       this.qtdePorPaginaSelecionado = event.rows;
-      if(this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) this.consultaOrcamentoGerencialResquest.pagina = 0;
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) this.consultaOrcamentoGerencialResquest.pagina = 0;
       this.buscarLista(this.consultaOrcamentoGerencialResquest);
     }
   }
@@ -186,7 +241,7 @@ export class OrcamentosComponent implements OnInit {
     this.consultaOrcamentoGerencialResquest.ordenacaoAscendente = this.ascendente;
     this.consultaOrcamentoGerencialResquest.nomeColunaOrdenacao = this.colunaOrdenacao;
     this.consultaOrcamentoGerencialResquest.qtdeItensPagina = this.qtdePorPaginaInicial;
-    this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
+    this.consultaOrcamentoGerencialResquest.lojas = this.lojas.length > 0 ? this.lojas : this.autenticacaoService._lojasUsuarioLogado;
     this.consultaOrcamentoGerencialResquest.pagina = 0;
     this.buscarLista(this.consultaOrcamentoGerencialResquest);
     this.first = 0;
@@ -201,16 +256,21 @@ export class OrcamentosComponent implements OnInit {
   }
 
   pesquisar() {
+    this.setarFiltroBusca();
+    this.buscarLista(this.consultaOrcamentoGerencialResquest);
+  }
+
+  setarFiltroBusca() {
     if (this.lojas.length > 0) this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
     else this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
 
-    this.consultaOrcamentoGerencialResquest.vendedor = !!this.vendedor.Id ? this.vendedor.Id.toString() : 0;
+    this.consultaOrcamentoGerencialResquest.vendedor = !this.vendedor ? 0 : this.vendedor.Id.toString();
 
     if (!this.comParceiro) this.consultaOrcamentoGerencialResquest.comParceiro = undefined;
     if (this.comParceiro == 1) this.consultaOrcamentoGerencialResquest.comParceiro = true;
     if (this.comParceiro == 2) this.consultaOrcamentoGerencialResquest.comParceiro = false;
 
-    this.consultaOrcamentoGerencialResquest.idParceiro = !!this.parceiro ? this.parceiro : undefined;
+    this.consultaOrcamentoGerencialResquest.idParceiro = !this.parceiro ? undefined : this.parceiro.Id;
     this.consultaOrcamentoGerencialResquest.fabricante = !!this.fabricante ? this.fabricante : undefined;
     this.consultaOrcamentoGerencialResquest.grupo = !!this.grupo ? this.grupo : undefined;
 
@@ -223,41 +283,6 @@ export class OrcamentosComponent implements OnInit {
 
     this.consultaOrcamentoGerencialResquest.pagina = 0;
     this.first = 0;
-
-    this.buscarLista(this.consultaOrcamentoGerencialResquest);
-  }
-
-  buscarCboParceiros() {
-    if (this.lojas.length <= 0) return;
-    if (!this.vendedor.Id) return;
-    if (!this.comParceiro) {
-      this.desabilitaCboParceiros = true;
-      return;
-    }
-    if (this.comParceiro == 2) {
-      this.desabilitaCboParceiros = true;
-      return;
-    }
-
-    this.desabilitaCboParceiros = false;
-
-    let filtro: BuscarParceiroRequest = new BuscarParceiroRequest();
-    filtro.vendedor = this.vendedor.Value.toString();
-    filtro.lojas = this.lojas;
-
-    this.cboParceiros = new Array<DropDownItem>();
-    this.orcamentistaService.buscarParceirosPorIdVendedor(filtro).toPromise().then((r) => {
-      if (!r.Sucesso) {
-        this.sweetAlertService.aviso(r.Mensagem);
-        return;
-      }
-
-      r.parceiros.forEach(x => {
-        this.cboParceiros.push({ Id: x.id, Value: x.razaoSocial });
-      });
-    }).catch((e) => {
-      this.sweetAlertService.aviso(e.error.Mensagem);
-    });
   }
 
   buscarCboComParceiro() {
@@ -293,15 +318,15 @@ export class OrcamentosComponent implements OnInit {
     });
   }
 
-  visualizarOrcamento(orcamento:number){
+  visualizarOrcamento(orcamento: number) {
     this.router.navigate(["orcamentos/aprovar-orcamento", orcamento]);
   }
 
-  exportarCSV(){
+  exportarCSV() {
     this.consultaOrcamentoGerencialResquest.pagina = 0;
     this.consultaOrcamentoGerencialResquest.qtdeItensPagina = 0;
     let lista = new Array<ConsultaGerencialOrcamentoResponse>();
-    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r)=>{
+    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r) => {
       let dataUtils = new DataUtils();
       r.lstConsultaGerencialOrcamentoResponse.forEach(x => {
         let item = new ConsultaGerencialOrcamentoResponse();
@@ -311,7 +336,7 @@ export class OrcamentosComponent implements OnInit {
         lista.push(item);
       });
       this.exportExcelService.exportAsCSVFile(lista, `relatorio-orçamentos-${this.consultaOrcamentoGerencialResquest.nomeLista}`);
-    }).catch((e)=>{
+    }).catch((e) => {
       this.sweetAlertService.aviso(e.erroe.Mensagem);
     });
   }
@@ -320,7 +345,7 @@ export class OrcamentosComponent implements OnInit {
     this.consultaOrcamentoGerencialResquest.pagina = 0;
     this.consultaOrcamentoGerencialResquest.qtdeItensPagina = 0;
     let lista = new Array<ConsultaGerencialOrcamentoResponse>();
-    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r)=>{
+    this.orcamentoService.consultaGerencial(this.consultaOrcamentoGerencialResquest).toPromise().then((r) => {
       let dataUtils = new DataUtils();
       r.lstConsultaGerencialOrcamentoResponse.forEach(x => {
         let item = new ConsultaGerencialOrcamentoResponse();
@@ -330,8 +355,18 @@ export class OrcamentosComponent implements OnInit {
         lista.push(item);
       });
       this.exportExcelService.exportAsXLSXFile(lista, `relatorio-orçamentos-${this.consultaOrcamentoGerencialResquest.nomeLista}`);
-    }).catch((e)=>{
+    }).catch((e) => {
       this.sweetAlertService.aviso(e.erroe.Mensagem);
     });
+  }
+
+  verificarParceiro(){
+    if(this.comParceiro == 2){
+      this.bloqueiaParceiro = true;
+      this.parceiro = undefined;
+      return;
+    }
+
+    this.bloqueiaParceiro = false;
   }
 }
