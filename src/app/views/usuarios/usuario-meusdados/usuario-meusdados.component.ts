@@ -5,7 +5,7 @@ import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../../../service/usuarios/usuarios.service';
 import { SistemaService } from '../../../service/Sistema/sistema.service';
 import { SistemaResponse } from 'src/app/service/sistema/sistemaResponse';
-import { environment } from 'src/environments/environment';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Component({
   selector: 'app-usuario-meusdados',
@@ -14,7 +14,7 @@ import { environment } from 'src/environments/environment';
 })
 export class UsuarioMeusdadosComponent implements OnInit {
     
-    env: environment;
+    //env: environment;
 
     public usuario: Usuario;
     public versaoFrontCache: string;    
@@ -27,15 +27,15 @@ export class UsuarioMeusdadosComponent implements OnInit {
 
   constructor(public readonly autenticacaoService: AutenticacaoService, 
     public readonly sistemaService: SistemaService,
-    private envir: environment,
-    public readonly usuariosService: UsuariosService) { 
-      this.env = envir;
+    public readonly usuariosService: UsuariosService,
+    private appSettingsService: AppSettingsService) {
+
     }
 
     ngOnInit(): void {
         this.usuario = new Usuario();
         this.versaoFrontCache = localStorage.getItem('versaoApi');
-        this.versaoFront = this.env.versaoApi();
+        this.versaoFront = this.appSettingsService.versao;
         
         this.usuariosService.buscarOperacaoUsuarioPorModuloCotac().toPromise().then((r) => {
           if (r != null) { 
