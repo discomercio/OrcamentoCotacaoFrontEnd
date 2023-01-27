@@ -18,6 +18,8 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
+import { totalmem } from 'os';
 
 @Injectable({
   providedIn: 'root'
@@ -50,6 +52,7 @@ export class NovoOrcamentoService {
   percentualMaxComissaoPadrao: PercMaxDescEComissaoResponseViewModel;
   editando: boolean;
   editarComissao: boolean = false;
+  produtoComboDto = new ProdutoComboDto();
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -86,22 +89,111 @@ export class NovoOrcamentoService {
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
+    // calcular o total com base em todos os filhotes quando é composto
+    // calcular utilizando a média de desconto para comparar com o verdinho
+    //somar pelo valor de preco venda
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
-        .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
-          .reduce((sum, current) => sum + this.moedaUtils
-            .formatarDecimal(current.totalItem), 0));
+      let todosProdutosSimples = [];
+      this.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+        let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == x.produto)[0];
+        if (produtoComposto != null) {
+          produtoComposto.filhos.forEach(el => {
+            let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
+            itemFilhote.descDado = x.descDado;
+            itemFilhote.qtde = el.qtde * x.qtde;
+            todosProdutosSimples.push(Object.assign({}, itemFilhote));
+          });
+        }
+        else {
+          let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == x.produto)[0];
+          itemSimples.descDado = x.descDado;
+          itemSimples.qtde = x.qtde;
+          todosProdutosSimples.push(Object.assign({}, itemSimples));
+        }
+      });
+
+      let totalPedido = 0;
+      let produtosFiltrados = todosProdutosSimples.map(item => item.produto)
+        .filter((value, index, self) => self.indexOf(value) === index);
+      produtosFiltrados.forEach(x => {
+
+        let itens = todosProdutosSimples.filter(f => f.produto == x);
+        let precoLista = itens[0].precoLista;
+        let somaDesconto = itens.reduce((soma, valor) => soma + (valor.descDado * valor.qtde), 0);
+        let somaQtde = itens.reduce((sum, current) => sum + current.qtde, 0);
+        let descontoMedio = parseFloat((somaDesconto / somaQtde).toString().substring(0, 4));
+        let totalPrecoLista = this.moedaUtils.formatarDecimal(precoLista * somaQtde);
+        let totalComDesconto = this.moedaUtils.formatarDecimal(totalPrecoLista * (1 - descontoMedio / 100));
+        totalPedido = this.moedaUtils.formatarDecimal(totalPedido + totalComDesconto);
+      });
+
+      return this.opcaoOrcamentoCotacaoDto.vlTotal = totalPedido;
+      // todosProdutosSimples.forEach(x => {
+      //   //calcular preco de venda => precoLista * (1 - desconto Pai / 100)
+      //   let precoVenda = this.moedaUtils.formatarDecimal(x.precoLista * (1 - x.descDado / 100));
+      //   let totalItem = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
+      //   totalPedido += totalItem;
+      // });
     }
+    // debugger;
+
+    // return this.opcaoOrcamentoCotacaoDto.vlTotal = valorTotal;
+
+    // if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
+    //   !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
+    //   return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
+    //     .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+    //       .reduce((sum, current) => sum + this.moedaUtils
+    //         .formatarDecimal(current.totalItem), 0));
+    // }
   }
 
   public totalAVista(): number {
-    let totalVista = this.moedaUtils
-      .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
-        .reduce((sum, current) => sum + this.moedaUtils
-          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+    if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
+      !!this.opcaoOrcamentoCotacaoDto.listaProdutos){
+        let todosProdutosSimples = [];
+      this.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+        let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == x.produto)[0];
+        if (produtoComposto != null) {
+          produtoComposto.filhos.forEach(el => {
+            let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
+            itemFilhote.descDado = x.descDado;
+            itemFilhote.qtde = el.qtde * x.qtde;
+            todosProdutosSimples.push(Object.assign({}, itemFilhote));
+          });
+        }
+        else {
+          let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == x.produto)[0];
+          itemSimples.descDado = x.descDado;
+          itemSimples.qtde = x.qtde;
+          todosProdutosSimples.push(Object.assign({}, itemSimples));
+        }
+      });
 
-    return totalVista;
+      let totalPedido = 0;
+      let produtosFiltrados = todosProdutosSimples.map(item => item.produto)
+        .filter((value, index, self) => self.indexOf(value) === index);
+      produtosFiltrados.forEach(x => {
+
+        let itens = todosProdutosSimples.filter(f => f.produto == x);
+        let precoListaBase = itens[0].precoListaBase;
+        let somaDesconto = itens.reduce((soma, valor) => soma + (valor.descDado * valor.qtde), 0);
+        let somaQtde = itens.reduce((sum, current) => sum + current.qtde, 0);
+        let descontoMedio = parseFloat((somaDesconto / somaQtde).toString().substring(0, 4));
+        let totalPrecoLista = this.moedaUtils.formatarDecimal(precoListaBase * somaQtde);
+        let totalComDesconto = this.moedaUtils.formatarDecimal(totalPrecoLista * (1 - descontoMedio / 100));
+        totalPedido = this.moedaUtils.formatarDecimal(totalPedido + totalComDesconto);
+      });
+
+      return totalPedido;
+      }
+    // let totalVista = this.moedaUtils
+    //   .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
+    //     .reduce((sum, current) => sum + this.moedaUtils
+    //       .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+
+    // return totalVista;
   }
 
   atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
@@ -179,7 +271,7 @@ export class NovoOrcamentoService {
   calcularParcelas(qtdeParcelas: number) {
     if (!qtdeParcelas || qtdeParcelas <= 0)
       return;
-    
+
     this.qtdeParcelas = qtdeParcelas;
     this.recalcularProdutosComCoeficiente(qtdeParcelas, this.coeficientes);
   }
@@ -193,7 +285,28 @@ export class NovoOrcamentoService {
     this.qtdeParcelas = qtdeParcelas;
 
     this.lstProdutosSelecionados.forEach(x => {
+
       let coeficiente = this.coeficientes?.filter(c => c.Fabricante == x.fabricante && c.QtdeParcelas == qtdeParcelas && c.TipoParcela == this.siglaPagto)[0];
+
+      let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == x.produto)[0];
+      if (produtoComposto != null) {
+        let somaFilhotes = 0;
+        produtoComposto.filhos.forEach(el => {
+          let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
+          let valorComCoeficiente = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * coeficiente.Coeficiente);
+          somaFilhotes += this.moedaUtils.formatarDecimal(valorComCoeficiente * el.qtde);
+        });
+        x.precoLista = somaFilhotes;
+        x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
+        x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
+        x.precoNF = x.precoVenda;
+        x.coeficienteDeCalculo = coeficiente.Coeficiente;
+        x.totalItem = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda * x.qtde) : this.moedaUtils.formatarDecimal(x.precoLista * x.qtde);
+
+        this.calcularPercentualComissao();
+        return;
+      }
+
       x.precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * coeficiente.Coeficiente);
       x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
       x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
@@ -258,12 +371,12 @@ export class NovoOrcamentoService {
     return;
   }
 
-  verificarUsuarioEnvolvido():boolean{
+  verificarUsuarioEnvolvido(): boolean {
     let idUsuarioLogado = this.autenticacaoService.usuario.id;
 
-    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicadorVendedor) return true;
-    if(idUsuarioLogado == this.orcamentoCotacaoDto.idIndicador) return true;
-    if(idUsuarioLogado == this.orcamentoCotacaoDto.idVendedor) return true;
+    if (idUsuarioLogado == this.orcamentoCotacaoDto.idIndicadorVendedor) return true;
+    if (idUsuarioLogado == this.orcamentoCotacaoDto.idIndicador) return true;
+    if (idUsuarioLogado == this.orcamentoCotacaoDto.idVendedor) return true;
 
     return false;
   }
@@ -480,8 +593,8 @@ export class NovoOrcamentoService {
     let descontoMedio = this.calcularDescontoMedio();
     let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
-    if(Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
-    
+    if (Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
+
     if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     return true
