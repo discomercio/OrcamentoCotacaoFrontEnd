@@ -7,7 +7,7 @@
                 "routerLink": [
                     "/dashboards"
                 ]
-            },        
+            },
             {
                 "label": "Orçamentos",
                 "icon": "fa fa-calculator",
@@ -113,7 +113,8 @@
                         ]
                     }
                 ]
-            },{
+            },
+            {
                 "label": "Calculadora VRF",
                 "icon": "fa fa-calculator",
                 "routerLink": [
@@ -128,31 +129,40 @@
                 ],
                 "items": [
                     {
-                        "label": "Orçamentos vigentes",
+                        "label": "Orçamentos",
                         "icon": "fa fa-list-alt",
                         "routerLink": [
-                            "/consultas/orcamentos-vigentes"
-                        ]
-                    },
-                    {
-                        "label": "Orçamentos cadastrados",
-                        "icon": "fa fa-list-alt",
-                        "routerLink": [
-                            "/consultas/orcamentos-cadastrados"
-                        ]
-                    },
-                    {
-                        "label": "Orçamentos expirados",
-                        "icon": "fa fa-list-alt",
-                        "routerLink": [
-                            "/consultas/orcamentos-expirados"
-                        ]
-                    },
-                    {
-                        "label": "Orçamentos com mensagens pendentes",
-                        "icon": "fa fa-list-alt",
-                        "routerLink": [
-                            "/consultas/orcamentos-com-mensagens-pendentes"
+                            "/consultas/orcamento"
+                        ],
+                        "items": [
+                            {
+                                "label": "Vigentes",
+                                "icon": "fa fa-list-alt",
+                                "routerLink": [
+                                    "/consultas/orcamento/orcamentos-vigentes"
+                                ]
+                            },
+                            {
+                                "label": "Cadastrados",
+                                "icon": "fa fa-list-alt",
+                                "routerLink": [
+                                    "/consultas/orcamento/orcamentos-cadastrados"
+                                ]
+                            },
+                            {
+                                "label": "Expirados",
+                                "icon": "fa fa-list-alt",
+                                "routerLink": [
+                                    "/consultas/orcamento/orcamentos-expirados"
+                                ]
+                            },
+                            {
+                                "label": "Mensagens pendentes",
+                                "icon": "fa fa-list-alt",
+                                "routerLink": [
+                                    "/consultas/orcamento/orcamentos-com-mensagens-pendentes"
+                                ]
+                            }
                         ]
                     }
                 ]

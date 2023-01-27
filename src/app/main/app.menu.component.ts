@@ -90,7 +90,7 @@ export class AppMenuComponent implements OnInit {
                             !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados) &&
                             !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados) &&
                             !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
-                            if (x.items[i].label == eMenu.ConsultasOrcamentos) {
+                            if (x.items[i].label == eMenu.Consultas) {
                                 x.items.splice(i, 1);
                             }
                         }
@@ -98,31 +98,35 @@ export class AppMenuComponent implements OnInit {
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados) ||
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados) ||
                             this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
-                            if (x.items[i].label == eMenu.ConsultasOrcamentos) {
+                            if (x.items[i].label == eMenu.Consultas) {
                                 for (let y = 0; y < x.items[i].items.length; y++) {
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosVigente &&
-                                        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente)) {
-                                        x.items[i].items.splice(y, 1);
-                                        y--;
-                                        continue;
-                                    }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosExpirados &&
-                                        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados)) {
-                                        x.items[i].items.splice(y, 1);
-                                        y--;
-                                        continue;
-                                    }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosMensagemPendente &&
-                                        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
-                                        x.items[i].items.splice(y, 1);
-                                        y--;
-                                        continue;
-                                    }
-                                    if (x.items[i].items[y].label == eMenu.RelOrcamentosCadastrados &&
-                                        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados)) {
-                                        x.items[i].items.splice(y, 1);
-                                        y--;
-                                        continue;
+                                    if (x.items[i].items[y].label == eMenu.ConsultasOrcamentos) {
+                                        for (let z = 0; z < x.items[i].items[y].items.length; z++) {
+                                            if (x.items[i].items[y].items[z].label == eMenu.RelOrcamentosVigente &&
+                                                !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente)) {
+                                                x.items[i].items[y].items.splice(z, 1);
+                                                z--;
+                                                continue;
+                                            }
+                                            if (x.items[i].items[y].label == eMenu.RelOrcamentosExpirados &&
+                                                !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados)) {
+                                                x.items[i].items[y].items.splice(z, 1);
+                                                z--;
+                                                continue;
+                                            }
+                                            if (x.items[i].items[y].label == eMenu.RelOrcamentosMensagemPendente &&
+                                                !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosMensagemPendente)) {
+                                                x.items[i].items[y].items.splice(z, 1);
+                                                z--;
+                                                continue;
+                                            }
+                                            if (x.items[i].items[y].label == eMenu.RelOrcamentosCadastrados &&
+                                                !this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados)) {
+                                                x.items[i].items[y].items.splice(z, 1);
+                                                z--;
+                                                continue;
+                                            }
+                                        }
                                     }
                                 }
                             }
