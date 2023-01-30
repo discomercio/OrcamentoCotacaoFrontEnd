@@ -412,7 +412,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   digitouQte(item: ProdutoOrcamentoDto): void {
     if (item.qtde <= 0) item.qtde = 1;
 
-    item.totalItem = item.precoVenda * item.qtde;
+    let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
+    item = itemCalculado;
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
@@ -474,15 +475,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     if (item.descDado > 100) {
       item.descDado = 100;
     }
-
+    debugger;
     if (item.descDado) {
       let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == item.produto)[0];
       if (produtoComposto != null){
         let somaFilhotes = 0;
         produtoComposto.filhos.forEach(el => {
           let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
-          let precoListaComDesc = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * (1 - item.descDado / 100));
-          somaFilhotes += this.moedaUtils.formatarDecimal(precoListaComDesc * el.qtde);
+          let precoComQtde = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * el.qtde)
+          let precoListaComDesc = this.moedaUtils.formatarDecimal(precoComQtde * (1 - item.descDado / 100));
+          // somaFilhotes += this.moedaUtils.formatarDecimal(precoListaComDesc * el.qtde);
+          somaFilhotes += precoListaComDesc;
         });
         item.precoVenda = somaFilhotes;
         this.digitouQte(item);
