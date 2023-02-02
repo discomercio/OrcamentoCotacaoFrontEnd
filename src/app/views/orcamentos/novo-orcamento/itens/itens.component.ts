@@ -414,6 +414,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
     item = itemCalculado;
+    item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
