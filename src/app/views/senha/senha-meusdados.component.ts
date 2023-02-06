@@ -30,6 +30,9 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
       
       ngAfterViewInit() {
         this.password.nativeElement.focus();
+        this.usuarioSenha.senha = "";
+        this.usuarioSenha.novaSenha = "";
+        this.usuarioSenha.confirmacaoSenha = "";
       }
 
       ngOnInit(): void {
