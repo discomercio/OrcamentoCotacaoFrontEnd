@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef  } from '@angular/core';
 import { UsuarioSenha } from 'src/app/dto/usuarios/UsuarioSenha';
 import { AutenticacaoService } from '../../service/autenticacao/autenticacao.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
   templateUrl: './senha-meusdados.component.html',
   styleUrls: ['./senha-meusdados.component.scss']
 })
-export class SenhaMeusdadosComponent implements OnInit {
+export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
 
     constructor(
       private router: Router,
@@ -22,11 +22,16 @@ export class SenhaMeusdadosComponent implements OnInit {
       private readonly criptoService: CriptoService,
       private readonly mensagemService: MensagemService,)
       { }
-      
+      @ViewChild("password") password: ElementRef;
+
       public usuarioSenha: UsuarioSenha;
       public form: FormGroup;
       public mensagemErro: string = "*Campo obrigatório.";
-  
+      
+      ngAfterViewInit() {
+        this.password.nativeElement.focus();
+      }
+
       ngOnInit(): void {
           this.usuarioSenha = new UsuarioSenha();
           this.criarForm();
