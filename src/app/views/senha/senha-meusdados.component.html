@@ -18,7 +18,7 @@
                                 [ngClass]="password.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
                                 (click)=" password.type = password.type == 'password' ? 'text' : 'password'"></i>
                             <input id="senha" type="password" pPassword formControlName="senha" [feedback]="false"
-                                #password autofocus/>
+                                #password autofocus autocomplete="off" />
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'senha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
