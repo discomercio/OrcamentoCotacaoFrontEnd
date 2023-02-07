@@ -114,6 +114,8 @@ export class OrcamentosComponent implements OnInit {
 
   buscarCboVendedores() {
     if (this.permissaoUniversal) {
+      this.vendedor = null;
+        this.buscarCboParceiros();
       let request = new UsuariosPorListaLojasRequest();
       if (this.lojas.length > 0) request.lojas = this.lojas;
       else request.lojas = this.autenticacaoService.usuario.lojas;
@@ -127,14 +129,21 @@ export class OrcamentosComponent implements OnInit {
         r.usuarios.forEach(x => {
           this.cboVendedores.push({ Id: x.id, Value: x.vendedor, Label: x.nomeIniciaisMaiusculo });
         });
-        this.vendedor = null;
+        
         this.cboFiltradoVendedores = this.cboVendedores;
+
+        
       }).catch((e) => {
         this.sweetAlertService.aviso(e.error.Mensagem);
       });
+
+      
     }
   }
 
+  buscarCboParceiros2(){
+    console.log("entrou no clear");
+  }
   buscarCboParceiros() {
 
     if (this.comParceiro == 2) return;
@@ -147,20 +156,20 @@ export class OrcamentosComponent implements OnInit {
     if (this.lojas.length <= 0)
       filtro.lojas = this.consultaOrcamentoGerencialResquest.lojas;
     else filtro.lojas = this.lojas;
-
+    
     this.cboFiltradoParceiros = new Array<any>();
     this.cboParceiros = new Array<any>();
+    
     this.orcamentistaService.buscarParceirosPorIdVendedor(filtro).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetAlertService.aviso(r.Mensagem);
         return;
       }
-
       r.parceiros.forEach(x => {
-        this.cboParceiros.push({ Id: x.id, Value: x.razaoSocial });
+        this.cboParceiros.push(Object.assign({}, { Id: x.id, Value: x.razaoSocial }));
       });
       this.parceiro = null;
-      this.cboFiltradoParceiros = this.cboParceiros;
+      this.cboFiltradoParceiros = Object.assign({},this.cboParceiros);
     }).catch((e) => {
       this.sweetAlertService.aviso(e.error.Mensagem);
     });

@@ -11,7 +11,7 @@
                                 <p-multiSelect formControlName="loja" [options]="cboLojas" placeholder="Selecione"
                                     emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
                                     optionLabel="Value" [(ngModel)]="lojas"
-                                    (onChange)="buscarCboParceiros();buscarCboVendedores()"
+                                    (onPanelHide)="buscarCboVendedores()"
                                     emptyFilterMessage="Nenhum item encontrado"
                                     selectedItemsLabel="{0} itens selecionados">
                                 </p-multiSelect>
@@ -19,9 +19,9 @@
                             <div *ngIf="permissaoUniversal" class="p-as-end p-col-8 p-field p-lg-3 p-md-3 p-sm-3">
                                 <label>Vendedor</label>
                                 <p-autoComplete [(ngModel)]="vendedor" formControlName="vendedor"
-                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true" 
+                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
                                     (completeMethod)="filtrarVendedores($event)" field="Label" [dropdown]="true"
-                                    (onSelect)="buscarCboParceiros()" (onClear)="buscarCboParceiros()">
+                                    (onBlur)="buscarCboParceiros()">
                                     <ng-template let-vendedor pTemplate="item">
                                         <div class="vendedor-item">
                                             <div>{{vendedor.Label}}</div>
