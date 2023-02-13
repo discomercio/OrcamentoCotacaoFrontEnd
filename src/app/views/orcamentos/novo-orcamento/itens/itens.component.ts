@@ -414,7 +414,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
     item = itemCalculado;
-    item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
+    // item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
@@ -483,10 +483,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         let somaFilhotes = 0;
         produtoComposto.filhos.forEach(el => {
           let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
-          let precoComQtde = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * el.qtde)
-          let precoListaComDesc = this.moedaUtils.formatarDecimal(precoComQtde * (1 - item.descDado / 100));
+          let precoVenda = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * (1 - item.descDado / 100));
+          let precoComQtde = this.moedaUtils.formatarDecimal(precoVenda * el.qtde)
           // somaFilhotes += this.moedaUtils.formatarDecimal(precoListaComDesc * el.qtde);
-          somaFilhotes += precoListaComDesc;
+          somaFilhotes += precoComQtde;
         });
         item.precoVenda = somaFilhotes;
         this.digitouQte(item);

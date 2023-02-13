@@ -99,14 +99,6 @@ export class NovoOrcamentoService {
         .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
           .reduce((sum, current) => sum + this.moedaUtils
             .formatarDecimal(current.totalItem), 0));
-
-
-      let todosProdutosSimples = this.montarProdutosParaCalculo();
-
-      let totalPedido = 0;
-      totalPedido = this.calcularTotalOrcamento(todosProdutosSimples, true);
-
-      return this.opcaoOrcamentoCotacaoDto.vlTotal = totalPedido;
     }
   }
 
@@ -125,25 +117,16 @@ export class NovoOrcamentoService {
   calcularTotalItem(item: ProdutoOrcamentoDto): ProdutoOrcamentoDto {
     let produtosDto = this.montarProdutoParaCalcularItem(item.produto);
 
-    debugger;
     let totalItem = 0;
     let precoVenda = 0;
     produtosDto.forEach(x => {
       let precoListaBase = x.precoLista;
-      let somaDesconto = x.descDado * x.qtde;
-
-      // let descontoMedio = parseFloat((somaDesconto / x.qtde).toString().substring(0, 4));
-      // let totalPrecoLista = this.moedaUtils.formatarDecimal(precoListaBase * x.qtde);
-      // let totalComDesconto = this.moedaUtils.formatarDecimal(totalPrecoLista * (1 - item.descDado / 100));
-      // precoVenda = this.moedaUtils.formatarDecimal(precoVenda + (precoListaBase * (1 - item.descDado / 100)));
-      let totalComDesconto = this.moedaUtils.formatarDecimal((precoListaBase * x.qtde) * (1 - item.descDado / 100));
+      let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
+      let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
       totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
     });
 
     item.totalItem = totalItem;
-    // item.precoVenda = precoVenda;
-    // item.precoVenda = this.moedaUtils.formatarDecimal(item.precoLista * (1 - item.descDado / 100));
-    // item.totalItem = this.moedaUtils.formatarDecimal((item.precoLista * item.qtde)*(1 - item.descDado / 100));
 
     return item;
   }
@@ -158,7 +141,6 @@ export class NovoOrcamentoService {
       let precoListaBase = totalAPrazo ? itens[0].precoLista : itens[0].precoListaBase;
       let somaDesconto = itens.reduce((soma, valor) => soma + (valor.descDado * valor.qtde), 0);
       let somaQtde = itens.reduce((sum, current) => sum + current.qtde, 0);
-      // let descontoMedio = parseFloat((somaDesconto / somaQtde).toString().substring(0, 4));
       let descontoMedio = this.moedaUtils.formatarDecimal(somaDesconto / somaQtde);
       let totalPrecoLista = this.moedaUtils.formatarDecimal(precoListaBase * somaQtde);
       let totalComDesconto = this.moedaUtils.formatarDecimal(totalPrecoLista * (1 - descontoMedio / 100));
@@ -213,7 +195,6 @@ export class NovoOrcamentoService {
     }
     return todosProdutosSimples;
   }
-
 
   atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
     this.opcaoOrcamentoCotacaoDto.formaPagto = lstFormaPagto;
@@ -315,6 +296,7 @@ export class NovoOrcamentoService {
           let valorComCoeficiente = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * coeficiente.Coeficiente);
           somaFilhotes += this.moedaUtils.formatarDecimal(valorComCoeficiente * el.qtde);
         });
+        debugger;
         x.precoLista = somaFilhotes;
         x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
         x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
