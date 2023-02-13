@@ -24,6 +24,7 @@ export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     // this.urlAnterior = this.router.transitions.value.currentSnapshot.url;
+    this.urlAnterior = sessionStorage.getItem("urlAnterior");
     
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosVigente)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
@@ -90,5 +91,10 @@ export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
     }, 3000);
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
     this.orcamentos.cdr.detectChanges();
+  }
+
+  ngOnDestroy(){
+    debugger;
+    sessionStorage.removeItem("urlAnterior");
   }
 }

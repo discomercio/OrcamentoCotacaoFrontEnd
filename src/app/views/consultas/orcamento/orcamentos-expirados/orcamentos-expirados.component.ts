@@ -1,5 +1,5 @@
 import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
@@ -15,7 +15,8 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly sweetAlertService: SweetalertService,
-    private readonly router: Router) { }
+    private readonly router: Router, 
+    private readonly active:ActivatedRoute) { }
 
   @ViewChild("orcamentos", { static: false }) orcamentos: OrcamentosComponent;
 
@@ -24,6 +25,7 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
 
     // this.urlAnterior = this.router.transitions.value.currentSnapshot.url;
+    this.urlAnterior = sessionStorage.getItem("urlAnterior");
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
@@ -91,5 +93,10 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
 
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
     this.orcamentos.cdr.detectChanges();
+  }
+
+  ngOnDestroy(){
+    debugger;
+    sessionStorage.removeItem("urlAnterior");
   }
 }

@@ -95,6 +95,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   ngOnInit(): void {
 
+    
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
@@ -444,6 +445,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   voltar() {
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
+    sessionStorage.setItem("urlAnterior", this.router.url);
     this.location.back();
   }
 
