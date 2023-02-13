@@ -23,7 +23,7 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
 
-    this.urlAnterior = this.router.transitions.value.currentSnapshot.url;
+    // this.urlAnterior = this.router.transitions.value.currentSnapshot.url;
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosExpirados)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
@@ -45,7 +45,7 @@ export class OrcamentosExpiradosComponent implements OnInit, AfterViewInit {
     let parca: any;
     let fab: any;
     let vendedor :any;
-    if (this.urlAnterior.indexOf("/aprovar-orcamento/") > -1) {
+    if (this.urlAnterior && this.urlAnterior.indexOf("/aprovar-orcamento/") > -1) {
       let sessionStorageFiltro = sessionStorage.getItem("filtro");
       if (sessionStorageFiltro) {
         this.orcamentos.consultaOrcamentoGerencialResquest = JSON.parse(sessionStorageFiltro);
