@@ -26,6 +26,7 @@ export class OrcamentosCadastradosComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     
     // this.urlAnterior = this.router.transitions.value.currentSnapshot.url;
+    this.urlAnterior = sessionStorage.getItem("urlAnterior");
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelOrcamentosCadastrados)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
@@ -89,5 +90,10 @@ export class OrcamentosCadastradosComponent implements OnInit, AfterViewInit {
 
     this.orcamentos.buscarLista(this.orcamentos.consultaOrcamentoGerencialResquest);
     this.orcamentos.cdr.detectChanges();
+  }
+
+  ngOnDestroy(){
+    debugger;
+    sessionStorage.removeItem("urlAnterior");
   }
 }
