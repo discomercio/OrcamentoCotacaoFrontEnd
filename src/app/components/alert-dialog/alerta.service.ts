@@ -4,20 +4,19 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { environment } from 'src/environments/environment';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AlertaService {
-  env: environment;
 
   constructor(public dialogService: DialogService,
     private readonly router: Router,
-    private envir: environment,
-    private readonly sweetalertService: SweetalertService) { 
-      this.env = envir;
-    }
+    private readonly sweetalertService: SweetalertService,
+    private appSettingsService: AppSettingsService) { 
+
+  }
 
 
   public mostrarMensagemComLargura(msg: string, largura: string, aposOk: () => void): void {
@@ -65,12 +64,6 @@ export class AlertaService {
           this.router.navigate(["account/login"]);
         })
 
-        // this.mostrarMensagemComLargura("Erro: Acesso não autorizado!", "250px", () => {
-        //   AlertaService.mostrandoErroNaoAutorizado = false;
-
-        //   sair.click();
-        // });
-
         return;
       }
 
@@ -115,13 +108,7 @@ export class AlertaService {
       if (error.status == 400) {
         let mensagens: Array<string> = new Array();
         let erro = error.error.message;
-          mensagens.push(erro);
-        // for (let key in error.error.errors) {
-        //   // let listaErros = error.error.errors[key];
-        //   // for (let erro in listaErros) {
-        //   //   mensagens.push(listaErros[erro]);
-        //   // }
-        // }
+        mensagens.push(erro);
 
         if (error.error.Mensagem != undefined) {
           this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
@@ -148,52 +135,47 @@ export class AlertaService {
     }
   }
 
-
   public mostrarErro412(error: HttpErrorResponse): boolean {
 
     if (error.status == 412) {
-      
-      let versao = this.env.versaoApi();
 
-      if (versao == null) {
-        versao = "";
-      }
-      if (versao.trim() != "") {
-        versao = " (" + versao + ")";
-      }
       this.sweetalertService.dialogoVersao("", "Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.").subscribe(result => {        
         
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
-        localStorage.setItem('versaoApi', this.env.versaoApi());
+        localStorage.removeItem("appsettings");
+        localStorage.removeItem("versaoApi");
 
         window.location.reload();
 
       });
+
       return true;
     }
+
     return false;
-  }  
+  } 
 
   public mostrarErroAtualizandoVersao(): boolean {
           
-      let versao = this.env.versaoApi();
+    let versao = this.appSettingsService.versao;
 
-      if (versao == null) {
-        versao = "";
-      }
-      if (versao.trim() != "") {
-        versao = " (" + versao + ")";
-      }
-      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
-        localStorage.setItem('versaoApi', this.env.versaoApi());
+    if (versao == null) {
+      versao = "";
+    }
+    if (versao.trim() != "") {
+      versao = " (" + versao + ")";
+    }
+
+    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
+
+        localStorage.removeItem("appsettings");
+        localStorage.removeItem("versaoApi");
+
         window.location.reload();
-
-      });
-      return true;
+    });
     
-    
+    return true;
   }  
 }
-

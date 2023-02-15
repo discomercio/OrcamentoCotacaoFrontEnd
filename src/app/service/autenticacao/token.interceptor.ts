@@ -1,7 +1,6 @@
 import { HttpInterceptor, HttpRequest, HttpHandler, HttpSentEvent, HttpHeaderResponse, HttpProgressEvent, HttpResponse, HttpUserEvent, HttpEvent, HttpHeaders, HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { AutenticacaoService } from './autenticacao.service';
 import { tap } from 'rxjs/internal/operators/tap';
 import { Router } from '@angular/router';
@@ -10,29 +9,27 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-  env: environment;
 
   constructor(
     private readonly autenticacaoService: AutenticacaoService, 
     private readonly alertaService: AlertaService, 
     private router: Router, 
     private http: HttpClient, 
-    private envir: environment,
     private appSettingsService: AppSettingsService) {
-    this.env = envir
+
   }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
 
     let headers: { [name: string]: string | string[]; } = {
-      'X-API-Version': this.env.versaoApi()
+      'X-API-Version': this.appSettingsService.versao
     };
 
     if (this.autenticacaoService.authEstaLogado()) {
       headers = {
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
-        'X-API-Version': this.env.versaoApi()
+        'X-API-Version': this.appSettingsService.versao
       };
     }
     else {
@@ -45,11 +42,14 @@ export class TokenInterceptor implements HttpInterceptor {
       this.router.navigate(['senha/senha-meusdados']);
     }
 
-    if (localStorage.getItem("versaoApi") != this.env.versaoApi()) {
+    console.log(localStorage.getItem("versaoApi"));
+    console.log(this.appSettingsService.versao);
+
+    if (localStorage.getItem("versaoApi") != this.appSettingsService.versao) {
       if (!this.router.url.startsWith('/publico/')) {
         this.alertaService.mostrarErroAtualizandoVersao();
       }else{
-        localStorage.setItem('versaoApi', this.env.versaoApi());
+        localStorage.setItem('versaoApi', this.appSettingsService.versao);
         window.location.reload();
       }
     }
@@ -64,7 +64,7 @@ export class TokenInterceptor implements HttpInterceptor {
           let resp: HttpResponse<any> = event;
           let respOk = false;
 
-          if (localStorage.getItem("versaoApi") == this.env.versaoApi()) {
+          if (localStorage.getItem("versaoApi") == this.appSettingsService.versao) {
             respOk = true;
           }        
           
