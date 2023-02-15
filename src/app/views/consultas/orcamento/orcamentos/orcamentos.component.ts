@@ -1,5 +1,5 @@
 import { JsonPipe } from '@angular/common';
-import { ChangeDetectorRef, Component, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { LazyLoadEvent, SelectItem } from 'primeng/api';
@@ -50,7 +50,7 @@ export class OrcamentosComponent implements OnInit {
   dataUtils: DataUtils = new DataUtils();
   mostrarQtdePorPagina: boolean = false;
   permissaoUniversal: boolean = false;
-  bloqueiaParceiro:boolean = false;
+  bloqueiaParceiro: boolean = false;
 
   //Combos
   cboVendedores: Array<any> = [];
@@ -66,7 +66,7 @@ export class OrcamentosComponent implements OnInit {
   vendedor: any;
   parceiro: any;
   comParceiro: number;
-  fabricante: string;
+  fabricante: any;
   grupo: string;
   dtCriacaoInicio: Date;
   dtCriacaoFim: Date;
@@ -87,9 +87,10 @@ export class OrcamentosComponent implements OnInit {
     }
 
     this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService._lojasUsuarioLogado;
+
     this.criarForm();
-    this.buscarCboVendedores();
-    this.buscarCboParceiros();
+    // this.buscarCboVendedores();
+    // this.buscarCboParceiros();
     this.buscarCboLojas();
     this.buscarCboComParceiro();
     this.buscarCboFabricantes();
@@ -114,6 +115,8 @@ export class OrcamentosComponent implements OnInit {
 
   buscarCboVendedores() {
     if (this.permissaoUniversal) {
+      this.vendedor = null;
+      this.buscarCboParceiros();
       let request = new UsuariosPorListaLojasRequest();
       if (this.lojas.length > 0) request.lojas = this.lojas;
       else request.lojas = this.autenticacaoService.usuario.lojas;
@@ -127,11 +130,15 @@ export class OrcamentosComponent implements OnInit {
         r.usuarios.forEach(x => {
           this.cboVendedores.push({ Id: x.id, Value: x.vendedor, Label: x.nomeIniciaisMaiusculo });
         });
-        this.vendedor = null;
+
         this.cboFiltradoVendedores = this.cboVendedores;
+
+
       }).catch((e) => {
         this.sweetAlertService.aviso(e.error.Mensagem);
       });
+
+
     }
   }
 
@@ -150,17 +157,17 @@ export class OrcamentosComponent implements OnInit {
 
     this.cboFiltradoParceiros = new Array<any>();
     this.cboParceiros = new Array<any>();
+
     this.orcamentistaService.buscarParceirosPorIdVendedor(filtro).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetAlertService.aviso(r.Mensagem);
         return;
       }
-
       r.parceiros.forEach(x => {
-        this.cboParceiros.push({ Id: x.id, Value: x.razaoSocial });
+        this.cboParceiros.push(Object.assign({}, { Id: x.id, Value: x.razaoSocial }));
       });
       this.parceiro = null;
-      this.cboFiltradoParceiros = this.cboParceiros;
+      this.cboFiltradoParceiros = Object.assign({}, this.cboParceiros);
     }).catch((e) => {
       this.sweetAlertService.aviso(e.error.Mensagem);
     });
@@ -195,6 +202,7 @@ export class OrcamentosComponent implements OnInit {
 
   buscarLista(filtro: ConsultaGerencialOrcamentoRequest) {
 
+    sessionStorage.setItem("filtro", JSON.stringify(filtro));
     this.carregando = true;
     this.consultaOrcamentoGerencialResponse = new Array<ConsultaGerencialOrcamentoResponse>();
     this.orcamentoService.consultaGerencial(filtro).toPromise().then((r) => {
@@ -261,17 +269,28 @@ export class OrcamentosComponent implements OnInit {
   }
 
   setarFiltroBusca() {
-    if (this.lojas.length > 0) this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
-    else this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
+    if (this.lojas.length > 0){
+      this.consultaOrcamentoGerencialResquest.lojas = this.lojas;
+      this.consultaOrcamentoGerencialResquest.lojasSelecionadas = this.lojas;
+    } 
+    else{
+      this.consultaOrcamentoGerencialResquest.lojasSelecionadas = null;
+      this.consultaOrcamentoGerencialResquest.lojas = this.autenticacaoService.usuario.lojas;
+    } 
 
     this.consultaOrcamentoGerencialResquest.vendedor = !this.vendedor ? 0 : this.vendedor.Id.toString();
+    //apenas para achar o vendedor selecionado
+    this.consultaOrcamentoGerencialResquest.vendedorSelecionado = this.vendedor;
 
     if (!this.comParceiro) this.consultaOrcamentoGerencialResquest.comParceiro = undefined;
     if (this.comParceiro == 1) this.consultaOrcamentoGerencialResquest.comParceiro = true;
     if (this.comParceiro == 2) this.consultaOrcamentoGerencialResquest.comParceiro = false;
 
     this.consultaOrcamentoGerencialResquest.idParceiro = !this.parceiro ? undefined : this.parceiro.Id;
-    this.consultaOrcamentoGerencialResquest.fabricante = !!this.fabricante ? this.fabricante : undefined;
+    this.consultaOrcamentoGerencialResquest.parceiroSelecionado = this.parceiro;
+
+    this.consultaOrcamentoGerencialResquest.fabricante = !this.fabricante ? undefined : this.fabricante;
+
     this.consultaOrcamentoGerencialResquest.grupo = !!this.grupo ? this.grupo : undefined;
 
     this.consultaOrcamentoGerencialResquest.dataCriacaoInicio =
@@ -360,8 +379,8 @@ export class OrcamentosComponent implements OnInit {
     });
   }
 
-  verificarParceiro(){
-    if(this.comParceiro == 2){
+  verificarParceiro() {
+    if (this.comParceiro == 2) {
       this.bloqueiaParceiro = true;
       this.parceiro = undefined;
       return;
