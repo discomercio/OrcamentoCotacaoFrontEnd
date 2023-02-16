@@ -16,6 +16,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 
 @Component({
   selector: 'app-editar-produto',
@@ -46,6 +47,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   public urlUpload: string;
   public uploadedFiles: any[] = [];
   carregando: boolean = false;
+  fabricantes: ProdutoCatalogoFabricante[];
 
   propriedades: ProdutoCatalogoPropriedade[] = new Array<ProdutoCatalogoPropriedade>();
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
@@ -62,6 +64,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }
 
     this.carregando = true;
+    this.buscarFabricantes();
     this.criarForm();
     this.setarCampos();
     this.buscarProdutoDetalhe();
@@ -214,7 +217,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    debugger;
+    
     if (this.produtoDetalhe.imagem.Caminho == "sem-imagem.png") {
       this.imgSemImagem = this.produtoDetalhe.imagem;
       this.produtoDetalhe.imagem = null;
@@ -272,6 +275,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     produto.Nome = this.produtoDetalhe.Nome; //Descricao
     produto.Descricao = this.produtoDetalhe.Descricao; //Descricao Completa
     produto.Ativo = this.produtoDetalhe.Ativo;
+    produto.Fabricante = this.produtoDetalhe.Fabricante;
     produto.campos = campos;
     if (!!this.imagem) {
       produto.imagem = new ProdutoCatalogoImagem();
@@ -335,6 +339,26 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);
+  }
+
+  buscarFabricantes() {
+    // let lstFabricantes = [];
+    // var indice = 0;
+
+    this.produtoService.buscarFabricantes().toPromise().then((r) => {
+      if (r != null) {
+
+        // debugger;
+        // while (indice < r.length) {
+        //   lstFabricantes.push({ label: r[indice]['Descricao'], value: r[indice]['Fabricante'] })
+        //   indice++;
+        // }
+
+        // this.lstFabricantes = lstFabricantes;
+        this.fabricantes = r;
+        this.carregando = false;
+      }
+    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 }
 

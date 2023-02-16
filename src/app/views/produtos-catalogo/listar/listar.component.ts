@@ -92,13 +92,20 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   }
 
   excluirClick(id: any) {
-    this.service.excluirProduto(id).toPromise().then((r) => {
-      if (r != null && r == true) {
-        this.mensagemService.showSuccessViaToast("Produto inativado com sucesso!");
-        this.carregando = false;
-        this.buscarTodosProdutos();
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja excluir esse produto?").subscribe(result => {
+      if (!result) return;
+
+      this.service.excluirProduto(id).toPromise().then((r) => {
+        if (r != null && r == true) {
+          this.mensagemService.showSuccessViaToast("Produto excluído com sucesso!");
+          this.carregando = false;
+          this.buscarTodosProdutos();
+        }
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+    });
+
   }
 
   criarClick() {
