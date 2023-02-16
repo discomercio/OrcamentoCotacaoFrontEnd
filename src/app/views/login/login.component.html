@@ -8,11 +8,11 @@
                 </div>
                 <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
                     <input-arclube setId="Login" titleInput="E-mail/Usuário" (inputValue)="usuario = $event"
-                        class="p-col-12" setFocus="true"></input-arclube>
+                        class="p-col-12" setAutoFocus="true"></input-arclube>
                 </div>
                 <div *ngIf="!autenticou" class="p-col-12" style="text-align:left;">
                     <input-arclube setId="Password" titleInput="Password" typeInput="password"
-                        (inputValue)="senha = $event" class="p-col-12"></input-arclube>
+                        (inputValue)="senha = $event" class="p-col-12" #password></input-arclube>
                 </div>
                 <div *ngIf="mostrarLoja" class="p-col-12" style="text-align:left;">
                     <div class="login-input">

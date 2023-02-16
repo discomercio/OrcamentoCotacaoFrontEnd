@@ -106,7 +106,7 @@ export class InputArClubeComponent {
 	}
 
 	@Input() 
-	set setFocus(value: boolean ){
+	set setAutoFocus(value: boolean ){
 		this.autofocus = value
 	}	
 	
@@ -119,7 +119,7 @@ export class InputArClubeComponent {
 
 	returnValue() {
 		this.inputValue.emit(this.value)
-	}
+	}	
 
 	ngOnInit() { }
 }
