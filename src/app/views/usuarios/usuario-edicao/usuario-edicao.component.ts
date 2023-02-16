@@ -175,6 +175,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.usuario.senha = f.senha.value;
     this.usuario.telefone = f.ddd_telefone.value;
     this.usuario.celular = f.dddCel_telefoneCel.value;
+    this.usuario.loja = this.autenticacaoService._lojaLogado;
 
     if (this.autenticacaoService._tipoUsuario == 1) {
       this.usuario.parceiro = this.parceiroSelecionado;
