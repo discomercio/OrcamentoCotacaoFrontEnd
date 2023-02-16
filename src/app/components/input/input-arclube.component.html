@@ -15,6 +15,7 @@
             [attr.disabled]="disabled == 'true' ? '' : null" 
             *ngIf="type === 'text' && !mask.length"      
             [placeholder]="placeholder"
+            autofocus = "value"
             autocomplete="new-password">
       
     <input 
