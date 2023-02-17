@@ -4,11 +4,11 @@
             *ngIf="!impressaoService.emImpressao() && telaDesktop">
             <mat-icon>edit</mat-icon> Editar
         </button> -->
-        <button mat-raised-button color="accent" style="font-size:80%;background-color: #007bff !important;color: white !important;" (click)="imprimir()" class="botaoImprimir"
+        <!-- <button mat-raised-button color="accent" style="font-size:80%;background-color: #007bff !important;color: white !important;" (click)="imprimir()" class="botaoImprimir"
             *ngIf="!impressaoService.emImpressao() && telaDesktop">
-            <!-- <mat-icon>print</mat-icon> -->
+            <mat-icon>print</mat-icon>
             <span class="pi pi-print"> </span> Versão para impressão
-        </button>
+        </button> -->
 
     </div>
     <div class="botaoEditarDiv">
@@ -378,21 +378,6 @@
                 <tr>
                     <td align="left">
                         <p align="left" class="C" *ngFor="let linha of this.prepedidoDto.FormaPagto">{{linha}}</p>
-                    </td>
-                </tr>
-
-            </table>
-            <table class="Q" style="width:649px;" cellspacing="0">
-                <tr>
-                    <td align="left"><span class="Rf">Descrição da Forma de Pagamento</span></td>
-                </tr>
-                <tr>
-                    <td align="left">
-                        <textarea name="c_obs1" id="c_obs1" class="PLLe" rows="{{constantes.MAX_LINHAS_FORMA_PAGTO}}"
-                            style="width:99%;margin-left:2pt; resize: none;" readonly tabindex=-1>{{this.prepedidoDto?.DetalhesPrepedido.DescricaoFormaPagamento}} &nbsp;
-                        </textarea>
-                        <!-- <span align="left" class="C">{{this.prepedidoDto.DetalhesPrepedido.DescricaoFormaPagamento}}
-                            &nbsp;</span> -->
                     </td>
                 </tr>
 
