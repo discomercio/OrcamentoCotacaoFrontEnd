@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener} from '@angular/core';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -36,6 +36,15 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
 
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.which == 13 || event.keyCode == 13) {
+      if (this.usuario && this.senha) {
+        this.login();
+      }    
+    }   
   }
 
   senha: string;

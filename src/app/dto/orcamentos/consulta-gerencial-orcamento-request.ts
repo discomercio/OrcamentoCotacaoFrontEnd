@@ -17,4 +17,7 @@ export class ConsultaGerencialOrcamentoRequest {
     nomeColunaOrdenacao: string;
     nomeLista: string;
     status: Array<number>;
+    vendedorSelecionado: any;
+    parceiroSelecionado:any;
+    lojasSelecionadas:Array<string>;
 }

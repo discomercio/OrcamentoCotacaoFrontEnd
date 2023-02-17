@@ -23,6 +23,7 @@ export class InputArClubeComponent {
 	requiredLabel: string = ''
 	number: number;
 	class: string;
+	autofocus: boolean = false;
 
 	constructor() { }	
 
@@ -103,6 +104,12 @@ export class InputArClubeComponent {
 	set setClass(value: string){
 		this.class = value
 	}
+
+	@Input() 
+	set setAutoFocus(value: boolean ){
+		this.autofocus = value
+	}	
+	
 	getLabelStatus() {
 		if (this.id == 'Login' || this.id == 'Password')
 			return "color: white;"
@@ -112,7 +119,7 @@ export class InputArClubeComponent {
 
 	returnValue() {
 		this.inputValue.emit(this.value)
-	}
+	}	
 
 	ngOnInit() { }
 }
