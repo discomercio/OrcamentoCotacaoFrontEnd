@@ -42,9 +42,6 @@ export class TokenInterceptor implements HttpInterceptor {
       this.router.navigate(['senha/senha-meusdados']);
     }
 
-    console.log(localStorage.getItem("versaoApi"));
-    console.log(this.appSettingsService.versao);
-
     if (localStorage.getItem("versaoApi") != this.appSettingsService.versao) {
       if (!this.router.url.startsWith('/publico/')) {
         this.alertaService.mostrarErroAtualizandoVersao();
@@ -60,6 +57,7 @@ export class TokenInterceptor implements HttpInterceptor {
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
 
+        
         if (event instanceof HttpResponse) {
           let resp: HttpResponse<any> = event;
           let respOk = false;
