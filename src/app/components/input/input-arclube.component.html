@@ -12,7 +12,6 @@
             [class.ng-invalid]= "invalid == 'true'" 
             [(ngModel)]="value" 
             (change)="returnValue()"
-            (blur)="nextFocus()"
             [attr.disabled]="disabled == 'true' ? '' : null" 
             *ngIf="type === 'text' && !mask.length"      
             [placeholder]="placeholder"
