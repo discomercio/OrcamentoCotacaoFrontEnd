@@ -186,7 +186,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.carregando = false;
           this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         }
-      });
+      }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
   }
 
