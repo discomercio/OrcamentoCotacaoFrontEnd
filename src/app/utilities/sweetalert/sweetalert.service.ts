@@ -64,7 +64,7 @@ export class SweetalertService {
         this.swalWithBootstrapButtons.fire({
             title: titulo,
             text: texto,
-            icon: 'warning',
+            icon: 'info',
             showCancelButton: false,
             showConfirmButton: true,
             confirmButtonText: 'Ok',
