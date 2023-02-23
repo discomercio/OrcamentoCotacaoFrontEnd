@@ -250,9 +250,9 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       i.Qtde = 1;
     }
 
-    let desc = 1 - i.Desc_Dado / 100;
-    i.TotalItem = this.moedaUtils.formatarDecimal((i.Preco_Lista * i.Qtde) * desc);
-    // i.TotalItem = this.moedaUtils.formatarDecimal(i.Preco_Venda * i.Qtde); // preco_venda = Vl Venda na tela
+    // let desc = 1 - i.Desc_Dado / 100;
+    // i.TotalItem = this.moedaUtils.formatarDecimal((i.Preco_Lista * i.Qtde) * desc);
+    i.TotalItem = this.moedaUtils.formatarDecimal(i.Preco_Venda * i.Qtde); // preco_venda = Vl Venda na tela
     this.dadosPagto.prepedidoAlterado();
     this.novoPrepedidoDadosService.totalPedido();
 
