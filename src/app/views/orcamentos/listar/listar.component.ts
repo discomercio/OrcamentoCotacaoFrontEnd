@@ -74,7 +74,6 @@ export class OrcamentosListarComponent implements OnInit {
   cboVendedoresParceiros: Array<DropDownItem> = [];
   cboMensagens: Array<DropDownItem> = [];
   cboDatas: Array<DropDownItem> = [];
-  cboExpirados: Array<SelectItem> = [];
 
   idValuesTmp = 0;
 
@@ -101,18 +100,10 @@ export class OrcamentosListarComponent implements OnInit {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
     this.criarTabela();
-    this.criarCbExpirado();
     // this.buscarRegistros();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
-  }
-
-  criarCbExpirado() {
-    this.cboExpirados = [
-      { value: true, label: "Sim" },
-      { value: false, label: "Não" }
-    ]
   }
 
   iniciarFiltro(param: any) {
@@ -156,8 +147,7 @@ export class OrcamentosListarComponent implements OnInit {
       dtFim: [''],
       filtroStatus: [''],
       dtFimExpiracao: [''],
-      dtInicioExpiracao: [''],
-      expirados: ['']
+      dtInicioExpiracao: ['']
     });
   }
 
@@ -259,7 +249,7 @@ export class OrcamentosListarComponent implements OnInit {
       x.linhaBusca += "/" + x.Cliente_Obra.toLowerCase() + "/";
     });
   }
-  
+
   popularTela() {
     this.setarPaginacao();
     this.buscarStatus();
@@ -291,7 +281,7 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (lstFiltrada.length > 0) {
       lstFiltrada.forEach(x => {
-        
+
         if (!!x.Parceiro) {
           if (!this.cboParceiros.find(f => f.Value == x.Parceiro))
             this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.Parceiro });
@@ -350,7 +340,7 @@ export class OrcamentosListarComponent implements OnInit {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar)) {
       lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
     }
-    
+
     lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
@@ -372,11 +362,9 @@ export class OrcamentosListarComponent implements OnInit {
       && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null)
       && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null)
       && (this.filtro.DtFim === undefined || this.filtro.DtFim == null)
-      && (this.filtro.Expirado === undefined || this.filtro.Expirado == null)
     ) {
       this.lstDtoFiltrada = this.lstDto;
     } else {
-      debugger;
 
       this.lstDtoFiltrada = this.lstDto;
       if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
@@ -387,18 +375,18 @@ export class OrcamentosListarComponent implements OnInit {
 
       if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
       if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
-      if (this.filtro.Expirado != undefined) {
-        let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-        if (this.filtro.Expirado == true) {
-          this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-            new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
-        }
+      //if (this.filtro.Expirado != undefined) {
+      //   let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      //   if (this.filtro.Expirado == true) {
+      //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
+      //       new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
+      //   }
 
-        if (this.filtro.Expirado == false) {
-          this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-            new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
-        }
-      }
+      //   if (this.filtro.Expirado == false) {
+      //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
+      //       new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
+      //   }
+      // }
       if (lstFiltraDataExpiracao.length > 0) {
         let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
         let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
@@ -498,7 +486,6 @@ export class OrcamentosListarComponent implements OnInit {
 
 
   dtFim_onBlur(event) {
-    // console.log('dtInicio_onChange');
     let dtini = new Date(this.form.controls.dtInicio.value);
     let dtfim = new Date(this.form.controls.dtFim.value);
 

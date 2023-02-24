@@ -62,14 +62,7 @@
                             <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex">
                                 <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-12"
                                     *ngIf="parametro == 'ORCAMENTOS'">
-                                    <div class="p-as-end p-field p-lg-4 p-md-4 p-pl-0 p-sm-4">
-                                        <label>Expirados</label>
-                                        <p-dropdown formControlName="expirados" [options]="cboExpirados"
-                                            [(ngModel)]="filtro.Expirado" (onChange)='cbExpirado_onChange()'
-                                            [showClear]="true" optionValue="value" optionLabel="label"
-                                            placeholder="Selecione">
-                                        </p-dropdown>
-                                    </div>
+                                    
                                     <div class="p-as-end p-field p-lg-3 p-lg-4 p-pr-sm-0">
                                         <label for="dataInicio">Início da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
