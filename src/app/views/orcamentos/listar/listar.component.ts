@@ -175,11 +175,11 @@ export class OrcamentosListarComponent implements OnInit {
       this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
         var indice = 0;
         if (r != null) {
-           this.cboStatus = [];
-           r.forEach(e => {
-            this.cboStatus.push({Id:e.Id, Value:e.Value});
-           });
-           this.cboStatus.push({Id: 4, Value:"Expirado"});
+          this.cboStatus = [];
+          r.forEach(e => {
+            this.cboStatus.push({ Id: e.Id, Value: e.Value });
+          });
+          this.cboStatus.push({ Id: 4, Value: "Expirado" });
         }
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
@@ -188,6 +188,7 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   buscarVendedores() {
+    console.log("foi buscar")
     this.cboVendedores = [];
     this.lstDto.forEach(x => {
       if (!this.cboVendedores.find(f => f.Value == x.Vendedor)) {
@@ -248,6 +249,14 @@ export class OrcamentosListarComponent implements OnInit {
       if (r != null && r.length > 0) {
         this.lstDto = r;
         this.montarLinhaBusca();
+        this.lstDto.forEach(x => {
+          let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
+          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+          if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
+            x.IdStatus = 4;
+            x.Status = "Expirado";
+          }
+        });
         this.lstDtoFiltrada = this.lstDto;
         this.iniciarFiltroExpericao();
         this.Pesquisar_Click();
@@ -270,8 +279,8 @@ export class OrcamentosListarComponent implements OnInit {
 
   popularTela() {
     this.setarPaginacao();
-    this.buscarStatus();
-    this.buscarVendedores();
+    if (this.cboStatus.length == 0) this.buscarStatus();
+    if (this.cboVendedores.length == 0) this.buscarVendedores();
     this.filtrar_cboVendedoresParceiro();
     this.filtrar_cboParceiros();
     this.buscarMensagens();
