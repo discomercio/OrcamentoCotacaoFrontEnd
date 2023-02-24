@@ -212,7 +212,7 @@ export class OrcamentosListarComponent implements OnInit {
       { field: 'Status', header: 'Status' },
       { field: 'Mensagem', header: 'Msg. Pendente', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
       { field: 'DtExpiracao', header: 'Expiração', visible: (this.parametro != enumParametros.ORCAMENTOS ? 'none' : '') },
-      { field: 'DtCadastro', header: 'Data' },
+      { field: 'DtCadastro', header: 'Criação' },
       { field: 'Editar', header: " ", visible: 'none' },
       { field: 'St_Orc_Virou_Pedido', header: 'St_Orc_Virou_Pedido', visible: 'none' }
     ];
