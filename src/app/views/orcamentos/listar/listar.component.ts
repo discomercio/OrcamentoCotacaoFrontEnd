@@ -169,6 +169,32 @@ export class OrcamentosListarComponent implements OnInit {
     }
   }
 
+  buscarStatus() {
+
+    if (this.autenticacaoService._usuarioLogado) {
+      this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
+        var indice = 0;
+        if (r != null) {
+          debugger;
+           this.cboStatus = [];
+           r.forEach(e => {
+            this.cboStatus.push({Id:e.Id, Value:e.Value});
+           });
+           this.cboStatus.push({Id: 4, Value:"Expirado"});
+          // this.lstDto.forEach(x => {
+          //   if (!this.cboStatus.find(f => f.Value == x.Status)) {
+          //     if (x.Status) {
+          //       this.cboStatus.push({ Id: (this.idValuesTmp++).toString(), Value: x.Status });
+          //     }
+          //   }
+          // });
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+  }
+
   buscarVendedores() {
     this.cboVendedores = [];
     this.lstDto.forEach(x => {
@@ -262,18 +288,6 @@ export class OrcamentosListarComponent implements OnInit {
   setarPaginacao() {
     this.first = 0;
   }
-
-  buscarStatus() {
-    this.cboStatus = [];
-    this.lstDto.forEach(x => {
-      if (!this.cboStatus.find(f => f.Value == x.Status)) {
-        if (x.Status) {
-          this.cboStatus.push({ Id: (this.idValuesTmp++).toString(), Value: x.Status });
-        }
-      }
-    });
-  }
-
 
   filtrar_cboParceiros() {
     this.cboParceiros = [];
