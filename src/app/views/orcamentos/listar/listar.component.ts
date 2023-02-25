@@ -25,6 +25,10 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { PrepedidoListarService } from 'src/app/service/prepedido/prepedido-listar.service';
 import { PrepedidoRemoverService } from 'src/app/service/prepedido/prepedido-remover.service';
+import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
+import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
+import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
 @Component({
   selector: 'app-listar',
   templateUrl: './listar.component.html',
@@ -44,11 +48,10 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly prepedidoService: PrepedidoListarService,
     private readonly prepedidoRemoverService: PrepedidoRemoverService,
     private readonly sweetalertService: SweetalertService,
-    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
-    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService
+    private readonly sweetAlertService: SweetalertService,
+    private readonly usuarioService: UsuariosService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -70,6 +73,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   cboStatus: Array<DropDownItem> = [];
   cboVendedores: Array<DropDownItem> = [];
+  cboFiltradoVendedores: Array<DropDownItem> = [];
   cboParceiros: Array<DropDownItem> = [];
   cboVendedoresParceiros: Array<DropDownItem> = [];
   cboMensagens: Array<DropDownItem> = [];
@@ -95,15 +99,21 @@ export class OrcamentosListarComponent implements OnInit {
   public lstVendedoresParceiros: SelectItem[] = [];
   public lstParceiro: SelectItem[] = [];
   tipoUsuario: number;
+  admModulo: boolean;
+  vendedorSelecionado: DropDownItem;
+  configValidade: ValidadeOrcamento;
 
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
     this.criarTabela();
-    // this.buscarRegistros();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
+    this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
+    this.buscarVendedores();
+    this.buscarConfigValidade();
+
   }
 
   iniciarFiltro(param: any) {
@@ -123,6 +133,8 @@ export class OrcamentosListarComponent implements OnInit {
   minExpiracao = new Date();
   maxEpiracao = new Date();
   iniciarFiltroExpericao() {
+    let periodoMaxExpiracao = this.configValidade.MaxPeriodoConsultaFiltroPesquisa;
+    
     let maxItem = this.lstDto.reduce((a, b) => {
       return new Date(a.DtExpiracao) > new Date(b.DtExpiracao) ? a : b;
     });
@@ -153,16 +165,14 @@ export class OrcamentosListarComponent implements OnInit {
 
   setarCamposDoForm(): void {
 
-    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS && !this.admModulo) {
       this.filtro.Vendedor = this.usuario.nome;
     }
     if (this.tipoUsuario == this.constantes.PARCEIRO) {
-      // this.filtro.Vendedor = this.usuario.idVendedor;
       this.filtro.Parceiro = this.usuario.nome;
     }
 
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      // this.filtro.Vendedor = this.usuario.idVendedor;
       this.filtro.Parceiro = this.usuario.idParceiro;
       this.filtro.VendedorParceiro = this.usuario.nome;
       this.filtro.IdIndicadorVendedor = this.usuario.id;
@@ -188,16 +198,38 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   buscarVendedores() {
-    console.log("foi buscar")
-    this.cboVendedores = [];
-    this.lstDto.forEach(x => {
-      if (!this.cboVendedores.find(f => f.Value == x.Vendedor)) {
-        if (x.Vendedor) {
-          this.cboVendedores.push({ Id: (this.idValuesTmp++).toString(), Value: x.Vendedor });
+    if (this.admModulo) {
+      let request = new UsuariosPorListaLojasRequest();
+      request.lojas = [];
+      request.lojas.push(this.autenticacaoService._lojaLogado);
+
+      this.usuarioService.buscarVendedoresPorListaLojas(request).toPromise().then((r) => {
+        if (!r.Sucesso) {
+          this.sweetAlertService.aviso(r.Mensagem);
+          return;
         }
-      }
-    });
+        this.cboVendedores = new Array<any>();
+        r.usuarios.forEach(x => {
+          this.cboVendedores.push({ Id: x.id, Value: x.vendedor });
+        });
+        this.cboFiltradoVendedores = this.cboVendedores;
+      }).catch((e) => {
+        this.sweetAlertService.aviso(e.error.Mensagem);
+      });
+    }
+
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
+  }
+
+  buscarConfigValidade() {
+    this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
+      if (r != null) {
+        this.configValidade = r;
+      }
+    }).catch((e) => {
+      debugger;
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   criarTabela() {
@@ -216,10 +248,6 @@ export class OrcamentosListarComponent implements OnInit {
       { field: 'Editar', header: " ", visible: 'none' },
       { field: 'St_Orc_Virou_Pedido', header: 'St_Orc_Virou_Pedido', visible: 'none' }
     ];
-    // this.activatedRoute.params.subscribe((param: any) => {
-    //   this.parametro = param.filtro.toUpperCase();
-
-    // });
   }
 
   btnDelete_onClick(idPedido) {
@@ -280,7 +308,6 @@ export class OrcamentosListarComponent implements OnInit {
   popularTela() {
     this.setarPaginacao();
     if (this.cboStatus.length == 0) this.buscarStatus();
-    if (this.cboVendedores.length == 0) this.buscarVendedores();
     this.filtrar_cboVendedoresParceiro();
     this.filtrar_cboParceiros();
     this.buscarMensagens();
@@ -352,10 +379,6 @@ export class OrcamentosListarComponent implements OnInit {
     let lstFiltroVendedor = new Array<ListaDto>();
     let lstFiltroParceiro = new Array<ListaDto>();
 
-    if (!this.autenticacaoService.verificarPermissoes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar)) {
-      lstFiltroVendedor = this.lstDto.filter(s => this.filtro.Vendedor == s.Vendedor);
-    }
-
     lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
@@ -384,24 +407,14 @@ export class OrcamentosListarComponent implements OnInit {
       this.lstDtoFiltrada = this.lstDto;
       if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
       if (lstFiltroStatus.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
-      if (lstFiltroVendedor.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor); }
+
+      if (this.filtro.Vendedor) {
+        this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor);
+      }
       if (lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Parceiro == x.Parceiro); }
       if (!!this.filtro.IdIndicadorVendedor) this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.IdIndicadorVendedor == x.IdIndicadorVendedor);
-
       if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
       if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
-      //if (this.filtro.Expirado != undefined) {
-      //   let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-      //   if (this.filtro.Expirado == true) {
-      //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-      //       new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) < dataAtual);
-      //   }
-
-      //   if (this.filtro.Expirado == false) {
-      //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-      //       new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= dataAtual);
-      //   }
-      // }
       if (lstFiltraDataExpiracao.length > 0) {
         let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
         let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
@@ -418,11 +431,13 @@ export class OrcamentosListarComponent implements OnInit {
     this.Pesquisar_Click();
   }
 
-  cboVendedor_onChange(event,) {
-    this.form.controls.parceiro.setValue(null);
-    this.form.controls.vendedorParceiro.setValue(null);
-
-    this.filtrar_cboParceiros();
+  cboVendedor_onChange(event) {
+    if (this.vendedorSelecionado) {
+      this.filtro.Vendedor = this.vendedorSelecionado.Value;
+    } else {
+      this.filtro.Vendedor = null;
+      this.vendedorSelecionado = new DropDownItem();
+    }
     this.Pesquisar_Click();
   }
 
@@ -572,6 +587,20 @@ export class OrcamentosListarComponent implements OnInit {
 
   pedido_OnClick(id) {
     this.router.navigate(["pedido/detalhes/", id]);
+  }
+
+  filtrarVendedores(event) {
+    let filtrado: any[] = [];
+    let query = event.query;
+
+    for (let i = 0; i < this.cboVendedores.length; i++) {
+      let vende = this.cboVendedores[i];
+      if (vende.Value.toLowerCase().indexOf(query.toLowerCase()) == 0) {
+        filtrado.push(vende);
+      }
+    }
+
+    this.cboFiltradoVendedores = filtrado;
   }
 }
 
