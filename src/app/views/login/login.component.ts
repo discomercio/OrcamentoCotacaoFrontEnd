@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, HostListener} from '@angular/core';
+import { Component, OnInit, ViewChild, HostListener, ElementRef, Renderer2 } from '@angular/core';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { Router } from '@angular/router';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -30,6 +30,8 @@ export class LoginComponent implements OnInit {
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
+    private elementRef: ElementRef,
+    private renderer: Renderer2,
     private readonly sweetalertService: SweetalertService,
     private readonly mensagemService: MensagemService,) { }
   //public toast: Toast
@@ -38,13 +40,35 @@ export class LoginComponent implements OnInit {
 
   }
 
+  ngAfterViewInit() {
+
+    // intial Number
+    let i: number = 0;
+    const tagName = "INPUT BUTTON SELECT";
+
+    this.elementRef.nativeElement.querySelectorAll('*').forEach(
+      x => {
+        x.tabIndex = -1;
+        if (tagName.match(x.tagName)) {
+          i = i + 1;
+          this.renderer.setAttribute(x, "tabIndex", i.toString());
+        }
+      }
+    );
+  }
+
+
   @HostListener('window:keyup', ['$event'])
   keyEvent(event: KeyboardEvent) {
     if (event.which == 13 || event.keyCode == 13) {
       if (this.usuario && this.senha) {
         this.login();
-      }    
-    }   
+      }
+    }
+  }
+
+  @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
+    const t = this.elementRef.nativeElement.querySelector('[tabindex="2"]').focus();
   }
 
   senha: string;
@@ -98,7 +122,7 @@ export class LoginComponent implements OnInit {
         this.carregando = false;
         return;
       }
-      
+
       if (this.autenticacaoService._lojasUsuarioLogado.length > 1) {
         this.mostrarLoja = true;
         this.montarSelectLoja();

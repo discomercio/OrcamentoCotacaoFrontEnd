@@ -24,6 +24,7 @@ export class InputArClubeComponent {
 	number: number;
 	class: string;
 	autofocus: boolean = false;
+	focus: boolean = false;
 
 	constructor() { }	
 
@@ -120,6 +121,13 @@ export class InputArClubeComponent {
 	returnValue() {
 		this.inputValue.emit(this.value)
 	}	
+
+	nextFocus() {
+		if (this.id == 'Login'){
+			this.id= 'Password';
+			this.focus = true;
+		}
+	}		
 
 	ngOnInit() { }
 }
