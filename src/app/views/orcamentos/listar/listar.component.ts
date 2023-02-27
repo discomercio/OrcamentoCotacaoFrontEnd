@@ -382,6 +382,7 @@ export class OrcamentosListarComponent implements OnInit {
     lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
+    
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
 
@@ -406,8 +407,7 @@ export class OrcamentosListarComponent implements OnInit {
 
       this.lstDtoFiltrada = this.lstDto;
       if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
-      if (lstFiltroStatus.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
-
+      if (this.filtro.Status && this.filtro.Status.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
       if (this.filtro.Vendedor) {
         this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor);
       }
