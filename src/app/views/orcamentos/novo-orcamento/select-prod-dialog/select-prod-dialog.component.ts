@@ -10,6 +10,8 @@ import { NovoOrcamentoService } from '../novo-orcamento.service';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { DropDownItem } from '../../models/DropDownItem';
+import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 
 @Component({
   selector: 'app-select-prod-dialog',
@@ -37,10 +39,16 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
   stringUtils = StringUtils;
   first: number = 0;
+  fabricantes: Array<DropDownItem> = new Array<DropDownItem>();
+  fabricantesSelecionados: Array<string>;
+  categorias: Array<DropDownItem> = new Array<DropDownItem>();
+  categoriasSelecionadas: Array<string>;
 
   ngOnInit(): void {
     this.displayModal = true;
     this.selecProdInfoPassado = this.option.data;
+    this.montarComboFabricante();
+    this.montarCategorias();
     this.transferirDados();
 
     this.prodsTela = this.prodsArray;
@@ -64,10 +72,113 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
+  montarComboFabricante() {
+    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(e => {
+      this.fabricantes.push({ Id: e.fabricante, Value: e.fabricante_Nome });
+    });
 
+    const key = "Id";
+    this.fabricantes = [... new Map(this.fabricantes.map(item => [item[key], item])).values()];
+  }
+
+  montarCategorias() {
+    // let produtosSimples = new Array<ProdutoDto>();
+    let produtosSimples = Object.assign([], this.selecProdInfoPassado.produtoComboDto.produtosSimples);
+    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(e => {
+
+      if (!e.codGrupoSubgrupo) {
+
+        let filhos = this.selecProdInfoPassado.produtoComboDto.produtosCompostos.filter(x => x.paiProduto == e.produto)[0].filhos;
+        let filhotes = filhos.map(x => x.produto);
+
+        let filhotesSimples = produtosSimples.filter(f => filhotes.includes(f.produto));
+        filhotesSimples.forEach(el => {
+          this.categorias.push({ Id: el.codGrupoSubgrupo, Value: el.descricaoGrupoSubgrupo });
+        });
+      }
+      else {
+        this.categorias.push({ Id: e.codGrupoSubgrupo, Value: e.descricaoGrupoSubgrupo });
+      }
+    });
+
+    const key = "Id";
+    this.categorias = [... new Map(this.categorias.map(item => [item[key], item])).values()];
+  }
+
+  pesquisar(e: Event) {
+    //filtrar somente por aqui
+    let lstParaFiltro = Object.assign([], this.prodsArray);
+
+    if (e) {
+      let valor = ((e.target) as HTMLInputElement).value;
+      lstParaFiltro = this.filtrarPorProduto(valor, lstParaFiltro);
+    }
+
+    let lstFabr = new Array<ProdutoTela>();
+    lstFabr = this.filtrarPorFabricante(lstParaFiltro);
+    let lstCat = new Array<ProdutoTela>();
+    lstCat = this.filtrarPorCategorias(lstFabr);
+
+    this.prodsTela = lstCat;
+    this.prodsTela = this.prodsTela.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
+
+    this.setarPaginacao();
+  }
+
+  filtrarPorFabricante(lista: ProdutoTela[]) {
+    let retorno: ProdutoTela[] = new Array<ProdutoTela>();
+
+    if (this.fabricantesSelecionados) {
+      let produtosFiltrados = lista.filter(x => this.fabricantesSelecionados.includes(x.produtoDto.fabricante));
+      if (produtosFiltrados.length > 0) {
+        produtosFiltrados.forEach(x => {
+          x.visivel = true;
+        });
+        retorno = produtosFiltrados;
+        return retorno;
+      }
+    }
+
+    ProdutoTela.AtualizarVisiveis(lista, "");
+    retorno = lista.filter(f => f.visivel == true);
+    return retorno;
+  }
+
+  filtrarPorCategorias(lista: ProdutoTela[]) {
+    let retorno: ProdutoTela[] = new Array<ProdutoTela>();
+
+    if (this.categoriasSelecionadas && this.categoriasSelecionadas.length > 0) {
+      this.categoriasSelecionadas.forEach(x => {
+        console.log("categoria: " + x);
+        ProdutoTela.AtualizarVisiveis(lista, "/" + x + "/");
+        let filtrados = lista.filter(f => f.visivel == true);
+        retorno = retorno.concat(filtrados);
+      });
+
+      const key = "produtoDto";
+      retorno = [... new Map(retorno.map(item => [item[key], item])).values()];
+      retorno = retorno.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
+
+      return retorno;
+    }
+
+    ProdutoTela.AtualizarVisiveis(lista, "");
+    retorno = lista.filter(f => f.visivel == true);
+
+    return retorno;
+  }
+
+  filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
+    let retorno: ProdutoTela[] = new Array<ProdutoTela>();
+
+    ProdutoTela.AtualizarVisiveis(lista, digitado);
+    retorno = lista.filter(f => f.visivel == true);
+
+    return retorno;
+  }
 
   digitado: string = "";
-  digitouProd(e: Event) {
+  digitouProd(e:Event) {
     this.digitado = ((e.target) as HTMLInputElement).value;
     ProdutoTela.AtualizarVisiveis(this.prodsArray, this.digitado);
 
@@ -90,16 +201,16 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
           let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
           if (!produto) {
             this.novoOrcamentoService.controleProduto.push(x.produto);
-            qtdeItens++; 
+            qtdeItens++;
           }
         });
       }
       else {
         let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
-          if (!produto) {
-            this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
-            qtdeItens++; 
-          }
+        if (!produto) {
+          this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
+          qtdeItens++;
+        }
       }
       if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
         this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
