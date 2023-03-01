@@ -1,22 +1,34 @@
 <div class="p-col-12">
     <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
+        <div class="p-field p-col-12 p-lg-6 p-md-12 p-sm-12">
             <label for="nome">Produto (código)</label>
-            <input id="nome" type="text" pInputText (change)="pesquisar($event)" (keyup)="pesquisar($event)" />            
+            <input id="nome" type="text" pInputText (change)="pesquisar($event)" (keyup)="pesquisar($event)" />
         </div>
-        <div class="p-col-12 p-field p-grid">
-            <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
+        <div class="p-col-12 p-field p-grid p-pr-0">
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
                 <label for="fabricante">Fabricante</label>
-                <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione" optionLabel="Value"
-                    optionValue="Id" (onChange)="pesquisar()"></p-multiSelect>
+                <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione"
+                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()"></p-multiSelect>
             </div>
-            <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-pr-md-0 p-pr-sm-0">
                 <label for="grupo">Categoria</label>
-                <p-multiSelect [options]="categorias" [(ngModel)]="categoriasSelecionadas" defaultLabel="Selecione" optionLabel="Value"
-                    optionValue="Id" (onChange)="pesquisar()"></p-multiSelect>
+                <p-multiSelect [options]="categorias" [(ngModel)]="categoriasSelecionadas" defaultLabel="Selecione"
+                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()"></p-multiSelect>
+            </div>
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
+                <label for="ciclo">Ciclo</label>
+                <p-dropdown [options]="ciclos" [(ngModel)]="cicloSelecionado"
+                    (onChange)='pesquisar()' [showClear]="true" optionValue="Id" optionLabel="Value"
+                    placeholder="Selecione">
+                </p-dropdown>
+            </div>
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-pr-md-0 p-pr-sm-0">
+                <label for="capacidade">Capacidade</label>
+                <p-multiSelect [options]="capacidades" [(ngModel)]="capacidadesSelecionadas" defaultLabel="Selecione"
+                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()"></p-multiSelect>
             </div>
         </div>
-        
+
     </div>
     <div class="p-col-12">
         <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" selectionMode="single"

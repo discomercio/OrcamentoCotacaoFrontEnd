@@ -3,4 +3,6 @@ export class ProdutoFilhoDto {
     produto: string;
     qtde: number;
     codGrupoSubgrupo:string;
+    ciclo:string;
+    capacidade:number;
 }

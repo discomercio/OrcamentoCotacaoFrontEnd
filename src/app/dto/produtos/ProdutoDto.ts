@@ -13,4 +13,7 @@ export class ProdutoDto {
     qtde:number;
     codGrupoSubgrupo:string;
     descricaoGrupoSubgrupo:string;
+    capacidade:number;
+    ciclo:string;
+    cicloDescricao:string;
 }

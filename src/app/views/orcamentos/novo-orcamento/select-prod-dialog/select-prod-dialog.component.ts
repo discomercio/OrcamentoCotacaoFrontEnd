@@ -12,6 +12,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { DropDownItem } from '../../models/DropDownItem';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
+import { arrayToHash } from '@fullcalendar/core/util/object';
 
 @Component({
   selector: 'app-select-prod-dialog',
@@ -43,12 +44,18 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   fabricantesSelecionados: Array<string>;
   categorias: Array<DropDownItem> = new Array<DropDownItem>();
   categoriasSelecionadas: Array<string>;
+  ciclos: Array<DropDownItem> = new Array<DropDownItem>();
+  cicloSelecionado: string;
+  capacidades: Array<DropDownItem> = new Array<DropDownItem>();
+  capacidadesSelecionadas: Array<string>;
 
   ngOnInit(): void {
     this.displayModal = true;
     this.selecProdInfoPassado = this.option.data;
     this.montarComboFabricante();
     this.montarCategorias();
+    this.montarCiclos();
+    this.montarCapacidades();
     this.transferirDados();
 
     this.prodsTela = this.prodsArray;
@@ -105,8 +112,67 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.categorias = [... new Map(this.categorias.map(item => [item[key], item])).values()];
   }
 
+  montarCiclos() {
+
+    let produtosSimples = Object.assign([], this.selecProdInfoPassado.produtoComboDto.produtosSimples);
+    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(e => {
+
+      if (!e.ciclo) {
+
+        let filhos = this.selecProdInfoPassado.produtoComboDto.produtosCompostos.filter(x => x.paiProduto == e.produto)[0]?.filhos;
+        if (filhos) {
+          let filhotes = filhos.map(x => x.produto);
+
+          let filhotesSimples = produtosSimples.filter(f => filhotes.includes(f.produto));
+          filhotesSimples.forEach(el => {
+            if (el.ciclo) {
+              this.ciclos.push({ Id: el.ciclo, Value: el.cicloDescricao });
+            }
+          });
+        }
+      }
+      else {
+        if (e.ciclo) {
+          this.ciclos.push({ Id: e.ciclo, Value: e.cicloDescricao });
+        }
+      }
+    });
+
+    const key = "Id";
+    this.ciclos = [... new Map(this.ciclos.map(item => [item[key], item])).values()];
+  }
+
+  montarCapacidades() {
+    let produtosSimples = Object.assign([], this.selecProdInfoPassado.produtoComboDto.produtosSimples);
+    this.selecProdInfoPassado.produtoComboDto.produtosSimples.forEach(e => {
+
+      if (!e.capacidade) {
+
+        let filhos = this.selecProdInfoPassado.produtoComboDto.produtosCompostos.filter(x => x.paiProduto == e.produto)[0]?.filhos;
+        if (filhos) {
+          let filhotes = filhos.map(x => x.produto);
+
+          let filhotesSimples = produtosSimples.filter(f => filhotes.includes(f.produto));
+          filhotesSimples.forEach(el => {
+            if (el.capacidade) {
+              this.capacidades.push({ Id: el.capacidade, Value: el.capacidade });
+            }
+          });
+        }
+      }
+      else {
+        if (e.ciclo) {
+          this.capacidades.push({ Id: e.capacidade, Value: e.capacidade.toString() });
+        }
+      }
+    });
+
+    const key = "Id";
+    this.capacidades = [... new Map(this.capacidades.map(item => [item[key], item])).values()];
+  }
+
   pesquisar(e: Event) {
-    //filtrar somente por aqui
+
     let lstParaFiltro = Object.assign([], this.prodsArray);
 
     if (e) {
@@ -118,8 +184,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     lstFabr = this.filtrarPorFabricante(lstParaFiltro);
     let lstCat = new Array<ProdutoTela>();
     lstCat = this.filtrarPorCategorias(lstFabr);
+    let lstCic = new Array<ProdutoTela>();
+    lstCic = this.filtrarPorCiclo(lstCat);
+    let lstCap = new Array<ProdutoTela>();
+    lstCap = this.filtrarPorCapacidades(lstCic);
 
-    this.prodsTela = lstCat;
+    this.prodsTela = lstCap;
     this.prodsTela = this.prodsTela.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
 
     this.setarPaginacao();
@@ -149,11 +219,31 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     if (this.categoriasSelecionadas && this.categoriasSelecionadas.length > 0) {
       this.categoriasSelecionadas.forEach(x => {
-        console.log("categoria: " + x);
         ProdutoTela.AtualizarVisiveis(lista, "/" + x + "/");
         let filtrados = lista.filter(f => f.visivel == true);
         retorno = retorno.concat(filtrados);
       });
+
+      const key = "produtoDto";
+      retorno = [... new Map(retorno.map(item => [item[key], item])).values()];
+      retorno = retorno.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
+
+      return retorno;
+    }
+
+    ProdutoTela.AtualizarVisiveis(lista, "");
+    retorno = lista.filter(f => f.visivel == true);
+
+    return retorno;
+  }
+
+  filtrarPorCiclo(lista: ProdutoTela[]) {
+    let retorno: ProdutoTela[] = new Array<ProdutoTela>();
+
+    if (this.cicloSelecionado) {
+      ProdutoTela.AtualizarVisiveis(lista, "/" + this.cicloSelecionado + "/");
+      let filtrados = lista.filter(f => f.visivel == true);
+      retorno = filtrados;
 
       const key = "produtoDto";
       retorno = [... new Map(retorno.map(item => [item[key], item])).values()];
@@ -177,8 +267,31 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     return retorno;
   }
 
+  filtrarPorCapacidades(lista: ProdutoTela[]) {
+    let retorno: ProdutoTela[] = new Array<ProdutoTela>();
+
+    if (this.capacidadesSelecionadas && this.capacidadesSelecionadas.length > 0) {
+      this.capacidadesSelecionadas.forEach(x => {
+        ProdutoTela.AtualizarVisiveis(lista, "/" + x + "/");
+        let filtrados = lista.filter(f => f.visivel == true);
+        retorno = retorno.concat(filtrados);
+      });
+
+      const key = "produtoDto";
+      retorno = [... new Map(retorno.map(item => [item[key], item])).values()];
+      retorno = retorno.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
+
+      return retorno;
+    }
+
+    ProdutoTela.AtualizarVisiveis(lista, "");
+    retorno = lista.filter(f => f.visivel == true);
+
+    return retorno;
+  }
+
   digitado: string = "";
-  digitouProd(e:Event) {
+  digitouProd(e: Event) {
     this.digitado = ((e.target) as HTMLInputElement).value;
     ProdutoTela.AtualizarVisiveis(this.prodsArray, this.digitado);
 
