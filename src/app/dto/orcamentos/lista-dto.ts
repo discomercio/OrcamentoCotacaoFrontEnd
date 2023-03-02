@@ -8,6 +8,7 @@ export class ListaDto {
     VendedorParceiro: string;
     Valor: string;
     Status: string;
+    IdStatus:number;
     VistoEm: string;
     Mensagem: string;
     DtCadastro: Date;

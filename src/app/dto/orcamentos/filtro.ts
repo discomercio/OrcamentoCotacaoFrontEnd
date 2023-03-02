@@ -12,5 +12,4 @@ export class Filtro {
     DtFim: Date;
     DtInicioExpiracao:Date;
     DtFimExpiracao:Date;
-    Expirado:boolean;
 }

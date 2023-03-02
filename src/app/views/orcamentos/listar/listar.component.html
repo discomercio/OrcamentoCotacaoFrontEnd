@@ -8,7 +8,7 @@
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
                     <div class="p-col-12">
                         <div class="p-grid">
-                            <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
+                            <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-4 p-as-end">
                                 <label for="filtro">Status</label>
                                 <p-multiSelect formControlName="status" [options]="cboStatus" placeholder="Selecione"
                                     emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
@@ -25,16 +25,22 @@
                                     [(ngModel)]="filtro.Nome_numero" (keyup)="Pesquisar_Click()">
                                 <!-- (input)="dt1.filterGlobal($event.target.value, 'contains')" -->
                             </div>
-                            <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end"
-                                *ngIf="this.usuario.permissoes.includes(this.constantes.AdministradorDoModulo)">
+                            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
+                                *ngIf="admModulo">
                                 <label for="filtroVendedor">Vendedor</label>
-                                <p-dropdown formControlName="vendedor" [options]="cboVendedores"
-                                    [(ngModel)]="filtro.Vendedor" (onChange)='cboVendedor_onChange($event)'
-                                    [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione">
-                                </p-dropdown>
+                                <p-autoComplete [(ngModel)]="vendedorSelecionado" formControlName="vendedor"
+                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
+                                    (completeMethod)="filtrarVendedores($event)" field="Value" [dropdown]="true"
+                                    (onSelect)="cboVendedor_onChange()" (onClear)="cboVendedor_onChange('teste')">
+                                    <ng-template let-vendedor pTemplate="item">
+                                        <div class="vendedor-item">
+                                            <div>{{vendedor.Value}}</div>
+                                        </div>
+                                    </ng-template>
+                                </p-autoComplete>
                             </div>
 
-                            <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end"
+                            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="tipoUsuario == constantes.GESTOR || tipoUsuario == constantes.VENDEDOR_UNIS">
                                 <label>Parceiro</label>
                                 <p-dropdown formControlName="parceiro" [options]="cboParceiros"
@@ -42,7 +48,7 @@
                                     [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione">
                                 </p-dropdown>
                             </div>
-                            <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end"
+                            <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="parametro != 'PEDIDOS' && tipoUsuario != constantes.PARCEIRO_VENDEDOR">
                                 <label for="filtroLoja">Vendedor do Parceiro</label>
                                 <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros"
@@ -51,7 +57,7 @@
                                     placeholder="Selecione">
                                 </p-dropdown>
                             </div>
-                            <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end"
+                            <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="parametro == 'ORCAMENTOS'">
                                 <label for="filtroLoja">Mensagem Pendente</label>
                                 <p-dropdown formControlName="msgPendente" [options]="cboMensagens"
@@ -59,18 +65,9 @@
                                     [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione">
                                 </p-dropdown>
                             </div>
-                            <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex">
-                                <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-12"
-                                    *ngIf="parametro == 'ORCAMENTOS'">
-                                    <div class="p-as-end p-field p-lg-4 p-md-4 p-pl-0 p-sm-4">
-                                        <label>Expirados</label>
-                                        <p-dropdown formControlName="expirados" [options]="cboExpirados"
-                                            [(ngModel)]="filtro.Expirado" (onChange)='cbExpirado_onChange()'
-                                            [showClear]="true" optionValue="value" optionLabel="label"
-                                            placeholder="Selecione">
-                                        </p-dropdown>
-                                    </div>
-                                    <div class="p-as-end p-field p-lg-3 p-lg-4 p-pr-sm-0">
+                            <div class="p-col-12">
+                                <div class="p-grid">
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
                                         <label for="dataInicio">Início da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
                                             [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true"
@@ -79,16 +76,69 @@
                                             [maxDate]="maxEpiracao">
                                         </p-calendar>
                                     </div>
-                                    <div class="p-as-end p-field p-lg-4 p-pl-sm-3 p-pr-sm-0 p-sm-4">
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
                                         <label for="dataFinal">Fim da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtFimExpiracao"
                                             [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true"
                                             (onBlur)="dtFimExpiracao_onBlur()" (onSelect)="dtFimExpiracao_onBlur()"
                                             [minDate]="minExpiracao" [maxDate]="maxEpiracao"></p-calendar>
                                     </div>
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                        <label for="dataInicio">Início da criação</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
+                                            [(ngModel)]="filtro.DtInicio" [showIcon]="true"
+                                            (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate"
+                                            (onSelect)="dtInicio_onSelect();">
+                                        </p-calendar>
+                                    </div>
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                        <label for="dataFinal">Fim da criação</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFim"
+                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
+                                            [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
+                                        </p-calendar>
+                                    </div>
                                 </div>
-                                <div class="p-d-inline-flex p-lg-5 p-md-5 p-px-0">
-                                    <div class="p-as-end p-col-6 p-field p-lg-6">
+                            </div>
+                            
+                            <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex">
+                                <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-12"
+                                    *ngIf="parametro == 'ORCAMENTOS'">
+                                    
+                                    <!-- <div class="p-as-end p-field p-lg-3 p-col-6 p-pr-sm-0">
+                                        <label for="dataInicio">Início da expiração</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
+                                            [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true"
+                                            (onBlur)="dtInicioExpiracao_onBlur()"
+                                            (onSelect)="dtInicioExpiracao_onBlur()" [minDate]="minExpiracao"
+                                            [maxDate]="maxEpiracao">
+                                        </p-calendar>
+                                    </div>
+                                    <div class="p-as-end p-field p-lg-3 p-col-6 p-pr-sm-0">
+                                        <label for="dataFinal">Fim da expiração</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFimExpiracao"
+                                            [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true"
+                                            (onBlur)="dtFimExpiracao_onBlur()" (onSelect)="dtFimExpiracao_onBlur()"
+                                            [minDate]="minExpiracao" [maxDate]="maxEpiracao"></p-calendar>
+                                    </div>
+                                    <div class="p-as-end p-col-6 p-field p-lg-3">
+                                        <label for="dataInicio">Início da criação</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
+                                            [(ngModel)]="filtro.DtInicio" [showIcon]="true"
+                                            (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate"
+                                            (onSelect)="dtInicio_onSelect();">
+                                        </p-calendar>
+                                    </div>
+                                    <div class="p-as-end p-col-6 p-field p-lg-3 p-pr-0">
+                                        <label for="dataFinal">Fim da criação</label>
+                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFim"
+                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
+                                            [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
+                                        </p-calendar>
+                                    </div> -->
+                                </div>
+                                <!-- <div class="p-d-inline-flex p-lg-5 p-md-5 p-px-0"> -->
+                                    <!-- <div class="p-as-end p-col-6 p-field p-lg-6">
                                         <label for="dataInicio">Início da criação</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
                                             [(ngModel)]="filtro.DtInicio" [showIcon]="true"
@@ -102,8 +152,8 @@
                                             [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
                                             [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
                                         </p-calendar>
-                                    </div>
-                                </div>
+                                    </div> -->
+                                <!-- </div> -->
                             </div>
                         </div>
                     </div>

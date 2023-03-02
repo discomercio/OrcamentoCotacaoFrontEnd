@@ -8,9 +8,15 @@ export class ProdutoTela {
      * Constroi a partir de um ProdutoDto
      */
     constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto[]) {
-        
-        this.stringBusca = produtoDto !=undefined? ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) + StringUtils.TextoDeHtml(produtoDto.descricaoHtml)): "";
-        const filhosDiretos = produtoDto !=undefined? produtoCompostoDto.filter(el => el.paiFabricante === produtoDto.fabricante && el.paiProduto === produtoDto.produto):  new Array();
+
+        this.stringBusca = produtoDto != undefined ?
+            ProdutoTela.StringSimples(
+                ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) + 
+                StringUtils.TextoDeHtml(produtoDto.descricaoHtml)) +
+                `/${produtoDto.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
+                `/${produtoDto.ciclo?.toLocaleLowerCase()}/` +
+                `/${produtoDto.capacidade}/`: "";
+        const filhosDiretos = produtoDto != undefined ? produtoCompostoDto.filter(el => el.paiFabricante === produtoDto.fabricante && el.paiProduto === produtoDto.produto) : new Array();
         if (filhosDiretos.length == 0) {
             this.Filhos = new Array();
         }
@@ -18,7 +24,10 @@ export class ProdutoTela {
             //somente pode ter uma entrada do pai no array
             this.Filhos = filhosDiretos[0].filhos;
             this.Filhos.forEach(p => {
-                this.stringBusca += "/" + p.produto;
+                this.stringBusca += "/" + p.produto +
+                `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
+                `/${p.ciclo?.toLocaleLowerCase()}/`+
+                `/${p.capacidade}/`;
             });
         }
     }
