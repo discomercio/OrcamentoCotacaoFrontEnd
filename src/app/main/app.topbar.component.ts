@@ -78,7 +78,6 @@ export class AppTopBarComponent {
   }
 
   limparInterval(){
-    alert(this.interval);
     clearInterval(this.interval);
     this.autenticacaoService.authLogout();
   }
