@@ -180,20 +180,29 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   buscarStatus() {
-
-    if (this.autenticacaoService._usuarioLogado) {
-      this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
-        var indice = 0;
-        if (r != null) {
-          this.cboStatus = [];
-          r.forEach(e => {
-            this.cboStatus.push({ Id: e.Id, Value: e.Value });
-          });
-          this.cboStatus.push({ Id: 4, Value: "Expirado" });
+    this.cboStatus = [];
+    if(this.parametro == "ORCAMENTOS"){
+      if (this.autenticacaoService._usuarioLogado) {
+        this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
+          if (r != null) {
+            r.forEach(e => {
+              this.cboStatus.push({ Id: e.Id, Value: e.Value });
+            });
+            this.cboStatus.push({ Id: 4, Value: "Expirado" });
+          }
+        }).catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
+        })
+      }
+    }
+    else{
+      this.lstDto.forEach(x => {
+        if (!this.cboStatus.find(f => f.Value == x.Status)) {
+          if (x.Status) {
+            this.cboStatus.push({ Id: (this.idValuesTmp++).toString(), Value: x.Status });
+          }
         }
-      }).catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
-      })
+      });
     }
   }
 
@@ -281,12 +290,15 @@ export class OrcamentosListarComponent implements OnInit {
           let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
+            debugger;
             x.IdStatus = 4;
             x.Status = "Expirado";
           }
         });
         this.lstDtoFiltrada = this.lstDto;
-        this.iniciarFiltroExpericao();
+        if(this.parametro ==  "ORCAMENTOS"){
+          this.iniciarFiltroExpericao();
+        }
         this.Pesquisar_Click();
         this.carregando = false;
       }

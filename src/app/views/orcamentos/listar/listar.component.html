@@ -67,7 +67,7 @@
                             </div>
                             <div class="p-col-12">
                                 <div class="p-grid">
-                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6" *ngIf="parametro == 'ORCAMENTOS'">
                                         <label for="dataInicio">Início da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
                                             [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true"
@@ -76,7 +76,7 @@
                                             [maxDate]="maxEpiracao">
                                         </p-calendar>
                                     </div>
-                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6" *ngIf="parametro == 'ORCAMENTOS'">
                                         <label for="dataFinal">Fim da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtFimExpiracao"
                                             [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true"
