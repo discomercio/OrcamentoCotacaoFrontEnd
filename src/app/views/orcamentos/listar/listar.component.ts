@@ -29,6 +29,8 @@ import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
 import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
+import { PedidoService } from 'src/app/service/pedido/pedido.service';
+import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
 @Component({
   selector: 'app-listar',
   templateUrl: './listar.component.html',
@@ -51,7 +53,8 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly prepedidoRemoverService: PrepedidoRemoverService,
     private readonly sweetalertService: SweetalertService,
     private readonly sweetAlertService: SweetalertService,
-    private readonly usuarioService: UsuariosService
+    private readonly usuarioService: UsuariosService,
+    private readonly pedidoService: PedidoService
   ) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
@@ -123,7 +126,6 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (this.parametro == "MSGPENDENTES") {
       this.parametro = "ORCAMENTOS";
-      this.filtro
       this.filtro.Mensagem = "Sim";
     }
 
@@ -134,7 +136,7 @@ export class OrcamentosListarComponent implements OnInit {
   maxEpiracao = new Date();
   iniciarFiltroExpericao() {
     let periodoMaxExpiracao = this.configValidade.MaxPeriodoConsultaFiltroPesquisa;
-    
+
     let maxItem = this.lstDto.reduce((a, b) => {
       return new Date(a.DtExpiracao) > new Date(b.DtExpiracao) ? a : b;
     });
@@ -179,9 +181,11 @@ export class OrcamentosListarComponent implements OnInit {
     }
   }
 
+  listaCodigoDescricao:Array<CodigoDescricaoRequest>=new Array<CodigoDescricaoRequest>();
   buscarStatus() {
     this.cboStatus = [];
-    if(this.parametro == "ORCAMENTOS"){
+
+    if (this.parametro == "ORCAMENTOS") {
       if (this.autenticacaoService._usuarioLogado) {
         this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
           if (r != null) {
@@ -195,7 +199,24 @@ export class OrcamentosListarComponent implements OnInit {
         })
       }
     }
-    else{
+    else if (this.parametro == "PEDIDOS") {
+      let filtro: CodigoDescricaoRequest = new CodigoDescricaoRequest();
+      filtro.grupo = "Pedido_St_Entrega";
+      this.pedidoService.statusPorFiltro(filtro).toPromise().then((r) => {
+        if (!r.Sucesso) {
+          this.sweetAlertService.aviso(r.Mensagem);
+          return;
+        }
+
+        r.listaCodigoDescricao.forEach(e => {
+          this.cboStatus.push({ Id: e.codigo, Value: e.descricao });
+        });
+        this.listaCodigoDescricao = r.listaCodigoDescricao;
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      })
+    }
+    else {
       this.lstDto.forEach(x => {
         if (!this.cboStatus.find(f => f.Value == x.Status)) {
           if (x.Status) {
@@ -290,13 +311,12 @@ export class OrcamentosListarComponent implements OnInit {
           let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
-            debugger;
             x.IdStatus = 4;
             x.Status = "Expirado";
           }
         });
         this.lstDtoFiltrada = this.lstDto;
-        if(this.parametro ==  "ORCAMENTOS"){
+        if (this.parametro == "ORCAMENTOS") {
           this.iniciarFiltroExpericao();
         }
         this.Pesquisar_Click();
@@ -393,8 +413,9 @@ export class OrcamentosListarComponent implements OnInit {
 
     lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
+    debugger;
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
-    
+
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
     if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
 

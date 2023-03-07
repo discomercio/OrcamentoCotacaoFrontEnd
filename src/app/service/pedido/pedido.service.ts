@@ -3,6 +3,9 @@ import { Observable } from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { CommonModule } from "@angular/common";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
+import { CodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/codigo-descricao-response';
+import { ListaCodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/lista-codigo-descricao-response';
 
 @Injectable({
   providedIn: 'root'
@@ -40,4 +43,7 @@ export class PedidoService {
 
   }
 
+  statusPorFiltro(filtro:CodigoDescricaoRequest):Observable<ListaCodigoDescricaoResponse>{
+    return this.http.post<ListaCodigoDescricaoResponse>(`${this.appSettingsService.config.apiUrl}api/Pedido/statusPorFiltro`, filtro);
+  }
 }
