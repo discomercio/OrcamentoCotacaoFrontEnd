@@ -48,6 +48,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   cicloSelecionado: string;
   capacidades: Array<DropDownItem> = new Array<DropDownItem>();
   capacidadesSelecionadas: Array<string>;
+  produto:string;
 
   ngOnInit(): void {
     this.displayModal = true;
@@ -171,13 +172,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.capacidades = [... new Map(this.capacidades.map(item => [item[key], item])).values()];
   }
 
-  pesquisar(e: Event) {
+  pesquisar() {
 
     let lstParaFiltro = Object.assign([], this.prodsArray);
 
-    if (e) {
-      let valor = ((e.target) as HTMLInputElement).value;
-      lstParaFiltro = this.filtrarPorProduto(valor, lstParaFiltro);
+    if (this.produto && this.produto.length >= 2) {
+      lstParaFiltro = this.filtrarPorProduto(this.produto, lstParaFiltro);
     }
 
     let lstFabr = new Array<ProdutoTela>();
@@ -198,15 +198,13 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorFabricante(lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (this.fabricantesSelecionados) {
+    if (this.fabricantesSelecionados && this.fabricantesSelecionados.length > 0) {
       let produtosFiltrados = lista.filter(x => this.fabricantesSelecionados.includes(x.produtoDto.fabricante));
-      if (produtosFiltrados.length > 0) {
-        produtosFiltrados.forEach(x => {
-          x.visivel = true;
-        });
-        retorno = produtosFiltrados;
-        return retorno;
-      }
+      produtosFiltrados.forEach(x => {
+        x.visivel = true;
+      });
+      retorno = produtosFiltrados;
+      return retorno;
     }
 
     ProdutoTela.AtualizarVisiveis(lista, "");
