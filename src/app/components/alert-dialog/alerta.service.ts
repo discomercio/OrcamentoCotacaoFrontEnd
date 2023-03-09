@@ -140,7 +140,8 @@ export class AlertaService {
     if (error.status == 412) {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
       let versao = this.appSettingsService.versao;
-      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
+
+      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
         
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
@@ -169,7 +170,7 @@ export class AlertaService {
       versao = " (" + versao + ")";
     }
 
-    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível" + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
+    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
 
         localStorage.removeItem("appsettings");
         localStorage.removeItem("versaoApi");

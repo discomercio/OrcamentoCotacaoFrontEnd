@@ -36,34 +36,27 @@ export class AppSettingsService {
             response = metadata;
         }
         
-        console.log(response);
         return response;
     }
 
     ObterVersao() {
 
         let response;
+        
+        localStorage.removeItem("versaoApi");
 
-        if(localStorage.getItem("versaoApi")) {
-            
-            response = localStorage.getItem("versaoApi");
-        }
-        else {
+        const fetch = require("sync-fetch");
 
-            const fetch = require("sync-fetch");
+        const metadata = fetch("/assets/config/version.json", {
+        //   headers: {
+        //     Accept: 'application/vnd.citationstyles.csl+json'
+        //   }
+        }).json().versaoApi;
 
-            const metadata = fetch("/assets/config/version.json", {
-            //   headers: {
-            //     Accept: 'application/vnd.citationstyles.csl+json'
-            //   }
-            }).json().versaoApi;
-
-            localStorage.setItem("versaoApi", metadata);
-            
-            response = metadata;
-        }
-
-        console.log(response);
+        localStorage.setItem("versaoApi", metadata);
+        
+        response = metadata;
+        
         return response;
     }
 }
