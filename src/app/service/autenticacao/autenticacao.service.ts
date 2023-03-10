@@ -181,13 +181,17 @@ export class AutenticacaoService {
     sessionStorage.removeItem('token');
     sessionStorage.removeItem('lojas');
     sessionStorage.removeItem('lojaLogada');
+    sessionStorage.removeItem("sininho");
+    sessionStorage.removeItem("senhaExpirada");
     this._usuarioLogado = null;
     this.unidade_negocio = null;
+    this.salvar = false;
+    AlertaService.mostrandoErroNaoAutorizado = false;
   }
 
   public setarToken(token: string): void {
     if (this.salvar) {
-      sessionStorage.setItem('token', "");
+      sessionStorage.setItem('token', undefined);
     }
     else {
       sessionStorage.setItem("token", token);

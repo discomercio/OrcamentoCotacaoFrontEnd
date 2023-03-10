@@ -75,14 +75,14 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
       if (!response.Sucesso) {
         this.sweetalertService.aviso(response.Mensagem);
-        return;
+        // return;
       }
 
       this.limparEstrutura();
 
       this.estrutura = response.Childs;
 
-    }).catch((response) => this.sweetalertService.aviso(response));
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
   montarPastas() {

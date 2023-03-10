@@ -96,5 +96,6 @@ export class OrcamentosVigentesComponent implements OnInit, AfterViewInit {
   ngOnDestroy(){
     debugger;
     sessionStorage.removeItem("urlAnterior");
+    sessionStorage.removeItem("filtro");
   }
 }
