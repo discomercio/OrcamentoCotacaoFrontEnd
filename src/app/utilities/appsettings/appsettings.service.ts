@@ -43,19 +43,39 @@ export class AppSettingsService {
 
         let response;
         
-        localStorage.removeItem("versaoApi");
+        if(localStorage.getItem("versaoApi")) {
+            
+            response = localStorage.getItem("versaoApi");
+        }
+        else {
+
+            const fetch = require("sync-fetch");
+
+            const metadata = fetch("/assets/config/version.json", {
+            //   headers: {
+            //     Accept: 'application/vnd.citationstyles.csl+json'
+            //   }
+            }).json().versaoApi;
+
+            localStorage.setItem("versaoApi", metadata);
+            
+            response = metadata;
+        }
+        
+        return response;
+    }
+
+    ObterVersaoAtual() {
 
         const fetch = require("sync-fetch");
 
         const metadata = fetch("/assets/config/version.json", {
-        //   headers: {
-        //     Accept: 'application/vnd.citationstyles.csl+json'
-        //   }
+            headers: {
+                'Cache-Control': 'no-cache'
+              }
         }).json().versaoApi;
-
-        localStorage.setItem("versaoApi", metadata);
         
-        response = metadata;
+        let response = metadata;
         
         return response;
     }
