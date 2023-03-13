@@ -139,7 +139,7 @@ export class AlertaService {
 
     if (error.status == 412) {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
-      let versao = this.appSettingsService.versao;
+      let versao = this.appSettingsService.ObterVersaoAtual();
 
       this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
         
@@ -161,7 +161,7 @@ export class AlertaService {
 
   public mostrarErroAtualizandoVersao(): boolean {
           
-    let versao = this.appSettingsService.versao;
+    let versao = this.appSettingsService.ObterVersaoAtual();
 
     if (versao == null) {
       versao = "";
