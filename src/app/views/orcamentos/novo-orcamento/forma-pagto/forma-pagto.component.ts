@@ -64,7 +64,10 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
             this.montarFormasPagto();
             // this.setarTipoPagto();
           }
-        }).catch((e) => this.alertaService.mostrarErroInternet(e));
+        }).catch((e) => {
+          debugger;
+          this.alertaService.mostrarErroInternet(e)
+        });
     }
 
   }

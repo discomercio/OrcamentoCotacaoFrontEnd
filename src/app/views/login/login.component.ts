@@ -87,15 +87,16 @@ export class LoginComponent implements OnInit {
       this.mensagemService.showErrorViaToast(["É necessário prencher usuário e senha!"]);
       return;
     }
-
     if (!this.loja && this.mostrarLoja) {
       this.mensagemService.showWarnViaToast("Precisamos que selecione uma loja!");
       return;
     }
     if (!!this.loja && this.mostrarLoja) {
+      this.autenticacaoService.obterToken();
       this.autenticacaoService.setarToken(this.tokenUsuarioInterno);
       sessionStorage.setItem("lojaLogada", this.loja);
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
+      sessionStorage.setItem("sininho", "S");
       this.autenticacaoService._lojaLogado = this.loja;
 
       this.router.navigate(['dashboards']);
@@ -135,6 +136,7 @@ export class LoginComponent implements OnInit {
       }
 
       this.autenticacaoService.setarToken(r.AccessToken);
+      sessionStorage.setItem("sininho", "S");
       this.carregando = false;
 
       this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);

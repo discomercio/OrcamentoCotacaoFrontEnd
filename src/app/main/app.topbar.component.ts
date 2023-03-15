@@ -42,13 +42,14 @@ export class AppTopBarComponent {
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
 
   meuDados: boolean = false;
+  interval:any;
 
   ngOnInit(): void {
     this.criarForm();
     this.populaComboLojas();
     this.obterQuantidadeMensagemPendente();
 
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.obterQuantidadeMensagemPendente();
     }, Number(this.appSettingsService.config.temporizadorSininho));
 
@@ -57,11 +58,28 @@ export class AppTopBarComponent {
 
   carregando: boolean = false;
   obterQuantidadeMensagemPendente() {
+    let sininho = sessionStorage.getItem("sininho");
+    if(!sininho){
+      this.limparInterval();
+      return;
+    }
     this.mensageriaService.obterQuantidadeMensagemPendente().toPromise().then((r) => {
       if (r != null) {
         this.qtdMensagem = r;
       }
     })
+    .catch((e)=>{
+      if(e.status == 401){
+        this.limparInterval();
+      }
+      this.alertaService.mostrarErroInternet(e);
+      
+    })
+  }
+
+  limparInterval(){
+    clearInterval(this.interval);
+    this.autenticacaoService.authLogout();
   }
 
   buscarEstilo() {

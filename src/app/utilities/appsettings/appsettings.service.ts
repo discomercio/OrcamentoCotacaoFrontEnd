@@ -36,14 +36,13 @@ export class AppSettingsService {
             response = metadata;
         }
         
-        console.log(response);
         return response;
     }
 
     ObterVersao() {
 
         let response;
-
+        
         if(localStorage.getItem("versaoApi")) {
             
             response = localStorage.getItem("versaoApi");
@@ -62,8 +61,22 @@ export class AppSettingsService {
             
             response = metadata;
         }
+        
+        return response;
+    }
 
-        console.log(response);
+    ObterVersaoAtual() {
+
+        const fetch = require("sync-fetch");
+
+        const metadata = fetch("/assets/config/version.json", {
+            headers: {
+                'Cache-Control': 'no-cache'
+              }
+        }).json().versaoApi;
+        
+        let response = metadata;
+        
         return response;
     }
 }

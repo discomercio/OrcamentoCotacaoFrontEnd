@@ -97,5 +97,6 @@ export class OrcamentosComMensagensPendentesComponent implements OnInit, AfterVi
   ngOnDestroy(){
     debugger;
     sessionStorage.removeItem("urlAnterior");
+    sessionStorage.removeItem("filtro");
   }
 }
