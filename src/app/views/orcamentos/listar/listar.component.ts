@@ -290,7 +290,6 @@ export class OrcamentosListarComponent implements OnInit {
           let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
-            debugger;
             x.IdStatus = 4;
             x.Status = "Expirado";
           }

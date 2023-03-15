@@ -31,7 +31,7 @@ export class NovoOrcamentoService {
 
   constructor(telaDesktopService: TelaDesktopService,
     public mensagemService: MensagemService,
-    private readonly autenticacaoService: AutenticacaoService,
+    public readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService) { }
 
   public orcamentoCloneCotacaoDto = new OrcamentoCotacaoResponse();
