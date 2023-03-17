@@ -77,7 +77,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   dtOptions: any = {};
   produtoComboDto: ProdutoComboDto;
   carregandoProds = true;
-  clicouAddProd: boolean = true;
+  // clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
   habilitarClone: boolean = false;
@@ -94,7 +94,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     if (param.filtro == undefined) {
       this.editando = true;
-      this.carregandoProds = false;
+      // this.carregandoProds = false;
     }
     if (param.filtro == "novo" || param.filtro == "iniciar") {
       this.param = "novo";
@@ -256,7 +256,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
         this.produtoComboDto = r;
         this.novoOrcamentoService.produtoComboDto = r;
-        this.carregandoProds = false;
+        if(!this.editando){
+          this.carregandoProds = false;
+        }
         this.cdref.detectChanges();
       }
     }).catch((r) => {
@@ -266,7 +268,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   }
 
   adicionarProduto(): void {
-    this.clicouAddProd = true;
+    // this.clicouAddProd = true;
     this.mostrarProdutos(null);
   }
   mostrarPercrt: boolean = false;
@@ -279,12 +281,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
 
         if (!this.novoOrcamentoService.editando) {
-          
+
           this.novoOrcamentoService.setarPercentualComissao();
           return;
         }
-
-        if (this.tipoUsuario == this.constantes.PARCEIRO || this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
+        
+        if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
           this.novoOrcamentoService.setarPercentualComissao();
           this.novoOrcamentoService.calcularPercentualComissao();
         }
@@ -323,7 +327,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   montarProdutoParaAdicionar(produto: ProdutoTela): ProdutoOrcamentoDto {
     let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == produto.produtoDto.produto)[0];
-    
+
     let produtoOrcamento: ProdutoOrcamentoDto = new ProdutoOrcamentoDto();
     produtoOrcamento.fabricante = filtro2.fabricante;
     produtoOrcamento.fabricanteNome = filtro2.fabricante_Nome;
@@ -451,9 +455,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
   digitouDesc(e: Event, item: ProdutoOrcamentoDto): void {
 
+    
+
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
     v = (v / 100).toFixed(2) + '';
+
+    
 
     //se o desconto for digitado estamos alterando o valor de venda e não devemos mais alterar esse valor
     if (item.descDado == 0 || item.descDado.toString() == '') {
@@ -476,10 +484,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     if (item.descDado > 100) {
       item.descDado = 100;
     }
-    debugger;
+
     if (item.descDado) {
       let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == item.produto)[0];
-      if (produtoComposto != null){
+      if (produtoComposto != null) {
         let somaFilhotes = 0;
         produtoComposto.filhos.forEach(el => {
           let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
@@ -621,6 +629,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
         return true;
       }
     }
+    
     return false;
   }
 

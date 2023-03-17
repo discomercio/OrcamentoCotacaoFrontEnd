@@ -76,6 +76,7 @@ export class NovoOrcamentoService {
 
 
   setarPercentualComissao() {
+    debugger;
     this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ?
       this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
@@ -165,9 +166,13 @@ export class NovoOrcamentoService {
       }
       else {
         let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == x.produto)[0];
-        itemSimples.descDado = x.descDado;
-        itemSimples.qtde = x.qtde;
-        todosProdutosSimples.push(Object.assign({}, itemSimples));
+        console.log(JSON.stringify(itemSimples));
+        if(!!itemSimples){
+          itemSimples.descDado = !x.descDado ? 0 : x.descDado;
+          itemSimples.qtde = x.qtde;
+          todosProdutosSimples.push(Object.assign({}, itemSimples));
+        }
+        
       }
     });
 
@@ -378,6 +383,7 @@ export class NovoOrcamentoService {
     if (idUsuarioLogado == this.orcamentoCotacaoDto.idIndicadorVendedor) return true;
     if (idUsuarioLogado == this.orcamentoCotacaoDto.idIndicador) return true;
     if (idUsuarioLogado == this.orcamentoCotacaoDto.idVendedor) return true;
+    if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoEditar)) return true;
 
     return false;
   }
