@@ -2,7 +2,6 @@ import { lojaEstilo } from './../../dto/lojas/lojaEstilo';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import jtw_decode from 'jwt-decode'
-import { environment } from '../../../environments/environment'
 import { Observable } from 'rxjs';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -15,7 +14,6 @@ import { Title } from "@angular/platform-browser";
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { usuarioSenhaResponse } from 'src/app/dto/usuarios/usuarioSenhaResponse';
 import { expiracaoSenhaResponse } from 'src/app/dto/usuarios/expiracaoSenhaResponse';
-import { AppComponent } from 'src/app/main/app.component';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { Router } from '@angular/router';
@@ -31,7 +29,6 @@ export class AutenticacaoService {
     private readonly mensagemService: MensagemService,
     private readonly lojaService: LojasService,
     private titleService: Title,
-    private appComponent: AppComponent,
     private readonly sweetalertService: SweetalertService,    
     private readonly router: Router,
     private appSettingsService: AppSettingsService) { }

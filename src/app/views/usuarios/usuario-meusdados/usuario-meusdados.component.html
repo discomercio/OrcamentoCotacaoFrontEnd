@@ -66,7 +66,8 @@
                     <br><br>
 
                     <label><b>Frontend x Backend:&nbsp; </b></label>
-                    <div
+                    <label> <i class="pi pi-check-square" [ngStyle]="confrontoVersao ? {'color':'green'}:{'color': 'red'}"></i></label><br>
+                    <!-- <div
                         *ngIf="versaoFront == versaoFrontCache && versaoApi == versaoApiCache && versaoFront == versaoApi && versaoApiCache == versaoFrontCache ; then confrontoOK else confrontoErro">
                     </div>
                     <ng-template #confrontoOK>
@@ -75,7 +76,7 @@
 
                     <ng-template #confrontoErro>
                         <label> <i class="pi pi-times" style="color:red;"></i></label><br>
-                    </ng-template>
+                    </ng-template> -->
                 </div>
 
                 <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
