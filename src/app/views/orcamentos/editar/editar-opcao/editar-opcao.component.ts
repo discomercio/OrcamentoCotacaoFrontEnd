@@ -28,14 +28,17 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   @ViewChild("itens", { static: false }) itens: ItensComponent;
   idOpcaoOrcamentoCotacao: number;
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
-  carregando: boolean = false;
+  carregando: boolean = true;
 
   ngOnInit(): void {
-
 
   }
 
   async ngAfterViewInit() {
+    setTimeout(() => {
+      this.itens.carregandoProds = false;
+    }, 3000);
+
     this.idOpcaoOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
     this.verificarPermissao();
     this.cdref.detectChanges();

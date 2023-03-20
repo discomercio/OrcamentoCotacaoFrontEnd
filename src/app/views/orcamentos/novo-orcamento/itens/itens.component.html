@@ -1,4 +1,4 @@
-<div class="p-grid" [ngClass]="{'carregando': carregandoProds && clicouAddProd}">
+<div class="p-grid" [ngClass]="{'carregando': carregandoProds}">
     <div class="p-col-12 p-pb-0">
         <div class="card itens">
             <h4>Produtos e Pagamentos</h4>
@@ -55,7 +55,7 @@
                                         [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde"
                                         type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
-                                        (change)="digitouQte(p)" />
+                                        (change)="digitouQte(p)" [disabled]="carregandoProds"/>
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
@@ -71,7 +71,7 @@
                                         <input
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
-                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)" [disabled]="carregandoProds"
                                             (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" />
                                         <div class="p-pl-1">%</div>
                                     </div>
@@ -82,7 +82,7 @@
                                         Venda</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" pInputText
                                         id="vlVenda" type="text"
-                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)"
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)" [disabled]="carregandoProds"
                                         (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)" />
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
@@ -159,7 +159,7 @@
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
                                             [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
-                                            (keyup)="formataDescontoGeral($event)" />
+                                            (keyup)="formataDescontoGeral($event)" [disabled]="carregandoProds"/>
                                         <div class="p-pl-1">%</div>
                                     </div>
                                 </td>
