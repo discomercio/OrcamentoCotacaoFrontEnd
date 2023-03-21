@@ -55,4 +55,8 @@ export class OrcamentistaIndicadorVendedorService {
   atualizar(usuario: Usuario): Observable<Usuario> {
     return this.http.put<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
+
+  excluir(idVendedorParceiro:number):Observable<boolean>{
+    return this.http.delete<boolean>(`${this.appSettingsService.config.apiUrl}OrcamentistaEIndicadorVendedor/${idVendedorParceiro}`);
+  }
 }
