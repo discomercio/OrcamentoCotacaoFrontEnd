@@ -36,7 +36,7 @@
                         <td class="p-text-center">
                             <button pButton style="align-content: flex-end;" icon="fa fa-edit"
                                 (click)="editarUsuario(lista)" pTooltip="Editar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="fa fa-trash"
+                            <button *ngIf="permite" pButton style="align-content: flex-end;" icon="fa fa-trash"
                                 (click)="excluirClick(lista)" pTooltip="Excluir"></button>&nbsp;
                         </td>
                     </tr>
