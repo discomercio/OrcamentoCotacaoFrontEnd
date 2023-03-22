@@ -181,7 +181,7 @@ export class OrcamentosListarComponent implements OnInit {
     }
   }
 
-  listaCodigoDescricao:Array<CodigoDescricaoRequest>=new Array<CodigoDescricaoRequest>();
+  listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
   buscarStatus() {
     this.cboStatus = [];
 
@@ -257,7 +257,6 @@ export class OrcamentosListarComponent implements OnInit {
         this.configValidade = r;
       }
     }).catch((e) => {
-      debugger;
       this.alertaService.mostrarErroInternet(e);
     });
   }
@@ -321,8 +320,10 @@ export class OrcamentosListarComponent implements OnInit {
         }
         this.Pesquisar_Click();
         this.carregando = false;
+        return;
       }
-      else this.carregando = false;
+      this.carregando = false;
+      this.Pesquisar_Click();
     }).catch((r) => {
 
       this.carregando = false;
@@ -413,7 +414,6 @@ export class OrcamentosListarComponent implements OnInit {
 
     lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
 
-    debugger;
     if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
 
     if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
