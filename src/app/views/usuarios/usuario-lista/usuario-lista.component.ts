@@ -16,6 +16,7 @@ import { ParcSemEntradaPrimPrestDto } from 'src/app/dto/forma-pagto/ParcSemEntra
 import { Alert } from 'selenium-webdriver';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { MatGridTileHeaderCssMatStyler } from '@angular/material';
+import { OrcamentistaIndicadorVendedorDeleteRequest } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-request';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -155,14 +156,17 @@ export class UsuarioListaComponent implements OnInit {
         return;
       }
 
-      //vamos chamar o endpoint aqui.
-      this.orcamentistaIndicadorVendedorService.excluir(orcamentista.id).toPromise().then((r)=>{
-        if(!r){
-          this.sweetAlertService.aviso("Colocar mensagem de retorno aqui, pois não pode excluir");
+      let request = new OrcamentistaIndicadorVendedorDeleteRequest();
+      request.idIndicadorVendedor = orcamentista.id;
+      this.orcamentistaIndicadorVendedorService.excluir(request).toPromise().then((r)=>{
+        if(!r.Sucesso){
+          this.sweetAlertService.aviso(r.Mensagem);
           return;
         }
 
         this.sweetAlertService.sucesso("Usuário exlcuído com sucesso!");
+        this.first = 0;
+        this.pesquisa = undefined;
         this.ngOnInit();
       }).catch((e)=>{
         this.alertaService.mostrarErroInternet(e);

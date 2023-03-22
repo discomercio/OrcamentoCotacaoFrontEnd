@@ -5,6 +5,8 @@ import { Observable } from 'rxjs';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { map } from 'rxjs/operators';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { OrcamentistaIndicadorVendedorDeleteRequest } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-request';
+import { OrcamentistaIndicadorVendedorDeleteResponse } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-response';
 
 @Injectable({
   providedIn: 'root'
@@ -56,7 +58,7 @@ export class OrcamentistaIndicadorVendedorService {
     return this.http.put<Usuario>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros', usuario);
   }
 
-  excluir(idVendedorParceiro:number):Observable<boolean>{
-    return this.http.delete<boolean>(`${this.appSettingsService.config.apiUrl}OrcamentistaEIndicadorVendedor/${idVendedorParceiro}`);
+  excluir(request:OrcamentistaIndicadorVendedorDeleteRequest):Observable<OrcamentistaIndicadorVendedorDeleteResponse>{
+    return this.http.post<OrcamentistaIndicadorVendedorDeleteResponse>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/delete', request);
   }
 }
