@@ -13,13 +13,13 @@ export class SistemaService {
       private http: HttpClient, 
       private appSettingsService: AppSettingsService) { }
       
-      retornarVersao(): Observable<SistemaResponse> {        
-        let response = this.http.get<SistemaResponse>(this.appSettingsService.config.apiUrl + 'Sistema/versao');
+      retornarVersao(): Observable<string> {        
+        let response = this.http.get<string>(this.appSettingsService.config.apiUrl + 'Sistema/versao');
         return response;
       } 
        
-      retornarVersaoCache(): Observable<SistemaResponse> {        
-        let response = this.http.get<SistemaResponse>(this.appSettingsService.config.apiUrl + 'Sistema/cache');
+      retornarVersaoCache(): Observable<string> {        
+        let response = this.http.get<string>(this.appSettingsService.config.apiUrl + 'Sistema/cache');
         return response;
       }       
 

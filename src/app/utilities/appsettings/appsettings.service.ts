@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { AppComponent } from "src/app/main/app.component";
 
 @Injectable({
     providedIn: "root",
@@ -24,7 +25,7 @@ export class AppSettingsService {
         else {
 
             const fetch = require("sync-fetch");
-
+            
             const metadata = fetch("/assets/config/appsettings.json", {
                 //   headers: {
                 //     Accept: 'application/vnd.citationstyles.csl+json'

@@ -28,8 +28,8 @@
     </div>
     <div class="p-col-3">
         <div class="card">
-            <h5 *ngIf="produto.imagens?.length == 0">Nenhuma Imagem</h5>
-            <p-carousel [value]="produto.imagens" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
+            <h5 *ngIf="produto.imagem">Nenhuma Imagem</h5>
+            <p-carousel [value]="produto.imagem" [numVisible]="1" [numScroll]="1" [circular]="false" [responsiveOptions]="carouselResponsiveOptions">
                 <ng-template let-imagem pTemplate="item">
                     <div class="product-item">
                         <div class="product-item-content">

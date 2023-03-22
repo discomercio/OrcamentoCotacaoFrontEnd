@@ -74,7 +74,6 @@ import { NovoPrepedidoModule } from "../views/prepedido/novo-prepedido/novo-prep
 import { ProdutosCatalogoClonarComponent } from "../views/produtos-catalogo/clonar/clonar.component";
 import { ClienteModule } from "../views/prepedido/cliente/cliente.module";
 import { SenhaMeusdadosComponent } from "../views/senha/senha-meusdados.component";
-import { environment } from "src/environments/environment";
 import { CepComponent } from "../views/cep/cep/cep.component";
 import { CepDialogComponent } from "../views/cep/cep-dialog/cep-dialog.component";
 import { EnderecoEntregaComponent } from "../views/cliente/endereco-entrega/endereco-entrega.component";
@@ -184,13 +183,12 @@ import { OrcamentosComMensagensPendentesComponent } from "../views/consultas/orc
         ValidacaoFormularioService,
         AutenticacaoService,
         AuthGuard,
-        environment,
         AppComponent,
     ],
     bootstrap: [AppComponent],
 })
 export class AppModule {
-    constructor(private app: AppComponent, private env: environment) {
+    constructor(private app: AppComponent) {
         // app._apiURL = env.apiUrl();
         //this.appComponent._apiURL
     }

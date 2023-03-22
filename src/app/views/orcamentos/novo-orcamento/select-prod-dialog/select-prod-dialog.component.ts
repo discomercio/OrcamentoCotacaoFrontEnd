@@ -187,6 +187,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     let lstFabr = new Array<ProdutoTela>();
     lstFabr = this.filtrarPorFabricante(lstParaFiltro);
     let lstCat = new Array<ProdutoTela>();
+    debugger;
     lstCat = this.filtrarPorCategorias(lstFabr);
     let lstCic = new Array<ProdutoTela>();
     lstCic = this.filtrarPorCiclo(lstCat);
