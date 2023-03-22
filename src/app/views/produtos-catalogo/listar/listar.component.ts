@@ -37,6 +37,7 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   fabricanteFiltro: string;
   nomeFiltro: string;
   descriacaoFiltro: string;
+  first: number = 0;
 
   ngOnInit(): void {
 
@@ -125,6 +126,8 @@ export class ProdutosCatalogoListarComponent implements OnInit {
       this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Nome.toLowerCase().includes(this.nomeFiltro.toLowerCase()));
     if (this.descriacaoFiltro)
       this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Descricao.toLowerCase().includes(this.descriacaoFiltro.toLowerCase()));
+
+    this.first = 0;
   }
 }
 
