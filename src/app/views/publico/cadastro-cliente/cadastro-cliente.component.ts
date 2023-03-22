@@ -38,7 +38,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly alertaService: AlertaService,
     private readonly activatedRoute: ActivatedRoute,
-    private readonly aprovacaoPubicoService: AprovacaoPublicoService,
+    public readonly aprovacaoPublicoService: AprovacaoPublicoService,
     telaDesktopService: TelaDesktopService,
     private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
     private readonly orcamentoService: OrcamentosService,
@@ -68,7 +68,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   clienteDto: ClienteDto = new ClienteDto();
   cadastroDto: CadastroDto = new CadastroDto();
-  dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto()
+  dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto();
   TipoCliente: string;
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
@@ -86,7 +86,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.mascaraCNPJ = StringUtils.inputMaskCNPJ();
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
 
-    if (this.aprovacaoPubicoService.orcamento == undefined) {
+    if (this.aprovacaoPublicoService.orcamento == undefined) {
       this.carregando = false;
       this.router.navigate([`publico/orcamento/${this.activatedRoute.snapshot.params.guid}`]);
       return;
@@ -97,14 +97,14 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     });
 
 
-    this.TipoCliente = this.aprovacaoPubicoService.orcamento.tipoCliente;
+    this.TipoCliente = this.aprovacaoPublicoService.orcamento.tipoCliente;
 
 
     this.verificarContribuinteICMS();
 
-    this.buscarOrientacaoPreenchimento(this.aprovacaoPubicoService.orcamento.loja);
-    this.buscarCondicoesAnaliseCredito(this.aprovacaoPubicoService.orcamento.loja);
-    this.buscarTermoPrivacidade(this.aprovacaoPubicoService.orcamento.loja);
+    this.buscarOrientacaoPreenchimento(this.aprovacaoPublicoService.orcamento.loja);
+    this.buscarCondicoesAnaliseCredito(this.aprovacaoPublicoService.orcamento.loja);
+    this.buscarTermoPrivacidade(this.aprovacaoPublicoService.orcamento.loja);
 
     this.inicializarDadosClienteCadastroDto();
     this.criarListas();
@@ -146,7 +146,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   verificarAlcadaDescontoSuperior(): boolean {
     let retorno = false;
-    let opcao = this.aprovacaoPubicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
+    let opcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
     if (opcao && opcao.id != 0) {
       let produtos = opcao.listaProdutos.filter(x => x.idOperacaoAlcadaDescontoSuperior != null && x.idOperacaoAlcadaDescontoSuperior != 0);
       if (produtos.length > 0) {
@@ -247,7 +247,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       contato: ["", [Validators.required]],
       email: ["", [Validators.required, Validators.email]],
       emailXml: ["", [Validators.email]],
-      icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPubicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPublicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: [""]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
   }
@@ -334,9 +334,9 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Uf = this.cepComponente.Uf;
     this.dadosCliente.ProdutorRural = this.TipoCliente == this.constantes.ID_PF ?
       this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
-    this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPubicoService.orcamento.parceiro;
-    this.dadosCliente.Vendedor = this.aprovacaoPubicoService.orcamento.vendedor;
-    this.dadosCliente.Loja = this.aprovacaoPubicoService.orcamento.loja;
+    this.dadosCliente.Indicador_Orcamentista = this.aprovacaoPublicoService.orcamento.parceiro;
+    this.dadosCliente.Vendedor = this.aprovacaoPublicoService.orcamento.vendedor;
+    this.dadosCliente.Loja = this.aprovacaoPublicoService.orcamento.loja;
 
     // this.dadosCliente.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
     this.dadosCliente.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
@@ -347,7 +347,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.converterTelefonesEnderecoEntrega();
 
     let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
-    aprovacaoOrcamento.idOrcamento = this.aprovacaoPubicoService.orcamento.id;
+    aprovacaoOrcamento.idOrcamento = this.aprovacaoPublicoService.orcamento.id;
     aprovacaoOrcamento.idOpcao = this.idOpcao;
     aprovacaoOrcamento.guid = this.activatedRoute.snapshot.params.guid;
     aprovacaoOrcamento.idFormaPagto = this.idFormaPagto;
@@ -384,7 +384,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   validarAlcadaEUf():boolean{
     if (this.alcadaSuperior && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
-      if (this.enderecoEntrega.componenteCep.Uf != this.aprovacaoPubicoService.orcamento.uf) {
+      if (this.enderecoEntrega.componenteCep.Uf != this.aprovacaoPublicoService.orcamento.uf) {
         this.alertaService.mostrarMensagem("A UF de endereço de entrega deve ser a mesma informada no orçamento!");
         this.carregando = false;
         this.desabilitaBotao = false;
@@ -392,7 +392,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       }
     }
     if (this.alcadaSuperior && !this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco){
-      if (this.cepComponente.Uf != this.aprovacaoPubicoService.orcamento.uf) {
+      if (this.cepComponente.Uf != this.aprovacaoPublicoService.orcamento.uf) {
         this.alertaService.mostrarMensagem("A UF do cadastro de cliente deve ser a mesma informada no orçamento!");
         this.carregando = false;
         this.desabilitaBotao = false;

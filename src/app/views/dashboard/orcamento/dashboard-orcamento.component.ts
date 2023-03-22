@@ -46,7 +46,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       this.siglaUsuario = "P";
     } else if (this.autenticacaoService._tipoUsuario == 2) {
       this.dashboardOrcamentoParceiro();
-      this.titulo = "Vendedor";
+      this.titulo = "Vendedor do Parceiro";
       this.siglaUsuario = "V";
     } else if (this.autenticacaoService._tipoUsuario == 3) {
       this.dashboardOrcamentoParceiro();

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from 'src/environments/environment';
 import { ObterEstruturaResponse } from './../../dto/arquivo/ObterEstruturaResponse';
 import { DownloadResponse } from './../../dto/arquivo/DownloadResponse';
 import { ArquivoExcluirResponse } from './../../dto/arquivo/ArquivoExcluirResponse';
@@ -15,7 +14,7 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 })
 export class DownloadsService {
 
-  constructor(private readonly http: HttpClient, private env: environment, private appSettingsService: AppSettingsService) { }
+  constructor(private readonly http: HttpClient, private appSettingsService: AppSettingsService) { }
 
   public urlUpload: string = `${this.appSettingsService.config.apiUrl}arquivo/upload`;
 

@@ -20,10 +20,12 @@ export class UsuarioMeusdadosComponent implements OnInit {
     public versaoFrontCache: string;    
     public versaoFront: string;  
     
-    public versaoApi: SistemaResponse;
-    public versaoApiCache: SistemaResponse;
+    public versaoApi: string;
+    public versaoApiCache: string;
 
     public operacao: Operacao[];
+
+    confrontoVersao:boolean;
 
   constructor(public readonly autenticacaoService: AutenticacaoService, 
     public readonly sistemaService: SistemaService,
@@ -57,13 +59,28 @@ export class UsuarioMeusdadosComponent implements OnInit {
         this.sistemaService.retornarVersao().toPromise().then((r) => {
           if (r != null) { 
             this.versaoApi = r;
+            this.sistemaService.retornarVersaoCache().toPromise().then((r) => {
+              if (r != null) { 
+                this.versaoApiCache = r;
+                this.verificarVersao();
+              }
+            });   
           }
-        })     
+        });
 
-        this.sistemaService.retornarVersaoCache().toPromise().then((r) => {
-          if (r != null) { 
-            this.versaoApiCache = r;
-          }
-        })           
+        
+        
+    }
+
+    verificarVersao(){
+      
+      if(this.versaoFront == this.versaoFrontCache && 
+        this.versaoApi == this.versaoApiCache && 
+        this.versaoFront == this.versaoApi && 
+        this.versaoApiCache == this.versaoFrontCache){
+          this.confrontoVersao = true;
+        }else{
+          this.confrontoVersao = false;
+        }
     }
 }
