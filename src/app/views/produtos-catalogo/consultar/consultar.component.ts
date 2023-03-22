@@ -43,6 +43,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   cboCapacidadeBTU: Array<DropDownItem> = [];
   cboCiclo: Array<DropDownItem> = [];
   cboLinhaProduto: Array<DropDownItem> = [];
+  first: number = 0;
 
   ngOnInit(): void {
 
@@ -164,6 +165,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     if (vlCapacidadeBTU) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.capacidadeBTU == vlCapacidadeBTU); }
     if (vlCiclo) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.ciclo == vlCiclo); }
     if (vlLinhaProduto) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.linhaProduto == vlLinhaProduto); }
+    
+    this.first = 0;
   }
 
   visualizarClick(id: number) {
