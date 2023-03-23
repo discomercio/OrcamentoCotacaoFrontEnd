@@ -14,6 +14,7 @@ import { ProdutoCalculadoraVrfRequestViewModel } from "src/app/dto/produtos-cata
 import { ProdutosAtivosRequestViewModel } from "src/app/dto/produtos-catalogo/ProdutosAtivosRequestViewModel";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { ProdutosGruposResponse } from "src/app/dto/produtos/produtos-grupos-response";
+import { CadastroProdutoCatalogoResponse } from "src/app/dto/produtos-catalogo/cadastro-produto-catalogo-response";
 
 @Injectable({
     providedIn: "root",
@@ -81,8 +82,8 @@ export class ProdutoCatalogoService {
         );
     }
 
-    criarProduto(formData: FormData): Observable<any> {
-        return this.http.post<any>(
+    criarProduto(formData: FormData): Observable<CadastroProdutoCatalogoResponse> {
+        return this.http.post<CadastroProdutoCatalogoResponse>(
             `${this.appSettingsService.config.apiUrl}produtocatalogo/criar`,
             formData
         );
