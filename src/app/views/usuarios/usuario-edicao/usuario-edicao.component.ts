@@ -43,14 +43,14 @@ export class UsuarioEdicaoComponent implements OnInit {
   public parceiros: any[] = [];
   public usuario = new Usuario();
   public mensagemErro: string = "*Campo obrigatório.";
-  public novoUsuario: boolean = false;
+  public bloqueiaParceiro: boolean = true;
   disabled: boolean = true;
   public formataTelefone = FormataTelefone;
   public mascaraTelefone: string;
   tipo: UsuarioTipo = 'todos';
   usuarioInterno: boolean;
   parceiroSelecionado: string = 'Selecione';
-
+  carregando: boolean = false;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
@@ -62,14 +62,15 @@ export class UsuarioEdicaoComponent implements OnInit {
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
 
-
+    this.carregando = true;
     if (this.apelido == "novo") {
-      this.novoUsuario = true;
+      this.bloqueiaParceiro = false;
     }
 
     if (this.apelido.toLowerCase() != "")
       if (!!this.apelido) {
         if (this.apelido.toLowerCase() != "novo") {
+          
           this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
             if (!!r) {
               this.usuario = r;
@@ -83,17 +84,18 @@ export class UsuarioEdicaoComponent implements OnInit {
 
                   // não tem permissão e está tentando editar um vendedor cujo usuário logado não é o responsável (O.o)
                   if (this.autenticacaoService._usuarioLogado != r.vendedorResponsavel) {
+                    this.carregando = false;
                     this.sweetalertService.aviso("Ops...você não é responsável por este vendedor!");
                     window.history.back();
                   }
                 }
               }
-
-              // const datastamp = this.usuario.senha;
-              // const senhaConvertida = this.criptoService.decodificaDado(datastamp, 1209);
-              // this.form.controls.senha.setValue(senhaConvertida);
-              // this.form.controls.confirmacao.setValue(senhaConvertida);
+              this.carregando = false;
             }
+          }).catch((e) => {
+            
+            this.carregando = false;
+            this.alertaService.mostrarErroInternet(e);
           });
         }
       }
@@ -112,6 +114,9 @@ export class UsuarioEdicaoComponent implements OnInit {
               indice++;
             }
           }
+        }).catch((e) => {
+          this.carregando = false;
+          this.alertaService.mostrarErroInternet(e);
         })
       } else {
         this.orcamentistaIndicadorService.buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
@@ -122,12 +127,15 @@ export class UsuarioEdicaoComponent implements OnInit {
               indice++;
             }
           }
+        }).catch((e) => {
+          this.carregando = false;
+          this.alertaService.mostrarErroInternet(e);
         })
       }
     } else {
       this.usuarioInterno = false;
     }
-
+    this.carregando = false;
   }
 
   onChangeParceiros(event) {
@@ -144,7 +152,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       dddCel_telefoneCel: [this.usuario.celular, [Validators.minLength(10), Validators.maxLength(11)]],
       ativo: [this.usuario.ativo, Validators.required],
       StLoginBloqueadoAutomatico: [this.usuario.StLoginBloqueadoAutomatico],
-      parceiro:[]
+      parceiro: [this.usuario.parceiro, [Validators.required]]
     },
       { validators: this.validacaoCustomizadaService.compararSenha() });
 
