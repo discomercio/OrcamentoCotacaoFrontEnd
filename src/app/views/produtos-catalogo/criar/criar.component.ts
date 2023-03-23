@@ -253,15 +253,19 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         formData.append("produto", JSON.stringify(prod));
         formData.append("loja", this.lojaLogado);
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
-          if (r != null) {
+          if(!r.Sucesso){
+            this.sweetAlertService.aviso(r.Mensagem);
+            return;
+          }
             this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
             this.router.navigate(["//produtos-catalogo/listar"]);
-          }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
-
-
+        }).catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
+        });
       }
-    }).catch();
+    }).catch((e)=>{
+      this.alertaService.mostrarErroInternet(e);
+    });
 
   }
 
