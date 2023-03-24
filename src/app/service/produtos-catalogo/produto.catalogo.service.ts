@@ -15,6 +15,7 @@ import { ProdutosAtivosRequestViewModel } from "src/app/dto/produtos-catalogo/Pr
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { ProdutosGruposResponse } from "src/app/dto/produtos/produtos-grupos-response";
 import { CadastroProdutoCatalogoResponse } from "src/app/dto/produtos-catalogo/cadastro-produto-catalogo-response";
+import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
 
 @Injectable({
     providedIn: "root",
@@ -35,6 +36,13 @@ export class ProdutoCatalogoService {
     buscarTodosProdutos(): Observable<ProdutoCatalogo[]> {
         return this.http.get<ProdutoCatalogo[]>(
             `${this.appSettingsService.config.apiUrl}produtocatalogo`
+        );
+    }
+    
+    ListarProdutoCatalogo(param: ProdutoCatalogoListar): Observable<any> {
+        return this.http.post<any>(
+            `${this.appSettingsService.config.apiUrl}produtocatalogo/ProdutoCatalogoListar`,
+            param
         );
     }
 
