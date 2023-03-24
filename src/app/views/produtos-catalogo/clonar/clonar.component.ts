@@ -18,6 +18,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 @Component({
   selector: 'app-clonar',
@@ -33,7 +34,8 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly activatedRoute: ActivatedRoute,
     private router: Router,
-    private readonly autenticacaoService: AutenticacaoService) { }
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly alertaService: AlertaService) { }
 
   carregando: boolean = false;
   form: FormGroup;
@@ -49,10 +51,10 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
   produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
   lstFabricantes: SelectItem[] = [];
   fabricantes: ProdutoCatalogoFabricante[];
-  lojaLogado:string;
+  lojaLogado: string;
 
   @ViewChild("codigo") codigo: ElementRef;
-  
+
   ngOnInit(): void {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
@@ -71,9 +73,9 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     this.lojaLogado = this.autenticacaoService._lojaLogado;
   }
 
-  ngAfterViewInit(){
+  ngAfterViewInit() {
     setTimeout(() => {
-    this.codigo.nativeElement.focus();
+      this.codigo.nativeElement.focus();
     }, 500);
   }
 
@@ -194,7 +196,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
       let prod = new ProdutoCatalogoItemProdutosAtivosDados();
       prod.idPropriedade = x.id;
       prod.idTipoCampo = x.IdCfgTipoPropriedade;
-      
+
 
       if (item.length == 0) {
         prod.idValorPropriedadeOpcao = 0;
@@ -258,7 +260,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
           itemModelo.IdProdutoCatalogoPropriedadeOpcao = '-1';
           itemModelo.Valor = x.valorPropriedade;
         }
-        
+
         itemModelo.Oculto = x.propriedadeOcultaItem ? true : false;
         campos.push(itemModelo);
       }
@@ -271,7 +273,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     produto.Descricao = this.form.controls.descricao.value; //Descricao Completa
     produto.Ativo = this.form.controls.ativo.value;
     produto.campos = campos;
-    
+
     if (this.imagem != null) {
       produto.imagem = new ProdutoCatalogoImagem();
       produto.imagem = this.imagem;
@@ -283,18 +285,22 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
         return;
       } else {
         let formData = new FormData();
-        if (!!this.arquivo)
-          formData.append("arquivo", this.arquivo, this.arquivo.name);
+
+        if (!!this.arquivo) formData.append("arquivo", this.arquivo, this.arquivo.name);
 
         formData.append("produto", JSON.stringify(produto));
         formData.append("loja", this.lojaLogado);
+
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
-          if (r != null) {
-            this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-            this.router.navigate(["//produtos-catalogo/listar"]);
+          if (!r.Sucesso) {
+            this.sweetAlertService.aviso(r.Mensagem);
+            return;
           }
-        }).catch((r) => {
-          this.sweetAlertService.aviso(r);
+
+          this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+          this.router.navigate(["//produtos-catalogo/listar"]);
+        }).catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
         });
       }
     }).catch((e) => {
@@ -351,7 +357,7 @@ export class ProdutosCatalogoClonarComponent implements OnInit, AfterViewInit {
     if (valorInteiro.toString().length > 6) return;
 
     valor = ("00000" + valor).slice(-6);
-    if(Number.parseInt(valor) == 0){
+    if (Number.parseInt(valor) == 0) {
       this.form.controls.produto.setValue("");
       return
     }
