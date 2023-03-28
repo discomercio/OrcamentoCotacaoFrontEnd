@@ -1,16 +1,35 @@
+// import { Component, OnInit, ViewChild } from '@angular/core';
+// import { FormBuilder, FormGroup } from '@angular/forms';
+// import { Router } from '@angular/router';
+// import { Table } from 'primeng/table';
+// import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+// import { ProdutoAtivoDto } from 'src/app/dto/produtos-catalogo/ProdutoAtivoDto';
+// import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
+// import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
+// import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
+// import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+// import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
+// import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+// import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+// import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
+// import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
+
 import { Component, OnInit, ViewChild } from '@angular/core';
+import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { Table } from 'primeng/table';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-import { ProdutoAtivoDto } from 'src/app/dto/produtos-catalogo/ProdutoAtivoDto';
-import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
+import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
+import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
-import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { DropDownItem } from 'src/app/views/orcamentos/models/DropDownItem';
+import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
+import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
 
 @Component({
   selector: 'app-consultar',
@@ -20,29 +39,38 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 export class ProdutosCatalogoConsultarComponent implements OnInit {
 
   constructor(
-    private readonly produtoService: ProdutoCatalogoService,
-    private readonly alertaService: AlertaService,
-    private readonly router: Router,
+    private readonly service: ProdutoCatalogoService,
     private fb: FormBuilder,
+    private readonly router: Router,
+    private readonly mensagemService: MensagemService,
+    private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
   listaProdutoDto: ProdutoCatalogo[];
-  registros: ProdutoAtivoDto[];
-  registrosFiltrados: ProdutoAtivoDto[];
+  //registros: ProdutoAtivoDto[];
+  //registrosFiltrados: ProdutoAtivoDto[];
   cols: any[];
   carregando: boolean = false;
-  stringUtils = StringUtils;
+  //stringUtils = StringUtils;
+  produtoCatalogResponse: ProdutoCatalogoResponse[];
 
-  cboCalculadoraVRF: Array<DropDownItem> = [];
-  cboTipoUnidade: Array<DropDownItem> = [];
-  cboDescargaCondensadora: Array<DropDownItem> = [];
-  cboVoltagem: Array<DropDownItem> = [];
-  cboCapacidadeBTU: Array<DropDownItem> = [];
-  cboCiclo: Array<DropDownItem> = [];
-  cboLinhaProduto: Array<DropDownItem> = [];
+  fabricantes: Array<DropDownItem> = new Array<DropDownItem>();
+  descargacondensadoras: Array<DropDownItem> = new Array<DropDownItem>();
+  voltagens: Array<DropDownItem> = new Array<DropDownItem>();
+  capacidades: Array<DropDownItem> = new Array<DropDownItem>();
+  ciclos: Array<DropDownItem> = new Array<DropDownItem>();
+  tipounidades: Array<DropDownItem> = new Array<DropDownItem>();
+
+  fabricantesSelecionados: string[] = [];
+  codAlfaNumFabricanteSelecionado: string = "";
+  descargaCondensadoraSelecionado: string = "";
+  voltagemSelecionadas: string[] = [];
+  capacidadeSelecionadas: string[] = [];
+  cicloSelecionado: string = "";
+  tipoUnidadeSelecionado: string[] = [];
 
   ngOnInit(): void {
 
@@ -52,124 +80,103 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       return;
     }
 
-    this.criarForm();
-    this.buscarRegistros();
+    this.carregando = true;
+    this.buscarPropriedades();
+    this.carregarFabricante();
+    this.carregando = false;
   }
 
-  criarForm() {
-    this.form = this.fb.group({
-      CalculadoraVRF: [''],
-      TipoUnidade: [''],
-      DescargaCondensadora: [''],
-      Voltagem: [''],
-      CapacidadeBTU: [''],
-      Ciclo: [''],
-      LinhaProduto: ['']
+  // criarForm() {
+  //   this.form = this.fb.group({
+  //     CalculadoraVRF: [''],
+  //     TipoUnidade: [''],
+  //     DescargaCondensadora: [''],
+  //     Voltagem: [''],
+  //     CapacidadeBTU: [''],
+  //     Ciclo: [''],
+  //     LinhaProduto: ['']
+  //   });
+  // }
+
+  buscarPropriedades() {
+    this.service.buscarPropriedades().toPromise().then((propieidade) => {
+      if (propieidade != null) {
+
+        let descargaCondensadora = propieidade.filter(x => x.descricao.trim().toUpperCase() == "DESCARGA CONDENSADORA");
+        let voltagens = propieidade.filter(x => x.descricao.trim().toUpperCase() == "VOLTAGEM");
+        let capacidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CAPACIDADE (BTU/H)");
+        let ciclos = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CICLO");
+        let tipounidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "TIPO DA UNIDADE");
+
+        this.service.buscarOpcoes().toPromise().then((opcao) => {
+
+          if(opcao != null) {
+            opcao.forEach(e => {
+              if(e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
+                this.descargacondensadoras.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
+                this.voltagens.push({ Id: e.id, Value: e.valor });
+              }
+
+              if(e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
+                this.capacidades.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
+                this.ciclos.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
+                this.tipounidades.push({ Id: e.id, Value: e.valor }); 
+              }
+            });
+          }
+        });
+      }   
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregando = false;
     });
   }
 
-  buscarRegistros() {
-    this.produtoService.buscarProdutosAtivosLista().toPromise().then((r) => {
+  carregarFabricante() {
+    this.service.buscarFabricantes().toPromise().then((r) => {
       if (r != null) {
-        this.registros = r;
-        this.registrosFiltrados = r;
-        this.carregando = false;
-
-        this.popularCombos();
+        r.forEach(e => {
+          this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome }); 
+        });
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+    });
   }
 
-  popularCombos() {
-    this.cboCalculadoraVRF = [];
-    this.registros.forEach(x => {
-      if (!this.cboCalculadoraVRF.find(f => f.Value == x.calculadoraVRF)) {
-        if (x.calculadoraVRF) {
-          this.cboCalculadoraVRF.push({ Id: x.calculadoraVRF, Value: x.calculadoraVRF });
-        }
+  buscarTodosProdutos() {
+    let produtoCatalogoListar = new ProdutoCatalogoListar();
+    produtoCatalogoListar.fabricantesSelecionados = this.fabricantesSelecionados;
+    produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.codAlfaNumFabricanteSelecionado;
+    produtoCatalogoListar.descargaCondensadoraSelecionado  = this.descargaCondensadoraSelecionado;
+    produtoCatalogoListar.voltagemSelecionadas = this.voltagemSelecionadas;
+    produtoCatalogoListar.capacidadeSelecionadas = this.capacidadeSelecionadas;
+    produtoCatalogoListar.cicloSelecionado = this.cicloSelecionado;
+    produtoCatalogoListar.tipoUnidadeSelecionado = this.tipoUnidadeSelecionado;
+    produtoCatalogoListar.ativoSelecionado = "true";
+
+    this.carregando = true;
+    this.service.ListarProdutoCatalogo(produtoCatalogoListar).toPromise().then((r) => {
+      if (r != null) {
+        this.produtoCatalogResponse = r;
       }
+      this.carregando = false;
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregando = false;
     });
-
-    this.cboTipoUnidade = [];
-    this.registros.forEach(x => {
-      if (!this.cboTipoUnidade.find(f => f.Value == x.tipoUnidade)) {
-        if (x.tipoUnidade) {
-          this.cboTipoUnidade.push({ Id: x.tipoUnidade, Value: x.tipoUnidade });
-        }
-      }
-    });
-
-    this.cboDescargaCondensadora = [];
-    this.registros.forEach(x => {
-      if (!this.cboDescargaCondensadora.find(f => f.Value == x.descargaCondensadora)) {
-        if (x.descargaCondensadora) {
-          this.cboDescargaCondensadora.push({ Id: x.descargaCondensadora, Value: x.descargaCondensadora });
-        }
-      }
-    });
-
-    this.cboVoltagem = [];
-    this.registros.forEach(x => {
-      if (!this.cboVoltagem.find(f => f.Value == x.voltagem)) {
-        if (x.voltagem) {
-          this.cboVoltagem.push({ Id: x.voltagem, Value: x.voltagem });
-        }
-      }
-    });
-
-    this.cboCapacidadeBTU = [];
-    this.registros.forEach(x => {
-      if (!this.cboCapacidadeBTU.find(f => f.Value == x.capacidadeBTU)) {
-        if (x.capacidadeBTU) {
-          this.cboCapacidadeBTU.push({ Id: x.capacidadeBTU, Value: x.capacidadeBTU });
-        }
-      }
-    });
-
-    this.cboCiclo = [];
-    this.registros.forEach(x => {
-      if (!this.cboCiclo.find(f => f.Value == x.ciclo)) {
-        if (x.ciclo) {
-          this.cboCiclo.push({ Id: x.ciclo, Value: x.ciclo });
-        }
-      }
-    });
-
-    this.cboLinhaProduto = [];
-    this.registros.forEach(x => {
-      if (!this.cboLinhaProduto.find(f => f.Value == x.linhaProduto)) {
-        if (x.linhaProduto) {
-          this.cboLinhaProduto.push({ Id: x.linhaProduto, Value: x.linhaProduto });
-        }
-      }
-    });
-
-  }
-
-  FiltrarRegistros() {
-    let vlCalculadoraVRF = this.form.controls.CalculadoraVRF.value;
-    let vlTipoUnidade = this.form.controls.TipoUnidade.value;
-    let vlDescargaCondensadora = this.form.controls.DescargaCondensadora.value;
-    let vlVoltagem = this.form.controls.Voltagem.value;
-    let vlCapacidadeBTU = this.form.controls.CapacidadeBTU.value;
-    let vlCiclo = this.form.controls.Ciclo.value;
-    let vlLinhaProduto = this.form.controls.LinhaProduto.value;
-
-    this.registrosFiltrados = this.registros;
-
-    if (vlCalculadoraVRF) { this.registrosFiltrados = this.registros.filter(x => x.calculadoraVRF == vlCalculadoraVRF); };
-    if (vlTipoUnidade) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.tipoUnidade == vlTipoUnidade); }
-    if (vlDescargaCondensadora) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.descargaCondensadora == vlDescargaCondensadora); }
-    if (vlVoltagem) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.voltagem == vlVoltagem); }
-    if (vlCapacidadeBTU) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.capacidadeBTU == vlCapacidadeBTU); }
-    if (vlCiclo) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.ciclo == vlCiclo); }
-    if (vlLinhaProduto) { this.registrosFiltrados = this.registrosFiltrados.filter(x => x.linhaProduto == vlLinhaProduto); }
   }
 
   visualizarClick(id: number) {
     this.router.navigate(["/produtos-catalogo/visualizar", id]);
   }
-
 }
-
-
