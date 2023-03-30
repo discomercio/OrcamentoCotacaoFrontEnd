@@ -13,7 +13,7 @@ export class SistemaService {
     private http: HttpClient,
     private appSettingsService: AppSettingsService) { }
 
-  retornarVersao() {
+  retornarVersao():Observable<any> {
     return this.http.get<any>(this.appSettingsService.config.apiUrl + 'Sistema/versao');
   }
 

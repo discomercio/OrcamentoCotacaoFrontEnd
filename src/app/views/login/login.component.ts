@@ -10,6 +10,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 import { LoginRequest } from 'src/app/dto/login/login-request';
 import { SistemaService } from 'src/app/service/Sistema/sistema.service';
 import { environment } from 'src/environments/environment';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 //Components
 
@@ -30,28 +31,22 @@ export class LoginComponent implements OnInit {
   @ViewChild(ButtonArClubeComponent, { static: false })
   button: ButtonArClubeComponent
 
-  public versaoFront: string; 
+  public versaoFront: string;
   public versaoApi: string;
 
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
     private elementRef: ElementRef,
     private renderer: Renderer2,
-    private readonly sweetalertService: SweetalertService,
+    private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly sistemaService: SistemaService,
-    ) { }
-  //public toast: Toast
+  ) { }
 
   ngOnInit(): void {
     this.versaoFront = environment.version;
 
-    this.sistemaService.retornarVersao().toPromise().then((r) => {
-      if (r != null) { 
-          this.versaoApi = r;
-          console.log(r);
-      }
-  });
+    this.buscarVersao();
   }
 
   ngAfterViewInit() {
@@ -69,6 +64,16 @@ export class LoginComponent implements OnInit {
         }
       }
     );
+  }
+
+  buscarVersao() {
+    this.sistemaService.retornarVersao().toPromise().then((r) => {
+      if (r != null) {
+        this.versaoApi = r.versao;
+      }
+    }).catch((e)=>{
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
 
