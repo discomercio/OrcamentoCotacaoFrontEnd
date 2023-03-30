@@ -140,7 +140,7 @@ export class AlertaService {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
       let versao = environment.version;
 
-      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
+      this.sweetalertService.dialogoVersao("", "Versão do Frontend incompatível! Versão em execução: ("+versao+").").subscribe(result => {        
         
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
@@ -156,21 +156,4 @@ export class AlertaService {
     return false;
   } 
 
-  public mostrarErroAtualizandoVersao(): boolean {
-          
-    let versao = environment.version;
-
-    if (versao == null) {
-      versao = "";
-    }
-    if (versao.trim() != "") {
-      versao = " (" + versao + ")";
-    }
-
-    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
-        window.location.reload();
-    });
-    
-    return true;
-  }  
 }
