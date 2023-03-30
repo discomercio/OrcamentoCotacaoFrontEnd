@@ -8,6 +8,8 @@ import { DropdownArClubeComponent } from 'src/app/components/dropdown/dropdown-a
 import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { LoginRequest } from 'src/app/dto/login/login-request';
+import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { SistemaService } from 'src/app/service/Sistema/sistema.service';
 
 //Components
 
@@ -28,16 +30,29 @@ export class LoginComponent implements OnInit {
   @ViewChild(ButtonArClubeComponent, { static: false })
   button: ButtonArClubeComponent
 
+  public versaoFront: string; 
+  public versaoApi: string;
+
   constructor(private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
     private elementRef: ElementRef,
     private renderer: Renderer2,
     private readonly sweetalertService: SweetalertService,
-    private readonly mensagemService: MensagemService,) { }
+    private readonly mensagemService: MensagemService,
+    private appSettingsService: AppSettingsService,
+    public readonly sistemaService: SistemaService,
+    ) { }
   //public toast: Toast
 
   ngOnInit(): void {
+    this.versaoFront = this.appSettingsService.versao;
 
+    this.sistemaService.retornarVersao().toPromise().then((r) => {
+      if (r != null) { 
+        this.versaoApi = r;
+        console.log(r);
+      }
+    });
   }
 
   ngAfterViewInit() {
