@@ -58,7 +58,7 @@ export class UsuarioMeusdadosComponent implements OnInit {
 
     this.sistemaService.retornarVersao().toPromise().then((r) => {
       if (r != null) {
-        this.versaoApi = r;
+        this.versaoApi = r.versao;
       }
     });
 
