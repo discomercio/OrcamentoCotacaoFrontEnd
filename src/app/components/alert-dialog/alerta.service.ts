@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -139,7 +140,7 @@ export class AlertaService {
 
     if (error.status == 412) {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
-      let versao = this.appSettingsService.ObterVersaoAtual();
+      let versao = environment.version;
 
       this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
         
@@ -161,7 +162,7 @@ export class AlertaService {
 
   public mostrarErroAtualizandoVersao(): boolean {
           
-    let versao = this.appSettingsService.ObterVersaoAtual();
+    let versao = environment.version;
 
     if (versao == null) {
       versao = "";
