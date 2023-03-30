@@ -1,7 +1,7 @@
 import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/main/app.module';
-import { enviroment } from './environments/environment';
+import { environment } from './environments/environment';
 
 // fetch('/assets/config/appsettings.json').then(res => res.json()).then((resp) =>{
 //     // platformBrowserDynamic().bootstrapModule(AppModule);
@@ -9,7 +9,7 @@ import { enviroment } from './environments/environment';
 //         enableProdMode();
 //     }
 //  })
-if (enviroment.production) {
+if (environment.production) {
     enableProdMode();
   }
 
