@@ -13,7 +13,7 @@ export class AlertaService {
 
   constructor(public dialogService: DialogService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService) { 
+    private readonly sweetalertService: SweetalertService) {
 
   }
 
@@ -75,14 +75,14 @@ export class AlertaService {
       }
 
       if (error.status == 422) {
-        if(error.error?.Message){
-            this.mostrarMensagemComLargura(
-                error.error.Message,
-                "250px", null);
-        }else{
-            this.mostrarMensagemComLargura(
-                "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-                "250px", null);
+        if (error.error?.Message) {
+          this.mostrarMensagemComLargura(
+            error.error.Message,
+            "250px", null);
+        } else {
+          this.mostrarMensagemComLargura(
+            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+            "250px", null);
         }
 
         return;
@@ -92,12 +92,11 @@ export class AlertaService {
         if (error.error.Mensagem != undefined) {
           this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
         }
-        else
-        {
+        else {
           this.mostrarMensagemComLargura(
-              "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-              "250px", null);
-         }
+            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+            "250px", null);
+        }
         return;
       }
 
@@ -115,7 +114,7 @@ export class AlertaService {
         else {
           this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
         }
-        
+
         return
       }
 
@@ -140,11 +139,14 @@ export class AlertaService {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
       let versao = environment.version;
 
-      this.sweetalertService.dialogoVersao("", "Versão do Frontend incompatível! Versão em execução: ("+versao+").").subscribe(result => {        
-        
+      this.sweetalertService.dialogoVersao("", "Versão do Frontend incompatível! Versão em execução: (" + versao + ").").subscribe(result => {
+
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
+        sessionStorage.removeItem("sininho");
+        sessionStorage.removeItem("senhaExpirada");
+        sessionStorage.removeItem("versaoApi");
 
         window.location.reload();
 
@@ -154,6 +156,6 @@ export class AlertaService {
     }
 
     return false;
-  } 
+  }
 
 }
