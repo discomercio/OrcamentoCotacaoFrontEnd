@@ -48,10 +48,10 @@ export class LoginComponent implements OnInit {
 
     this.sistemaService.retornarVersao().toPromise().then((r) => {
       if (r != null) { 
-        this.versaoApi = r;
-        console.log(r);
+          this.versaoApi = r;
+          console.log(r);
       }
-    });
+  });
   }
 
   ngAfterViewInit() {

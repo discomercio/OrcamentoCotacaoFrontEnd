@@ -4,7 +4,6 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { environment } from 'src/environments/environment';
 
 @Injectable({
@@ -14,8 +13,7 @@ export class AlertaService {
 
   constructor(public dialogService: DialogService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService,
-    private appSettingsService: AppSettingsService) { 
+    private readonly sweetalertService: SweetalertService) { 
 
   }
 
@@ -147,8 +145,6 @@ export class AlertaService {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
-        localStorage.removeItem("appsettings");
-        localStorage.removeItem("versaoApi");
 
         window.location.reload();
 
@@ -172,10 +168,6 @@ export class AlertaService {
     }
 
     this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
-
-        localStorage.removeItem("appsettings");
-        localStorage.removeItem("versaoApi");
-
         window.location.reload();
     });
     
