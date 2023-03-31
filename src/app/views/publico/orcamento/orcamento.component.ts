@@ -148,6 +148,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.paramGuid = param.guid;
           }
 
+          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+          let validade = this.orcamento.validade;
+          let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+          
+          if (this.orcamento.status == 1 && dataValidade < dataAtual) {
+            this.orcamento.statusDescricao = "Expirado";
+          }
+
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
             if (!!r) {
               this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;

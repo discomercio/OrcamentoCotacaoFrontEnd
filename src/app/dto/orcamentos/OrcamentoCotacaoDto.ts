@@ -27,6 +27,7 @@ export class OrcamentoCotacaoDto {
     telefone: string;
     email: string;
     status: number;
+    statusDescricao:string;
     token: string;
     condiCoesGerais: string;
     contribuinteIcms: number;
