@@ -139,16 +139,20 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
                 opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
                 opcaoAprovado.aprovado = true;
               }
-              // if(!!opcaoAprovado){
-              //   this.orcamento.listaOpcoes = new Array();
-              //   this.orcamento.listaOpcoes.push(opcaoAprovado);
-              // }
             });
           }
           else {
             this.aprovacaoPublicoService.orcamento = r;
             this.aprovacaoPublicoService.paramGuid = param.guid;
             this.paramGuid = param.guid;
+          }
+
+          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+          let validade = this.orcamento.validade;
+          let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+          
+          if (this.orcamento.status == 1 && dataValidade < dataAtual) {
+            this.orcamento.statusDescricao = "Expirado";
           }
 
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
