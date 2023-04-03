@@ -127,6 +127,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
+        
         if (r != null) {
           this.validado = true;
           this.orcamento = r;
@@ -139,10 +140,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
                 opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
                 opcaoAprovado.aprovado = true;
               }
-              // if(!!opcaoAprovado){
-              //   this.orcamento.listaOpcoes = new Array();
-              //   this.orcamento.listaOpcoes.push(opcaoAprovado);
-              // }
             });
           }
           else {
@@ -151,12 +148,19 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.paramGuid = param.guid;
           }
 
+          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+          let validade = this.orcamento.validade;
+          let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+          
+          if (this.orcamento.status == 1 && dataValidade < dataAtual) {
+            this.orcamento.statusDescricao = "Expirado";
+          }
+
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
             if (!!r) {
               this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;
               this.publicHeader.corCabecalho = r.corCabecalho + " !important";
               this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
-              this.titleService.setTitle(r.titulo);
             }
           });
 
