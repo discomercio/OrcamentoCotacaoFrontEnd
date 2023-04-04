@@ -1,24 +1,22 @@
-<div class="p-grid" >
+<div class="p-grid" [ngClass]="{'carregando': carregando}">
     <div class="p-col-12">
         <div class="card">
-            <h4 *ngIf="novoUsuario">Novo Usuário</h4>
-            <h4 *ngIf="!novoUsuario">Consulta/Edição de Usuário Cadastrado</h4>
+            <h4 *ngIf="!bloqueiaParceiro">Novo Usuário</h4>
+            <h4 *ngIf="bloqueiaParceiro">Consulta/Edição de Usuário Cadastrado</h4>
             <form [formGroup]="form">
                 <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
 
                     <div class="p-field p-col-6 p-lg-12 p-md-6 p-sm-6" *ngIf="usuarioInterno">
-                        <div id="edicao" *ngIf="novoUsuario">
+                        <div id="edicao">
                             <label>Parceiro</label>
                             <p-dropdown [options]="parceiros" [(ngModel)]="parceiro" formControlName="parceiro"
-                                placeholder="{{parceiroSelecionado}}" (onChange)="onChangeParceiros($event)">
+                                placeholder="{{parceiroSelecionado}}" (onChange)="onChangeParceiros($event)"
+                                [readonly]="bloqueiaParceiro">
                             </p-dropdown>
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'parceiro')">
+                                <small class="p-error" *ngIf="form.controls.parceiro.errors?.required">{{mensagemErro}}</small>
+                            </div>
                         </div>
-                        <div id="edicao" *ngIf="!novoUsuario">
-                            <label>Parceiro</label>
-                            <p-dropdown [options]="parceiros" [(ngModel)]="parceiro" formControlName="parceiro"
-                                placeholder="{{parceiroSelecionado}}" (onChange)="onChangeParceiros($event)" [readonly]="true">
-                            </p-dropdown>
-                        </div>                        
                     </div>
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
@@ -34,7 +32,7 @@
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                         <label for="email">E-mail/Login</label>
-                        <input id="email" type="text" pInputText placeholder="" formControlName="email"/>
+                        <input id="email" type="text" pInputText placeholder="" formControlName="email" />
                         <div *ngIf="validacaoFormularioService.verificaCampo(form,'email')">
                             <small class="p-error" *ngIf="form.controls.email.errors?.required">{{mensagemErro}}</small>
                             <small class="p-error" *ngIf="form.controls.email.errors?.pattern">Endereço de e-mail
@@ -55,7 +53,7 @@
                                 [ngClass]="password.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
                                 (click)=" password.type = password.type == 'password' ? 'text' : 'password'"></i>
                             <input id="senha" type="password" pPassword formControlName="senha" [feedback]="false"
-                                #password autocomplete="new-password"/>
+                                #password autocomplete="new-password" />
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'senha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
@@ -122,13 +120,15 @@
                         </div>
 
                         <div class="p-field-radiobutton p-mb-1" style="margin-left: 80px;">
-                            <p-radioButton name="StLoginBloqueadoAutomatico" [disabled]="true" [value]="true" formControlName="StLoginBloqueadoAutomatico" inputId="trueSt">
+                            <p-radioButton name="StLoginBloqueadoAutomatico" [disabled]="true" [value]="true"
+                                formControlName="StLoginBloqueadoAutomatico" inputId="trueSt">
                             </p-radioButton>
                             <label for="StLoginBloqueadoAutomatico">Bloqueado</label>
                         </div>
 
                         <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="StLoginBloqueadoAutomatico" [value]="false" formControlName="StLoginBloqueadoAutomatico" inputId="falseSt">
+                            <p-radioButton name="StLoginBloqueadoAutomatico" [value]="false"
+                                formControlName="StLoginBloqueadoAutomatico" inputId="falseSt">
                             </p-radioButton>
                             <label for="StLoginBloqueadoAutomatico">Desbloqueado</label>
                         </div>
