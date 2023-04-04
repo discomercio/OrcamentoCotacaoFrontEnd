@@ -248,6 +248,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
         var indice = 0;
         if (r != null) {
+          
+          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+          let validade = this.novoOrcamentoService.orcamentoCotacaoDto.validade;
+          let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+          
+          if (id == 1 && dataValidade < dataAtual) {
+            this.statusOrcamento = "Expirado";
+            return;
+          }
           while (indice <= r.length) {
             if (r[indice]['Id'] == id) {
               this.statusOrcamento = r[indice]['Value'];

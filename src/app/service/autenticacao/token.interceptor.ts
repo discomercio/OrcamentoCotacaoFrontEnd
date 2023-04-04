@@ -6,66 +6,55 @@ import { tap } from 'rxjs/internal/operators/tap';
 import { Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
 
   constructor(
-    private readonly autenticacaoService: AutenticacaoService, 
-    private readonly alertaService: AlertaService, 
-    private router: Router, 
-    private http: HttpClient, 
+    private readonly autenticacaoService: AutenticacaoService,
+    private readonly alertaService: AlertaService,
+    private router: Router,
+    private http: HttpClient,
     private appSettingsService: AppSettingsService) {
 
   }
+
+  private versaoApi = "";
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpSentEvent
     | HttpHeaderResponse | HttpProgressEvent | HttpResponse<any> | HttpUserEvent<any>> {
 
     let headers: { [name: string]: string | string[]; } = {
-      'X-API-Version': this.appSettingsService.versao
+      'X-API-Version': environment.version
     };
 
     if (this.autenticacaoService.authEstaLogado()) {
       headers = {
         'Authorization': 'Bearer ' + this.autenticacaoService.obterToken(),
-        'X-API-Version': this.appSettingsService.versao
+        'X-API-Version': environment.version
       };
     }
     else {
       if (!this.router.url.startsWith('/publico/')) {
-        this.router.navigate(['account/login']);        
+        this.router.navigate(['account/login']);
       }
     }
-    
-    if (sessionStorage.getItem("senhaExpirada") =="S"){
+
+    if (sessionStorage.getItem("senhaExpirada") == "S") {
       this.router.navigate(['senha/senha-meusdados']);
     }
 
-    if (localStorage.getItem("versaoApi") != this.appSettingsService.versao) {
-      if (!this.router.url.startsWith('/publico/')) {
-        this.alertaService.mostrarErroAtualizandoVersao();
-      }else{
-        localStorage.setItem('versaoApi', this.appSettingsService.versao);
-        window.location.reload();
-      }
-    }
-
     req = req.clone({ setHeaders: headers });
-    
 
     return next.handle(req).pipe(
       tap((event: HttpEvent<any>) => {
 
-        
+
         if (event instanceof HttpResponse) {
           let resp: HttpResponse<any> = event;
           let respOk = false;
 
-          if (localStorage.getItem("versaoApi") == this.appSettingsService.versao) {
-            respOk = true;
-          }        
-          
           //Fizemos isso pq não é realizado a chamada na API
           let apiUrl = this.appSettingsService.config.apiUrl;
           if (event.url != apiUrl + "assets/demo/data/banco/menu.json") return;
