@@ -83,7 +83,7 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
               this.mensagemService.showSuccessViaToast(x.MensagemRetorno);
               sessionStorage.setItem("senhaExpirada", "N");
               setTimeout(() => {
-                this.router.navigate(['/']);
+                this.router.navigate(['dashboards']);
               }, 3500);
             }
             else {

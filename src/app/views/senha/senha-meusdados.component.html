@@ -17,13 +17,13 @@
                             <i style="cursor: pointer"
                                 [ngClass]="password.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
                                 (click)=" password.type = password.type == 'password' ? 'text' : 'password'"></i>
-                            <input id="senha" type="password" pPassword formControlName="senha" [feedback]="false"
-                                #password autofocus autocomplete="off">
+                            <input id="senha" type="password" name="pwd" pPassword formControlName="senha"
+                                [feedback]="false" #password autofocus autocomplete="new-password">
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'senha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.senha.errors?.required">{{mensagemErro}}</small>
-                            </div> 
-                        </span> 
+                            </div>
+                        </span>
                     </div>
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 login-input">
@@ -32,15 +32,17 @@
                             <i style="cursor: pointer"
                                 [ngClass]="newPassword.type == 'password'? 'pi pi-eye': 'pi pi-eye-slash'"
                                 (click)=" newPassword.type = newPassword.type == 'password' ? 'text' : 'password'"></i>
-                            <input id="novaSenha" type="password" pPassword formControlName="novaSenha" [feedback]="false"
-                                #newPassword />
+                            <input id="novaSenha" type="password" pPassword formControlName="novaSenha"
+                                [feedback]="false" #newPassword />
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'novaSenha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.novaSenha.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.novaSenha.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
+                                <small class="p-error" *ngIf="form.controls.novaSenha.errors?.minlength">A senha deve
+                                    ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.novaSenha.errors?.maxlength">Quantidade de
                                     caracteres
-                                    excede a o limite de {{form.controls.novaSenha.errors.maxlength.requiredLength}}</small>
+                                    excede a o limite de
+                                    {{form.controls.novaSenha.errors.maxlength.requiredLength}}</small>
                             </div>
                         </span>
                     </div>
@@ -56,7 +58,8 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'confirmacao')">
                                 <small class="p-error"
                                     *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
+                                    ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
                                 <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
                                     caracteres
                                     excede a o limite de

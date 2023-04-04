@@ -4,7 +4,7 @@ import { DialogService } from 'primeng/dynamicdialog';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,8 +13,7 @@ export class AlertaService {
 
   constructor(public dialogService: DialogService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService,
-    private appSettingsService: AppSettingsService) { 
+    private readonly sweetalertService: SweetalertService) {
 
   }
 
@@ -76,14 +75,14 @@ export class AlertaService {
       }
 
       if (error.status == 422) {
-        if(error.error?.Message){
-            this.mostrarMensagemComLargura(
-                error.error.Message,
-                "250px", null);
-        }else{
-            this.mostrarMensagemComLargura(
-                "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-                "250px", null);
+        if (error.error?.Message) {
+          this.mostrarMensagemComLargura(
+            error.error.Message,
+            "250px", null);
+        } else {
+          this.mostrarMensagemComLargura(
+            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+            "250px", null);
         }
 
         return;
@@ -93,12 +92,11 @@ export class AlertaService {
         if (error.error.Mensagem != undefined) {
           this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
         }
-        else
-        {
+        else {
           this.mostrarMensagemComLargura(
-              "Erro inesperado! Favor entrar em contato com o suporte técnico.",
-              "250px", null);
-         }
+            "Erro inesperado! Favor entrar em contato com o suporte técnico.",
+            "250px", null);
+        }
         return;
       }
 
@@ -116,7 +114,7 @@ export class AlertaService {
         else {
           this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
         }
-        
+
         return
       }
 
@@ -139,15 +137,16 @@ export class AlertaService {
 
     if (error.status == 412) {
       // Erro [412 - Versão]  -  Favor entrar em contato com o suporte técnico.
-      let versao = this.appSettingsService.ObterVersaoAtual();
+      let versao = environment.version;
 
-      this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {        
-        
+      this.sweetalertService.dialogoVersao("", "Versão do Frontend incompatível! Versão em execução: (" + versao + ").").subscribe(result => {
+
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('lojas');
         sessionStorage.removeItem('lojaLogada');
-        localStorage.removeItem("appsettings");
-        localStorage.removeItem("versaoApi");
+        sessionStorage.removeItem("sininho");
+        sessionStorage.removeItem("senhaExpirada");
+        sessionStorage.removeItem("versaoApi");
 
         window.location.reload();
 
@@ -157,27 +156,6 @@ export class AlertaService {
     }
 
     return false;
-  } 
+  }
 
-  public mostrarErroAtualizandoVersao(): boolean {
-          
-    let versao = this.appSettingsService.ObterVersaoAtual();
-
-    if (versao == null) {
-      versao = "";
-    }
-    if (versao.trim() != "") {
-      versao = " (" + versao + ")";
-    }
-
-    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + versao + ". Clique em OK para carregar a nova versão.").subscribe(result => {                
-
-        localStorage.removeItem("appsettings");
-        localStorage.removeItem("versaoApi");
-
-        window.location.reload();
-    });
-    
-    return true;
-  }  
 }
