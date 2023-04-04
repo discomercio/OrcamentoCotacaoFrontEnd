@@ -59,6 +59,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       return;
     }
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
+    
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
 
@@ -134,6 +135,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       }
     } else {
       this.usuarioInterno = false;
+      this.form.controls.parceiro.setValue(this.autenticacaoService._parceiro);
     }
     this.carregando = false;
   }
@@ -143,6 +145,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   }
 
   criarForm() {
+    
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
       email: [this.usuario.email, [Validators.required, Validators.email, Validators.maxLength(60)]],
