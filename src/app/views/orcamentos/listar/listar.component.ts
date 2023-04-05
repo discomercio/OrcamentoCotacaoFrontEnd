@@ -31,6 +31,9 @@ import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamen
 import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
 import { PedidoService } from 'src/app/service/pedido/pedido.service';
 import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
+import { LazyLoadEvent } from 'primeng/api';
+import { ChangeDetectorRef } from '@angular/core';
+
 @Component({
   selector: 'app-listar',
   templateUrl: './listar.component.html',
@@ -54,8 +57,7 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly sweetalertService: SweetalertService,
     private readonly sweetAlertService: SweetalertService,
     private readonly usuarioService: UsuariosService,
-    private readonly pedidoService: PedidoService
-  ) {
+    private readonly pedidoService: PedidoService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -95,7 +97,7 @@ export class OrcamentosListarComponent implements OnInit {
   minDate = new Date(this.d.setDate(this.d.getDate() - this.qtdDiasDtIni));
   maxDate = new Date();
 
-  first: number = 0;
+  
   public constantes: Constantes = new Constantes();
   usuario = new Usuario();
   public lstVendedores: SelectItem[] = [];
@@ -106,6 +108,12 @@ export class OrcamentosListarComponent implements OnInit {
   vendedorSelecionado: DropDownItem;
   configValidade: ValidadeOrcamento;
 
+  first: number = 0;
+  qtdeRegistros: number;
+  qtdePorPaginaInicial: number = 10;
+  qtdePorPaginaSelecionado: number = 10;
+  mostrarQtdePorPagina: boolean = false;
+
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarForm();
@@ -114,71 +122,14 @@ export class OrcamentosListarComponent implements OnInit {
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
+
+    this.buscarStatus();
     this.buscarVendedores();
     this.buscarConfigValidade();
 
-  }
-
-  iniciarFiltro(param: any) {
-    this.parametro = param.filtro.toUpperCase();
-    this.filtro.DtInicio = this.minDate;
-    this.filtro.DtFim = this.maxDate;
-
-    if (this.parametro == "MSGPENDENTES") {
-      this.parametro = "ORCAMENTOS";
-      this.filtro.Mensagem = "Sim";
-    }
-
-    this.buscarRegistros();
-  }
-
-  minExpiracao = new Date();
-  maxEpiracao = new Date();
-  iniciarFiltroExpericao() {
-    let periodoMaxExpiracao = this.configValidade.MaxPeriodoConsultaFiltroPesquisa;
-
-    let maxItem = this.lstDto.reduce((a, b) => {
-      return new Date(a.DtExpiracao) > new Date(b.DtExpiracao) ? a : b;
-    });
-    let minItem = this.lstDto.reduce((a, b) => {
-      return new Date(a.DtExpiracao) < new Date(b.DtExpiracao) ? a : b;
-    });
-    this.filtro.DtFimExpiracao = new Date(maxItem.DtExpiracao);
-    this.filtro.DtInicioExpiracao = new Date(minItem.DtExpiracao);
-    this.maxEpiracao = this.filtro.DtFimExpiracao;
-    this.minExpiracao = this.filtro.DtInicioExpiracao;
-  }
-
-  criarForm() {
-    this.form = this.fb.group({
-      status: [''],
-      cliente: [''],
-      vendedor: [''],
-      parceiro: [''],
-      vendedorParceiro: [''],
-      msgPendente: [''],
-      dtInicio: [''],
-      dtFim: [''],
-      filtroStatus: [''],
-      dtFimExpiracao: [''],
-      dtInicioExpiracao: ['']
-    });
-  }
-
-  setarCamposDoForm(): void {
-
-    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS && !this.admModulo) {
-      this.filtro.Vendedor = this.usuario.nome;
-    }
-    if (this.tipoUsuario == this.constantes.PARCEIRO) {
-      this.filtro.Parceiro = this.usuario.nome;
-    }
-
-    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      this.filtro.Parceiro = this.usuario.idParceiro;
-      this.filtro.VendedorParceiro = this.usuario.nome;
-      this.filtro.IdIndicadorVendedor = this.usuario.id;
-    }
+    //this.filtrar_cboVendedoresParceiro(); ??
+    //this.filtrar_cboParceiros(); ??
+    //this.buscarMensagens(); ??
   }
 
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
@@ -251,6 +202,68 @@ export class OrcamentosListarComponent implements OnInit {
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
+  iniciarFiltro(param: any) {
+    this.parametro = param.filtro.toUpperCase();
+    this.filtro.DtInicio = this.minDate;
+    this.filtro.DtFim = this.maxDate;
+
+    if (this.parametro == "MSGPENDENTES") {
+      this.parametro = "ORCAMENTOS";
+      this.filtro.Mensagem = "Sim";
+    }
+
+    //this.buscarRegistros();
+  }
+
+  minExpiracao = new Date();
+  maxEpiracao = new Date();
+  iniciarFiltroExpericao() {
+    let periodoMaxExpiracao = this.configValidade.MaxPeriodoConsultaFiltroPesquisa;
+
+    let maxItem = this.lstDto.reduce((a, b) => {
+      return new Date(a.DtExpiracao) > new Date(b.DtExpiracao) ? a : b;
+    });
+    let minItem = this.lstDto.reduce((a, b) => {
+      return new Date(a.DtExpiracao) < new Date(b.DtExpiracao) ? a : b;
+    });
+    this.filtro.DtFimExpiracao = new Date(maxItem.DtExpiracao);
+    this.filtro.DtInicioExpiracao = new Date(minItem.DtExpiracao);
+    this.maxEpiracao = this.filtro.DtFimExpiracao;
+    this.minExpiracao = this.filtro.DtInicioExpiracao;
+  }
+
+  criarForm() {
+    this.form = this.fb.group({
+      status: [''],
+      cliente: [''],
+      vendedor: [''],
+      parceiro: [''],
+      vendedorParceiro: [''],
+      msgPendente: [''],
+      dtInicio: [''],
+      dtFim: [''],
+      filtroStatus: [''],
+      dtFimExpiracao: [''],
+      dtInicioExpiracao: ['']
+    });
+  }
+
+  setarCamposDoForm(): void {
+
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS && !this.admModulo) {
+      this.filtro.Vendedor = this.usuario.nome;
+    }
+    if (this.tipoUsuario == this.constantes.PARCEIRO) {
+      this.filtro.Parceiro = this.usuario.nome;
+    }
+
+    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
+      this.filtro.Parceiro = this.usuario.idParceiro;
+      this.filtro.VendedorParceiro = this.usuario.nome;
+      this.filtro.IdIndicadorVendedor = this.usuario.id;
+    }
+  }
+
   buscarConfigValidade() {
     this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
       if (r != null) {
@@ -297,33 +310,108 @@ export class OrcamentosListarComponent implements OnInit {
       }
     });
   }
+
+  MudarPaginacao(event: LazyLoadEvent) {
+
+    this.filtro.pagina = 0;
+    this.first = 0;
+
+    console.log(this.lstDtoFiltrada);
+
+    if (this.lstDtoFiltrada.length > 0) {
+
+      alert("MudarPaginacao");
+
+      this.filtro.pagina = event.first / event.rows;
+      this.filtro.qtdeItensPagina = event.rows;
+      this.qtdePorPaginaSelecionado = event.rows;
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
+        this.filtro.pagina = 0;
+      }
+      this.buscarRegistros();
+    }
+  }
+
+  ascendente: boolean = false;
+  colunaOrdenacao: string;
+
+  ordenar(coluna: string) {
+    
+    if (coluna == this.colunaOrdenacao) {
+      this.ascendente = !this.ascendente;
+    }
+    else {
+      this.ascendente = false;
+    }
+
+    this.colunaOrdenacao = coluna;
+
+    this.filtro.ordenacaoAscendente = this.ascendente;
+    this.filtro.nomeColunaOrdenacao = this.colunaOrdenacao;
+    this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
+    this.filtro.pagina = 0;
+    //this.buscarRegistros();
+    this.first = 0;
+  }
+
   carregando: boolean = false;
-  buscarRegistros() {
+
+  buscarRegistros() { 
+
+    alert("buscarRegistros");
+
     this.filtro.Origem = this.parametro;
     this.filtro.Loja = this.autenticacaoService._lojaLogado;
-    this.carregando = true;
+    
+    // console.log(this.filtro.Status);
+    // console.log(this.filtro.Nome_numero);
+    // console.log(this.filtro.Vendedor); //vendedorSelecionado
+    // console.log(this.filtro.Parceiro);
+    // console.log(this.filtro.VendedorParceiro);
+    // console.log(this.filtro.Mensagem);
+    // console.log(this.filtro.DtInicioExpiracao);
+    // console.log(this.filtro.DtFimExpiracao);
+    // console.log(this.filtro.DtInicio);
+    // console.log(this.filtro.DtFim);
+
+    // this.carregando = true;
+
+    this.lstDto = new Array();
+
     this.orcamentoService.buscarRegistros(this.filtro).toPromise().then((r) => {
-      if (r != null && r.length > 0) {
-        this.lstDto = r;
-        this.montarLinhaBusca();
-        this.lstDto.forEach(x => {
-          let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
-          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-          if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
-            x.IdStatus = 4;
-            x.Status = "Expirado";
-          }
-        });
-        this.lstDtoFiltrada = this.lstDto;
-        if (this.parametro == "ORCAMENTOS") {
-          this.iniciarFiltroExpericao();
-        }
-        this.Pesquisar_Click();
+
+      if (!r.Sucesso) {
+        this.mostrarQtdePorPagina = false;
+        this.sweetAlertService.aviso(r.Mensagem);
         this.carregando = false;
         return;
       }
+
+      this.lstDto = r.orcamentoCotacaoListaDto;
+      this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
-      this.Pesquisar_Click();
+      this.mostrarQtdePorPagina = true;
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
+        this.first = 0;
+        this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
+      }
+
+      this.montarLinhaBusca();
+      this.lstDto.forEach(x => {
+        let dataExpiracao = new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate());
+        let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+        if (x.IdStatus == 1 && dataExpiracao < dataAtual) {
+          x.IdStatus = 4;
+          x.Status = "Expirado";
+        }
+      });
+      this.lstDtoFiltrada = this.lstDto;
+      if (this.parametro == "ORCAMENTOS") {
+        this.iniciarFiltroExpericao();
+      }
+      //this.Pesquisar_Click();
+      this.carregando = false;
+      return;
     }).catch((r) => {
 
       this.carregando = false;
@@ -339,16 +427,16 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   popularTela() {
-    this.setarPaginacao();
+    //this.setarPaginacao();
     if (this.cboStatus.length == 0) this.buscarStatus();
     this.filtrar_cboVendedoresParceiro();
     this.filtrar_cboParceiros();
     this.buscarMensagens();
   }
 
-  setarPaginacao() {
-    this.first = 0;
-  }
+  // setarPaginacao() {
+  //   this.first = 0;
+  // }
 
   filtrar_cboParceiros() {
     this.cboParceiros = [];
@@ -403,61 +491,73 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   Pesquisar_Click() {
-
-    let lstFiltroStatus: Array<ListaDto> = new Array();
-    let lstFiltroMensagem: Array<ListaDto> = new Array();
-    let lstFiltroDatas: Array<ListaDto> = new Array();
-    let lstFiltraDataExpiracao: Array<ListaDto> = new Array();
-    this.lstDtoFiltrada = new Array();
-    let lstFiltroVendedor = new Array<ListaDto>();
-    let lstFiltroParceiro = new Array<ListaDto>();
-
-    lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
-
-    if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
-
-    if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
-    if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
-
-    if (this.filtro.DtInicioExpiracao && this.filtro.DtFimExpiracao) {
-      let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
-      let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
-      lstFiltraDataExpiracao = this.lstDto.filter(x =>
-      (new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= inicio &&
-        new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) <= fim));
-    }
-
-    if ((this.filtro.Status === undefined || this.filtro.Status == null)
-      && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null)
-      && (this.filtro.Parceiro === undefined || this.filtro.Parceiro == null)
-      && (this.filtro.VendedorParceiro === undefined || this.filtro.VendedorParceiro == null)
-      && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null)
-      && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null)
-      && (this.filtro.DtFim === undefined || this.filtro.DtFim == null)
-    ) {
-      this.lstDtoFiltrada = this.lstDto;
-    } else {
-
-      this.lstDtoFiltrada = this.lstDto;
-      if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
-      if (this.filtro.Status && this.filtro.Status.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
-      if (this.filtro.Vendedor) {
-        this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor);
-      }
-      if (lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Parceiro == x.Parceiro); }
-      if (!!this.filtro.IdIndicadorVendedor) this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.IdIndicadorVendedor == x.IdIndicadorVendedor);
-      if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
-      if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
-      if (lstFiltraDataExpiracao.length > 0) {
-        let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
-        let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
-        this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
-        (new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= inicio &&
-          new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) <= fim));
-      }
-    }
-
     this.popularTela();
+
+    // console.log(this.filtro.Status);
+    // console.log(this.filtro.Nome_numero);
+    // console.log(this.filtro.Vendedor); //vendedorSelecionado
+    // console.log(this.filtro.Parceiro);
+    // console.log(this.filtro.VendedorParceiro);
+    // console.log(this.filtro.Mensagem);
+    // console.log(this.filtro.DtInicioExpiracao);
+    // console.log(this.filtro.DtFimExpiracao);
+    // console.log(this.filtro.DtInicio);
+    // console.log(this.filtro.DtFim);
+
+    // let lstFiltroStatus: Array<ListaDto> = new Array();
+    // let lstFiltroMensagem: Array<ListaDto> = new Array();
+    // let lstFiltroDatas: Array<ListaDto> = new Array();
+    // let lstFiltraDataExpiracao: Array<ListaDto> = new Array();
+    // this.lstDtoFiltrada = new Array();
+    // let lstFiltroVendedor = new Array<ListaDto>();
+    // let lstFiltroParceiro = new Array<ListaDto>();
+
+    // lstFiltroParceiro = this.lstDto.filter(s => this.filtro.Parceiro == s.Parceiro);
+
+    // if (this.filtro.Status) { lstFiltroStatus = this.lstDto.filter(s => this.filtro.Status.includes(s.Status)); }
+
+    // if (this.filtro.Mensagem) { lstFiltroMensagem = this.lstDto.filter(s => this.filtro.Mensagem == s.Mensagem) };
+    // if (this.filtro.DtInicio && this.filtro.DtFim) { lstFiltroDatas = this.lstDto.filter(s => (new Date(s.DtCadastro)) >= this.filtro.DtInicio && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
+
+    // if (this.filtro.DtInicioExpiracao && this.filtro.DtFimExpiracao) {
+    //   let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
+    //   let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
+    //   lstFiltraDataExpiracao = this.lstDto.filter(x =>
+    //   (new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= inicio &&
+    //     new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) <= fim));
+    // }
+
+    // if ((this.filtro.Status === undefined || this.filtro.Status == null)
+    //   && (this.filtro.Vendedor === undefined || this.filtro.Vendedor == null)
+    //   && (this.filtro.Parceiro === undefined || this.filtro.Parceiro == null)
+    //   && (this.filtro.VendedorParceiro === undefined || this.filtro.VendedorParceiro == null)
+    //   && (this.filtro.Mensagem === undefined || this.filtro.Mensagem == null)
+    //   && (this.filtro.DtInicio === undefined || this.filtro.DtInicio == null)
+    //   && (this.filtro.DtFim === undefined || this.filtro.DtFim == null)
+    // ) {
+    //   this.lstDtoFiltrada = this.lstDto;
+    // } else {
+
+    //   this.lstDtoFiltrada = this.lstDto;
+    //   if (this.filtro.Nome_numero) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => x.linhaBusca.includes(this.filtro.Nome_numero.toLowerCase())); };
+    //   if (this.filtro.Status && this.filtro.Status.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Status.includes(x.Status)); }
+    //   if (this.filtro.Vendedor) {
+    //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Vendedor == x.Vendedor);
+    //   }
+    //   if (lstFiltroParceiro.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Parceiro == x.Parceiro); }
+    //   if (!!this.filtro.IdIndicadorVendedor) this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.IdIndicadorVendedor == x.IdIndicadorVendedor);
+    //   if (lstFiltroMensagem.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x => this.filtro.Mensagem == x.Mensagem); }
+    //   if (lstFiltroDatas.length > 0) { this.lstDtoFiltrada = this.lstDtoFiltrada.filter(s => (new Date(s.DtCadastro) >= this.filtro.DtInicio) && (new Date(s.DtCadastro) <= this.filtro.DtFim)); }
+    //   if (lstFiltraDataExpiracao.length > 0) {
+    //     let inicio = new Date(this.filtro.DtInicioExpiracao.getFullYear(), this.filtro.DtInicioExpiracao.getMonth(), this.filtro.DtInicioExpiracao.getDate());
+    //     let fim = new Date(this.filtro.DtFimExpiracao.getFullYear(), this.filtro.DtFimExpiracao.getMonth(), this.filtro.DtFimExpiracao.getDate());
+    //     this.lstDtoFiltrada = this.lstDtoFiltrada.filter(x =>
+    //     (new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) >= inicio &&
+    //       new Date(new Date(x.DtExpiracao).getFullYear(), new Date(x.DtExpiracao).getMonth(), new Date(x.DtExpiracao).getDate()) <= fim));
+    //   }
+    // }
+
+    // this.popularTela();
   }
 
   cboStatus_onChange(event) {

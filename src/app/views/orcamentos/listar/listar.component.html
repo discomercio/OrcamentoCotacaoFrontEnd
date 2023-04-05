@@ -12,8 +12,8 @@
                                 <label for="filtro">Status</label>
                                 <p-multiSelect formControlName="status" [options]="cboStatus" placeholder="Selecione"
                                     emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Value"
-                                    optionLabel="Value" [(ngModel)]="filtro.Status"
-                                    (onChange)='cboStatus_onChange($event)' emptyFilterMessage="Nenhum item encontrado">
+                                    optionLabel="Value" [(ngModel)]="filtro.Status" 
+                                    emptyFilterMessage="Nenhum item encontrado">
                                 </p-multiSelect>
                             </div>
                             <div class="p-field p-col-6 p-lg-4 p-md-4 p-sm-4 p-as-end">
@@ -22,46 +22,41 @@
                                 <label for="nomeObra" *ngIf="parametro != 'ORCAMENTOS'">Nº Orçamento / Nº Pedido / Nome
                                     do cliente</label>
                                 <input pInputText type="text" formControlName="cliente" placeholder="Digite a busca"
-                                    [(ngModel)]="filtro.Nome_numero" (keyup)="Pesquisar_Click()">
-                                <!-- (input)="dt1.filterGlobal($event.target.value, 'contains')" -->
+                                    [(ngModel)]="filtro.Nome_numero">
                             </div>
                             <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="admModulo">
                                 <label for="filtroVendedor">Vendedor</label>
-                                <p-autoComplete [(ngModel)]="vendedorSelecionado" formControlName="vendedor"
-                                    [suggestions]="cboFiltradoVendedores" [forceSelection]="true"
-                                    (completeMethod)="filtrarVendedores($event)" field="Value" [dropdown]="true"
-                                    (onSelect)="cboVendedor_onChange()" (onClear)="cboVendedor_onChange('teste')">
-                                    <ng-template let-vendedor pTemplate="item">
-                                        <div class="vendedor-item">
-                                            <div>{{vendedor.Value}}</div>
-                                        </div>
-                                    </ng-template>
-                                </p-autoComplete>
+                                <p-multiSelect [options]="cboVendedores" [(ngModel)]="filtro.Vendedor" formControlName="vendedor" 
+                                               defaultLabel="Selecione" optionLabel="Value" optionValue="Id" 
+                                               emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado" 
+                                               resetFilterOnHide="true">
+                                </p-multiSelect>
                             </div>
 
                             <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="tipoUsuario == constantes.GESTOR || tipoUsuario == constantes.VENDEDOR_UNIS">
                                 <label>Parceiro</label>
-                                <p-dropdown formControlName="parceiro" [options]="cboParceiros"
-                                    [(ngModel)]="filtro.Parceiro" (onChange)="cboParceiro_onChange($event)"
-                                    [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione">
-                                </p-dropdown>
+                                <p-multiSelect [options]="cboParceiros" [(ngModel)]="filtro.Parceiro" formControlName="parceiro" 
+                                               defaultLabel="Selecione" optionValue="Value" optionLabel="Value"
+                                               emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado" 
+                                               resetFilterOnHide="true">
+                                </p-multiSelect>
                             </div>
                             <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="parametro != 'PEDIDOS' && tipoUsuario != constantes.PARCEIRO_VENDEDOR">
                                 <label for="filtroLoja">Vendedor do Parceiro</label>
-                                <p-dropdown formControlName="vendedorParceiro" [options]="cboVendedoresParceiros"
-                                    [(ngModel)]="filtro.VendedorParceiro" [showClear]="true" optionValue="Id"
-                                    (onChange)="cboVendedoresParceiro_onChange($event)" optionLabel="Value"
-                                    placeholder="Selecione">
-                                </p-dropdown>
+                                <p-multiSelect [options]="cboVendedoresParceiros" [(ngModel)]="filtro.VendedorParceiro" 
+                                               formControlName="vendedorParceiro"  defaultLabel="Selecione" 
+                                               optionValue="Id" optionLabel="Value" emptyMessage="Nenhum item encontrado" 
+                                               emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true">
+                                </p-multiSelect>
                             </div>
                             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end"
                                 *ngIf="parametro == 'ORCAMENTOS'">
                                 <label for="filtroLoja">Mensagem Pendente</label>
                                 <p-dropdown formControlName="msgPendente" [options]="cboMensagens"
-                                    [(ngModel)]="filtro.Mensagem" (onChange)='cbMensagens_onChange($event)'
+                                    [(ngModel)]="filtro.Mensagem"
                                     [showClear]="true" optionValue="Value" optionLabel="Value" placeholder="Selecione">
                                 </p-dropdown>
                             </div>
@@ -71,32 +66,40 @@
                                         <label for="dataInicio">Início da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
                                             [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true"
-                                            (onBlur)="dtInicioExpiracao_onBlur()"
-                                            (onSelect)="dtInicioExpiracao_onBlur()" [minDate]="minExpiracao"
-                                            [maxDate]="maxEpiracao">
+                                            [minDate]="minExpiracao" [maxDate]="maxEpiracao">
                                         </p-calendar>
                                     </div>
                                     <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6" *ngIf="parametro == 'ORCAMENTOS'">
                                         <label for="dataFinal">Fim da expiração</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtFimExpiracao"
                                             [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true"
-                                            (onBlur)="dtFimExpiracao_onBlur()" (onSelect)="dtFimExpiracao_onBlur()"
-                                            [minDate]="minExpiracao" [maxDate]="maxEpiracao"></p-calendar>
+                                            [minDate]="minExpiracao" [maxDate]="maxEpiracao">
+                                        </p-calendar>
                                     </div>
                                     <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
                                         <label for="dataInicio">Início da criação</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
                                             [(ngModel)]="filtro.DtInicio" [showIcon]="true"
-                                            (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate"
-                                            (onSelect)="dtInicio_onSelect();">
+                                             [minDate]="minDate" [maxDate]="maxDate">
                                         </p-calendar>
                                     </div>
                                     <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
                                         <label for="dataFinal">Fim da criação</label>
                                         <p-calendar dateFormat="dd/mm/yy" formControlName="dtFim"
-                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
-                                            [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
+                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" 
+                                            [minDate]="minDate" [maxDate]="maxDate" >
                                         </p-calendar>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="p-col-12">
+                                <div class="p-grid">
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6"></div>
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6"></div>
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6"></div>
+                                    <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                        <button pButton type="button" label="Pesquisar" icon="pi pi-search" (click)="buscarRegistros()"></button>
                                     </div>
                                 </div>
                             </div>
@@ -104,65 +107,19 @@
                             <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex">
                                 <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-lg-7 p-md-7 p-px-0 p-sm-12"
                                     *ngIf="parametro == 'ORCAMENTOS'">
-                                    
-                                    <!-- <div class="p-as-end p-field p-lg-3 p-col-6 p-pr-sm-0">
-                                        <label for="dataInicio">Início da expiração</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicioExpiracao"
-                                            [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true"
-                                            (onBlur)="dtInicioExpiracao_onBlur()"
-                                            (onSelect)="dtInicioExpiracao_onBlur()" [minDate]="minExpiracao"
-                                            [maxDate]="maxEpiracao">
-                                        </p-calendar>
-                                    </div>
-                                    <div class="p-as-end p-field p-lg-3 p-col-6 p-pr-sm-0">
-                                        <label for="dataFinal">Fim da expiração</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFimExpiracao"
-                                            [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true"
-                                            (onBlur)="dtFimExpiracao_onBlur()" (onSelect)="dtFimExpiracao_onBlur()"
-                                            [minDate]="minExpiracao" [maxDate]="maxEpiracao"></p-calendar>
-                                    </div>
-                                    <div class="p-as-end p-col-6 p-field p-lg-3">
-                                        <label for="dataInicio">Início da criação</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
-                                            [(ngModel)]="filtro.DtInicio" [showIcon]="true"
-                                            (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate"
-                                            (onSelect)="dtInicio_onSelect();">
-                                        </p-calendar>
-                                    </div>
-                                    <div class="p-as-end p-col-6 p-field p-lg-3 p-pr-0">
-                                        <label for="dataFinal">Fim da criação</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFim"
-                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
-                                            [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
-                                        </p-calendar>
-                                    </div> -->
                                 </div>
-                                <!-- <div class="p-d-inline-flex p-lg-5 p-md-5 p-px-0"> -->
-                                    <!-- <div class="p-as-end p-col-6 p-field p-lg-6">
-                                        <label for="dataInicio">Início da criação</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtInicio"
-                                            [(ngModel)]="filtro.DtInicio" [showIcon]="true"
-                                            (onBlur)="dtInicio_onBlur($event)" [minDate]="minDate" [maxDate]="maxDate"
-                                            (onSelect)="dtInicio_onSelect();">
-                                        </p-calendar>
-                                    </div>
-                                    <div class="p-as-end p-col-6 p-field p-lg-6 p-pr-0">
-                                        <label for="dataFinal">Fim da criação</label>
-                                        <p-calendar dateFormat="dd/mm/yy" formControlName="dtFim"
-                                            [(ngModel)]="filtro.DtFim" [showIcon]="true" (onBlur)="dtFim_onBlur($event)"
-                                            [minDate]="minDate" [maxDate]="maxDate" (onSelect)="dtFim_onSelect();">
-                                        </p-calendar>
-                                    </div> -->
-                                <!-- </div> -->
                             </div>
                         </div>
                     </div>
                 </div>
-                <p-table #dt1 id="dt1" [columns]="cols" [value]="lstDtoFiltrada" [responsive]="true"
+                <p-table #dt1 id="dt1" [value]="lstDtoFiltrada" [columns]="cols"  [responsive]="true" [customSort]="true"
                     responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
-                    styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true"
-                    [filterDelay]="0"
-                    [globalFilterFields]="['NumeroOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']">
+                    styleClass="p-datatable-customers p-datatable-striped" [rows]="qtdePorPaginaInicial" 
+                    [paginator]="true" [showCurrentPageReport]="mostrarQtdePorPagina" [rowsPerPageOptions]="[5,10,20]" 
+                    [totalRecords]="qtdeRegistros"
+                    currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}" [lazy]="true" 
+                    (onLazyLoad)="MudarPaginacao($event)">
+                    <!-- [globalFilterFields]="['NumeroOrcamento','NumPedido','Cliente_Obra','Status', 'Valor']" -->
                     <ng-template pTemplate="caption">
                         <div class="p-d-flex p-jc-end">
                             <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
@@ -174,18 +131,27 @@
                     </ng-template>
                     <ng-template pTemplate="header" let-columns>
                         <tr>
-                            <th pSortableColumn="{{col.field}}" *ngFor="let col of columns" class="p-text-center p-py-1"
+                            <th pSortableColumn="{{col.field}}" 
+                                *ngFor="let col of columns" 
+                                class="p-text-center p-py-1 p-px-2 p-lg-2 p-md-1 p-sm-2 p-text-nowrap"
                                 [ngStyle]="{'display': col.visible}">
+                                <!-- (click)="ordenar(col.field)" -->
+                                
                                 <div class="p-text-center" *ngIf="parametro == 'ORCAMENTOS'">
-                                    {{
+                                    <!-- {{
                                     col.header == 'Cliente'? 'Cliente/Obra':
                                     col.header
-                                    }}
+                                    }}  -->
+
+                                    {{ col.header == 'Cliente'? 'Cliente/Obra': col.header }} 
+                                    <p-sortIcon [field]="col.field"></p-sortIcon>
                                 </div>
+                                
                                 <div style="text-align: center;" *ngIf="parametro != 'ORCAMENTOS'">
                                     {{col.header}}
                                 </div>
                             </th>
+
                             <th *ngIf="parametro == 'PENDENTES'">
                                 &nbsp;
                             </th>
@@ -193,13 +159,14 @@
                     </ng-template>
                     <ng-template pTemplate="body" let-rowData let-columns="columns">
                         <tr class="p-selectable-row" [pSelectableRow]="rowData">
-                            <td *ngFor="let col of columns" class="p-py-2" [ngStyle]="{'display': col.visible}"
-                                style="text-align: center;">
+                            <td *ngFor="let col of columns" class="p-py-2" [ngStyle]="{'display': col.visible}" style="text-align: center;">
+
                                 <span *ngIf="col.field == 'NumeroOrcamento' && rowData['NumeroOrcamento']!='-'"
                                     (click)="orcamento_OnClick(rowData['NumeroOrcamento'])"
                                     style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{ rowData[col.field] }}
                                 </span>
+
                                 <span *ngIf="col.field != 'NumeroOrcamento' && col.field != 'NumPedido'">
                                     {{
                                     col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
@@ -209,29 +176,31 @@
                                     }}
                                 </span>
                                 
-                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']=='0' && rowData['Cliente_Obra']"  (click)="prepedido_OnClick(rowData['NumPedido'])"
-                                style="cursor:pointer; color:blue;text-decoration:underline">
+                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']=='0' && rowData['Cliente_Obra']" 
+                                (click)="prepedido_OnClick(rowData['NumPedido'])" style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{
                                     col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
                                     col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                     col.field == 'DtExpiracao'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                     rowData[col.field]
                                     }}
-                                </span>       
-                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']!='0' && rowData['Cliente_Obra']"  (click)="pedido_OnClick(rowData['NumPedido'])"
-                                style="cursor:pointer; color:blue;text-decoration:underline">
+                                </span>
+
+                                <span *ngIf="col.field == 'NumPedido' && rowData['St_Orc_Virou_Pedido']!='0' && rowData['Cliente_Obra']" 
+                                (click)="pedido_OnClick(rowData['NumPedido'])" style="cursor:pointer; color:blue;text-decoration:underline">
                                     {{
                                     col.field == 'Valor'? moedaUtils.formatarMoedaComPrefixo(rowData[col.field]):
                                     col.field == 'DtCadastro'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                     col.field == 'DtExpiracao'? dataUtils.formata_data_DDMMYYY(rowData[col.field]):
                                     rowData[col.field]
                                     }}
-                                </span>                                                            
+                                </span>
+
                             </td>
                                                         
                             <td *ngIf="parametro == 'PENDENTES'">
-                                <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0' && rowData['Status'] != 'Cancelado' " style="color: red;"
-                                    (click)="btnDelete_onClick(rowData['NumPedido'])"></i>
+                                <i class="pi pi-trash" *ngIf="rowData['St_Orc_Virou_Pedido']=='0' && rowData['Status'] != 'Cancelado' " 
+                                style="color: red;" (click)="btnDelete_onClick(rowData['NumPedido'])"></i>
                             </td>
                         </tr>
                     </ng-template>

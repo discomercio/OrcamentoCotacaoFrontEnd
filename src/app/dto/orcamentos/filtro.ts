@@ -12,4 +12,9 @@ export class Filtro {
     DtFim: Date;
     DtInicioExpiracao:Date;
     DtFimExpiracao:Date;
+
+    pagina: number;
+    qtdeItensPagina: number;
+    nomeColunaOrdenacao: string;
+    ordenacaoAscendente: boolean;
 }

@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 import { ListaDto } from 'src/app/dto/orcamentos/lista-dto';
+import { OrcamentoCotacaoListaResponse } from 'src/app/dto/orcamentos/lista-dto';
 import { ValidadeOrcamento } from '../../dto/config-orcamento/validade-orcamento';
 import { ClienteOrcamentoCotacaoDto } from 'src/app/dto/clientes/cliente-orcamento-cotacao-dto';
 import { RemetenteDestinatarioResponse } from '../mensageria/remetenteDestinatarioResponse';
@@ -27,8 +28,8 @@ export class OrcamentosService {
     private http: HttpClient, 
     private appSettingsService: AppSettingsService) { }
 
-  buscarRegistros(filtro: any): Observable<ListaDto[]> {
-    return this.http.post<ListaDto[]>(`${this.appSettingsService.config.apiUrl}Orcamento/porfiltro`, filtro);
+  buscarRegistros(filtro: any): Observable<OrcamentoCotacaoListaResponse> {
+    return this.http.post<OrcamentoCotacaoListaResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/porfiltro`, filtro);
   }
 
   buscarStatus(origem: string): Observable<any> {
@@ -91,7 +92,7 @@ export class OrcamentosService {
     //aqui podemos incluir a chamada com token
   }
 
-  consultaGerencial(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse>{
+  consultaGerencial(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse> {
     return this.http.post<ListaConsultaGerencialOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/consultaGerencial`, filtro);
   }
 
