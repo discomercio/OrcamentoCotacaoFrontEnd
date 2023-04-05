@@ -748,21 +748,25 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       return;
     }
 
+    this.carregandoProds = true;
     this.desabilitarEnvio = true;
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);
         this.desabilitarEnvio = false;
+        this.carregandoProds = false;
         return;
       }
 
       this.sweetalertService.sucesso("Orçamento salvo!");
       this.novoOrcamentoService.criarNovo();
       this.novoOrcamentoService.descontoGeral = 0;
+      this.carregandoProds = false;
       this.router.navigate(["orcamentos/listar/orcamentos"]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.desabilitarEnvio = false;
+      this.carregandoProds = false;
     });
   }
 
