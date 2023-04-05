@@ -14,6 +14,9 @@ import { mergeMap } from 'rxjs/operators';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { ParcSemEntradaPrimPrestDto } from 'src/app/dto/forma-pagto/ParcSemEntradaPrimPrestDto';
 import { Alert } from 'selenium-webdriver';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { MatGridTileHeaderCssMatStyler } from '@angular/material';
+import { OrcamentistaIndicadorVendedorDeleteRequest } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-request';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -26,18 +29,19 @@ export class UsuarioListaComponent implements OnInit {
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly route: ActivatedRoute,
-    private readonly router: Router) { }
+    private readonly router: Router,
+    private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild('dataTable') table: Table;
-  usuarios: OrcamentistaIndicadorVendedorDto[] = new Array<OrcamentistaIndicadorVendedorDto>();
-  usuarioSelecionado: OrcamentistaIndicadorVendedorDto;
-  public form: FormGroup;
+  usuarios: Array<OrcamentistaIndicadorVendedorDto> = new Array<OrcamentistaIndicadorVendedorDto>();
+  usuariosApoio: Array<OrcamentistaIndicadorVendedorDto> = new Array<OrcamentistaIndicadorVendedorDto>();
   cols: any[];
   perfil: SelectItem;
   carregando: boolean = false;
   tipo: UsuarioTipo = 'todos';
   permite: boolean = false;
+  pesquisa: string;
+  first: number = 0;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
@@ -47,61 +51,128 @@ export class UsuarioListaComponent implements OnInit {
     }
 
     this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
+    this.criarColunas();
+    this.buscarUsuarios();
+  }
 
-    this.route.queryParamMap.pipe(
-      mergeMap((params) => {
-
-        this.tipo = params.get('tipo') as UsuarioTipo || 'todos';
-
-        if (this.autenticacaoService._tipoUsuario != 1) {
-          return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorParceiroELoja(this.autenticacaoService._parceiro, this.autenticacaoService._lojaLogado)
-        } else {
-          if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)){
-            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorloja(this.autenticacaoService._lojaLogado)
-          }else{
-            
-            return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorVendedorELoja(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado)
+  buscarUsuarios() {
+    if (this.autenticacaoService._tipoUsuario != 1) {
+      this.orcamentistaIndicadorVendedorService
+        .buscarVendedoresParceirosPorParceiroELoja(this.autenticacaoService._parceiro, this.autenticacaoService._lojaLogado)
+        .toPromise()
+        .then((r) => {
+          if (r == null) {
+            this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
+            return;
           }
-          
-        }
-
-      })
-    ).subscribe(r => {
-      if (r == null) {
-        this.alertaService.mostrarErroInternet('Nenhum usuário encontrado');
-        return;
+          this.usuarios = this.montarStringBusca(r);
+        }).catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
+        });
+    }
+    else {
+      if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+        this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorloja(this.autenticacaoService._lojaLogado)
+          .toPromise()
+          .then((r) => {
+            if (r == null) {
+              this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
+              return;
+            }
+            this.usuarios = this.montarStringBusca(r);
+          }).catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+          });
       }
-      this.usuarios = r;
-    },
-      (error) => {
-        this.alertaService.mostrarErroInternet(error);
-      });
+      else {
+        this.orcamentistaIndicadorVendedorService
+          .buscarVendedoresParceirosPorVendedorELoja(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado)
+          .toPromise()
+          .then((r) => {
+            if (r == null) {
+              this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
+              return;
+            }
+            this.usuarios = this.montarStringBusca(r);
+          }).catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+          });
+      }
+    }
+  }
 
-    this.form = this.fb.group({
-      usuario: ['', [Validators.required]],
-      apelido: ['', [Validators.required]],
-      perfil: ['', [Validators.required]]
-    });
+  criarColunas() {
     this.cols = [
       { field: 'parceiro', header: 'Parceiro' },
       { field: 'nome', header: 'Nome' },
       { field: 'email', header: 'E-mail', width: '300px' },
       { field: 'vendedorResponsavel', header: 'Responsável' },
-      { field: 'ativoLabel', header: 'Ativo', width: '60px' },
-      //   { field: 'Responsavel', header: 'Responsável' },
-      //   { field: 'Papel', header: 'Papel' },
-      //   { field: 'Nome', header: 'Nome' },
-      //   { field: 'Apelido', header: 'Apelido' },
-      //   { field: 'Ativo', header: 'Ativo' }
+      { field: 'ativoLabel', header: 'Ativo', width: '60px' }
     ];
   }
 
-  editarUsuario() {
-    if (!!this.usuarioSelecionado) {
-      this.router.navigate(['/usuarios/usuario-edicao', this.usuarioSelecionado.id]);
+  montarStringBusca(lista: Array<OrcamentistaIndicadorVendedorDto>): Array<OrcamentistaIndicadorVendedorDto> {
+    lista.forEach(x => {
+      x.stringBusca = `|${x.parceiro.toLocaleLowerCase()}|` +
+        `${x.nome.toLocaleLowerCase()}|` +
+        `${x.email.toLocaleLowerCase()}|` +
+        `${x.vendedorResponsavel.toLocaleLowerCase()}|` +
+        `${x.ativoLabel.toLocaleLowerCase()}|`;
+    });
+
+    this.usuariosApoio = lista;
+    return lista;
+  }
+
+  pesquisar() {
+
+    if (this.pesquisa && this.pesquisa.length > 3) {
+      this.usuarios = new Array<OrcamentistaIndicadorVendedorDto>();
+      this.usuariosApoio.forEach(x => {
+        if (x.stringBusca.indexOf(this.pesquisa) > -1) {
+          this.usuarios.push(x);
+        }
+      });
+      this.first = 0;
+      return;
+    }
+
+    this.usuarios = this.usuariosApoio;
+    this.first = 0;
+  }
+
+  editarUsuario(orcamentista: OrcamentistaIndicadorVendedorDto) {
+    if (!!orcamentista) {
+      this.router.navigate(['/usuarios/usuario-edicao', orcamentista.id]);
     }
     else {
       this.router.navigate(['/usuarios/usuario-edicao', 'novo', { tipo: this.tipo }],);
     }
+  }
+
+  excluirClick(orcamentista: OrcamentistaIndicadorVendedorDto) {
+    this.sweetAlertService.dialogo("", "Deseja excluir permanentemente este cadastro de usuário?").subscribe((r)=>{
+      if(!r){
+        return;
+      }
+
+      let request = new OrcamentistaIndicadorVendedorDeleteRequest();
+      request.idIndicadorVendedor = orcamentista.id;
+      this.orcamentistaIndicadorVendedorService.excluir(request).toPromise().then((r)=>{
+        if(!r.Sucesso){
+          this.sweetAlertService.aviso(r.Mensagem);
+          return;
+        }
+
+        this.sweetAlertService.sucesso("Usuário exlcuído com sucesso!");
+        this.first = 0;
+        this.pesquisa = undefined;
+        this.ngOnInit();
+      }).catch((e)=>{
+        this.alertaService.mostrarErroInternet(e);
+      })
+    })
+
+      
   }
 }
