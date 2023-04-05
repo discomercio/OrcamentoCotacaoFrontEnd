@@ -29,7 +29,7 @@
                 </div>
             </div>
             <p-table #dt1 [value]="listaProdutoDto" [responsive]="true" responsiveLayout="stack"
-                [ngClass]="{'carregando': carregando}" breakpoint="680px"
+                [ngClass]="{'carregando': carregando}" breakpoint="680px" [(first)]="first"
                 styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0">
                 <ng-template pTemplate="header">
                     <tr class="font-size">
