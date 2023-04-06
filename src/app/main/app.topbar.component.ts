@@ -12,6 +12,7 @@ import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import { Title } from "@angular/platform-browser";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-topbar',
@@ -108,7 +109,12 @@ export class AppTopBarComponent {
     });
 
     if (usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)) {
-      this.meuDados = true;
+      
+      
+      if (environment.production){
+        this.meuDados = true;
+      }
+      
     }
   }
 
