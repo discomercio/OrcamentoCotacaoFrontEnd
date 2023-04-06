@@ -61,6 +61,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   _lojaEstilo: lojaEstilo = new lojaEstilo();
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
+  esconderBotaoAprovacao:boolean = false;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
@@ -156,6 +157,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.orcamento.statusDescricao = "Expirado";
           }
 
+          if(this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual){
+            this.esconderBotaoAprovacao = true;
+          }
+
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
             if (!!r) {
               this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;
@@ -169,7 +174,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
             if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
               this.desabiltarBotoes = true;
-              this.mensagemComponente.permiteEnviarMensagem = false;
+              // this.mensagemComponente.permiteEnviarMensagem = false;
             }
 
 
