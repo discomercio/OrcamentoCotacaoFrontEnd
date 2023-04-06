@@ -13,19 +13,23 @@
                 *ngIf="produtoDados != undefined">
                 <div class="p-text-bold">Fabricante:</div>
                 <div class="p-field p-col-12">
-                    <span>{{produtoDados[0].fabricante}} - {{produtoDados[0].fabricanteNome}}</span>
+                    <!-- <span>{{produtoDados[0].fabricante}} - {{produtoDados[0].fabricanteNome}}</span> -->
+                    <span>
+                        {{ produtoDados.length > 0 ? produtoDados[0].fabricante + ' - ' : '' }}
+                        {{ produtoDados.length > 0 ? produtoDados[0].fabricanteNome : ''}}
+                    </span>
                 </div>
                 <div class="p-text-bold">Código:<br></div>
                 <div class="p-field p-col-12">
-                    <span>{{produtoDados[0].produto}}</span>
+                    <span>{{ produtoDados.length > 0 ? produtoDados[0].produto : '' }}</span>
                 </div>
                 <div class="p-text-bold">Descrição:</div>
                 <div class="p-field p-col-12">
-                    <span>{{produtoDados[0].descricao}}</span>
+                    <span>{{ produtoDados.length > 0 ? produtoDados[0].descricao : '' }}</span>
                 </div>
                 <div class="p-text-bold">Descrição Completa:</div>
                 <div class="p-field p-col-12">
-                    <span [innerHTML]="produtoDados[0].descricaoCompleta"></span>
+                    <span [innerHTML]=" produtoDados.length > 0 ? produtoDados[0].descricaoCompleta : '' "></span>
                 </div>
 
             </div>
