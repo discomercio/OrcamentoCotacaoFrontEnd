@@ -1,19 +1,3 @@
-// import { Component, OnInit, ViewChild } from '@angular/core';
-// import { FormBuilder, FormGroup } from '@angular/forms';
-// import { Router } from '@angular/router';
-// import { Table } from 'primeng/table';
-// import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-// import { ProdutoAtivoDto } from 'src/app/dto/produtos-catalogo/ProdutoAtivoDto';
-// import { ProdutoCatalogo } from 'src/app/dto/produtos-catalogo/ProdutoCatalogo';
-// import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
-// import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
-// import { DropDownItem } from '../../orcamentos/models/DropDownItem';
-// import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
-// import { ePermissao } from 'src/app/utilities/enums/ePermissao';
-// import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
-// import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
-// import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
-
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';

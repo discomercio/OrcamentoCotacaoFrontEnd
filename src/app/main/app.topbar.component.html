@@ -151,6 +151,8 @@
                         </li>
                     </ul>
                 </li> -->
+                
+                <span style="vertical-align: middle;color:white">Olá, {{nomeUsuario}}</span>
                 <li #notifications [ngClass]="{'active-top-menu':appMain.activeTopbarItem === notifications}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
                         <i class="topbar-icon pi pi-fw pi-bell"></i>

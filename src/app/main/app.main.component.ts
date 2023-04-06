@@ -1,13 +1,19 @@
-import {Component, Renderer2} from '@angular/core';
+import { Component, Renderer2 } from '@angular/core';
 import { MenuService } from './app.menu.service';
 import { PrimeNGConfig } from 'primeng/api';
-import {AppComponent} from './app.component';
+import { AppComponent } from './app.component';
+import { SistemaService } from 'src/app/service/Sistema/sistema.service';
+import { environment } from 'src/environments/environment';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 
 @Component({
     selector: 'app-main',
     templateUrl: './app.main.component.html',
+    styleUrls: ['./app.main.component.scss']
 })
 export class AppMainComponent {
+
+
     rotateMenuButton: boolean;
 
     topbarMenuActive: boolean;
@@ -31,10 +37,19 @@ export class AppMainComponent {
     configActive: boolean;
 
     configClick: boolean;
-    carregando:boolean;
+    carregando: boolean;
+
+    public versaoFront: string;
+    public versaoApi: string;
 
     constructor(public renderer: Renderer2, private menuService: MenuService,
-                private primengConfig: PrimeNGConfig, public app: AppComponent) {}
+        private primengConfig: PrimeNGConfig, public app: AppComponent,
+        public readonly sistemaService: SistemaService,
+        private readonly alertaService: AlertaService
+    ) {
+
+        this.buscarVersao();
+    }
 
     onLayoutClick() {
         if (!this.topbarItemClick) {
@@ -61,6 +76,19 @@ export class AppMainComponent {
         this.configClick = false;
         this.topbarItemClick = false;
         this.menuClick = false;
+
+        this.buscarVersao();
+    }
+
+    buscarVersao() {
+        this.versaoFront = environment.version;
+        this.sistemaService.retornarVersao().toPromise().then((r) => {
+            if (r != null) {
+                this.versaoApi = r.versao;
+            }
+        }).catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+        });
     }
 
     onMenuButtonClick(event) {
@@ -72,8 +100,10 @@ export class AppMainComponent {
             this.overlayMenuActive = !this.overlayMenuActive;
         } else {
             if (this.isDesktop()) {
-                this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive; } else {
-                this.staticMenuMobileActive = !this.staticMenuMobileActive; }
+                this.staticMenuDesktopInactive = !this.staticMenuDesktopInactive;
+            } else {
+                this.staticMenuMobileActive = !this.staticMenuMobileActive;
+            }
         }
 
         event.preventDefault();
@@ -96,8 +126,10 @@ export class AppMainComponent {
         this.topbarItemClick = true;
 
         if (this.activeTopbarItem === item) {
-            this.activeTopbarItem = null; } else {
-            this.activeTopbarItem = item; }
+            this.activeTopbarItem = null;
+        } else {
+            this.activeTopbarItem = item;
+        }
 
         event.preventDefault();
     }
