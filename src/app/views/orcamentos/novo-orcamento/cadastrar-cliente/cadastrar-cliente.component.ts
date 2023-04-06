@@ -423,7 +423,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       Validade: [null, [Validators.required]],//A validade está estipulada em um valor fixo de 7 dias corridos
       ObservacoesGerais: [this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais],
       Nome: [clienteOrcamentoCotacao.nomeCliente, [Validators.required, Validators.maxLength(60)]],
-      NomeObra: [clienteOrcamentoCotacao.nomeObra],
+      NomeObra: [clienteOrcamentoCotacao.nomeObra, [Validators.maxLength(120)]],
       Vendedor: [this.novoOrcamentoService.orcamentoCotacaoDto.vendedor, [Validators.required]],
       Email: [clienteOrcamentoCotacao.email, [Validators.required, Validators.pattern("^[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,4}$"), Validators.maxLength(60)]],
       Parceiro: [this.novoOrcamentoService.orcamentoCotacaoDto.parceiro],
