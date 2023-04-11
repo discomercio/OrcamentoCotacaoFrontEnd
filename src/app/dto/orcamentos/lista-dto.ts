@@ -1,3 +1,10 @@
+export class OrcamentoCotacaoListaResponse{
+    orcamentoCotacaoListaDto: Array<ListaDto>;
+    qtdeRegistros:number;
+    Sucesso:boolean;
+    Mensagem:string;
+}
+
 export class ListaDto {
     linhaBusca: string;
     NumeroOrcamento: string;
