@@ -23,6 +23,10 @@ export class OrcamentistaIndicadorVendedorService {
     .pipe(map(res=>OrcamentistaIndicadorVendedorDto.arrayJSONtoConcret(res)));
   }
 
+  buscarVendedoresParceirosPorParceiros(parceiros :string[]): Observable<OrcamentistaIndicadorVendedorDto[]> {
+    return this.http.post<OrcamentistaIndicadorVendedorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/vendedores-parceiros-por-parceiros', parceiros);
+  }
+
   buscarVendedoresParceirosPorParceiroELoja(usuario:string, loja: string): Observable<OrcamentistaIndicadorVendedorDto[]> {
     let params = new HttpParams();
     params = params.append('apelido', usuario);
