@@ -11,8 +11,8 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { DropDownItem } from '../../models/DropDownItem';
-import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
-import { arrayToHash } from '@fullcalendar/core/util/object';
+//import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
+//import { arrayToHash } from '@fullcalendar/core/util/object';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { GrupoSubgrupoProdutoRequest } from 'src/app/dto/produtos/grupo-subgrupo-produto-request';
@@ -67,8 +67,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.montarCiclos();
     this.montarCapacidades();
     this.transferirDados();
-
-    this.prodsTela = this.prodsArray;
+    
+    this.prodsTela = this.prodsArray.filter(f => f.visivel == false);
     this.novoOrcamentoService.pageItens = this.telaDesktop ? 3 : 6;
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
@@ -187,7 +187,6 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     let lstFabr = new Array<ProdutoTela>();
     lstFabr = this.filtrarPorFabricante(lstParaFiltro);
     let lstCat = new Array<ProdutoTela>();
-    debugger;
     lstCat = this.filtrarPorCategorias(lstFabr);
     let lstCic = new Array<ProdutoTela>();
     lstCic = this.filtrarPorCiclo(lstCat);

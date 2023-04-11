@@ -1,118 +1,102 @@
 <div class="p-grid" [ngClass]="{'carregando': carregando}">
     <div class="p-col-12 p-pb-0">
         <div class="card itens">
-            <form [formGroup]="form">
-
             <h4>Consulta de Catálogo de Produtos</h4>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
-                <div class="p-col-12">
-                    <div class="p-grid">
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Incluir na calculadora VRF</label>
-                            <p-dropdown formControlName="CalculadoraVRF" [options]="cboCalculadoraVRF" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado"
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Tipo da Unidade</label>
-                            <p-dropdown formControlName="TipoUnidade" [options]="cboTipoUnidade" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado" 
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Descarga Condensadora</label>
-                            <p-dropdown formControlName="DescargaCondensadora" [options]="cboDescargaCondensadora" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado" 
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Voltagem</label>
-                            <p-dropdown formControlName="Voltagem" [options]="cboVoltagem" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado"
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                    </div>
 
-                    <div class="p-grid">
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Capacidade (BTU/h)</label>
-                            <p-dropdown formControlName="CapacidadeBTU" [options]="cboCapacidadeBTU" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado"
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Ciclo</label>
-                            <p-dropdown formControlName="Ciclo" [options]="cboCiclo" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado"
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                        <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3 p-as-end">
-                            <label for="filtro">Linha de Produto</label>
-                            <p-dropdown formControlName="LinhaProduto" [options]="cboLinhaProduto" placeholder="Selecione"
-                                emptyFilterMessage="Nenhum item encontrado"
-                                optionValue="Id" optionLabel="Value" [showClear]="true"
-                                emptyFilterMessage="Nenhum item encontrado" (onChange)="FiltrarRegistros()"
-                                >
-                            </p-dropdown>
-                        </div>
-                    </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
 
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Fabricante</label>
+                        <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione"
+                            optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
+                            emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true">
+                        </p-multiSelect>
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Código Alfanumérico do Fabricante</label>
+                    <input pInputText type="text" class="p-lg-2" placeholder="Código Alfanumérico do Fabricante"
+                        [(ngModel)]="codAlfaNumFabricanteSelecionado">
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Descarga condensadora</label>
+                    <p-dropdown [options]="descargacondensadoras" [(ngModel)]="descargaCondensadoraSelecionado"
+                        [showClear]="true" optionValue="Id" optionLabel="Value" placeholder="Selecione"
+                        emptyMessage="Nenhum item encontrado">
+                    </p-dropdown>
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Voltagem</label>
+                    <p-multiSelect [options]="voltagens" [(ngModel)]="voltagemSelecionadas" defaultLabel="Selecione"
+                        optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
+                        emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true">
+                    </p-multiSelect>
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Capacidade</label>
+                    <p-multiSelect [options]="capacidades" [(ngModel)]="capacidadeSelecionadas" defaultLabel="Selecione"
+                        optionLabel="Value" optionValue="Id"  emptyMessage="Nenhum item encontrado"
+                        emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true">
+                    </p-multiSelect>
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Ciclo</label>
+                    <p-dropdown [options]="ciclos" [(ngModel)]="cicloSelecionado"
+                        [showClear]="true" optionValue="Id" optionLabel="Value" placeholder="Selecione"
+                        emptyMessage="Nenhum item encontrado">
+                    </p-dropdown>
+                </div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <label>Tipo de unidade</label>
+                    <p-multiSelect [options]="tipounidades" [(ngModel)]="tipoUnidadeSelecionado" defaultLabel="Selecione"
+                        optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
+                        emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true">
+                    </p-multiSelect>
+                </div>
+
+            </div>
+
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6"></div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6"></div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6"></div>
+                <div class="p-col-12 p-field p-lg-3 p-md-3 p-sm-6">
+                    <button pButton type="button" label="Pesquisar" icon="pi pi-search" (click)="buscarTodosProdutos()"></button>
                 </div>
             </div>
 
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-                <p-table #dt1 [value]="registrosFiltrados" [responsive]="true" responsiveLayout="stack"
+                <p-table #dt1 [value]="produtoCatalogResponse" [responsive]="true" responsiveLayout="stack"
                     [ngClass]="{'carregando': carregando}" styleClass="p-datatable-customers p-datatable-striped"
                     [rows]="10" [paginator]="true" [filterDelay]="0">
                     <ng-template pTemplate="header">
                         <tr class="font-size">
-                            <th class="p-text-center p-lg-1 p-py-0">Produto</th>
+                            <th class="p-text-center p-lg-1 p-py-0">Código</th>
                             <th class="p-text-left p-py-0">Fabricante</th>
-                            <th class="p-text-left p-lg-3 p-py-0">Descrição</th>
-                            <th class="p-text-left p-py-0">Linha de Produto</th>
-                            <th class="p-text-center p-py-0">Tipo da Unidade</th>
-                            <th class="p-text-center p-py-0">Voltagem (v)</th>
-                            <th class="p-text-center p-py-0">Capacidade (BTU/h)</th>
+                            <th class="p-text-left p-py-0">Cód. alfanum. do fabricante</th>
+                            <th class="p-text-left p-lg-3 p-py-0">Descrição completa</th>
+                            <th class="p-text-center p-py-0">Capacidade</th>
+                            <th class="p-text-center p-py-0">Ciclo</th>
+                            <th class="p-text-center p-py-0">Tipo de unidade</th>
                             <th class="p-text-center p-py-0">Visualizar</th>
                         </tr>
                     </ng-template>
                     <ng-template pTemplate="body" let-lista>
                         <tr class="p-selectable-row">
-                            <td class="p-py-2 p-text-center">{{lista.produto}}</td>
-                            <td class="p-py-2 p-text-left">{{lista.fabricante}}</td>
-                            <td class="p-py-2 p-text-left">{{lista.descricao}}</td>
-                            <td class="p-py-2 p-text-left">{{lista.linhaProduto}}</td>
-                            <td class="p-py-2 p-text-center">{{lista.tipoUnidade}}</td>
-                            <td class="p-py-2 p-text-center">{{lista.voltagem}}</td>
-                            <td class="p-py-2 p-text-center">{{lista.capacidadeBTU}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.Codigo}}</td>
+                            <td class="p-py-2 p-text-left">{{lista.Fabricante}}</td>
+                            <td class="p-py-2 p-text-left">{{lista.CodAlfanumericoFabricante}}</td>
+                            <td style="text-align: left"><span innerHtml="{{lista.DescricaoCompleta}}"></span></td>
+                            <td class="p-py-2 p-text-center">{{lista.Capacidade}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.Ciclo}}</td>
+                            <td class="p-py-2 p-text-center">{{lista.TipoUnidade}}</td> 
                             <td class="p-py-2 p-text-center">
                                 <button pButton style="align-content: flex-end;" icon="fa fa-eye" 
-                                    (click)="visualizarClick(lista.id)" pTooltip="Visualizar"></button>
+                                    (click)="visualizarClick(lista.Id)" pTooltip="Visualizar"></button>
                             </td>
                         </tr>
                     </ng-template>
                 </p-table>
             </div>
-
-            </form>
         </div>
     </div>
 </div>

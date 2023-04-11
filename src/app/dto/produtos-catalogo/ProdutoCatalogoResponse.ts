@@ -1,0 +1,20 @@
+export class ProdutoCatalogoResponse{
+    Id:string;
+    Codigo:string;
+    CodigoFabricante:string;
+    Fabricante:string;
+    CodAlfanumericoFabricante:string;
+    DescricaoCompleta:string;
+    IdCapacidade:string;
+    Capacidade:string;
+    IdCiclo:string;
+    Ciclo:string;
+    IdTipoUnidade:string;
+    TipoUnidade:string;
+    IdDescargaCondensadora:string;
+    DescargaCondensadora:string;
+    IdVoltagem:string;
+    Voltagem:string;
+    Imagem:boolean;
+    Ativo:boolean;
+}

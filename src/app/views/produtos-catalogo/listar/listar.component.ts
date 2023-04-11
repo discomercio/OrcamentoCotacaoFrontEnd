@@ -10,6 +10,10 @@ import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { DropDownItem } from 'src/app/views/orcamentos/models/DropDownItem';
+import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
+import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
+import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
 
 @Component({
   selector: 'app-listar-produtos',
@@ -29,14 +33,29 @@ export class ProdutosCatalogoListarComponent implements OnInit {
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
-  listaProdutoDto: ProdutoCatalogo[];
-  listaProdutoDtoApoio: ProdutoCatalogo[];
+
+  produtoCatalogResponse: ProdutoCatalogoResponse[];
   cols: any[];
   carregando: boolean = false;
-  produtoFiltro: string;
-  fabricanteFiltro: string;
-  nomeFiltro: string;
-  descriacaoFiltro: string;
+
+  fabricantes: Array<DropDownItem> = new Array<DropDownItem>();
+  descargacondensadoras: Array<DropDownItem> = new Array<DropDownItem>();
+  voltagens: Array<DropDownItem> = new Array<DropDownItem>();
+  capacidades: Array<DropDownItem> = new Array<DropDownItem>();
+  ciclos: Array<DropDownItem> = new Array<DropDownItem>();
+  tipounidades: Array<DropDownItem> = new Array<DropDownItem>();
+  imagens: Array<DropDownItem> = new Array<DropDownItem>();
+  ativos: Array<DropDownItem> = new Array<DropDownItem>();
+
+  fabricantesSelecionados: string[] = [];
+  codAlfaNumFabricanteSelecionado: string = "";
+  descargaCondensadoraSelecionado: string = "";
+  voltagemSelecionadas: string[] = [];
+  capacidadeSelecionadas: string[] = [];
+  cicloSelecionado: string = "";
+  tipoUnidadeSelecionado: string[] = [];
+  imagemSelecionado: string;
+  ativoSelecionado: string;
 
   ngOnInit(): void {
 
@@ -47,30 +66,99 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     }
 
     this.carregando = true;
-    this.buscarTodosProdutos();
+    this.buscarPropriedades();
+    this.carregarFabricante();
+    this.carregarImagem();
+    this.carregarAtivo();
+    this.carregando = false;
   }
 
-  buscarTodosProdutos() {
-    this.service.buscarTodosProdutos().toPromise().then((r) => {
-      if (r != null) {
-        this.listaProdutoDto = r;
-        this.listaProdutoDtoApoio = this.listaProdutoDto;
-        this.montarCampoTexto();
-      }
-      this.carregando = false;
+  buscarPropriedades() {
+    this.service.buscarPropriedades().toPromise().then((propieidade) => {
+      if (propieidade != null) {
+
+        let descargaCondensadora = propieidade.filter(x => x.descricao.trim().toUpperCase() == "DESCARGA CONDENSADORA");
+        let voltagens = propieidade.filter(x => x.descricao.trim().toUpperCase() == "VOLTAGEM");
+        let capacidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CAPACIDADE (BTU/H)");
+        let ciclos = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CICLO");
+        let tipounidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "TIPO DA UNIDADE");
+
+        this.service.buscarOpcoes().toPromise().then((opcao) => {
+
+          if(opcao != null) {
+            opcao.forEach(e => {
+              if(e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
+                this.descargacondensadoras.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
+                this.voltagens.push({ Id: e.id, Value: e.valor });
+              }
+
+              if(e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
+                this.capacidades.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
+                this.ciclos.push({ Id: e.id, Value: e.valor }); 
+              }
+
+              if(e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
+                this.tipounidades.push({ Id: e.id, Value: e.valor }); 
+              }
+            });
+          }
+        });
+      }   
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
     });
   }
 
-  montarCampoTexto() {
-    this.listaProdutoDto.forEach(x => {
-      x.linhaBusca = x.Id + "/";
-      x.linhaBusca += x.Produto + "/";
-      x.linhaBusca = x.Fabricante + "/";
-      x.linhaBusca = x.Nome + "/";
-      x.linhaBusca = x.Descricao + "/";
+  carregarFabricante() {
+    this.service.buscarFabricantes().toPromise().then((r) => {
+      if (r != null) {
+        r.forEach(e => {
+          this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome }); 
+        });
+      }
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+    });
+  }
+  
+  carregarImagem() {
+    this.imagens.push({ Id: 1, Value: "Sim" });
+    this.imagens.push({ Id: 0, Value: "Não" });
+  }
+  
+  carregarAtivo() {
+    this.ativos.push({ Id: 1, Value: "Sim" });
+    this.ativos.push({ Id: 0, Value: "Não" });
+  }
+
+  buscarTodosProdutos() {
+    let produtoCatalogoListar = new ProdutoCatalogoListar();
+    produtoCatalogoListar.fabricantesSelecionados = this.fabricantesSelecionados;
+    produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.codAlfaNumFabricanteSelecionado;
+    produtoCatalogoListar.descargaCondensadoraSelecionado  = this.descargaCondensadoraSelecionado;
+    produtoCatalogoListar.voltagemSelecionadas = this.voltagemSelecionadas;
+    produtoCatalogoListar.capacidadeSelecionadas = this.capacidadeSelecionadas;
+    produtoCatalogoListar.cicloSelecionado = this.cicloSelecionado;
+    produtoCatalogoListar.tipoUnidadeSelecionado = this.tipoUnidadeSelecionado;
+    produtoCatalogoListar.imagemSelecionado = this.imagemSelecionado;
+    produtoCatalogoListar.ativoSelecionado = this.ativoSelecionado;
+
+    this.carregando = true;
+    this.service.ListarProdutoCatalogo(produtoCatalogoListar).toPromise().then((r) => {
+      if (r != null) {
+        this.produtoCatalogResponse = r;
+      }
+      this.carregando = false;
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregando = false;
     });
   }
 
@@ -111,20 +199,4 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   criarClick() {
     this.router.navigate(["/produtos-catalogo/criar"]);
   }
-
-  filtrar() {
-    this.listaProdutoDto = this.listaProdutoDtoApoio;
-
-    let p: ProdutoCatalogo = new ProdutoCatalogo();
-
-    if (this.produtoFiltro)
-      this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Produto.toLowerCase().includes(this.produtoFiltro.toLowerCase()));
-    if (this.fabricanteFiltro)
-      this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Fabricante.toLowerCase().includes(this.fabricanteFiltro.toLowerCase()));
-    if (this.nomeFiltro)
-      this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Nome.toLowerCase().includes(this.nomeFiltro.toLowerCase()));
-    if (this.descriacaoFiltro)
-      this.listaProdutoDto = this.listaProdutoDto.filter(x => x.Descricao.toLowerCase().includes(this.descriacaoFiltro.toLowerCase()));
-  }
 }
-

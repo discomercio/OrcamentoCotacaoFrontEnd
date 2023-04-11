@@ -39,6 +39,10 @@ export class UsuarioMeusdadosComponent implements OnInit {
     this.usuario = new Usuario();
     this.versaoFront = environment.version;
 
+    if (!environment.production){
+      window.history.back();
+    }
+
     this.usuariosService.buscarOperacaoUsuarioPorModuloCotac().toPromise().then((r) => {
       if (r != null) {
         this.operacao = r;

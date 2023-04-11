@@ -1,29 +1,26 @@
 <div class="p-col-12" [ngClass]="{'carregando': carregando}">
     <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
-        <!-- <div class="p-field p-col-12 p-lg-6 p-md-12 p-sm-12">
-            <label for="produto">Produto ou código</label>
-            <input id="produto" type="text" pInputText [(ngModel)]="produto" (change)="pesquisar()" (keyup)="pesquisar()" />
-        </div> -->
+
         <div class="p-col-12 p-field p-grid p-pr-0">
             <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
                 <label for="produto">Produto ou código</label>
-            <input id="produto" type="text" pInputText [(ngModel)]="produto" (change)="pesquisar()" (keyup)="pesquisar()" />
+            <input id="produto" type="text" pInputText [(ngModel)]="produto" />
             </div>
             <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
                 <label for="fabricante">Fabricante</label>
                 <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione"
-                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()" emptyMessage="Nenhum item encontrado"
+                    optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
                     emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"></p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-pr-md-0 p-pr-sm-0">
                 <label for="grupo">Categoria</label>
                 <p-multiSelect [options]="categorias" [(ngModel)]="categoriasSelecionadas" defaultLabel="Selecione"
-                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()" emptyMessage="Nenhum item encontrado"
+                    optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
                     emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"></p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
                 <label for="ciclo">Ciclo</label>
-                <p-dropdown [options]="ciclos" [(ngModel)]="cicloSelecionado" (onChange)='pesquisar()'
+                <p-dropdown [options]="ciclos" [(ngModel)]="cicloSelecionado"
                     [showClear]="true" optionValue="Id" optionLabel="Value" placeholder="Selecione"
                     emptyMessage="Nenhum item encontrado">
                 </p-dropdown>
@@ -31,8 +28,17 @@
             <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-pr-md-0 p-pr-sm-0">
                 <label for="capacidade">Capacidade</label>
                 <p-multiSelect [options]="capacidades" [(ngModel)]="capacidadesSelecionadas" defaultLabel="Selecione"
-                    optionLabel="Value" optionValue="Id" (onChange)="pesquisar()" emptyMessage="Nenhum item encontrado"
+                    optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
                     emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"></p-multiSelect>
+            </div>
+        </div>
+
+        <div class="p-col-12 p-field p-grid p-pr-0">
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6"></div>
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6"></div>
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6 p-pr-md-0 p-pr-sm-0"></div>
+            <div class="p-field p-col-12 p-lg-3 p-md-6 p-sm-6">
+                <button pButton type="button" label="Pesquisar" icon="pi pi-search" (click)="pesquisar()"></button>
             </div>
         </div>
 
@@ -85,6 +91,14 @@
                     </tr>
                 </ng-container>
             </ng-template>
+            <ng-template pTemplate="emptymessage" let-columns>
+                <tr>
+                    <td colspan="7" class="p-text-center">
+                        Clique em Pesquisar para listar produtos, utilize os filtros para agilizar a pesquisa.
+                    </td>
+                </tr>
+            </ng-template>
+
         </p-table>
     </div>
     <div class="footer">

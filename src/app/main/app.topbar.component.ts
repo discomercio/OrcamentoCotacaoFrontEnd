@@ -12,6 +12,7 @@ import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import { Title } from "@angular/platform-browser";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-topbar',
@@ -32,8 +33,10 @@ export class AppTopBarComponent {
     private appSettingsService: AppSettingsService
   ) { }
   public lojaLogada: any;
+  public nomeUsuario: string;
+
   parametro: string;
-  qtdMensagem: any;
+  qtdMensagem: any;  
   public form: FormGroup;
   lojas: Array<DropDownItem> = [];
   filtro: Filtro = new Filtro();
@@ -47,8 +50,7 @@ export class AppTopBarComponent {
   ngOnInit(): void {
     this.criarForm();
     this.populaComboLojas();
-    this.obterQuantidadeMensagemPendente();
-
+    this.obterQuantidadeMensagemPendente();    
     this.interval = setInterval(() => {
       this.obterQuantidadeMensagemPendente();
     }, Number(this.appSettingsService.config.temporizadorSininho));
@@ -94,7 +96,7 @@ export class AppTopBarComponent {
       this.alertaService.mostrarMensagem("Ops! Parece que não conseguimos carregar a loja do usuário!");
       return;
     }
-
+    this.nomeUsuario = usuario.nome;
     this.lojaService.buscarLojaEstilo(usuario.loja).toPromise().then((r) => {
       if (!!r) {
 
@@ -107,7 +109,12 @@ export class AppTopBarComponent {
     });
 
     if (usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)) {
-      this.meuDados = true;
+      
+      
+      if (environment.production){
+        this.meuDados = true;
+      }
+      
     }
   }
 
