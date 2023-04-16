@@ -3,10 +3,10 @@ import { Operacao } from '../../../dto/operacao/operacao';
 import { AutenticacaoService } from '../../../service/autenticacao/autenticacao.service';
 import { Component, OnInit } from '@angular/core';
 import { UsuariosService } from '../../../service/usuarios/usuarios.service';
-import { SistemaService } from '../../../service/Sistema/sistema.service';
 import { SistemaResponse } from 'src/app/service/sistema/sistemaResponse';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { environment } from 'src/environments/environment';
+import { SistemaService } from 'src/app/service/sistema/sistema.service';
 
 @Component({
   selector: 'app-usuario-meusdados',

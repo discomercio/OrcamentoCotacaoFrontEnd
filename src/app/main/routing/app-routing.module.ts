@@ -133,61 +133,6 @@ import { OrcamentosExpiradosComponent } from 'src/app/views/consultas/orcamento/
                                     }
                                 ]
                             },
-                            // {
-                            //     path: 'selecionacliente',
-                            //     canActivate: [AuthGuard],
-                            //     component: SelecionarClienteComponent
-                            //   },
-                            // { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
-                            // {
-                            //     path: 'novo-prepedido',
-                            //     canActivate: [AuthGuard],
-                            //     component: NovoPrepedidoComponent,
-                            //     children: [
-                            //       {
-                            //         path: 'confirmar-cliente/:cpfCnpj',
-                            //         canActivate: [AuthGuard],
-                            //         component: ConfirmarClienteComponent
-                            //       },
-                            //       {
-                            //         path: 'cadastrar-cliente/:cpfCnpj',
-                            //         canActivate: [AuthGuard],
-                            //         component: CadastrarClienteComponent
-                            //       },
-                            //       {
-                            //         path: 'itens/:numeroPrepedido',
-                            //         canActivate: [AuthGuard],
-                            //         component: ItensComponent
-                            //       },
-                            //       {
-                            //         path: 'itens',
-                            //         canActivate: [AuthGuard],
-                            //         component: ItensComponent
-                            //       },
-                            //       {
-                            //         path: 'observacoes',
-                            //         canActivate: [AuthGuard],
-                            //         component: ObservacoesComponent
-                            //       },
-                            //       {
-                            //         path: 'confirmar-prepedido',
-                            //         canActivate: [AuthGuard],
-                            //         component: ConfirmarPrepedidoComponent
-                            //       },
-                            //       {
-                            //         path: '**',
-                            //         canActivate: [AuthGuard],
-                            //         component: SelecionarClienteComponent
-                            //       },
-                            //     ],
-                            //   },
-                            // { path: 'selecionacliente',canActivate: [AuthGuard],component: SelecionarClienteComponent },
-                            //tem suas prórpias rotas filhas
-
-                            // path: 'pedido', canActivate: [AuthGuard], children: [
-                            //     { path: 'novo-prepedido', canActivate: [AuthGuard], component: NovoPrepedidoComponent },
-                            // ]
-                            // Produtos Catalogo
                             {
                                 path: 'produtos-catalogo', canActivate: [AuthGuard], children: [
                                     { path: 'consultar', canActivate: [AuthGuard], component: ProdutosCatalogoConsultarComponent },

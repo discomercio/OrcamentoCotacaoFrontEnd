@@ -8,9 +8,9 @@ import { DropdownArClubeComponent } from 'src/app/components/dropdown/dropdown-a
 import { ButtonArClubeComponent } from 'src/app/components/button/button-arclube.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { LoginRequest } from 'src/app/dto/login/login-request';
-import { SistemaService } from 'src/app/service/Sistema/sistema.service';
 import { environment } from 'src/environments/environment';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { SistemaService } from 'src/app/service/sistema/sistema.service';
 
 //Components
 
@@ -70,6 +70,11 @@ export class LoginComponent implements OnInit {
     this.sistemaService.retornarVersao().toPromise().then((r) => {
       if (r != null) {
         this.versaoApi = r.versao;
+        this.sistemaService.versaoFrontTxt = r.versaoFront;
+        if(this.versaoFront != this.sistemaService.versaoFrontTxt){
+          this.alertaService.mostrarErroPacote();
+          return;
+        }
       }
     }).catch((e)=>{
       this.alertaService.mostrarErroInternet(e);

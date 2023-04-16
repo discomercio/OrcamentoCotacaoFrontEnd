@@ -37,6 +37,28 @@ export class SweetalertService {
         });
     }
 
+    dialogoNaoAutorizado(titulo: string, texto: string): Observable<any> {
+        this.subject = new Subject<any>();
+        this.swalWithBootstrapButtons.fire({
+            allowOutsideClick: false,
+            title: titulo,
+            text: texto,
+            icon: 'info',
+            showCancelButton: false,
+            confirmButtonText: 'Ok',
+            reverseButtons: true,
+            allowEscapeKey: false,
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.subject.next(true);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                this.subject.next(false);
+            }
+        });
+
+        return this.subject.asObservable();
+    }
+
     dialogo(titulo: string, texto: string): Observable<any> {
         this.subject = new Subject<any>();
         this.swalWithBootstrapButtons.fire({
@@ -69,7 +91,9 @@ export class SweetalertService {
             showConfirmButton: true,
             confirmButtonText: 'Ok',
             cancelButtonText: 'Não',
-            reverseButtons: true
+            reverseButtons: true,
+            allowEscapeKey: false,
+            allowOutsideClick: false
         }).then((result) => {
             if (result.isConfirmed) {
                 this.subject.next(true);

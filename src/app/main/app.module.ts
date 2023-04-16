@@ -4,7 +4,7 @@ import { APP_INITIALIZER, NgModule } from "@angular/core";
 import { FormsModule } from "@angular/forms";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserModule } from "@angular/platform-browser";
-import { CommonModule } from "@angular/common";
+import { CommonModule, HashLocationStrategy } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 import { LocationStrategy, PathLocationStrategy } from "@angular/common";
 import { ChartModule } from 'primeng/chart';
@@ -166,7 +166,7 @@ import { OrcamentosComMensagensPendentesComponent } from "../views/consultas/orc
             multi: true,
         },
 
-        { provide: LocationStrategy, useClass: PathLocationStrategy },
+        { provide: LocationStrategy, useClass: HashLocationStrategy },
         CountryService,
         CustomerService,
         EventService,

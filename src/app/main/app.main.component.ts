@@ -2,9 +2,9 @@ import { Component, Renderer2 } from '@angular/core';
 import { MenuService } from './app.menu.service';
 import { PrimeNGConfig } from 'primeng/api';
 import { AppComponent } from './app.component';
-import { SistemaService } from 'src/app/service/Sistema/sistema.service';
 import { environment } from 'src/environments/environment';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { SistemaService } from '../service/sistema/sistema.service';
 
 @Component({
     selector: 'app-main',
@@ -85,6 +85,11 @@ export class AppMainComponent {
         this.sistemaService.retornarVersao().toPromise().then((r) => {
             if (r != null) {
                 this.versaoApi = r.versao;
+                this.sistemaService.versaoFrontTxt = r.versaoFront;
+                if (this.versaoFront != this.sistemaService.versaoFrontTxt) {
+                    this.alertaService.mostrarErroPacote();
+                    return;
+                }
             }
         }).catch((e) => {
             this.alertaService.mostrarErroInternet(e);
