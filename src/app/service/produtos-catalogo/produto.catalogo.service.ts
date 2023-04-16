@@ -16,6 +16,7 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 import { ProdutosGruposResponse } from "src/app/dto/produtos/produtos-grupos-response";
 import { CadastroProdutoCatalogoResponse } from "src/app/dto/produtos-catalogo/cadastro-produto-catalogo-response";
 import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
+import { ListaProdutoCatalogoListarResponse } from "src/app/dto/produtos-catalogo/lista-produto-catalogo-listar-response";
 
 @Injectable({
     providedIn: "root",
@@ -39,8 +40,8 @@ export class ProdutoCatalogoService {
         );
     }
     
-    ListarProdutoCatalogo(param: ProdutoCatalogoListar): Observable<any> {
-        return this.http.post<any>(
+    ListarProdutoCatalogo(param: ProdutoCatalogoListar): Observable<ListaProdutoCatalogoListarResponse> {
+        return this.http.post<ListaProdutoCatalogoListarResponse>(
             `${this.appSettingsService.config.apiUrl}produtocatalogo/ProdutoCatalogoListar`,
             param
         );

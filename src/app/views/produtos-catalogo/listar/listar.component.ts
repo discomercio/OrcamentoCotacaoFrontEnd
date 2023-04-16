@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -14,13 +14,14 @@ import { DropDownItem } from 'src/app/views/orcamentos/models/DropDownItem';
 import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/ProdutoCatalogoPropriedade';
 import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
 import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
+import { LazyLoadEvent } from 'primeng/api';
 
 @Component({
   selector: 'app-listar-produtos',
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss']
 })
-export class ProdutosCatalogoListarComponent implements OnInit {
+export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
 
   constructor(
     private readonly service: ProdutoCatalogoService,
@@ -29,7 +30,8 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly sweetAlertService: SweetalertService) { }
+    private readonly sweetAlertService: SweetalertService,
+    public readonly cdr: ChangeDetectorRef) { }
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
@@ -57,6 +59,14 @@ export class ProdutosCatalogoListarComponent implements OnInit {
   imagemSelecionado: string;
   ativoSelecionado: string;
 
+  qtdePorPaginaInicial: number = 10;
+  mostrarQtdePorPagina: boolean = false;
+  qtdePorPaginaSelecionado: number = 10;
+  first: number = 0;
+  qtdeRegistros: number;
+  urlAnterior: any;
+  filtro: ProdutoCatalogoListar = new ProdutoCatalogoListar();
+
   ngOnInit(): void {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
@@ -65,12 +75,31 @@ export class ProdutosCatalogoListarComponent implements OnInit {
       return;
     }
 
+    this.urlAnterior = sessionStorage.getItem("urlAnterior");
+
     this.carregando = true;
     this.buscarPropriedades();
     this.carregarFabricante();
     this.carregarImagem();
     this.carregarAtivo();
     this.carregando = false;
+  }
+
+  ngAfterViewInit(): void {
+    //se veio de clonar, editar e excluir, vamos manter os filtros
+    if (this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/visualizar") > -1 ||
+      this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/editar") > -1 ||
+      this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/clonar") > -1) {
+      let sessionStorageFiltro = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(sessionStorageFiltro);
+        
+    }
+    else {
+      debugger;
+      sessionStorage.removeItem("filtro");
+    }
+
+    this.cdr.detectChanges();
   }
 
   buscarPropriedades() {
@@ -85,31 +114,31 @@ export class ProdutosCatalogoListarComponent implements OnInit {
 
         this.service.buscarOpcoes().toPromise().then((opcao) => {
 
-          if(opcao != null) {
+          if (opcao != null) {
             opcao.forEach(e => {
-              if(e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
-                this.descargacondensadoras.push({ Id: e.id, Value: e.valor }); 
+              if (e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
+                this.descargacondensadoras.push({ Id: e.id, Value: e.valor });
               }
 
-              if(e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
+              if (e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
                 this.voltagens.push({ Id: e.id, Value: e.valor });
               }
 
-              if(e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
-                this.capacidades.push({ Id: e.id, Value: e.valor }); 
+              if (e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
+                this.capacidades.push({ Id: e.id, Value: e.valor });
               }
 
-              if(e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
-                this.ciclos.push({ Id: e.id, Value: e.valor }); 
+              if (e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
+                this.ciclos.push({ Id: e.id, Value: e.valor });
               }
 
-              if(e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
-                this.tipounidades.push({ Id: e.id, Value: e.valor }); 
+              if (e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
+                this.tipounidades.push({ Id: e.id, Value: e.valor });
               }
             });
           }
         });
-      }   
+      }
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
@@ -120,46 +149,80 @@ export class ProdutosCatalogoListarComponent implements OnInit {
     this.service.buscarFabricantes().toPromise().then((r) => {
       if (r != null) {
         r.forEach(e => {
-          this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome }); 
+          this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome });
         });
       }
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
     });
   }
-  
+
   carregarImagem() {
     this.imagens.push({ Id: 1, Value: "Sim" });
     this.imagens.push({ Id: 0, Value: "Não" });
   }
-  
+
   carregarAtivo() {
     this.ativos.push({ Id: 1, Value: "Sim" });
     this.ativos.push({ Id: 0, Value: "Não" });
   }
 
-  buscarTodosProdutos() {
-    let produtoCatalogoListar = new ProdutoCatalogoListar();
-    produtoCatalogoListar.fabricantesSelecionados = this.fabricantesSelecionados;
-    produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.codAlfaNumFabricanteSelecionado;
-    produtoCatalogoListar.descargaCondensadoraSelecionado  = this.descargaCondensadoraSelecionado;
-    produtoCatalogoListar.voltagemSelecionadas = this.voltagemSelecionadas;
-    produtoCatalogoListar.capacidadeSelecionadas = this.capacidadeSelecionadas;
-    produtoCatalogoListar.cicloSelecionado = this.cicloSelecionado;
-    produtoCatalogoListar.tipoUnidadeSelecionado = this.tipoUnidadeSelecionado;
-    produtoCatalogoListar.imagemSelecionado = this.imagemSelecionado;
-    produtoCatalogoListar.ativoSelecionado = this.ativoSelecionado;
+  buscarTodosProdutos(filtro: ProdutoCatalogoListar) {
 
+    sessionStorage.setItem("filtro", JSON.stringify(filtro));
     this.carregando = true;
-    this.service.ListarProdutoCatalogo(produtoCatalogoListar).toPromise().then((r) => {
-      if (r != null) {
-        this.produtoCatalogResponse = r;
+    this.produtoCatalogResponse = new Array<ProdutoCatalogoResponse>();
+    this.service.ListarProdutoCatalogo(filtro).toPromise().then((r) => {
+      if (!r.Sucesso) {
+        this.mostrarQtdePorPagina = false;
+        this.carregando = false;
+        return;
       }
+
+      this.produtoCatalogResponse = r.listaProdutoCatalogoResponse;
+      this.mostrarQtdePorPagina = true;
+      this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
     });
+  }
+
+  pesquisar() {
+    let filtro = this.setarFiltro();
+    this.buscarTodosProdutos(filtro);
+  }
+
+  setarFiltro(): ProdutoCatalogoListar {
+    let produtoCatalogoListar = new ProdutoCatalogoListar();
+    produtoCatalogoListar.fabricantesSelecionados = this.filtro.fabricantesSelecionados;
+    produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.filtro.codAlfaNumFabricanteSelecionado;
+    produtoCatalogoListar.descargaCondensadoraSelecionado = this.filtro.descargaCondensadoraSelecionado;
+    produtoCatalogoListar.voltagemSelecionadas = this.filtro.voltagemSelecionadas;
+    produtoCatalogoListar.capacidadeSelecionadas = this.filtro.capacidadeSelecionadas;
+    produtoCatalogoListar.cicloSelecionado = this.filtro.cicloSelecionado;
+    produtoCatalogoListar.tipoUnidadeSelecionado = this.filtro.tipoUnidadeSelecionado;
+    produtoCatalogoListar.imagemSelecionado = this.filtro.imagemSelecionado;
+    produtoCatalogoListar.ativoSelecionado = this.filtro.ativoSelecionado;
+
+    produtoCatalogoListar.pagina = 0;
+    produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+
+    this.first = 0;
+    return produtoCatalogoListar;
+  }
+
+  buscarRegistros(event: LazyLoadEvent) {
+    let filtro = this.setarFiltro();
+    if (!!this.produtoCatalogResponse && this.produtoCatalogResponse.length > 0) {
+      filtro.pagina = event.first / event.rows;
+      filtro.qtdeItensPorPagina = event.rows;
+      this.qtdePorPaginaSelecionado = event.rows;
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) filtro.pagina = 0;
+      this.buscarTodosProdutos(filtro);
+    }
   }
 
   visualizarClick(id: any) {
@@ -188,7 +251,7 @@ export class ProdutosCatalogoListarComponent implements OnInit {
         if (r != null && r == true) {
           this.mensagemService.showSuccessViaToast("Produto excluído com sucesso!");
           this.carregando = false;
-          this.buscarTodosProdutos();
+          this.pesquisar();
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
 
@@ -198,5 +261,16 @@ export class ProdutosCatalogoListarComponent implements OnInit {
 
   criarClick() {
     this.router.navigate(["/produtos-catalogo/criar"]);
+  }
+
+  ngOnDestroy() {
+    debugger;
+    if (this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/editar/") > -1 ||
+      this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/clonar")) {
+      sessionStorage.setItem("urlAnterior", this.router.routerState.snapshot.url)
+      return;
+    }
+    sessionStorage.removeItem("urlAnterior");
+    sessionStorage.removeItem("filtro");
   }
 }

@@ -151,7 +151,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     this.carregando = true;
     this.service.ListarProdutoCatalogo(produtoCatalogoListar).toPromise().then((r) => {
       if (r != null) {
-        this.produtoCatalogResponse = r;
+        // this.produtoCatalogResponse = r;
       }
       this.carregando = false;
     }).catch((r) => {

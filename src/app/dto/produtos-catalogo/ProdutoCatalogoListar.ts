@@ -1,4 +1,4 @@
-export class ProdutoCatalogoListar{
+export class ProdutoCatalogoListar {
   fabricantesSelecionados: string[];
   codAlfaNumFabricanteSelecionado: string;
   descargaCondensadoraSelecionado: string;
@@ -8,4 +8,8 @@ export class ProdutoCatalogoListar{
   tipoUnidadeSelecionado: string[];
   imagemSelecionado: string;
   ativoSelecionado: string;
+  pagina: number;
+  qtdeItensPorPagina: number;
+  ordenacaoAscendente: boolean;
+  nomeColunaOrdenacao: string;
 }
