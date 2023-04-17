@@ -86,20 +86,20 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    //se veio de clonar, editar e excluir, vamos manter os filtros
-    if (this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/visualizar") > -1 ||
-      this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/editar") > -1 ||
-      this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/clonar") > -1) {
-      let sessionStorageFiltro = sessionStorage.getItem("filtro");
-      this.filtro = JSON.parse(sessionStorageFiltro);
+    // //se veio de clonar, editar e excluir, vamos manter os filtros
+    // if (this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/visualizar") > -1 ||
+    //   this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/editar") > -1 ||
+    //   this.urlAnterior && this.urlAnterior.indexOf("/produtos-catalogo/clonar") > -1) {
+    //   let sessionStorageFiltro = sessionStorage.getItem("filtro");
+    //   this.filtro = JSON.parse(sessionStorageFiltro);
         
-    }
-    else {
-      debugger;
-      sessionStorage.removeItem("filtro");
-    }
+    // }
+    // else {
+    //   debugger;
+    //   sessionStorage.removeItem("filtro");
+    // }
 
-    this.cdr.detectChanges();
+    // this.cdr.detectChanges();
   }
 
   buscarPropriedades() {
@@ -196,16 +196,41 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
 
   setarFiltro(): ProdutoCatalogoListar {
     let produtoCatalogoListar = new ProdutoCatalogoListar();
-    produtoCatalogoListar.fabricantesSelecionados = this.filtro.fabricantesSelecionados;
-    produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.filtro.codAlfaNumFabricanteSelecionado;
+    
+    if(!this.filtro.fabricantesSelecionados || this.filtro.fabricantesSelecionados.length == 0){
+      produtoCatalogoListar.fabricantesSelecionados = undefined;
+    }else{
+      produtoCatalogoListar.fabricantesSelecionados = this.filtro.fabricantesSelecionados;
+    }
+    if(!this.filtro.codAlfaNumFabricanteSelecionado || this.filtro.codAlfaNumFabricanteSelecionado == ""){
+      produtoCatalogoListar.codAlfaNumFabricanteSelecionado = undefined;
+    }
+    else{
+      produtoCatalogoListar.codAlfaNumFabricanteSelecionado = this.filtro.codAlfaNumFabricanteSelecionado;
+    }
+    if(!this.filtro.voltagemSelecionadas || this.filtro.voltagemSelecionadas.length == 0){
+      produtoCatalogoListar.voltagemSelecionadas = undefined;
+    }
+    else{
+      produtoCatalogoListar.voltagemSelecionadas = this.filtro.voltagemSelecionadas;
+    }
+    if(!this.filtro.capacidadeSelecionadas || this.filtro.capacidadeSelecionadas.length == 0){
+      produtoCatalogoListar.capacidadeSelecionadas = undefined;
+    }
+    else{
+      produtoCatalogoListar.capacidadeSelecionadas = this.filtro.capacidadeSelecionadas;
+    }
+    if(!this.filtro.tipoUnidadeSelecionado || this.filtro.tipoUnidadeSelecionado.length == 0){
+      produtoCatalogoListar.tipoUnidadeSelecionado = undefined;
+    }
+    else{
+      produtoCatalogoListar.tipoUnidadeSelecionado = this.filtro.tipoUnidadeSelecionado;
+    }
+
     produtoCatalogoListar.descargaCondensadoraSelecionado = this.filtro.descargaCondensadoraSelecionado;
-    produtoCatalogoListar.voltagemSelecionadas = this.filtro.voltagemSelecionadas;
-    produtoCatalogoListar.capacidadeSelecionadas = this.filtro.capacidadeSelecionadas;
     produtoCatalogoListar.cicloSelecionado = this.filtro.cicloSelecionado;
-    produtoCatalogoListar.tipoUnidadeSelecionado = this.filtro.tipoUnidadeSelecionado;
     produtoCatalogoListar.imagemSelecionado = this.filtro.imagemSelecionado;
     produtoCatalogoListar.ativoSelecionado = this.filtro.ativoSelecionado;
-
     produtoCatalogoListar.pagina = 0;
     produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
     this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
@@ -264,13 +289,14 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   ngOnDestroy() {
-    debugger;
-    if (this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/editar/") > -1 ||
-      this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/clonar")) {
-      sessionStorage.setItem("urlAnterior", this.router.routerState.snapshot.url)
-      return;
-    }
-    sessionStorage.removeItem("urlAnterior");
-    sessionStorage.removeItem("filtro");
+    // debugger;
+    // incluir a rota de criar novo produto
+    // if (this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/editar/") > -1 ||
+    //   this.router.routerState.snapshot.url.indexOf("/produtos-catalogo/clonar")) {
+    //   sessionStorage.setItem("urlAnterior", this.router.routerState.snapshot.url)
+    //   return;
+    // }
+    // sessionStorage.removeItem("urlAnterior");
+    // sessionStorage.removeItem("filtro");
   }
 }
