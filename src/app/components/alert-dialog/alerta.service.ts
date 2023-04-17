@@ -5,6 +5,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { environment } from 'src/environments/environment';
+import { SistemaService } from 'src/app/service/sistema/sistema.service';
 
 @Injectable({
   providedIn: 'root'
@@ -13,17 +14,19 @@ export class AlertaService {
 
   constructor(public dialogService: DialogService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService) {
+    private readonly sweetalertService: SweetalertService,
+    private readonly sistemaService: SistemaService) {
 
   }
 
 
   public mostrarMensagemComLargura(msg: string, largura: string, aposOk: () => void): void {
-    const dialogRef = this.dialogService.open(AlertDialogComponent, {
-      width: largura,
-      data: msg,
-      styleClass: 'dynamicDialog'
-    });
+    this.sweetalertService.aviso(msg);
+    // const dialogRef = this.dialogService.open(AlertDialogComponent, {
+    //   width: largura,
+    //   data: msg,
+    //   styleClass: 'dynamicDialog'
+    // });
 
   }
 
@@ -45,30 +48,36 @@ export class AlertaService {
       let error: HttpErrorResponse = r;
       if (error.status == 403 || error.status == 401) {
         //colocamos um id no botão para poder simular o click
-        let sair = document.getElementById('btnSair');
+        // let sair = document.getElementById('btnSair');
 
-        if (AlertaService.mostrandoErroNaoAutorizado) {
-          sair.click();
-          return;
-        }
+        // if (AlertaService.mostrandoErroNaoAutorizado) {
+        //   sair.click();
+        //   return;
+        // }
 
         AlertaService.mostrandoErroNaoAutorizado = true;
-        let dialogRef = this.dialogService.open(AlertDialogComponent, {
-          width: "250px",
-          data: "Erro: Acesso não autorizado!",
-          styleClass: "dynamicDialog"
+        this.sweetalertService.dialogoNaoAutorizado("", "Erro: Acesso não autorizado!").subscribe(result => {
+          window.location.reload();
+          this.limparSessao();
+          this.router.navigate(['/account/login']);
+          return;
         });
+        // let dialogRef = this.dialogService.open(AlertDialogComponent, {
+        //   width: "250px",
+        //   data: "Erro: Acesso não autorizado!",
+        //   styleClass: "dynamicDialog"
+        // });
 
-        dialogRef.onClose.subscribe(x => {
-          this.router.navigate(["account/login"]);
-        })
+        // dialogRef.onClose.subscribe(x => {
+        //   this.router.navigate(["account/login"]);
+        // })
 
         return;
       }
 
       if (error.status == 0) {
         this.mostrarMensagemComLargura(
-          "Favor verificar sua conexão com a internet!",
+          "Sistema temporariamente indisponível. Por favor, feche o navegador e tente novamente dentro de alguns instantes.",
           "250px", null);
 
         return;
@@ -133,6 +142,15 @@ export class AlertaService {
     }
   }
 
+  mostrarErroPacote() {
+    this.sweetalertService.dialogoVersao("", "Uma nova versão do sistema está disponível " + this.sistemaService.versaoFrontTxt + ". Clique em OK para carregar a nova versão.").subscribe(result => {
+      window.location.reload();
+      this.limparSessao();
+      this.router.navigate(['/account/login']);
+
+    });
+  }
+
   public mostrarErro412(error: HttpErrorResponse): boolean {
 
     if (error.status == 412) {
@@ -141,12 +159,7 @@ export class AlertaService {
 
       this.sweetalertService.dialogoVersao("", "Versão do Frontend incompatível! Versão em execução: (" + versao + ").").subscribe(result => {
 
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('lojas');
-        sessionStorage.removeItem('lojaLogada');
-        sessionStorage.removeItem("sininho");
-        sessionStorage.removeItem("senhaExpirada");
-        sessionStorage.removeItem("versaoApi");
+
 
         window.location.reload();
 
@@ -158,4 +171,12 @@ export class AlertaService {
     return false;
   }
 
+  limparSessao() {
+    sessionStorage.removeItem('token');
+    sessionStorage.removeItem('lojas');
+    sessionStorage.removeItem('lojaLogada');
+    sessionStorage.removeItem("sininho");
+    sessionStorage.removeItem("senhaExpirada");
+    sessionStorage.removeItem("versaoApi");
+  }
 }
