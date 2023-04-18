@@ -97,6 +97,7 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     let url = this.router.url;
     if(url.indexOf("/produtos-catalogo/consultar") == -1) {
       sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
     }
   }
 }

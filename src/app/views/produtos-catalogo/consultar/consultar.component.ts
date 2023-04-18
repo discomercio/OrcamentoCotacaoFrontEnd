@@ -1,7 +1,7 @@
 import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
 import { FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
@@ -73,7 +73,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       return;
     }
 
-    let url = this.router.transitions.value.currentSnapshot.url;
+    let url = sessionStorage.getItem("urlAnterior");
     if (!!url && url.indexOf("/produtos-catalogo/visualizar") > -1) {
       let json = sessionStorage.getItem("filtro");
       this.filtro = JSON.parse(json);
@@ -87,8 +87,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   }
 
   ngAfterViewInit(): void {
-
-
     this.cdr.detectChanges();
   }
 
@@ -250,11 +248,15 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   visualizando: boolean = false;
   visualizarClick(id: number) {
     this.visualizando = true;
+    sessionStorage.setItem("urlAnterior", "/produtos-catalogo/visualizar");
     this.router.navigate(["/produtos-catalogo/visualizar", id]);
   }
 
   ngOnDestroy() {
-    if (!this.visualizando)
+    if (!this.visualizando) {
       sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+
+    }
   }
 }
