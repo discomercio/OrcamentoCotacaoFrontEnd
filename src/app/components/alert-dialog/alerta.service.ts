@@ -121,7 +121,7 @@ export class AlertaService {
           this.mostrarMensagemComLargura(error.error.Mensagem, "250px", null);
         }
         else {
-          this.mostrarMensagemComLargura("Erro ao salvar.<br>" + mensagens.join("<br>"), "250px", null);
+          this.mostrarMensagemComLargura(mensagens.join("<br>"), "250px", null);
         }
 
         return
