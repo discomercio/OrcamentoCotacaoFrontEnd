@@ -65,6 +65,9 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   qtdeRegistros: number;
   filtro: ProdutoCatalogoListar = new ProdutoCatalogoListar();
 
+  urlAnterior: string;
+  visualizando: boolean = false;
+  
   ngOnInit(): void {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoConsultar)) {
@@ -244,8 +247,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     }
   }
 
-  urlAnterior: string;
-  visualizando: boolean = false;
+  
   visualizarClick(id: number) {
     this.visualizando = true;
     sessionStorage.setItem("urlAnterior", "/produtos-catalogo/visualizar");
@@ -256,7 +258,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     if (!this.visualizando) {
       sessionStorage.removeItem("filtro");
       sessionStorage.removeItem("urlAnterior");
-
     }
   }
 }
