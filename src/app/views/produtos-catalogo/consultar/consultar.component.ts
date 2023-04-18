@@ -76,12 +76,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       return;
     }
 
-    let url = sessionStorage.getItem("urlAnterior");
-    if (!!url && url.indexOf("/produtos-catalogo/visualizar") > -1) {
-      let json = sessionStorage.getItem("filtro");
-      this.filtro = JSON.parse(json);
-      this.buscarTodosProdutos(this.filtro);
-    }
+    
 
     this.carregando = true;
     this.buscarPropriedades();
@@ -90,6 +85,12 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   }
 
   ngAfterViewInit(): void {
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && url.indexOf("/produtos-catalogo/visualizar") > -1) {
+      let json = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(json);
+      this.buscarTodosProdutos(this.filtro);
+    }
     this.cdr.detectChanges();
   }
 
@@ -179,7 +180,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       this.carregando = false;
 
       if (!!this.filtro.pagina)
-        this.first = this.filtro.pagina * this.qtdePorPaginaInicial;
+        this.first = this.filtro.pagina * this.filtro.qtdeItensPorPagina;
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
@@ -241,8 +242,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       filtro.pagina = event.first / event.rows;
       this.filtro.pagina = filtro.pagina;
       filtro.qtdeItensPorPagina = event.rows;
-      this.qtdePorPaginaSelecionado = event.rows;
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) filtro.pagina = 0;
+      this.filtro.qtdeItensPorPagina = event.rows;
       this.buscarTodosProdutos(filtro);
     }
   }
