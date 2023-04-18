@@ -31,8 +31,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     public readonly novoOrcamentoService: NovoOrcamentoService,
     telaDesktopService: TelaDesktopService,
     private produtoService: ProdutoService,
-    private readonly alertaService:AlertaService,
-    private readonly sweetAlertService:SweetalertService) {
+    private readonly alertaService: AlertaService,
+    private readonly sweetAlertService: SweetalertService) {
     super(telaDesktopService)
   }
 
@@ -55,11 +55,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   cicloSelecionado: string;
   capacidades: Array<DropDownItem> = new Array<DropDownItem>();
   capacidadesSelecionadas: Array<string>;
-  produto:string;
-  carregando:boolean;
+  produto: string;
+  carregando: boolean;
 
   ngOnInit(): void {
-    this.carregando=true;
+    this.carregando = true;
     this.displayModal = true;
     this.selecProdInfoPassado = this.option.data;
     this.montarComboFabricante();
@@ -67,8 +67,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.montarCiclos();
     this.montarCapacidades();
     this.transferirDados();
-    
-    this.prodsTela = this.prodsArray.filter(f => f.visivel == false);
+
+    this.prodsTela = this.prodsArray.filter(f => f.visivel == true);
+
     this.novoOrcamentoService.pageItens = this.telaDesktop ? 3 : 6;
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
@@ -82,11 +83,26 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       if (!(this.prodsArray.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
         break;
       //colocamos mais um
-      let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[this.prodsArray.length],
+      let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[copiar],
         this.selecProdInfoPassado.produtoComboDto.produtosCompostos);
 
-      this.prodsArray.push(xy);
+      let existe = false;
+      this.selecProdInfoPassado.produtoComboDto.produtosCompostos.some(x => {
+        let ff = x.filhos.filter(y => y.produto == xy.produtoDto.produto);
+        debugger;
+        if (ff.length > 0) {
+          existe = true;
+          return true
+        }
+      });
+
+      if(!existe){
+        this.prodsArray.push(xy);
+      }
+
     }
+
+
   }
 
   montarComboFabricante() {
@@ -98,11 +114,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.fabricantes = [... new Map(this.fabricantes.map(item => [item[key], item])).values()];
   }
 
-  buscarCategorias(){
+  buscarCategorias() {
     let request = new GrupoSubgrupoProdutoRequest();
     request.loja = this.novoOrcamentoService.autenticacaoService._lojaLogado;
-    this.produtoService.buscarGruposSubgruposProdutos(request).toPromise().then((r)=>{
-      if(!r.Sucesso){
+    this.produtoService.buscarGruposSubgruposProdutos(request).toPromise().then((r) => {
+      if (!r.Sucesso) {
         this.sweetAlertService.aviso(r.Mensagem);
         return;
       }
@@ -111,7 +127,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         this.categorias.push({ Id: x.codigo, Value: x.descricao });
       });
       this.carregando = false;
-    }).catch((e)=>{
+    }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     });

@@ -19,6 +19,7 @@ export class ProdutoTela {
         const filhosDiretos = produtoDto != undefined ? produtoCompostoDto.filter(el => el.paiFabricante === produtoDto.fabricante && el.paiProduto === produtoDto.produto) : new Array();
         if (filhosDiretos.length == 0) {
             this.Filhos = new Array();
+            
         }
         else {
             //somente pode ter uma entrada do pai no array
@@ -31,6 +32,8 @@ export class ProdutoTela {
             });
         }
     }
+
+    public vendavel:boolean = true;
 
     //a busca é feita contra esta string
     public stringBusca: string;
