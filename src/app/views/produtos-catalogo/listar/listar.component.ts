@@ -99,7 +99,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     //   sessionStorage.removeItem("filtro");
     // }
 
-    // this.cdr.detectChanges();
+    this.cdr.detectChanges();
   }
 
   buscarPropriedades() {
@@ -183,6 +183,9 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
       this.mostrarQtdePorPagina = true;
       this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
+      
+      if (!!this.filtro.pagina)
+        this.first = this.filtro.pagina * this.filtro.qtdeItensPorPagina;
     }).catch((r) => {
       this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
@@ -241,11 +244,11 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
 
   buscarRegistros(event: LazyLoadEvent) {
     let filtro = this.setarFiltro();
+    
     if (!!this.produtoCatalogResponse && this.produtoCatalogResponse.length > 0) {
       filtro.pagina = event.first / event.rows;
       filtro.qtdeItensPorPagina = event.rows;
       this.qtdePorPaginaSelecionado = event.rows;
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) filtro.pagina = 0;
       this.buscarTodosProdutos(filtro);
     }
   }
