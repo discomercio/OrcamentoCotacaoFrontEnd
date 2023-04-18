@@ -85,14 +85,6 @@
                 [totalRecords]="qtdeRegistros"
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}" [lazy]="true"
                 (onLazyLoad)="buscarRegistros($event)" [loading]="carregando">
-                <ng-template pTemplate="caption">
-                    <div class="p-d-flex p-jc-end">
-                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
-                            class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
-                        <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportarCSV()" class="p-mr-2"
-                            label="Exportar para CSV" tooltipPosition="bottom"></button>
-                    </div>
-                </ng-template>
                 <ng-template pTemplate="header">
                     <tr class="font-size">
                         <th class="p-text-left p-py-1 p-lg-1 p-md-1 p-sm-2 p-text-nowrap" [pSortableColumn]="Codigo">
