@@ -91,5 +91,14 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
       console.log(e);
     });
   }
+
+  ngOnDestroy(){
+    
+    let url = this.router.url;
+    if(url.indexOf("/produtos-catalogo/consultar") == -1) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+    }
+  }
 }
 
