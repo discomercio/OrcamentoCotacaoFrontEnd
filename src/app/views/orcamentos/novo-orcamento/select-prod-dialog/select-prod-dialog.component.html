@@ -51,7 +51,7 @@
                 <ng-container>
 
                     <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
-                        [pSelectableRow]="p">
+                        [pSelectableRow]="p" *ngIf="p.vendavel">
                         <td class="p-d-inline-flex" style="width: 100%">
                             <span>
                                 <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
@@ -67,7 +67,7 @@
                             </div>
                         </td>
                     </tr>
-                    <tr *ngFor="let f of p.Filhos">
+                    <tr *ngFor="let f of p.Filhos" [ngStyle]="{}">
                         <ng-container *ngIf="telaDesktop">
                             <td class="p-pl-6">
                                 <span class="p-column-title">Produto</span>
