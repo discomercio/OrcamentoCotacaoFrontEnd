@@ -80,7 +80,7 @@
 
             <p-table #dt1 [value]="produtoCatalogResponse" [responsive]="true" [customSort]="true"
                 responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
-                styleClass="p-datatable-customers p-datatable-striped" [rows]="qtdePorPaginaInicial" [paginator]="true"
+                styleClass="p-datatable-customers p-datatable-striped" [rows]="filtro.qtdeItensPorPagina" [paginator]="true"
                 [showCurrentPageReport]="mostrarQtdePorPagina" [rowsPerPageOptions]="[5,10,20]"
                 [totalRecords]="qtdeRegistros"
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}" [lazy]="true"
