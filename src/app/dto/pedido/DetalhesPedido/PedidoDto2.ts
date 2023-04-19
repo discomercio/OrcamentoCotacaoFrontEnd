@@ -1,15 +1,14 @@
-﻿import { StatusPedidoDtoPedido } from './StatusPedidoDtoPedido';
-
-import { PedidoProdutosDtoPedido } from './PedidoProdutosDtoPedido';
-import { DetalhesNFPedidoDtoPedido } from './DetalhesNFPedidoDtoPedido';
-import { DetalhesFormaPagamentos } from './DetalhesFormaPagamentos';
-import { ProdutoDevolvidoDtoPedido } from './ProdutoDevolvidoDTOPedido';
-import { PedidoPerdasDtoPedido } from './PedidoPerdasDtoPedido';
-import { OcorrenciasDtoPedido } from './OcorrenciasDtoPedido';
-import { BlocoNotasDtoPedido } from './BlocoNotasDtoPedido';
-import { BlocoNotasDevolucaoMercadoriasDtoPedido } from './BlocoNotasDevolucaoMercadoriasDtoPedido';
-import { EnderecoEntregaDtoClienteCadastro } from '../../prepedido/ClienteCadastro/EnderecoEntregaDTOClienteCadastro';
+﻿import { EnderecoEntregaDtoClienteCadastro } from '../../prepedido/ClienteCadastro/EnderecoEntregaDTOClienteCadastro';
 import { DadosClienteCadastroDto } from '../../prepedido/ClienteCadastro/DadosClienteCadastroDto';
+import { BlocoNotasDevolucaoMercadoriasDtoPedido } from '../../prepedido/pedido/DetalhesPedido/BlocoNotasDevolucaoMercadoriasDtoPedido';
+import { StatusPedidoDtoPedido } from '../../prepedido/pedido/DetalhesPedido/StatusPedidoDtoPedido';
+import { PedidoProdutosDtoPedido } from '../../prepedido/pedido/DetalhesPedido/PedidoProdutosDtoPedido';
+import { DetalhesNFPedidoDtoPedido } from '../../prepedido/pedido/DetalhesPedido/DetalhesNFPedidoDtoPedido';
+import { DetalhesFormaPagamentos } from '../../prepedido/pedido/DetalhesPedido/DetalhesFormaPagamentos';
+import { ProdutoDevolvidoDtoPedido } from '../../prepedido/pedido/DetalhesPedido/ProdutoDevolvidoDTOPedido';
+import { PedidoPerdasDtoPedido } from '../../prepedido/pedido/DetalhesPedido/PedidoPerdasDtoPedido';
+import { OcorrenciasDtoPedido } from '../../prepedido/pedido/DetalhesPedido/OcorrenciasDtoPedido';
+import { BlocoNotasDtoPedido } from '../../prepedido/pedido/DetalhesPedido/BlocoNotasDtoPedido';
 
 
 

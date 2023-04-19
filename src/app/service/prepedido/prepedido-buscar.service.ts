@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, observable } from 'rxjs';
+import { Observable } from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
-import { PedidoDto } from 'src/app/dto/pedido/detalhesPedido/PedidoDto2';
 import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrePedidoDto';
 import { FormaPagtoDto } from 'src/app/dto/prepedido/FormaPagto/FormaPagtoDto';
 import { DadosClienteCadastroDto } from 'src/app/dto/prepedido/ClienteCadastro/DadosClienteCadastroDto';
@@ -20,7 +19,7 @@ export class PrepedidoBuscarService {
   public dadosClienteDto: DadosClienteCadastroDto = new DadosClienteCadastroDto();
 
   constructor(
-    private readonly http: HttpClient, 
+    private readonly http: HttpClient,
     private appSettingsService: AppSettingsService) { }
 
   public buscar(numeroPrePedido: string): Observable<PrePedidoDto> {
@@ -47,15 +46,15 @@ export class PrepedidoBuscarService {
     return this.pedidos$;
   }
 
-  
-  
+
+
 
   public Obter_Permite_RA_Status(): Observable<number> {
     return this.http.get<any>(this.appSettingsService.config.apiUrl + 'api/prepedido/obter_permite_ra_status');
   }
 
   public cadastrarPrepedido(prePedidoDto: PrePedidoDto): Observable<string[]> {
-    
+
     return this.http.post<string[]>(this.appSettingsService.config.apiUrl + 'api/prepedido/cadastrarPrepedido', prePedidoDto);
   }
 
@@ -78,7 +77,7 @@ export class PrepedidoBuscarService {
     return this.http.get<number>(this.appSettingsService.config.apiUrl + 'api/prepedido/buscarQtdeParcCartaoVisa');
   }
 
-  public ObtemPercentualVlPedidoRA():Observable<number> {
+  public ObtemPercentualVlPedidoRA(): Observable<number> {
     return this.http.get<number>(this.appSettingsService.config.apiUrl + 'api/prepedido/obtemPercentualVlPedidoRA');
   }
 }
