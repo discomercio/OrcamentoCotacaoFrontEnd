@@ -213,7 +213,7 @@
 
                 <mat-form-field class="edicao-endereco" floatLabel="floatLabel()" style="width: 25ch;">
                     <textarea matInput type="text" placeholder="Descrição da Forma de Pagamento"
-                        [ngModelOptions]="{standalone: true}" (keydown.enter)="enterFormaPagto($event)"
+                        [ngModelOptions]="{standalone: true}"
                         [(ngModel)]="prePedidoDto.FormaPagtoCriacao.C_forma_pagto"
                         rows="{{constantes.MAX_LINHAS_FORMA_PAGTO}}"></textarea>
                 </mat-form-field>
