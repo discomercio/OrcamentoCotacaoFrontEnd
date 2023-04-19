@@ -39,7 +39,12 @@ export class UsuarioMeusdadosComponent implements OnInit {
     this.usuario = new Usuario();
     this.versaoFront = environment.version;
 
-    if (!environment.production){
+    const fetch = require("sync-fetch");
+            
+    const appsettings = fetch("/assets/config/appsettings.json", {
+    }).json();
+  
+    if (Boolean(appsettings.ambienteProducao)){
       window.history.back();
     }
 

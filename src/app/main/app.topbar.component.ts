@@ -110,10 +110,16 @@ export class AppTopBarComponent {
 
     if (usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)) {
       
-      
-      if (environment.production){
+      const fetch = require("sync-fetch");
+            
+      const appsettings = fetch("/assets/config/appsettings.json", {
+      }).json();
+    
+      if (Boolean(appsettings.ambienteProducao)){
+        this.meuDados = false;
+      }else{
         this.meuDados = true;
-      }
+      }      
       
     }
   }
