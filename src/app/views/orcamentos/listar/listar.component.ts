@@ -1,6 +1,6 @@
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
@@ -39,7 +39,7 @@ import { ChangeDetectorRef } from '@angular/core';
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss']
 })
-export class OrcamentosListarComponent implements OnInit {
+export class OrcamentosListarComponent implements OnInit, AfterViewInit {
 
   @ViewChild(ButtonArClubeComponent, { static: false })
   button: ButtonArClubeComponent
@@ -59,7 +59,8 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly usuarioService: UsuariosService,
     private readonly pedidoService: PedidoService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
-    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService) {
+    private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
+    private readonly cdr: ChangeDetectorRef) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -93,7 +94,7 @@ export class OrcamentosListarComponent implements OnInit {
   dataUtils: DataUtils = new DataUtils();
   parametro: string;
   lojaLogada: string = this.autenticacaoService._lojaLogado;
-  
+
   public constantes: Constantes = new Constantes();
   usuario = new Usuario();
   public lstVendedores: SelectItem[] = [];
@@ -109,6 +110,7 @@ export class OrcamentosListarComponent implements OnInit {
   qtdePorPaginaInicial: number = 10;
   qtdePorPaginaSelecionado: number = 10;
   mostrarQtdePorPagina: boolean = false;
+  carregandoVendedoresParceiros:boolean = false;
 
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
@@ -118,12 +120,16 @@ export class OrcamentosListarComponent implements OnInit {
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
-    
+
     this.buscarStatus();
     this.buscarVendedores();
     this.buscarParceiros();
     this.buscarMensagens();
     this.buscarConfigValidade();
+  }
+
+  ngAfterViewInit(): void {
+    this.cdr.detectChanges();
   }
 
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
@@ -196,14 +202,14 @@ export class OrcamentosListarComponent implements OnInit {
   buscarParceiros() {
 
     this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-      if(r != null) {
-          r.forEach(x => {
-            if (!!x.nome) {
-              if (!this.cboParceiros.find(f => f.Value == x.nome))
-                this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.nome });
-            }
-          });
-    
+      if (r != null) {
+        r.forEach(x => {
+          if (!!x.nome) {
+            if (!this.cboParceiros.find(f => f.Value == x.nome))
+              this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.nome });
+          }
+        });
+
         this.cboParceiros = this.cboParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
       }
 
@@ -213,14 +219,14 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   cboParceiro_onChange() {
-    this.carregando = true;
+    
+    this.carregandoVendedoresParceiros = true;
     this.form.controls.vendedorParceiro.setValue(null);
     this.cboVendedoresParceiros = new Array<DropDownItem>();
     this.filtro.IdIndicadorVendedor = null;
     if (this.filtro.Parceiros != undefined && this.filtro.Parceiros.length > 0) {
       this.buscarVendedoresDoParceiro(this.filtro.Parceiros);
     }
-    this.carregando = false;
   }
 
   buscarVendedoresDoParceiro(parceiros: string[]) {
@@ -229,12 +235,14 @@ export class OrcamentosListarComponent implements OnInit {
         r.forEach(x => {
           if (!!x.nome) {
             if (!this.cboVendedoresParceiros.find(f => f.Value == x.nome))
-            this.cboVendedoresParceiros.push({ Id: x.id, Value: x.nome });
+              this.cboVendedoresParceiros.push({ Id: x.id, Value: x.nome });
           }
-      });
-    }
+        });
+        this.carregandoVendedoresParceiros = false;
+      }
     }).catch((e) => {
       this.sweetAlertService.aviso(e.error.Mensagem);
+      this.carregandoVendedoresParceiros = false;
     });
   }
 
@@ -335,7 +343,7 @@ export class OrcamentosListarComponent implements OnInit {
               this.lstDtoFiltrada.splice(i, 1);
             }
           });
-          
+
           window.location.reload();
         }).catch(e => this.alertaService.mostrarErroInternet("Falha ao excluir!"));
       }
@@ -352,17 +360,17 @@ export class OrcamentosListarComponent implements OnInit {
     this.filtro.Exportar = false;
     //this.first = 0;
 
-    if(event != undefined) {
+    if (event != undefined) {
 
-        this.filtro.pagina = event.first / event.rows;
-        this.filtro.qtdeItensPagina = event.rows;
-        this.qtdePorPaginaSelecionado = event.rows;
-        this.filtro.nomeColunaOrdenacao = event.sortField;
-        this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true: false;
+      this.filtro.pagina = event.first / event.rows;
+      this.filtro.qtdeItensPagina = event.rows;
+      this.qtdePorPaginaSelecionado = event.rows;
+      this.filtro.nomeColunaOrdenacao = event.sortField;
+      this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
 
-        if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
-          this.filtro.pagina = 0;
-        }
+      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
+        this.filtro.pagina = 0;
+      }
     }
 
     this.buscarRegistros(this.filtro);
@@ -370,7 +378,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   carregando: boolean = false;
 
-  buscarRegistros(filtro: Filtro) { 
+  buscarRegistros(filtro: Filtro) {
 
     this.carregando = true;
 
@@ -394,7 +402,7 @@ export class OrcamentosListarComponent implements OnInit {
         this.first = 0;
         this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
       }
-      
+
       this.lstDtoFiltrada = this.lstDto;
     }).catch((r) => {
       this.carregando = false;
@@ -448,13 +456,13 @@ export class OrcamentosListarComponent implements OnInit {
         linha.Status = l.Status;
         if (this.parametro == enumParametros.ORCAMENTOS) linha.DtExpiracao = this.dataUtils.formata_data_DDMMYYY(l.DtExpiracao);
         linha.DtCadastro = this.dataUtils.formata_data_DDMMYYY(l.DtCadastro);
-        
+
         lstExport.push(linha);
       });
 
       this.carregando = false;
 
-      if(excel) {
+      if (excel) {
         this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos");
       }
       else {
