@@ -12,8 +12,8 @@ export class Filtro {
     Parceiros: string[];
     VendedorParceiros: string[];
     Mensagem: string;
-    DtInicio: Date;
-    DtFim: Date;
+    DtInicio: Date|string;
+    DtFim: Date|string;
     DtInicioExpiracao:Date;
     DtFimExpiracao:Date;
     Exportar: boolean;
