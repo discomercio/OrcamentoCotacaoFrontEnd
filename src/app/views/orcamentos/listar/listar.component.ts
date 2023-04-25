@@ -224,7 +224,6 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
 
   cboParceiro_onChange() {
 
-    this.form.controls.vendedorParceiro.setValue(null);
     this.cboVendedoresParceiros = new Array<DropDownItem>();
     this.filtro.IdIndicadorVendedor = null;
     if (this.filtro.Parceiros != undefined && this.filtro.Parceiros.length > 0) {
