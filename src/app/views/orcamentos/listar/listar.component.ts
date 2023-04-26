@@ -33,6 +33,7 @@ import { PedidoService } from 'src/app/service/pedido/pedido.service';
 import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
 import { LazyLoadEvent } from 'primeng/api';
 import { ChangeDetectorRef } from '@angular/core';
+import { arrayToHash } from '@fullcalendar/core/util/object';
 
 @Component({
   selector: 'app-listar',
@@ -133,6 +134,12 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    if (this.tipoUsuario == this.constantes.PARCEIRO) {
+      let filtro = new Array<string>();
+      filtro.push(this.usuario.nome);
+      this.buscarVendedoresDoParceiro(filtro);
+    }
+
     this.cdr.detectChanges();
   }
 
@@ -318,7 +325,7 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     }
 
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-      this.filtro.Parceiro = this.usuario.idParceiro;
+      // this.filtro.Parceiro = this.usuario.idParceiro;
       this.filtro.VendedorParceiro = this.usuario.nome;
       this.filtro.IdIndicadorVendedor = this.usuario.id;
     }
@@ -368,11 +375,11 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
 
   setarFiltro() {
 
-    if (this.dtInicio){
+    if (this.dtInicio) {
       this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
-    }else this.filtro.DtInicio = null;
-      
-    if (this.dtFim){
+    } else this.filtro.DtInicio = null;
+
+    if (this.dtFim) {
       this.filtro.DtFim = DataUtils.formataParaFormulario(new Date(this.dtFim));
     }
     else this.filtro.DtFim = null;
