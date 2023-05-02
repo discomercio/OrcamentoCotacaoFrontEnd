@@ -48,10 +48,10 @@
             autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
             [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true" [(first)]="first">
             <ng-template pTemplate="body" let-p>
-                <ng-container>
+                <ng-container *ngIf="p.produtoDto.unitarioVendavel">
 
                     <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
-                        [pSelectableRow]="p" *ngIf="p.vendavel && p.produtoDto.unitarioVendavel">
+                        [pSelectableRow]="p" *ngIf="p.vendavel">
                         <td class="p-d-inline-flex" style="width: 100%">
                             <span>
                                 <p-tableRadioButton [value]="p" (click)="marcarLinha($event)"></p-tableRadioButton>
