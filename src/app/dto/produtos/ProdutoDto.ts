@@ -16,4 +16,5 @@ export class ProdutoDto {
     capacidade:number;
     ciclo:string;
     cicloDescricao:string;
+    unitarioVendavel:boolean;
 }

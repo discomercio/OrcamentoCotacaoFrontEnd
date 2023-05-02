@@ -89,7 +89,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       let existe = false;
       this.selecProdInfoPassado.produtoComboDto.produtosCompostos.some(x => {
         let ff = x.filhos.filter(y => y.produto == xy.produtoDto.produto);
-        debugger;
+        
         if (ff.length > 0) {
           existe = true;
           return true
@@ -278,7 +278,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
   filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
-
+debugger;
     ProdutoTela.AtualizarVisiveis(lista, digitado);
     retorno = lista.filter(f => f.visivel == true);
 
