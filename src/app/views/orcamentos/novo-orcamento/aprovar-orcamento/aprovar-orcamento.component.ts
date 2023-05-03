@@ -277,8 +277,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
-
-          if (this.novoOrcamentoService.permiteEnviarMensagem(r.status, r.validade)) {
+          
+          if (this.novoOrcamentoService.permiteEnviarMensagem(r.validade, r.dataMaxTrocaMsg)) {
             this.mensagemComponente.permiteEnviarMensagem = true;
           } else {
             this.mensagemComponente.permiteEnviarMensagem = false;

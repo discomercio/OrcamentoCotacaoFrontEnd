@@ -167,12 +167,12 @@ export class NovoOrcamentoService {
       else {
         let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == x.produto)[0];
         console.log(JSON.stringify(itemSimples));
-        if(!!itemSimples){
+        if (!!itemSimples) {
           itemSimples.descDado = !x.descDado ? 0 : x.descDado;
           itemSimples.qtde = x.qtde;
           todosProdutosSimples.push(Object.assign({}, itemSimples));
         }
-        
+
       }
     });
 
@@ -493,13 +493,12 @@ export class NovoOrcamentoService {
     return false;
   }
 
-  permiteEnviarMensagem(status, dataValidade): boolean {
-
-    if (status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
-      status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
+  permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
+    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
+    let dataMax = DataUtils.formata_dataString_para_formato_data(new Date(dataMaxTrocaMsg).toLocaleString("pt-br").slice(0, 10));
+    if(dataAtual > dataMax) return false;
 
     return this.validarExpiracao(dataValidade);
-
   }
 
   validarExpiracao(dataValidade): boolean {
