@@ -11,29 +11,29 @@ export class ProdutoTela {
 
         this.stringBusca = produtoDto != undefined ?
             ProdutoTela.StringSimples(
-                ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) + 
+                ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) +
                 StringUtils.TextoDeHtml(produtoDto.descricaoHtml)) +
-                `/${produtoDto.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
-                `/${produtoDto.ciclo?.toLocaleLowerCase()}/` +
-                `/${produtoDto.capacidade}/`: "";
+            `/${produtoDto.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
+            `/${produtoDto.ciclo?.toLocaleLowerCase()}/` +
+            `/${produtoDto.capacidade}/` : "";
         const filhosDiretos = produtoDto != undefined ? produtoCompostoDto.filter(el => el.paiFabricante === produtoDto.fabricante && el.paiProduto === produtoDto.produto) : new Array();
         if (filhosDiretos.length == 0) {
             this.Filhos = new Array();
-            
+
         }
         else {
             //somente pode ter uma entrada do pai no array
             this.Filhos = filhosDiretos[0].filhos;
             this.Filhos.forEach(p => {
                 this.stringBusca += "/" + p.produto +
-                `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
-                `/${p.ciclo?.toLocaleLowerCase()}/`+
-                `/${p.capacidade}/`;
+                    `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
+                    `/${p.ciclo?.toLocaleLowerCase()}/` +
+                    `/${p.capacidade}/`;
             });
         }
     }
 
-    public vendavel:boolean = true;
+    public vendavel: boolean = true;
 
     //a busca é feita contra esta string
     public stringBusca: string;
@@ -59,7 +59,7 @@ export class ProdutoTela {
         for (let i = 0; i < arr.length; i++) {
             let este = arr[i];
             if (digitado != "") {
-                if (digitado.length >= 2 && este.stringBusca.indexOf(digitado) > -1) {
+                if (digitado.length >= 2 && este.stringBusca.indexOf(digitado) > -1 && este.produtoDto.unitarioVendavel) {
                     este.visivel = true;
                 }
                 else {
