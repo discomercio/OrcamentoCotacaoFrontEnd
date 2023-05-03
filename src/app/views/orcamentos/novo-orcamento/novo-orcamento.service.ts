@@ -496,7 +496,7 @@ export class NovoOrcamentoService {
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
     let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let dataMax = DataUtils.formata_dataString_para_formato_data(new Date(dataMaxTrocaMsg).toLocaleString("pt-br").slice(0, 10));
-    if(dataAtual > dataMax) return false;
+    if(dataAtual >= dataMax) return false;
 
     return this.validarExpiracao(dataValidade);
   }
