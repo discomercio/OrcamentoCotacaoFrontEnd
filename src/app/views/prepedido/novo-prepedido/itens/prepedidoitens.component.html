@@ -26,8 +26,10 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 
 
 			<div style="width: 100%; text-align: right; padding-bottom: 1em;">
-				<div><a mat-raised-button (click)="adicionarProduto()" style="background-color: #007bff !important; color: white !important; font-size: 80%;">
-					<span class="pi pi-plus"></span> Adicionar produto
+				<div>
+					<a mat-raised-button (click)="adicionarProduto()"
+						style="background-color: #007bff !important; color: white !important; font-size: 80%;">
+						<span class="pi pi-plus"></span> Adicionar produto
 					</a></div>
 			</div>
 			<!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
@@ -36,15 +38,7 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 				<thead>
 
 					<tr>
-						<!-- //esepcifica para a tela de itens do pedido, largura do produto
-							//3 ou 4 preços, o desconto e a quantidade
-							//10+6+36 ou 10+6+48 = 52 ou 64
-							.hproduto {
-							  width: 100%;
-							}
-							 -->
-
-						<th style="width: auto;" scope="col" align="left" valign="bottom"><span
+						<th style="width: 26rem; max-width: 26rem;" scope="col" align="left" valign="bottom"><span
 								class="PLTe">Produto</span></th>
 
 						<!-- esta coluna está oculta: $(".tdProdObs").hide(); 
@@ -52,48 +46,28 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 
 						<th scope="col" class="hquantidade" align="right" valign="bottom"><span class="PLTd">Qtde</span>
 						</th>
-						<!-- <% if r_orcamentista_e_indicador.permite_RA_status = 1 then %> -->
 						<th *ngIf="permite_RA_Status" scope="col" class="preco" align="right" valign="bottom"><span
 								class="PLTd">Preço</span></th>
-						<!-- <% end if %> -->
 						<th scope="col" class="hpreco" align="right" valign="bottom"><span class="PLTd">VL Lista</span>
 						</th>
 						<th scope="col" class="hdesconto" align="right" valign="bottom"><span class="PLTd">Desc%
-								&nbsp;&nbsp;</span></th>
+							</span></th>
 						<th scope="col" class="hpreco" align="right" valign="bottom"><span class="PLTd">VL Venda</span>
 						</th>
 						<th scope="col" class="hpreco" align="right" valign="bottom"><span class="PLTd">VL Total</span>
 						</th>
-						<th scope="col" style="width: 2em;">
-							<!-- excluir  -->
-						</th>
-
 					</tr>
 				</thead>
 				<tbody>
 
 					<ng-container *ngFor="let i of prePedidoDto?.ListaProdutos">
 						<tr>
-							<td align="left" style="cursor: pointer;" (click)="mostrarProdutos(i)">
+							<td align="left" style="cursor: pointer;">
 								{{i.Fabricante}}/{{i.Produto}} -
 								<span [innerHTML]="i.Descricao"></span>
 							</td>
-							<!-- esta coluna está oculta: 
-							$(".tdProdObs").hide(); 
-                    <td class="MDB tdProdObs" align="left">
-                        <% if isLojaHabilitadaProdCompostoECommerce(loja) then s_campo_focus="c_desc" else s_campo_focus="c_vl_unitario"%>
-                        <input name="c_obs" id="c_obs" maxlength="10" class="PLLe" style="width:80px;"
-                            onkeypress="if (digitou_enter(true)) <%if r_orcamentista_e_indicador.permite_RA_status = 1 then Response.Write "fORC.c_vl_NF" else Response.Write "fORC." & s_campo_focus%>[<%=Cstr(i-1)%>].focus(); filtra_nome_identificador();"
-                            onblur="this.value=trim(this.value);" value='' <%=s_readonly%> />
-					</td> -->
-
-							<td align="right">
-								<!-- <input name="c_qtde" id="c_qtde" class="PLLd" style="width:27px;" value='{{i.Qtde}}' /> -->
-								<mat-form-field class="quantidade">
-									<input matInput [ngModelOptions]="{standalone: true}" type="number" required
-										[(ngModel)]="i.Qtde" (keyup)="digitouQte(i)" (change)="digitouQte(i)">
-									<!-- (blur)="qtdeVendaPermitida(i)" -->
-								</mat-form-field>
+							<td align="center">
+								{{i.Qtde}}
 							</td>
 							<td *ngIf="permite_RA_Status" align="right">
 								<mat-form-field class="preco">
@@ -102,15 +76,13 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 										(keyup)="formatarPreco_NF($event,i)" (blur)="digitouPreco_NF($event,i)">
 								</mat-form-field>
 							</td>
-
 							<td align="right">
 								{{moedaUtils.formatarMoedaSemPrefixo(i.Preco_Lista)}}
 							</td>
-
-
 							<td align="right">
 								<mat-form-field class="desconto">
-									<input matInput type="text" [value]="moedaUtils.formatarMoedaSemPrefixo(i.Desc_Dado)"
+									<input matInput type="text"
+										[value]="moedaUtils.formatarMoedaSemPrefixo(i.Desc_Dado)"
 										(keyup)="formatarDesc($event,i)" (blur)="digitouDesc($event,i)">
 								</mat-form-field>%
 							</td>
@@ -121,43 +93,32 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 										(keyup)="formataPreco_Venda($event,i)" (blur)="digitouPreco_Venda($event,i)">
 								</mat-form-field>
 							</td>
-
-
 							<td align="right">
-								<!-- input name="c_vl_total" id="c_vl_total" class="PLLd" style="width:70px;" -->
 								{{moedaUtils.formatarMoedaSemPrefixo(i.TotalItem)}}
-							</td>
-
-							<td style="padding: 0; min-width: auto; max-width: 32px; cursor:pointer;">
-								<span class="pi pi-trash" (click)="removerLinha(i)"> </span>
-								<!-- <button mat-button (click)="removerLinha(i)"
-									style="padding: 0; min-width: auto; max-width: 32px;">
-									
-								</button> -->
 							</td>
 						</tr>
 						<tr *ngIf="estoqueExcedido(i)">
-							<td colspan="7" class="avisoestoque" *ngIf="!permite_RA_Status">
+							<td colspan="6" class="avisoestoque" *ngIf="!permite_RA_Status">
 								Quantidade solicitada é maior que o estoque disponível!
 							</td>
-							<td colspan="8" class="avisoestoque" *ngIf="permite_RA_Status">
+							<td colspan="7" class="avisoestoque" *ngIf="permite_RA_Status">
 								Quantidade solicitada é maior que o estoque disponível!
 							</td>
 						</tr>
 						<tr *ngIf="produtoTemAviso(i)">
-							<td colspan="7" class="avisoestoque" *ngIf="!permite_RA_Status">
+							<td colspan="6" class="avisoestoque" *ngIf="!permite_RA_Status">
 								Aviso: {{produtoMsgAviso(i)}}
 							</td>
-							<td colspan="8" class="avisoestoque" *ngIf="permite_RA_Status">
+							<td colspan="7" class="avisoestoque" *ngIf="permite_RA_Status">
 								Aviso: {{produtoMsgAviso(i)}}
 							</td>
 						</tr>
 						<!-- verifica a qtde máxima de venda permitida -->
 						<tr *ngIf="qtdeVendaPermitida(i)">
-							<td colspan="7" class="avisoestoque" *ngIf="!permite_RA_Status">
+							<td colspan="6" class="avisoestoque" *ngIf="!permite_RA_Status">
 								{{this.msgQtdePermitida}}
 							</td>
-							<td colspan="8" class="avisoestoque" *ngIf="permite_RA_Status">
+							<td colspan="7" class="avisoestoque" *ngIf="permite_RA_Status">
 								{{this.msgQtdePermitida}}
 							</td>
 						</tr>
@@ -179,11 +140,9 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 						<td align="right"> </td>
 						<td align="right"> </td>
 						<td align="right"> </td>
-
 						<td align="right">
 							<strong>{{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedido())}}</strong>
 						</td>
-						<td align="right"> </td>
 					</tr>
 
 				</tbody>
@@ -198,7 +157,7 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 			<div *ngIf="!telaDesktop">
 				<div *ngFor="let i of prePedidoDto?.ListaProdutos" class="caixacel ">
 					<!-- sempre uma linha inteira -->
-					<div style="cursor: pointer; padding-bottom: 1em; text-align: center" (click)="mostrarProdutos(i)">
+					<div style="cursor: pointer; padding-bottom: 1em; text-align: center">
 						Produto
 						{{i.Fabricante}}/{{i.Produto}} -
 						<span [innerHTML]="i.Descricao"></span>
@@ -246,13 +205,6 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 							{{moedaUtils.formatarMoedaSemPrefixo(i.TotalItem)}}
 						</span>
 
-						<span>
-							<button mat-button (click)="removerLinha(i)"
-								style="padding: 0; min-width: auto; max-width: 32px;">
-								<mat-icon class="icone-lixeira" style="padding: 0;" title="Remover linha">delete
-								</mat-icon>
-							</button>
-						</span>
 					</div>
 					<!-- mensagem de estoque em linha separada -->
 					<div *ngIf="estoqueExcedido(i)" class="avisoestoque" style="padding-top: 1em">
@@ -280,24 +232,34 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 				</div>
 				<div style="text-align: left; padding-right: 1em;">
 					<span *ngIf="permite_RA_Status">
-						<strong>Total Preço: {{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedidoRA())}}</strong>
+						<strong>Total Preço:
+							{{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedidoRA())}}</strong>
 					</span>
 				</div>
 				<div style="text-align: left; padding-right: 1em;">
 					<span>
-						<strong>Total VL Venda : {{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedido())}}</strong>
+						<strong>Total VL Venda :
+							{{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedido())}}</strong>
 					</span>
 				</div>
+			</div>
+			<div *ngIf="prePedidoDto?.ListaProdutos.length > 0" align="right">
+				<a mat-raised-button (click)="removerTodosProdutos()"
+				style="background-color: #007bff !important; color: white !important; font-size: 80%;">
+				<span class="pi pi-trash"></span>&nbsp; Excluir todos os produtos
+			</a>
 			</div>
 			<div>
 				<app-dados-pagto #dadosPagto></app-dados-pagto>
 			</div>
 		</article>
 		<footer>
-			<a mat-raised-button color="accent" (click)="voltar()" style="font-size:80%;background-color: #007bff !important;color: white !important;">
+			<a mat-raised-button color="accent" (click)="voltar()"
+				style="font-size:80%;background-color: #007bff !important;color: white !important;">
 				<span class="pi pi-arrow-circle-left"> </span> Voltar
 			</a>
-			<button mat-raised-button color="accent" (click)="continuar()" type="button" style="background-color: #007bff !important;color: white !important;font-size:80%">
+			<button mat-raised-button color="accent" (click)="continuar()" type="button"
+				style="background-color: #007bff !important;color: white !important;font-size:80%">
 				<span class="pi pi-arrow-circle-right"> </span> Avançar
 			</button>
 		</footer>
