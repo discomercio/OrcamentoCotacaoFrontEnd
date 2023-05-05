@@ -62,7 +62,7 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 
 					<ng-container *ngFor="let i of prePedidoDto?.ListaProdutos">
 						<tr>
-							<td align="left" style="cursor: pointer;">
+							<td align="left">
 								{{i.Fabricante}}/{{i.Produto}} -
 								<span [innerHTML]="i.Descricao"></span>
 							</td>
@@ -157,19 +157,15 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 			<div *ngIf="!telaDesktop">
 				<div *ngFor="let i of prePedidoDto?.ListaProdutos" class="caixacel ">
 					<!-- sempre uma linha inteira -->
-					<div style="cursor: pointer; padding-bottom: 1em; text-align: center">
-						Produto
+					<div style="padding-bottom: 1em; text-align: center">
+						<strong>Produto</strong> 
 						{{i.Fabricante}}/{{i.Produto}} -
 						<span [innerHTML]="i.Descricao"></span>
 					</div>
 
 					<div style="display: flex; justify-content: space-around;">
 						<span>
-							<mat-form-field class="quantidade" style="width: 5em">
-								<input matInput [ngModelOptions]="{standalone: true}" type="number" required
-									[(ngModel)]="i.Qtde" (keyup)="digitouQte(i)" (change)="digitouQte(i)"
-									placeholder="Quantidade">
-							</mat-form-field>
+							<strong>Qtde: </strong>{{i.Qtde}}
 						</span>
 						<span *ngIf="permite_RA_Status">
 							<mat-form-field class="preco">
@@ -198,11 +194,11 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 					</div>
 					<div style="display: flex; justify-content: space-around; align-items: center;">
 						<span>
-							VL Lista: {{moedaUtils.formatarMoedaSemPrefixo(i.Preco_Lista)}}
+							<strong>VL Lista:</strong> {{moedaUtils.formatarMoedaSemPrefixo(i.Preco_Lista)}}
 						</span>
 
-						<span>VL Total:
-							{{moedaUtils.formatarMoedaSemPrefixo(i.TotalItem)}}
+						<span>
+							<strong>VL Total:</strong> {{moedaUtils.formatarMoedaSemPrefixo(i.TotalItem)}}
 						</span>
 
 					</div>
