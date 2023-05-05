@@ -7,4 +7,5 @@ export class RemetenteDestinatarioResponse {
     donoOrcamento: boolean;
     status: number;
     validade: string;
+    dataMaxTrocaMsg: Date;
 }
