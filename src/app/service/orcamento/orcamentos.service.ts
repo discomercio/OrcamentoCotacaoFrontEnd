@@ -15,9 +15,6 @@ import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { CadastroOrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/CadastroOrcamentoCotacaoResponse';
 import { AtualizarOrcamentoOpcaoResponse } from 'src/app/dto/orcamentos/AtualizarOrcamentoOpcaoResponse';
-import { ConsultaGerencialOrcamentoRequest } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-request';
-import { ConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/consulta-gerencial-orcamento-response';
-import { ListaConsultaGerencialOrcamentoResponse } from 'src/app/dto/orcamentos/lista-consulta-gerencial-orcamento-response';
 
 @Injectable({
   providedIn: 'root'
@@ -90,13 +87,5 @@ export class OrcamentosService {
       return this.http.post<string[]>(`${this.appSettingsService.config.apiUrl}publico/aprovarOrcamento`, aprovacaoDto);
 
     //aqui podemos incluir a chamada com token
-  }
-
-  consultaGerencial(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse> {
-    return this.http.post<ListaConsultaGerencialOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/consultaGerencial`, filtro);
-  }
-
-  exportarCSV(filtro:ConsultaGerencialOrcamentoRequest):Observable<ListaConsultaGerencialOrcamentoResponse>{
-    return this.http.post<ListaConsultaGerencialOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/exportarConsultaGerencial`, filtro);
   }
 }

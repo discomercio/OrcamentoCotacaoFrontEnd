@@ -120,52 +120,6 @@
                 "routerLink": [
                     "/calculadora-vrf"
                 ]
-            },
-            {
-                "label": "Consultas",
-                "icon": "fa fa-search",
-                "routerLink": [
-                    "/consultas"
-                ],
-                "items": [
-                    {
-                        "label": "Orçamentos",
-                        "icon": "fa fa-list-alt",
-                        "routerLink": [
-                            "/consultas/orcamento"
-                        ],
-                        "items": [
-                            {
-                                "label": "Vigentes",
-                                "icon": "fa fa-list-alt",
-                                "routerLink": [
-                                    "/consultas/orcamento/orcamentos-vigentes"
-                                ]
-                            },
-                            {
-                                "label": "Cadastrados",
-                                "icon": "fa fa-list-alt",
-                                "routerLink": [
-                                    "/consultas/orcamento/orcamentos-cadastrados"
-                                ]
-                            },
-                            {
-                                "label": "Expirados",
-                                "icon": "fa fa-list-alt",
-                                "routerLink": [
-                                    "/consultas/orcamento/orcamentos-expirados"
-                                ]
-                            },
-                            {
-                                "label": "Mensagens pendentes",
-                                "icon": "fa fa-list-alt",
-                                "routerLink": [
-                                    "/consultas/orcamento/orcamentos-com-mensagens-pendentes"
-                                ]
-                            }
-                        ]
-                    }
-                ]
             }
         ]
     }
