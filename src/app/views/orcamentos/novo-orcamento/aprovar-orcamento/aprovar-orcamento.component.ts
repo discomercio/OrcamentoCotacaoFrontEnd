@@ -465,4 +465,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   editarDadosCliente(orcamento) {
     this.router.navigate(["orcamentos/editar/editar-cliente"]);
   }
+
+  copiarLink(){
+    navigator.clipboard.writeText(this.novoOrcamentoService.orcamentoCotacaoDto.link);
+    this.mensagemService.showSuccessViaToast("Link copiado com sucesso!");
+  }
 }
