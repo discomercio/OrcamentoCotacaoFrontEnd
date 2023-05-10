@@ -143,9 +143,6 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
             this.lstEnderecos = r;
             this.endereco = "";
           }
-          else {
-            this.alertaService.mostrarMensagem("Erro ao carregar a lista de Endereços!")
-          }
         }
         this.carregando = false;
       }).catch((e) => {
