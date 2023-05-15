@@ -49,10 +49,6 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     this.carregando = true;
     this.criarForm();
     this.setarCampos();
-    
-    // this.buscarProdutoDetalhe();
-    // this.buscarProduto()
-    // this.buscarProdutoCatalogoAtivo();
   }
 
   criarForm() {
@@ -71,46 +67,27 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     this.buscarProdutoCatalogoAtivo();
   }
 
-  buscarProdutoDetalhe() {
-    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
-      if (r != null) {
-        this.produto = r;
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
-
   buscarProdutoCatalogoAtivo(){
     let request = new ConsultaProdutoCatalogoAtivoRequest();
     
     request.id = this.id;
     this.produtoService.buscarProdutoCatalogoAtivo(request).toPromise().then((r)=>{
-      debugger;
+      this.carregando = false;
       if(!r.Sucesso){
-        
+        this.alertaService.mostrarMensagem(r.Mensagem);
+        return;
       }
+
+      this.response = r;
+
     }).catch((r)=>{
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(r);
     })
   }
 
   voltarClick(): void {
     window.history.back();
-  }
-
-  produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];
-
-  buscarProduto() {
-    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
-    obj.idProduto = this.id;
-    obj.propriedadeOculta= false;
-    obj.propriedadeOcultaItem = false;
-    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
-      if (r != null) {
-        this.produtoDados = r;
-      }
-    }).catch((e) => {
-      console.log(e);
-    });
   }
 
   ngOnDestroy(){
