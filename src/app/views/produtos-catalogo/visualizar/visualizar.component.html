@@ -10,26 +10,30 @@
     <div class="p-col-12">
         <div class="card p-d-block p-d-lg-flex p-d-md-flex p-d-sm-flex">
             <div class="p-fluid p-formgrid p-col-12 p-lg-7 p-md-7 p-sm-6 p-mx-0 p-px-0"
-                *ngIf="produtoDados != undefined">
+                *ngIf="produto != undefined">
                 <div class="p-text-bold">Fabricante:</div>
                 <div class="p-field p-col-12">
                     <!-- <span>{{produtoDados[0].fabricante}} - {{produtoDados[0].fabricanteNome}}</span> -->
-                    <span>
+                    <!-- <span>
                         {{ produtoDados.length > 0 ? produtoDados[0].fabricante + ' - ' : '' }}
                         {{ produtoDados.length > 0 ? produtoDados[0].fabricanteNome : ''}}
+                    </span> -->
+                    <span>
+                        {{produto.Fabricante + ' - ' }}
+                        {{produto.fabricanteNome}}
                     </span>
                 </div>
                 <div class="p-text-bold">Código:<br></div>
                 <div class="p-field p-col-12">
-                    <span>{{ produtoDados.length > 0 ? produtoDados[0].produto : '' }}</span>
+                    <span>{{produto.Produto}}</span>
                 </div>
                 <div class="p-text-bold">Descrição:</div>
                 <div class="p-field p-col-12">
-                    <span>{{ produtoDados.length > 0 ? produtoDados[0].descricao : '' }}</span>
+                    <span>{{produto.Nome }}</span>
                 </div>
                 <div class="p-text-bold">Descrição Completa:</div>
                 <div class="p-field p-col-12">
-                    <span [innerHTML]=" produtoDados.length > 0 ? produtoDados[0].descricaoCompleta : '' "></span>
+                    <span [innerHTML]=" produto.Descricao"></span>
                 </div>
 
             </div>
@@ -50,8 +54,8 @@
 <div class="p-grid">
     <div class="p-col-12">
         <div class="card">
-            <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-field" *ngIf="produtoDados != undefined">
-                <div class=" p-col-12 p-d-inline-flex" *ngFor="let prop of produtoDados; let i=index">
+            <div class="p-fluid p-formgrid p-col-12 p-mx-0 p-px-0 p-field" *ngIf="!!produto && produto.campos?.length > 0">
+                <div class=" p-col-12 p-d-inline-flex" *ngFor="let prop of produto.campos; let i=index">
                     <div class="p-col-6">
                         <div class="p-text-bold"><span>{{prop.nomePropriedade}}:</span></div>
                     </div>
