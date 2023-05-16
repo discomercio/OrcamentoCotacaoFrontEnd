@@ -44,3 +44,11 @@
     background: #146fd7;
     color: #fff;
 }
+
+::ng-deep .p-chip-icon, ::ng-deep.p-chip-text{
+    color: #146fd7;
+}
+
+::ng-deep .p-chip-icon{
+    rotate: 136deg;
+}

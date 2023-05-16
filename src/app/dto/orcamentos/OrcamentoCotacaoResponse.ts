@@ -27,4 +27,5 @@ export class OrcamentoCotacaoResponse {
     statusEmail:string;
     instaladorInstala:number;
     erro:string;
+    link:string;
 }

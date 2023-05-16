@@ -39,6 +39,10 @@
                                     {{dataUtils.formata_data_DDMMYYY(novoOrcamentoService.orcamentoCotacaoDto?.validade)}}
                                 </span>
                             </div>
+                            <div>
+                                <p-chip label="Copiar link do orçamento enviado para o cliente" icon="fa fa-link"
+                                    (click)="copiarLink()" style="cursor: pointer;"></p-chip>
+                            </div>
                             <br>
 
                         </div>
@@ -197,7 +201,7 @@
                                                         <th class="p-col-4">Produto</th>
                                                         <th class="p-col-1 p-text-center">Qtde</th>
                                                         <th class="p-col-1 p-text-center">Desc</th>
-                                                        <th class="p-col-2 p-text-center">Preço</th>                                                        
+                                                        <th class="p-col-2 p-text-center">Preço</th>
                                                     </tr>
                                                 </ng-template>
 
@@ -265,10 +269,12 @@
                                                     *ngFor="let fp of orcamento.formaPagto; let y = index">
                                                     <div class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(100% - 45px);">
-                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center" *ngIf="fp.aprovado">
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
+                                                            *ngIf="fp.aprovado">
                                                             <i class="pi pi-check" style="color: green;"></i>
                                                         </div>
-                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center" *ngIf="!fp.aprovado">
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
+                                                            *ngIf="!fp.aprovado">
                                                             <i class="pi pi-circle-off"></i>
                                                         </div>
 
@@ -316,8 +322,8 @@
                                         <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotal)}}</span>
                                     </div>
                                     <div class="p-col-1 p-ml-auto p-p-0 p-text-right">
-                                        <button *ngIf="editarOpcoes[i]" style="color: #fff;" pButton type="button" label="Editar"
-                                            icon="pi pi-user-edit" (click)="editarOpcao(orcamento)"
+                                        <button *ngIf="editarOpcoes[i]" style="color: #fff;" pButton type="button"
+                                            label="Editar" icon="pi pi-user-edit" (click)="editarOpcao(orcamento)"
                                             class="p-button-text p-p-0 p-text-bold"></button>
                                     </div>
                                 </ng-template>
