@@ -168,6 +168,7 @@ export class SelecProdDialogComponent extends TelaDesktopBaseComponent implement
   public digitado = "";
   digitouProd(e: Event) {
     this.digitado = ((e.target) as HTMLInputElement).value;
+    
     ProdutoTela.AtualizarVisiveis(this.prodsArray, this.digitado);
     this.atualizarProdsTela();
   }

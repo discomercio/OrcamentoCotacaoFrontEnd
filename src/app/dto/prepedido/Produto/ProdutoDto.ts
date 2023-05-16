@@ -7,4 +7,5 @@
     Estoque: number;
     Alertas: string;
     Qtde_Max_Venda: number = 0;
+    UnitarioVendavel: boolean;
 }

@@ -26,6 +26,7 @@ import { ProdutoService } from 'src/app/service/produto/prepedido/produto.servic
 import { ProdutoDto } from 'src/app/dto/prepedido/Produto/ProdutoDto';
 import { PrepedidoProdutoDtoPrepedido } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrepedidoProdutoDtoPrepedido';
 import { ConfirmationDialogComponent } from 'src/app/utilities/confirmation-dialog/confirmation-dialog.component';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-prepedidoitens',
@@ -53,7 +54,8 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     public readonly alertaService: AlertaService,
     public readonly produtoService: ProdutoService,
     public readonly dialog: MatDialog,
-    telaDesktopService: TelaDesktopService
+    telaDesktopService: TelaDesktopService,
+    private readonly sweetAlertService: SweetalertService
   ) {
     super(telaDesktopService);
   }
@@ -509,6 +511,25 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     });
   }
 
+  removerTodosProdutos(){
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja remover todos os itens do pedido?").subscribe((result)=>{
+      if(result){
+        this.prePedidoDto.ListaProdutos = new Array();
+        this.dadosPagto.prepedidoAlterado();
+      }
+    });
+    // const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
+    //   data: `Remover todos itens do pedido?`
+    // });
+
+    // dialogRef.afterClosed().subscribe((result) => {
+    //   if (result) {
+    //     this.prePedidoDto.ListaProdutos = new Array();
+    //     //Gabriel
+    //     this.dadosPagto.prepedidoAlterado();
+    //   }
+    // });
+  }
 
   public clicouAddProd: boolean = false;
   verificarCargaProdutos(): boolean {

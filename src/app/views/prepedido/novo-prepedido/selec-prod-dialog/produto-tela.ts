@@ -9,7 +9,7 @@ export class ProdutoTela {
      * Constroi a partir de um ProdutoDto
      */
     constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto[]) {
-        this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.Fabricante, produtoDto.Fabricante_Nome, produtoDto.Produto) + StringUtils.TextoDeHtml(produtoDto.Descricao_html));
+        this.stringBusca = ProdutoTela.StringSimples(ProdutoTela.FabrProd(produtoDto.Fabricante, produtoDto.Fabricante_Nome, produtoDto.Produto) + "/" + StringUtils.TextoDeHtml(produtoDto.Descricao_html));
         const filhosDiretos = produtoCompostoDto.filter(el => el.PaiFabricante === produtoDto.Fabricante && el.PaiProduto === produtoDto.Produto);
         if (filhosDiretos.length == 0) {
             this.Filhos = new Array();
@@ -17,6 +17,9 @@ export class ProdutoTela {
         else {
             //somente pode ter uma entrada do pai no array
             this.Filhos = filhosDiretos[0].Filhos;
+            this.Filhos.forEach(p => {
+                this.stringBusca += "/" + p.Produto + "/";
+            });
         }
     }
 
@@ -42,16 +45,32 @@ export class ProdutoTela {
         digitado = ProdutoTela.StringSimples(digitado);
         for (let i = 0; i < arr.length; i++) {
             let este = arr[i];
-            // if (digitado === "" || este.stringBusca.indexOf(digitado) >= 0) {
-            //     este.visivel = true;
-            // }  
-            //alteramos a condição para que apareça apenas quando o código do produto for igual ao digitado
-            if (digitado != "" && parseInt(este.produtoDto.Produto) == parseInt(digitado)) {
-                este.visivel = true;
-            }           
-            else {
-                este.visivel = false;
+            if (digitado != "") {
+                
+                if (digitado.length >= 2 && parseInt(este.produtoDto.Produto) == parseInt(digitado) && este.produtoDto.UnitarioVendavel) {
+                    este.visivel = true;
+                }
+                //***Se pedirem para poder filtrar por filhotes, descomentar esse código
+                //Se descomentar esse código, poderá aparecer mais de 1 produto na lista, sendo assim, 
+                //precisa remover a seleção automática do checkbox
+                // else if(arr[i].Filhos.length > 0 && este.produtoDto.UnitarioVendavel){
+                //     let existeFilhos = este.Filhos.filter(x => parseInt(x.Produto) == parseInt(digitado));
+                //     if(existeFilhos.length > 0){
+                //         este.visivel = true;
+                //     }
+                // }
+                else {
+                    este.visivel = false;
+                }
             }
+            if (digitado == "")
+                este.visivel = false;
+            // if (digitado != "" && parseInt(este.produtoDto.Produto) == parseInt(digitado)) {
+            //     este.visivel = true;
+            // }           
+            // else {
+            //     este.visivel = false;
+            // }
 
         }
     }

@@ -8,35 +8,36 @@
             <!-- este fica ruim: div style="display: flex; " [ngStyle]="{'flex-direction':telaDesktop?'row':'column'}"  (keydown)="keydownProduto($event)" -->
 
             <div *ngIf="telaDesktop" style="display: flex; flex-direction: row; ">
-                <mat-form-field style="flex-grow: 1; flex-shrink: 1;" >
-                    <input matInput type="text" name="buscaproduto" placeholder="Produto (código)" 
-                        value="{{this.selecProdInfoPassado.Produto}}" (change)="digitouProd($event)" 
+                <mat-form-field style="flex-grow: 1; flex-shrink: 1;">
+                    <input matInput type="text" name="buscaproduto" placeholder="Produto (código)"
+                        value="{{this.selecProdInfoPassado.Produto}}" (change)="digitouProd($event)"
                         (keyup)="digitouProd($event)" appFocoAutomatico>
                 </mat-form-field>
 
-                <mat-form-field style="flex-grow: 0; flex-shrink: 0;">                        
-                    <input matInput type="number" name="qtde" placeholder="Quantidade" id="qtde" required [(ngModel)]="qtde"
-                        [value]="qtde" [ngModelOptions]="{standalone: true}" (keyup)="verificaNegativo()">  
-                        <span class="pi pi-minus-circle" (click)="menos()"> </span>
-                        <span class="pi pi-plus-circle" (click)="mais()"> </span>
-                        <!-- <mat-icon (click)="menos()">remove</mat-icon>       -->
-                        <!-- <mat-icon (click)="mais()">add</mat-icon>  -->
+                <mat-form-field style="flex-grow: 0; flex-shrink: 0;">
+                    <input matInput type="number" name="qtde" placeholder="Quantidade" id="qtde" required
+                        [(ngModel)]="qtde" [value]="qtde" [ngModelOptions]="{standalone: true}"
+                        (keyup)="verificaNegativo()">
+                    <span class="pi pi-minus-circle" (click)="menos()"> </span>
+                    <span class="pi pi-plus-circle" (click)="mais()"> </span>
+                    <!-- <mat-icon (click)="menos()">remove</mat-icon>       -->
+                    <!-- <mat-icon (click)="mais()">add</mat-icon>  -->
                 </mat-form-field>
-                
+
             </div>
             <div *ngIf="!telaDesktop">
                 <mat-form-field>
                     <input matInput type="text" name="buscaproduto" placeholder="Produto (código)"
                         value="{{this.selecProdInfoPassado.Produto}}" (change)="digitouProd($event)"
                         (keyup)="digitouProd($event)" appFocoAutomatico>
-                        
+
                 </mat-form-field>
 
                 <mat-form-field>
                     <input matInput type="number" name="qtde" placeholder="Quantidade" required [(ngModel)]="qtde"
                         [value]="qtde" [ngModelOptions]="{standalone: true}">
-                        <span class="pi pi-minus-circle" (click)="menos()"> </span>
-                        <span class="pi pi-plus-circle" (click)="mais()"> </span>
+                    <span class="pi pi-minus-circle" (click)="menos()"> </span>
+                    <span class="pi pi-plus-circle" (click)="mais()"> </span>
                 </mat-form-field>
             </div>
 
@@ -51,56 +52,60 @@
                     [ngModelOptions]="{standalone: true}">
                     <table style="width: 100%;" class="destaquelinha">
                         <ng-container *ngFor="let p of prodsTela; let i=index">
-                        <ng-container *ngIf="p.visivel">
-                        <tr class="prod" style="font-size: 80%">
-                            <td class="tdtabela">
-                                <!-- usamos o display: none e não o ngif para ficar mais rápido:
+                            <ng-container *ngIf="p.produtoDto.UnitarioVendavel && p.visivel">
+                                <tr class="prod" style="font-size: 80%">
+                                    <td class="tdtabela">
+                                        <!-- usamos o display: none e não o ngif para ficar mais rápido:
                         quando o usuário pede para editar uma linha existente, se ele apagar o código do produto na caixa de texto
                         fica lento porque tem que reconstruir a árvore -->
-                                <div>
-                                    <!-- usar o mat-radio-button fica BEM mais lento!!
+                                        <div>
+                                            <!-- usar o mat-radio-button fica BEM mais lento!!
         mas paree que a veocidade está suficiente... porque fizemos o truque de passar somente X registros por atualizacao, na rotina maisDadosProd
         no celular, vamos usar só o checkbox mesmo
          -->
-                                    <mat-radio-button *ngIf="telaDesktop" type="radio" name="produto"
-                                        value="{{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}">
-                                        <!-- {{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}} -->
-                                        {{p.produtoDto.Produto}}
-                                    </mat-radio-button>
-                                    <label *ngIf="!telaDesktop">
-                                        <input *ngIf="!telaDesktop" type="radio" name="produto"
-                                            value="{{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}"
-                                            [(ngModel)]="produto">
-                                        {{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}
-                                    </label>
+                                            <mat-radio-button *ngIf="telaDesktop" type="radio" name="produto"
+                                                value="{{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}">
+                                                <!-- {{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}} -->
+                                                {{p.produtoDto.Produto}}
+                                            </mat-radio-button>
+                                            <label *ngIf="!telaDesktop">
+                                                <input *ngIf="!telaDesktop" type="radio" name="produto"
+                                                    value="{{ProdutoTelaFabrProd(p.produtoDto.Fabricante, p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}"
+                                                    [(ngModel)]="produto">
+                                                {{ProdutoTelaFabrProd(p.produtoDto.Fabricante,
+                                                p.produtoDto.Fabricante_Nome, p.produtoDto.Produto)}}
+                                            </label>
 
-                                    <!-- no celular, nao temos a coluan de descrição, colocamos na mesma coluna -->
-                                    <span *ngIf="!telaDesktop" [innerHTML]="p.produtoDto.Descricao_html"></span>
+                                            <!-- no celular, nao temos a coluan de descrição, colocamos na mesma coluna -->
+                                            <span *ngIf="!telaDesktop" [innerHTML]="p.produtoDto.Descricao_html"></span>
 
-                                </div>
-                            </td>
-                            <td class="tdtabela" *ngIf="telaDesktop">
-                                <span [innerHTML]="p.produtoDto.Descricao_html"></span> </td>
-                            <td class="tdtabela" align="right">
-                                {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.Preco_lista)}}
-                            </td>
-                        </tr>
-                        <!-- filhos -->
-                        <tr [ngStyle]="{display: p.visivel ? '':'none'}" class="prod trfilho"
-                            *ngFor="let f of p.Filhos">
-                            <td class="itemfilho">
-                                {{f.Qtde}} x {{ProdutoTelaFabrProd(f.Fabricante, f.Fabricante_Nome, f.Produto)}}
-                                <span *ngIf="!telaDesktop"
-                                    innerHTML="{{produtoDescr(f.Fabricante, f.Produto).Descricao_html}}"></span>
-                            </td>
-                            <td class="tdtabela" *ngIf="telaDesktop">
-                                <span innerHTML="{{produtoDescr(f.Fabricante, f.Produto).Descricao_html}}"></span>
-                            </td>
-                            <td class="tdtabela" align="right">
-                                {{moedaUtils.formatarMoedaComPrefixo(produtoDescr(f.Fabricante, f.Produto).Preco_lista * f.Qtde)}}
-                            </td>
-                        </tr>
-                        </ng-container>
+                                        </div>
+                                    </td>
+                                    <td class="tdtabela" *ngIf="telaDesktop">
+                                        <span [innerHTML]="p.produtoDto.Descricao_html"></span>
+                                    </td>
+                                    <td class="tdtabela" align="right">
+                                        {{moedaUtils.formatarMoedaComPrefixo(p.produtoDto.Preco_lista)}}
+                                    </td>
+                                </tr>
+                                <!-- filhos -->
+                                <tr [ngStyle]="{display: p.visivel ? '':'none'}" class="prod trfilho"
+                                    *ngFor="let f of p.Filhos">
+                                    <td class="itemfilho">
+                                        {{f.Qtde}} x {{ProdutoTelaFabrProd(f.Fabricante, f.Fabricante_Nome, f.Produto)}}
+                                        <span *ngIf="!telaDesktop"
+                                            innerHTML="{{produtoDescr(f.Fabricante, f.Produto).Descricao_html}}"></span>
+                                    </td>
+                                    <td class="tdtabela" *ngIf="telaDesktop">
+                                        <span
+                                            innerHTML="{{produtoDescr(f.Fabricante, f.Produto).Descricao_html}}"></span>
+                                    </td>
+                                    <td class="tdtabela" align="right">
+                                        {{moedaUtils.formatarMoedaComPrefixo(produtoDescr(f.Fabricante,
+                                        f.Produto).Preco_lista * f.Qtde)}}
+                                    </td>
+                                </tr>
+                            </ng-container>
                         </ng-container>
 
                         <!-- botão para msotrar o resto dos registros
@@ -124,25 +129,29 @@
 
         </article>
         <footer *ngIf="telaDesktop" mat-dialog-actions style="justify-content: space-around;">
-            <button mat-raised-button type="button" (click)="onNoClick($event)" style="background-color: #007bff !important;color: white !important;">Cancelar</button>
+            <button mat-raised-button type="button" (click)="onNoClick($event)"
+                style="background-color: #007bff !important;color: white !important;">Cancelar</button>
 
-            <button mat-raised-button (click)="onAdicionarClick()" style="background-color: #007bff !important;color: white !important;">
+            <button mat-raised-button (click)="onAdicionarClick()"
+                style="background-color: #007bff !important;color: white !important;">
                 <ng-template *ngIf="selecProdInfoPassado.Produto; then modificarBlock else adicionarBlock">
                 </ng-template>
                 <ng-template #modificarBlock>Modificar</ng-template>
                 <ng-template #adicionarBlock>Adicionar</ng-template>
             </button>
-            
+
         </footer>
         <footer *ngIf="!telaDesktop" mat-dialog-actions>
-                <button mat-raised-button type="button" (click)="onNoClick($event)" style="background-color: #007bff !important;color: white !important;"
+            <button mat-raised-button type="button" (click)="onNoClick($event)"
+                style="background-color: #007bff !important;color: white !important;"
                 style="width: 5%; font-size: 80%">Cancelar</button>
-                <button mat-raised-button (click)="onAdicionarClick()" style="background-color: #007bff !important;color: white !important;width: 5%;font-size: 80%">
-                        <ng-template *ngIf="selecProdInfoPassado.Produto; then modificarBlock else adicionarBlock">
-                        </ng-template>
-                        <ng-template #modificarBlock>Modificar</ng-template>
-                        <ng-template #adicionarBlock>Adicionar</ng-template>
-                    </button>
+            <button mat-raised-button (click)="onAdicionarClick()"
+                style="background-color: #007bff !important;color: white !important;width: 5%;font-size: 80%">
+                <ng-template *ngIf="selecProdInfoPassado.Produto; then modificarBlock else adicionarBlock">
+                </ng-template>
+                <ng-template #modificarBlock>Modificar</ng-template>
+                <ng-template #adicionarBlock>Adicionar</ng-template>
+            </button>
             <!-- <button mat-raised-button type="button" (click)="onNoClick($event)" style="width: 10%;">
                 <mat-icon>highlight_off</mat-icon>
             </button>

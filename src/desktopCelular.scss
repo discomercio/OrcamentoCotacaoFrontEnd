@@ -18,6 +18,7 @@
   padding-bottom: 0.3em;
   flex-grow: 0;
   flex-shrink: 0;
+  z-index: 9;
 }
 .sectionDesktop article {
   width: calc(100% - 2em);
