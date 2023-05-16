@@ -122,9 +122,6 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
               if (!!r) {
                 if (r.length > 0) {
                   this.lstEnderecos = r;
-                  // this.lstCidades = [];
-                  // this.localidade = "";
-                  this.endereco = "";
                   this.endNaoEncontrado = "";
                 }
                 else

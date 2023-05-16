@@ -141,7 +141,6 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
         if (!!r) {
           if (r.length > 0) {
             this.lstEnderecos = r;
-            this.endereco = "";
           }
         }
         this.carregando = false;
