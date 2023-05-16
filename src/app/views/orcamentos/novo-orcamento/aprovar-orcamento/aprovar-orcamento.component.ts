@@ -467,7 +467,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   copiarLink(){
-    navigator.clipboard.writeText(this.novoOrcamentoService.orcamentoCotacaoDto.link);
+    
+      const copiar = (e : ClipboardEvent) => {
+          e.clipboardData.setData('text/plain', this.novoOrcamentoService.orcamentoCotacaoDto.link);
+          e.preventDefault();
+      };
+      document.addEventListener('copy', copiar );
+      document.execCommand('copy');
+      document.removeEventListener('copy', copiar );
     this.mensagemService.showSuccessViaToast("Link copiado com sucesso!");
   }
 }
