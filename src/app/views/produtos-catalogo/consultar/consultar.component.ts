@@ -67,7 +67,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
 
   urlAnterior: string;
   visualizando: boolean = false;
-  
+
   ngOnInit(): void {
 
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoConsultar)) {
@@ -76,7 +76,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       return;
     }
 
-    
+
 
     this.carregando = true;
     this.buscarPropriedades();
@@ -107,37 +107,39 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   // }
 
   buscarPropriedades() {
-    this.service.buscarPropriedades().toPromise().then((propieidade) => {
-      if (propieidade != null) {
+    this.service.buscarPropriedades().toPromise().then((proprieidade) => {
+      if (proprieidade != null) {
 
-        let descargaCondensadora = propieidade.filter(x => x.descricao.trim().toUpperCase() == "DESCARGA CONDENSADORA");
-        let voltagens = propieidade.filter(x => x.descricao.trim().toUpperCase() == "VOLTAGEM");
-        let capacidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CAPACIDADE (BTU/H)");
-        let ciclos = propieidade.filter(x => x.descricao.trim().toUpperCase() == "CICLO");
-        let tipounidades = propieidade.filter(x => x.descricao.trim().toUpperCase() == "TIPO DA UNIDADE");
+        let descargaCondensadora = proprieidade.filter(x => x.id == 1);
+        let tipounidades = proprieidade.filter(x => x.id == 2);
+        let voltagens = proprieidade.filter(x => x.id == 4);
+        let capacidades = proprieidade.filter(x => x.id == 5);
+        let ciclos = proprieidade.filter(x => x.id == 6);
 
         this.service.buscarOpcoes().toPromise().then((opcao) => {
 
           if (opcao != null) {
             opcao.forEach(e => {
-              if (e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
-                this.descargacondensadoras.push({ Id: e.id, Value: e.valor });
-              }
+              if (!!e.valor) {
+                if (descargaCondensadora.length > 0 && e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
+                  this.descargacondensadoras.push({ Id: e.id, Value: e.valor });
+                }
 
-              if (e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
-                this.voltagens.push({ Id: e.id, Value: e.valor });
-              }
+                if (voltagens.length > 0 && e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
+                  this.voltagens.push({ Id: e.id, Value: e.valor });
+                }
 
-              if (e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
-                this.capacidades.push({ Id: e.id, Value: e.valor });
-              }
+                if (capacidades.length > 0 && e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
+                  this.capacidades.push({ Id: e.id, Value: e.valor });
+                }
 
-              if (e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
-                this.ciclos.push({ Id: e.id, Value: e.valor });
-              }
+                if (ciclos.length > 0 && e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
+                  this.ciclos.push({ Id: e.id, Value: e.valor });
+                }
 
-              if (e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
-                this.tipounidades.push({ Id: e.id, Value: e.valor });
+                if (tipounidades.length > 0 && e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
+                  this.tipounidades.push({ Id: e.id, Value: e.valor });
+                }
               }
             });
           }
@@ -247,7 +249,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     }
   }
 
-  
+
   visualizarClick(id: number) {
     this.visualizando = true;
     sessionStorage.setItem("urlAnterior", "/produtos-catalogo/visualizar");
