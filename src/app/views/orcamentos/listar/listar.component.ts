@@ -28,12 +28,10 @@ import { PrepedidoRemoverService } from 'src/app/service/prepedido/prepedido-rem
 import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
-import { dateToLocalArray } from '@fullcalendar/core/datelib/marker';
 import { PedidoService } from 'src/app/service/pedido/pedido.service';
 import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
 import { LazyLoadEvent } from 'primeng/api';
 import { ChangeDetectorRef } from '@angular/core';
-import { arrayToHash } from '@fullcalendar/core/util/object';
 
 @Component({
   selector: 'app-listar',

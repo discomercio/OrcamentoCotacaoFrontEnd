@@ -52,11 +52,6 @@ import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/clien
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-cliente/cadastro-cliente.component';
-import { OrcamentosVigentesComponent } from 'src/app/views/consultas/orcamento/orcamentos-vigentes/orcamentos-vigentes.component';
-import { OrcamentosCadastradosComponent } from 'src/app/views/consultas/orcamento/orcamentos-cadastrados/orcamentos-cadastrados.component';
-import { OrcamentosComMensagensPendentesComponent } from 'src/app/views/consultas/orcamento/orcamentos-com-mensagens-pendentes/orcamentos-com-mensagens-pendentes.component';
-import { OrcamentosExpiradosComponent } from 'src/app/views/consultas/orcamento/orcamentos-expirados/orcamentos-expirados.component';
-
 
 @NgModule({
     imports: [
@@ -184,18 +179,6 @@ import { OrcamentosExpiradosComponent } from 'src/app/views/consultas/orcamento/
                             {
                                 path: 'senha', canActivate: [AuthGuard], children: [
                                     { path: 'senha-meusdados', component: SenhaMeusdadosComponent, canActivate: [AuthGuard] },
-                                ]
-                            },
-                            {
-                                path: 'consultas', canActivate: [AuthGuard], children: [
-                                    {
-                                        path: 'orcamento', canActivate: [AuthGuard], children: [
-                                            { path: "orcamentos-vigentes", canActivate: [AuthGuard], component: OrcamentosVigentesComponent },
-                                            { path: "orcamentos-cadastrados", canActivate: [AuthGuard], component: OrcamentosCadastradosComponent },
-                                            { path: "orcamentos-com-mensagens-pendentes", canActivate: [AuthGuard], component: OrcamentosComMensagensPendentesComponent },
-                                            { path: "orcamentos-expirados", canActivate: [AuthGuard], component: OrcamentosExpiradosComponent },
-                                        ]
-                                    }
                                 ]
                             }
                         ]
