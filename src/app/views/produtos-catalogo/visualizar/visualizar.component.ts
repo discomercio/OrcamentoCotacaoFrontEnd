@@ -10,6 +10,8 @@ import { ProdutosAtivosRequestViewModel } from 'src/app/dto/produtos-catalogo/Pr
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { ConsultaProdutoCatalogoAtivoResponse } from 'src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-response';
+import { ConsultaProdutoCatalogoAtivoRequest } from 'src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-request';
 
 @Component({
   selector: 'app-visualizar-produto',
@@ -34,6 +36,7 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
   products: Product[];
   images: any[];
   carregando: boolean = false;
+  response:ConsultaProdutoCatalogoAtivoResponse;
 
   ngOnInit(): void {
     
@@ -46,8 +49,6 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
     this.carregando = true;
     this.criarForm();
     this.setarCampos();
-    this.buscarProdutoDetalhe();
-    this.buscarProduto()
   }
 
   criarForm() {
@@ -60,36 +61,33 @@ export class ProdutosCatalogoVisualizarComponent implements OnInit {
 
   setarCampos() {
     this.imgUrl = this.produtoService.imgUrl;
-    this.id = this.activatedRoute.snapshot.params.id;
+    this.id = Number.parseInt(this.activatedRoute.snapshot.params.id);
     this.form.controls.ativo.setValue(this.produto.Ativo);
+
+    this.buscarProdutoCatalogoAtivo();
   }
 
-  buscarProdutoDetalhe() {
-    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
-      if (r != null) {
-        this.produto = r;
+  buscarProdutoCatalogoAtivo(){
+    let request = new ConsultaProdutoCatalogoAtivoRequest();
+    
+    request.id = this.id;
+    this.produtoService.buscarProdutoCatalogoAtivo(request).toPromise().then((r)=>{
+      this.carregando = false;
+      if(!r.Sucesso){
+        this.alertaService.mostrarMensagem(r.Mensagem);
+        return;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+      this.response = r;
+
+    }).catch((r)=>{
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(r);
+    })
   }
 
   voltarClick(): void {
     window.history.back();
-  }
-
-  produtoDados: ProdutoCatalogoItemProdutosAtivosDados[];
-
-  buscarProduto() {
-    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
-    obj.idProduto = this.id;
-    obj.propriedadeOculta= false;
-    obj.propriedadeOcultaItem = false;
-    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
-      if (r != null) {
-        this.produtoDados = r;
-      }
-    }).catch((e) => {
-      console.log(e);
-    });
   }
 
   ngOnDestroy(){

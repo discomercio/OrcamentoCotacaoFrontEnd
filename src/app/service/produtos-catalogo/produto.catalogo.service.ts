@@ -17,6 +17,8 @@ import { ProdutosGruposResponse } from "src/app/dto/produtos/produtos-grupos-res
 import { CadastroProdutoCatalogoResponse } from "src/app/dto/produtos-catalogo/cadastro-produto-catalogo-response";
 import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
 import { ListaProdutoCatalogoListarResponse } from "src/app/dto/produtos-catalogo/lista-produto-catalogo-listar-response";
+import { ConsultaProdutoCatalogoAtivoRequest } from "src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-request";
+import { ConsultaProdutoCatalogoAtivoResponse } from "src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-response";
 
 @Injectable({
     providedIn: "root",
@@ -214,5 +216,9 @@ export class ProdutoCatalogoService {
     buscarGruposProdutos():Observable<ProdutosGruposResponse>{
         return this.http.get<ProdutosGruposResponse>(`${this.appSettingsService.config.apiUrl}produto/buscarGruposProdutos`);
     
+    }
+
+    buscarProdutoCatalogoAtivo(request:ConsultaProdutoCatalogoAtivoRequest):Observable<ConsultaProdutoCatalogoAtivoResponse>{
+        return this.http.post<ConsultaProdutoCatalogoAtivoResponse>(`${this.appSettingsService.config.apiUrl}produtocatalogo/consultaProdutoCatalogo`, request);
     }
 }
