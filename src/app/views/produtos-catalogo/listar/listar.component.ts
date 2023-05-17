@@ -106,7 +106,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     this.service.buscarPropriedades().toPromise().then((proprieidade) => {
       if (proprieidade != null) {
 
-        let descargaCondensadora = proprieidade.filter(x => x.id == 1);
+        let descargaCondensadora = proprieidade.filter(x => x.id == 3);
         let tipounidades = proprieidade.filter(x => x.id == 2);
         let voltagens = proprieidade.filter(x => x.id == 4);
         let capacidades = proprieidade.filter(x => x.id == 5);
