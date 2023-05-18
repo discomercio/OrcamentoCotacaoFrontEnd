@@ -9,4 +9,5 @@ export class OrcamentoOpcaoDto {
     id: number;
     idOrcamentoCotacao: number;
     aprovado:boolean;
+    existeImagemProduto:boolean;
 }

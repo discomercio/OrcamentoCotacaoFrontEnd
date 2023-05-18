@@ -132,6 +132,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         if (r != null) {
           this.validado = true;
           this.orcamento = r;
+
           if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
             let opcaoAprovado: OrcamentoOpcaoDto;
             this.orcamento.listaOpcoes.forEach(e => {
@@ -188,7 +189,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
-
+          this.verificarImagens();
           this.autenticacaoService.setarToken(r.token);
           this.carregando = false;
         } else {
@@ -197,6 +198,15 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
+  }
+
+  verificarImagens(){
+    this.orcamento.listaOpcoes.forEach(opcao => {
+      opcao.listaProdutos.forEach(item => {
+        if(!!item.urlImagem) opcao.existeImagemProduto = true;
+        else opcao.existeImagemProduto = false;
+      });
+    });
   }
 
   aprovar(opcao: OrcamentoOpcaoDto) {
