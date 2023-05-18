@@ -10,4 +10,5 @@ export class OrcamentoOpcaoDto {
     idOrcamentoCotacao: number;
     aprovado:boolean;
     existeImagemProduto:boolean;
+    pagtoSelecionado:FormaPagtoCriacao;
 }

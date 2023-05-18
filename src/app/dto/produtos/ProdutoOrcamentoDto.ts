@@ -17,5 +17,5 @@ export class ProdutoOrcamentoDto {
     alterouPrecoVenda: boolean | null;
     mostrarCampos: boolean = false;
     idOperacaoAlcadaDescontoSuperior: number;
-    urlImagem: string;
+    urlImagem:string;
 }
