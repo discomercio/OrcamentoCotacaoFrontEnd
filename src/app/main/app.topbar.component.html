@@ -1,5 +1,7 @@
 <style>
-    .hidden {display:none;}
+    .hidden {
+        display: none;
+    }
 </style>
 <form [formGroup]="form">
     <div class="topbar clearfix">
@@ -9,14 +11,11 @@
             </a>
         </div>
 
-        <div class="topbar-right" 
-            [style.backgroundColor]="corCabecalho"
-            [style.backgroundImage]="'none !important'"
-            >
+        <div class="topbar-right" [style.backgroundColor]="corCabecalho" [style.backgroundImage]="'none !important'">
             <a id="menu-button" href="#" (click)="appMain.onMenuButtonClick($event)" class="p-shadow-10"
-               [ngClass]="{'menu-button-rotate': appMain.rotateMenuButton}">
+                [ngClass]="{'menu-button-rotate': appMain.rotateMenuButton}">
                 <i class="pi pi-angle-left"></i>
-           </a>
+            </a>
 
             <a id="topbar-menu-button" href="#" (click)="appMain.onTopbarMenuButtonClick($event)">
                 <i class="pi pi-bars"></i>
@@ -92,13 +91,13 @@
                         </li>
                         -->
                         <li role="menuitem" *ngIf="meuDados">
-                            <a href="#" [routerLink]="['/usuarios/usuario-meusdados']" >
+                            <a href="#" [routerLink]="['/usuarios/usuario-meusdados']">
                                 <i class="pi pi-fw pi-user"></i>
                                 <span>Meus dados</span>
                             </a>
                         </li>
                         <li role="menuitem">
-                            <a href="#" [routerLink]="['/senha/senha-meusdados']" >
+                            <a href="#" [routerLink]="['/senha/senha-meusdados']">
                                 <i class="pi pi-fw pi-lock"></i>
                                 <span>Alterar Senha</span>
                             </a>
@@ -111,7 +110,7 @@
                         </li>
                     </ul>
                 </li>
-<!--
+                <!--
                 <li #messages [ngClass]="{'active-top-menu':appMain.activeTopbarItem === messages}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,messages)">
                         <i class="topbar-icon animated swing pi pi-fw pi-envelope"></i>
@@ -151,7 +150,7 @@
                         </li>
                     </ul>
                 </li> -->
-                
+
                 <span style="vertical-align: middle;color:white">Olá, {{nomeUsuario}}</span>
                 <li #notifications [ngClass]="{'active-top-menu':appMain.activeTopbarItem === notifications}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
@@ -160,29 +159,41 @@
                         <span class="topbar-item-name" *ngIf="qtdMensagem > 1">Notificações</span>
                         <span class="topbar-item-name" *ngIf="qtdMensagem < 2">Notificação</span>
                     </a>
-                    
-                    <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}" *ngIf="qtdMensagem>0">
+                    <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                         <li role="menuitem">
                             <a href="#/orcamentos/listar/msgPendentes">
                                 <i class="pi pi-fw pi-sliders-h"></i>
                                 <span>Mensagens não tratadas</span>
                             </a>
                         </li>
+                        <li role="menuitem" *ngIf="!!listaMensagemPendente.listaQtdeMensagemPendente && listaMensagemPendente.listaQtdeMensagemPendente.length > 0 && qtdeLojasUsuarioLogado > 1" >
+                            <a href="#" style="pointer-events: none;">
+                                <!-- <i class="pi pi-fw pi-envelope"></i> -->
+                                <span style="font-weight: 700;">Mensagens pendentes por lojas</span>
+                                <hr style="margin-bottom: 0px; margin-top: 15px;">
+                            </a>
+                        </li>
+                        <ng-container *ngIf="qtdeLojasUsuarioLogado > 1">
+                            <li role="menuitem" *ngFor="let item of listaMensagemPendente.listaQtdeMensagemPendente" >
+                                <a href="#" style="pointer-events: none;">
+                                    <i class="pi pi-fw pi-envelope"></i>
+                                    <span *ngIf="item.qtde > 1">Loja: {{item.loja}} / Mensagens: {{item.qtde}}</span>
+                                    <span *ngIf="item.qtde == 1">Loja: {{item.loja}} / Mensagem: {{item.qtde}}</span>
+                                </a>
+                            </li>
+                        </ng-container>
+                        
+                    </ul>
+                    <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}" >
+                        
                     </ul>
                 </li>
                 <li #search class="search-item" [ngClass]="{'active-top-menu':appMain.activeTopbarItem === search}"
                     (click)="appMain.onTopbarItemClick($event,search)">
-                    <dropdown-arclube
-                    setId="cboLojas"
-                    titleInput="Loja"
-                    [inputItems]="lojas"
-                    setOptionsName="Value"
-                    setOptionsValueName="Id"
-                    [setReset]="lojaLogada"
-                    (getItemSelected)="cboLojas_onChange($event)"
-                    setShowLabel="false"      
-                    [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"          
-                ></dropdown-arclube>
+                    <dropdown-arclube setId="cboLojas" titleInput="Loja" [inputItems]="lojas" setOptionsName="Value"
+                        setOptionsValueName="Id" [setReset]="lojaLogada" (getItemSelected)="cboLojas_onChange($event)"
+                        setShowLabel="false"
+                        [ngClass]="{'hidden': this.form.controls.cboLojas.disabled}"></dropdown-arclube>
                 </li>
             </ul>
         </div>

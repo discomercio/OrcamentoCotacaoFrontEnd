@@ -3,6 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { ListaQuantidadeMensagemPendenteResponse } from 'src/app/dto/mensageria/lista-quantidade-mensagem-pendente-response';
 
 @Injectable({
   providedIn: 'root'
@@ -25,18 +26,15 @@ export class MensageriaService {
     let params = new HttpParams();    
         params = params.append("guid", guid);
         return this.http.get<MensageriaDto[]>(this.appSettingsService.config.apiUrl + "Mensagem/publico/?guid=" + guid);
-    }      
-
-    obterListaMensagemPendente(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
-    
-      let params = new HttpParams();    
-          params = params.append("IdOrcamentoCotacao", idOrcamentoCotacao);
-          return this.http.get<MensageriaDto[]>(this.appSettingsService.config.apiUrl + "Mensagem/pendente?IdOrcamentoCotacao=" + idOrcamentoCotacao);
-      }    
+    }        
 
     obterQuantidadeMensagemPendente() {
       return this.http.get<number[]>(this.appSettingsService.config.apiUrl + "Mensagem/pendente/quantidade");
     }          
+
+    obterQuantidadeMensagemPendentePorLoja():Observable<ListaQuantidadeMensagemPendenteResponse> {
+      return this.http.get<ListaQuantidadeMensagemPendenteResponse>(this.appSettingsService.config.apiUrl + "Mensagem/pendente/quantidadePorLoja");
+    }  
 
     enviarMensagem(msg: any): Observable<any> {
         return this.http.post<any>(`${this.appSettingsService.config.apiUrl}Mensagem/`, msg);
