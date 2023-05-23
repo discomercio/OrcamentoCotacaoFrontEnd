@@ -13,6 +13,7 @@ import { ePermissao } from './../utilities/enums/ePermissao';
 import { Title } from "@angular/platform-browser";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { environment } from 'src/environments/environment';
+import { ListaQuantidadeMensagemPendenteResponse } from '../dto/mensageria/lista-quantidade-mensagem-pendente-response';
 
 @Component({
   selector: 'app-topbar',
@@ -43,7 +44,9 @@ export class AppTopBarComponent {
   imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
   corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
+  listaMensagemPendente:ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
 
+  qtdeLojasUsuarioLogado:number = 0;
   meuDados: boolean = false;
   interval:any;
 
@@ -56,6 +59,7 @@ export class AppTopBarComponent {
     }, Number(this.appSettingsService.config.temporizadorSininho));
 
     this.buscarEstilo();
+    this.qtdeLojasUsuarioLogado = this.autenticacaoService._lojasUsuarioLogado.length;
   }
 
   carregando: boolean = false;
@@ -65,18 +69,25 @@ export class AppTopBarComponent {
       this.limparInterval();
       return;
     }
-    this.mensageriaService.obterQuantidadeMensagemPendente().toPromise().then((r) => {
-      if (r != null) {
-        this.qtdMensagem = r;
+    this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
+      if (!r.Sucesso) {
+        this.alertaService.mostrarMensagem(r.Mensagem);
+        return;
       }
+      
+      this.listaMensagemPendente = r;
+      if(!!this.listaMensagemPendente.listaQtdeMensagemPendente){
+        this.qtdMensagem = this.listaMensagemPendente.listaQtdeMensagemPendente.reduce((soma, item)=>
+          soma + item.qtde, 0);
+      }
+      else this.qtdMensagem = 0;
     })
     .catch((e)=>{
       if(e.status == 401){
         this.limparInterval();
       }
       this.alertaService.mostrarErroInternet(e);
-      
-    })
+    });
   }
 
   limparInterval(){
