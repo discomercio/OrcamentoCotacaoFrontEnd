@@ -132,6 +132,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         if (r != null) {
           this.validado = true;
           this.orcamento = r;
+
           if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
             let opcaoAprovado: OrcamentoOpcaoDto;
             this.orcamento.listaOpcoes.forEach(e => {
@@ -147,6 +148,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.aprovacaoPublicoService.orcamento = r;
             this.aprovacaoPublicoService.paramGuid = param.guid;
             this.paramGuid = param.guid;
+            this.verificarFormasPagtos();
           }
 
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
@@ -188,7 +190,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
-
+          this.verificarImagens();
           this.autenticacaoService.setarToken(r.token);
           this.carregando = false;
         } else {
@@ -197,6 +199,21 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
     }
+  }
+
+  verificarImagens(){
+    this.orcamento.listaOpcoes.forEach(opcao => {
+      opcao.listaProdutos.forEach(item => {
+        if(!!item.urlImagem) opcao.existeImagemProduto = true;
+        else opcao.existeImagemProduto = false;
+      });
+    });
+  }
+
+  verificarFormasPagtos(){
+    this.orcamento.listaOpcoes.forEach(opcao =>{
+      if(opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
+    })
   }
 
   aprovar(opcao: OrcamentoOpcaoDto) {
@@ -213,22 +230,22 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     //Não precisamos validar isso, pois essa validação esta sendo feita ao buscar o orçamento
     // estou deixando comentado para o caso de precisar mudar o fluxo de verificação dessa regra
     // if(!this.verificarStatusEExpiracao()) return;
-    if (!this.opcaoPagtoSelecionada) {
+    if (!opcao.pagtoSelecionado) {
       this.alertaService.mostrarMensagem("Favor selecionar uma forma de pagamento!");
       return;
     }
 
     //aprovar forma de pagto
     opcao.formaPagto.forEach(x => {
-      if (x.id == this.opcaoPagtoSelecionada.id) x.aprovado = true;
+      if (x.id == opcao.pagtoSelecionado.id) x.aprovado = true;
     });
 
     this.sweetalertService.dialogo("Deseja realmente aprovar essa opção?", "").subscribe(result => {
       if (result) {
         this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], {
           queryParams: {
-            idOpcao: this.opcaoPagtoSelecionada.idOpcao,
-            idFormaPagto: this.opcaoPagtoSelecionada.id
+            idOpcao: opcao.id,
+            idFormaPagto: opcao.pagtoSelecionado.id
           }
         });
       }

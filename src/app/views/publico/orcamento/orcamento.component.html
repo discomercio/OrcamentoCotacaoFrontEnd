@@ -137,7 +137,7 @@
                             </div>
                             <br>
                             <div>
-                                <span>Mediante confirmação de estoque</span>
+                                <span class="infoEstoque">Mediante confirmação de estoque</span>
                             </div>
                         </div>
                     </div>
@@ -162,22 +162,18 @@
                                                 [rows]="10" [filterDelay]="0">
                                                 <ng-template *ngIf="telaDesktop" pTemplate="header">
                                                     <tr class="font-size">
-                                                        <th style="width: 15%"></th>
+                                                        <th style="width: 15%" *ngIf="opcao.existeImagemProduto"></th>
                                                         <th class="p-col-4">Produto</th>
                                                         <th class="p-col-1 p-text-center">Qtde</th>
                                                         <th class="p-col-2 p-text-center">Preço</th>
                                                     </tr>
                                                 </ng-template>
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
-                                                    <tr class="{{telaDesktop ? '' : 'font-size'}}">
-                                                        <td class="p-d-inline-flex"
+                                                    <tr style="height: 105px !important;" class="{{telaDesktop ? '' : 'font-size'}}">
+                                                        <td *ngIf="opcao.existeImagemProduto" class="p-d-inline-flex"
                                                             [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
                                                             <img src="{{imgUrl}}{{produto.urlImagem}}"
                                                                 [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
-
-                                                            <p *ngIf="!telaDesktop"
-                                                                [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
-                                                            </p>
                                                         </td>
                                                         <td *ngIf="telaDesktop">
                                                             <p
@@ -220,7 +216,7 @@
                                                         style="min-height: calc(50% - 45px);">
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
                                                             <p-radioButton [inputId]="y" [value]="fp"
-                                                                [(ngModel)]="opcaoPagtoSelecionada">
+                                                                [(ngModel)]="opcao.pagtoSelecionado">
                                                             </p-radioButton>
                                                         </div>
                                                         <div class="p-col-10 p-as-center">
