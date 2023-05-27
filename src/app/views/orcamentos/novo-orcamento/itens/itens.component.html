@@ -2,10 +2,37 @@
     <div class="p-col-12 p-pb-0">
         <div class="card itens">
             <h4>Produtos e Pagamentos</h4>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-pb-0">
                 <span class="p-text-bold p-pr-1">Cliente: </span>
                 <p>{{novoOrcamentoService.orcamentoCotacaoDto?.clienteOrcamentoCotacaoDto?.nomeCliente}}</p>
-
+            </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0"
+                *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR">
+                <span class="p-text-bold p-pr-1">Comissão: </span>
+                <p *ngIf="!novoOrcamentoService.editarComissao" class="p-m-0">
+                    {{moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
+                    % </p>
+                <div *ngIf="novoOrcamentoService.editarComissao" class="p-col-2 p-inputgroup">
+                    <input type="text" pInputText class="p-text-right"
+                        [value]="moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
+                        (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
+                    <span class="p-inputgroup-addon">%</span>
+                </div>
+                <div *ngIf="param != 'novo' && param != 'clone' && habilitarComissao">
+                    <button
+                        *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
+                        pButton type="button" icon="pi pi-user-edit" (click)="liberarEdicaoComissao()"
+                        pTooltip="Editar comissão" class="p-button-text p-p-0"></button>
+                    <button
+                        *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"
+                        pButton type="button" icon="pi pi-times" (click)="liberarEdicaoComissao()"
+                        class="p-button-text p-p-0"></button>
+                </div>
+            </div>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0"
+                *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR">
+                <span class="p-text-bold p-pr-1">Desconto médio: </span>
+                <p>{{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoMedio)}}</p>
             </div>
             <!-- <form> -->
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
@@ -55,7 +82,7 @@
                                         [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde"
                                         type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
-                                        (change)="digitouQte(p)" [disabled]="carregandoProds"/>
+                                        (change)="digitouQte(p)" [disabled]="carregandoProds" />
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
@@ -71,8 +98,9 @@
                                         <input
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
-                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)" [disabled]="carregandoProds"
-                                            (blur)="digitouDesc($event,p)" (keyup)="formatarDesc($event,p)" />
+                                            [value]="moedaUtils.formatarValorDuasCasaReturnZero(p.descDado)"
+                                            [disabled]="carregandoProds" (blur)="digitouDesc($event,p)"
+                                            (keyup)="formatarDesc($event,p)" />
                                         <div class="p-pl-1">%</div>
                                     </div>
                                 </td>
@@ -82,8 +110,9 @@
                                         Venda</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" pInputText
                                         id="vlVenda" type="text"
-                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)" [disabled]="carregandoProds"
-                                        (keyup)="formataPreco_Venda($event,p)" (blur)="digitouPreco_Venda($event,p)" />
+                                        [value]="moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)"
+                                        [disabled]="carregandoProds" (keyup)="formataPreco_Venda($event,p)"
+                                        (blur)="digitouPreco_Venda($event,p)" />
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">Vl Total:</span>
@@ -113,45 +142,11 @@
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">
                             <tr class="font-size">
-                                <!-- <td class="p-text-right">
-                                    
-
+                                <td class="p-text-right" colspan="1">
                                 </td>
-                                <td></td> -->
-                                <td class="p-text-right" colspan="2">
-                                    <div class="p-d-inline-flex">
-                                        <span
-                                            *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && !novoOrcamentoService.editarComissao">
-                                            Comissão:
-                                            {{moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
-                                            %
-                                        </span>
-                                        <div class="p-d-inline-flex p-jc-end"
-                                            *ngIf="novoOrcamentoService.editarComissao">
-
-                                            <div class="p-col-7 p-inputgroup">
-                                                <input type="text" pInputText class="p-text-right"
-                                                    [value]="moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
-                                                    (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
-                                                <span class="p-inputgroup-addon">%</span>
-                                            </div>
-
-                                        </div>
-                                        <div class="p-as-center" *ngIf="param != 'novo' && param != 'clone' && habilitarComissao">
-                                            <button
-                                                *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
-                                                pButton type="button" icon="pi pi-user-edit"
-                                                (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
-                                            <button
-                                                *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"
-                                                pButton type="button" icon="pi pi-times"
-                                                (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
-                                        </div>
-                                    </div>
-
-
+                                <td colspan="2" class="p-text-right p-p-0">
+                                    <p>Desconto linear:</p>
                                 </td>
-                                <td></td>
                                 <td class="p-text-right">
                                     <div class="p-d-inline-flex p-ai-center p-jc-end"
                                         [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'width':'100%'}">
@@ -159,7 +154,7 @@
                                             class="{{telaDesktop ? 'p-text-right font-size' : 'p-text-right p-ml-2 font-size'}}"
                                             pInputText id="desconto" type="text"
                                             [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
-                                            (keyup)="formataDescontoGeral($event)" [disabled]="carregandoProds"/>
+                                            (keyup)="formataDescontoGeral($event)" [disabled]="carregandoProds" />
                                         <div class="p-pl-1">%</div>
                                     </div>
                                 </td>
@@ -168,11 +163,11 @@
                                     <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
                                         <div>
                                             <button type="button" pButton pRipple icon="fa fa-check"
-                                                styleClass="p-button-warn" pTooltip="Aplicar desconto nos produtos"
+                                                styleClass="p-button-warn" label="Aplicar a todos"
                                                 [value]="moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoGeral)"
                                                 (click)="aplicarDescontoGeral($event)"></button>
                                         </div>
-                                        <div class="p-as-center">
+                                        <div class="p-as-center p-text-right">
                                             Total
                                             {{moedaUtils.formatarMoedaSemPrefixo(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto?.vlTotal)}}
                                         </div>
