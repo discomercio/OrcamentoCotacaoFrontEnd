@@ -347,16 +347,30 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
-    if (orcamento.parceiro != null) {
+    let apelidoParceiro:string;
+
+    if(orcamento.cadastradoPor == orcamento.vendedor){
+      tipoUsuario = this.constantes.USUARIO_PERFIL_VENDEDOR;
+      apelido = orcamento.vendedor;
+      if(orcamento.parceiro != null){
+        comIndicacao = 1;
+        apelidoParceiro = orcamento.parceiro;
+      }
+      else{
+        comIndicacao = 0;
+      }
+    }
+    if (orcamento.cadastradoPor == orcamento.parceiro || orcamento.cadastradoPor == orcamento.vendedorParceiro) {
       comIndicacao = 1;
       tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
       apelido = orcamento.parceiro;
-    }
+      apelidoParceiro = orcamento.parceiro;
+    } 
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
 
     this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
-      comIndicacao, tipoUsuario, apelido)
+      comIndicacao, tipoUsuario, apelido, apelidoParceiro)
       .toPromise()
       .then((r) => {
         if (r != null) {

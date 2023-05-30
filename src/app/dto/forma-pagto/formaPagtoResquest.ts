@@ -3,4 +3,5 @@ export class FormaPagtoRequest{
     ComIndicacao:number;
     TipoUsuario:number;
     Apelido:string;
+    ApelidoParceiro:string;
 }

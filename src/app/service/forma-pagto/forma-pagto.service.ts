@@ -11,15 +11,16 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 export class FormaPagtoService {
 
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private appSettingsService: AppSettingsService) { }
 
-  buscarFormaPagto(tipoCliente: string, comIndicacao: number, tipoUsuario:number, apelido:string): Observable<FormaPagto[]> {
+  buscarFormaPagto(tipoCliente: string, comIndicacao: number, tipoUsuario: number, apelido: string, apelidoParceiro: string): Observable<FormaPagto[]> {
     let formaPagtoRequest: FormaPagtoRequest = new FormaPagtoRequest();
     formaPagtoRequest.TipoCliente = tipoCliente;
     formaPagtoRequest.ComIndicacao = comIndicacao;
     formaPagtoRequest.TipoUsuario = tipoUsuario;
     formaPagtoRequest.Apelido = apelido;
+    formaPagtoRequest.ApelidoParceiro = apelidoParceiro
     return this.http.post<FormaPagto[]>(this.appSettingsService.config.apiUrl + "FormaPagamento/buscarFormasPagamentos", formaPagtoRequest);
   }
 
