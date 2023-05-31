@@ -383,7 +383,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
       this.buscarCoeficientes(dataRefCoeficiente);
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
-
+    this.novoOrcamentoService.calcularDescontoMedio();
     this.novoOrcamentoService.totalPedido();
 
     this.formaPagto.habilitar = false;
@@ -424,6 +424,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.formaPagto.calcularValorAvista();
     if (this.novoOrcamentoService.calcularComissaoAuto)
       this.novoOrcamentoService.calcularPercentualComissao();
+    this.novoOrcamentoService.calcularDescontoMedio();
   }
 
   digitouPreco_NF(e: Event, item: ProdutoOrcamentoDto): void {
@@ -452,17 +453,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     }
   }
 
-
   digitouDesc(e: Event, item: ProdutoOrcamentoDto): void {
-
-    
-
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
     v = (v / 100).toFixed(2) + '';
-
-    
-
     //se o desconto for digitado estamos alterando o valor de venda e não devemos mais alterar esse valor
     if (item.descDado == 0 || item.descDado.toString() == '') {
       item.alterouPrecoVenda = false;

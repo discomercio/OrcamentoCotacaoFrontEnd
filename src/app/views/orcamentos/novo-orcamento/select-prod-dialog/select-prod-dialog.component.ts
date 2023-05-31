@@ -95,14 +95,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
           return true
         }
       });
-
       if (!existe) {
         if (xy.produtoDto.unitarioVendavel)
           this.prodsArray.push(xy);
       }
-
     }
-
   }
 
   montarComboFabricante() {
