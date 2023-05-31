@@ -244,7 +244,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
       let pagto = this.meioParcelaUnica.filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pu_forma_pagto)[0];
 
-      if (pagto.qtdeMaxDias != null)
+      if (!!pagto && pagto.qtdeMaxDias != null)
         this.qtdeMaxDias = pagto.qtdeMaxDias;
 
       if (this.qtdeMaxDias != null && this.formaPagtoCriacaoAprazo.c_pu_vencto_apos > this.qtdeMaxDias) {
