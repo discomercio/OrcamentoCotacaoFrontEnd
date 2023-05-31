@@ -47,16 +47,29 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
-      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-      comIndicacao = 1;
-      tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
+    let apelidoParceiro:string;
+    if (tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+      tipoUsuario = this.constantes.VENDEDOR_UNIS;
+      apelido = apelido;
+
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+        this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
+        comIndicacao = 1;
+          apelidoParceiro = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
+      }
+      else {
+        comIndicacao = 0;
+      }
+    }
+    if (tipoUsuario == this.constantes.PARCEIRO || tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
+      tipoUsuario = this.constantes.PARCEIRO;
       apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
+      comIndicacao = 1;
     }
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
       return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
-        comIndicacao, tipoUsuario, apelido)
+        comIndicacao, tipoUsuario, apelido, apelidoParceiro)
         .toPromise()
         .then((r) => {
           if (r != null) {
@@ -65,7 +78,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
             // this.setarTipoPagto();
           }
         }).catch((e) => {
-          debugger;
           this.alertaService.mostrarErroInternet(e)
         });
     }
@@ -115,16 +127,15 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : !!pagto.meios[0].qtdeMaxParcelas ? pagto.meios[0].qtdeMaxParcelas : this.qtdeMaxParcelaCartaoVisa;
       this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA)[0];
-      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : pagto.meios[0].qtdeMaxParcelas;
+      this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : !!pagto.meios[0].qtdeMaxParcelas ? pagto.meios[0].qtdeMaxParcelas : this.qtdeMaxParcelaCartaoVisa;
       this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde = pagto.meios[0].qtdeMaxParcelas;
     }
-
-
 
     this.setarSiglaPagto()
   }
@@ -422,7 +433,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   gravarOpcao() {
     this.atribuirFormasPagto();
-    
+
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);
     this.novoOrcamentoService.criarNovoOrcamentoItem();
     this.limparCampos();

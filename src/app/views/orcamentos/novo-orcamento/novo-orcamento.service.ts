@@ -76,7 +76,7 @@ export class NovoOrcamentoService {
 
 
   setarPercentualComissao() {
-    debugger;
+    
     this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ?
       this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
@@ -301,7 +301,7 @@ export class NovoOrcamentoService {
           let valorComCoeficiente = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * coeficiente.Coeficiente);
           somaFilhotes += this.moedaUtils.formatarDecimal(valorComCoeficiente * el.qtde);
         });
-        debugger;
+        
         x.precoLista = somaFilhotes;
         x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
         x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
