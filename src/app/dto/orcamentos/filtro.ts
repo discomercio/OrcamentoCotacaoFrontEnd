@@ -22,4 +22,6 @@ export class Filtro {
     qtdeItensPagina: number;
     nomeColunaOrdenacao: string;
     ordenacaoAscendente: boolean;
+
+    idBaseBusca:string;
 }

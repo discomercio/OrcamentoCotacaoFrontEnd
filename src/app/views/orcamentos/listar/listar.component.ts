@@ -113,6 +113,7 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
 
   dtInicio: Date;
   dtFim: Date;
+  clicouPesquisar: boolean;
 
   ngOnInit(): void {
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
@@ -368,6 +369,7 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
 
   pesquisar() {
     this.setarFiltro();
+    this.filtro.idBaseBusca = null;
     this.buscarLista(this.filtro);
   }
 
@@ -386,7 +388,9 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     this.filtro.Loja = this.autenticacaoService._lojaLogado;
     this.filtro.pagina = 0;
     this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
-    this.filtro.nomeColunaOrdenacao = this.cols[0].field;
+    if (this.parametro == "ORCAMENTOS") this.filtro.nomeColunaOrdenacao = this.cols[0].field;
+    if (this.parametro == "PENDENTES") this.filtro.nomeColunaOrdenacao = this.cols[1].field;
+
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
@@ -400,8 +404,19 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
       this.filtro.pagina = event.first / event.rows;
       this.filtro.qtdeItensPagina = event.rows;
       this.qtdePorPaginaSelecionado = event.rows;
-      this.filtro.nomeColunaOrdenacao = event.sortField;
-      this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
+      if (!!event.sortField) {
+        this.filtro.nomeColunaOrdenacao = event.sortField;
+        this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
+      } else {
+        this.filtro.ordenacaoAscendente = false;
+      }
+
+      if (this.filtro.idBaseBusca == null && this.parametro == "ORCAMENTOS")
+        this.filtro.idBaseBusca = this.lstDtoFiltrada[0].NumeroOrcamento;
+      if (this.filtro.idBaseBusca == null && this.parametro == "PENDENTES")
+        this.filtro.idBaseBusca = this.lstDtoFiltrada[0].NumPedido;
+      if (this.filtro.idBaseBusca == null && this.parametro == "PEDIDOS")
+        this.filtro.idBaseBusca = this.lstDtoFiltrada[0].NumPedido;
 
       if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
         this.filtro.pagina = 0;
