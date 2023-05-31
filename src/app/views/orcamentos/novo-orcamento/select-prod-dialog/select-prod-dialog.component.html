@@ -48,7 +48,7 @@
             autoLayout="true" [(selection)]="selecionado" styleClass="p-datatable-customers p-datatable-sm"
             [rows]="novoOrcamentoService.pageItens" [filterDelay]="0" [paginator]="true" [(first)]="first">
             <ng-template pTemplate="body" let-p>
-                <ng-container *ngIf="p.produtoDto.unitarioVendavel">
+                <ng-container *ngIf="p.produtoDto.unitarioVendavel && p.visivel">
 
                     <tr class="p-selectable-row p-field-checkbox" id="linha_tabela" class="font-size"
                         [pSelectableRow]="p" *ngIf="p.vendavel">
@@ -91,7 +91,7 @@
                     </tr>
                 </ng-container>
             </ng-template>
-            <ng-template pTemplate="emptymessage" let-columns>
+            <ng-template pTemplate="emptymessage">
                 <tr>
                     <td colspan="7" class="p-text-center">
                         Clique em Pesquisar para listar produtos, utilize os filtros para agilizar a pesquisa.
