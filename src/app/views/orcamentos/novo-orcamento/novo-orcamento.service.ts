@@ -56,6 +56,7 @@ export class NovoOrcamentoService {
   editando: boolean;
   editarComissao: boolean = false;
   produtoComboDto = new ProdutoComboDto();
+  descontoMedio:number;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -67,6 +68,7 @@ export class NovoOrcamentoService {
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
     this.opcaoOrcamentoCotacaoDto.listaProdutos = new Array();
+    this.descontoMedio = 0;
 
   }
 
@@ -334,6 +336,8 @@ export class NovoOrcamentoService {
     let totalComDesc = this.totalPedido();
 
     let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
+    
+    this.descontoMedio = descMedio;
 
     return descMedio;
   }

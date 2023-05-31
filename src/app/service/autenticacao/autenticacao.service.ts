@@ -65,7 +65,11 @@ export class AutenticacaoService {
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
     this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;
     this._idUsuarioLogado = (user && user.Id) ? user.Id : 0;
-    
+
+    if(this._lojasUsuarioLogado.length == 1){
+      this._lojaLogado = this._lojasUsuarioLogado[0];
+    }
+
     if (!this._lojaLogado) {
       if (user && user.family_name && this._lojasUsuarioLogado.length < 2) {
         this._lojaLogado = this._lojasUsuarioLogado[0];
