@@ -18,42 +18,60 @@
             <div class="p-as-baseline p-col-12 p-field p-lg-5 p-md-6 p-py-0 p-sm-5">
                 <label for="endereco">Endereço</label>
                 <input id="endereco" pInputText formControlName="endereco" [(ngModel)]="Endereco" />
-                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'endereco')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'endereco')">
                     <small class="p-error" *ngIf="form.controls.endereco.errors?.required">{{mensagemErro}}</small>
+                    <small class="p-error" *ngIf="form.controls.endereco.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.endereco.errors.maxlength.requiredLength}} caracteres</small>
                 </div>
             </div>
             <div class="p-field p-col-2 p-sm-2 p-as-baseline p-py-0">
                 <label for="numero">Nº</label>
                 <input id="numero" pInputText formControlName="numero" [(ngModel)]="Numero" />
-                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'numero')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'numero')">
                     <small class="p-error" *ngIf="form.controls.numero.errors?.required">{{mensagemErro}}</small>
+                    <small class="p-error" *ngIf="form.controls.numero.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.numero.errors.maxlength.requiredLength}} caracteres</small>
                 </div>
             </div>
             <div class="p-field p-col-10 p-lg-3 p-md-6 p-sm-6 p-as-baseline p-py-0">
                 <label for="complemento">Complemento</label>
                 <input id="complemento" pInputText formControlName="complemento" [(ngModel)]="Complemento" />
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'complemento')">
+                    <small class="p-error" *ngIf="form.controls.complemento.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.complemento.errors.maxlength.requiredLength}}
+                        caracteres</small>
+                </div>
             </div>
         </div>
         <div class="p-fluid p-grid">
             <div class="p-as-baseline p-col-12 p-field p-lg-5 p-md-4 p-md-5 p-py-0 p-sm-5">
                 <label for="bairro">Bairro</label>
                 <input id="bairro" pInputText formControlName="bairro" [(ngModel)]="Bairro" />
-                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'bairro')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'bairro')">
                     <small class="p-error" *ngIf="form.controls.bairro.errors?.required">{{mensagemErro}}</small>
+                    <small class="p-error" *ngIf="form.controls.bairro.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.bairro.errors.maxlength.requiredLength}}
+                        caracteres</small>
                 </div>
             </div>
             <div class="p-as-baseline p-col-9 p-field p-lg-5 p-md-5 p-py-0 p-sm-5">
                 <label for="cidade">Cidade</label>
                 <input id="cidade" pInputText formControlName="cidade" [(ngModel)]="Cidade" />
-                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'cidade')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'cidade')">
                     <small class="p-error" *ngIf="form.controls.cidade.errors?.required">{{mensagemErro}}</small>
+                    <small class="p-error" *ngIf="form.controls.cidade.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.cidade.errors.maxlength.requiredLength}}
+                        caracteres</small>
                 </div>
             </div>
             <div class="p-as-baseline p-col-3 p-field p-py-0 p-sm-2">
                 <label for="uf">UF</label>
                 <input pInputText type="text" formControlName="uf" [(ngModel)]="Uf" maxlength="2">
-                <div class="p-text-truncate" *ngIf="validacaoFormularioService.verificaCampo(form,'uf')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'uf')">
                     <small class="p-error" *ngIf="form.controls.uf.errors?.required">{{mensagemErro}}</small>
+                    <small class="p-error" *ngIf="form.controls.uf.errors?.maxlength">*Quantidade de caracteres
+                        excede o limite de {{form.controls.uf.errors.maxlength.requiredLength}}
+                        caracteres</small>
                 </div>
             </div>
         </div>

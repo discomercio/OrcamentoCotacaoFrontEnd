@@ -26,6 +26,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'razao')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.razao.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.razao.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.razao.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline p-py-0">
@@ -54,10 +58,13 @@
                             <label for="contato">Nome da pessoa para contato na empresa</label>
                             <input id="contato" type="text" formControlName="contato" [(ngModel)]="dadosCliente.Contato"
                                 pInputText maxlength="60">
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'contato')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(formPJ,'contato')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.contato.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.contato.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.contato.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -75,6 +82,10 @@
                                     *ngIf="formPJ.controls.email.errors?.required">{{mensagemErro}}</small>
                                 <small class="p-error" *ngIf="formPJ.controls.email.errors?.email">E-mail
                                     inválido</small>
+                                <small class="p-error" *ngIf="formPJ.controls.email.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.email.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
@@ -85,6 +96,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'emailXml')">
                                 <small class="p-error" *ngIf="formPJ.controls.emailXml.errors?.email">E-mail
                                     inválido</small>
+                                <small class="p-error" *ngIf="formPJ.controls.emailXml.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.emailXml.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -110,6 +125,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal1')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.ramal1.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.ramal1.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.ramal1.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div class="p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
@@ -131,6 +150,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal2')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.ramal2.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.ramal2.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.ramal2.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -161,10 +184,13 @@
                             <input id="iePJ" type="text" pInputText maxlength="20" formControlName="inscricaoEstadual"
                                 [disabled]="dadosCliente.Contribuinte_Icms_Status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
                                 [(ngModel)]="dadosCliente.Ie">
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'inscricaoEstadual')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(formPJ,'inscricaoEstadual')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.inscricaoEstadual.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.inscricaoEstadual.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPJ.controls.inscricaoEstadual.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -190,6 +216,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'nome')">
                                 <small class="p-error"
                                     *ngIf="formPF.controls.nome.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPF.controls.nome.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPF.controls.nome.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
@@ -222,6 +252,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'email')">
                                 <small class="p-error" *ngIf="formPF.controls.email.errors?.email">E-mail
                                     inválido</small>
+                                <small class="p-error" *ngIf="formPF.controls.email.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPF.controls.email.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
@@ -232,6 +266,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'emailXml')">
                                 <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.email">E-mail
                                     inválido</small>
+                                <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPF.controls.emailXml.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -277,6 +315,10 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(formPF,'ramal')">
                                 <small class="p-error"
                                     *ngIf="formPF.controls.ramal.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPF.controls.ramal.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{formPF.controls.ramal.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>

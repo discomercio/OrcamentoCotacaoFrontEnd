@@ -55,20 +55,26 @@
                             <label for="nomeEndEntrega">Nome</label>
                             <input id="nomeEndEntrega" type="text" formControlName="endNome"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
                                 <small class="p-error"
                                     *ngIf="form.controls.endNome.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.endNome.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{form.controls.endNome.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                         <div *ngIf="!pessoaEntregaEhPF" class="p-field p-col-12 p-as-end p-p-0">
                             <label for="endNome">Razão social</label>
                             <input id="endNome" type="text" formControlName="endNome"
                                 [(ngModel)]="enderecoEntregaDtoClienteCadastro.EndEtg_nome" pInputText maxlength="60">
-                            <div class="p-text-truncate"
-                                *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
+                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'endNome')">
                                 <small class="p-error"
                                     *ngIf="form.controls.endNome.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.endNome.errors?.maxlength">*Quantidade de
+                                    caracteres
+                                    excede o limite de {{form.controls.endNome.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -174,6 +180,11 @@
                                 *ngIf="validacaoFormularioService.verificaCampo(form,'ieEndEntrega')">
                                 <small class="p-error"
                                     *ngIf="form.controls.ieEndEntrega.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="form.controls.ieEndEntrega.errors?.maxlength">*Quantidade
+                                    de
+                                    caracteres
+                                    excede o limite de {{form.controls.ieEndEntrega.errors.maxlength.requiredLength}}
+                                    caracteres</small>
                             </div>
                         </div>
                     </div>
@@ -182,7 +193,8 @@
             </div>
         </form>
 
-        <div class="p-py-2" *ngIf="enderecoEntregaDtoClienteCadastro.OutroEndereco && (pessoaEntregaEhPF != undefined || tipoPf)">
+        <div class="p-py-2"
+            *ngIf="enderecoEntregaDtoClienteCadastro.OutroEndereco && (pessoaEntregaEhPF != undefined || tipoPf)">
             <app-cep #componenteCep></app-cep>
         </div>
     </div>
