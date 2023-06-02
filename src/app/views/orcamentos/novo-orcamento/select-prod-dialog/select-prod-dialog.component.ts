@@ -41,6 +41,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   selecProdInfoPassado: SelecProdInfo;
   public prodsTela: ProdutoTela[] = new Array();
   public prodsArray: ProdutoTela[] = new Array();
+  prodsArrayApoio: ProdutoTela[] = new Array();
   public moedaUtils: MoedaUtils = new MoedaUtils();
   selecionado: ProdutoTela;
   codigo: string;
@@ -78,9 +79,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   transferirDados() {
 
     const limite = this.limiteMaximo;
-    for (let copiar = 0; copiar < limite; copiar++) {
+    for (let copiar = 0; copiar < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length; copiar++) {
       //acabou?
-      if (!(this.prodsArray.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
+      if (!(this.prodsArrayApoio.length < this.selecProdInfoPassado.produtoComboDto.produtosSimples.length))
         break;
       //colocamos mais um
       let xy = new ProdutoTela(this.selecProdInfoPassado.produtoComboDto.produtosSimples[copiar],
@@ -97,7 +98,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       });
       if (!existe) {
         if (xy.produtoDto.unitarioVendavel)
-          this.prodsArray.push(xy);
+          xy.visivel = false;
+        this.prodsArrayApoio.push(xy);
       }
     }
   }
@@ -190,7 +192,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   pesquisar() {
-
+    this.prodsArray = Object.assign([], this.prodsArrayApoio);
     let lstParaFiltro = Object.assign([], this.prodsArray);
 
     if (this.produto && this.produto.length >= 2) {
