@@ -350,7 +350,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let apelidoParceiro:string;
 
     if(orcamento.cadastradoPor == orcamento.vendedor){
-      tipoUsuario = this.constantes.USUARIO_PERFIL_VENDEDOR;
+      tipoUsuario = this.constantes.VENDEDOR_UNIS;
       apelido = orcamento.vendedor;
       if(orcamento.parceiro != null){
         comIndicacao = 1;
@@ -362,7 +362,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
     if (orcamento.cadastradoPor == orcamento.parceiro || orcamento.cadastradoPor == orcamento.vendedorParceiro) {
       comIndicacao = 1;
-      tipoUsuario = this.constantes.USUARIO_PERFIL_PARCEIRO_INDICADOR;
+      tipoUsuario = this.constantes.PARCEIRO;
       apelido = orcamento.parceiro;
       apelidoParceiro = orcamento.parceiro;
     } 
