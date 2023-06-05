@@ -55,15 +55,15 @@ export class EnderecoEntregaComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       justificativa: ["", [Validators.required]],
-      endTipoPessoa: [null, this.tipoPf ? [] : [Validators.required]],
-      endNome: [this.enderecoEntregaDtoClienteCadastro.EndEtg_nome, this.tipoPf ? [] : [Validators.required]],
+      endTipoPessoa: [null, this.tipoPf ? [] : [Validators.required, Validators.maxLength(2)]],
+      endNome: [this.enderecoEntregaDtoClienteCadastro.EndEtg_nome, this.tipoPf ? [] : [Validators.required, Validators.maxLength(60)]],
       cpfCnpj: [this.enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf, this.tipoPf ? [] : [Validators.required]],
       endTelResidencial: [FormataTelefone.mascaraTelefone()],
       endCelular: [FormataTelefone.mascaraTelefone()],
       endTel1: [FormataTelefone.mascaraTelefone()],
-      endRamal1: [""],
+      endRamal1: ["", [Validators.maxLength(4)]],
       endTel2: [FormataTelefone.mascaraTelefone()],
-      endRamal2: [""],
+      endRamal2: ["", [Validators.maxLength(4)]],
       icmsEntrega: [this.tipoPf ? [] : [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_INICIAL)]],
       ieEndEntrega: [this.enderecoEntregaDtoClienteCadastro.EndEtg_ie]
     }, {
