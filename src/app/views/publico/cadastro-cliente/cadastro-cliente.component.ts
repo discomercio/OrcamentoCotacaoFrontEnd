@@ -216,17 +216,17 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (this.clientePF()) {
       //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
-
+      
       this.formPF = this.fb.group({
-        nome: ["", [Validators.required]],
+        nome: ["", [Validators.required, Validators.maxLength(60)]],
         cpfCnpj: ["", [Validators.required]],
         rg: [""],
-        email: ["", [Validators.email]],
-        emailXml: ["", [Validators.email]],
+        email: ["", [Validators.email, Validators.maxLength(60)]],
+        emailXml: ["", [Validators.email, Validators.maxLength(60)]],
         telResidencial: [""],
         celular: [""],
         telComercial: [""],
-        ramal: [""],
+        ramal: ["", [Validators.maxLength(4)]],
         observacao: [""]
       }, {
         validators: [
@@ -238,17 +238,17 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
     this.formPJ = this.fb.group({
-      razao: ["", [Validators.required]],
+      razao: ["", [Validators.required, Validators.maxLength(60)]],
       cpfCnpj: ["", [Validators.required]],
       tel1: [""],
-      ramal1: [""],
+      ramal1: ["", [Validators.maxLength(4)]],
       tel2: [""],
-      ramal2: [""],
-      contato: ["", [Validators.required]],
-      email: ["", [Validators.required, Validators.email]],
+      ramal2: ["", [Validators.maxLength(4)]],
+      contato: ["", [Validators.required, Validators.maxLength(30)]],
+      email: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
       emailXml: ["", [Validators.email]],
       icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPublicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
-      inscricaoEstadual: [""]
+      inscricaoEstadual: ["", [Validators.maxLength(20)]]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
   }
 

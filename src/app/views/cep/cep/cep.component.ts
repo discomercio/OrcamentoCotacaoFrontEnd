@@ -9,6 +9,7 @@ import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-de
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
 import { CepDialogComponent } from '../cep-dialog/cep-dialog.component';
+import { validateBasis } from '@angular/flex-layout';
 
 @Component({
   selector: 'app-cep',
@@ -55,12 +56,12 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   criarForm() {
     this.form = this.fb.group({
       cep: ["", [Validators.required]],
-      endereco: ["", [Validators.required]],
-      numero: [, [Validators.required]],
-      complemento: [],
-      bairro: ["", [Validators.required]],
-      cidade: ["", [Validators.required]],
-      uf: ["", []],
+      endereco: ["", [Validators.required, Validators.maxLength(60)]],
+      numero: [, [Validators.required, Validators.maxLength(60)]],
+      complemento: ["", [Validators.maxLength(60)]],
+      bairro: ["", [Validators.maxLength(72)]],
+      cidade: ["", [Validators.required, Validators.maxLength(60)]],
+      uf: ["", [Validators.maxLength(2)]],
     });
     // Validators.required
   }
