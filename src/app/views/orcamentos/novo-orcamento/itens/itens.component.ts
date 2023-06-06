@@ -416,6 +416,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   digitouQte(item: ProdutoOrcamentoDto): void {
     if (item.qtde <= 0) item.qtde = 1;
 
+    item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
     item = itemCalculado;
     // item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
@@ -548,8 +549,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     item.totalItem = item.qtde * item.precoLista;
     item.totalItem = item.qtde * item.precoLista;
-
-    item.descDado = 100 * (item.precoLista - v) / item.precoLista;
+debugger;
+    item.descDado = 100 * (item.precoLista - Number.parseFloat(v)) / item.precoLista;
     item.descDado = this.moedaUtils.formatarDecimal(item.descDado);
 
     if (item.descDado > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
@@ -659,6 +660,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.removerProdutoDaListaControle(produto);
 
     this.digitouQte(produto);
+
+    this.novoOrcamentoService.totalPedido();
   }
 
   removerProdutoDaListaControle(produto: ProdutoOrcamentoDto) {

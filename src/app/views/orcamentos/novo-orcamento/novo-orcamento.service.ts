@@ -95,9 +95,9 @@ export class NovoOrcamentoService {
 
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
+    
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      // let novoTotal = 0;
       return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
         .formatarDecimal(this.opcaoOrcamentoCotacaoDto.listaProdutos
           .reduce((sum, current) => sum + this.moedaUtils
@@ -122,14 +122,20 @@ export class NovoOrcamentoService {
 
     let totalItem = 0;
     let precoVenda = 0;
-    produtosDto.forEach(x => {
-      let precoListaBase = x.precoLista;
-      let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
-      let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
-      totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
-    });
+    if(!item.alterouPrecoVenda){
+      produtosDto.forEach(x => {
+        let precoListaBase = x.precoLista;
+        let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
+        let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
+        totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
+      });
+  
+      item.totalItem = totalItem;
+    }
+    if(item.alterouPrecoVenda){
 
-    item.totalItem = totalItem;
+      item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
+    }
 
     return item;
   }
@@ -182,25 +188,28 @@ export class NovoOrcamentoService {
   }
 
   montarProdutoParaCalcularItem(produto: string): Array<ProdutoDto> {
-    let todosProdutosSimples = new Array<ProdutoDto>();
 
-    let itemCalulo = this.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.produto == produto)[0];
-    let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == produto)[0];
-    if (produtoComposto != null) {
-      produtoComposto.filhos.forEach(el => {
-        let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
-        itemFilhote.descDado = itemCalulo.descDado;
-        itemFilhote.qtde = el.qtde * itemCalulo.qtde;
-        todosProdutosSimples.push(Object.assign({}, itemFilhote));
-      });
+    if(this.opcaoOrcamentoCotacaoDto.listaProdutos && this.opcaoOrcamentoCotacaoDto.listaProdutos.length > 0){
+      let todosProdutosSimples = new Array<ProdutoDto>();
+
+      let itemCalulo = this.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.produto == produto)[0];
+      let produtoComposto = this.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == produto)[0];
+      if (produtoComposto != null) {
+        produtoComposto.filhos.forEach(el => {
+          let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
+          itemFilhote.descDado = itemCalulo.descDado;
+          itemFilhote.qtde = el.qtde * itemCalulo.qtde;
+          todosProdutosSimples.push(Object.assign({}, itemFilhote));
+        });
+      }
+      else {
+        let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == produto)[0];
+        itemSimples.descDado = itemCalulo.descDado;
+        itemSimples.qtde = itemCalulo.qtde;
+        todosProdutosSimples.push(Object.assign({}, itemSimples));
+      }
+      return todosProdutosSimples;
     }
-    else {
-      let itemSimples = this.produtoComboDto.produtosSimples.filter(s => s.produto == produto)[0];
-      itemSimples.descDado = itemCalulo.descDado;
-      itemSimples.qtde = itemCalulo.qtde;
-      todosProdutosSimples.push(Object.assign({}, itemSimples));
-    }
-    return todosProdutosSimples;
   }
 
   atribuirOpcaoPagto(lstFormaPagto: FormaPagtoCriacao[], formaPagamento: FormaPagto[]) {
