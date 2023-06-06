@@ -21,7 +21,7 @@
             <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
                 <label for="nomeObra">Nome da obra</label>
                 <input id="nomeObra" type="text" pInputText formControlName="NomeObra" />
-                <div *ngIf="validacaoFormularioService.verificaCampo(form,'Nome')">
+                <div *ngIf="validacaoFormularioService.verificaCampo(form,'NomeObra')">
                     <small class="p-error" *ngIf="form.controls.NomeObra.errors?.maxlength">*Quantidade de caracteres
                         excede o limite de {{this.form.controls.NomeObra.errors.maxlength.requiredLength}} caracteres</small>
                 </div>
