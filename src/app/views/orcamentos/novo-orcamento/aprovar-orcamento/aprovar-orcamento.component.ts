@@ -91,51 +91,60 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   editar: boolean = false;
   imgUrl: string;
   mostrarInstaladorInstala: boolean;
-  carregando:boolean = true;
+  carregando: boolean = true;
 
   ngOnInit(): void {
 
-    
+
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
-
-    this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise().then(response => {
-
-      this.permissaoOrcamentoResponse = response;
-
-      if (!this.permissaoOrcamentoResponse.Sucesso) {
-        this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
-        this.router.navigate(['orcamentos/listar/orcamentos']);
-        return;
-      }
-
-      if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
-        this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-        this.router.navigate(['orcamentos/listar/orcamentos']);
-        return;
-      }
-
-      this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
-      this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
-      this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
-      this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
-      this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
-      this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
-      this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
-      this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
-      
-      this.carrregarBotoneira();
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
 
     this.activatedRoute.params.subscribe(params => {
       this.desabiltarBotoes = params["aprovando"] == "false" ? true : false;
     });
 
     this.novoOrcamentoService.usuarioLogado = this.autenticacaoService.getUsuarioDadosToken();
-    this.buscarOrcamento(this.idOrcamentoCotacao);
 
-    this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    const promise = [
+      this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise().then(response => {
+
+        this.permissaoOrcamentoResponse = response;
+  
+        if (!this.permissaoOrcamentoResponse.Sucesso) {
+          this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
+          this.router.navigate(['orcamentos/listar/orcamentos']);
+          return;
+        }
+  
+        if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
+          this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+          this.router.navigate(['orcamentos/listar/orcamentos']);
+          return;
+        }
+  
+        this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
+        this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
+        this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
+        this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
+        this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
+        this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
+        this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
+        this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
+  
+        this.carrregarBotoneira();
+      })
+    ];
+
+    Promise.all(promise).then(() => {
+      this.buscarOrcamento(this.idOrcamentoCotacao);
+      this.buscarDadosParaMensageria(this.idOrcamentoCotacao);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    }).finally(() => {
+      this.carregando = false;
+    });
   }
 
   ngAfterViewInit() {
@@ -183,6 +192,36 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     ];
 
+  }
+
+  buscarPermissoes() {
+    this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise().then(response => {
+
+      this.permissaoOrcamentoResponse = response;
+
+      if (!this.permissaoOrcamentoResponse.Sucesso) {
+        this.sweetalertService.aviso(this.permissaoOrcamentoResponse.Mensagem);
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+        return;
+      }
+
+      if (!this.permissaoOrcamentoResponse.VisualizarOrcamento) {
+        this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+        return;
+      }
+
+      this.exibeBotaoProrrogar = this.permissaoOrcamentoResponse.ProrrogarOrcamento;
+      this.exibeBotaoEditar = this.permissaoOrcamentoResponse.EditarOrcamento;
+      this.exibeBotaoCancelar = this.permissaoOrcamentoResponse.CancelarOrcamento;
+      this.habilitaBotaoAprovar = this.permissaoOrcamentoResponse.DesabilitarAprovarOpcaoOrcamento;
+      this.exibeBotaoClonar = this.permissaoOrcamentoResponse.ClonarOrcamento;
+      this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
+      this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
+      this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
+
+      this.carrregarBotoneira();
+    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
   clonarOrcamento() {
@@ -248,11 +287,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
         var indice = 0;
         if (r != null) {
-          
+
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           let validade = this.novoOrcamentoService.orcamentoCotacaoDto.validade;
           let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
-          
+
           if (id == 1 && dataValidade < dataAtual) {
             this.statusOrcamento = "Expirado";
             return;
@@ -277,7 +316,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.autenticacaoService._usuarioLogado) {
       this.orcamentoService.buscarDadosParaMensageria(id, true).toPromise().then((r) => {
         if (r != null) {
-          
+
           if (this.novoOrcamentoService.permiteEnviarMensagem(r.validade, r.dataMaxTrocaMsg)) {
             this.mensagemComponente.permiteEnviarMensagem = true;
           } else {
@@ -302,7 +341,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.novoOrcamentoService.criarNovo();
     this.orcamentoService.buscarOrcamento(id).toPromise().then(r => {
       if (r != null) {
-        
+
         this.novoOrcamentoService.orcamentoCotacaoDto = r;
 
         this.buscarStatus(this.novoOrcamentoService.orcamentoCotacaoDto.status);
@@ -311,9 +350,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
         this.buscarFormasPagto();
         this.editarOpcoes = this.verificarEdicaoOpcao(r);
-        
+
       }
-    }).catch((e) =>{
+    }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;
     });
@@ -321,7 +360,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
 
   editarOpcoes = new Array<boolean>();
-  verificarEdicaoOpcao(orcamento: OrcamentoCotacaoResponse):Array<boolean> {
+  verificarEdicaoOpcao(orcamento: OrcamentoCotacaoResponse): Array<boolean> {
+    
     let permissaoEdicao = this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
     let opcoes = new Array<boolean>();
     for (let i = 0; i < orcamento.listaOrcamentoCotacaoDto.length; i++) {
@@ -347,16 +387,16 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
-    let apelidoParceiro:string;
+    let apelidoParceiro: string;
 
-    if(orcamento.cadastradoPor == orcamento.vendedor){
+    if (orcamento.cadastradoPor == orcamento.vendedor) {
       tipoUsuario = this.constantes.VENDEDOR_UNIS;
       apelido = orcamento.vendedor;
-      if(orcamento.parceiro != null){
+      if (orcamento.parceiro != null) {
         comIndicacao = 1;
         apelidoParceiro = orcamento.parceiro;
       }
-      else{
+      else {
         comIndicacao = 0;
       }
     }
@@ -365,7 +405,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       tipoUsuario = this.constantes.PARCEIRO;
       apelido = orcamento.parceiro;
       apelidoParceiro = orcamento.parceiro;
-    } 
+    }
 
     let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
 
@@ -378,7 +418,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           this.novoOrcamentoService.atribuirOpcaoPagto(formaPagtoOrcamento, this.formaPagamento);
           this.carregando = false;
         }
-      }).catch((e) => this.alertaService.mostrarErroInternet(e));
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      });
   }
 
   toggle(index: number) {
@@ -480,15 +522,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.router.navigate(["orcamentos/editar/editar-cliente"]);
   }
 
-  copiarLink(){
-    
-      const copiar = (e : ClipboardEvent) => {
-          e.clipboardData.setData('text/plain', this.novoOrcamentoService.orcamentoCotacaoDto.link);
-          e.preventDefault();
-      };
-      document.addEventListener('copy', copiar );
-      document.execCommand('copy');
-      document.removeEventListener('copy', copiar );
+  copiarLink() {
+
+    const copiar = (e: ClipboardEvent) => {
+      e.clipboardData.setData('text/plain', this.novoOrcamentoService.orcamentoCotacaoDto.link);
+      e.preventDefault();
+    };
+    document.addEventListener('copy', copiar);
+    document.execCommand('copy');
+    document.removeEventListener('copy', copiar);
     this.mensagemService.showSuccessViaToast("Link copiado com sucesso!");
   }
 }
