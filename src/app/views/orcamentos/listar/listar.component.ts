@@ -140,6 +140,7 @@ export class OrcamentosListarComponent implements OnInit {
       this.carregando = false;
     }).finally(() => {
       this.carregando = false;
+      this.pesquisar();
     });
 
     this.criarTabela();
@@ -158,7 +159,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.dtInicio = dtIni;
     this.dtFim = new Date();
 
-    this.pesquisar();
+    // this.pesquisar();
   }
 
   setarVendedores(vendedores: UsuariosPorListaLojasResponse) {
