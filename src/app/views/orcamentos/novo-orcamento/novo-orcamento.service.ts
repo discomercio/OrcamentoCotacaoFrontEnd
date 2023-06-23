@@ -108,12 +108,11 @@ export class NovoOrcamentoService {
   public totalAVista(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      let todosProdutosSimples = this.montarProdutosParaCalculo();
-
-      let totalPedido = 0;
-      totalPedido = this.calcularTotalOrcamento(todosProdutosSimples, false);
-
-      return totalPedido;
+      
+      let valorTotalAvista = this.opcaoOrcamentoCotacaoDto.listaProdutos
+        .reduce((sum, current) => sum + this.moedaUtils
+          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0);
+      return valorTotalAvista;
     }
   }
 
