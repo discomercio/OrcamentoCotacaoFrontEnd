@@ -63,4 +63,6 @@ export class Constantes {
     public COD_INSTALADOR_INSTALA_NAO_DEFINIDO = 0;
     public COD_INSTALADOR_INSTALA_NAO = 1;
     public COD_INSTALADOR_INSTALA_SIM = 2;
+
+    public ModuloOrcamentoCotacao_TextoFixo_CondicoesGerais = 12;
 }
