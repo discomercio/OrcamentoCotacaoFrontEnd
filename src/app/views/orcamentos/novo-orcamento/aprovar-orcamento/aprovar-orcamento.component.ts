@@ -108,11 +108,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     this.novoOrcamentoService.usuarioLogado = this.autenticacaoService.getUsuarioDadosToken();
 
-    const promises = [this.buscarPermissoes2(),
-    this.buscarOrcamento2(),
-    this.buscarDadosParaMensageria2(),
-    this.buscarParametros2(),
-    this.buscarStatus2(), 
+    const promises = [this.buscarPermissoes(),
+    this.buscarOrcamento(),
+    this.buscarDadosParaMensageria(),
+    this.buscarParametros(),
+    this.buscarStatus(), 
     this.mensagemComponente.buscarListaMensagem(this.idOrcamentoCotacao)];
 
     Promise.all(promises).then((r) => {
@@ -171,35 +171,35 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   }
 
-  buscarPermissoes2(): Promise<PermissaoOrcamentoResponse> {
+  buscarPermissoes(): Promise<PermissaoOrcamentoResponse> {
     return this.permissaoService.buscarPermissaoOrcamento(this.idOrcamentoCotacao).toPromise();
   }
 
-  buscarOrcamento2(): Promise<OrcamentoCotacaoResponse> {
+  buscarOrcamento(): Promise<OrcamentoCotacaoResponse> {
     return this.orcamentoService.buscarOrcamento(this.idOrcamentoCotacao).toPromise();
   }
 
-  buscarDadosParaMensageria2(): Promise<RemetenteDestinatarioResponse> {
+  buscarDadosParaMensageria(): Promise<RemetenteDestinatarioResponse> {
     if (this.autenticacaoService._usuarioLogado)
       return this.orcamentoService.buscarDadosParaMensageria(this.idOrcamentoCotacao, true).toPromise();
   }
 
-  buscarParametros2(): Promise<any> {
+  buscarParametros(): Promise<any> {
     return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_TextoFixo_CondicoesGerais, this.autenticacaoService._lojaLogado, null).toPromise();
   }
 
-  buscarStatus2(): Promise<any> {
+  buscarStatus(): Promise<any> {
     return this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise()
   }
 
-  buscarParceiro2(): Promise<OrcamentistaIndicadorDto> {
+  buscarParceiro(): Promise<OrcamentistaIndicadorDto> {
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro)
       return this.orcamentistaIndicadorService.buscarParceiroPorApelido(this.novoOrcamentoService.orcamentoCotacaoDto.parceiro).toPromise();
 
     return;
   }
 
-  buscarFormasPagto2(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro): Promise<FormaPagto[]> {
+  buscarFormasPagto(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro): Promise<FormaPagto[]> {
     return this.formaPagtoService.buscarFormaPagto(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro).toPromise();
   }
 
@@ -262,7 +262,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }
 
       this.carregando = true;
-      const promises: any[] = [this.buscarParceiro2(), this.buscarFormasPagto2(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
+      const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
         tipoUsuario, apelido, apelidoParceiro)];
 
       Promise.all(promises).then((r) => {
@@ -393,47 +393,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     return opcoes;
-  }
-
-  buscarFormasPagto() {
-    let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
-    let comIndicacao: number = 0;
-    let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
-    let apelido: string = this.autenticacaoService.usuario.nome;
-    let apelidoParceiro: string;
-
-    if (orcamento.cadastradoPor == orcamento.vendedor) {
-      tipoUsuario = this.constantes.VENDEDOR_UNIS;
-      apelido = orcamento.vendedor;
-      if (orcamento.parceiro != null) {
-        comIndicacao = 1;
-        apelidoParceiro = orcamento.parceiro;
-      }
-      else {
-        comIndicacao = 0;
-      }
-    }
-    if (orcamento.cadastradoPor == orcamento.parceiro || orcamento.cadastradoPor == orcamento.vendedorParceiro) {
-      comIndicacao = 1;
-      tipoUsuario = this.constantes.PARCEIRO;
-      apelido = orcamento.parceiro;
-      apelidoParceiro = orcamento.parceiro;
-    }
-
-    let formaPagtoOrcamento = new Array<FormaPagtoCriacao>();
-
-    this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
-      comIndicacao, tipoUsuario, apelido, apelidoParceiro)
-      .toPromise()
-      .then((r) => {
-        if (r != null) {
-          this.formaPagamento = r;
-          this.novoOrcamentoService.atribuirOpcaoPagto(formaPagtoOrcamento, this.formaPagamento);
-          this.carregando = false;
-        }
-      }).catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
-      });
   }
 
   toggle(index: number) {
