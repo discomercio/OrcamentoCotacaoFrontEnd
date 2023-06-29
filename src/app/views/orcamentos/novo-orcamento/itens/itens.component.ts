@@ -36,6 +36,8 @@ import { ProdutoTela } from '../select-prod-dialog/produto-tela';
 import { SelectCloneOpcoesDialogComponent } from '../select-clone-opcoes-dialog/select-clone-opcoes-dialog.component';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
+import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,7 +45,7 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
   templateUrl: './itens.component.html',
   styleUrls: ['./itens.component.scss']
 })
-export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
+export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   constructor(private fb: FormBuilder,
     public readonly novoOrcamentoService: NovoOrcamentoService,
@@ -77,40 +79,108 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
   dtOptions: any = {};
   produtoComboDto: ProdutoComboDto;
   carregandoProds = true;
-  // clicouAddProd: boolean = true;
   selecProdInfo = new SelecProdInfo();
   param: string;
   habilitarClone: boolean = false;
   habilitarComissao: boolean = true;
+  editando: boolean = false;
+  mostrarPercrt: boolean = false;
+  produtoRequest: ProdutoRequest;
+  mensagemAlerta: string = "";
+  mostrando: boolean = false;
+  desabilitarEnvio: boolean = false;
+  antigoPercRT: number;
+
+  @ViewChild("formaPagto", { static: true }) formaPagto: FormaPagtoComponent;
+  @ViewChild("opcoes", { static: true }) opcoes: OpcoesComponent;
 
   ngOnInit(): void {
-    this.activatedRoute.params.subscribe((param: any) => { this.verificarParam(param); });
-    this.novoOrcamentoService.criarNovoOrcamentoItem();
-    this.novoOrcamentoService.descontoGeral = 0;
-    this.permissaoEditarComissao();
-  }
-  editando: boolean = false;
-  verificarParam(param: any) {
+    this.param = this.verificarParam2();
 
-    if (param.filtro == undefined) {
-      this.editando = true;
-      // this.carregandoProds = false;
+    if (this.param) {
+      this.carregandoProds = true;
+      this.iniciarNovo();
+      this.novoOrcamentoService.criarNovoOrcamentoItem();
+      this.novoOrcamentoService.descontoGeral = 0;
+
+      const promises: any = [this.formaPagto.buscarFormasPagto2(), this.formaPagto.buscarQtdeMaxParcelas(), this.buscarPercentualComissao2()];
+      Promise.all(promises).then((r: any) => {
+        this.formaPagto.setarFormasPagto(r[0]);
+        this.formaPagto.setarQtdeMaxParcelas(r[1]);
+        this.setarPercentualMaxComissao(r[2]);
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+        this.carregandoProds = false;
+      }).finally(() => {
+        this.carregandoProds = false;
+        this.setarParametrosBuscaProdutos();
+        if (this.param == "clone") {
+          this.buscarProdutosAutomatico();
+        }
+      })
     }
-    if (param.filtro == "novo" || param.filtro == "iniciar") {
-      this.param = "novo";
-      this.novoOrcamentoService.editarComissao = false;
-      this.novoOrcamentoService.editando = false;
-      this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
-    }
-    if (param.filtro == "clone") {
-      this.param = param.filtro;
-      this.habilitarClone = true;
-      //precisamos clonar as opções
-      this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
-    }
-    this.iniciarNovo();
-    this.buscarPercentualComissao();
+
+
+    // this.activatedRoute.params.subscribe((param: any) => { 
+    //   this.verificarParam(param); 
+    // });
+    // this.novoOrcamentoService.criarNovoOrcamentoItem();
+    // this.novoOrcamentoService.descontoGeral = 0;
+    // this.permissaoEditarComissao();
   }
+
+  iniciarNovo() {
+    if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
+      this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
+      return;
+    }
+
+    this.usuario = this.autenticacaoService.getUsuarioDadosToken();
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
+    this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
+  }
+
+  verificarParam2(): string {
+    let retorno: string;
+    this.activatedRoute.params.subscribe((param: any) => {
+      if (param.filtro == undefined) {
+        this.editando = true;
+      }
+      if (param.filtro == "novo" || param.filtro == "iniciar") {
+        retorno = "novo";
+        this.novoOrcamentoService.editando = false;
+        this.formaPagto.editando = false;
+        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+      }
+      if (param.filtro == "clone") {
+        retorno = param.filtro;
+        this.habilitarClone = true;
+        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+      }
+    });
+    return retorno;
+  }
+  // verificarParam(param: any) {
+
+  //   if (param.filtro == undefined) {
+  //     this.editando = true;
+  //     // this.carregandoProds = false;
+  //   }
+  //   if (param.filtro == "novo" || param.filtro == "iniciar") {
+  //     this.param = "novo";
+  //     this.novoOrcamentoService.editarComissao = false;
+  //     this.novoOrcamentoService.editando = false;
+  //     this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+  //   }
+  //   if (param.filtro == "clone") {
+  //     this.param = param.filtro;
+  //     this.habilitarClone = true;
+  //     //precisamos clonar as opções
+  //     this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+  //   }
+  //   this.iniciarNovo();
+  //   this.buscarPercentualComissao();
+  // }
 
   permissaoEditarComissao() {
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
@@ -133,6 +203,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
             return;
           }
           this.novoOrcamentoService.lstProdutosSelecionados = new Array<ProdutoOrcamentoDto>();
+          this.novoOrcamentoService.criarNovoOrcamentoItem();
+          this.atualizarRemocao();
+          this.formaPagto.setarFormasPagto(this.formaPagto.formaPagamento);
           //vamos abrir a modal
           this.mostrarOpcoesClone();
           return;
@@ -198,116 +271,183 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     });
   }
 
-  iniciarNovo() {
-    if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
-      this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
-      return;
-    }
 
-    this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
-    this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
+
+  // async ngAfterViewInit() {
+
+  //   if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined ||
+  //     this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == null) {
+  //     this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
+  //     return;
+  //   }
+
+  //   await this.formaPagto.buscarFormasPagto(this.param);
+
+  //   // if (this.param != undefined) {
+  //   this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
+  //     if (r != null) {
+  //       this.formaPagto.qtdeMaxParcelas = r;
+  //       this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
+
+  //       this.formaPagto.setarTipoPagto();
+  //       this.inscreveProdutoComboDto();
+  //     }
+  //   }).catch((e) => {
+  //     this.alertaService.mostrarErroInternet(e);
+  //     this.carregandoProds = false;
+  //   });
+  //   // }
+
+  //   if (this.editando) this.formaPagto.editando = true;
+  // }
+
+  setarParametrosBuscaProdutos() {
+    this.produtoRequest = new ProdutoRequest();
+    this.produtoRequest.loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
+    this.produtoRequest.uf = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
+    this.produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
+    this.produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
+    this.produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
+    this.produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
   }
 
-  async ngAfterViewInit() {
+  // inscreveProdutoComboDto(): void {
+  //   if (this.novoOrcamentoService.orcamentoCotacaoDto.loja == undefined) return;
 
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == undefined ||
-      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto == null) {
-      this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
-      return;
-    }
+  //   let produtoRequest: ProdutoRequest = new ProdutoRequest();
+  //   produtoRequest.loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
+  //   produtoRequest.uf = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
+  //   produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
+  //   produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
+  //   produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
+  //   produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
 
-    await this.formaPagto.buscarFormasPagto(this.param);
+  //   this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
+  //     if (r != null) {
 
-    // if (this.param != undefined) {
-    this.formaPagto.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise().then((r) => {
-      if (r != null) {
-        this.formaPagto.qtdeMaxParcelas = r;
-        this.formaPagto.qtdeMaxParcelaCartaoVisa = r;
+  //       this.produtoComboDto = r;
+  //       this.novoOrcamentoService.produtoComboDto = r;
+  //       if (!this.editando) {
+  //         this.carregandoProds = false;
+  //       }
+  //       this.cdref.detectChanges();
+  //     }
+  //   }).catch((r) => {
+  //     this.alertaService.mostrarErroInternet(r);
+  //     this.carregandoProds = false;
+  //   });
+  // }
 
-        this.formaPagto.setarTipoPagto();
-        this.inscreveProdutoComboDto();
-      }
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
-      this.carregandoProds = false;
-    });
-    // }
-
-    if (this.editando) this.formaPagto.editando = true;
+  buscarProdutos(): Promise<ProdutoComboDto> {
+    return this.produtoService.buscarProdutosCompostosXSimples(this.produtoRequest).toPromise();
   }
 
-  @ViewChild("formaPagto", { static: false }) formaPagto: FormaPagtoComponent;
-  @ViewChild("opcoes", { static: false }) opcoes: OpcoesComponent;
-
-  inscreveProdutoComboDto(): void {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.loja == undefined) return;
-
-    let produtoRequest: ProdutoRequest = new ProdutoRequest();
-    produtoRequest.loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
-    produtoRequest.uf = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf;
-    produtoRequest.tipoCliente = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
-    produtoRequest.tipoParcela = this.novoOrcamentoService.siglaPagto;
-    produtoRequest.qtdeParcelas = this.formaPagto.qtdeMaxParcelas;
-    produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
-
-    this.produtoService.buscarProdutosCompostosXSimples(produtoRequest).toPromise().then((r) => {
-      if (r != null) {
-
-        this.produtoComboDto = r;
-        this.novoOrcamentoService.produtoComboDto = r;
-        if(!this.editando){
-          this.carregandoProds = false;
-        }
-        this.cdref.detectChanges();
+  setarProdutos(r: ProdutoComboDto) {
+    if (r != null) {
+      this.produtoComboDto = r;
+      this.novoOrcamentoService.produtoComboDto = r;
+      if (!this.editando) {
+        this.carregandoProds = false;
       }
-    }).catch((r) => {
-      this.alertaService.mostrarErroInternet(r);
-      this.carregandoProds = false;
-    });
+      this.cdref.detectChanges();
+    }
   }
 
   adicionarProduto(): void {
-    // this.clicouAddProd = true;
-    this.mostrarProdutos(null);
+    this.carregandoProds = true;
+    if (!this.produtoComboDto) {
+      const promise = [this.buscarProdutos()];
+      Promise.all(promise).then((r: any) => {
+        this.setarProdutos(r[0]);
+        if (!this.editando) {
+          this.mostrarProdutos(null);
+        }
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+        this.carregandoProds = false;
+      }).finally(() => {
+        this.carregandoProds = false;
+        return;
+      });
+    }
+    else {
+      this.mostrarProdutos(null);
+      this.carregandoProds = false;
+    }
   }
-  mostrarPercrt: boolean = false;
-  buscarPercentualComissao() {
-    if (this.usuario.loja == undefined) return;
 
-    this.lojaService.buscarPercentualComissao(this.usuario.loja, this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
-      if (r != null) {
-        this.novoOrcamentoService.percentualMaxComissao = r;
-        this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
+  buscarProdutosAutomatico() {
+    this.carregandoProds = true;
+    this.setarParametrosBuscaProdutos();
+    const promise = [this.buscarProdutos()];
+    Promise.all(promise).then((r: any) => {
+      this.setarProdutos(r[0]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregandoProds = false;
+    }).finally(() => {
+      this.carregandoProds = false;
+    });
+  }
 
-        if (!this.novoOrcamentoService.editando) {
+  buscarPercentualComissao2(): Promise<PercMaxDescEComissaoResponseViewModel> {
+    return this.lojaService.buscarPercentualComissao(this.usuario.loja,
+      this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise();
+  }
 
-          this.novoOrcamentoService.setarPercentualComissao();
-          return;
-        }
-        
-        if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-            !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-          this.novoOrcamentoService.setarPercentualComissao();
-          this.novoOrcamentoService.calcularPercentualComissao();
-        }
+  setarPercentualMaxComissao(r: PercMaxDescEComissaoResponseViewModel) {
+    if (r != null) {
+      this.novoOrcamentoService.percentualMaxComissao = r;
+      this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
+
+      if (!this.novoOrcamentoService.editando) {
+
+        this.novoOrcamentoService.setarPercentualComissao();
+        return;
       }
-    }).catch(e => this.alertaService.mostrarErroInternet(e));
+
+      if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+        !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+        this.novoOrcamentoService.setarPercentualComissao();
+        this.novoOrcamentoService.calcularPercentualComissao();
+      }
+    }
   }
 
-  verificarCargaProdutos(): boolean {
-    if (this.carregandoProds) {
-      //ainda não carregou, vamos esperar....
-      return false;
-    }
-    return true;
-  }
+  // buscarPercentualComissao() {
+  //   if (this.usuario.loja == undefined) return;
 
-  async mostrarProdutos(linha: ProdutoOrcamentoDto) {
-    if (!this.verificarCargaProdutos()) {
-      return;
-    }
+  //   this.lojaService.buscarPercentualComissao(this.usuario.loja, this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo).toPromise().then((r) => {
+  //     if (r != null) {
+  //       this.novoOrcamentoService.percentualMaxComissao = r;
+  //       this.novoOrcamentoService.percentualMaxComissaoPadrao = r;
+
+  //       if (!this.novoOrcamentoService.editando) {
+
+  //         this.novoOrcamentoService.setarPercentualComissao();
+  //         return;
+  //       }
+
+  //       if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
+  //         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
+  //         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
+  //         this.novoOrcamentoService.setarPercentualComissao();
+  //         this.novoOrcamentoService.calcularPercentualComissao();
+  //       }
+  //     }
+  //   }).catch(e => this.alertaService.mostrarErroInternet(e));
+  // }
+
+  // verificarCargaProdutos(): boolean {
+  //   if (this.carregandoProds) {
+  //     //ainda não carregou, vamos esperar....
+  //     return false;
+  //   }
+  //   return true;
+  // }
+
+  mostrarProdutos(linha: ProdutoOrcamentoDto) {
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
     this.selecProdInfo.ClicouOk = false;
     let largura: string = this.novoOrcamentoService.onResize() ? "" : "65vw";
@@ -386,6 +526,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     this.novoOrcamentoService.calcularDescontoMedio();
     this.novoOrcamentoService.totalPedido();
 
+
     this.formaPagto.habilitar = false;
   }
 
@@ -419,7 +560,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
     item = itemCalculado;
-    // item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
@@ -488,7 +628,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
           let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
           let precoVenda = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * (1 - item.descDado / 100));
           let precoComQtde = this.moedaUtils.formatarDecimal(precoVenda * el.qtde)
-          // somaFilhotes += this.moedaUtils.formatarDecimal(precoListaComDesc * el.qtde);
           somaFilhotes += precoComQtde;
         });
         item.precoVenda = somaFilhotes;
@@ -549,7 +688,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
 
     item.totalItem = item.qtde * item.precoLista;
     item.totalItem = item.qtde * item.precoLista;
-debugger;
+    
     item.descDado = 100 * (item.precoLista - Number.parseFloat(v)) / item.precoLista;
     item.descDado = this.moedaUtils.formatarDecimal(item.descDado);
 
@@ -576,18 +715,11 @@ debugger;
     return false;
   }
 
-  mensagemAlerta: string = "";
   produtoTemAviso(item: ProdutoOrcamentoDto): boolean {
     let retorno: boolean = false;
     if (item) {
       if (this.confirmaProdutoComposto(item)) {
         let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
-        // produto.filhos.forEach(i => {
-        //   if (i.alertas) {
-        //     retorno = true;
-        //     this.mensagemAlerta = i.alertas;
-        //   }
-        // });
       }
       if (!this.confirmaProdutoComposto(item)) {
         let produto = this.produtoComboDto?.produtosSimples.filter(f => f.produto == item.produto)[0];
@@ -624,7 +756,7 @@ debugger;
         return true;
       }
     }
-    
+
     return false;
   }
 
@@ -636,12 +768,6 @@ debugger;
     if (this.confirmaProdutoComposto(item)) {
       let produto = this.produtoComboDto?.produtosCompostos.filter(f => f.paiProduto == item.produto)[0];
       let excede: boolean = false;
-      // produto.filhos.forEach(i => {
-      //   if (i.qtdeMaxVenda < item.qtde) {
-      //     excede = true;
-      //     return;
-      //   }
-      // });
       return excede;
     }
     if (!this.confirmaProdutoComposto(item)) {
@@ -659,7 +785,9 @@ debugger;
 
     this.removerProdutoDaListaControle(produto);
 
-    this.digitouQte(produto);
+    // this.digitouQte(produto);
+    // this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = new Array<ProdutoOrcamentoDto>();
+    this.atualizarRemocao();
 
     this.novoOrcamentoService.totalPedido();
   }
@@ -697,7 +825,15 @@ debugger;
     }
   }
 
-  mostrando: boolean = false;
+  atualizarRemocao(): void {
+    let valorTotal = this.novoOrcamentoService.totalPedido()
+    this.formaPagto.setarValorParcela(valorTotal / this.novoOrcamentoService.qtdeParcelas);
+    this.formaPagto.calcularValorAvista();
+    if (this.novoOrcamentoService.calcularComissaoAuto)
+      this.novoOrcamentoService.calcularPercentualComissao();
+    this.novoOrcamentoService.calcularDescontoMedio();
+  }
+
   mostrarIrmaos(e: any, produto: ProdutoOrcamentoDto) {
 
     if (this.telaDesktop) return;
@@ -737,7 +873,6 @@ debugger;
     }
   }
 
-  desabilitarEnvio: boolean = false;
   salvarOrcamento() {
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 0) {
@@ -781,7 +916,6 @@ debugger;
     this.novoOrcamentoService.editarComissao = true;
   }
 
-  antigoPercRT: number;
   formataComissao(e: Event) {
 
     let valor = ((e.target) as HTMLInputElement).value;
