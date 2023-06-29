@@ -33,9 +33,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
   carregando: boolean;
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void { }
 
   ngAfterViewInit() {
     if (!this.itens.param && this.validarEdicao()) {
@@ -44,8 +42,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.setarOpcao();
       this.setarProdutosOpcao();
 
-      const promise1: any = [this.itens.formaPagto.buscarFormasPagto2(), this.itens.formaPagto.buscarQtdeMaxParcelas(),
-      this.buscarPercentualPorAlcada2()];
+      const promise1: any = [this.itens.formaPagto.buscarFormasPagto(), this.itens.formaPagto.buscarQtdeMaxParcelas(),
+      this.buscarPercentualPorAlcada()];
       Promise.all(promise1).then((r: any) => {
         this.itens.formaPagto.setarFormasPagto(r[0]);
         this.itens.formaPagto.setarQtdeMaxParcelas(r[1]);
@@ -54,18 +52,13 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         this.alertaService.mostrarErroInternet(e);
         this.itens.carregandoProds = false;
       }).finally(() => {
-        this.buscarProdutos2();
+        this.buscarProdutos();
         this.cdref.detectChanges();
         this.atribuirPercRT();
       });
 
       this.cdref.detectChanges();
     }
-    // setTimeout(() => {
-    //   this.itens.carregandoProds = false;
-    // }, 3000);
-
-
   }
 
   validarEdicao(): boolean {
@@ -97,7 +90,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(dataRef);
   }
 
-  buscarProdutos2() {
+  buscarProdutos() {
     this.itens.carregandoProds = true;
     this.setarParametrosBuscaProdutos();
     const promise = [this.itens.buscarProdutos()];
@@ -130,33 +123,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-  // verificarPermissao() {
-  //   if (this.idOpcaoOrcamentoCotacao == undefined || this.itens.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor == undefined) {
-  //     this.router.navigate(["/orcamentos/listar/orcamentos"]);
-  //     return;
-  //   }
-
-  //   this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
-  //   this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
-  //   this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
-  //   this.itens.novoOrcamentoService.editando = true;
-  //   this.itens.novoOrcamentoService.calcularComissaoAuto = this.verificarCalculoComissao();
-
-  //   this.buscarProdutos();
-  //   if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
-  //     this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-  //     this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-  //     this.buscarPercentualPorAlcada();
-  //     return;
-  //   }
-
-  //   this.buscarFormaPagto();
-  //   this.itens.inserirProduto();
-  // }
-
   verificarCalculoComissao(): boolean {
-    
+
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
 
@@ -187,13 +155,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.lstProdutosSelecionados = this.opcaoOrcamento.listaProdutos;
   }
 
-  // buscarProdutos() {
-
-  //   this.opcaoOrcamento.listaProdutos.forEach(x => { if (x.descDado > 0) x.alterouPrecoVenda = true; });
-  //   this.itens.novoOrcamentoService.lstProdutosSelecionados = this.opcaoOrcamento.listaProdutos;
-  // }
-
-  buscarPercentualPorAlcada2(): Promise<PercMaxDescEComissaoResponseViewModel> {
+  buscarPercentualPorAlcada(): Promise<PercMaxDescEComissaoResponseViewModel> {
     if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
       this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
@@ -210,29 +172,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar = r.percMaxComissaoEDesconto;
       this.buscarFormaPagto();
       this.itens.inserirProduto();
-      // setTimeout(() => {
-      //   this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
-      // }, 300);
-
       this.itens.cdref.detectChanges();
     }
   }
-  // buscarPercentualPorAlcada() {
-  //   let tipoCliente = this.itens.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
-  //   this.lojaService.buscarPercentualAlcada(this.autenticacaoService._lojaLogado, tipoCliente).toPromise().then((r) => {
-  //     if (r != null) {
-  //       this.itens.novoOrcamentoService.percentualMaxComissao = r;
-  //       this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar = r.percMaxComissaoEDesconto;
-  //       this.buscarFormaPagto();
-  //       this.itens.inserirProduto();
-  //       setTimeout(() => {
-  //         this.itens.digitouQte(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos[0]);
-  //       }, 300);
-
-  //       this.itens.cdref.detectChanges();
-  //     }
-  //   }).catch((e) => { this.alertaService.mostrarErroInternet(e) });
-  // }
 
   buscarFormaPagto() {
     this.itens.formaPagto.habilitar = false;
@@ -315,9 +257,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
       let pergunta = `Para manter o desconto médio de ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
         ${this.itens.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
-      //fazer uma pergunta se quer arredondar para o valor máximo de desconto
+
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
-        //se não => return;
         if (!result) {
           this.carregando = false;
           return;

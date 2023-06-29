@@ -61,7 +61,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
   }
 
-  buscarFormasPagto2():Promise<FormaPagto[]>{
+  buscarFormasPagto():Promise<FormaPagto[]>{
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
@@ -95,47 +95,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.montarFormasPagto();
     }
   }
-
-  // buscarFormasPagto(param: string) {
-  //   let comIndicacao: number = 0;
-  //   let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
-  //   let apelido: string = this.autenticacaoService.usuario.nome;
-  //   let apelidoParceiro:string;
-  //   if (tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-  //     tipoUsuario = this.constantes.VENDEDOR_UNIS;
-  //     apelido = apelido;
-
-  //     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
-  //       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-  //       comIndicacao = 1;
-  //         apelidoParceiro = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
-  //     }
-  //     else {
-  //       comIndicacao = 0;
-  //     }
-  //   }
-  //   if (tipoUsuario == this.constantes.PARCEIRO || tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
-  //     tipoUsuario = this.constantes.PARCEIRO;
-  //     apelido = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
-  //     comIndicacao = 1;
-  //   }
-
-  //   if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
-  //     return this.formaPagtoService.buscarFormaPagto(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo,
-  //       comIndicacao, tipoUsuario, apelido, apelidoParceiro)
-  //       .toPromise()
-  //       .then((r) => {
-  //         if (r != null) {
-  //           this.formaPagamento = r;
-  //           this.montarFormasPagto();
-  //           // this.setarTipoPagto();
-  //         }
-  //       }).catch((e) => {
-  //         this.alertaService.mostrarErroInternet(e)
-  //       });
-  //   }
-
-  // }
 
   buscarQtdeMaxParcelas():Promise<number>{
     return this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise();
