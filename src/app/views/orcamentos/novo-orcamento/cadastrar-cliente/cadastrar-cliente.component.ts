@@ -370,8 +370,8 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     if (r != null) {
       this.lstVendedoresParceiros = this.montarListaParaSelectItem(r);
       this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro);
+      this.mostrarInstaladorInstala = true;
     }
-    this.mostrarInstaladorInstala = true;
     this.form.controls.instaladorInstala.setValidators([Validators.required, Validators.max(this.constantes.COD_INSTALADOR_INSTALA_SIM), Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]);
     this.form.controls.instaladorInstala.updateValueAndValidity();
   }
