@@ -580,12 +580,16 @@ export class NovoOrcamentoService {
   }
 
   validarComissao(valor: any): boolean {
+    
+    if(Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+
     let descontoMedio = this.calcularDescontoMedio();
     let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
     if (Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
 
-    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || 
+        Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     return true
   }

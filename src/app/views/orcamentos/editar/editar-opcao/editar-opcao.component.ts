@@ -31,7 +31,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   @ViewChild("itens", { static: true }) itens: ItensComponent;
   idOpcaoOrcamentoCotacao: number;
   opcaoOrcamento: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
-  carregando: boolean;
 
   ngOnInit(): void { }
 
@@ -39,6 +38,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (!this.itens.param && this.validarEdicao()) {
       this.idOpcaoOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
       this.itens.formaPagto.editando = true;
+      this.itens.novoOrcamentoService.descontoGeral = 0;
       this.setarOpcao();
       this.setarProdutosOpcao();
 
@@ -169,6 +169,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   setarPercentualMaxComissao(r: PercMaxDescEComissaoResponseViewModel) {
     if (r != null) {
       this.itens.novoOrcamentoService.percentualMaxComissao = r;
+      this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao = r.percMaxComissao;
       this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar = r.percMaxComissaoEDesconto;
       this.buscarFormaPagto();
       this.itens.inserirProduto();
@@ -208,15 +209,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.itens.cdref.detectChanges();
       this.itens.formaPagto.setarSiglaPagto();
     }
-    // setTimeout(() => {
-
-    // }, 700);
   }
 
   salvarOpcao() {
     this.itens.carregandoProds = true;
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
-      this.carregando = false;
+      this.itens.carregandoProds = false;
       return;
     }
 
@@ -224,7 +222,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     if (!this.validarDescontosProdutos()) {
       this.alertaService.mostrarMensagem("Existe produto que excede o desconto máximo permitido!");
-      this.carregando = false;
+      this.itens.carregandoProds = false;
       return;
     }
 
@@ -260,7 +258,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
-          this.carregando = false;
+          this.itens.carregandoProds = false;
           return;
         }
 
@@ -280,7 +278,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
-          this.carregando = false;
+          this.itens.carregandoProds = false;
           return;
         }
 
@@ -291,21 +289,21 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   atualizarOpcao() {
-    this.carregando = true;
+    
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);
-        this.carregando = false;
+        this.itens.carregandoProds = false;
         return;
       }
-      this.carregando = false;
+      this.itens.carregandoProds = false;
       this.sweetalertService.sucesso("Opcão atualizada com sucesso!");
       this.router.navigate(["orcamentos/aprovar-orcamento", this.itens.novoOrcamentoService.orcamentoCotacaoDto.id]);
 
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
-      this.carregando = false;
+      this.itens.carregandoProds = false;
     });
   }
 
