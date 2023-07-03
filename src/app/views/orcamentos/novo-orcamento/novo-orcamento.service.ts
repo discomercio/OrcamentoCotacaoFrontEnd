@@ -83,7 +83,7 @@ export class NovoOrcamentoService {
   }
 
   setarPercentualComissao() {
-    
+
     this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ?
       this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
@@ -99,7 +99,7 @@ export class NovoOrcamentoService {
   }
 
   public totalPedido(): number {
-    
+
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
       return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
@@ -112,11 +112,15 @@ export class NovoOrcamentoService {
   public totalAVista(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      
-      let valorTotalAvista = this.opcaoOrcamentoCotacaoDto.listaProdutos
-        .reduce((sum, current) => sum + this.moedaUtils
-          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0);
-      return valorTotalAvista;
+      let total = 0;
+      this.opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+        let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+        let precoBaseVenda = this.moedaUtils
+          .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+        total += precoBaseVenda;
+      });
+
+      return total;
     }
   }
 
@@ -125,17 +129,17 @@ export class NovoOrcamentoService {
 
     let totalItem = 0;
     let precoVenda = 0;
-    if(!item.alterouPrecoVenda){
+    if (!item.alterouPrecoVenda) {
       produtosDto.forEach(x => {
         let precoListaBase = x.precoLista;
         let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
         let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
         totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
       });
-  
+
       item.totalItem = totalItem;
     }
-    if(item.alterouPrecoVenda){
+    if (item.alterouPrecoVenda) {
 
       item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
     }
@@ -192,7 +196,7 @@ export class NovoOrcamentoService {
 
   montarProdutoParaCalcularItem(produto: string): Array<ProdutoDto> {
 
-    if(this.opcaoOrcamentoCotacaoDto.listaProdutos && this.opcaoOrcamentoCotacaoDto.listaProdutos.length > 0){
+    if (this.opcaoOrcamentoCotacaoDto.listaProdutos && this.opcaoOrcamentoCotacaoDto.listaProdutos.length > 0) {
       let todosProdutosSimples = new Array<ProdutoDto>();
 
       let itemCalulo = this.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.produto == produto)[0];
@@ -228,12 +232,15 @@ export class NovoOrcamentoService {
       let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
 
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-        let valorTotalAvista = this.moedaUtils
-          .formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.listaProdutos
-            .reduce((sum, current) => sum + this.moedaUtils
-              .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+        let total = 0;
+        opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+          let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+          let precoBaseVenda = this.moedaUtils
+            .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+          total += precoBaseVenda;
+        });
         let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
+        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         return true;
       }
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
@@ -314,7 +321,7 @@ export class NovoOrcamentoService {
           let valorComCoeficiente = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * coeficiente.Coeficiente);
           somaFilhotes += this.moedaUtils.formatarDecimal(valorComCoeficiente * el.qtde);
         });
-        
+
         x.precoLista = somaFilhotes;
         x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
         x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
@@ -347,7 +354,7 @@ export class NovoOrcamentoService {
     let totalComDesc = this.totalPedido();
 
     let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
-    
+
     this.descontoMedio = descMedio;
 
     return descMedio;
@@ -488,7 +495,7 @@ export class NovoOrcamentoService {
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
     let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let dataMax = DataUtils.formata_dataString_para_formato_data(new Date(dataMaxTrocaMsg).toLocaleString("pt-br").slice(0, 10));
-    if(dataAtual >= dataMax) return false;
+    if (dataAtual >= dataMax) return false;
 
     return this.validarExpiracao(dataValidade);
   }
