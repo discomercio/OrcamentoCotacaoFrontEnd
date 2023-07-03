@@ -229,12 +229,15 @@ export class NovoOrcamentoService {
       let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
 
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-        let valorTotalAvista = this.moedaUtils
-          .formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.listaProdutos
-            .reduce((sum, current) => sum + this.moedaUtils
-              .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+        let total = 0;
+        opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+          let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+          let precoBaseVenda = this.moedaUtils
+            .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+          total += precoBaseVenda;
+        });
         let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
+        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         return true;
       }
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
