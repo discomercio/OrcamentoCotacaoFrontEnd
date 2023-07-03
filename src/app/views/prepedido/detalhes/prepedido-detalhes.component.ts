@@ -23,7 +23,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 export class PrepedidoDetalhesComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly prepedidoService : PrepedidoService,
+    private readonly prepedidoService: PrepedidoService,
     private readonly alertaService: AlertaService,
     private router: Router,
     private location: Location,
@@ -33,45 +33,70 @@ export class PrepedidoDetalhesComponent implements OnInit {
 
   numeroPrepedido = "";
   prepedido: PrePedidoDto;
-  stringUtils = new StringUtils();  
-  moedaUtils: MoedaUtils = new MoedaUtils();  
-  dataUtils: DataUtils = new DataUtils();  
+  stringUtils = new StringUtils();
+  moedaUtils: MoedaUtils = new MoedaUtils();
+  dataUtils: DataUtils = new DataUtils();
   formatarTelefone: FormataTelefone = new FormataTelefone();
   formatarEndereco: FormatarEndereco = new FormatarEndereco();
   constantes: Constantes = new Constantes();
   public enderecoEntregaFormatado: string;
   public qtdeLinhaEndereco: number;
   permissaoPrePedidoResponse: PermissaoPrePedidoResponse;
+  carregando: boolean;
 
   ngOnInit() {
+    this.carregando = true;
     this.numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
 
-    this.permissaoService.buscarPermissaoPrePedido(this.numeroPrepedido).toPromise().then(response => {
+    const promises: any = [this.buscarPermissao(this.numeroPrepedido), this.buscarPrepedido(this.numeroPrepedido)];
 
-      this.permissaoPrePedidoResponse = response;
+    Promise.all(promises).then((r: any) => {
+      this.verificarPermissaoPrepedido(r[0]);
+      this.setarPrepedido(r[1]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+      return;
+    }).finally(() => {
+      this.carregando = false;
+    });
+  }
 
-      if (!this.permissaoPrePedidoResponse.Sucesso) {
-        this.sweetalertService.aviso(this.permissaoPrePedidoResponse.Mensagem);
-        this.router.navigate(['orcamentos/listar/pendentes']);
-        return;
+  buscarPermissao(numeroPrepedido: string): Promise<PermissaoPrePedidoResponse> {
+    return this.permissaoService.buscarPermissaoPrePedido(numeroPrepedido).toPromise();
+  }
+
+  buscarPrepedido(numeroPrepedido: string): Promise<PrePedidoDto> {
+    return this.prepedidoService.carregar(numeroPrepedido).toPromise();
+  }
+
+  verificarPermissaoPrepedido(r: PermissaoPrePedidoResponse) {
+    this.permissaoPrePedidoResponse = r;
+
+    if (!this.permissaoPrePedidoResponse.Sucesso) {
+      this.sweetalertService.aviso(this.permissaoPrePedidoResponse.Mensagem);
+      this.router.navigate(['orcamentos/listar/pendentes']);
+      return;
+    }
+
+    if (!this.permissaoPrePedidoResponse.VisualizarPrePedido) {
+      this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+      this.router.navigate(['orcamentos/listar/pendentes']);
+      return;
+    }
+  }
+
+  setarPrepedido(r: PrePedidoDto) {
+    if (r != null) {
+      this.prepedido = r;
+      if (this.prepedido.EnderecoEntrega.OutroEndereco) {
+        this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
       }
+    }
+  }
 
-      if (!this.permissaoPrePedidoResponse.VisualizarPrePedido) {
-        this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-        this.router.navigate(['orcamentos/listar/pendentes']);
-        return;
-      }
+  montarEnderecoEntrega(enderecoEntregaDto: any): void {
 
-      this.carregar();    
-            
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
-
-    
-
-  }  
-
-  montarEnderecoEntrega(enderecoEntregaDto: any): void {  
-    
     if (enderecoEntregaDto.OutroEndereco) {
       let retorno: string = "";
       let sEndereco: string;
@@ -91,7 +116,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
         // return;
       }
       else {
-        
+
         let emails: string = "";
         if (this.prepedido.DadosCliente.Tipo == this.constantes.ID_PF) {
           if ((!!enderecoEntregaDto.EndEtg_email) ||
@@ -103,7 +128,7 @@ export class PrepedidoDetalhesComponent implements OnInit {
 
           if (!!enderecoEntregaDto.EndEtg_email_xml && enderecoEntregaDto.EndEtg_email_xml != "")
             emails += "E-mail (XML): " + enderecoEntregaDto.EndEtg_email_xml;
-          
+
           this.enderecoEntregaFormatado = sEndereco + emails + "\n" + enderecoEntregaDto.EndEtg_descricao_justificativa;
 
           split = this.enderecoEntregaFormatado.split('\n');
@@ -127,49 +152,28 @@ export class PrepedidoDetalhesComponent implements OnInit {
     }
 
     return;
-  }  
-
-  carregar() {
-    
-    if (this.numeroPrepedido) {
-      this.prepedidoService.carregar(this.numeroPrepedido).toPromise().then((r) => {
-        if (r != null) {
-          this.prepedido = r;
-          if(this.prepedido.EnderecoEntrega.OutroEndereco){
-            this.montarEnderecoEntrega(this.prepedido.EnderecoEntrega);
-          }
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
   }
 
   voltar() {
     this.router.navigate(["orcamentos/listar/pendentes/"]);
-  } 
+  }
 
-  editar() {
-    //
-  } 
-
-  //para dizer se é PF ou PJ
   ehPf(): boolean {
     if (this.prepedido && this.prepedido.DadosCliente && this.prepedido.DadosCliente.Tipo)
       return this.prepedido.DadosCliente.Tipo == 'PF';
     //sem dados! qualquer opção serve...  
     return true;
   }
-  
+
   verificaValor() {
     if (this.prepedido.TotalFamiliaParcelaRA >= 0)
       return true
     else
       return false;
-  }  
+  }
 
-  
-
-  consultarCliente(){
+  consultarCliente() {
     let cliente = StringUtils.retorna_so_digitos(this.prepedido.DadosCliente.Cnpj_Cpf);
-     this.router.navigate(["/prepedido/cliente/cliente", cliente]);
+    this.router.navigate(["/prepedido/cliente/cliente", cliente]);
   }
 }
