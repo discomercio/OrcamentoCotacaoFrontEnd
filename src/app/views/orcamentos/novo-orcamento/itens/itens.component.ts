@@ -548,8 +548,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit, 
     v = (v / 100).toFixed(2) + '';
 
     item.totalItem = item.qtde * item.precoLista;
-    item.totalItem = item.qtde * item.precoLista;
-debugger;
     item.descDado = 100 * (item.precoLista - Number.parseFloat(v)) / item.precoLista;
     item.descDado = this.moedaUtils.formatarDecimal(item.descDado);
 
