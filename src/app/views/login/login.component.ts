@@ -122,7 +122,7 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       sessionStorage.setItem("sininho", "S");
       this.autenticacaoService._lojaLogado = this.loja;
-
+      this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
       this.router.navigate(['dashboards']);
       return;
     }
@@ -161,6 +161,7 @@ export class LoginComponent implements OnInit {
 
       this.autenticacaoService.setarToken(r.AccessToken);
       sessionStorage.setItem("sininho", "S");
+      sessionStorage.setItem("lojaLogada", this.autenticacaoService._lojasUsuarioLogado[0]);
       this.carregando = false;
 
       this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
