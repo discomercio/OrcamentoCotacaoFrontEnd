@@ -64,5 +64,12 @@ export class Constantes {
     public COD_INSTALADOR_INSTALA_NAO = 1;
     public COD_INSTALADOR_INSTALA_SIM = 2;
 
+    public ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf = 21;
+    public ModuloOrcamentoCotacao_CalculadoraVrf_TextoDisclaimer = 22;
+    public ModuloOrcamentoCotacao_Cliente_AceitePoliticaCredito = 27;
+    public ModuloOrcamentoCotacao_Cliente_AceitePoliticaPrivacidadeDados = 28;
+    public ModuloOrcamentoCotacao_Cliente_PF_AvisoPreenchimentoDadosCadastrais = 29;
+    public ModuloOrcamentoCotacao_Cliente_PJ_AvisoPreenchimentoDadosCadastrais = 30;
+    public ModuloOrcamentoCotacao_EntregaImediata_PrazoMaxPrevisaoEntrega = 37;
     public ModuloOrcamentoCotacao_TextoFixo_CondicoesGerais = 12;
 }

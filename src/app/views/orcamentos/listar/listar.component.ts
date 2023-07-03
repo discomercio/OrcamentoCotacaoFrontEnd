@@ -1,6 +1,6 @@
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SelectItem } from 'primeng/api/selectitem';
@@ -23,7 +23,6 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentistaIndicadorVendedorService } from 'src/app/service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
-import { PrepedidoListarService } from 'src/app/service/prepedido/prepedido-listar.service';
 import { PrepedidoRemoverService } from 'src/app/service/prepedido/prepedido-remover.service';
 import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
 import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
@@ -32,13 +31,16 @@ import { PedidoService } from 'src/app/service/pedido/pedido.service';
 import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
 import { LazyLoadEvent } from 'primeng/api';
 import { ChangeDetectorRef } from '@angular/core';
+import { UsuariosPorListaLojasResponse } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-response';
+import { ListaCodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/lista-codigo-descricao-response';
+import { CodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/codigo-descricao-response';
 
 @Component({
   selector: 'app-listar',
   templateUrl: './listar.component.html',
   styleUrls: ['./listar.component.scss']
 })
-export class OrcamentosListarComponent implements OnInit, AfterViewInit {
+export class OrcamentosListarComponent implements OnInit {
 
   @ViewChild(ButtonArClubeComponent, { static: false })
   button: ButtonArClubeComponent
@@ -50,7 +52,6 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     private readonly orcamentoService: OrcamentosService,
     private readonly exportExcelService: ExportExcelService,
     private readonly alertaService: AlertaService,
-    private readonly mensagemService: MensagemService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly prepedidoRemoverService: PrepedidoRemoverService,
     private readonly sweetalertService: SweetalertService,
@@ -109,74 +110,102 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
   qtdePorPaginaInicial: number = 10;
   qtdePorPaginaSelecionado: number = 10;
   mostrarQtdePorPagina: boolean = false;
-  carregandoVendedoresParceiros: boolean = false;
+  carregandoVendedoresParceiros: boolean;
 
   dtInicio: Date;
   dtFim: Date;
   clicouPesquisar: boolean;
+  carregando: boolean;
+  listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
+  filtroParceirosApoio:string[];
 
   ngOnInit(): void {
+    this.carregando = true;
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
-    this.buscarConfigValidade();
+    this.criarTabela();
+    this.usuario = this.autenticacaoService.getUsuarioDadosToken();
+    this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
+
+    const promises = [this.buscarConfigValidade(),
+    this.buscarVendedores(), this.buscarStatus(), this.buscarParceiros()];
+
+    Promise.all(promises).then((r: Array<any>) => {
+      this.setarConfigValidade(r[0]);
+      this.setarVendedores(r[1]);
+      this.setarStatus(r[2]);
+      this.setarParceiros(r[3]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    }).finally(() => {
+      this.carregando = false;
+      this.pesquisar();
+    });
 
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
-
-    this.buscarStatus();
-    this.buscarVendedores();
-    this.buscarParceiros();
     this.buscarMensagens();
 
   }
 
-  ngAfterViewInit(): void {
-    if (this.tipoUsuario == this.constantes.PARCEIRO) {
-      let filtro = new Array<string>();
-      filtro.push(this.usuario.nome);
-      this.buscarVendedoresDoParceiro(filtro);
-    }
+  setarConfigValidade(config: ValidadeOrcamento) {
+    this.configValidade = config;
 
-    this.cdr.detectChanges();
+    let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsultaFiltroPesquisa * 24 * 60 * 60 * 1000);
+    this.dtInicio = dtIni;
+    this.dtFim = new Date();
+
+    // this.pesquisar();
   }
 
-  listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
+  setarVendedores(vendedores: UsuariosPorListaLojasResponse) {
+    if (this.tipoUsuario.toString() == this.constantes.PARCEIRO.toString() ||
+      this.tipoUsuario.toString() == this.constantes.PARCEIRO_VENDEDOR.toString()) return;
 
-  buscarStatus() {
-    this.cboStatus = [];
+    if (!vendedores.Sucesso) {
+      this.sweetAlertService.aviso(vendedores.Mensagem);
+      return;
+    }
+    if (this.admModulo) {
+      this.cboVendedores = new Array<any>();
+      vendedores.usuarios.forEach(x => {
+        this.cboVendedores.push({ Id: x.id, Value: x.vendedor });
+      });
+      this.cboFiltradoVendedores = this.cboVendedores;
+    }
 
+    this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
+  }
+
+  setarStatus(status: Array<any>) {
     if (this.parametro == "ORCAMENTOS") {
       if (this.autenticacaoService._usuarioLogado) {
-        this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise().then((r) => {
-          if (r != null) {
-            r.forEach(e => {
-              this.cboStatus.push({ Id: e.Id, Value: e.Value });
-            });
-            this.cboStatus.push({ Id: 4, Value: "Expirado" });
-          }
-        }).catch((e) => {
-          this.alertaService.mostrarErroInternet(e);
-        })
+        if (status != null) {
+          status.forEach(e => {
+            this.cboStatus.push({ Id: e.Id, Value: e.Value });
+          });
+          this.cboStatus.push({ Id: 4, Value: "Expirado" });
+        }
       }
     }
     else if (this.parametro == "PEDIDOS") {
-      let filtro: CodigoDescricaoRequest = new CodigoDescricaoRequest();
-      filtro.grupo = "Pedido_St_Entrega";
-      this.pedidoService.statusPorFiltro(filtro).toPromise().then((r) => {
-        if (!r.Sucesso) {
-          this.sweetAlertService.aviso(r.Mensagem);
-          return;
-        }
+      let statusPedido = new ListaCodigoDescricaoResponse();
+      statusPedido.Sucesso = status["Sucesso"];
 
-        r.listaCodigoDescricao.forEach(e => {
-          this.cboStatus.push({ Id: e.codigo, Value: e.descricao });
-        });
-        this.listaCodigoDescricao = r.listaCodigoDescricao;
-      }).catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
-      })
+      if (!statusPedido.Sucesso) {
+        this.sweetAlertService.aviso(statusPedido.Mensagem);
+        return;
+      }
+      statusPedido.listaCodigoDescricao = new Array<CodigoDescricaoResponse>();
+      statusPedido.listaCodigoDescricao = status["listaCodigoDescricao"];
+      statusPedido.listaCodigoDescricao.forEach(e => {
+        this.cboStatus.push({ Id: e.codigo, Value: e.descricao });
+      });
+      this.listaCodigoDescricao = statusPedido.listaCodigoDescricao;
     }
     else {
       this.cboStatus.push({ Id: 1, Value: "Pedido em andamento" });
@@ -185,47 +214,59 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  buscarVendedores() {
+  setarParceiros(parceiros: Array<OrcamentistaIndicadorDto>) {
+    if (parceiros != null) {
+      parceiros.forEach(x => {
+        if (!!x.nome) {
+          if (!this.cboParceiros.find(f => f.Value == x.nome))
+            this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.nome });
+        }
+      });
+
+      this.cboParceiros = this.cboParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
+    }
+
+    if (this.tipoUsuario == this.constantes.PARCEIRO) {
+      let filtro = new Array<string>();
+      filtro.push(this.usuario.nome);
+      this.buscarVendedoresDoParceiro(filtro);
+    }
+  }
+
+  buscarStatus(): Promise<any> {
+    if (this.parametro == "ORCAMENTOS") {
+      if (this.autenticacaoService._usuarioLogado) {
+        return this.orcamentoService.buscarStatus('ORCAMENTOS').toPromise();
+      }
+    }
+    else if (this.parametro == "PEDIDOS") {
+      let filtro: CodigoDescricaoRequest = new CodigoDescricaoRequest();
+      filtro.grupo = "Pedido_St_Entrega";
+      return this.pedidoService.statusPorFiltro(filtro).toPromise()
+    }
+    else {
+      let lista = new Array();
+      lista.push({ Id: 1, Value: "Pedido em andamento" });
+      lista.push({ Id: 2, Value: "Pedido em processamento" });
+      lista.push({ Id: 3, Value: "Cancelado" });
+      return new Promise<any>((resolve, reject) => {
+        resolve(lista);
+      });
+    }
+  }
+
+  buscarVendedores(): Promise<UsuariosPorListaLojasResponse> {
     if (this.admModulo) {
       let request = new UsuariosPorListaLojasRequest();
       request.lojas = [];
       request.lojas.push(this.autenticacaoService._lojaLogado);
 
-      this.usuarioService.buscarVendedoresPorListaLojas(request).toPromise().then((r) => {
-        if (!r.Sucesso) {
-          this.sweetAlertService.aviso(r.Mensagem);
-          return;
-        }
-        this.cboVendedores = new Array<any>();
-        r.usuarios.forEach(x => {
-          this.cboVendedores.push({ Id: x.id, Value: x.vendedor });
-        });
-        this.cboFiltradoVendedores = this.cboVendedores;
-      }).catch((e) => {
-        this.sweetAlertService.aviso(e.error.Mensagem);
-      });
+      return this.usuarioService.buscarVendedoresPorListaLojas(request).toPromise();
     }
-
-    this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
-  buscarParceiros() {
-
-    this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-      if (r != null) {
-        r.forEach(x => {
-          if (!!x.nome) {
-            if (!this.cboParceiros.find(f => f.Value == x.nome))
-              this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.nome });
-          }
-        });
-
-        this.cboParceiros = this.cboParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
-      }
-
-    }).catch((e) => {
-      this.sweetAlertService.aviso(e.error.Mensagem);
-    });
+  buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
+    return this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise()
   }
 
   cboParceiro_onChange() {
@@ -272,21 +313,8 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     });
   }
 
-  buscarConfigValidade() {
-    this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-      if (r != null) {
-        this.configValidade = r;
-
-        let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsultaFiltroPesquisa * 24 * 60 * 60 * 1000);
-        this.dtInicio = dtIni;
-        this.dtFim = new Date();
-
-        this.pesquisar();
-
-      }
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
-    });
+  buscarConfigValidade(): Promise<ValidadeOrcamento> {
+    return this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise();
   }
 
   iniciarFiltro(param: any) {
@@ -391,6 +419,22 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     if (this.parametro == "ORCAMENTOS") this.filtro.nomeColunaOrdenacao = this.cols[0].field;
     if (this.parametro == "PENDENTES") this.filtro.nomeColunaOrdenacao = this.cols[1].field;
 
+    if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
+      
+      this.filtroParceirosApoio = this.filtro.Parceiros;
+      let filtroParceiro = this.filtro.Parceiros;
+      this.filtro.Parceiros = new Array();
+      if (filtroParceiro) {
+        filtroParceiro.forEach(x => {
+          if (x == this.constantes.SEM_INDICADOR) {
+            if (this.parametro == "PENDENTES") x = "";
+            else x = "-";
+          }
+
+          this.filtro.Parceiros.push(x);
+        });
+      }
+    }
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
@@ -425,8 +469,6 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
     }
   }
 
-  carregando: boolean = false;
-
   buscarLista(filtro: Filtro) {
 
     this.carregando = true;
@@ -453,6 +495,7 @@ export class OrcamentosListarComponent implements OnInit, AfterViewInit {
       }
 
       this.lstDtoFiltrada = this.lstDto;
+      this.filtro.Parceiros = this.filtroParceirosApoio;
     }).catch((r) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(r);
