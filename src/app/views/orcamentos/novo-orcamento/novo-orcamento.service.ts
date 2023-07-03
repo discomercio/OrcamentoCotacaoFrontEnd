@@ -47,6 +47,8 @@ export class NovoOrcamentoService {
   public siglaPagto: string;
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
+  public moedaUtils: MoedaUtils = new MoedaUtils();
+
   tipoUsuario: number;
   calcularComissaoAuto: boolean;
   descontaComissao: boolean;
@@ -57,6 +59,9 @@ export class NovoOrcamentoService {
   editarComissao: boolean = false;
   produtoComboDto = new ProdutoComboDto();
   descontoMedio:number;
+  formaPagamento: FormaPagto[];
+  usuarioLogado: Usuario;
+  descontoGeral: number;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -65,6 +70,7 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
     this.lstProdutosSelecionados = new Array();
   }
+
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
     this.opcaoOrcamentoCotacaoDto.listaProdutos = new Array();
@@ -75,7 +81,6 @@ export class NovoOrcamentoService {
   setarDados(ClienteOrcamentoCotacao: ClienteOrcamentoCotacaoDto) {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = ClienteOrcamentoCotacao;
   }
-
 
   setarPercentualComissao() {
     
@@ -93,7 +98,6 @@ export class NovoOrcamentoService {
     this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
   }
 
-  public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
@@ -216,7 +220,6 @@ export class NovoOrcamentoService {
     this.formaPagamento = formaPagamento;
   }
 
-  formaPagamento: FormaPagto[];
   formatarFormaPagamento(opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
     let texto: string = "";
 
@@ -482,29 +485,6 @@ export class NovoOrcamentoService {
     return false;
   }
 
-  verificarEdicao(): boolean {
-    //se orçamento com status aprovado = 3 ou cancelado = 2, não pode editar
-    if (this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
-      this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
-
-    // se orçamento estiver expirado só pode prorrogar o orçamento
-    // verificar se esta orçamento esta expirado
-    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
-    let validade = this.orcamentoCotacaoDto.validade.toString().slice(0, 10);
-    if (validade <= dataAtual) return false;
-
-    //ver se o usuário é o dono, se não for verificar se tem permissão de desconto superior
-    let idDonoOrcamento = this.VerificarUsuarioLogadoDonoOrcamento();
-    if (idDonoOrcamento == this.autenticacaoService.usuario.id) return true;
-    else {
-      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) return true;
-    }
-
-    return false;
-  }
-
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
     let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let dataMax = DataUtils.formata_dataString_para_formato_data(new Date(dataMaxTrocaMsg).toLocaleString("pt-br").slice(0, 10));
@@ -523,11 +503,6 @@ export class NovoOrcamentoService {
     if (validade <= dataAtual) return false;
 
     return true;
-
-  }
-
-
-  verificarDonoOrcamento() {
 
   }
 
@@ -562,7 +537,6 @@ export class NovoOrcamentoService {
     return true;
   }
 
-  usuarioLogado: Usuario;
   buscarMaiorAlcadaUsuario(): number {
     let lstAlcadas = new Array<number>();
 
@@ -581,7 +555,6 @@ export class NovoOrcamentoService {
     return null;
   }
 
-
   validarDescontosProdutos(): boolean {
     let retorno = true;
     this.lstProdutosSelecionados.some(x => {
@@ -592,7 +565,6 @@ export class NovoOrcamentoService {
     return retorno;
   }
 
-  descontoGeral: number;
   verificarDescontoGeral(): boolean {
     if (this.descontoGeral == undefined) {
       this.descontoGeral = 0;
@@ -608,12 +580,16 @@ export class NovoOrcamentoService {
   }
 
   validarComissao(valor: any): boolean {
+    
+    if(Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+
     let descontoMedio = this.calcularDescontoMedio();
     let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
     if (Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
 
-    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || 
+        Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     return true
   }
