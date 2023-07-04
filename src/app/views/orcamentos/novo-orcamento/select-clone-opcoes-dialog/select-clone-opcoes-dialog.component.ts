@@ -34,7 +34,7 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
   displayModal: boolean = false;
   prodsTela: ProdutoTela[] = new Array();
   prodsArray: ProdutoTela[] = new Array();
-  carregandoProdutos:boolean = true;
+  // carregandoProdutos:boolean = true;
   carregando:boolean;
   ngOnInit(): void {
     
@@ -46,7 +46,7 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
   }
 
   copiarOpcao(opcaoClone: OrcamentosOpcaoResponse) {
-    if(this.carregandoProdutos) return;
+    // if(this.carregandoProdutos) return;
 
     let listaProdutosOpcao = opcaoClone.listaProdutos.slice();
     //O que queremos da opção
@@ -99,7 +99,7 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
       this.prodsArray.push(xy);
     }
 
-    this.carregandoProdutos = false;
+    // this.carregandoProdutos = false;
 
   }
 }

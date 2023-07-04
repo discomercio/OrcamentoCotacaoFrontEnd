@@ -1,6 +1,5 @@
 import { Injectable } from "@angular/core";
 import { ListaQuantidadeMensagemPendenteResponse } from "../dto/mensageria/lista-quantidade-mensagem-pendente-response";
-import { AutenticacaoService } from "../service/autenticacao/autenticacao.service";
 import { MensageriaService } from "../service/mensageria/mensageria.service";
 import { AlertaService } from "../components/alert-dialog/alerta.service";
 import { DataUtils } from "../utilities/formatarString/data-utils";
@@ -22,9 +21,8 @@ export class AppTopBarService {
     interval: any = 0;
 
     ligarInterval() {
-        console.log("entrada interval: " + this.interval);
+        
         if(this.interval > 0){
-            console.log("já tem interval: " + this.interval);
             return;
         } 
         this.mensageriaService.appSettingsService.retornarVersao().toPromise().then((r) => {
@@ -32,7 +30,6 @@ export class AppTopBarService {
             let temporizador = r.temporizadorSininho;
             this.interval = setInterval(() => {
                 if (this.interval > 0) {
-                    console.log("rolando interval: " + this.interval);
                     this.obterQuantidadeMensagemPendente();
                     this.sininho = true;
                 } else {
@@ -40,15 +37,12 @@ export class AppTopBarService {
                 }
 
             }, Number(temporizador));
-            console.log("fim interval: " + this.interval);
-        })
-
-
+        });
     }
+
     obterQuantidadeMensagemPendente() {
-        
-        
-        if (!this.sininho) {
+        let sininho = sessionStorage.getItem("sininho");
+        if (!sininho) {
             this.limparInterval();
             return;
         }

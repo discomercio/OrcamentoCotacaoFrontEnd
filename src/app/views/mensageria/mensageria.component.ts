@@ -10,7 +10,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
   templateUrl: './mensageria.component.html',
   styleUrls: ['./mensageria.component.scss']
 })
-export class MensageriaComponent implements AfterViewInit {
+export class MensageriaComponent {
 
   @Input('idOrcamentoCotacao')
   public idOrcamentoCotacao: number;
@@ -49,36 +49,33 @@ export class MensageriaComponent implements AfterViewInit {
 
   @ViewChild("mensagem") mensagem: ElementRef;
 
-  ngAfterViewInit(): void {
-    this.obterListaMensagem(this.idOrcamentoCotacao);
+  obterListaMensagem(idOrcamentoCotacao: number) {
+    const promise = [this.buscarListaMensagem(idOrcamentoCotacao)];
+    Promise.all(promise).then((r) => {
+      this.setarListaMensagem(idOrcamentoCotacao, r[0]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      return;
+    })
   }
 
-  obterListaMensagem(idOrcamentoCotacao: number) {
-
-    //Rota Pública
+  buscarListaMensagem(idOrcamentoCotacao: number): Promise<MensageriaDto[]> {
     if (this.rotaPublica && this.guid) {
+      return this.mensageriaService.obterListaMensagemRotaPublica(this.guid).toPromise();
+    }
 
-      this.mensageriaService.obterListaMensagemRotaPublica(this.guid).toPromise().then((r) => {
-        if (r != null) {
-          this.listaMensagens = r;
+    return this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise();
+  }
 
-          this.marcarMensagemComoLida(idOrcamentoCotacao);
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  setarListaMensagem(idOrcamento: number, r: Array<MensageriaDto>) {
+    if (r != null) {
+      this.listaMensagens = r;
 
-    } else {
-
-      //Interno
-      if (idOrcamentoCotacao) {
-        this.mensageriaService.obterListaMensagem(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-          if (r != null) {
-            this.listaMensagens = r;
-
-            this.marcarMensagemComoLida(idOrcamentoCotacao);
-          }
-        }).catch((r) => this.alertaService.mostrarErroInternet(r));
-      }
-
+      const promise = [this.marcarMensagemComoLida(idOrcamento)];
+      Promise.all(promise).then().catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+      });
     }
   }
 
@@ -138,24 +135,18 @@ export class MensageriaComponent implements AfterViewInit {
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  marcarMensagemComoLida(idOrcamentoCotacao: number) {
-
+  marcarMensagemComoLida(idOrcamentoCotacao: number): Promise<any> {
     var url = window.location.href;
-
     var acessoExterno = url.includes("publico/orcamento");
 
     if (acessoExterno) {
-      this.mensageriaService.marcarMensagemComoLidaRotaPublica(this.guid).toPromise().then((r) => {
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    } else {
-      this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise().then((r) => {
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+      return this.mensageriaService.marcarMensagemComoLidaRotaPublica(this.guid).toPromise();
     }
 
+    return this.mensageriaService.marcarMensagemComoLida(idOrcamentoCotacao.toString()).toPromise();
   }
 
   validar() {
-
     if (this.mensagem.nativeElement.value == "") {
       throw this.mensagemService.showWarnViaToast("Ops...você não informou nenhuma mensagem!");
     }
@@ -176,5 +167,4 @@ export class MensageriaComponent implements AfterViewInit {
 
     return dataFinal;
   }
-
 }

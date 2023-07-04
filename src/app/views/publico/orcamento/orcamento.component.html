@@ -169,7 +169,7 @@
                                                     </tr>
                                                 </ng-template>
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
-                                                    <tr style="height: 105px !important;" class="{{telaDesktop ? '' : 'font-size'}}">
+                                                    <tr class="{{telaDesktop ? '' : 'font-size'}}">
                                                         <td *ngIf="opcao.existeImagemProduto" class="p-d-inline-flex"
                                                             [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
                                                             <img src="{{imgUrl}}{{produto.urlImagem}}"

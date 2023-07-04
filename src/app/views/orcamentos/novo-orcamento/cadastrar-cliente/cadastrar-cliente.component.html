@@ -98,7 +98,7 @@
                 class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                 <label for="parceiro">Parceiro</label>
                 <p-dropdown id="parceiro" [options]="lstParceiro" placeholder="Selecione" formControlName="Parceiro"
-                    (onChange)="buscarVendedoresDoParceiro()">
+                    (onChange)="parceiroOnChange()">
                 </p-dropdown>
                 <small class="p-error"
                     *ngIf="validacaoFormularioService.verificaCampo(form,'Parceiro')">{{mensagemErro}}</small>
