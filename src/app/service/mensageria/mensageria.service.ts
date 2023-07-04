@@ -12,7 +12,7 @@ export class MensageriaService {
 
   constructor(
     private http: HttpClient, 
-    private appSettingsService: AppSettingsService) { }
+    public appSettingsService: AppSettingsService) { }
 
     obterListaMensagem(idOrcamentoCotacao: string): Observable<MensageriaDto[]> {
     
