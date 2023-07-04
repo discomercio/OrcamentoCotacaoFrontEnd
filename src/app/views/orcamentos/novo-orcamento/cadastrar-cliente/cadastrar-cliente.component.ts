@@ -413,8 +413,6 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   parceiroOnChange(): void {
     this.carregando = true;
 
-    this.form.controls.Parceiro.value
-    debugger;
     Promise.all([this.buscarVendedoresDoParceiro()]).then((r) => {
       this.setarVendedoresDoParceiro(r[0]);
       this.carregando = false;
