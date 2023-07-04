@@ -47,6 +47,8 @@ export class NovoOrcamentoService {
   public siglaPagto: string;
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
+  public moedaUtils: MoedaUtils = new MoedaUtils();
+
   tipoUsuario: number;
   calcularComissaoAuto: boolean;
   descontaComissao: boolean;
@@ -57,6 +59,9 @@ export class NovoOrcamentoService {
   editarComissao: boolean = false;
   produtoComboDto = new ProdutoComboDto();
   descontoMedio:number;
+  formaPagamento: FormaPagto[];
+  usuarioLogado: Usuario;
+  descontoGeral: number;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -65,6 +70,7 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
     this.lstProdutosSelecionados = new Array();
   }
+
   criarNovoOrcamentoItem() {
     this.opcaoOrcamentoCotacaoDto = new OrcamentosOpcaoResponse();
     this.opcaoOrcamentoCotacaoDto.listaProdutos = new Array();
@@ -76,9 +82,8 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = ClienteOrcamentoCotacao;
   }
 
-
   setarPercentualComissao() {
-    
+
     this.percMaxComissaoEDescontoUtilizar = this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF ?
       this.percentualMaxComissao.percMaxComissaoEDesconto : this.percentualMaxComissao.percMaxComissaoEDescontoPJ;
 
@@ -93,9 +98,8 @@ export class NovoOrcamentoService {
     this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
   }
 
-  public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
-    
+
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
       return this.opcaoOrcamentoCotacaoDto.vlTotal = this.moedaUtils
@@ -108,11 +112,15 @@ export class NovoOrcamentoService {
   public totalAVista(): number {
     if (this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length >= 0 &&
       !!this.opcaoOrcamentoCotacaoDto.listaProdutos) {
-      
-      let valorTotalAvista = this.opcaoOrcamentoCotacaoDto.listaProdutos
-        .reduce((sum, current) => sum + this.moedaUtils
-          .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0);
-      return valorTotalAvista;
+      let total = 0;
+      this.opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+        let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+        let precoBaseVenda = this.moedaUtils
+          .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+        total += precoBaseVenda;
+      });
+
+      return total;
     }
   }
 
@@ -121,17 +129,17 @@ export class NovoOrcamentoService {
 
     let totalItem = 0;
     let precoVenda = 0;
-    if(!item.alterouPrecoVenda){
+    if (!item.alterouPrecoVenda) {
       produtosDto.forEach(x => {
         let precoListaBase = x.precoLista;
         let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
         let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
         totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
       });
-  
+
       item.totalItem = totalItem;
     }
-    if(item.alterouPrecoVenda){
+    if (item.alterouPrecoVenda) {
 
       item.totalItem = this.moedaUtils.formatarDecimal(item.precoVenda * item.qtde);
     }
@@ -188,7 +196,7 @@ export class NovoOrcamentoService {
 
   montarProdutoParaCalcularItem(produto: string): Array<ProdutoDto> {
 
-    if(this.opcaoOrcamentoCotacaoDto.listaProdutos && this.opcaoOrcamentoCotacaoDto.listaProdutos.length > 0){
+    if (this.opcaoOrcamentoCotacaoDto.listaProdutos && this.opcaoOrcamentoCotacaoDto.listaProdutos.length > 0) {
       let todosProdutosSimples = new Array<ProdutoDto>();
 
       let itemCalulo = this.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.produto == produto)[0];
@@ -216,7 +224,6 @@ export class NovoOrcamentoService {
     this.formaPagamento = formaPagamento;
   }
 
-  formaPagamento: FormaPagto[];
   formatarFormaPagamento(opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
     let texto: string = "";
 
@@ -225,12 +232,15 @@ export class NovoOrcamentoService {
       let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
 
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-        let valorTotalAvista = this.moedaUtils
-          .formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.listaProdutos
-            .reduce((sum, current) => sum + this.moedaUtils
-              .formatarDecimal((current.precoListaBase * (1 - current.descDado / 100)) * current.qtde), 0));
+        let total = 0;
+        opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+          let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+          let precoBaseVenda = this.moedaUtils
+            .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+          total += precoBaseVenda;
+        });
         let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + valorTotalAvista;
+        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         return true;
       }
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
@@ -311,7 +321,7 @@ export class NovoOrcamentoService {
           let valorComCoeficiente = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * coeficiente.Coeficiente);
           somaFilhotes += this.moedaUtils.formatarDecimal(valorComCoeficiente * el.qtde);
         });
-        
+
         x.precoLista = somaFilhotes;
         x.precoVenda = x.alterouPrecoVenda ? this.moedaUtils.formatarDecimal(x.precoVenda) : x.precoLista;
         x.descDado = x.alterouPrecoVenda ? Number.parseFloat(((x.precoLista - x.precoVenda) * 100 / x.precoLista).toFixed(2)) : x.descDado;
@@ -344,7 +354,7 @@ export class NovoOrcamentoService {
     let totalComDesc = this.totalPedido();
 
     let descMedio = (((totalSemDesc - totalComDesc) / totalSemDesc) * 100);
-    
+
     this.descontoMedio = descMedio;
 
     return descMedio;
@@ -482,33 +492,10 @@ export class NovoOrcamentoService {
     return false;
   }
 
-  verificarEdicao(): boolean {
-    //se orçamento com status aprovado = 3 ou cancelado = 2, não pode editar
-    if (this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO ||
-      this.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_CANCELADO) return false;
-
-    // se orçamento estiver expirado só pode prorrogar o orçamento
-    // verificar se esta orçamento esta expirado
-    let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
-    let validade = this.orcamentoCotacaoDto.validade.toString().slice(0, 10);
-    if (validade <= dataAtual) return false;
-
-    //ver se o usuário é o dono, se não for verificar se tem permissão de desconto superior
-    let idDonoOrcamento = this.VerificarUsuarioLogadoDonoOrcamento();
-    if (idDonoOrcamento == this.autenticacaoService.usuario.id) return true;
-    else {
-      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) return true;
-    }
-
-    return false;
-  }
-
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
     let dataAtual = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
     let dataMax = DataUtils.formata_dataString_para_formato_data(new Date(dataMaxTrocaMsg).toLocaleString("pt-br").slice(0, 10));
-    if(dataAtual >= dataMax) return false;
+    if (dataAtual >= dataMax) return false;
 
     return this.validarExpiracao(dataValidade);
   }
@@ -523,11 +510,6 @@ export class NovoOrcamentoService {
     if (validade <= dataAtual) return false;
 
     return true;
-
-  }
-
-
-  verificarDonoOrcamento() {
 
   }
 
@@ -562,7 +544,6 @@ export class NovoOrcamentoService {
     return true;
   }
 
-  usuarioLogado: Usuario;
   buscarMaiorAlcadaUsuario(): number {
     let lstAlcadas = new Array<number>();
 
@@ -581,7 +562,6 @@ export class NovoOrcamentoService {
     return null;
   }
 
-
   validarDescontosProdutos(): boolean {
     let retorno = true;
     this.lstProdutosSelecionados.some(x => {
@@ -592,7 +572,6 @@ export class NovoOrcamentoService {
     return retorno;
   }
 
-  descontoGeral: number;
   verificarDescontoGeral(): boolean {
     if (this.descontoGeral == undefined) {
       this.descontoGeral = 0;
@@ -608,12 +587,16 @@ export class NovoOrcamentoService {
   }
 
   validarComissao(valor: any): boolean {
+    
+    if(Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+
     let descontoMedio = this.calcularDescontoMedio();
     let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
     if (Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
 
-    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || 
+        Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     return true
   }

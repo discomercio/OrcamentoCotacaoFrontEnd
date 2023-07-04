@@ -151,7 +151,7 @@ $candy-app-theme: mat-light-theme($candy-app-primary, $candy-app-accent, $candy-
   overflow: hidden !important;
   transform: translate3d(0, 0, 0);
   cursor: wait;
-
+  pointer-events: none;
   &::after {
     overflow: hidden !important;
     content: "";
@@ -279,7 +279,7 @@ $gutter: .5rem; //for primeflex grid system
     overflow: hidden !important;
     transform: translate3d(0, 0, 0);
     cursor: wait;
-  
+    pointer-events: none;
     &::after {
       overflow: hidden !important;
       content: "";

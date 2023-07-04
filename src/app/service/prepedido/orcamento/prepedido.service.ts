@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {Observable} from 'rxjs';
 import { HttpParams, HttpClient } from '@angular/common/http';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrePedidoDto';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +16,7 @@ export class PrepedidoService {
     private readonly http: HttpClient, 
     private appSettingsService: AppSettingsService) { }
     
-  public carregar(numeroPrePedido: string): Observable<any> {
+  public carregar(numeroPrePedido: string): Observable<PrePedidoDto> {
 
     // Initialize Params Object
     let params = new HttpParams();
