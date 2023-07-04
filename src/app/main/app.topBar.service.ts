@@ -13,21 +13,26 @@ export class AppTopBarService {
         private readonly mensageriaService: MensageriaService,
         private readonly alertaService: AlertaService,
     ) {
-        
+        this.sininho = sessionStorage.getItem("sininho") == "S" ? true : false;
     }
     dataUtils: DataUtils = new DataUtils();
-    sininho: boolean = false;
+    sininho: boolean;
     public listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
     qtdMensagem: any;
     interval: any = 0;
 
     ligarInterval() {
-
+        console.log("entrada interval: " + this.interval);
+        if(this.interval > 0){
+            console.log("já tem interval: " + this.interval);
+            return;
+        } 
         this.mensageriaService.appSettingsService.retornarVersao().toPromise().then((r) => {
 
             let temporizador = r.temporizadorSininho;
             this.interval = setInterval(() => {
                 if (this.interval > 0) {
+                    console.log("rolando interval: " + this.interval);
                     this.obterQuantidadeMensagemPendente();
                     this.sininho = true;
                 } else {
@@ -35,13 +40,15 @@ export class AppTopBarService {
                 }
 
             }, Number(temporizador));
+            console.log("fim interval: " + this.interval);
         })
 
 
     }
     obterQuantidadeMensagemPendente() {
-        let sininho = sessionStorage.getItem("sininho");
-        if (!sininho) {
+        
+        
+        if (!this.sininho) {
             this.limparInterval();
             return;
         }
@@ -73,5 +80,6 @@ export class AppTopBarService {
         clearInterval(this.interval);
         this.interval = 0;
         this.sininho = false;
+        sessionStorage.setItem("sininho", "N");
     }
 }

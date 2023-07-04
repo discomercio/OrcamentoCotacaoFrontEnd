@@ -54,7 +54,7 @@ export class AppMainComponent {
 
         this.buscarVersao();
 
-        if (!this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+        if (this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
             this.appTopBarService.obterQuantidadeMensagemPendente();
             this.appTopBarService.ligarInterval();
         }
@@ -87,8 +87,11 @@ export class AppMainComponent {
         this.menuClick = false;
 
         this.buscarVersao();
+// debugger;
 
         if (!this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+            sessionStorage.setItem("sininho", "S");
+            this.appTopBarService.sininho = true;
             this.appTopBarService.obterQuantidadeMensagemPendente();
             this.appTopBarService.ligarInterval();
         }
