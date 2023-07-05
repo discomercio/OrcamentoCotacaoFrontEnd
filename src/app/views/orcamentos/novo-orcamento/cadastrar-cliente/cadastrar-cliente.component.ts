@@ -310,6 +310,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
 
     if (parceiro == this.constantes.SEM_INDICADOR) {
       this.mostrarInstaladorInstala = false;
+      this.form.controls.instaladorInstala.setValue(this.constantes.COD_INSTALADOR_INSTALA_NAO);
       this.form.controls.instaladorInstala.clearValidators();
       this.form.controls.instaladorInstala.updateValueAndValidity();
       return;
@@ -411,7 +412,9 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
 
   parceiroOnChange(): void {
     this.carregando = true;
-    
+
+    this.form.controls.Parceiro.value
+    debugger;
     Promise.all([this.buscarVendedoresDoParceiro()]).then((r) => {
       this.setarVendedoresDoParceiro(r[0]);
       this.carregando = false;
