@@ -170,22 +170,16 @@
                                                 </ng-template>
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
                                                     <tr class="{{telaDesktop ? '' : 'font-size'}}">
-                                                        <td *ngIf="opcao.existeImagemProduto" class="p-d-inline-flex p-col-12 p-p-0"
+                                                        <td *ngIf="opcao.existeImagemProduto"
+                                                            class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                             [ngStyle]="telaDesktop ? {'display':'contents', 'max-height':'175px', 'min-height':'23px'} : {'':''}">
                                                             <img *ngIf="produto.urlImagem"
                                                                 src="{{imgUrl}}{{produto.urlImagem}}"
                                                                 class="p-text-center p-p-2"
                                                                 [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
-                                                            <img *ngIf="!produto.urlImagem"
-                                                                src=""
-                                                                class="p-text-center"
+                                                            <img *ngIf="!produto.urlImagem" src="" class="p-text-center"
                                                                 [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
                                                         </td>
-                                                        <!-- <td *ngIf="opcao.existeImagemProduto && !produto.urlImagem"
-                                                            class="p-d-inline-flex"
-                                                            [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                            <div class="p-text-center" [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'} : {'':''}"></div>
-                                                        </td> -->
                                                         <td *ngIf="telaDesktop">
                                                             <p
                                                                 [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
