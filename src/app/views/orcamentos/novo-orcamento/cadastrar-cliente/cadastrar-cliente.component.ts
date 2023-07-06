@@ -219,9 +219,6 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   }
 
   setarCamposDoForm(): void {
-    this.form.controls.Vendedor.setValue("");
-    this.form.controls.Parceiro.setValue("");
-    this.form.controls.VendedorParceiro.setValue("");
 
     if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.form.controls.Vendedor.setValue(this.usuario.nome);
@@ -236,6 +233,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       this.form.controls.Vendedor.setValue(this.usuario.idVendedor);
       this.form.controls.Parceiro.setValue(this.usuario.idParceiro);
       this.form.controls.VendedorParceiro.setValue(this.usuario.nome);
+
       return;
     }
   }
@@ -300,7 +298,6 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
 
     parceiro = this.form.controls.Parceiro.value;
 
-    this.form.controls.VendedorParceiro.setValue(null);
     this.lstVendedoresParceiros = [];
 
     if (parceiro == null || parceiro == "" || parceiro == undefined) {
@@ -316,7 +313,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       return;
     }
 
-    if(this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) return;
+    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) return;
 
     return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceiros(parceiro).toPromise();
   }
@@ -352,7 +349,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     this.minDataEntrega = dataAtual;
     this.maxDataEntrega.setDate(dataAtual.getDate() + this.limiteDataEntrega);
   }
-  
+
   setarVendedores(r: Array<Usuario>) {
     if (r != null) {
       this.lstVendedores = this.montarListaParaSelectItem(r);
@@ -370,7 +367,8 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   setarVendedoresDoParceiro(r: Array<OrcamentistaIndicadorVendedorDto>) {
     if (r != null) {
       this.lstVendedoresParceiros = this.montarListaParaSelectItem(r);
-      this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro);
+      if (this.filtro == "clone")
+        this.form.controls.VendedorParceiro.setValue(this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro);
       this.mostrarInstaladorInstala = true;
     }
     this.form.controls.instaladorInstala.setValidators([Validators.required, Validators.max(this.constantes.COD_INSTALADOR_INSTALA_SIM), Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]);
@@ -413,8 +411,6 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   parceiroOnChange(): void {
     this.carregando = true;
 
-    this.form.controls.Parceiro.value
-    debugger;
     Promise.all([this.buscarVendedoresDoParceiro()]).then((r) => {
       this.setarVendedoresDoParceiro(r[0]);
       this.carregando = false;
@@ -454,9 +450,20 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.validade = DataUtils.formata_dataString_para_formato_data(DataUtils.formatarTela(this.form.controls.Validade.value));
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
+    if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
+      if (this.filtro == "clone")
+        this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.novoOrcamentoService.orcamentoCloneCotacaoDto.idIndicador.toString();
+      else
+        this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.usuario.idParceiro;
+      this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = this.usuario.nome;
+    }
+    else {
+      this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.form.controls.Parceiro.value;
+      if (this.form.controls.VendedorParceiro.value)
+        this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = this.form.controls.VendedorParceiro.value;
+      else this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = undefined;
+    }
     this.novoOrcamentoService.orcamentoCotacaoDto.concordaWhatsapp = this.form.controls.Concorda.value == null ? 0 : this.form.controls.Concorda.value;
-    this.novoOrcamentoService.orcamentoCotacaoDto.vendedorParceiro = !this.form.controls.VendedorParceiro.value ? this.form.controls.VendedorParceiro.value : this.form.controls.VendedorParceiro.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
     this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata = this.form.controls.EntregaImediata.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata = this.form.controls.DataEntregaImediata.value;
@@ -495,13 +502,34 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     return true;
   }
 
+  copiarDados() {
+    this.novoOrcamentoService.orcamentoCotacaoDto = JSON.parse(JSON.stringify(this.novoOrcamentoService.orcamentoCloneCotacaoDto));
+    this.novoOrcamentoService.orcamentoCotacaoDto.qtdeRenovacao = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.cadastradoPor = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.dataCadastro = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.validade = undefined;
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
+    this.novoOrcamentoService.orcamentoCotacaoDto.status = undefined;
+
+    this.criarForm();
+    this.setarOrcamentoValidade(this.novoOrcamentoService.configValidade);
+
+    if (this.novoOrcamentoService.orcamentoCloneCotacaoDto.parceiro) {
+      this.carregando = true;
+      const promise = [this.buscarVendedoresDoParceiro()];
+      Promise.all(promise).then((r: any) => {
+        this.setarVendedoresDoParceiro(r[0]);
+      }).catch((e) => {
+        this.alertaService.mostrarErroInternet(e);
+        this.carregando = false;
+      }).finally(()=>{
+        this.carregando = false;
+      });
+    }
+  }
+
+
   salvarOrcamento() {
-
-    if (!this.validacaoFormularioService.validaForm(this.form))
-      return;
-
-    if (!this.ValidaDataEntrega())
-      return;
 
     if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       if (this.form.controls.Parceiro.value == null || this.form.controls.Parceiro.value == "") {
@@ -515,6 +543,12 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     if (this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR) {
       this.form.controls.VendedorParceiro.setValue(null);
     }
+
+    if (!this.validacaoFormularioService.validaForm(this.form))
+      return;
+
+    if (!this.ValidaDataEntrega())
+      return;
 
     if (!this.validarContribuinteICMS()) return;
 
