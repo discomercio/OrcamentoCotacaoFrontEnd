@@ -400,8 +400,20 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   inserirProduto(): void {
 
     let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
-    if (!this.editando)
-      this.buscarCoeficientes(dataRefCoeficiente);
+    if (!this.editando){
+      this.carregandoProds = true;
+      let request = this.setarCoeficienteRequest(dataRefCoeficiente);
+      const promise = [this.buscarCoeficientes2(request)];
+      Promise.all(promise).then((r:any)=>{
+        this.setarCoeficienteResponse(r[0]);
+      }).catch((e)=>{
+        this.alertaService.mostrarErroInternet(e);
+        this.carregandoProds = false;
+      }).finally(()=>{
+        this.carregandoProds = false;
+      })
+      // this.buscarCoeficientes(dataRefCoeficiente);
+    }
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
     this.novoOrcamentoService.calcularDescontoMedio();
@@ -411,28 +423,33 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.formaPagto.habilitar = false;
   }
 
-  buscarCoeficientes(dataReferencia: string) {
+  setarCoeficienteRequest(dataReferencia: string): CoeficienteRequest {
     let coeficienteRequest: CoeficienteRequest = new CoeficienteRequest();
     coeficienteRequest.lstFabricantes = new Array();
     coeficienteRequest.dataRefCoeficiente = dataReferencia;
 
-    this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => { coeficienteRequest.lstFabricantes.push(x.fabricante) });
-    this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise().then((r) => {
-      if (r != null) {
+    return coeficienteRequest;
+  }
 
-        if (!this.editando) {
-          this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
-          if (this.novoOrcamentoService.qtdeParcelas) {
-            this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
-            this.formaPagto.calcularValorAvista();
-            this.novoOrcamentoService.coeficientes = r;
-          }
-        }
-        if (this.editando) {
+  buscarCoeficientes2(coeficienteRequest:CoeficienteRequest):Promise<CoeficienteDto[]>{
+    return this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise()
+  }
+
+  setarCoeficienteResponse(r:CoeficienteDto[]){
+    if (r != null) {
+
+      if (!this.editando) {
+        this.novoOrcamentoService.recalcularProdutosComCoeficiente(this.formaPagto.buscarQtdeParcelas(), r);
+        if (this.novoOrcamentoService.qtdeParcelas) {
+          this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
+          this.formaPagto.calcularValorAvista();
           this.novoOrcamentoService.coeficientes = r;
         }
       }
-    }).catch((e) => { this.mensagemService.showErrorViaToast(["Falha ao buscar lista de coeficientes!"]) });
+      if (this.editando) {
+        this.novoOrcamentoService.coeficientes = r;
+      }
+    }
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
@@ -758,6 +775,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     this.carregandoProds = true;
     this.desabilitarEnvio = true;
+
     this.orcamentosService.enviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);
