@@ -124,9 +124,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.mensagemComponente.setarListaMensagem(this.idOrcamentoCotacao, r[5]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
-      this.carregando = false;
+      // this.carregando = false;
     }).finally(() => {
-      this.carregando = false;
+      // this.carregando = false;
     });
   }
 
