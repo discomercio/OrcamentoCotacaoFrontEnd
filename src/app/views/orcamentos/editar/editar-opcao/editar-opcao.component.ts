@@ -104,9 +104,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }).finally(() => {
       this.buscarFormaPagto();
       this.itens.inserirProduto();
-      this.itens.carregandoProds = false;
+      // this.itens.carregandoProds = false;
       this.atribuirPercRT();
-      this.itens.formaPagto.habilitar = false;
+      // this.itens.formaPagto.habilitar = false;
       this.cdref.detectChanges();
     });
   }
@@ -205,7 +205,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.itens.carregandoProds = false;
     })
 
-    this.itens.cdref.detectChanges();
+    // this.itens.cdref.detectChanges();
   }
 
   setarPagtoAvista() {
