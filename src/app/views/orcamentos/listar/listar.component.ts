@@ -166,7 +166,7 @@ export class OrcamentosListarComponent implements OnInit {
     if (this.tipoUsuario.toString() == this.constantes.PARCEIRO.toString() ||
       this.tipoUsuario.toString() == this.constantes.PARCEIRO_VENDEDOR.toString()) return;
 
-    if (!vendedores.Sucesso) {
+    if (vendedores && !vendedores.Sucesso) {
       this.sweetAlertService.aviso(vendedores.Mensagem);
       return;
     }
@@ -177,7 +177,7 @@ export class OrcamentosListarComponent implements OnInit {
       });
       this.cboFiltradoVendedores = this.cboVendedores;
     }
-
+    
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
