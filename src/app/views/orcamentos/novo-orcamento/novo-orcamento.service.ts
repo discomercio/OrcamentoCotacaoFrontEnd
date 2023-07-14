@@ -50,7 +50,6 @@ export class NovoOrcamentoService {
   public moedaUtils: MoedaUtils = new MoedaUtils();
 
   tipoUsuario: number;
-  calcularComissaoAuto: boolean;
   descontaComissao: boolean;
   percMaxComissaoEDescontoUtilizar: number;
   percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
@@ -373,11 +372,9 @@ export class NovoOrcamentoService {
 
   }
   calcularPercentualComissao() {
-    // if (this.calcularComissaoAuto && this.descontaComissao) {
     if (this.descontaComissao) {
       let descMedio = this.calcularDescontoMedio();
 
-      // if (this.calcularComissaoAuto && this.percMaxComissaoEDescontoUtilizar) {
       if (this.percMaxComissaoEDescontoUtilizar) {
         if (descMedio > (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao)) {
 
