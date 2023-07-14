@@ -55,17 +55,17 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   formaPagtoCriacaoAvista: FormaPagtoCriacao = new FormaPagtoCriacao();
   meioDemaisPrestacoes: MeiosPagto[];
   totalAvista: number;
-  habilitar:boolean = true;
+  habilitar: boolean = true;
 
   ngOnInit(): void {
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
   }
 
-  buscarFormasPagto():Promise<FormaPagto[]>{
+  buscarFormasPagto(): Promise<FormaPagto[]> {
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
     let apelido: string = this.autenticacaoService.usuario.nome;
-    let apelidoParceiro:string;
+    let apelidoParceiro: string;
     if (tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       tipoUsuario = this.constantes.VENDEDOR_UNIS;
       apelido = apelido;
@@ -73,7 +73,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
         comIndicacao = 1;
-          apelidoParceiro = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
+        apelidoParceiro = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
       }
       else {
         comIndicacao = 0;
@@ -89,18 +89,18 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       .toPromise();
   }
 
-  setarFormasPagto(r:FormaPagto[]){
+  setarFormasPagto(r: FormaPagto[]) {
     if (r != null) {
       this.formaPagamento = r;
       this.montarFormasPagto();
     }
   }
 
-  buscarQtdeMaxParcelas():Promise<number>{
+  buscarQtdeMaxParcelas(): Promise<number> {
     return this.formaPagtoService.buscarQtdeMaxParcelaCartaoVisa().toPromise();
   }
 
-  setarQtdeMaxParcelas(r:number){
+  setarQtdeMaxParcelas(r: number) {
     if (r != null) {
       this.qtdeMaxParcelas = r;
       this.qtdeMaxParcelaCartaoVisa = r;
@@ -108,7 +108,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.setarTipoPagto();
     }
   }
-  
+
   montarFormasPagto() {
     if (this.formaPagamento != null) {
 
@@ -145,7 +145,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
       let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO)[0];
-      
+
       this.qtdeMaxParcelas = !temParceiro ? this.qtdeMaxParcelaCartaoVisa : !!pagto.meios[0].qtdeMaxParcelas ? pagto.meios[0].qtdeMaxParcelas : this.qtdeMaxParcelaCartaoVisa;
       this.formaPagtoCriacaoAprazo.c_pc_qtde = this.qtdeMaxParcelas;
     }
@@ -287,7 +287,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return this.formaPagtoCriacaoAprazo.c_pc_maquineta_qtde;
     }
   }
-  
+
   qtdeMaxParcelasEDiasComEntrada() {
     let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA)[0];
     let meiopagto = pagto.meios.filter(x => x.id == Number.parseInt(this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto) &&
@@ -410,18 +410,19 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
-
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-      if (this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)) {
+      if (this.novoOrcamentoService.verificarCalculoComissao() &&
+        this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.calcularPercentualComissaoValidacao())) {
         let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
         let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
-          ${this.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
-        this.sweetalertService.dialogo("", pergunta).subscribe(result => {
+            ${this.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.novoOrcamentoService.calcularPercentualComissaoValidacao())}%. Confirma a redução da comissão?`;
+        
+            this.sweetalertService.dialogo("", pergunta).subscribe(result => {
           if (!result) return;
 
+          this.novoOrcamentoService.calcularPercentualComissao();
           this.gravarOpcao();
-
         });
       }
       else this.gravarOpcao();

@@ -142,12 +142,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         retorno = "novo";
         this.novoOrcamentoService.editando = false;
         this.formaPagto.editando = false;
-        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+        // this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
       }
       if (param.filtro == "clone") {
         retorno = param.filtro;
         this.habilitarClone = true;
-        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+        this.formaPagto.editando = false;
+        // this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
       }
     });
     return retorno;
