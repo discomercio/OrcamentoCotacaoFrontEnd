@@ -19,7 +19,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { FormaPagtoComponent } from '../forma-pagto/forma-pagto.component';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
-import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
+import { ProdutoRequest } from 'src/app/dto/produtos/produtoRequest';
 
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { OpcoesComponent } from '../opcoes/opcoes.component';
@@ -276,7 +276,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
   }
 
-  buscarProdutos(): Promise<ProdutoComboDto> {
+  buscarProdutos(editando:boolean): Promise<ProdutoComboDto> {
+    if(editando) return this.produtoService.buscarProdutosOrcamentoEdicao(this.produtoRequest).toPromise();
     return this.produtoService.buscarProdutosCompostosXSimples(this.produtoRequest).toPromise();
   }
 
@@ -294,7 +295,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   adicionarProduto(): void {
     this.carregandoProds = true;
     if (!this.produtoComboDto) {
-      const promise = [this.buscarProdutos()];
+      const promise = [this.buscarProdutos(false)];
       Promise.all(promise).then((r: any) => {
         this.setarProdutos(r[0]);
         if (!this.editando) {
@@ -317,7 +318,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   buscarProdutosAutomatico() {
     this.carregandoProds = true;
     this.setarParametrosBuscaProdutos();
-    const promise = [this.buscarProdutos()];
+    const promise = [this.buscarProdutos(false)];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
     }).catch((e) => {
@@ -455,7 +456,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   digitouQte(item: ProdutoOrcamentoDto): void {
     if (item.qtde <= 0) item.qtde = 1;
 
-    item.alterouPrecoVenda = true;
+    // item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
     item = itemCalculado;
 
@@ -511,7 +512,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
       return;
     }
-
+debugger  ;
     item.descDado = Number.parseFloat(v);
 
     if (item.descDado > 100) {
@@ -524,8 +525,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         let somaFilhotes = 0;
         produtoComposto.filhos.forEach(el => {
           let itemFilhote = this.produtoComboDto.produtosSimples.filter(s => s.produto == el.produto)[0];
-          let precoVenda = this.moedaUtils.formatarDecimal(itemFilhote.precoLista * (1 - item.descDado / 100));
-          let precoComQtde = this.moedaUtils.formatarDecimal(precoVenda * el.qtde)
+          let precoLista = this.moedaUtils.formatarDecimal(itemFilhote.precoListaBase * item.coeficienteDeCalculo);
+          let precoVenda = this.moedaUtils.formatarDecimal(precoLista * (1 - item.descDado / 100));
+          let precoComQtde = this.moedaUtils.formatarDecimal(precoVenda * el.qtde);
           somaFilhotes += precoComQtde;
         });
         item.precoVenda = somaFilhotes;

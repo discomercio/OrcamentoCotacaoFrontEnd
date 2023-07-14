@@ -5,4 +5,7 @@ export class ProdutoRequest {
     tipoParcela: string;
     qtdeParcelas: number;
     dataRefCoeficiente: Date|string;
+    produtos:Array<string>;//para edição da opção
+    idOpcao:number;//para edição da opção
+    idOpcaoFormaPagto;//para edição da opção
 }
