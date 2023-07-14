@@ -98,6 +98,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
 
   ngOnInit(): void {
+    this.novoOrcamentoService.criarNovo();
+    this.novoOrcamentoService.criarNovoOrcamentoItem();
+
     this.imgUrl = this.produtoCatalogoService.imgUrl;
 
     this.idOrcamentoCotacao = this.activatedRoute.snapshot.params.id;
