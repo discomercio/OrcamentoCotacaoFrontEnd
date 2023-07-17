@@ -131,8 +131,8 @@ export class NovoOrcamentoService {
     let precoVenda = 0;
     if (!item.alterouPrecoVenda) {
       produtosDto.forEach(x => {
-        let precoListaBase = x.precoLista;
-        let precoVenda = this.moedaUtils.formatarDecimal(precoListaBase * (1 - item.descDado / 100));
+        let precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * item.coeficienteDeCalculo);
+        let precoVenda = this.moedaUtils.formatarDecimal(precoLista * (1 - item.descDado / 100));
         let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
         totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
       });
@@ -298,6 +298,7 @@ export class NovoOrcamentoService {
       return;
 
     this.qtdeParcelas = qtdeParcelas;
+    debugger;
     this.recalcularProdutosComCoeficiente(qtdeParcelas, this.coeficientes);
   }
 

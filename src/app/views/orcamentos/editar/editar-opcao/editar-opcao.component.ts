@@ -7,9 +7,10 @@ import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ItensComponent } from '../../novo-orcamento/itens/itens.component';
-import { ProdutoRequest } from 'src/app/dto/produtos/ProdutoRequest';
+import { ProdutoRequest } from 'src/app/dto/produtos/produtoRequest';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
+import { ProdutoService } from 'src/app/service/produto/produto.service';
 
 @Component({
   selector: 'app-editar-opcao',
@@ -25,7 +26,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     private readonly lojaService: LojasService,
     private readonly alertaService: AlertaService,
     public cdref: ChangeDetectorRef,
-    private readonly sweetalertService: SweetalertService
+    private readonly sweetalertService: SweetalertService,
+    private readonly produtoService: ProdutoService
   ) { }
 
   @ViewChild("itens", { static: true }) itens: ItensComponent;
@@ -90,13 +92,20 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     let dataRef = DataUtils.formatarTela(this.itens.novoOrcamentoService.orcamentoCotacaoDto.dataCadastro);
     this.itens.produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(dataRef);
+
+    this.itens.produtoRequest.produtos = this.opcaoOrcamento.listaProdutos.map(x => x.produto);
+    this.itens.produtoRequest.idOpcao = this.idOpcaoOrcamentoCotacao;
+    let pagto = this.opcaoOrcamento.formaPagto.filter(x => x.tipo_parcelamento != this.itens.constantes.COD_FORMA_PAGTO_A_VISTA)[0];
+    this.itens.produtoRequest.idOpcaoFormaPagto = pagto.id;
   }
 
   buscarProdutos() {
     this.itens.carregandoProds = true;
+
     this.setarParametrosBuscaProdutos();
-    const promise = [this.itens.buscarProdutos()];
+    const promise = [this.itens.buscarProdutos(true)];
     Promise.all(promise).then((r: any) => {
+      //vamos passar os valores base para os produtos combos e simples
       this.itens.setarProdutos(r[0]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);

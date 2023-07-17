@@ -313,6 +313,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
     }
+debugger;
     this.setarQtdeMaxParcelasEDias();
 
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
@@ -329,7 +330,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       valorParcela = this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas;
     }
     this.setarValorParcela(valorParcela);
-
+    this.novoOrcamentoService.calcularDescontoMedio();
   }
 
   setarValorParcela(valorParcelas: number) {
