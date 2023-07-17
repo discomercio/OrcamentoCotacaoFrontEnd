@@ -79,7 +79,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
     this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
     this.itens.novoOrcamentoService.editando = true;
-    this.itens.novoOrcamentoService.calcularComissaoAuto = this.verificarCalculoComissao();
+    this.verificarCalculoComissao();
   }
 
   setarParametrosBuscaProdutos() {
@@ -113,9 +113,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }).finally(() => {
       this.buscarFormaPagto();
       this.itens.inserirProduto();
-      // this.itens.carregandoProds = false;
       this.atribuirPercRT();
-      // this.itens.formaPagto.habilitar = false;
       this.cdref.detectChanges();
     });
   }
@@ -155,8 +153,9 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
       let usuarioEnvolvido = this.itens.novoOrcamentoService.verificarUsuarioEnvolvido();
       if (usuarioEnvolvido) {
-        this.itens.novoOrcamentoService.descontaComissao = true;
+        this.itens.novoOrcamentoService.descontaComissao = false;
         this.itens.novoOrcamentoService.editarComissao = false;
+        this.itens.habilitarComissao = false;
         return true;
       }
     }
@@ -214,7 +213,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.itens.carregandoProds = false;
     })
 
-    // this.itens.cdref.detectChanges();
   }
 
   setarPagtoAvista() {
@@ -258,7 +256,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     //se tem parceiro
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
-
       if (!this.itens.novoOrcamentoService.verificarCalculoComissao()) {
         this.atualizaComEdicaoComissao();
         return;
@@ -299,18 +296,18 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   atualizaSemEdicaoComissao() {
-    let antigoPercRT = this.itens.antigoPercRT.toFixed(2);
-    let atualPercRT = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT.toFixed(2);
-    if (Number.parseFloat(atualPercRT) < Number.parseFloat(antigoPercRT)) {
+    let antigoPercRT = this.itens.antigoPercRT;
+    let atualPercRT = this.itens.novoOrcamentoService.calcularPercentualComissaoValidacao();
+    if (atualPercRT < antigoPercRT) {
       let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
       let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
-      ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}%. Confirma a redução da comissão?`;
+      ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(atualPercRT)}%. Confirma a redução da comissão?`;
       this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
         if (!result) {
           this.itens.carregandoProds = false;
           return;
         }
-
+        this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = atualPercRT;
         this.atualizarOpcao();
       });
     }

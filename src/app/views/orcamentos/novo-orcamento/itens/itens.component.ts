@@ -142,12 +142,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         retorno = "novo";
         this.novoOrcamentoService.editando = false;
         this.formaPagto.editando = false;
-        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
       }
       if (param.filtro == "clone") {
         retorno = param.filtro;
         this.habilitarClone = true;
-        this.novoOrcamentoService.calcularComissaoAuto = this.novoOrcamentoService.verificarCalculoComissao();
+        this.formaPagto.editando = false;
       }
     });
     return retorno;
@@ -175,14 +174,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         this.novoOrcamentoService.setarPercentualComissao();
         this.novoOrcamentoService.calcularPercentualComissao();
       }
-    }
-  }
-
-  permissaoEditarComissao() {
-    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) &&
-      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
-      !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-      this.habilitarComissao = false;
     }
   }
 
@@ -462,8 +453,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    if (this.novoOrcamentoService.calcularComissaoAuto)
-      this.novoOrcamentoService.calcularPercentualComissao();
     this.novoOrcamentoService.calcularDescontoMedio();
   }
 
@@ -724,8 +713,6 @@ debugger  ;
     let valorTotal = this.novoOrcamentoService.totalPedido()
     this.formaPagto.setarValorParcela(valorTotal / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
-    if (this.novoOrcamentoService.calcularComissaoAuto)
-      this.novoOrcamentoService.calcularPercentualComissao();
     this.novoOrcamentoService.calcularDescontoMedio();
   }
 

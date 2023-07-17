@@ -50,7 +50,6 @@ export class NovoOrcamentoService {
   public moedaUtils: MoedaUtils = new MoedaUtils();
 
   tipoUsuario: number;
-  calcularComissaoAuto: boolean;
   descontaComissao: boolean;
   percMaxComissaoEDescontoUtilizar: number;
   percentualMaxComissao: PercMaxDescEComissaoResponseViewModel;
@@ -58,7 +57,7 @@ export class NovoOrcamentoService {
   editando: boolean;
   editarComissao: boolean = false;
   produtoComboDto = new ProdutoComboDto();
-  descontoMedio:number;
+  descontoMedio: number;
   formaPagamento: FormaPagto[];
   usuarioLogado: Usuario;
   descontoGeral: number;
@@ -361,11 +360,23 @@ export class NovoOrcamentoService {
     return descMedio;
   }
 
-  calcularPercentualComissao() {
-    if (this.calcularComissaoAuto && this.descontaComissao) {
+  calcularPercentualComissaoValidacao() {
+    if (this.descontaComissao) {
       let descMedio = this.calcularDescontoMedio();
 
-      if (this.calcularComissaoAuto && this.percMaxComissaoEDescontoUtilizar) {
+      if (this.percMaxComissaoEDescontoUtilizar) {
+        let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
+        let comissao = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
+        return this.moedaUtils.formatarDecimal(comissao);
+      }
+    }
+
+  }
+  calcularPercentualComissao() {
+    if (this.descontaComissao) {
+      let descMedio = this.calcularDescontoMedio();
+
+      if (this.percMaxComissaoEDescontoUtilizar) {
         if (descMedio > (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao)) {
 
           let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
@@ -588,16 +599,16 @@ export class NovoOrcamentoService {
   }
 
   validarComissao(valor: any): boolean {
-    
-    if(Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+
+    if (Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     let descontoMedio = this.calcularDescontoMedio();
     let limiteComissao = (this.percentualMaxComissao.percMaxComissao - (descontoMedio - (this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao))).toFixed(2);
 
     if (Number.parseFloat(valor) <= Number.parseFloat(limiteComissao)) return true;
 
-    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) || 
-        Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
+    if (Number.parseFloat(valor) > Number.parseFloat(limiteComissao) ||
+      Number.parseFloat(valor) > this.percentualMaxComissao.percMaxComissao) return false;
 
     return true
   }
