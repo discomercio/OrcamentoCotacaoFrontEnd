@@ -93,11 +93,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   editar: boolean = false;
   imgUrl: string;
   mostrarInstaladorInstala: boolean;
-  carregando: boolean = true;
   editarOpcoes = new Array<boolean>();
 
 
   ngOnInit(): void {
+    this.mensagemComponente.carregando = true;
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
 
@@ -115,9 +115,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarOrcamento(),
     this.buscarDadosParaMensageria(),
     this.buscarParametros(),
-    this.buscarStatus(), 
+    this.buscarStatus(),
     this.mensagemComponente.buscarListaMensagem(this.idOrcamentoCotacao)];
-
     Promise.all(promises).then((r) => {
       this.setarPermissoes(r[0]);
       this.setarOrcamento(r[1]);
@@ -127,9 +126,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.mensagemComponente.setarListaMensagem(this.idOrcamentoCotacao, r[5]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
-      // this.carregando = false;
+      this.mensagemComponente.carregando = false;
     }).finally(() => {
-      // this.carregando = false;
+      this.Promise2();
     });
   }
 
@@ -239,44 +238,46 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
       this.editarOpcoes = this.verificarEdicaoOpcao(r);
+    }
+  }
 
-      let orcamento = r;
-      let comIndicacao: number = 0;
-      let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
-      let apelido: string = this.autenticacaoService.usuario.nome;
-      let apelidoParceiro: string;
+  Promise2(){
+    let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
+    let comIndicacao: number = 0;
+    let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
+    let apelido: string = this.autenticacaoService.usuario.nome;
+    let apelidoParceiro: string;
 
-      if (orcamento.cadastradoPor == orcamento.vendedor) {
-        tipoUsuario = this.constantes.VENDEDOR_UNIS;
-        apelido = orcamento.vendedor;
-        if (orcamento.parceiro != null) {
-          comIndicacao = 1;
-          apelidoParceiro = orcamento.parceiro;
-        }
-        else {
-          comIndicacao = 0;
-        }
-      }
-      if (orcamento.cadastradoPor == orcamento.parceiro || orcamento.cadastradoPor == orcamento.vendedorParceiro) {
+    if (orcamento.cadastradoPor == orcamento.vendedor) {
+      tipoUsuario = this.constantes.VENDEDOR_UNIS;
+      apelido = orcamento.vendedor;
+      if (orcamento.parceiro != null) {
         comIndicacao = 1;
-        tipoUsuario = this.constantes.PARCEIRO;
-        apelido = orcamento.parceiro;
         apelidoParceiro = orcamento.parceiro;
       }
-
-      this.carregando = true;
-      const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
-        tipoUsuario, apelido, apelidoParceiro)];
-
-      Promise.all(promises).then((r) => {
-        this.setarParceiro(r[0]);
-        this.setarFormaPagto(r[1]);
-      }).catch((e) => {
-        this.carregando = false;
-      }).finally(() => {
-        this.carregando = false;
-      });
+      else {
+        comIndicacao = 0;
+      }
     }
+    if (orcamento.cadastradoPor == orcamento.parceiro || orcamento.cadastradoPor == orcamento.vendedorParceiro) {
+      comIndicacao = 1;
+      tipoUsuario = this.constantes.PARCEIRO;
+      apelido = orcamento.parceiro;
+      apelidoParceiro = orcamento.parceiro;
+    }
+
+    const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
+      tipoUsuario, apelido, apelidoParceiro), this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao)];
+
+    Promise.all(promises).then((r) => {
+      this.setarParceiro(r[0]);
+      this.setarFormaPagto(r[1]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.mensagemComponente.carregando = false;
+    }).finally(() => {
+      this.mensagemComponente.carregando = false;
+    });
   }
 
   setarDadosParaMensageria(r: RemetenteDestinatarioResponse) {
@@ -337,7 +338,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (r != null) {
       this.formaPagamento = r;
       this.novoOrcamentoService.atribuirOpcaoPagto(new Array<FormaPagtoCriacao>(), this.formaPagamento);
-      this.carregando = false;
     }
   }
 
@@ -424,7 +424,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     this.sweetalertService.dialogo("", "Deseja prorrogar esse orçamento?").subscribe(result => {
       if (!result) return;
-      this.carregando = true;
+      this.mensagemComponente.carregando = true;
       this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           if (r.tipo == "WARN") {
@@ -437,11 +437,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
             }
           }
         }
-        this.carregando = false;
+        this.mensagemComponente.carregando = false;
         this.ngOnInit();
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
-        this.carregando = false;
+        this.mensagemComponente.carregando = false;
       });
     });
   }
@@ -449,7 +449,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   cancelar() {
     this.sweetalertService.dialogo("", "Confirma o cancelamento do orçamento?").subscribe(result => {
       if (!result) return;
-      this.carregando = true;
+      this.mensagemComponente.carregando = true;
       this.orcamentoService.cancelarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
           if (r.tipo == "WARN") {
@@ -457,11 +457,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           }
 
         }
-        this.carregando = false;
+        this.mensagemComponente.carregando = false;
         this.ngOnInit();
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
-        this.carregando = false;
+        this.mensagemComponente.carregando = false;
       });
 
     });
@@ -470,7 +470,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   reenviarOrcamento() {
     this.sweetalertService.dialogo("", "Confirma o reenvio do orçamento?").subscribe(result => {
       if (!result) return;
-      this.carregando = true;
+      this.mensagemComponente.carregando = true;
       this.orcamentoService.reenviarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id).toPromise().then((r) => {
         if (r != null) {
 
@@ -483,11 +483,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           }
 
         }
-        this.carregando = false;
+        this.mensagemComponente.carregando = false;
         this.ngOnInit();
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
-        this.carregando = false; 
+        this.mensagemComponente.carregando = false;
       });
 
     });

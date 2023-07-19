@@ -41,6 +41,8 @@ export class MensageriaComponent {
 
   listaMensagens: MensageriaDto[];
 
+  public carregando: boolean;
+
   constructor(
     public readonly mensageriaService: MensageriaService,
     private readonly alertaService: AlertaService,
@@ -71,16 +73,12 @@ export class MensageriaComponent {
   setarListaMensagem(idOrcamento: number, r: Array<MensageriaDto>) {
     if (r != null) {
       this.listaMensagens = r;
-
-      const promise = [this.marcarMensagemComoLida(idOrcamento)];
-      Promise.all(promise).then().catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
-      });
     }
   }
 
   enviarMensagem() {
     this.validar();
+    this.carregando = true;
 
     let msg = new MensageriaDto();
     msg.IdOrcamentoCotacao = this.idOrcamentoCotacao.toString();
@@ -89,7 +87,6 @@ export class MensageriaComponent {
     msg.IdTipoUsuarioContextoDestinatario = this.idTipoUsuarioContextoDestinatario;
     msg.IdUsuarioRemetente = this.idUsuarioRemetente;
     msg.IdUsuarioDestinatario = this.idUsuarioDestinatario;
-
     if (this.rotaPublica && this.guid) {
 
       this.mensageriaService.enviarMensagemRotaPublica(msg, this.guid).toPromise().then((r) => {
@@ -98,8 +95,11 @@ export class MensageriaComponent {
           this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-
+        this.carregando = false;
+      }).catch((r) => {
+        this.alertaService.mostrarErroInternet(r);
+        this.carregando = false;
+      });
     } else {
       this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
         if (r != null) {
@@ -107,12 +107,17 @@ export class MensageriaComponent {
           this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
+        this.carregando = false;
+
+      }).catch((r) => {
+        this.alertaService.mostrarErroInternet(r);
+        this.carregando = false;
+      });
     }
   }
 
   marcarPendenciaTratada() {
-
+    this.carregando = true;
     this.mensageriaService.obterListaMensagem(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
 
       if (r != null && r.length > 0) {
@@ -121,18 +126,30 @@ export class MensageriaComponent {
             if (r != null) {
               this.mensagemService.showSuccessViaToast("Mensagens marcadas como não tratadas!");
             }
-          }).catch((r) => this.alertaService.mostrarErroInternet(r));
+          this.carregando = false;
+          }).catch((r) => {
+            this.alertaService.mostrarErroInternet(r);
+            this.carregando = false;
+          });
         } else {
           this.mensageriaService.marcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
             if (r != null) {
               this.mensagemService.showSuccessViaToast("Mensagens marcadas como tratadas!");
             }
-          }).catch((r) => this.alertaService.mostrarErroInternet(r));
+            this.carregando = false;
+          }).catch((r) => {
+            this.alertaService.mostrarErroInternet(r);
+            this.carregando = false;
+          });
         }
       } else {
         this.mensagemService.showWarnViaToast("Não há mensagens para marcar como tratadas!");
+        this.carregando = false;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+    }).catch((r) => {
+      this.alertaService.mostrarErroInternet(r);
+      this.carregando = false;
+    });
   }
 
   marcarMensagemComoLida(idOrcamentoCotacao: number): Promise<any> {
