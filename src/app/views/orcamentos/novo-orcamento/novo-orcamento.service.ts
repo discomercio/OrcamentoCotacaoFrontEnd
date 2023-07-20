@@ -297,7 +297,6 @@ export class NovoOrcamentoService {
       return;
 
     this.qtdeParcelas = qtdeParcelas;
-    debugger;
     this.recalcularProdutosComCoeficiente(qtdeParcelas, this.coeficientes);
   }
 
