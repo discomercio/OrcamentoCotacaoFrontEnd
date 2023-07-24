@@ -367,7 +367,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     if (this.arrumarProdutosRepetidos(produtoOrcamento)) return;
 
     this.inserirProduto();
-    this.digitouQte(produtoOrcamento);
   }
 
   arrumarProdutosRepetidos(produto: ProdutoOrcamentoDto): boolean {
@@ -403,14 +402,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         this.carregandoProds = false;
       }).finally(()=>{
         this.carregandoProds = false;
-      })
-      // this.buscarCoeficientes(dataRefCoeficiente);
+      });
     }
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos = this.novoOrcamentoService.lstProdutosSelecionados;
-    this.novoOrcamentoService.calcularDescontoMedio();
-    this.novoOrcamentoService.totalPedido();
-
 
     this.formaPagto.habilitar = false;
   }
@@ -501,7 +496,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
       return;
     }
-debugger  ;
+    
     item.descDado = Number.parseFloat(v);
 
     if (item.descDado > 100) {
