@@ -807,7 +807,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     let v: any = valor.replace(/,/g, '').replace(/\./g, "");
     v = Number.parseFloat((v * 0.1) + '');
 
-    if (!this.novoOrcamentoService.validarComissao(v)) {
+    if(v > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
       v = this.antigoPercRT;
       ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.antigoPercRT);
       this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
