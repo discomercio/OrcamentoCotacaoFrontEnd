@@ -25,13 +25,6 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
   styleUrls: ['./prepedidoconfirmar-cliente.component.scss']
 })
 export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent implements OnInit {
-
-  //dados
-  dadosClienteCadastroDto = new DadosClienteCadastroDto();
-  clienteCadastroDto = new ClienteCadastroDto();
-  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-  public endCadastralClientePrepedidoDto = new EnderecoCadastralClientePrepedidoDto();
-
   constructor(private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     telaDesktopService: TelaDesktopService,
@@ -43,6 +36,34 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     private readonly buscarClienteService: BuscarClienteService) {
     super(telaDesktopService);
   }
+
+  //dados
+  dadosClienteCadastroDto = new DadosClienteCadastroDto();
+  clienteCadastroDto = new ClienteCadastroDto();
+  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
+  public endCadastralClientePrepedidoDto = new EnderecoCadastralClientePrepedidoDto();
+  private dadosClienteCadastroDtoIe: string;
+  private dadosClienteCadastroDtoProdutorRural: number;
+  private dadosClienteCadastroDtoContribuinte_Icms_Status: number;
+  public constantes = new Constantes();
+  //precisa do static: false porque está dentro de um ngif
+  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: ConfirmarEnderecoComponent;
+  //esta como undefined
+  @ViewChild("clienteCorpo", { static: false }) clienteCorpo: ClienteCorpoComponent;
+  //desabilita o botão para evitar duplo clique
+  desabilita = false;
+  //#region fase
+  /*
+  temos 2 fases: uma que confirma o cliente e a segunda que confirma o endereço de entrega
+  na especificação original, é uma tela só no desktop e duas telas no celular
+  talvez no desktop também fique em duas
+  aqui controlamos a transição entre as telas
+  */
+  fase1 = true;
+  fase2 = false;
+  fase1e2juntas = false;
+  //#endregion
+  converteu_tel_endCadastralClientePrepedidoDto = false;
 
   ngOnInit() {
 
@@ -62,6 +83,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
         return;
       }
     }
+    
     //se chegar como null é pq foi salvo como link; não temos dados para mostrar
     if (!this.dadosClienteCadastroDto) {
 
@@ -172,10 +194,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.dadosClienteCadastroDtoProdutorRural = this.dadosClienteCadastroDto.ProdutorRural;
     this.dadosClienteCadastroDtoContribuinte_Icms_Status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status;
   }
-  private dadosClienteCadastroDtoIe: string;
-  private dadosClienteCadastroDtoProdutorRural: number;
-  private dadosClienteCadastroDtoContribuinte_Icms_Status: number;
-  public constantes = new Constantes();
+
   salvarAtivo(): boolean {
     //diz se o botão de salvar está ligado
     if (!this.dadosClienteCadastroDto) {
@@ -260,20 +279,6 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.alertaService.mostrarMensagem(msg);
   }
 
-  //#endregion
-
-  //#region fase
-  /*
-  temos 2 fases: uma que confirma o cliente e a segunda que confirma o endereço de entrega
-  na especificação original, é uma tela só no desktop e duas telas no celular
-  talvez no desktop também fique em duas
-  aqui controlamos a transição entre as telas
-  */
-  fase1 = true;
-  fase2 = false;
-  fase1e2juntas = false;
-  //#endregion
-
   voltar() {
     //voltamos apra a fase anterior
     //fazer uma variavel para receber um valor para saber para onde voltar
@@ -295,14 +300,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.confirmarEndereco.desconverterTelefonesEnderecoEntrega(this.enderecoEntregaDtoClienteCadastro);
 
   }
-  //precisa do static: false porque está dentro de um ngif
-  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: ConfirmarEnderecoComponent;
 
-  //esta como undefined
-  @ViewChild("clienteCorpo", { static: false }) clienteCorpo: ClienteCorpoComponent;
-
-  //desabilita o botão para evitar duplo clique
-  desabilita = false;
   continuar(): void {
     //desabilita o botão para evitar duplo clique
     this.desabilita = true;
@@ -330,7 +328,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.continuarEfetivo();
   }
 
-  converteu_tel_endCadastralClientePrepedidoDto = false;
+  
   continuarEfetivo(): void {
 
     let validacoes: string[] = new Array();

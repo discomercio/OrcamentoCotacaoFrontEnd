@@ -1,5 +1,6 @@
 <section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
-    <form style="display: contents;" (keydown.enter)="continuar()">
+    <form style="display: contents;" (keydown.enter)="continuar()"
+        [ngClass]="{'carregando': telaDesktopService.carregando}">
         <header>
             Confirmar Cliente
         </header>
@@ -29,7 +30,8 @@
             <mat-icon>save</mat-icon> Salvar
         </button> -->
             <button mat-raised-button color="accent" (click)="continuar()" autofocus id="idcontinuar"
-                style="font-size: 80%" [disabled]="desabilita" style="font-size:80%;background-color: #007bff !important;color: white !important;">
+                style="font-size: 80%" [disabled]="desabilita"
+                style="font-size:80%;background-color: #007bff !important;color: white !important;">
                 <span class="pi pi-arrow-circle-right"> </span> Avançar
             </button>
         </footer>
