@@ -9,6 +9,7 @@ import { BuscarClienteService } from 'src/app/service/prepedido/cliente/buscar-c
 import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 import { FormatarTelefone, TelefoneSeparado } from 'src/app/utilities/formatarTelefone';
 import { CepComponent } from '../../cliente/cep/cep/cep.component';
+import { CepDto } from 'src/app/dto/ceps/CepDto';
 
 
 @Component({
@@ -26,7 +27,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
 
   buscarClienteServiceJustificativaEndEntregaComboTemporario: EnderecoEntregaJustificativaDto[];
   ngOnInit() {
-    
+
     //se OutroEndereco for undefined, precisamos inicializar
     if (!this.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.enderecoEntregaDtoClienteCadastro.OutroEndereco = false;
@@ -40,18 +41,49 @@ export class ConfirmarEnderecoComponent implements OnInit {
           return;
         }
         this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
-      }).catch((r)=>{
+      }).catch((r) => {
         this.alertaService.mostrarErroInternet(r);
       });
   }
 
   ngAfterViewInit(): void {
-    setTimeout(() => {
-      //fazendo por timeout, como em cliente-corpo.component.ts
-      if (this.componenteCep)
-        this.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
-    }, 0);
+    // setTimeout(() => {
+    //   //fazendo por timeout, como em cliente-corpo.component.ts
+    //   if (this.componenteCep)
+    //     this.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
+    // }, 0);
 
+  }
+
+  setarDadosEnderecoTela(enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro) {
+    //precisamos fazer a busca de cep para saber se tem endereço bairro e cidade para bloquear ou não
+    this.enderecoEntregaDtoClienteCadastro = enderecoEntregaDtoClienteCadastro;
+    const src = this.componenteCep;
+    src.cep_retorno = this.enderecoEntregaDtoClienteCadastro.EndEtg_cep;
+    src.Endereco = this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco;
+    src.Numero = this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_numero;
+    src.Complemento = this.enderecoEntregaDtoClienteCadastro.EndEtg_endereco_complemento;
+    src.Bairro = this.enderecoEntregaDtoClienteCadastro.EndEtg_bairro;
+    src.Cidade = this.enderecoEntregaDtoClienteCadastro.EndEtg_cidade;
+    src.Uf = this.enderecoEntregaDtoClienteCadastro.EndEtg_uf;
+    src.Cep = this.enderecoEntregaDtoClienteCadastro.EndEtg_cep;
+    enderecoEntregaDtoClienteCadastro.EndEtg_cod_justificativa = this.enderecoEntregaDtoClienteCadastro.EndEtg_cod_justificativa;
+    this.pessoaEntregaEhPJ = this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa == this.constantes.ID_PJ ? true : false;
+    this.pessoaEntregaEhPF = this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa == this.constantes.ID_PF ? true : false;
+
+    this.RbTipoPessoa = true;
+
+    this.enderecoEntregaDtoClienteCadastro = this.desconverterTelefonesEnderecoEntrega(enderecoEntregaDtoClienteCadastro);
+  }
+
+  buscarCep(cep:string):Promise<CepDto[]>{
+    return this.componenteCep.cepService.buscarCep(cep, null, null, null).toPromise()
+  }
+
+  setarDadosCep(r:CepDto[]){
+    if(!!r){
+      this.componenteCep.temCidade = r[0].Cidade == "" || !r[0].Cidade ? false : true;
+    }
   }
 
   @ViewChild('mySelectProdutor', { static: false }) mySelectProdutor: MatSelect;
@@ -67,6 +99,8 @@ export class ConfirmarEnderecoComponent implements OnInit {
       document.getElementById("avancar").focus();
     }
   }
+
+  
 
   required: boolean;
   atualizarDadosEnderecoTela(enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro) {
@@ -105,7 +139,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
   //dados
   @Input() enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   @Input() tipoPf: boolean;
-  @Input() origem:string;
+  @Input() origem: string;
 
   //utilitários
   public clienteCadastroUtils = new ClienteCadastroUtils();
