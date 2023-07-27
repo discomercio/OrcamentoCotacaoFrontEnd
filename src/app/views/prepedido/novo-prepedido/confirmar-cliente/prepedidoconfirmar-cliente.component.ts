@@ -139,9 +139,11 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
       this.telaDesktopService.carregando = true;
       this.confirmarEndereco.setarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
 
-      let promises = [this.confirmarEndereco.buscarCep(this.enderecoEntregaDtoClienteCadastro.EndEtg_cep)];
-      Promise.all(promises).then((r) => {
+      let promises:any = [this.confirmarEndereco.buscarCep(this.enderecoEntregaDtoClienteCadastro.EndEtg_cep), 
+        this.confirmarEndereco.buscarJustificativaEntrega()];
+      Promise.all(promises).then((r:any) => {
         this.confirmarEndereco.setarDadosCep(r[0]);
+        this.confirmarEndereco.setarJustificativaEntrega(r[1]);
       }).catch((e) => {
         this.telaDesktopService.carregando = false;
       }).finally(() => {
@@ -419,7 +421,6 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.fase2 = true;
     this.fase1 = false;
     this.desabilita = false;
-
   }
 }
 

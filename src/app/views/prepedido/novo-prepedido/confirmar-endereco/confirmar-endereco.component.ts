@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter, ViewChild, Inject } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, ViewChild, Inject, ChangeDetectorRef, AfterViewInit } from '@angular/core';
 import { MatSelect } from '@angular/material';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ClienteCadastroUtils } from 'src/app/dto/prepedido/AngularClienteCadastroUtils/ClienteCadastroUtils';
@@ -10,6 +10,8 @@ import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 import { FormatarTelefone, TelefoneSeparado } from 'src/app/utilities/formatarTelefone';
 import { CepComponent } from '../../cliente/cep/cep/cep.component';
 import { CepDto } from 'src/app/dto/ceps/CepDto';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 
 
 @Component({
@@ -20,10 +22,14 @@ import { CepDto } from 'src/app/dto/ceps/CepDto';
     '../../../../estilos/endereco.scss'
   ]
 })
-export class ConfirmarEnderecoComponent implements OnInit {
+export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
 
   constructor(private readonly buscarClienteService: BuscarClienteService,
-    private readonly alertaService: AlertaService) { }
+    private readonly alertaService: AlertaService,
+    private readonly telaDesktopService: TelaDesktopService,
+    public cdref: ChangeDetectorRef) {
+    super(telaDesktopService)
+  }
 
   buscarClienteServiceJustificativaEndEntregaComboTemporario: EnderecoEntregaJustificativaDto[];
   ngOnInit() {
@@ -34,28 +40,42 @@ export class ConfirmarEnderecoComponent implements OnInit {
       this.inicializarCamposEndereco(this.enderecoEntregaDtoClienteCadastro);
     }
 
-    this.buscarClienteService.JustificativaEndEntregaComboTemporario().toPromise()
-      .then((r) => {
-        if (r == null) {
-          this.alertaService.mostrarErroInternet(r);
-          return;
-        }
-        this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
-      }).catch((r) => {
-        this.alertaService.mostrarErroInternet(r);
-      });
+    // this.buscarClienteService.JustificativaEndEntregaComboTemporario().toPromise()
+    //   .then((r) => {
+    //     if (r == null) {
+    //       this.alertaService.mostrarErroInternet(r);
+    //       return;
+    //     }
+    //     this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
+    //   }).catch((r) => {
+    //     this.alertaService.mostrarErroInternet(r);
+    //   });
   }
 
   ngAfterViewInit(): void {
-    // setTimeout(() => {
-    //   //fazendo por timeout, como em cliente-corpo.component.ts
-    //   if (this.componenteCep)
-    //     this.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
-    // }, 0);
+    // this.telaDesktopService.carregando = true;
+    // this.cdref.detectChanges();
+    this.setarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
+    this.cdref.detectChanges();
 
+    if (!this.telaDesktop) {
+      setTimeout(() => {
+        this.telaDesktopService.carregando = true;
+        let promises: any = [this.buscarJustificativaEntrega()];
+        Promise.all(promises).then((r: any) => {
+          this.setarJustificativaEntrega(r[0]);
+        }).catch((e) => {
+          this.telaDesktopService.carregando = false;
+          this.alertaService.mostrarErroInternet(e);
+        }).finally(() => {
+          this.telaDesktopService.carregando = false;
+        });
+      }, 0);
+    }
   }
 
   setarDadosEnderecoTela(enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro) {
+
     //precisamos fazer a busca de cep para saber se tem endereço bairro e cidade para bloquear ou não
     this.enderecoEntregaDtoClienteCadastro = enderecoEntregaDtoClienteCadastro;
     const src = this.componenteCep;
@@ -76,14 +96,26 @@ export class ConfirmarEnderecoComponent implements OnInit {
     this.enderecoEntregaDtoClienteCadastro = this.desconverterTelefonesEnderecoEntrega(enderecoEntregaDtoClienteCadastro);
   }
 
-  buscarCep(cep:string):Promise<CepDto[]>{
-    return this.componenteCep.cepService.buscarCep(cep, null, null, null).toPromise()
+  buscarCep(cep: string): Promise<CepDto[]> {
+    return this.componenteCep.cepService.buscarCep(cep, null, null, null).toPromise();
   }
 
-  setarDadosCep(r:CepDto[]){
-    if(!!r){
+  setarDadosCep(r: CepDto[]) {
+    if (r.length > 0) {
       this.componenteCep.temCidade = r[0].Cidade == "" || !r[0].Cidade ? false : true;
     }
+  }
+
+  buscarJustificativaEntrega(): Promise<EnderecoEntregaJustificativaDto[]> {
+    return this.buscarClienteService.JustificativaEndEntregaComboTemporario().toPromise();
+  }
+
+  setarJustificativaEntrega(r: EnderecoEntregaJustificativaDto[]) {
+    if (r == null) {
+      this.alertaService.mostrarErroInternet(r);
+      return;
+    }
+    this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
   }
 
   @ViewChild('mySelectProdutor', { static: false }) mySelectProdutor: MatSelect;
@@ -100,7 +132,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
     }
   }
 
-  
+
 
   required: boolean;
   atualizarDadosEnderecoTela(enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro) {
@@ -122,16 +154,6 @@ export class ConfirmarEnderecoComponent implements OnInit {
     this.RbTipoPessoa = true;
 
     this.enderecoEntregaDtoClienteCadastro = this.desconverterTelefonesEnderecoEntrega(enderecoEntregaDtoClienteCadastro);
-
-    this.componenteCep.cepService.buscarCep(src.Cep, null, null, null).toPromise()
-      .then((r) => {
-        //recebemos um endereço
-        const end = r[0];
-
-        src.temCidade = end.Cidade == "" || !end.Cidade ? false : true;
-      }).catch((r) => {
-        // não fazemos nada
-      });
   }
 
 
@@ -148,7 +170,7 @@ export class ConfirmarEnderecoComponent implements OnInit {
   @ViewChild("componenteCep", { static: false }) componenteCep: CepComponent;
   public podeAvancar(): boolean {
 
-    return !this.componenteCep.carregando;
+    return !this.componenteCep.telaDesktopService.carregando;
   }
   public prepararAvancar(): void {
     //transferimos os dados do CEP para cá
