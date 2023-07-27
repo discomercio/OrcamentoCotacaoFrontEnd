@@ -32,29 +32,35 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
   }
 
   buscarClienteServiceJustificativaEndEntregaComboTemporario: EnderecoEntregaJustificativaDto[];
-  ngOnInit() {
+  @ViewChild('mySelectProdutor', { static: false }) mySelectProdutor: MatSelect;
+  //precisa do static: false porque está dentro de um ngif
+  @ViewChild("componenteCep", { static: false }) componenteCep: CepComponent;
+  //dados
+  @Input() enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
+  @Input() tipoPf: boolean;
+  @Input() origem: string;
+  //utilitários
+  public clienteCadastroUtils = new ClienteCadastroUtils();
+  public ignorarProximoEnter = false;
+  required: boolean;
+  public mascaraTelefone = FormatarTelefone.mascaraTelefone;
+  public mascaraCpf = CpfCnpjUtils.mascaraCpf;
+  public mascaraCnpj = CpfCnpjUtils.mascaraCnpj;
+  constantes: Constantes = new Constantes();
+  pessoaEntregaEhPJ: boolean;
+  pessoaEntregaEhPF: boolean;
+  RbTipoPessoa: boolean;
+  converteu_tel_enderecoEntrega = false;
 
+  ngOnInit() {
     //se OutroEndereco for undefined, precisamos inicializar
     if (!this.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.enderecoEntregaDtoClienteCadastro.OutroEndereco = false;
       this.inicializarCamposEndereco(this.enderecoEntregaDtoClienteCadastro);
     }
-
-    // this.buscarClienteService.JustificativaEndEntregaComboTemporario().toPromise()
-    //   .then((r) => {
-    //     if (r == null) {
-    //       this.alertaService.mostrarErroInternet(r);
-    //       return;
-    //     }
-    //     this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
-    //   }).catch((r) => {
-    //     this.alertaService.mostrarErroInternet(r);
-    //   });
   }
 
   ngAfterViewInit(): void {
-    // this.telaDesktopService.carregando = true;
-    // this.cdref.detectChanges();
     this.setarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
     this.cdref.detectChanges();
 
@@ -118,8 +124,6 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     this.buscarClienteServiceJustificativaEndEntregaComboTemporario = r;
   }
 
-  @ViewChild('mySelectProdutor', { static: false }) mySelectProdutor: MatSelect;
-  public ignorarProximoEnter = false;
   keydownSelectProdutor(event: KeyboardEvent): void {
     if (event.which == 13) {
       event.cancelBubble = true;
@@ -132,9 +136,6 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     }
   }
 
-
-
-  required: boolean;
   atualizarDadosEnderecoTela(enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro) {
     //precisamos fazer a busca de cep para saber se tem endereço bairro e cidade para bloquear ou não
     this.enderecoEntregaDtoClienteCadastro = enderecoEntregaDtoClienteCadastro;
@@ -156,22 +157,10 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     this.enderecoEntregaDtoClienteCadastro = this.desconverterTelefonesEnderecoEntrega(enderecoEntregaDtoClienteCadastro);
   }
 
-
-
-  //dados
-  @Input() enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-  @Input() tipoPf: boolean;
-  @Input() origem: string;
-
-  //utilitários
-  public clienteCadastroUtils = new ClienteCadastroUtils();
-
-  //precisa do static: false porque está dentro de um ngif
-  @ViewChild("componenteCep", { static: false }) componenteCep: CepComponent;
   public podeAvancar(): boolean {
-
     return !this.componenteCep.telaDesktopService.carregando;
   }
+
   public prepararAvancar(): void {
     //transferimos os dados do CEP para cá
     const src = this.componenteCep;
@@ -197,11 +186,6 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     article.scrollTop = 0;
 
   }
-
-  public mascaraTelefone = FormatarTelefone.mascaraTelefone;
-  public mascaraCpf = CpfCnpjUtils.mascaraCpf;
-  public mascaraCnpj = CpfCnpjUtils.mascaraCnpj;
-  constantes: Constantes = new Constantes();
 
   inicializarCamposEndereco(enderecoEntrega: EnderecoEntregaDtoClienteCadastro) {
     if (!enderecoEntrega) return;
@@ -233,9 +217,7 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     enderecoEntrega.EndEtg_email_xml = "";
     enderecoEntrega.EndEtg_cod_justificativa = "";
   }
-  pessoaEntregaEhPJ: boolean;
-  pessoaEntregaEhPF: boolean;
-  RbTipoPessoa: boolean;
+  
   PF() {
     this.inicializarCamposEndereco(this.enderecoEntregaDtoClienteCadastro);
     this.componenteCep.zerarCamposEndEntrega();
@@ -255,8 +237,7 @@ export class ConfirmarEnderecoComponent extends TelaDesktopBaseComponent impleme
     this.pessoaEntregaEhPF = false;
     this.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.constantes.ID_PJ;
   }
-
-  converteu_tel_enderecoEntrega = false;
+  
   public converterTelefones(enderecoEntrega: EnderecoEntregaDtoClienteCadastro): EnderecoEntregaDtoClienteCadastro {
 
     let s: TelefoneSeparado = new TelefoneSeparado();
