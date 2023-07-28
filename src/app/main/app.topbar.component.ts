@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AppMainComponent } from './app.main.component';
@@ -12,88 +12,52 @@ import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import { Title } from "@angular/platform-browser";
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
-import { environment } from 'src/environments/environment';
 import { ListaQuantidadeMensagemPendenteResponse } from '../dto/mensageria/lista-quantidade-mensagem-pendente-response';
+import { AppTopBarService } from './app.topBar.service';
 
 @Component({
   selector: 'app-topbar',
   templateUrl: "app.topbar.component.html"
 })
-export class AppTopBarComponent {
+export class AppTopBarComponent implements OnInit, OnDestroy {
 
   constructor(
     public app: AppComponent,
     public appMain: AppMainComponent,
     public readonly autenticacaoService: AutenticacaoService,
-    private readonly mensageriaService: MensageriaService,
     private readonly router: Router,
     private fb: FormBuilder,
     private readonly lojaService: LojasService,
     private readonly alertaService: AlertaService,
     private titleService: Title,
-    private appSettingsService: AppSettingsService
+    public readonly appTopBarService: AppTopBarService
   ) { }
   public lojaLogada: any;
   public nomeUsuario: string;
 
   parametro: string;
-  qtdMensagem: any;  
+  qtdMensagem: any;
   public form: FormGroup;
   lojas: Array<DropDownItem> = [];
   filtro: Filtro = new Filtro();
   imagemLogotipo: string = this.autenticacaoService._lojaEstilo.imagemLogotipo;
   corCabecalho: string = this.autenticacaoService._lojaEstilo.corCabecalho;
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
-  listaMensagemPendente:ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
+  listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
 
-  qtdeLojasUsuarioLogado:number = 0;
+  qtdeLojasUsuarioLogado: number = 0;
   meuDados: boolean = false;
-  interval:any;
+  interval: any;
 
   ngOnInit(): void {
     this.criarForm();
     this.populaComboLojas();
-    this.obterQuantidadeMensagemPendente();    
-    this.interval = setInterval(() => {
-      this.obterQuantidadeMensagemPendente();
-    }, Number(this.appSettingsService.config.temporizadorSininho));
-
     this.buscarEstilo();
     this.qtdeLojasUsuarioLogado = this.autenticacaoService._lojasUsuarioLogado.length;
+    
   }
 
   carregando: boolean = false;
-  obterQuantidadeMensagemPendente() {
-    let sininho = sessionStorage.getItem("sininho");
-    if(!sininho){
-      this.limparInterval();
-      return;
-    }
-    this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
-      if (!r.Sucesso) {
-        this.alertaService.mostrarMensagem(r.Mensagem);
-        return;
-      }
-      
-      this.listaMensagemPendente = r;
-      if(!!this.listaMensagemPendente.listaQtdeMensagemPendente){
-        this.qtdMensagem = this.listaMensagemPendente.listaQtdeMensagemPendente.reduce((soma, item)=>
-          soma + item.qtde, 0);
-      }
-      else this.qtdMensagem = 0;
-    })
-    .catch((e)=>{
-      if(e.status == 401){
-        this.limparInterval();
-      }
-      this.alertaService.mostrarErroInternet(e);
-    });
-  }
-
-  limparInterval(){
-    clearInterval(this.interval);
-    this.autenticacaoService.authLogout();
-  }
 
   buscarEstilo() {
 
@@ -120,18 +84,18 @@ export class AppTopBarComponent {
     });
 
     if (usuario.permissoes.includes(ePermissao.ConsultarUsuarioLogado)) {
-      
+
       const fetch = require("sync-fetch");
-            
+
       const appsettings = fetch("/assets/config/appsettings.json", {
       }).json();
-    
-      if (Boolean(appsettings.ambienteProducao)){
+
+      if (Boolean(appsettings.ambienteProducao)) {
         this.meuDados = false;
-      }else{
+      } else {
         this.meuDados = true;
-      }      
-      
+      }
+
     }
   }
 
@@ -183,5 +147,10 @@ export class AppTopBarComponent {
     this.autenticacaoService._lojaLogadoApoio = $event;
     this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
     this.router.navigate(["dashboards"]);
+  }
+
+  ngOnDestroy(){
+    this.appTopBarService.sininho = false;
+    this.appTopBarService.qtdMensagem = 0;
   }
 }

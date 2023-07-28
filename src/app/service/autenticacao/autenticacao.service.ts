@@ -188,6 +188,7 @@ export class AutenticacaoService {
     this.unidade_negocio = null;
     this.salvar = false;
     AlertaService.mostrandoErroNaoAutorizado = false;
+    this._lojaLogadoApoio = undefined;
   }
 
   public setarToken(token: string): void {
