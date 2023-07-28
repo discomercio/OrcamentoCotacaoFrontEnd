@@ -155,7 +155,7 @@
                                 </ng-template>
                                 <ng-template pTemplate="content">
                                     <div class="p-col-12 p-p-0">
-                                        <div class="p-col-12">
+                                        <div class="p-col-12 p-py-0">
                                             <p-table #dataTable [value]="opcao.listaProdutos" [responsive]="true"
                                                 responsiveLayout="stack" [ngClass]="{'carregando': carregando}"
                                                 autoLayout="true" styleClass="p-datatable-customers p-datatable-sm"
@@ -170,10 +170,15 @@
                                                 </ng-template>
                                                 <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
                                                     <tr class="{{telaDesktop ? '' : 'font-size'}}">
-                                                        <td *ngIf="opcao.existeImagemProduto" class="p-d-inline-flex"
-                                                            [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                            <img src="{{imgUrl}}{{produto.urlImagem}}"
-                                                                [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
+                                                        <td *ngIf="opcao.existeImagemProduto"
+                                                            class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
+                                                            [ngStyle]="telaDesktop ? {'display':'contents', 'max-height':'175px', 'min-height':'23px'} : {'':''}">
+                                                            <img *ngIf="produto.urlImagem"
+                                                                src="{{imgUrl}}{{produto.urlImagem}}"
+                                                                class="p-text-center p-p-2"
+                                                                [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
+                                                            <img *ngIf="!produto.urlImagem" src="" class="p-text-center"
+                                                                [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
                                                         </td>
                                                         <td *ngIf="telaDesktop">
                                                             <p
@@ -225,9 +230,10 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div *ngIf="opcao.aprovado && fp.aprovado" class="p-col-12 p-d-inline-flex"
+                                                    <div *ngIf="opcao.aprovado && fp.aprovado"
+                                                        class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(50% - 45px);">
-                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">                                                            
+                                                        <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
                                                             <i class="pi pi-check" style="color: green;"></i>
                                                         </div>
                                                         <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
@@ -240,7 +246,8 @@
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <div class="p-col-12 p-d-inline-flex"  *ngIf="opcao.aprovado && fp.aprovado">
+                                                    <div class="p-col-12 p-d-inline-flex"
+                                                        *ngIf="opcao.aprovado && fp.aprovado">
                                                         <div class="p-col-2 p-m-1 p-text-center">
                                                             <span class="p-text-bold">OBS:</span>
                                                         </div>
@@ -248,14 +255,14 @@
                                                             <span>{{fp.observacoesGerais}}</span>
                                                         </div>
                                                     </div>
-                                                    <div class="p-col-12 p-d-inline-flex"  *ngIf="!opcao.aprovado">
+                                                    <div class="p-col-12 p-d-inline-flex" *ngIf="!opcao.aprovado">
                                                         <div class="p-col-2 p-m-1 p-text-center">
                                                             <span class="p-text-bold">OBS:</span>
                                                         </div>
                                                         <div class="p-col-10" style="word-wrap: break-word;">
                                                             <span>{{fp.observacoesGerais}}</span>
                                                         </div>
-                                                    </div>                                                    
+                                                    </div>
                                                 </div>
 
                                             </div>
