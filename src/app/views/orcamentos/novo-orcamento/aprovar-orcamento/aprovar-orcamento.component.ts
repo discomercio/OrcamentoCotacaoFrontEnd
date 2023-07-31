@@ -96,6 +96,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   mostrarInstaladorInstala: boolean;
   editarOpcoes = new Array<boolean>();
   imagem: any;
+  fraseEstoque: string;
+  fraseFrete: string;
 
   ngOnInit(): void {
     this.mensagemComponente.carregando = true;
@@ -210,6 +212,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return this.formaPagtoService.buscarFormaPagto(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro).toPromise();
   }
 
+  buscarParametroFraseEstoque(loja: string) {
+    return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, loja, null).toPromise();
+  }
+
+  buscarParametroFraseFrete(loja: string) {
+    return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, loja, null).toPromise();
+  }
+
   setarPermissoes(response: PermissaoOrcamentoResponse) {
     this.permissaoOrcamentoResponse = response;
 
@@ -273,12 +283,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
       tipoUsuario, apelido, apelidoParceiro), this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao),
-    this.buscarParametroLogoImpressao(orcamento.loja)];
+    this.buscarParametroLogoImpressao(orcamento.loja), this.buscarParametroFraseEstoque(orcamento.loja), this.buscarParametroFraseFrete(orcamento.loja)];
 
     Promise.all(promises).then((r) => {
       this.setarParceiro(r[0]);
       this.setarFormaPagto(r[1]);
       this.setarImagemLogoImpressao(r[3][0].Valor);
+      this.setarFraseEstoque(r[4][0].Valor);
+      this.setarFraseFrete(r[5][0].Valor);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.mensagemComponente.carregando = false;
@@ -346,6 +358,18 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.formaPagamento = r;
       this.novoOrcamentoService.atribuirOpcaoPagto(new Array<FormaPagtoCriacao>(), this.formaPagamento);
     }
+  }
+
+  setarImagemLogoImpressao(image: string) {
+    this.imagem = `assets/layout/images/${image}`;
+  }
+
+  setarFraseEstoque(frase: string) {
+    this.fraseEstoque = frase;
+  }
+
+  setarFraseFrete(frase: string) {
+    this.fraseFrete = frase;
   }
 
   clonarOrcamento() {
@@ -534,21 +558,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   CHECKBOX_SIZE = 6;
 
   FOOTER_MARGIN = this.SMALL_FONT_SIZE * 3;
-  PAYMENT_OPTIONS = {
-    cashPayment: {
-      paymentTitle: "À vista em depósito 6.973,05 ",
-      paymentLines: ["Depositar até 15/06/2023"],
-    },
-    installmentPayment: {
-      paymentTitle: "Parcelado com entrada 7.182,24",
-      paymentLines: [
-        "Entrada: Cartão (internet) no valor de 1.000,00",
-        "Demais Prestações: Cartão (internet) em 10 X de 618,22",
-        "Período entre Parcelas: 45 dias",
-      ],
-    },
-  };
-  DELIVERY_ALERTS = ["Mediante confirmação em estoque", "Frete grátis"];
+
+  DELIVERY_ALERTS = [];
 
   generatePDF(image) {
     // Captura data de geração do PDF
@@ -564,6 +575,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     currentPositionY = this.addBudgetInfo(doc, currentPositionY, this.novoOrcamentoService.orcamentoCotacaoDto);
 
     // Adicionar informações sobre a entrega
+    this.DELIVERY_ALERTS.push(this.fraseEstoque);
+    this.DELIVERY_ALERTS.push(this.fraseFrete);
+
     currentPositionY = this.addDeliveryInfo(
       doc,
       currentPositionY,
@@ -618,34 +632,20 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     );
   }
 
-  setarImagemLogoImpressao(image: string) {
-    this.imagem = `assets/layout/images/${image}`;
-  }
-
-  
   getImageSizeAndGeneratePDF() {
     // this.getImageSize2(this.imagem);
     let img = new Image();
     img.src = this.imagem;
-    debugger;
+
     this.getImageSize(this.imagem).then(({ source, height, width }) => {
       this.generatePDF({ source, height, width });
     });
   }
 
   // Função para pegar tamanho da imagem
-  getImageSize2(source) {
-    debugger;
-    const image = new Image();
-    image.onload = () => {
-      const height = image.height * 0.75;
-      const width = image.width * 0.75;
-    };
-    image.src = source;
-  }
-  getImageSize(source:string) {
+  getImageSize(source: string) {
     return new Promise((resolve) => {
-      debugger;
+
       const image = new Image();
       image.onload = () => {
         const height = image.height * 0.75;
@@ -763,22 +763,48 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const maxAlertWidth = doc.internal.pageSize.width / 2 - 4 * this.TAB_SIZE;
 
     deliveryAlerts.forEach((alert) => {
-      const alertLines = doc
-        .setFontSize(this.NORMAL_FONT_SIZE)
-        .setFont(undefined, "bold")
-        .splitTextToSize(alert, maxAlertWidth);
 
-      alertLines.forEach((line) => {
-        doc
-          .setTextColor("F00")
-          .text(
-            `${line}`,
-            doc.internal.pageSize.width - 2 * this.TAB_SIZE,
-            currentPositionY,
-            { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: 1.5 }
-          );
-        currentPositionY += this.NORMAL_FONT_SIZE;
-      });
+      if (alert.indexOf("style=") > -1) {
+        //é html
+        let parser = new DOMParser();
+        let html = parser.parseFromString(alert, 'text/html');
+        let parag = html.getElementsByTagName("p");
+        
+        const alertLines = doc
+          .setFontSize(this.NORMAL_FONT_SIZE)
+          .setFont(undefined, "bold")
+          .splitTextToSize(parag[0].innerText, maxAlertWidth);
+
+          alertLines.forEach((line) => {
+            doc
+              .setTextColor(parag[0].style.color)
+              .text(
+                `${line}`,
+                doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+                currentPositionY,
+                { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: Number.parseFloat(parag[0].style.lineHeight) }
+              );
+            currentPositionY += this.NORMAL_FONT_SIZE;
+          });
+      }
+      else {
+        const alertLines = doc
+          .setFontSize(this.NORMAL_FONT_SIZE)
+          .setFont(undefined, "bold")
+          .splitTextToSize(alert, maxAlertWidth);
+
+        alertLines.forEach((line) => {
+          doc
+            .setTextColor("F00")
+            .text(
+              `${line}`,
+              doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+              currentPositionY,
+              { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: 1.5 }
+            );
+          currentPositionY += this.NORMAL_FONT_SIZE;
+        });
+      }
     });
 
     doc.setTextColor("000").setFont(undefined, "normal");

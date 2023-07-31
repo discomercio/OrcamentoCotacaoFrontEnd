@@ -22,6 +22,7 @@ import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produ
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { Title } from '@angular/platform-browser';
 import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 @Component({
   selector: 'app-orcamento',
@@ -40,7 +41,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
     private readonly produtoCatalogoService: ProdutoCatalogoService,
-    private readonly lojaService: LojasService
+    private readonly lojaService: LojasService,
+    private readonly orcamentoService: OrcamentosService
   ) {
     super(telaDesktopService);
   }
@@ -61,13 +63,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   _lojaEstilo: lojaEstilo = new lojaEstilo();
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
-  esconderBotaoAprovacao:boolean = false;
+  esconderBotaoAprovacao: boolean;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
     this.imgUrl = this.produtoCatalogoService.imgUrl;
-
+    this.esconderBotaoAprovacao = false;
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
@@ -75,7 +77,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   ngAfterViewInit(): void {
-    this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
+    this.sub = this.activatedRoute.params.subscribe((param: any) => {
+      //  this.buscarOrcamentoPorGuid(param); 
+    });
   }
 
   ngOnDestroy() {
@@ -128,7 +132,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
-        
+
         if (r != null) {
           this.validado = true;
           this.orcamento = r;
@@ -154,18 +158,18 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           let validade = this.orcamento.validade;
           let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
-          
+
           if (this.orcamento.status == 1 && dataValidade < dataAtual) {
             this.orcamento.statusDescricao = "Expirado";
           }
 
-          if(this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual){
+          if (this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual) {
             this.esconderBotaoAprovacao = true;
           }
 
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
             if (!!r) {
-              this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;
+              this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
               this.publicHeader.corCabecalho = r.corCabecalho + " !important";
               this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
             }
@@ -190,6 +194,43 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
 
+          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, this.orcamento.loja, "publico")
+            .toPromise()
+            .then((r) => {
+              let valor = r[0].Valor;
+              let div = document.getElementById("estoque");
+              if (valor.indexOf("style=") > -1) {
+                let parser = new DOMParser();
+                let html = parser.parseFromString(valor, 'text/html');
+                let parag = html.getElementsByTagName("p");
+                div.appendChild(parag[0]);
+              }
+              else {
+                div.innerHTML = r[0].Valor;
+                div.classList.add("infoEstoque");
+              }
+            });
+
+          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, this.orcamento.loja, "publico")
+            .toPromise()
+            .then((r) => {
+              let valor = r[0].Valor;
+              let div = document.getElementById("frete");
+              while (div.firstChild) {
+                div.removeChild(div.firstChild);
+              };
+              if (valor.indexOf("style=") > -1) {
+                let parser = new DOMParser();
+                let html = parser.parseFromString(valor, 'text/html');
+                let parag = html.getElementsByTagName("p");
+                div.appendChild(parag[0]);
+              }
+              else {
+                div.innerHTML = r[0].Valor;
+                div.classList.add("infoEstoque");
+              }
+            });
+
           this.verificarImagens();
           this.autenticacaoService.setarToken(r.token);
           this.carregando = false;
@@ -201,18 +242,18 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  verificarImagens(){
+  verificarImagens() {
     this.orcamento.listaOpcoes.forEach(opcao => {
       opcao.listaProdutos.forEach(item => {
-        if(!!item.urlImagem) opcao.existeImagemProduto = true;
+        if (!!item.urlImagem) opcao.existeImagemProduto = true;
         else opcao.existeImagemProduto = false;
       });
     });
   }
 
-  verificarFormasPagtos(){
-    this.orcamento.listaOpcoes.forEach(opcao =>{
-      if(opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
+  verificarFormasPagtos() {
+    this.orcamento.listaOpcoes.forEach(opcao => {
+      if (opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
     })
   }
 
