@@ -10,6 +10,9 @@
                                 <button type="button" pButton icon="pi pi-fw pi-arrow-left" label="Voltar"
                                     (click)="voltar()"></button>
                                 &nbsp;
+                                <button type="button" pButton icon="pi pi-fw pi-arrow-left" label="PDF"
+                                    (click)="getImageSizeAndGeneratePDF()"></button>
+                                &nbsp;
                                 <button type="button" pButton icon="pi pi-bars" label="Opções"
                                     (click)="menu.toggle($event)"></button>
                                 <p-menu #menu [popup]="true" [model]="items"></p-menu>
@@ -488,6 +491,8 @@
         <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
         </app-mensageria>
     </div>
+
+    <img *ngIf="imagem" src="{{imagem}}">
 </div>
 
 
