@@ -807,7 +807,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       }
     });
 
-    doc.setTextColor("000").setFont(undefined, "normal");
+    doc.setTextColor("000").setFont('Helvetica', "normal");
 
     return (currentPositionY += this.NORMAL_FONT_SIZE + 30);
   }

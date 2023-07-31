@@ -221,12 +221,12 @@
                                                                     [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td *ngIf="telaDesktop">
                                                                 <p
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td
@@ -361,12 +361,12 @@
                                                                     [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td *ngIf="telaDesktop">
                                                                 <p
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td
