@@ -38,13 +38,6 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
   ]
 })
 export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements OnInit {
-
-  //#region dados
-  //dados sendo criados
-  criando = true;
-  prePedidoDto: PrePedidoDto;
-  //#endregion
-
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
@@ -60,9 +53,22 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     super(telaDesktopService);
   }
 
-  carregandoDto = true;
+  moedaUtils: MoedaUtils = new MoedaUtils();
+  criando:boolean = true;
+  prePedidoDto: PrePedidoDto;
+  carregandoDto:boolean;
+  permite_RA_Status:boolean = false;
+  carregandoProds:boolean = true;
+  produtoComboDto: ProdutoComboDto;
+  somaRA: string;
+  percentualVlPedidoRA: number;
+  public msgQtdePermitida: string = "";
+  public clicouAddProd: boolean = false;
+  public lstProdutoAdd: PrepedidoProdutoDtoPrepedido[] = [];
+  @ViewChild("dadosPagto", { static: false }) dadosPagto: DadosPagtoComponent;
+
   ngOnInit() {
-    debugger;
+    // debugger;
     //se tem um parâmetro no link, colocamos ele no serviço
     let numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
     if (!!numeroPrepedido) {
@@ -119,8 +125,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     // this.obtemPercentualVlPedidoRA();
   }
 
-  moedaUtils: MoedaUtils = new MoedaUtils();
-
   buscarPermissaoRaStatus(): Promise<number> {
     return this.prepedidoBuscarService.Obter_Permite_RA_Status().toPromise();
   }
@@ -169,7 +173,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     return ret + CpfCnpjUtils.cnpj_cpf_formata(this.prePedidoDto.DadosCliente.Cnpj_Cpf);
   }
 
-  permite_RA_Status = false;
   inscreverPermite_RA_Status() {
     this.prepedidoBuscarService.Obter_Permite_RA_Status().subscribe({
       next: (r) => {
@@ -182,8 +185,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     });
   }
 
-  carregandoProds = true;
-  produtoComboDto: ProdutoComboDto;
+  
   inscreverProdutoComboDto() {
     this.produtoService.listarProdutosCombo(this.prePedidoDto.DadosCliente.Loja, this.prePedidoDto.DadosCliente.Id).subscribe({
       next: (r: ProdutoComboDto) => {
@@ -242,7 +244,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     return item.Estoque;
   }
 
-  public msgQtdePermitida: string = "";
   qtdeVendaPermitida(i: PrepedidoProdutoDtoPrepedido): boolean {
     //busca o item na lista
     this.msgQtdePermitida = "";
@@ -280,23 +281,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     }
     return item.Alertas;
   }
-
-  // totalPedido(): number {
-  //   return this.prePedidoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
-  //     this.prePedidoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
-
-  // }
-
-  // totalPedidoRA(): number {
-  //   //afazer: calcular o total de Preco_Lista para somar apenas o total como é feito no total do pedido
-  //   return this.prePedidoDto.ValorTotalDestePedidoComRA = this.moedaUtils.formatarDecimal(
-  //     this.prePedidoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItemRA), 0));
-  // }
-
-  //componente de forma de pagamento, precisa do static false
-  @ViewChild("dadosPagto", { static: false }) dadosPagto: DadosPagtoComponent;
-
-  //#region digitacao de numeros
 
   digitouQte(i: PrepedidoProdutoDtoPrepedido) {
     if (i.Qtde <= 0) {
@@ -362,7 +346,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     i.Preco_NF = v;
   }
 
-  somaRA: string;
   somarRA(): string {
     let total = this.novoPrepedidoDadosService.totalPedido();
     let totalRa = this.novoPrepedidoDadosService.totalPedidoRA();
@@ -465,11 +448,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     }
     this.digitouQte(i);
   }
-  //#endregion
 
-  //#region navegação
-
-  percentualVlPedidoRA: number;
   obtemPercentualVlPedidoRA() {
     this.prepedidoBuscarService.ObtemPercentualVlPedidoRA().subscribe({
       next: (r: number) => {
@@ -582,7 +561,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     // });
   }
 
-  public clicouAddProd: boolean = false;
   verificarCargaProdutos(): boolean {
     if (this.carregandoProds) {
       //ainda não carregou, vamos esperar....
@@ -592,7 +570,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   }
 
   //criaremos uma lista para armazenar os itens pelo item principal, independente se é produto composto
-  public lstProdutoAdd: PrepedidoProdutoDtoPrepedido[] = [];
   mostrarProdutos(linha: PrepedidoProdutoDtoPrepedido) {
 
     if (!this.verificarCargaProdutos()) {
@@ -807,6 +784,4 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       }
     }
   }
-  //#endregion
-
 }
