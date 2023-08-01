@@ -47,7 +47,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     public readonly alertaService: AlertaService,
     public readonly produtoService: ProdutoService,
     public readonly dialog: MatDialog,
-    telaDesktopService: TelaDesktopService,
+    private readonly telaDesktopService: TelaDesktopService,
     private readonly sweetAlertService: SweetalertService
   ) {
     super(telaDesktopService);
@@ -58,7 +58,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   prePedidoDto: PrePedidoDto;
   carregandoDto:boolean;
   permite_RA_Status:boolean = false;
-  carregandoProds:boolean = true;
   produtoComboDto: ProdutoComboDto;
   somaRA: string;
   percentualVlPedidoRA: number;
@@ -106,7 +105,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       return;
     }
 
-    this.carregandoDto = false;
+    this.carregandoDto = true;
     this.criando = !this.prePedidoDto.NumeroPrePedido;
     let promises:any = [this.buscarPermissaoRaStatus(), this.buscarProdutos(), this.buscarPercentualVlPedidoRA()];
     Promise.all(promises).then((r: any) => {
@@ -119,10 +118,24 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.carregandoDto = false;
+      this.dadosPagto.verificarEmProcesso();
+      this.promise2();
     });
-    // this.inscreverPermite_RA_Status();
-    // this.inscreverProdutoComboDto();
-    // this.obtemPercentualVlPedidoRA();
+  }
+
+  promise2(){
+    this.carregandoDto = true;
+    let promises:any = [this.dadosPagto.buscarQtdeParcCartaoVisa(), this.dadosPagto.buscarFormaPagto()];
+    Promise.all(promises).then((r: any) => {
+      //setar retorno
+      this.dadosPagto.setarQtdeParcCartaoVisa(r[0]);
+      this.dadosPagto.setarFormaPagto(r[1]);
+    }).catch((e) => {
+      this.carregandoDto = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregandoDto = false;
+    });
   }
 
   buscarPermissaoRaStatus(): Promise<number> {
@@ -148,11 +161,9 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     if (!!r) {
       this.produtoComboDto = r;
       this.produtoComboDto.ProdutoDto = this.produtoComboDto.ProdutoDto.filter(el => el.Preco_lista && el.Preco_lista != 0);
-      this.carregandoProds = false;
       if (this.clicouAddProd)
         this.adicionarProduto();
     } else {
-      this.carregandoProds = false;
       this.alertaService.mostrarMensagem("Erro ao acessar a lista de produtos: nenhum produto retornado. Por favor, entre em contato com o suporte técnico.")
     }
   }
@@ -184,7 +195,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       error: (r) => this.alertaService.mostrarErroInternet(r)
     });
   }
-
   
   inscreverProdutoComboDto() {
     this.produtoService.listarProdutosCombo(this.prePedidoDto.DadosCliente.Loja, this.prePedidoDto.DadosCliente.Id).subscribe({
@@ -192,16 +202,13 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
         if (!!r) {
           this.produtoComboDto = r;
           this.produtoComboDto.ProdutoDto = this.produtoComboDto.ProdutoDto.filter(el => el.Preco_lista && el.Preco_lista != 0);
-          this.carregandoProds = false;
           if (this.clicouAddProd)
             this.adicionarProduto();
         } else {
-          this.carregandoProds = false;
           this.alertaService.mostrarMensagem("Erro ao acessar a lista de produtos: nenhum produto retornado. Por favor, entre em contato com o suporte técnico.")
         }
       },
       error: (r: ProdutoComboDto) => {
-        this.carregandoProds = false;
         this.alertaService.mostrarErroInternet(r);
       }
     });
@@ -562,7 +569,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   }
 
   verificarCargaProdutos(): boolean {
-    if (this.carregandoProds) {
+    if (this.carregandoDto) {
       //ainda não carregou, vamos esperar....
       return false;
     }

@@ -6,13 +6,12 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
  -->
 
 <section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
-	<header *ngIf="!prePedidoDto" [ngClass]="{'carregando': carregandoDto || carregandoProds}">Carregando dados</header>
-	<form style="display: contents;" *ngIf="prePedidoDto">
+	<form style="display: contents;" *ngIf="prePedidoDto" [ngClass]="{'carregando': carregandoDto }">
 		<header>
 			<ng-container *ngIf="criando; else tituloEditando">Criar Pedido</ng-container>
 			<ng-template #tituloEditando>Editar Pedido</ng-template>
 		</header>
-		<article class="indicadorlinha" [ngClass]="{'carregando': carregandoProds && clicouAddProd}">
+		<article class="indicadorlinha">
 			<div style="padding-bottom: 0.6em;"><strong>Cliente:</strong> {{cpfCnpj()}} -
 				{{prePedidoDto.DadosCliente.Nome}}</div>
 
@@ -23,14 +22,13 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 				neste caso, ele não permite criar o pré-pedido. Por enquanto, estamos mandando para o servidor.
 
 			-->
-
-
 			<div style="width: 100%; text-align: right; padding-bottom: 1em;">
 				<div>
 					<a mat-raised-button (click)="adicionarProduto()"
 						style="background-color: #007bff !important; color: white !important; font-size: 80%;">
 						<span class="pi pi-plus"></span> Adicionar produto
-					</a></div>
+					</a>
+				</div>
 			</div>
 			<!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
 			<!-- versão desktop -->
@@ -148,17 +146,13 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 				</tbody>
 
 			</table>
-
-
-
-
 			<!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
 			<!-- versão celular -->
 			<div *ngIf="!telaDesktop">
 				<div *ngFor="let i of prePedidoDto?.ListaProdutos" class="caixacel ">
 					<!-- sempre uma linha inteira -->
 					<div style="padding-bottom: 1em; text-align: center">
-						<strong>Produto</strong> 
+						<strong>Produto</strong>
 						{{i.Fabricante}}/{{i.Produto}} -
 						<span [innerHTML]="i.Descricao"></span>
 					</div>
@@ -241,9 +235,9 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
 			</div>
 			<div *ngIf="prePedidoDto?.ListaProdutos.length > 0" align="right">
 				<a mat-raised-button (click)="removerTodosProdutos()"
-				style="background-color: #007bff !important; color: white !important; font-size: 80%;">
-				<span class="pi pi-trash"></span>&nbsp; Excluir todos os produtos
-			</a>
+					style="background-color: #007bff !important; color: white !important; font-size: 80%;">
+					<span class="pi pi-trash"></span>&nbsp; Excluir todos os produtos
+				</a>
 			</div>
 			<div>
 				<app-dados-pagto #dadosPagto></app-dados-pagto>

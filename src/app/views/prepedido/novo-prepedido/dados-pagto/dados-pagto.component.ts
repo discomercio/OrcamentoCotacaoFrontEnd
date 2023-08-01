@@ -22,12 +22,6 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
   styleUrls: ['./dados-pagto.component.scss']
 })
 export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
-
-  public enumFormaPagto: EnumFormaPagto;
-  //para usar o enum 
-  public EnumFormaPagto = EnumFormaPagto;
-
-
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly location: Location,
@@ -41,21 +35,61 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     super(telaDesktopService, router, novoPrepedidoDadosService);
   }
 
-  mascaraNum() {
-    return [/\d/, /\d/];
+  public enumFormaPagto: EnumFormaPagto;
+  public EnumFormaPagto = EnumFormaPagto;
+  public opcaoPagtoAvista: string;
+  public opcaoPagtoParcUnica: string;
+  public opcaoPagtoParcComEntrada: string;
+  public opcaoPagtoParcCartaoInternet: string;
+  public opcaoPagtoParcCartaoMaquineta: string;
+  public meioPagtoEntrada: number;
+  public meioPagtoAVista: number;
+  public meioPagtoEntradaPrest: number;
+  public diasVenc: number;//pagto com entrada, dias para vencimento
+  public meioPagtoParcUnica: number;
+  public diasVencParcUnica: number;
+  public vlEntrada: number;
+  qtde: number;//qtde de parcelas
+  valor: number;//valor da parcela
+  lstNovoCoeficiente = new RecalcularComCoeficiente(this.prepedidoBuscarService, this.novoPrepedidoDadosService,
+    this.alertaService);
+  formaPagtoDto: FormaPagtoDto;
+  qtdeParcVisa: number;
+  coeficienteDto: CoeficienteDto[];
+  constantes = new Constantes();
+  lstMsg: string[] = [];
+  tipoFormaPagto: string = '';
+  coeficienteDtoNovo: CoeficienteDto[][];
+  formaPagtoNum: number;
+  enumTipoFP = EnumTipoPagto;
+  moedaUtils = new MoedaUtils();
+
+  ngOnInit() { }
+
+  buscarQtdeParcCartaoVisa(): Promise<number> {
+    return this.prepedidoBuscarService.buscarQtdeParcCartaoVisa().toPromise();
   }
 
-  ngOnInit() {
+  buscarFormaPagto(): Promise<FormaPagtoDto> {
+    return this.prepedidoBuscarService.buscarFormaPagto(this.prePedidoDto.DadosCliente.Tipo).toPromise();
+  }
 
-    this.buscarQtdeParcCartaoVisa();
-    this.verificarEmProcesso();
-    this.buscarFormaPagto();
-    // this.buscarCoeficiente(null);
-    // this.buscarNovoCoeficiente();
-    setTimeout(() => {
-      this.montaFormaPagtoExistente();
-    }, 300);
+  setarQtdeParcCartaoVisa(r: number) {
+    if (!!r) {
+      this.qtdeParcVisa = r;
+    }
+    else {
+      this.alertaService.mostrarMensagem("Erro ao carregar a quantidade de parcelas!");
+    }
+  }
 
+  setarFormaPagto(r: FormaPagtoDto) {
+    if (!!r) {
+      this.formaPagtoDto = r;
+    }
+    else {
+      this.alertaService.mostrarMensagem("Erro ao carregar a lista de forma de pagamentos")
+    }
   }
 
   voltar() {
@@ -85,22 +119,9 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     return false;
   }
 
-  public opcaoPagtoAvista: string;
-  public opcaoPagtoParcUnica: string;
-  public opcaoPagtoParcComEntrada: string;
-  public opcaoPagtoParcCartaoInternet: string;
-  public opcaoPagtoParcCartaoMaquineta: string;
-  public meioPagtoEntrada: number;
-  public meioPagtoAVista: number;
-  public meioPagtoEntradaPrest: number;
-  public diasVenc: number;//pagto com entrada, dias para vencimento
-  public meioPagtoParcUnica: number;
-  public diasVencParcUnica: number;
-  qtde: number;//qtde de parcelas
-  valor: number;//valor da parcela
-
-  lstNovoCoeficiente = new RecalcularComCoeficiente(this.prepedidoBuscarService, this.novoPrepedidoDadosService,
-    this.alertaService);
+  mascaraNum() {
+    return [/\d/, /\d/];
+  }
 
   atribuirFormaPagtoParaDto() {
     // this.prePedidoDto.FormaPagtoCriacao = new FormaPagtoCriacaoDto(); 
@@ -322,56 +343,6 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     }
   }
 
-  formaPagtoDto: FormaPagtoDto;
-  buscarFormaPagto() {
-    return this.prepedidoBuscarService.buscarFormaPagto(this.prePedidoDto.DadosCliente.Tipo).subscribe({
-      next: (r: FormaPagtoDto) => {
-        if (!!r) {
-          this.formaPagtoDto = r;
-        }
-        else {
-          this.alertaService.mostrarMensagem("Erro ao carregar a lista de forma de pagamentos")
-        }
-      },
-      error: (r: FormaPagtoDto) => this.alertaService.mostrarErroInternet(r)
-    })
-  }
-
-  coeficienteDto: CoeficienteDto[];
-  buscarCoeficiente(callback: () => void) {
-    return this.prepedidoBuscarService.buscarCoeficiente(this.prePedidoDto.ListaProdutos).subscribe({
-      next: (r: CoeficienteDto[]) => {
-        if (!!r) {
-          this.coeficienteDto = r;
-          if (callback)
-            callback();
-        }
-        else {
-          this.alertaService.mostrarMensagem("Erro ao carregar a lista de coeficientes dos fabricantes")
-        }
-      },
-      error: (r: CoeficienteDto) => this.alertaService.mostrarErroInternet(r)
-    })
-  }
-
-  // foi solicitado que a qtde de parcelas disponível será baseada na
-  // qtde de parcelas disponível no cartão Visa(PRAZO_LOJA)
-  //então faremos a busca pela API
-  qtdeParcVisa: number;
-  public buscarQtdeParcCartaoVisa(): void {
-    this.prepedidoBuscarService.buscarQtdeParcCartaoVisa().subscribe({
-      next: (r: number) => {
-        if (!!r) {
-          this.qtdeParcVisa = r;
-        }
-        else {
-          this.alertaService.mostrarMensagem("Erro ao carregar a quantidade de parcelas!");
-        }
-      },
-      error: (r: number) => this.alertaService.mostrarErroInternet(r)
-    })
-  }
-
   //chamado quando algum item do prepedido for alterado
   //aqui é feito a limpeza do select da forma de pagamento
   public prepedidoAlterado() {
@@ -383,10 +354,6 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     this.opcaoPagtoParcUnica = null;
   }
 
-  constantes = new Constantes();
-  lstMsg: string[] = [];
-  tipoFormaPagto: string = '';
-  coeficienteDtoNovo: CoeficienteDto[][];
   recalcularValoresComCoeficiente(enumFP: number): void {
     //na mudança da forma de pagto iremos zerar todos os campos
     this.zerarTodosCampos();
@@ -397,6 +364,7 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
       //aisamos que está carregando...
       this.lstMsg = new Array();
       this.lstMsg.push("Carregando dados....");
+      
       this.buscarNovoCoeficiente((coefciente: CoeficienteDto[][]) => {
         this.coeficienteDtoNovo = coefciente;
         this.lstMsg = new Array();
@@ -414,7 +382,6 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     }
   }
 
-  formaPagtoNum: number;
   buscarNovoCoeficiente(callback: (coefciente: CoeficienteDto[][]) => void): void {
     this.lstNovoCoeficiente.buscarCoeficienteFornecedores(callback);
   }
@@ -429,7 +396,7 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
       this.qtde);
   }
 
-  public zerarTodosCampos(): void {
+  zerarTodosCampos(): void {
     this.meioPagtoEntrada = null;
     this.opcaoPagtoAvista = "";
     this.meioPagtoAVista = null;
@@ -443,7 +410,6 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     this.opcaoPagtoParcCartaoMaquineta = "";
   }
 
-  enumTipoFP = EnumTipoPagto;
   verificaEnum(enumFP: number) {
     if (enumFP == EnumFormaPagto.Avista)
       return this.enumTipoFP.Avista.toString();
@@ -459,10 +425,6 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
       return this.enumTipoFP.ParcCartaoMaquineta.toString();
   }
 
-  public vlEntrada: number;
-  moedaUtils = new MoedaUtils();
-
-  // digitouVlEntrada
   digitouVlEntrada(e: Event) {
 
     let valor = ((e.target) as HTMLInputElement).value;
@@ -567,6 +529,5 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
 
     return retorno;
   }
-
 }
 
