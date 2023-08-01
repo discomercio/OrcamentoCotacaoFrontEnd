@@ -12,6 +12,7 @@ import { PrepedidoBuscarService } from 'src/app/service/prepedido/prepedido-busc
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/prepedido/ClienteCadastro/EnderecoEntregaDTOClienteCadastro';
 import { Constantes } from 'src/app/dto/prepedido/Constantes';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 
 @Component({
@@ -30,7 +31,8 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
     public readonly dialog: MatDialog,
     telaDesktopService: TelaDesktopService,
     public readonly prepedidoBuscarService: PrepedidoBuscarService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private readonly sweetAlertService: SweetalertService
   ) {
     super(telaDesktopService, router, novoPrepedidoDadosService);
   }
@@ -88,7 +90,7 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
           }
           else {
             this.carregando = false;
-            this.alertaService.mostrarMensagem("Pedido criado com sucesso.");
+            this.sweetAlertService.sucesso("Pedido criado com sucesso.");
             localStorage.setItem('ultima_url', document.URL);
             this.router.navigate(["prepedido/detalhes/" + r[0]]);
           }
