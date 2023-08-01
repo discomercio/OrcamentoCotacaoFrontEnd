@@ -19,7 +19,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   constructor(private readonly alertaService: AlertaService,
     public readonly cepService: CepsService,
     public readonly dialog: MatDialog,
-    telaDesktopService: TelaDesktopService
+    public readonly telaDesktopService: TelaDesktopService
   ) {
     super(telaDesktopService);
   }
@@ -36,9 +36,6 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   required: boolean;
-  //indicador que estamos esperando dados
-  public carregando = false;
-
   //campos sendo editados
   public Endereco: string;
   public Numero: string;
@@ -83,7 +80,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
 
   //saiu do campo de CEP, vamos carregar o endereco
   saiuCep() {
-
+    
     //se vazio, não damos nenhuma mensagem
     if (this.Cep == "" || this.Cep == 'undefined') {
       //nao avisamos
@@ -105,11 +102,11 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
     if(this.Cep != undefined && this.Cep != ""){
       this.zerarCamposEndEntrega();
       //vamos fazer a busca
-      this.carregando = true;
+      this.telaDesktopService.carregando = true;
   
       this.cepService.buscarCep(this.Cep, null, null, null).toPromise()
         .then((r) => {
-          this.carregando = false;
+          this.telaDesktopService.carregando = false;
   
           if (!r || r.length !== 1) {
             this.cep_retorno = "";
@@ -146,23 +143,16 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
           //deu erro na busca
           //ou não achou nada...
           
-          this.carregando = false;
+          this.telaDesktopService.carregando = false;
           this.alertaService.mostrarErroInternet(r);
         });
     }
-    
-
-
-
-
   }
 
   enterCep(event: Event) {
     document.getElementById("numero").focus();
     event.cancelBubble = true;
     event.preventDefault();
-    // event.srcElement
-
   }
 
   //para acessar a caixa de diálogo

@@ -1,37 +1,40 @@
 <section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
     <form style="display: contents;" (keydown.enter)="continuar()">
-        <header>
-            Confirmar Cliente
-        </header>
-        <article id="article-confirmar-cliente">
-            <!-- mostramos o endereço se não estiver na fase 2
-            quer dizer: no desktop não mostramo so endereço aqui, só no app-confirmar-endereco
-            no celular, mostramos o endereço aqui pq o app-confirmar-endereco não está visivel -->
-            <app-cliente-corpo [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="false"
-                [clienteCadastroDto]="clienteCadastroDto"
-                [enderecoCadastralClientePrepedidoDto]="endCadastralClientePrepedidoDto" [editarIcms]="true"
-                [hidden]="!fase1" [mostrarEndereco]="!fase2" #clienteCorpo [dadosCadastrais]="true">
-            </app-cliente-corpo>
+        <div [ngClass]="{'carregando': telaDesktopService.carregando}">
+            <header>
+                Confirmar Cliente
+            </header>
+            <article id="article-confirmar-cliente">
+                <!-- mostramos o endereço se não estiver na fase 2
+                quer dizer: no desktop não mostramo so endereço aqui, só no app-confirmar-endereco
+                no celular, mostramos o endereço aqui pq o app-confirmar-endereco não está visivel -->
+                <app-cliente-corpo [dadosClienteCadastroDto]="dadosClienteCadastroDto" [cadastrando]="false"
+                    [clienteCadastroDto]="clienteCadastroDto"
+                    [enderecoCadastralClientePrepedidoDto]="endCadastralClientePrepedidoDto" [editarIcms]="true"
+                    [hidden]="!fase1" [mostrarEndereco]="!fase2" #clienteCorpo [dadosCadastrais]="true">
+                </app-cliente-corpo>
 
-            <app-confirmar-endereco [tipoPf]="dadosClienteCadastroDto && dadosClienteCadastroDto.Tipo == 'PF'"
-                *ngIf="fase2" [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro"
-                #confirmarEndereco>
-            </app-confirmar-endereco>
-        </article>
-        <footer>
+                <app-confirmar-endereco [tipoPf]="dadosClienteCadastroDto && dadosClienteCadastroDto.Tipo == 'PF'"
+                    *ngIf="fase2" [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro"
+                    #confirmarEndereco>
+                </app-confirmar-endereco>
+            </article>
+            <footer>
 
-            <a mat-raised-button color="accent" (click)="voltar()"
-                style="font-size: 80%;     background-color: #007bff !important;color: white !important;">
-                <span class="pi pi-arrow-circle-left"> </span> Voltar
-            </a>
-            <!-- nao temos o botão salvar porque ele salva automaticamente
-        <button mat-raised-button color="accent" (click)="salvar(false)" [disabled]="!salvarAtivo()" >
-            <mat-icon>save</mat-icon> Salvar
-        </button> -->
-            <button mat-raised-button color="accent" (click)="continuar()" autofocus id="idcontinuar"
-                style="font-size: 80%" [disabled]="desabilita" style="font-size:80%;background-color: #007bff !important;color: white !important;">
-                <span class="pi pi-arrow-circle-right"> </span> Avançar
-            </button>
-        </footer>
+                <a mat-raised-button color="accent" (click)="voltar()"
+                    style="font-size: 80%;     background-color: #007bff !important;color: white !important;">
+                    <span class="pi pi-arrow-circle-left"> </span> Voltar
+                </a>
+                <!-- nao temos o botão salvar porque ele salva automaticamente
+            <button mat-raised-button color="accent" (click)="salvar(false)" [disabled]="!salvarAtivo()" >
+                <mat-icon>save</mat-icon> Salvar
+            </button> -->
+                <button mat-raised-button color="accent" (click)="continuar()" autofocus id="idcontinuar"
+                    style="font-size: 80%" [disabled]="desabilita"
+                    style="font-size:80%;background-color: #007bff !important;color: white !important;">
+                    <span class="pi pi-arrow-circle-right"> </span> Avançar
+                </button>
+            </footer>
+        </div>
     </form>
 </section>
