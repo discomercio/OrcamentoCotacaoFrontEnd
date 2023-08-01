@@ -62,6 +62,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
 
   carregandoDto = true;
   ngOnInit() {
+    debugger;
     //se tem um parâmetro no link, colocamos ele no serviço
     let numeroPrepedido = this.activatedRoute.snapshot.params.numeroPrepedido;
     if (!!numeroPrepedido) {
@@ -101,12 +102,62 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
 
     this.carregandoDto = false;
     this.criando = !this.prePedidoDto.NumeroPrePedido;
-    this.inscreverPermite_RA_Status();
-    this.inscreverProdutoComboDto();
-    this.obtemPercentualVlPedidoRA();
+    let promises:any = [this.buscarPermissaoRaStatus(), this.buscarProdutos(), this.buscarPercentualVlPedidoRA()];
+    Promise.all(promises).then((r: any) => {
+      //setar retorno
+      this.setarPermissaoRaStatus(r[0]);
+      this.setarProdutos(r[1]);
+      this.setarPercentualVlPedidoRA(r[2]);
+    }).catch((e) => {
+      this.carregandoDto = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregandoDto = false;
+    });
+    // this.inscreverPermite_RA_Status();
+    // this.inscreverProdutoComboDto();
+    // this.obtemPercentualVlPedidoRA();
   }
 
   moedaUtils: MoedaUtils = new MoedaUtils();
+
+  buscarPermissaoRaStatus(): Promise<number> {
+    return this.prepedidoBuscarService.Obter_Permite_RA_Status().toPromise();
+  }
+
+  buscarProdutos(): Promise<ProdutoComboDto> {
+    return this.produtoService.listarProdutosCombo(this.prePedidoDto.DadosCliente.Loja, this.prePedidoDto.DadosCliente.Id).toPromise();
+  }
+
+  buscarPercentualVlPedidoRA(): Promise<number> {
+    return this.prepedidoBuscarService.ObtemPercentualVlPedidoRA().toPromise();
+  }
+
+  setarPermissaoRaStatus(r: number) {
+    if (r != 0) {
+      this.permite_RA_Status = true;
+      this.novoPrepedidoDadosService.prePedidoDto.PermiteRAStatus = 1;
+    }
+  }
+
+  setarProdutos(r: ProdutoComboDto) {
+    if (!!r) {
+      this.produtoComboDto = r;
+      this.produtoComboDto.ProdutoDto = this.produtoComboDto.ProdutoDto.filter(el => el.Preco_lista && el.Preco_lista != 0);
+      this.carregandoProds = false;
+      if (this.clicouAddProd)
+        this.adicionarProduto();
+    } else {
+      this.carregandoProds = false;
+      this.alertaService.mostrarMensagem("Erro ao acessar a lista de produtos: nenhum produto retornado. Por favor, entre em contato com o suporte técnico.")
+    }
+  }
+
+  setarPercentualVlPedidoRA(r: number) {
+    if (!!r) {
+      this.percentualVlPedidoRA = r;
+    }
+  }
 
   cpfCnpj() {
     let ret = "CPF: ";
@@ -338,7 +389,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/\D/g, '');
     v = (v / 100).toFixed(2) + '';
-    
+
     i.TotalItem = i.Qtde * i.Preco_Lista;
     i.VlTotalItem = i.Qtde * i.Preco_Lista;
 
@@ -356,7 +407,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   }
 
   digitouDesc(e: Event, i: PrepedidoProdutoDtoPrepedido) {
-    
+
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
     v = (v / 100).toFixed(2) + '';
@@ -381,15 +432,15 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   }
 
   digitouDescValor(i: PrepedidoProdutoDtoPrepedido, v: string) {
-    
+
     //se não alteraram nada, ignoramos
-    if (i.Desc_Dado === Number.parseFloat(v)){
-      if(i.Desc_Dado == 0){
+    if (i.Desc_Dado === Number.parseFloat(v)) {
+      if (i.Desc_Dado == 0) {
         i.Desc_Dado = 0;
       }
       return;
     }
-      
+
 
     i.Desc_Dado = Number.parseFloat(v);
     //não deixa números negativos e nem maior que 100
@@ -511,9 +562,9 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     });
   }
 
-  removerTodosProdutos(){
-    this.sweetAlertService.dialogo("", "Tem certeza que deseja remover todos os itens do pedido?").subscribe((result)=>{
-      if(result){
+  removerTodosProdutos() {
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja remover todos os itens do pedido?").subscribe((result) => {
+      if (result) {
         this.prePedidoDto.ListaProdutos = new Array();
         this.dadosPagto.prepedidoAlterado();
       }
