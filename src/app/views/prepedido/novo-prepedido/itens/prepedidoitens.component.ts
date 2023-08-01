@@ -56,7 +56,6 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   moedaUtils: MoedaUtils = new MoedaUtils();
   criando:boolean = true;
   prePedidoDto: PrePedidoDto;
-  carregandoDto:boolean;
   permite_RA_Status:boolean = false;
   produtoComboDto: ProdutoComboDto;
   somaRA: string;
@@ -83,7 +82,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
               return;
             }
             //detalhes do prepedido
-            this.carregandoDto = false;
+            this.telaDesktopService.carregando = false;
             this.prePedidoDto = r;
             this.novoPrepedidoDadosService.setar(r);
             this.criando = !this.prePedidoDto.NumeroPrePedido;
@@ -105,7 +104,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       return;
     }
 
-    this.carregandoDto = true;
+    this.telaDesktopService.carregando = true;
     this.criando = !this.prePedidoDto.NumeroPrePedido;
     let promises:any = [this.buscarPermissaoRaStatus(), this.buscarProdutos(), this.buscarPercentualVlPedidoRA()];
     Promise.all(promises).then((r: any) => {
@@ -114,27 +113,27 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
       this.setarProdutos(r[1]);
       this.setarPercentualVlPedidoRA(r[2]);
     }).catch((e) => {
-      this.carregandoDto = false;
+      this.telaDesktopService.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.carregandoDto = false;
+      this.telaDesktopService.carregando = false;
       this.dadosPagto.verificarEmProcesso();
       this.promise2();
     });
   }
 
   promise2(){
-    this.carregandoDto = true;
+    this.telaDesktopService.carregando = true;
     let promises:any = [this.dadosPagto.buscarQtdeParcCartaoVisa(), this.dadosPagto.buscarFormaPagto()];
     Promise.all(promises).then((r: any) => {
       //setar retorno
       this.dadosPagto.setarQtdeParcCartaoVisa(r[0]);
       this.dadosPagto.setarFormaPagto(r[1]);
     }).catch((e) => {
-      this.carregandoDto = false;
+      this.telaDesktopService.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.carregandoDto = false;
+      this.telaDesktopService.carregando = false;
     });
   }
 
@@ -569,7 +568,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   }
 
   verificarCargaProdutos(): boolean {
-    if (this.carregandoDto) {
+    if (this.telaDesktopService.carregando) {
       //ainda não carregou, vamos esperar....
       return false;
     }

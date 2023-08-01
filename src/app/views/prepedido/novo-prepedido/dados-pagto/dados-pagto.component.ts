@@ -29,7 +29,7 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
     novoPrepedidoDadosService: NovoPrepedidoDadosService,
     public readonly alertaService: AlertaService,
     public readonly dialog: MatDialog,
-    telaDesktopService: TelaDesktopService,
+    private readonly telaDesktopService: TelaDesktopService,
     public readonly prepedidoBuscarService: PrepedidoBuscarService
   ) {
     super(telaDesktopService, router, novoPrepedidoDadosService);
@@ -364,8 +364,9 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
       //aisamos que está carregando...
       this.lstMsg = new Array();
       this.lstMsg.push("Carregando dados....");
-      
+      this.telaDesktopService.carregando = true;
       this.buscarNovoCoeficiente((coefciente: CoeficienteDto[][]) => {
+        
         this.coeficienteDtoNovo = coefciente;
         this.lstMsg = new Array();
         this.lstMsg = this.lstNovoCoeficiente.CalcularTotalProdutosComCoeficiente(this.formaPagtoNum, this.coeficienteDtoNovo,
@@ -378,6 +379,8 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
           this.lstNovoCoeficiente.RecalcularListaProdutos(this.formaPagtoNum, this.coeficienteDtoNovo, this.tipoFormaPagto, 1);
           this.opcaoPagtoParcUnica = this.lstMsg[0];
         }
+
+        this.telaDesktopService.carregando = false;
       });
     }
   }

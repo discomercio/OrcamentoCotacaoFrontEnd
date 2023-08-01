@@ -6,7 +6,7 @@ http://discomercio.com.br/homologacao/orcamento/OrcamentoNovoConsiste.asp para l
  -->
 
 <section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop}">
-	<form style="display: contents;" *ngIf="prePedidoDto" [ngClass]="{'carregando': carregandoDto }">
+	<form style="display: contents;" *ngIf="prePedidoDto" [ngClass]="{'carregando': telaDesktopService.carregando }">
 		<header>
 			<ng-container *ngIf="criando; else tituloEditando">Criar Pedido</ng-container>
 			<ng-template #tituloEditando>Editar Pedido</ng-template>

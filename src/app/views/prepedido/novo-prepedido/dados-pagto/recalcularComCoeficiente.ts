@@ -35,7 +35,6 @@ export class RecalcularComCoeficiente {
 
     let f: string[] = new Array();
 
-    debugger;
     this.prepedidoBuscarService.buscarCoeficienteFornecedores(fornecDistinct).subscribe({
       next: (r: any[]) => {
         if (!!r) {
