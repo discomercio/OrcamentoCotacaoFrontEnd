@@ -643,13 +643,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   // Função para pegar tamanho da imagem
-  getImageSize(source: string) {
+  getImageSize(source: string):any {
     return new Promise((resolve) => {
 
       const image = new Image();
       image.onload = () => {
-        const height = image.height * 0.75;
-        const width = image.width * 0.75;
+        const height = image.height * 0.25;
+        const width = image.width * 0.25;
 
         resolve({ source, height, width });
       };
