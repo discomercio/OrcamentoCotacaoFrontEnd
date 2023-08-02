@@ -16,8 +16,9 @@ export class AppTopBarService {
     }
     dataUtils: DataUtils = new DataUtils();
     sininho: boolean;
+    iniciouSininho:boolean;
     public listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
-    public qtdMensagem: any;
+    public qtdMensagem: number;
     interval: any = 0;
 
     ligarInterval() {
@@ -60,7 +61,9 @@ export class AppTopBarService {
                 this.qtdMensagem = this.listaMensagemPendente.listaQtdeMensagemPendente.reduce((soma, item) =>
                     soma + item.qtde, 0);
             }
-            else this.qtdMensagem = 0;
+            else {
+                this.qtdMensagem = 0;
+            }
 
         }).catch((e) => {
             this.limparInterval();

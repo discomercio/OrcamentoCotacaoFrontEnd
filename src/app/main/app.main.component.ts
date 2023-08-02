@@ -54,7 +54,8 @@ export class AppMainComponent {
 
         this.buscarVersao();
 
-        if (this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+        if (!this.appTopBarService.iniciouSininho && this.autenticacaoService.authEstaLogado()) {
+            this.appTopBarService.iniciouSininho = true;
             this.appTopBarService.obterQuantidadeMensagemPendente();
             this.appTopBarService.ligarInterval();
         }
@@ -82,20 +83,19 @@ export class AppMainComponent {
             this.configActive = false;
         }
 
-        this.configClick = false;
-        this.topbarItemClick = false;
-        this.menuClick = false;
-
-        this.buscarVersao();
-// debugger;
-
-        if (!this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
-            console.log(`Sininho clique layout: ${this.appTopBarService.sininho}`);
+        if (!this.menuClick && !this.configClick && !this.topbarItemClick &&
+            !this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
             sessionStorage.setItem("sininho", "S");
             this.appTopBarService.sininho = true;
             this.appTopBarService.obterQuantidadeMensagemPendente();
             this.appTopBarService.ligarInterval();
         }
+
+        this.configClick = false;
+        this.topbarItemClick = false;
+        this.menuClick = false;
+
+        this.buscarVersao();
     }
 
     buscarVersao() {

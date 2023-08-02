@@ -36,7 +36,6 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
   public nomeUsuario: string;
 
   parametro: string;
-  qtdMensagem: any;
   public form: FormGroup;
   lojas: Array<DropDownItem> = [];
   filtro: Filtro = new Filtro();
@@ -150,7 +149,7 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(){
-    this.appTopBarService.sininho = false;
+    // this.appTopBarService.sininho = false;
     this.appTopBarService.qtdMensagem = 0;
   }
 }
