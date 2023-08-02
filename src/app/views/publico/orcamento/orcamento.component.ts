@@ -61,7 +61,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   _lojaEstilo: lojaEstilo = new lojaEstilo();
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
-  esconderBotaoAprovacao:boolean = false;
+  esconderBotaoAprovacao: boolean = false;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
@@ -128,7 +128,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (param.guid.length >= 32) {
       this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
-        
+
         if (r != null) {
           this.validado = true;
           this.orcamento = r;
@@ -154,18 +154,18 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
           let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
           let validade = this.orcamento.validade;
           let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
-          
+
           if (this.orcamento.status == 1 && dataValidade < dataAtual) {
             this.orcamento.statusDescricao = "Expirado";
           }
 
-          if(this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual){
+          if (this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual) {
             this.esconderBotaoAprovacao = true;
           }
 
           this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
             if (!!r) {
-              this.publicHeader.imagemLogotipo ='assets/layout/images/' + r.imagemLogotipo;
+              this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
               this.publicHeader.corCabecalho = r.corCabecalho + " !important";
               this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
             }
@@ -201,18 +201,33 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  verificarImagens(){
-    this.orcamento.listaOpcoes.forEach(opcao => {
-      opcao.listaProdutos.forEach(item => {
-        if(!!item.urlImagem) opcao.existeImagemProduto = true;
-        else opcao.existeImagemProduto = false;
-      });
-    });
+  verificarImagens() {
+    for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
+      this.orcamento.listaOpcoes[i].existeImagemProduto = false;
+      for (let y = 0; y < this.orcamento.listaOpcoes[i].listaProdutos.length; y++) {
+        if (!!this.orcamento.listaOpcoes[i].listaProdutos[y].urlImagem) {
+          this.orcamento.listaOpcoes[i].existeImagemProduto = true;
+          break;
+        }
+      }
+    }
+    // this.orcamento.listaOpcoes.forEach(opcao => {
+    //   if(temProduto) return;
+    //   opcao.listaProdutos.forEach(item => {
+    //     debugger;
+    //     if(!!item.urlImagem) {
+    //       temProduto = true;
+    //       opcao.existeImagemProduto = true;
+    //       break;
+    //     }
+    //     else opcao.existeImagemProduto = false;
+    //   });
+    // });
   }
 
-  verificarFormasPagtos(){
-    this.orcamento.listaOpcoes.forEach(opcao =>{
-      if(opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
+  verificarFormasPagtos() {
+    this.orcamento.listaOpcoes.forEach(opcao => {
+      if (opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
     })
   }
 
