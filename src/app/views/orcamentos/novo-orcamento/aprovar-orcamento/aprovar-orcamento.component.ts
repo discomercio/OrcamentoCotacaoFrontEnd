@@ -444,9 +444,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (!this.opcaoPagto) {
     }
     this.sweetalertService.aviso("Funcionalidade não implementada.");
-    /*this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
-
-    });*/
   }
 
   prorrogar() {
@@ -575,6 +572,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     currentPositionY = this.addBudgetInfo(doc, currentPositionY, this.novoOrcamentoService.orcamentoCotacaoDto);
 
     // Adicionar informações sobre a entrega
+    this.DELIVERY_ALERTS = [];
     this.DELIVERY_ALERTS.push(this.fraseEstoque);
     this.DELIVERY_ALERTS.push(this.fraseFrete);
 
@@ -715,7 +713,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     currentPositionY += this.NORMAL_FONT_SIZE;
 
-    const clientDescriptionText = `Aos cuidados cuidados cuidados cuidados cuidados cuidados cuidados cuidados cuidados de ${orcamento.clienteOrcamentoCotacaoDto.nomeCliente
+    const clientDescriptionText = `Aos cuidados de ${orcamento.clienteOrcamentoCotacaoDto.nomeCliente
       }${orcamento.clienteOrcamentoCotacaoDto.nomeObra ? ` (${orcamento.clienteOrcamentoCotacaoDto.nomeObra})` : ""}`;
 
     const maxClientDescriptionWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE;
