@@ -243,12 +243,27 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   verificarImagens() {
-    this.orcamento.listaOpcoes.forEach(opcao => {
-      opcao.listaProdutos.forEach(item => {
-        if (!!item.urlImagem) opcao.existeImagemProduto = true;
-        else opcao.existeImagemProduto = false;
-      });
-    });
+    for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
+      this.orcamento.listaOpcoes[i].existeImagemProduto = false;
+      for (let y = 0; y < this.orcamento.listaOpcoes[i].listaProdutos.length; y++) {
+        if (!!this.orcamento.listaOpcoes[i].listaProdutos[y].urlImagem) {
+          this.orcamento.listaOpcoes[i].existeImagemProduto = true;
+          break;
+        }
+      }
+    }
+    // this.orcamento.listaOpcoes.forEach(opcao => {
+    //   if(temProduto) return;
+    //   opcao.listaProdutos.forEach(item => {
+    //     debugger;
+    //     if(!!item.urlImagem) {
+    //       temProduto = true;
+    //       opcao.existeImagemProduto = true;
+    //       break;
+    //     }
+    //     else opcao.existeImagemProduto = false;
+    //   });
+    // });
   }
 
   verificarFormasPagtos() {

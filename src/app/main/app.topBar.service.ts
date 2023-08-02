@@ -1,32 +1,31 @@
 import { Injectable } from "@angular/core";
 import { ListaQuantidadeMensagemPendenteResponse } from "../dto/mensageria/lista-quantidade-mensagem-pendente-response";
-import { AutenticacaoService } from "../service/autenticacao/autenticacao.service";
 import { MensageriaService } from "../service/mensageria/mensageria.service";
 import { AlertaService } from "../components/alert-dialog/alerta.service";
 import { DataUtils } from "../utilities/formatarString/data-utils";
-import { SistemaService } from "../service/sistema/sistema.service";
 
 @Injectable({
     providedIn: 'root'
 })
-
 export class AppTopBarService {
     constructor(
         private readonly mensageriaService: MensageriaService,
         private readonly alertaService: AlertaService,
-        private readonly sistemaService: SistemaService
     ) {
-
+        this.sininho = sessionStorage.getItem("sininho") == "S" ? true : false;
     }
     dataUtils: DataUtils = new DataUtils();
-    sininho: boolean = false;
+    sininho: boolean;
     public listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
-    qtdMensagem: any;
+    public qtdMensagem: any;
     interval: any = 0;
 
     ligarInterval() {
-
-        this.sistemaService.retornarVersao().toPromise().then((r) => {
+        
+        if(this.interval > 0){
+            return;
+        } 
+        this.mensageriaService.appSettingsService.retornarVersao().toPromise().then((r) => {
 
             let temporizador = r.temporizadorSininho;
             this.interval = setInterval(() => {
@@ -47,6 +46,7 @@ export class AppTopBarService {
             this.limparInterval();
             return;
         }
+        console.log("interval: " + this.interval);
         console.log(this.dataUtils.formata_data_e_talvez_hora_hhmmss(new Date()));
 
         this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
@@ -73,7 +73,9 @@ export class AppTopBarService {
 
     limparInterval() {
         clearInterval(this.interval);
+        console.log("desligando interval: " + this.interval);
         this.interval = 0;
         this.sininho = false;
+        sessionStorage.setItem("sininho", "N");
     }
 }
