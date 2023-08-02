@@ -14,6 +14,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { ValidacaoCustomizadaService } from 'src/app/utilities/validacao-customizada/validacao-customizada.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
 
 @Component({
   selector: 'app-usuario-edicao',
@@ -50,7 +51,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   tipo: UsuarioTipo = 'todos';
   usuarioInterno: boolean;
   parceiroSelecionado: string = 'Selecione';
-  carregando: boolean = false;
+  carregando: boolean;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
@@ -59,7 +60,7 @@ export class UsuarioEdicaoComponent implements OnInit {
       return;
     }
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
-    
+
     this.apelido = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
 
@@ -71,7 +72,7 @@ export class UsuarioEdicaoComponent implements OnInit {
     if (this.apelido.toLowerCase() != "")
       if (!!this.apelido) {
         if (this.apelido.toLowerCase() != "novo") {
-          
+
           this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
             if (!!r) {
               this.usuario = r;
@@ -94,7 +95,7 @@ export class UsuarioEdicaoComponent implements OnInit {
               this.carregando = false;
             }
           }).catch((e) => {
-            
+
             this.carregando = false;
             this.alertaService.mostrarErroInternet(e);
           });
@@ -104,40 +105,54 @@ export class UsuarioEdicaoComponent implements OnInit {
     // usuário interno
     if (this.autenticacaoService._tipoUsuario == 1) {
       this.usuarioInterno = true;
-      if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
-        this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-          if (r != null) {
-            var indice = 1;
-            while (indice < r.length) {
-              if (r[indice].nome != this.parceiroSelecionado) {
-                this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
-              }
-              indice++;
-            }
-          }
-        }).catch((e) => {
-          this.carregando = false;
-          this.alertaService.mostrarErroInternet(e);
-        })
-      } else {
-        this.orcamentistaIndicadorService.buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
-          if (r != null) {
-            var indice = 1;
-            while (indice < r.length) {
-              this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
-              indice++;
-            }
-          }
-        }).catch((e) => {
-          this.carregando = false;
-          this.alertaService.mostrarErroInternet(e);
-        })
-      }
+
+      let promise: any = [this.buscarParceiros()];
+      Promise.all(promise).then((r: any) => {
+        this.setarParceiros(r[0]);
+      }).catch((e) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      }).finally(() => {
+        this.carregando = false;
+      });
     } else {
+      this.carregando = false;
       this.usuarioInterno = false;
       this.form.controls.parceiro.setValue(this.autenticacaoService._parceiro);
     }
-    this.carregando = false;
+  }
+
+  buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
+    if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+      return this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise();
+    }
+    else {
+      return this.orcamentistaIndicadorService
+        .buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise();
+    }
+  }
+
+  setarParceiros(r: OrcamentistaIndicadorDto[]) {
+    if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+      if (r != null) {
+        let indice = 1;
+        while (indice < r.length) {
+          if (r[indice].nome != this.parceiroSelecionado) {
+            this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+          }
+          indice++;
+        }
+      }
+    }
+    else {
+      if (r != null) {
+        let indice = 1;
+        while (indice < r.length) {
+          this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
+          indice++;
+        }
+      }
+    }
   }
 
   onChangeParceiros(event) {
@@ -145,7 +160,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   }
 
   criarForm() {
-    
+
     this.form = this.fb.group({
       nome: [this.usuario.nome, [Validators.required, Validators.maxLength(40)]],
       email: [this.usuario.email, [Validators.required, Validators.email, Validators.maxLength(60)]],
