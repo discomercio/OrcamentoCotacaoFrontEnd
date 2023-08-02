@@ -40,7 +40,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   ) { }
 
   public form: FormGroup;
-  public apelido: string;
+  public param: string;
   public parceiros: any[] = [];
   public usuario = new Usuario();
   public mensagemErro: string = "*Campo obrigatório.";
@@ -56,73 +56,42 @@ export class UsuarioEdicaoComponent implements OnInit {
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar)) {
       this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      this.router.navigate(['orcamentos/listar/orcamentos']);
+      this.router.navigate(['dashboards']);
       return;
     }
+    this.carregando = true;
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
 
-    this.apelido = this.activatedRoute.snapshot.params.apelido;
+    this.param = this.activatedRoute.snapshot.params.apelido;
     this.criarForm();
 
-    this.carregando = true;
-    if (this.apelido == "novo") {
+    if (this.autenticacaoService._tipoUsuario == 1) {
+      this.usuarioInterno = true;
+    }
+
+    //novo usuário
+    if (Number.isNaN(parseInt(this.param))) {
       this.bloqueiaParceiro = false;
     }
 
-    if (this.apelido.toLowerCase() != "")
-      if (!!this.apelido) {
-        if (this.apelido.toLowerCase() != "novo") {
-
-          this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.apelido).toPromise().then((r) => {
-            if (!!r) {
-              this.usuario = r;
-              this.parceiroSelecionado = r.parceiro;
-              this.criarForm();
-
-              // Verifico se o usuário logado tem permissão para editar usuários de outro vendedor              
-              if (!this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
-                // Verifico se está tentando editar um vendedor que é do parceiro logado
-                if (r.parceiro != this.autenticacaoService._usuarioLogado) {
-
-                  // não tem permissão e está tentando editar um vendedor cujo usuário logado não é o responsável (O.o)
-                  if (this.autenticacaoService._usuarioLogado != r.vendedorResponsavel) {
-                    this.carregando = false;
-                    this.sweetalertService.aviso("Ops...você não é responsável por este vendedor!");
-                    window.history.back();
-                  }
-                }
-              }
-              this.carregando = false;
-            }
-          }).catch((e) => {
-
-            this.carregando = false;
-            this.alertaService.mostrarErroInternet(e);
-          });
-        }
-      }
-
-    // usuário interno
-    if (this.autenticacaoService._tipoUsuario == 1) {
-      this.usuarioInterno = true;
-
-      let promise: any = [this.buscarParceiros()];
-      Promise.all(promise).then((r: any) => {
-        this.setarParceiros(r[0]);
-      }).catch((e) => {
-        this.carregando = false;
-        this.alertaService.mostrarErroInternet(e);
-      }).finally(() => {
-        this.carregando = false;
-      });
-    } else {
+    let promise: any = [this.buscarVendedorParceiroPorId(), this.buscarParceiros()];
+    Promise.all(promise).then((r: any) => {
+      this.setarVendedorParceiro(r[0]);
+      this.setarParceiros(r[1]);
+    }).catch((e) => {
       this.carregando = false;
-      this.usuarioInterno = false;
-      this.form.controls.parceiro.setValue(this.autenticacaoService._parceiro);
-    }
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    });
   }
 
   buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
+    if (!this.usuarioInterno) {
+      this.form.controls.parceiro.setValue(this.autenticacaoService._parceiro);
+      return;
+    }
+
     if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
       return this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise();
     }
@@ -130,6 +99,12 @@ export class UsuarioEdicaoComponent implements OnInit {
       return this.orcamentistaIndicadorService
         .buscarParceirosPorVendedor(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado).toPromise();
     }
+  }
+
+  buscarVendedorParceiroPorId(): Promise<Usuario> {
+    if(!this.bloqueiaParceiro) return null;
+
+    return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.param).toPromise();
   }
 
   setarParceiros(r: OrcamentistaIndicadorDto[]) {
@@ -150,6 +125,28 @@ export class UsuarioEdicaoComponent implements OnInit {
         while (indice < r.length) {
           this.parceiros.push({ label: r[indice].nome, value: r[indice].nome });
           indice++;
+        }
+      }
+    }
+  }
+
+  setarVendedorParceiro(r: Usuario) {
+    if (!!r) {
+      this.usuario = r;
+      this.parceiroSelecionado = r.parceiro;
+      this.criarForm();
+
+      // Verifico se o usuário logado tem permissão para editar usuários de outro vendedor              
+      if (!this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+        // Verifico se está tentando editar um vendedor que é do parceiro logado
+        if (r.parceiro != this.autenticacaoService._usuarioLogado) {
+
+          // não tem permissão e está tentando editar um vendedor cujo usuário logado não é o responsável (O.o)
+          if (this.autenticacaoService._usuarioLogado != r.vendedorResponsavel) {
+            this.carregando = false;
+            this.sweetalertService.aviso("Ops...você não é responsável por este vendedor!");
+            window.history.back();
+          }
         }
       }
     }
@@ -231,8 +228,4 @@ export class UsuarioEdicaoComponent implements OnInit {
         });
     }
   }
-
-  celular = false;
-  celular2 = false;
-  celular3 = false;
 }

@@ -46,7 +46,7 @@ export class UsuarioListaComponent implements OnInit {
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
       this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      this.router.navigate(['orcamentos/listar/orcamentos']);
+      this.router.navigate(['dashboards']);
       return;
     }
 
