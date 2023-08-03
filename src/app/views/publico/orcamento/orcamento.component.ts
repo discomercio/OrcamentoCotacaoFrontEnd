@@ -47,14 +47,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     super(telaDesktopService);
   }
 
-  public constantes: Constantes = new Constantes();
+  constantes: Constantes = new Constantes();
   sub: Subscription;
   carregando: boolean = false;
   orcamento: OrcamentoCotacaoDto;
   moedaUtils: MoedaUtils = new MoedaUtils();
   dataUtils: DataUtils = new DataUtils();
   stringUtils = StringUtils;
-  @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
+  
   display: boolean = false;
   validado: boolean = false;
   desabiltarBotoes: boolean;
@@ -64,16 +64,194 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
   esconderBotaoAprovacao: boolean;
-
+  paramGuid: any;
+  activeState: boolean[] = [false, false, false];
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
+  @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
 
   ngOnInit(): void {
+    this.mensagemComponente.carregando = true;
     this.imgUrl = this.produtoCatalogoService.imgUrl;
     this.esconderBotaoAprovacao = false;
     this.carregando = true;
-    this.sub = this.activatedRoute.params.subscribe((param: any) => {
-      this.buscarOrcamentoPorGuid(param);
+    this.paramGuid = this.activatedRoute.snapshot.params.guid;
+
+    let promise: any = [this.buscarOrcamento()];
+    Promise.all(promise).then((r: any) => {
+      this.setarOrcamento(r[0]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+      this.promise2();
     });
+
+    // this.sub = this.activatedRoute.params.subscribe((param: any) => {
+    //   this.buscarOrcamentoPorGuid(param);
+    // });
+  }
+
+  promise2() {
+    this.carregando = true;
+    this.setarMensageria();
+
+    
+    let promises: any = [this.buscarEstilo()];
+    Promise.all(promises).then((r: any) => {
+      this.setarLojaEstilo(r[0]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+      this.mensagemComponente.obterListaMensagem(this.orcamento.id)
+    });
+  }
+
+  buscarOrcamento(): Promise<OrcamentoCotacaoDto> {
+    return this.publicoService.buscarOrcamentoPorGuid(this.paramGuid).toPromise();
+  }
+
+  buscarEstilo(): Promise<lojaEstilo> {
+    return this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise();
+  }
+
+  setarOrcamento(r: OrcamentoCotacaoDto) {
+    if (r != null) {
+      this.validado = true;
+      this.orcamento = r;
+
+      if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+        let opcaoAprovado: OrcamentoOpcaoDto;
+        this.orcamento.listaOpcoes.forEach(e => {
+          let pagtoAprovado = e.formaPagto.filter(x => x.aprovado)[0];
+          if (!!pagtoAprovado) {
+            opcaoAprovado = new OrcamentoOpcaoDto();
+            opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
+            opcaoAprovado.aprovado = true;
+          }
+        });
+      }
+      else {
+        this.aprovacaoPublicoService.orcamento = r;
+        this.aprovacaoPublicoService.paramGuid = this.paramGuid;
+        this.verificarFormasPagtos();
+      }
+
+      let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      let validade = this.orcamento.validade;
+      let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+
+      if (this.orcamento.status == 1 && dataValidade < dataAtual) {
+        this.orcamento.statusDescricao = "Expirado";
+      }
+
+      if (this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual) {
+        this.esconderBotaoAprovacao = true;
+      }
+
+      // this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
+      //   if (!!r) {
+      //     this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
+      //     this.publicHeader.corCabecalho = r.corCabecalho + " !important";
+      //     this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+      //   }
+      // });
+
+      // debugger;
+      // if (this.mensagemComponente != undefined) {
+      //   this.mensagemComponente.permiteEnviarMensagem = true;
+
+      //   if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+      //     this.desabiltarBotoes = true;
+      //     // this.mensagemComponente.permiteEnviarMensagem = false;
+      //   }
+
+
+      //   this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
+      //   this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
+      //   this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
+      //   this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
+      //   this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
+      //   this.mensagemComponente.rotaPublica = true;
+      //   this.mensagemComponente.guid = this.paramGuid;
+      //   this.mensagemComponente.obterListaMensagem(this.orcamento.id);
+      // }
+
+      this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, this.orcamento.loja, "publico")
+        .toPromise()
+        .then((r) => {
+          let valor = r[0].Valor;
+          let div = document.getElementById("estoque");
+          if (valor.indexOf("style=") > -1) {
+            let parser = new DOMParser();
+            let html = parser.parseFromString(valor, 'text/html');
+            let parag = html.getElementsByTagName("p");
+            div.appendChild(parag[0]);
+          }
+          else {
+            div.innerHTML = r[0].Valor;
+            div.classList.add("infoEstoque");
+          }
+        });
+
+      this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, this.orcamento.loja, "publico")
+        .toPromise()
+        .then((r) => {
+          let valor = r[0].Valor;
+          let div = document.getElementById("frete");
+          while (div.firstChild) {
+            div.removeChild(div.firstChild);
+          };
+          if (valor.indexOf("style=") > -1) {
+            let parser = new DOMParser();
+            let html = parser.parseFromString(valor, 'text/html');
+            let parag = html.getElementsByTagName("p");
+            div.appendChild(parag[0]);
+          }
+          else {
+            div.innerHTML = r[0].Valor;
+            div.classList.add("infoEstoque");
+          }
+        });
+
+      this.verificarImagens();
+      this.autenticacaoService.setarToken(r.token);
+      this.carregando = false;
+    } else {
+      this.carregando = false;
+      this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
+    }
+  }
+
+  setarLojaEstilo(r: lojaEstilo) {
+    if (!!r) {
+      this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
+      this.publicHeader.corCabecalho = r.corCabecalho + " !important";
+      this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+    }
+  }
+
+  setarMensageria() {
+    debugger;
+    if (this.mensagemComponente != undefined) {
+      this.mensagemComponente.permiteEnviarMensagem = true;
+
+      if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+        this.desabiltarBotoes = true;
+        // this.mensagemComponente.permiteEnviarMensagem = false;
+      }
+
+
+      this.mensagemComponente.idOrcamentoCotacao = this.orcamento.mensageria.idOrcamentoCotacao;
+      this.mensagemComponente.idUsuarioRemetente = this.orcamento.mensageria.idUsuarioRemetente.toString();
+      this.mensagemComponente.idTipoUsuarioContextoRemetente = this.orcamento.mensageria.idTipoUsuarioContextoRemetente.toString();
+      this.mensagemComponente.idUsuarioDestinatario = this.orcamento.mensageria.idUsuarioDestinatario.toString();
+      this.mensagemComponente.idTipoUsuarioContextoDestinatario = this.orcamento.mensageria.idTipoUsuarioContextoDestinatario.toString();
+      this.mensagemComponente.rotaPublica = true;
+      this.mensagemComponente.guid = this.paramGuid;
+    }
   }
 
   ngAfterViewInit(): void {
@@ -127,7 +305,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  paramGuid: any;
   buscarOrcamentoPorGuid(param) {
 
     if (param.guid.length >= 32) {
@@ -326,7 +503,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return true;
   }
 
-  activeState: boolean[] = [false, false, false];
   toggle(index: number) {
     if (this.activeState.toString().indexOf("true") == -1) return;
 
