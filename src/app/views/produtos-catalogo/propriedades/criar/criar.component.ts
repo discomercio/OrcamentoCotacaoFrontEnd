@@ -61,23 +61,25 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     this.carregando = true;
     this.criarForm();
 
-    let promise: any = [this.buscarDataTypes(), this.buscarTipoPropriedades2()];
-    Promise.all(promise).then((r: any) => {
-      this.setarDataTypes(r[0]);
-      this.setarTipoPropriedades(r[1]);
-    }).catch((e) => {
-      this.carregando = false;
-      this.alertaService.mostrarErroInternet(e);
-    }).finally(() => {
-      this.carregando = false;
-    });
+    if(!this.edicao){
+      let promise: any = [this.buscarDataTypes(), this.buscarTipoPropriedades()];
+      Promise.all(promise).then((r: any) => {
+        this.setarDataTypes(r[0]);
+        this.setarTipoPropriedades(r[1]);
+      }).catch((e) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      }).finally(() => {
+        this.carregando = false;
+      });
+    }
   }
 
   buscarDataTypes(): Promise<Array<DataType>> {
     return this.produtoService.buscarDataTypes().toPromise();
   }
 
-  buscarTipoPropriedades2(): Promise<any[]> {
+  buscarTipoPropriedades(): Promise<any[]> {
     return this.produtoService.buscarTipoPropriedades().toPromise();
   }
 
