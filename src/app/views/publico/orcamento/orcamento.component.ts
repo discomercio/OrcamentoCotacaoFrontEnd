@@ -22,6 +22,7 @@ import { ProdutoCatalogoService } from '../../../service/produtos-catalogo/produ
 import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { Title } from '@angular/platform-browser';
 import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 
 @Component({
   selector: 'app-orcamento',
@@ -40,7 +41,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly router: Router,
     private readonly aprovacaoPublicoService: AprovacaoPublicoService,
     private readonly produtoCatalogoService: ProdutoCatalogoService,
-    private readonly lojaService: LojasService
+    private readonly lojaService: LojasService,
+    private readonly orcamentoService: OrcamentosService
   ) {
     super(telaDesktopService);
   }
@@ -61,13 +63,13 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   _lojaEstilo: lojaEstilo = new lojaEstilo();
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
-  esconderBotaoAprovacao: boolean = false;
+  esconderBotaoAprovacao: boolean;
 
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
 
   ngOnInit(): void {
     this.imgUrl = this.produtoCatalogoService.imgUrl;
-
+    this.esconderBotaoAprovacao = false;
     this.carregando = true;
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       this.buscarOrcamentoPorGuid(param);
@@ -75,7 +77,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   ngAfterViewInit(): void {
-    this.sub = this.activatedRoute.params.subscribe((param: any) => { this.buscarOrcamentoPorGuid(param); });
+    this.sub = this.activatedRoute.params.subscribe((param: any) => {
+      //  this.buscarOrcamentoPorGuid(param); 
+    });
   }
 
   ngOnDestroy() {
@@ -189,6 +193,43 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             this.mensagemComponente.guid = param.guid;
             this.mensagemComponente.obterListaMensagem(this.orcamento.id);
           }
+
+          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, this.orcamento.loja, "publico")
+            .toPromise()
+            .then((r) => {
+              let valor = r[0].Valor;
+              let div = document.getElementById("estoque");
+              if (valor.indexOf("style=") > -1) {
+                let parser = new DOMParser();
+                let html = parser.parseFromString(valor, 'text/html');
+                let parag = html.getElementsByTagName("p");
+                div.appendChild(parag[0]);
+              }
+              else {
+                div.innerHTML = r[0].Valor;
+                div.classList.add("infoEstoque");
+              }
+            });
+
+          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, this.orcamento.loja, "publico")
+            .toPromise()
+            .then((r) => {
+              let valor = r[0].Valor;
+              let div = document.getElementById("frete");
+              while (div.firstChild) {
+                div.removeChild(div.firstChild);
+              };
+              if (valor.indexOf("style=") > -1) {
+                let parser = new DOMParser();
+                let html = parser.parseFromString(valor, 'text/html');
+                let parag = html.getElementsByTagName("p");
+                div.appendChild(parag[0]);
+              }
+              else {
+                div.innerHTML = r[0].Valor;
+                div.classList.add("infoEstoque");
+              }
+            });
 
           this.verificarImagens();
           this.autenticacaoService.setarToken(r.token);

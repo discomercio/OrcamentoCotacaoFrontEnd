@@ -41,7 +41,7 @@ export class AppSettingsService {
         return response;
     }
 
-    retornarVersao():Observable<any> {
+    public retornarVersao():Observable<any> {
         return this.http.get<any>('assets/config/appsettings.json');
       }
 }
