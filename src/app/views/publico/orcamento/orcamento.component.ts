@@ -114,6 +114,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.carregando = false;
+      this.mensagemComponente.marcarMensagemComoLida(this.paramGuid);
     });
   }
 
@@ -254,6 +255,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
       this.desabiltarBotoes = true;
     }
+    
     this.mensagemComponente.idOrcamentoCotacao = this.orcamento.mensageria.idOrcamentoCotacao;
     this.mensagemComponente.idUsuarioRemetente = this.orcamento.mensageria.idUsuarioRemetente.toString();
     this.mensagemComponente.idTipoUsuarioContextoRemetente = this.orcamento.mensageria.idTipoUsuarioContextoRemetente.toString();

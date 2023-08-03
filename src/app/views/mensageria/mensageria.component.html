@@ -24,45 +24,45 @@
                     value="Marcar/Desmarcar Pendência Tratada"></button>
             </h4>
             <ul>
-                <p-table #dt1 [value]="listaMensagens" [responsive]="true" responsiveLayout="stack" [scrollable]="true"
-                    scrollHeight="100%" scrollWidth="100%" breakpoint="680px" styleClass="p-datatable-customers"
-                    [rows]="2" [filterDelay]="0">
+                <div id="tabela">
+                    <p-table #dt1 [value]="listaMensagens" [responsive]="true" responsiveLayout="stack"
+                        breakpoint="680px" styleClass="p-datatable-customers" [rows]="2" [filterDelay]="0">
 
-                    <ng-template pTemplate="body" let-lista>
-
-                        <li class="clearfix message-from"
-                            *ngIf="lista.IdUsuarioRemetente == idUsuarioRemetente;else outra_visao">
-                            <div style="text-align:center">
-                                {{formatarData(lista.DataCadastro)}} - Mensagem enviada <br />
-                            </div>
-                            <img src="assets/layout/images/avatar1.png" *ngIf="vendedor;else outro_avatar">
-
-                            <ng-template #outro_avatar>
-                                <img src="assets/layout/images/avatar2.png">
-                            </ng-template>
-                            <span *ngIf="lista.Lida === true">{{lista.Mensagem}}&nbsp;<i class="pi pi-check"
-                                    style="font-size: 0.80rem; color: #0084FF; "></i><i class="pi pi-check"
-                                    style="font-size: 0.80rem; color: #0084FF; "></i></span>
-                            <span *ngIf="lista.Lida === false">{{lista.Mensagem}}&nbsp;<i class="pi pi-check"
-                                    style="font-size: 0.80rem; color: #0084FF; "></i></span>
-                        </li>
-                        <ng-template #outra_visao>
-                            <li class="clearfix message-own">
+                        <ng-template pTemplate="body" let-lista>
+                            <li class="clearfix message-from"
+                                *ngIf="lista.IdUsuarioRemetente != idUsuarioRemetente;else outra_visao">
                                 <div style="text-align:center"> {{formatarData(lista.DataCadastro)}} - Mensagem
                                     recebida<br /></div>
                                 <img src="assets/layout/images/avatar2.png"
-                                    *ngIf="vendedor === true;else outro_avatar2">
+                                    *ngIf="idUsuarioRemetente == 0;else outro_avatar2">
 
                                 <ng-template #outro_avatar2>
                                     <img src="assets/layout/images/avatar1.png">
                                 </ng-template>
                                 <span> {{lista.Mensagem}}</span>
-                                <!--<span *ngIf="lista.Lida === true">{{lista.Mensagem}}&nbsp;<i class="pi pi-check" style="font-size: 0.80rem; color: #0084FF; "></i><i class="pi pi-check" style="font-size: 0.80rem; color: #0084FF; "></i></span>-->
-                                <!-- <span *ngIf="lista.Lida === false">{{lista.Mensagem}}&nbsp;<i class="pi pi-check" style="font-size: 0.80rem; color: #0084FF; "></i></span>-->
                             </li>
+                            <ng-template #outra_visao>
+                                <li class="clearfix message-own">
+                                    <div style="text-align:center">
+                                        {{formatarData(lista.DataCadastro)}} - Mensagem enviada <br />
+                                    </div>
+                                    <img src="assets/layout/images/avatar1.png"
+                                        *ngIf="idUsuarioRemetente == 0;else outro_avatar">
+
+                                    <ng-template #outro_avatar>
+                                        <img src="assets/layout/images/avatar2.png">
+                                    </ng-template>
+                                    <span *ngIf="lista.Lida === true">{{lista.Mensagem}}&nbsp;<i class="pi pi-check"
+                                            style="font-size: 0.80rem; color: #0084FF; "></i><i class="pi pi-check"
+                                            style="font-size: 0.80rem; color: #0084FF; "></i></span>
+                                    <span *ngIf="lista.Lida === false">{{lista.Mensagem}}&nbsp;<i class="pi pi-check"
+                                            style="font-size: 0.80rem; color: #0084FF; "></i></span>
+
+                                </li>
+                            </ng-template>
                         </ng-template>
-                    </ng-template>
-                </p-table>
+                    </p-table>
+                </div>
             </ul>
         </div>
 

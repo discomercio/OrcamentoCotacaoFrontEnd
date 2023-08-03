@@ -72,7 +72,9 @@ export class MensageriaComponent {
 
   setarListaMensagem(idOrcamento: number, r: Array<MensageriaDto>) {
     if (r != null) {
-      this.listaMensagens = r;
+      this.listaMensagens = r.sort((a, b) => {
+        return Number.parseInt(a.Id) - Number.parseFloat(b.Id);
+      });
     }
   }
 
@@ -126,7 +128,7 @@ export class MensageriaComponent {
             if (r != null) {
               this.mensagemService.showSuccessViaToast("Mensagens marcadas como não tratadas!");
             }
-          this.carregando = false;
+            this.carregando = false;
           }).catch((r) => {
             this.alertaService.mostrarErroInternet(r);
             this.carregando = false;
