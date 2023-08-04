@@ -1,4 +1,4 @@
-<div [ngClass]="{'carregando': carregando}">
+<div [ngClass]="{'carregando': mensagemComponente.carregando}">
     <app-publico-header #publicHeader></app-publico-header>
     <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" *ngIf="!validado">
         <div class="p-grid p-jc-center">
@@ -316,21 +316,15 @@
                             </p-accordionTab>
                         </p-accordion>
                     </div>
-
-                </div>
-                <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
-                    <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
-                    </app-mensageria>
                 </div>
             </div>
-
         </div>
     </div>
-    <div class="p-grid p-jc-center">
+    <div class="p-grid p-jc-center p-pt-2">
         <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
-                <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
-                    <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
+                <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}} p-pb-0">
+                    <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center p-col-12">
                     </app-mensageria>
                 </div>
             </div>

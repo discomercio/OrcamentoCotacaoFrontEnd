@@ -4,6 +4,7 @@ import { MensageriaService } from 'src/app/service/mensageria/mensageria.service
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
 
 @Component({
   selector: 'app-mensageria',
@@ -11,7 +12,7 @@ import { Usuario } from 'src/app/dto/usuarios/usuario';
   styleUrls: ['./mensageria.component.scss']
 })
 export class MensageriaComponent {
-
+''
   @Input('idOrcamentoCotacao')
   public idOrcamentoCotacao: number;
 
@@ -39,6 +40,8 @@ export class MensageriaComponent {
   @Input('guid')
   public guid: string;
 
+  @ViewChild('sc', { static: true }) sc: ScrollPanel;
+
   listaMensagens: MensageriaDto[];
 
   public carregando: boolean;
@@ -52,12 +55,20 @@ export class MensageriaComponent {
   @ViewChild("mensagem") mensagem: ElementRef;
 
   obterListaMensagem(idOrcamentoCotacao: number) {
+    this.carregando = true;
     const promise = [this.buscarListaMensagem(idOrcamentoCotacao)];
     Promise.all(promise).then((r) => {
       this.setarListaMensagem(idOrcamentoCotacao, r[0]);
     }).catch((e) => {
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
+      this.carregando = false;
+      //dento do settimeout, por algum motivo não reflete no layout
+      //sendo assim, não rola o scroll das mensagens para baixo
+      setTimeout(() => {
+        this.rolarChat();
+      }, 300);
       return;
     })
   }
@@ -92,28 +103,31 @@ export class MensageriaComponent {
     if (this.rotaPublica && this.guid) {
 
       this.mensageriaService.enviarMensagemRotaPublica(msg, this.guid).toPromise().then((r) => {
+        this.carregando = false;
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
           this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
-        this.carregando = false;
       }).catch((r) => {
         this.alertaService.mostrarErroInternet(r);
         this.carregando = false;
+      }).finally(()=>{
+        this.marcarMensagemComoLida(this.idOrcamentoCotacao);
       });
     } else {
       this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
+        this.carregando = false;
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
           this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
-        this.carregando = false;
-
       }).catch((r) => {
         this.alertaService.mostrarErroInternet(r);
         this.carregando = false;
+      }).finally(()=>{
+        this.marcarMensagemComoLida(this.idOrcamentoCotacao);
       });
     }
   }
@@ -185,5 +199,10 @@ export class MensageriaComponent {
     var dataFinal = day + "/" + month + "/" + year + " " + hora;
 
     return dataFinal;
+  }
+
+  rolarChat() {
+    let widgetchat = document.getElementById("chat") as HTMLElement;
+    this.sc.scrollTop(widgetchat.clientHeight);
   }
 }

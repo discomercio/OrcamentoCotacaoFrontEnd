@@ -49,7 +49,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   constantes: Constantes = new Constantes();
   sub: Subscription;
-  carregando: boolean = false;
+  // carregando: boolean = false;
   orcamento: OrcamentoCotacaoDto;
   moedaUtils: MoedaUtils = new MoedaUtils();
   dataUtils: DataUtils = new DataUtils();
@@ -73,7 +73,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     // this.mensagemComponente.carregando = true;
     this.imgUrl = this.produtoCatalogoService.imgUrl;
     this.esconderBotaoAprovacao = false;
-    this.carregando = true;
+    this.mensagemComponente.carregando= true;
     this.paramGuid = this.activatedRoute.snapshot.params.guid;
 
     let promise: any = [this.buscarOrcamento()];
@@ -81,10 +81,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarOrcamento(r[0]);
       this.autenticacaoService.setarToken(r[0].token);
     }).catch((e) => {
-      this.carregando = false;
+      this.mensagemComponente.carregando= false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.carregando = false;
+      this.mensagemComponente.carregando= false;
       this.verificarImagens();
       this.promise2();
     });
@@ -95,7 +95,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   promise2() {
-    this.carregando = true;
+    this.mensagemComponente.carregando= true;
     this.setarMensageria();
 
     let promises: any = [
@@ -110,12 +110,26 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarMensagemEstoque(r[2]);
       this.setarMensagemFrete(r[3]);
     }).catch((e) => {
-      this.carregando = false;
+      this.mensagemComponente.carregando= false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.carregando = false;
-      this.mensagemComponente.marcarMensagemComoLida(this.paramGuid);
+      this.mensagemComponente.carregando= false;
+      this.promise3();
     });
+  }
+
+  promise3() {
+    this.mensagemComponente.carregando= true;
+    let promise = [this.mensagemComponente.marcarMensagemComoLida(this.paramGuid)];
+    Promise.all(promise).then((r) => {
+
+    }).catch((e) => {
+      this.mensagemComponente.carregando= false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.rolarChat();
+    })
   }
 
   buscarOrcamento(): Promise<OrcamentoCotacaoDto> {
@@ -233,9 +247,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       // this.verificarImagens();
       // this.autenticacaoService.setarToken(r.token);
-      // this.carregando = false;
+      // this.mensagemComponente.carregando= false;
     } else {
-      this.carregando = false;
+      this.mensagemComponente.carregando= false;
       this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
     }
   }
@@ -255,7 +269,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
       this.desabiltarBotoes = true;
     }
-    
+
     this.mensagemComponente.idOrcamentoCotacao = this.orcamento.mensageria.idOrcamentoCotacao;
     this.mensagemComponente.idUsuarioRemetente = this.orcamento.mensageria.idUsuarioRemetente.toString();
     this.mensagemComponente.idTipoUsuarioContextoRemetente = this.orcamento.mensageria.idTipoUsuarioContextoRemetente.toString();
@@ -454,9 +468,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   //         this.verificarImagens();
   //         this.autenticacaoService.setarToken(r.token);
-  //         this.carregando = false;
+  //         this.mensagemComponente.carregando= false;
   //       } else {
-  //         this.carregando = false;
+  //         this.mensagemComponente.carregando= false;
   //         this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
   //       }
   //     }).catch((r) => this.alertaService.mostrarErroInternet(r));

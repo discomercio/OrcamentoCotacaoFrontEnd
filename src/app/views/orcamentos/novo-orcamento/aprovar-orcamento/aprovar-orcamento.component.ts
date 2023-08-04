@@ -36,6 +36,7 @@ import { RemetenteDestinatarioResponse } from 'src/app/service/mensageria/remete
 import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
 import jsPDF from 'jspdf';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
+import { ScrollPanel } from 'primeng/scrollpanel';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -296,6 +297,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.mensagemComponente.carregando = false;
     }).finally(() => {
       this.mensagemComponente.carregando = false;
+      this.mensagemComponente.rolarChat();
     });
   }
 
@@ -641,7 +643,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   // Função para pegar tamanho da imagem
-  getImageSize(source: string):any {
+  getImageSize(source: string): any {
     return new Promise((resolve) => {
 
       const image = new Image();
@@ -767,23 +769,23 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         let parser = new DOMParser();
         let html = parser.parseFromString(alert, 'text/html');
         let parag = html.getElementsByTagName("p");
-        
+
         const alertLines = doc
           .setFontSize(this.NORMAL_FONT_SIZE)
           .setFont(undefined, "bold")
           .splitTextToSize(parag[0].innerText, maxAlertWidth);
 
-          alertLines.forEach((line) => {
-            doc
-              .setTextColor(parag[0].style.color)
-              .text(
-                `${line}`,
-                doc.internal.pageSize.width - 2 * this.TAB_SIZE,
-                currentPositionY,
-                { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: Number.parseFloat(parag[0].style.lineHeight) }
-              );
-            currentPositionY += this.NORMAL_FONT_SIZE;
-          });
+        alertLines.forEach((line) => {
+          doc
+            .setTextColor(parag[0].style.color)
+            .text(
+              `${line}`,
+              doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+              currentPositionY,
+              { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: Number.parseFloat(parag[0].style.lineHeight) }
+            );
+          currentPositionY += this.NORMAL_FONT_SIZE;
+        });
       }
       else {
         const alertLines = doc
