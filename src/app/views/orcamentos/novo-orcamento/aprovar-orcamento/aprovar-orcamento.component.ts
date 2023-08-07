@@ -1199,9 +1199,4 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     return `${year}${month}${day}_${hours}${minutes}`;
   }
-
-  // Função para formatar valor monetário
-  getFormattedMoney(number: number): string {
-    return new Intl.NumberFormat("pt-BR").format(number);
-  }
 }
