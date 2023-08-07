@@ -25,9 +25,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
 
   constructor(
     private readonly service: ProdutoCatalogoService,
-    private fb: FormBuilder,
     private readonly router: Router,
-    private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly sweetAlertService: SweetalertService,
@@ -36,11 +34,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
   listaProdutoDto: ProdutoCatalogo[];
-  //registros: ProdutoAtivoDto[];
-  //registrosFiltrados: ProdutoAtivoDto[];
   cols: any[];
   carregando: boolean = false;
-  //stringUtils = StringUtils;
   produtoCatalogResponse: ProdutoCatalogoResponse[];
 
   fabricantes: Array<DropDownItem> = new Array<DropDownItem>();
@@ -93,18 +88,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     }
     this.cdr.detectChanges();
   }
-
-  // criarForm() {
-  //   this.form = this.fb.group({
-  //     CalculadoraVRF: [''],
-  //     TipoUnidade: [''],
-  //     DescargaCondensadora: [''],
-  //     Voltagem: [''],
-  //     CapacidadeBTU: [''],
-  //     Ciclo: [''],
-  //     LinhaProduto: ['']
-  //   });
-  // }
 
   buscarPropriedades() {
     this.service.buscarPropriedades().toPromise().then((proprieidade) => {
