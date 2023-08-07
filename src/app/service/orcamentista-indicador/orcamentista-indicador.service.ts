@@ -29,7 +29,9 @@ export class OrcamentistaIndicadorService {
   }
 
   buscarParceiroPorApelido(apelido:string):Observable<OrcamentistaIndicadorDto>{
-      return this.http.get<OrcamentistaIndicadorDto>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/parceiro-por-apelido/${apelido}`);
+    let params = new HttpParams();
+    params = params.append('apelido', apelido);
+      return this.http.get<OrcamentistaIndicadorDto>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/parceiro-por-apelido`, {params:params});
   }
 
   buscarParceirosPorIdVendedor(filtro:BuscarParceiroRequest):Observable<OrcamentistasComboResponse>{
