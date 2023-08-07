@@ -114,6 +114,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.buscarFormaPagto();
       this.itens.inserirProduto();
       this.atribuirPercRT();
+      this.itens.novoOrcamentoService.descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
       this.cdref.detectChanges();
     });
   }
