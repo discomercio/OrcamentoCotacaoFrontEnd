@@ -998,7 +998,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     doc.text(`${product.qtde}`, 319, currentPositionY, { align: "right" });
 
     doc.text(
-      `${this.getFormattedMoney(product.precoVenda)}`,
+      `${this.moedaUtils.formatarMoedaSemPrefixo(product.precoVenda)}`,
       doc.internal.pageSize.width - 3 * this.TAB_SIZE,
       currentPositionY,
       { align: "right" }
