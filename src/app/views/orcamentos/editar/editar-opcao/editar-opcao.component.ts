@@ -254,6 +254,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    if (this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT > this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
+      this.alertaService.mostrarMensagem("A comissão excedeu o máximo permitido!");
+      this.itens.carregandoProds = false;
+      return;
+    }
+
     //se tem parceiro
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
