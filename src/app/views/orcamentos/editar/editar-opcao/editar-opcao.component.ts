@@ -114,6 +114,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.buscarFormaPagto();
       this.itens.inserirProduto();
       this.atribuirPercRT();
+      this.itens.novoOrcamentoService.descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
       this.cdref.detectChanges();
     });
   }
@@ -257,6 +258,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
       if (!this.itens.novoOrcamentoService.verificarCalculoComissao()) {
+        
+
         this.atualizaComEdicaoComissao();
         return;
       }
