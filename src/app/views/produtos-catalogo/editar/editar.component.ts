@@ -68,11 +68,23 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }
 
     this.carregando = true;
-    this.buscarFabricantes();
+
+    this.lojaLogada = this.autenticacaoService._lojaLogado;
     this.criarForm();
     this.setarCampos();
-    this.buscarProdutoDetalhe();
-    this.lojaLogada = this.autenticacaoService._lojaLogado;
+
+    let promises: any = [this.buscarFabricantes(), this.buscarProdutoDetalhe(), this.buscarPropriedades(), this.buscarProdutosOpcoes()];
+    Promise.all(promises).then((r: any) => {
+      this.setarFabricantes(r[0]);
+      this.setarProdutos(r[1]);
+      this.setarPropriedades(r[2]);
+      this.setarProdutosOpcoes(r[3]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    });
   }
 
   criarForm() {
@@ -84,6 +96,84 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       fabricante: [this.produtoDetalhe.Fabricante, [Validators.required]],
       nome: [this.produtoDetalhe.Descricao, [Validators.required]]
     });
+  }
+
+  buscarFabricantes(): Promise<ProdutoCatalogoFabricante[]> {
+    return this.produtoService.buscarFabricantes().toPromise();
+  }
+
+  buscarProdutoDetalhe(): Promise<ProdutoCatalogoItemProdutosAtivosDados[]> {
+    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
+    obj.idProduto = this.id;
+    return this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise();
+  }
+
+  buscarPropriedades(): Promise<ProdutoCatalogoPropriedade[]> {
+    return this.produtoService.buscarPropriedades().toPromise();
+  }
+
+  buscarProdutosOpcoes(): Promise<ProdutoCatalogoPropriedadeOpcao[]> {
+
+    return this.produtoService.buscarOpcoes().toPromise();
+  }
+
+  setarFabricantes(r: ProdutoCatalogoFabricante[]) {
+    if (r != null) {
+      this.fabricantes = r;
+    }
+  }
+
+  setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
+    if (r != null) {
+      this.consolidarLista(r);
+    }
+  }
+
+  setarPropriedades(r: ProdutoCatalogoPropriedade[]) {
+    if (r != null) {
+      this.propriedades = r;
+      this.montarListaProdutoParaTela();
+    }
+  }
+
+  setarProdutosOpcoes(r: ProdutoCatalogoPropriedadeOpcao[]) {
+    if (r != null) {
+      this.opcoes = r;
+      let listaId = [];
+
+      r.forEach(x => {
+        listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
+      });
+
+      listaId.forEach(x => {
+        let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
+
+        let lstOpcoesPorId = [];
+        if (opcao.length > 0) {
+          opcao.forEach(o => {
+            if (o.oculto) {
+              let propriedadeProduto = this.produtosParaTela
+                .filter(p => p.idPropriedade == Number.parseInt(o.id_produto_catalogo_propriedade) &&
+                  p.idValorPropriedadeOpcao == Number.parseInt(o.id));
+
+              if (propriedadeProduto.length > 1) {
+                let pErro = this.propriedades.filter(prop => prop.id == propriedadeProduto[0].idPropriedade);
+                this.sweetAlertService.aviso(`Ops! existe uma inconsistência na propriedade: <br> <b>${pErro[0].descricao}</b>`);
+              }
+              if (propriedadeProduto.length > 0) {
+                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+              }
+            }
+            else {
+              lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
+            }
+          });
+          if (lstOpcoesPorId.length > 0) {
+            this.lstOpcoes[x] = lstOpcoesPorId;
+          }
+        }
+      });
+    }
   }
 
   setarCampos() {
@@ -98,7 +188,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     });
   }
 
-  buscarProdutoDetalhe() {
+  buscarProdutoDetalhe2() {
     let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
     obj.idProduto = this.id;
     this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
@@ -151,7 +241,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.buscarOpcoes();
   }
 
-  buscarPropriedades() {
+  buscarPropriedades2() {
     this.produtoService.buscarPropriedades().toPromise().then((r) => {
       if (r != null) {
         this.propriedades = r;
@@ -338,7 +428,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.setarDadosImagem(arquivo);
   }
 
-  buscarFabricantes() {
+  buscarFabricantes2() {
     // let lstFabricantes = [];
     // var indice = 0;
 
