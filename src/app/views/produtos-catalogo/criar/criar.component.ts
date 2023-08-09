@@ -50,7 +50,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lstFabricantes: SelectItem[] = [];
   lstPropriedades: ProdutoCatalogoOpcao[] = [];
   lstPropriedadesAtivo: any = [];
-  lojaLogado :string;
+  lojaLogado: string;
   imagem: ProdutoCatalogoImagem;
   arquivo: File;
 
@@ -64,13 +64,22 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
     this.carregando = true;
     this.criarForm();
-    this.buscarPropriedades();
-    this.buscarOpcoes();
-    this.buscarFabricantes();
     this.produto.Ativo = true
     this.urlUpload = this.produtoService.urlUpload;
     this.imgUrl = this.produtoService.imgUrl;
     this.lojaLogado = this.autenticacaoService._lojaLogado;
+
+    let promises: any = [this.buscarPropriedades(), this.buscarFabricantes(), this.buscarPropriedadesOpcoes()];
+    Promise.all(promises).then((r: any) => {
+      this.setarPropriedades(r[0]);
+      this.setarFabricantes(r[1]);
+      this.setarPropriedadesOpcoes(r[2]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    })
   }
 
   criarForm() {
@@ -83,67 +92,65 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     });
   }
 
-  voltarClick(): void {
-    this.router.navigate(["//produtos-catalogo/listar"]);
+  buscarPropriedades(): Promise<ProdutoCatalogoPropriedade[]> {
+    return this.produtoService.buscarPropriedades().toPromise();
   }
 
-  buscarPropriedades() {
-    this.produtoService.buscarPropriedades().toPromise().then((r) => {
-      if (r != null) {
-        this.propriedades = r;
-
-        this.carregando = false;
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+  buscarFabricantes(): Promise<ProdutoCatalogoFabricante[]> {
+    return this.produtoService.buscarFabricantes().toPromise();
   }
 
-  buscarFabricantes() {
+  buscarPropriedadesOpcoes(): Promise<ProdutoCatalogoPropriedadeOpcao[]> {
+    return this.produtoService.buscarOpcoes().toPromise();
+  }
+
+  setarPropriedades(r: ProdutoCatalogoPropriedade[]) {
+    if (r != null) {
+      this.propriedades = r;
+    }
+  }
+
+  setarFabricantes(r:ProdutoCatalogoFabricante[]){
     let lstFabricantes = [];
     var indice = 0;
 
-    this.produtoService.buscarFabricantes().toPromise().then((r) => {
-      if (r != null) {
-
-        while (indice < r.length) {
-          lstFabricantes.push({ label: r[indice]['Descricao'], value: r[indice]['Fabricante'] })
-          indice++;
-        }
-
-        this.lstFabricantes = lstFabricantes;
-        this.fabricantes = r;
-        this.carregando = false;
+    if (r != null) {
+      while (indice < r.length) {
+        lstFabricantes.push({ label: r[indice]['Descricao'], value: r[indice]['Fabricante'] })
+        indice++;
       }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+
+      this.lstFabricantes = lstFabricantes;
+      this.fabricantes = r;
+    }
   }
 
-  buscarOpcoes(): void {
-    this.produtoService.buscarOpcoes().toPromise().then((r) => {
-      if (r != null) {
-        this.opcoes = r;
-        this.carregando = false;
-        let listaId = [];
+  setarPropriedadesOpcoes(r:ProdutoCatalogoPropriedadeOpcao[]){
+    if (r != null) {
+      this.opcoes = r;
+      this.carregando = false;
+      let listaId = [];
 
-        r.forEach(x => {
-          listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
-        });
+      r.forEach(x => {
+        listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
+      });
 
-        listaId.forEach(x => {
-          let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
+      listaId.forEach(x => {
+        let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
 
-          let lstOpcoesPorId = [];
-          if (opcao.length > 0) {
-            opcao.forEach(o => {
-              if(!o.oculto){
-                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
-              }
-            });
-            if (lstOpcoesPorId.length > 0) {
-              this.lstOpcoes[x] = lstOpcoesPorId;
+        let lstOpcoesPorId = [];
+        if (opcao.length > 0) {
+          opcao.forEach(o => {
+            if (!o.oculto) {
+              lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
             }
+          });
+          if (lstOpcoesPorId.length > 0) {
+            this.lstOpcoes[x] = lstOpcoesPorId;
           }
-        });
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
+        }
+      });
+    }
   }
 
   digitouCodigo(event: Event) {
@@ -164,7 +171,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     if (valorInteiro.toString().length > 6) return;
 
     valor = ("00000" + valor).slice(-6);
-    if(Number.parseInt(valor) == 0){
+    if (Number.parseInt(valor) == 0) {
       this.form.controls.produto.setValue("");
       return
     }
@@ -186,7 +193,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
 
     return null;
-    
   }
 
   salvarClick() {
@@ -194,6 +200,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       return;
     }
 
+    this.carregando = true;
     this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
       if (r != null) {
         this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
@@ -254,17 +261,17 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         formData.append("produto", JSON.stringify(prod));
         formData.append("loja", this.lojaLogado);
         this.produtoService.criarProduto(formData).toPromise().then((r) => {
-          if(!r.Sucesso){
+          if (!r.Sucesso) {
             this.sweetAlertService.aviso(r.Mensagem);
             return;
           }
-            this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-            this.router.navigate(["//produtos-catalogo/listar"]);
+          this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+          this.router.navigate(["//produtos-catalogo/listar"]);
         }).catch((e) => {
           this.alertaService.mostrarErroInternet(e);
         });
       }
-    }).catch((e)=>{
+    }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
     });
 
@@ -284,6 +291,10 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);
+  }
+
+  voltarClick(): void {
+    this.router.navigate(["//produtos-catalogo/listar"]);
   }
 }
 
