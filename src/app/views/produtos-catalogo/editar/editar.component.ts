@@ -73,12 +73,14 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.criarForm();
     this.setarCampos();
 
-    let promises: any = [this.buscarFabricantes(), this.buscarProdutoDetalhe(), this.buscarPropriedades(), this.buscarProdutosOpcoes()];
+    let promises: any = [this.buscarFabricantes(), this.buscarPropriedadesProdutoAtivo(), this.buscarPropriedades(),
+    this.buscarProdutosOpcoes(), this.buscarProdutoDetalhe()];
     Promise.all(promises).then((r: any) => {
       this.setarFabricantes(r[0]);
       this.setarProdutos(r[1]);
       this.setarPropriedades(r[2]);
       this.setarProdutosOpcoes(r[3]);
+      this.setarProdutoDetalhe(r[4]);
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -102,7 +104,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     return this.produtoService.buscarFabricantes().toPromise();
   }
 
-  buscarProdutoDetalhe(): Promise<ProdutoCatalogoItemProdutosAtivosDados[]> {
+  buscarPropriedadesProdutoAtivo(): Promise<ProdutoCatalogoItemProdutosAtivosDados[]> {
     let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
     obj.idProduto = this.id;
     return this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise();
@@ -113,8 +115,11 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   buscarProdutosOpcoes(): Promise<ProdutoCatalogoPropriedadeOpcao[]> {
-
     return this.produtoService.buscarOpcoes().toPromise();
+  }
+
+  buscarProdutoDetalhe(): Promise<ProdutoCatalogo> {
+    return this.produtoService.buscarProdutoDetalhe(this.id).toPromise();
   }
 
   setarFabricantes(r: ProdutoCatalogoFabricante[]) {
@@ -176,6 +181,12 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }
   }
 
+  setarProdutoDetalhe(r: ProdutoCatalogo) {
+    if (r != null) {
+      this.produtoDetalhe = r;
+    }
+  }
+
   setarCampos() {
     this.id = this.activatedRoute.snapshot.params.id;
     this.imgUrl = this.produtoService.imgUrl;
@@ -188,34 +199,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     });
   }
 
-  buscarProdutoDetalhe2() {
-    let obj: ProdutosAtivosRequestViewModel = new ProdutosAtivosRequestViewModel();
-    obj.idProduto = this.id;
-    this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((r) => {
-
-      this.produtoService.buscarPropriedadesProdutoAtivo(obj).toPromise().then((y) => {
-        if (r != null) {
-          //   this.produto = r;
-          this.consolidarLista(r);
-          this.consolidarLista(y);
-          this.buscarPropriedades();
-        }
-      }).catch((e) => {
-        console.log(e);
-      });
-    }).catch((e) => {
-      console.log(e);
-    });
-
-    this.produtoService.buscarProdutoDetalhe(this.id).toPromise().then((r) => {
-      if (r != null) {
-        this.produtoDetalhe = r;
-      }
-    }).catch((r) => this.sweetAlertService.aviso(r));
-  }
-
   montarListaProdutoParaTela() {
-
     this.propriedades.forEach(x => {
 
       let item = this.produto.filter(y => y.idPropriedade == x.id);
@@ -237,64 +221,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.produtosParaTela.push(prod);
       }
     });
-
-    this.buscarOpcoes();
-  }
-
-  buscarPropriedades2() {
-    this.produtoService.buscarPropriedades().toPromise().then((r) => {
-      if (r != null) {
-        this.propriedades = r;
-        this.montarListaProdutoParaTela();
-        this.carregando = false;
-
-
-      }
-    }).catch((r) => this.sweetAlertService.aviso(r));
-  }
-
-  buscarOpcoes(): void {
-
-    this.produtoService.buscarOpcoes().toPromise().then((r) => {
-      if (r != null) {
-        this.opcoes = r;
-        this.carregando = false;
-        let listaId = [];
-
-        r.forEach(x => {
-          listaId.push(Number.parseInt(x.id_produto_catalogo_propriedade));
-        });
-
-        listaId.forEach(x => {
-          let opcao = r.filter(p => p.id_produto_catalogo_propriedade == x);
-
-          let lstOpcoesPorId = [];
-          if (opcao.length > 0) {
-            opcao.forEach(o => {
-              if (o.oculto) {
-                let propriedadeProduto = this.produtosParaTela
-                  .filter(p => p.idPropriedade == Number.parseInt(o.id_produto_catalogo_propriedade) &&
-                    p.idValorPropriedadeOpcao == Number.parseInt(o.id));
-
-                if (propriedadeProduto.length > 1) {
-                  let pErro = this.propriedades.filter(prop => prop.id == propriedadeProduto[0].idPropriedade);
-                  this.sweetAlertService.aviso(`Ops! existe uma inconsistência na propriedade: <br> <b>${pErro[0].descricao}</b>`);
-                }
-                if (propriedadeProduto.length > 0) {
-                  lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
-                }
-              }
-              else {
-                lstOpcoesPorId.push({ label: o.valor, value: Number.parseInt(o.id) });
-              }
-            });
-            if (lstOpcoesPorId.length > 0) {
-              this.lstOpcoes[x] = lstOpcoesPorId;
-            }
-          }
-        });
-      }
-    }).catch((r) => this.sweetAlertService.aviso(r));
   }
 
   voltarClick(): void {
@@ -308,34 +234,32 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-
     if (this.produtoDetalhe.imagem.Caminho == "sem-imagem.png") {
       this.imgSemImagem = this.produtoDetalhe.imagem;
       this.produtoDetalhe.imagem = null;
       return;
     }
 
+    this.carregando = true;
+
     this.produtoService.excluirImagem(this.produtoDetalhe.Id, idImagem).toPromise().then((r) => {
       if (r != null) {
-        this.sweetAlertService.aviso(r);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(r);
         return;
       }
-
-      // for (var x = 0; x <= this.produtoDetalhe.imagens.length - 1; x++) {
-      //   if (this.produtoDetalhe.imagens[x].Id == idImagem) {
-      //     this.produtoDetalhe.imagens.splice(x, 1);
-      //   }
-      // }
-
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(()=>{
+      this.carregando = false;
       this.produtoDetalhe.imagem = null;
       this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
-    }).catch((r) => {
-      this.sweetAlertService.aviso(r)
     });
   }
 
   atualizarProdutoClick() {
-
+    this.carregando = true;
     let campos: ProdutoCatalogoItem[] = [];
 
     this.produtosParaTela.forEach(x => {
@@ -382,19 +306,21 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
     this.produtoService.atualizarProduto(formData).toPromise().then((r) => {
       if (r != null) {
+        this.carregando = false;
         this.mensagemService.showErrorViaToast([r]);
         return;
       }
-
-      this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
-      this.router.navigate(["//produtos-catalogo/listar"]);
     }).catch((r) => {
+      this.carregando = false;
       if (r.error.message == undefined) {
         this.alertaService.mostrarErroInternet(r);
         return;
       }
-
       this.sweetAlertService.aviso(r.error.message);
+    }).finally(() => {
+      this.carregando = false;
+      this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+      this.router.navigate(["//produtos-catalogo/listar"]);
     });
 
 
@@ -412,6 +338,12 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }
   }
 
+  onSelectFile(event) {
+    let arquivo = event.files[0];
+    this.arquivo = arquivo;
+    this.setarDadosImagem(arquivo);
+  }
+
   setarDadosImagem(arquivo: any): void {
     let img = new ProdutoCatalogoImagem();
     img.IdProdutoCatalogo = "-1";
@@ -420,32 +352,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     img.Ordem = "200";
 
     this.imagem = img;
-  }
-
-  onSelectFile(event) {
-    let arquivo = event.files[0];
-    this.arquivo = arquivo;
-    this.setarDadosImagem(arquivo);
-  }
-
-  buscarFabricantes2() {
-    // let lstFabricantes = [];
-    // var indice = 0;
-
-    this.produtoService.buscarFabricantes().toPromise().then((r) => {
-      if (r != null) {
-
-        // debugger;
-        // while (indice < r.length) {
-        //   lstFabricantes.push({ label: r[indice]['Descricao'], value: r[indice]['Fabricante'] })
-        //   indice++;
-        // }
-
-        // this.lstFabricantes = lstFabricantes;
-        this.fabricantes = r;
-        this.carregando = false;
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 }
 
