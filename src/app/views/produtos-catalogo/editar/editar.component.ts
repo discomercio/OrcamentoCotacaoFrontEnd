@@ -36,24 +36,28 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly autenticacaoService: AutenticacaoService) { }
 
-  public form: FormGroup;
-  public mensagemErro: string = "*Campo obrigatório.";
-  public produtoDetalhe: ProdutoCatalogo = new ProdutoCatalogo();
-  public produto: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>()
-  public propriedade: ProdutoCatalogoItem = new ProdutoCatalogoItem();
-  public propriedade_opcoes: ProdutoCatalogoItem = new ProdutoCatalogoItem();
-  private id: number;
-  private imgUrl: string;
-  public urlUpload: string;
-  public uploadedFiles: any[] = [];
+  form: FormGroup;
+  mensagemErro: string = "*Campo obrigatório.";
+  produtoDetalhe: ProdutoCatalogo = new ProdutoCatalogo();
+  produto: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>()
+  propriedade: ProdutoCatalogoItem = new ProdutoCatalogoItem();
+  propriedade_opcoes: ProdutoCatalogoItem = new ProdutoCatalogoItem();
+  id: number;
+  imgUrl: string;
+  urlUpload: string;
+  uploadedFiles: any[] = [];
   carregando: boolean = false;
   fabricantes: ProdutoCatalogoFabricante[];
-
   propriedades: ProdutoCatalogoPropriedade[] = new Array<ProdutoCatalogoPropriedade>();
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
   lstOpcoes: SelectItem[][] = [];
   lojaLogada: string;
   imgSemImagem: ProdutoCatalogoImagem = new ProdutoCatalogoImagem();
+  arquivo: File;
+  propriedadesItem: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>();
+  produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
+  lstPropriedades: any = [];
+  imagem: ProdutoCatalogoImagem;
 
   ngOnInit(): void {
 
@@ -119,9 +123,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
       }
     }).catch((r) => this.sweetAlertService.aviso(r));
   }
-
-  propriedadesItem: ProdutoCatalogoItemProdutosAtivosDados[] = new Array<ProdutoCatalogoItemProdutosAtivosDados>();
-  produtosParaTela: ProdutoCatalogoItemProdutosAtivosDados[] = new Array();
 
   montarListaProdutoParaTela() {
 
@@ -217,7 +218,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   }
 
   excluirImagemClick(idImagem) {
-    
+
     if (this.produtoDetalhe.imagem.Caminho == "sem-imagem.png") {
       this.imgSemImagem = this.produtoDetalhe.imagem;
       this.produtoDetalhe.imagem = null;
@@ -309,8 +310,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
 
   }
 
-  lstPropriedades: any = [];
-
   onChange(idProdutoCatalogoPropriedade, idProdutoCatalogoPropriedadeOpcao, idCfgTipoPropriedade, valor) {
     if (this.lstPropriedades.find((test) => test.idPropriedade === idProdutoCatalogoPropriedade) === undefined) {
       this.lstPropriedades.push(
@@ -323,7 +322,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }
   }
 
-  imagem: ProdutoCatalogoImagem;
   setarDadosImagem(arquivo: any): void {
     let img = new ProdutoCatalogoImagem();
     img.IdProdutoCatalogo = "-1";
@@ -334,7 +332,6 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     this.imagem = img;
   }
 
-  arquivo: File;
   onSelectFile(event) {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
