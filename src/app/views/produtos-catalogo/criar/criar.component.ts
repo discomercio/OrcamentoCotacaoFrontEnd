@@ -1,4 +1,3 @@
-import { Subject } from 'rxjs';
 import { ProdutoCatalogoOpcao } from './../../../dto/produtos-catalogo/ProdutoCatalogoOpcao';
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
@@ -52,6 +51,8 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lstPropriedades: ProdutoCatalogoOpcao[] = [];
   lstPropriedadesAtivo: any = [];
   lojaLogado :string;
+  imagem: ProdutoCatalogoImagem;
+  arquivo: File;
 
   ngOnInit(): void {
 
@@ -269,7 +270,6 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
 
   }
 
-  imagem: ProdutoCatalogoImagem;
   setarDadosImagem(arquivo: any): void {
     let img = new ProdutoCatalogoImagem();
     img.IdProdutoCatalogo = "-1";
@@ -280,13 +280,11 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     this.imagem = img;
   }
 
-  arquivo: File;
   onSelectFile(event) {
     let arquivo = event.files[0];
     this.arquivo = arquivo;
     this.setarDadosImagem(arquivo);
   }
-
 }
 
 
