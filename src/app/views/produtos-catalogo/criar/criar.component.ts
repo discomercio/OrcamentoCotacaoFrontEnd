@@ -1,5 +1,5 @@
 import { ProdutoCatalogoOpcao } from './../../../dto/produtos-catalogo/ProdutoCatalogoOpcao';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
@@ -33,14 +33,15 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly autenticacaoService: AutenticacaoService) { }
+    private readonly autenticacaoService: AutenticacaoService,
+    public cdref: ChangeDetectorRef) { }
 
-  public form: FormGroup;
-  public mensagemErro: string = "*Campo obrigatório.";
-  public produto: ProdutoCatalogo = new ProdutoCatalogo();
-  public uploadedFiles: any[] = [];
+  form: FormGroup;
+  mensagemErro: string = "*Campo obrigatório.";
+  produto: ProdutoCatalogo = new ProdutoCatalogo();
+  uploadedFiles: any[] = [];
 
-  carregando: boolean = false;
+  carregando: boolean;
   propriedades: ProdutoCatalogoPropriedade[];
   fabricantes: ProdutoCatalogoFabricante[];
   opcoes: ProdutoCatalogoPropriedadeOpcao[];
@@ -53,9 +54,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
   lojaLogado: string;
   imagem: ProdutoCatalogoImagem;
   arquivo: File;
+  produtoJaExiste: boolean;
 
   ngOnInit(): void {
-
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoCaradastrarIncluirEditar)) {
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       window.history.back();
@@ -78,8 +79,8 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.carregando = false;
-    })
+      this.carregando = false;  
+    });
   }
 
   criarForm() {
@@ -110,7 +111,7 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
   }
 
-  setarFabricantes(r:ProdutoCatalogoFabricante[]){
+  setarFabricantes(r: ProdutoCatalogoFabricante[]) {
     let lstFabricantes = [];
     var indice = 0;
 
@@ -125,10 +126,9 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     }
   }
 
-  setarPropriedadesOpcoes(r:ProdutoCatalogoPropriedadeOpcao[]){
+  setarPropriedadesOpcoes(r: ProdutoCatalogoPropriedadeOpcao[]) {
     if (r != null) {
       this.opcoes = r;
-      this.carregando = false;
       let listaId = [];
 
       r.forEach(x => {
@@ -199,82 +199,111 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) {
       return;
     }
-
+    
     this.carregando = true;
-    this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise().then((r) => {
-      if (r != null) {
-        this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
+
+    let promise: any = [this.buscarProdutoPorCodigo()];
+    Promise.all(promise).then((r: any) => {
+      this.verificarExistenciaProdutoPorCodigo(r[0]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      
+      this.carregando = false;
+
+      if (this.produtoJaExiste) return;
+
+      this.cadastrarProduto();
+    });
+  }
+
+  buscarProdutoPorCodigo(): Promise<ProdutoCatalogo[]> {
+    return this.produtoService.buscarPorCodigo(this.form.controls.produto.value).toPromise();
+  }
+
+  verificarExistenciaProdutoPorCodigo(r: ProdutoCatalogo[]) {
+    if (r != null) {
+      this.mensagemService.showWarnViaToast(`Código [${this.form.controls.produto.value}] já foi cadastrado!`);
+      this.produtoJaExiste = true;
+      return;
+    }
+
+    this.produtoJaExiste = false;
+  }
+
+  cadastrarProduto() {
+    this.carregando = true;
+
+    let prod = new ProdutoCatalogo();
+    let campo = new ProdutoCatalogoItem();
+
+    prod.Fabricante = this.form.controls.fabricante.value;
+    prod.Produto = this.form.controls.produto.value;
+    prod.Nome = this.form.controls.nome_produto.value;
+    prod.Descricao = this.form.controls.descricao.value;
+    prod.Ativo = this.produto.Ativo;
+    prod.campos = [];
+
+    if (!!this.imagem) {
+      prod.imagem = new ProdutoCatalogoImagem();
+      prod.imagem = this.imagem;
+    }
+    var listaInput = document.getElementsByTagName("input");
+
+    for (let i = 0; i < listaInput.length; i++) {
+      if (listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
+        campo = new ProdutoCatalogoItem();
+        campo.IdProdutoCatalogo = '-1';
+        campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-', '');
+        campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
+        campo.Valor = listaInput[i].value;
+        campo.Oculto = document.getElementById(listaInput[i].id.replace('txt', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
+        prod.campos.push(campo);
+      }
+    }
+
+    var listaDrop = document.getElementsByTagName("p-dropdown");
+    for (let d = 0; d < listaDrop.length; d++) {
+      var listaOpt = listaDrop[d].getElementsByTagName("span");
+      for (let i = 0; i < listaOpt.length - 1; i++) {
+        if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
+          campo = new ProdutoCatalogoItem();
+          campo.IdProdutoCatalogo = '-1';
+          campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-', '');
+          campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-', ''), listaOpt[i].innerText)}`;
+          campo.Valor = '';
+          campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
+          prod.campos.push(campo);
+        }
+      }
+    }
+
+    if (!this.validacaoFormularioService.validaForm(this.form)) {
+      return;
+    }
+
+    let formData = new FormData();
+    if (!!this.arquivo)
+      formData.append("arquivo", this.arquivo, this.arquivo.name);
+
+    formData.append("produto", JSON.stringify(prod));
+    formData.append("loja", this.lojaLogado);
+
+    this.produtoService.criarProduto(formData).toPromise().then((r) => {
+      if (!r.Sucesso) {
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(r.Mensagem);
         return;
-      } else {
-        let prod = new ProdutoCatalogo();
-        let campo = new ProdutoCatalogoItem();
-
-        prod.Fabricante = this.form.controls.fabricante.value;
-        prod.Produto = this.form.controls.produto.value;
-        prod.Nome = this.form.controls.nome_produto.value;
-        prod.Descricao = this.form.controls.descricao.value;
-        prod.Ativo = this.produto.Ativo;
-        prod.campos = [];
-
-        if (!!this.imagem) {
-          prod.imagem = new ProdutoCatalogoImagem();
-          prod.imagem = this.imagem;
-        }
-        var listaInput = document.getElementsByTagName("input");
-
-        for (let i = 0; i < listaInput.length; i++) {
-          if (listaInput[i].id.startsWith('txt') && listaInput[i].value != "") {
-            campo = new ProdutoCatalogoItem();
-            campo.IdProdutoCatalogo = '-1';
-            campo.IdProdutoCatalogoPropriedade = listaInput[i].id.replace('txt-', '');
-            campo.IdProdutoCatalogoPropriedadeOpcao = '-1';
-            campo.Valor = listaInput[i].value;
-            campo.Oculto = document.getElementById(listaInput[i].id.replace('txt', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
-            prod.campos.push(campo);
-          }
-        }
-
-        var listaDrop = document.getElementsByTagName("p-dropdown");
-        for (let d = 0; d < listaDrop.length; d++) {
-          var listaOpt = listaDrop[d].getElementsByTagName("span");
-          for (let i = 0; i < listaOpt.length - 1; i++) {
-            if (listaDrop[d].id.startsWith('cbo') && listaOpt[i].innerText != "Selecione") {
-              campo = new ProdutoCatalogoItem();
-              campo.IdProdutoCatalogo = '-1';
-              campo.IdProdutoCatalogoPropriedade = listaDrop[d].id.replace('cbo-', '');
-              campo.IdProdutoCatalogoPropriedadeOpcao = `${this.obterIdOpcao(listaDrop[d].id.replace('cbo-', ''), listaOpt[i].innerText)}`;
-              campo.Valor = '';
-              campo.Oculto = document.getElementById(listaDrop[d].id.replace('cbo', 'chk')).getElementsByTagName('input')[0].checked.toString() == "true" ? false : true;
-              prod.campos.push(campo);
-            }
-          }
-        }
-
-        if (!this.validacaoFormularioService.validaForm(this.form)) {
-          return;
-        }
-
-        let formData = new FormData();
-        if (!!this.arquivo)
-          formData.append("arquivo", this.arquivo, this.arquivo.name);
-
-        formData.append("produto", JSON.stringify(prod));
-        formData.append("loja", this.lojaLogado);
-        this.produtoService.criarProduto(formData).toPromise().then((r) => {
-          if (!r.Sucesso) {
-            this.sweetAlertService.aviso(r.Mensagem);
-            return;
-          }
-          this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
-          this.router.navigate(["//produtos-catalogo/listar"]);
-        }).catch((e) => {
-          this.alertaService.mostrarErroInternet(e);
-        });
       }
     }).catch((e) => {
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+      this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
+      this.router.navigate(["//produtos-catalogo/listar"]);
     });
-
   }
 
   setarDadosImagem(arquivo: any): void {

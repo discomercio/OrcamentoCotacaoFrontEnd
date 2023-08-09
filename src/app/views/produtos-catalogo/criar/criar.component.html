@@ -1,7 +1,7 @@
-<div [ngClass]="{'carregando': carregando }">
+<div>
     <div class="p-grid">
         <div class="p-col-12">
-            <div class="card">
+            <div class="card" [ngClass]="{'carregando': carregando }">
                 <h4 style="color: #007BFF"><i class="fa fa-info-circle" style="font-size:36px"></i>&nbsp;Características
                     do
                     Produto</h4>
@@ -9,7 +9,7 @@
         </div>
     </div>
 
-    <form [formGroup]="form">
+    <form [formGroup]="form" [ngClass]="{'carregando': carregando }">
 
         <div class="p-grid p-d-lg-flex">
             <div class="p-col-12">
@@ -120,7 +120,7 @@
     <!-- PROPRIEDADES DO PRODUTO -->
     <div class="p-grid">
         <div class="p-col-12">
-            <div class="card">
+            <div class="card" [ngClass]="{'carregando': carregando }">
                 <h4 style="color: #007BFF"><i class="fa fa-gear" style="font-size:36px;"></i>&nbsp;Propriedades do
                     Produto
                 </h4>
@@ -132,7 +132,7 @@
         <div class="p-col-12">
             <div class="card">
                 <div class="p-col-12 p-px-0">
-                    <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0"
+                    <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0" [ngClass]="{'carregando': carregando }"
                         *ngFor="let lista of propriedades; let i=index">
                         <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                         <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
