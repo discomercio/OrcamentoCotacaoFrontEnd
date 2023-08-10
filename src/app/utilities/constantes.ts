@@ -72,4 +72,7 @@ export class Constantes {
     public ModuloOrcamentoCotacao_Cliente_PJ_AvisoPreenchimentoDadosCadastrais = 30;
     public ModuloOrcamentoCotacao_EntregaImediata_PrazoMaxPrevisaoEntrega = 37;
     public ModuloOrcamentoCotacao_TextoFixo_CondicoesGerais = 12;
+    public ModuloOrcamentoCotacao_Orcamento_LogoPdf = 41;
+    public ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque = 39;
+    public ModuloOrcamentoCotacao_Disclaimer_Frete = 40;
 }

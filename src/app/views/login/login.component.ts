@@ -11,6 +11,7 @@ import { LoginRequest } from 'src/app/dto/login/login-request';
 import { environment } from 'src/environments/environment';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { SistemaService } from 'src/app/service/sistema/sistema.service';
+import { AppTopBarService } from 'src/app/main/app.topBar.service';
 
 //Components
 
@@ -41,12 +42,15 @@ export class LoginComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
     public readonly sistemaService: SistemaService,
+    public readonly appTopBarService: AppTopBarService,
   ) { }
 
   ngOnInit(): void {
     this.versaoFront = environment.version;
 
     this.buscarVersao();
+
+
   }
 
   ngAfterViewInit() {
@@ -71,12 +75,12 @@ export class LoginComponent implements OnInit {
       if (r != null) {
         this.versaoApi = r.versao;
         this.sistemaService.versaoFrontTxt = r.versaoFront;
-        if(this.versaoFront != this.sistemaService.versaoFrontTxt){
+        if (this.versaoFront != this.sistemaService.versaoFrontTxt) {
           this.alertaService.mostrarErroPacote();
           return;
         }
       }
-    }).catch((e)=>{
+    }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
     });
   }
@@ -122,6 +126,12 @@ export class LoginComponent implements OnInit {
       sessionStorage.setItem("lojas", this.autenticacaoService._lojasUsuarioLogado.toString());
       sessionStorage.setItem("sininho", "S");
       this.autenticacaoService._lojaLogado = this.loja;
+      this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
+
+      if (this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+        this.appTopBarService.obterQuantidadeMensagemPendente();
+        this.appTopBarService.ligarInterval();
+      }
 
       this.router.navigate(['dashboards']);
       return;
@@ -161,9 +171,16 @@ export class LoginComponent implements OnInit {
 
       this.autenticacaoService.setarToken(r.AccessToken);
       sessionStorage.setItem("sininho", "S");
+      sessionStorage.setItem("lojaLogada", this.autenticacaoService._lojasUsuarioLogado[0]);
       this.carregando = false;
 
       this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
+
+      if (this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+        console.log(`sininho login: ${this.appTopBarService.sininho}`);
+        this.appTopBarService.obterQuantidadeMensagemPendente();
+        this.appTopBarService.ligarInterval();
+      }
 
       this.router.navigate(['dashboards']);
     }).catch((e) => {

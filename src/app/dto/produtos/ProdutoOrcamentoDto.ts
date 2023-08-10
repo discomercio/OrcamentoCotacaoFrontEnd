@@ -6,6 +6,7 @@ export class ProdutoOrcamentoDto {
     fabricanteNome: string;
     produto: string;
     descricao: string;
+    descricaoHtml: string;
     precoLista: number | null;
     precoListaBase: number;
     coeficienteDeCalculo: number;

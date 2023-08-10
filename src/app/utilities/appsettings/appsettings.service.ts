@@ -1,4 +1,6 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 import { AppComponent } from "src/app/main/app.component";
 
 @Injectable({
@@ -8,7 +10,7 @@ export class AppSettingsService {
 
     public config: any;
 
-    constructor() {
+    constructor(private http: HttpClient) {
         this.config = this.ObterConfigs();
     }
 
@@ -30,6 +32,7 @@ export class AppSettingsService {
                 //   }
             }).json();
 
+            
             localStorage.setItem("appsettings", JSON.stringify(metadata));
             
             response = metadata;
@@ -37,4 +40,8 @@ export class AppSettingsService {
         
         return response;
     }
+
+    public retornarVersao():Observable<any> {
+        return this.http.get<any>('assets/config/appsettings.json');
+      }
 }

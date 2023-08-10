@@ -5,6 +5,8 @@ import { AppComponent } from './app.component';
 import { environment } from 'src/environments/environment';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { SistemaService } from '../service/sistema/sistema.service';
+import { AppTopBarService } from './app.topBar.service';
+import { AutenticacaoService } from '../service/autenticacao/autenticacao.service';
 
 @Component({
     selector: 'app-main',
@@ -45,10 +47,18 @@ export class AppMainComponent {
     constructor(public renderer: Renderer2, private menuService: MenuService,
         private primengConfig: PrimeNGConfig, public app: AppComponent,
         public readonly sistemaService: SistemaService,
-        private readonly alertaService: AlertaService
+        private readonly alertaService: AlertaService,
+        public readonly appTopBarService: AppTopBarService,
+        public readonly autenticacaoService: AutenticacaoService
     ) {
 
         this.buscarVersao();
+
+        if (!this.appTopBarService.iniciouSininho && this.autenticacaoService.authEstaLogado()) {
+            this.appTopBarService.iniciouSininho = true;
+            this.appTopBarService.obterQuantidadeMensagemPendente();
+            this.appTopBarService.ligarInterval();
+        }
     }
 
     onLayoutClick() {
@@ -71,6 +81,14 @@ export class AppMainComponent {
 
         if (this.configActive && !this.configClick) {
             this.configActive = false;
+        }
+
+        if (!this.menuClick && !this.configClick && !this.topbarItemClick &&
+            !this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
+            sessionStorage.setItem("sininho", "S");
+            this.appTopBarService.sininho = true;
+            this.appTopBarService.obterQuantidadeMensagemPendente();
+            this.appTopBarService.ligarInterval();
         }
 
         this.configClick = false;

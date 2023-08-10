@@ -34,7 +34,8 @@ import { PermissaoService } from 'src/app/service/permissao/permissao.service';
 import { PermissaoOrcamentoResponse } from 'src/app/dto/permissao/PermissaoOrcamentoResponse';
 import { RemetenteDestinatarioResponse } from 'src/app/service/mensageria/remetenteDestinatarioResponse';
 import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
-
+import jsPDF from 'jspdf';
+import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -94,7 +95,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   imgUrl: string;
   mostrarInstaladorInstala: boolean;
   editarOpcoes = new Array<boolean>();
-
+  imagem: any;
+  fraseEstoque: string;
+  fraseFrete: string;
 
   ngOnInit(): void {
     this.mensagemComponente.carregando = true;
@@ -114,7 +117,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const promises = [this.buscarPermissoes(),
     this.buscarOrcamento(),
     this.buscarDadosParaMensageria(),
-    this.buscarParametros(),
+    this.buscarParametrosCondicoesGerais(),
     this.buscarStatus(),
     this.mensagemComponente.buscarListaMensagem(this.idOrcamentoCotacao)];
     Promise.all(promises).then((r) => {
@@ -186,8 +189,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       return this.orcamentoService.buscarDadosParaMensageria(this.idOrcamentoCotacao, true).toPromise();
   }
 
-  buscarParametros(): Promise<any> {
+  buscarParametrosCondicoesGerais(): Promise<any> {
     return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_TextoFixo_CondicoesGerais, this.autenticacaoService._lojaLogado, null).toPromise();
+  }
+
+  buscarParametroLogoImpressao(loja: string): Promise<any> {
+    return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Orcamento_LogoPdf, loja, null).toPromise();
   }
 
   buscarStatus(): Promise<any> {
@@ -203,6 +210,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   buscarFormasPagto(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro): Promise<FormaPagto[]> {
     return this.formaPagtoService.buscarFormaPagto(tipoCliente, comIndicacao, tipoUsuario, apelido, apelidoParceiro).toPromise();
+  }
+
+  buscarParametroFraseEstoque(loja: string) {
+    return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, loja, null).toPromise();
+  }
+
+  buscarParametroFraseFrete(loja: string) {
+    return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, loja, null).toPromise();
   }
 
   setarPermissoes(response: PermissaoOrcamentoResponse) {
@@ -241,7 +256,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  Promise2(){
+  Promise2() {
     let orcamento = this.novoOrcamentoService.orcamentoCotacaoDto;
     let comIndicacao: number = 0;
     let tipoUsuario: number = this.autenticacaoService._tipoUsuario;
@@ -267,11 +282,15 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
-      tipoUsuario, apelido, apelidoParceiro), this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao)];
+      tipoUsuario, apelido, apelidoParceiro), this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao),
+    this.buscarParametroLogoImpressao(orcamento.loja), this.buscarParametroFraseEstoque(orcamento.loja), this.buscarParametroFraseFrete(orcamento.loja)];
 
     Promise.all(promises).then((r) => {
       this.setarParceiro(r[0]);
       this.setarFormaPagto(r[1]);
+      this.setarImagemLogoImpressao(r[3][0].Valor);
+      this.setarFraseEstoque(r[4][0].Valor);
+      this.setarFraseFrete(r[5][0].Valor);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.mensagemComponente.carregando = false;
@@ -339,6 +358,18 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.formaPagamento = r;
       this.novoOrcamentoService.atribuirOpcaoPagto(new Array<FormaPagtoCriacao>(), this.formaPagamento);
     }
+  }
+
+  setarImagemLogoImpressao(image: string) {
+    this.imagem = `assets/layout/images/${image}`;
+  }
+
+  setarFraseEstoque(frase: string) {
+    this.fraseEstoque = frase;
+  }
+
+  setarFraseFrete(frase: string) {
+    this.fraseFrete = frase;
   }
 
   clonarOrcamento() {
@@ -413,9 +444,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (!this.opcaoPagto) {
     }
     this.sweetalertService.aviso("Funcionalidade não implementada.");
-    /*this.sweetalertService.dialogo("", "Deseja aprovar essa opção?").subscribe(result => {
-
-    });*/
   }
 
   prorrogar() {
@@ -517,5 +545,658 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     document.execCommand('copy');
     document.removeEventListener('copy', copiar);
     this.mensagemService.showSuccessViaToast("Link copiado com sucesso!");
+  }
+
+  TAB_SIZE = 10;
+  NORMAL_FONT_SIZE = 10;
+  TITLE_FONT_SIZE = 12;
+  SMALL_FONT_SIZE = 8;
+
+  CHECKBOX_SIZE = 6;
+
+  FOOTER_MARGIN = this.SMALL_FONT_SIZE * 3;
+
+  DELIVERY_ALERTS = [];
+
+  generatePDF(image) {
+    // Captura data de geração do PDF
+    const generateDate = new Date();
+
+    // Cria documento
+    const doc = this.createPDF();
+
+    //Adicionar um template de pagina
+    let currentPositionY = this.addPageTemplate(doc, image);
+
+    // Adicionar informações sobre o orçamento
+    currentPositionY = this.addBudgetInfo(doc, currentPositionY, this.novoOrcamentoService.orcamentoCotacaoDto);
+
+    // Adicionar informações sobre a entrega
+    this.DELIVERY_ALERTS = [];
+    this.DELIVERY_ALERTS.push(this.fraseEstoque);
+    this.DELIVERY_ALERTS.push(this.fraseFrete);
+
+    currentPositionY = this.addDeliveryInfo(
+      doc,
+      currentPositionY,
+      this.novoOrcamentoService.orcamentoCotacaoDto,
+      this.DELIVERY_ALERTS
+    );
+
+    // Loop para adicionar as opções disponíveis
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach((option, index) => {
+      const optionTitle = `Opção ${index + 1}`;
+
+      // Adicionar opção
+      let pagtos = {
+        cashPayment: {
+          paymentTitle: "",
+          paymentLines: [],
+        },
+        installmentPayment: {
+          paymentTitle: "",
+          paymentLines: [],
+        }
+      }
+      option.formaPagto.forEach((p) => {
+        if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+          pagtos.cashPayment.paymentTitle = pagto.titulo;
+          pagtos.cashPayment.paymentLines = pagto.linhasPagto;
+        }
+        else {
+          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+          pagtos.installmentPayment.paymentTitle = pagto.titulo;
+          pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+        }
+      });
+      currentPositionY = this.addOption(
+        doc,
+        currentPositionY,
+        option,
+        optionTitle,
+        pagtos
+      );
+    });
+
+    // Adicionar informações de disclaimer
+    this.addDisclaimer(doc, currentPositionY, this.condicoesGerais);
+
+    // Adicionar informações no footer
+    this.addPageFooter(doc, generateDate);
+
+    doc.save(
+      `${this.novoOrcamentoService.orcamentoCotacaoDto.id}_${this.getFormattedDateFileName(generateDate)}.pdf`
+    );
+  }
+
+  getImageSizeAndGeneratePDF() {
+    // this.getImageSize2(this.imagem);
+    let img = new Image();
+    img.src = this.imagem;
+
+    this.getImageSize(this.imagem).then(({ source, height, width }) => {
+      this.generatePDF({ source, height, width });
+    });
+  }
+
+  // Função para pegar tamanho da imagem
+  getImageSize(source: string):any {
+    return new Promise((resolve) => {
+
+      const image = new Image();
+      image.onload = () => {
+        const height = image.height * 0.25;
+        const width = image.width * 0.25;
+
+        resolve({ source, height, width });
+      };
+      image.src = source;
+    });
+  }
+
+  //Função para criar documento PDF
+  createPDF(): jsPDF {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      format: "a4",
+      unit: "px",
+    });
+
+    doc.deletePage(1);
+    return doc;
+  }
+
+  // Função para adicionar pagina template
+  addPageTemplate(doc: jsPDF, image) {
+    doc.addPage();
+
+    // Adicionar imagem na primeira pagina
+    if (doc.getNumberOfPages() === 1 && image?.source) {
+      doc.addImage(
+        image.source,
+        "PNG",
+        doc.internal.pageSize.width - image.width - this.TAB_SIZE,
+        this.TAB_SIZE,
+        image.width,
+        image.height
+      );
+    }
+
+    // Adicionar moldura do relatorio
+    doc
+      .setFillColor("#000")
+      .rect(
+        this.TAB_SIZE,
+        this.TAB_SIZE,
+        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - 2 * this.TAB_SIZE,
+        "S"
+      );
+
+    return 3 * this.TAB_SIZE;
+  }
+
+  // Função para adicionar informações sobre o orçamento
+  addBudgetInfo(doc: jsPDF, currentPositionY: number, orcamento: OrcamentoCotacaoResponse) {
+    currentPositionY = this.addTitle(doc, currentPositionY, "Dados do Orçamento", undefined);
+
+    const budgetInfo = [
+      ["Orçamento nº:", orcamento.id],
+      ["Status:", this.statusOrcamento],
+      ["Criado em:", this.getFormattedDate(new Date(orcamento.dataCadastro))],
+      ["Válido até:", this.getFormattedDate(new Date(orcamento.validade))],
+      ["Tipo de cliente:", this.retornarTipoPessoa(this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo)],
+    ];
+
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo);
+
+    currentPositionY += this.NORMAL_FONT_SIZE;
+
+    const clientDescriptionText = `Aos cuidados de ${orcamento.clienteOrcamentoCotacaoDto.nomeCliente
+      }${orcamento.clienteOrcamentoCotacaoDto.nomeObra ? ` (${orcamento.clienteOrcamentoCotacaoDto.nomeObra})` : ""}`;
+
+    const maxClientDescriptionWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE;
+
+    const clientDescriptionLines = doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .splitTextToSize(clientDescriptionText, maxClientDescriptionWidth);
+
+    clientDescriptionLines.forEach((line) => {
+      doc
+        .setFontSize(this.NORMAL_FONT_SIZE)
+        .text(line, 2 * this.TAB_SIZE, currentPositionY);
+
+      currentPositionY += this.NORMAL_FONT_SIZE;
+    });
+
+    return (currentPositionY += 10);
+  }
+
+  // Função para adicionar informações sobre a entrega
+  addDeliveryInfo(doc: jsPDF, currentPositionY: number, orcamento: OrcamentoCotacaoResponse, deliveryAlerts) {
+    currentPositionY = this.addTitle(doc, currentPositionY, "Dados de Entrega", undefined);
+
+    const deliveryInfo = [
+      ["UF:", orcamento.clienteOrcamentoCotacaoDto.uf],
+      [
+        "Entrega imediata:",
+        this.retornarSimOuNao(orcamento.entregaImediata),
+      ]
+    ];
+
+    if (!orcamento.entregaImediata) {
+      deliveryInfo.push(
+        [
+          "Entrega prevista para:",
+          this.dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata),
+        ]);
+    }
+
+    currentPositionY = this.addLabeledData(doc, currentPositionY, deliveryInfo);
+
+    currentPositionY -= this.NORMAL_FONT_SIZE * deliveryInfo.length;
+
+    // Adicionar aviso de entrega
+    const maxAlertWidth = doc.internal.pageSize.width / 2 - 4 * this.TAB_SIZE;
+
+    deliveryAlerts.forEach((alert) => {
+
+      if (alert.indexOf("style=") > -1) {
+        //é html
+        let parser = new DOMParser();
+        let html = parser.parseFromString(alert, 'text/html');
+        let parag = html.getElementsByTagName("p");
+        
+        const alertLines = doc
+          .setFontSize(this.NORMAL_FONT_SIZE)
+          .setFont(undefined, "bold")
+          .splitTextToSize(parag[0].innerText, maxAlertWidth);
+
+          alertLines.forEach((line) => {
+            doc
+              .setTextColor(parag[0].style.color)
+              .text(
+                `${line}`,
+                doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+                currentPositionY,
+                { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: Number.parseFloat(parag[0].style.lineHeight) }
+              );
+            currentPositionY += this.NORMAL_FONT_SIZE;
+          });
+      }
+      else {
+        const alertLines = doc
+          .setFontSize(this.NORMAL_FONT_SIZE)
+          .setFont(undefined, "bold")
+          .splitTextToSize(alert, maxAlertWidth);
+
+        alertLines.forEach((line) => {
+          doc
+            .setTextColor("F00")
+            .text(
+              `${line}`,
+              doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+              currentPositionY,
+              { align: "right", maxWidth: maxAlertWidth, lineHeightFactor: 1.5 }
+            );
+          currentPositionY += this.NORMAL_FONT_SIZE;
+        });
+      }
+    });
+
+    doc.setTextColor("000").setFont('Helvetica', "normal");
+
+    return (currentPositionY += this.NORMAL_FONT_SIZE + 30);
+  }
+
+  // Função para adicionar uma opção do orçamento
+  addOption(doc: jsPDF,
+    currentPositionY: number,
+    option: OrcamentosOpcaoResponse,
+    optionTitle: string,
+    paymentOptions) {
+    const maxPaymentWidth = doc.internal.pageSize.width / 2 - 4 * this.TAB_SIZE;
+
+    let cashPaymentPaymentLines = 0;
+    if (paymentOptions.cashPayment.paymentTitle != "") {
+      cashPaymentPaymentLines = this.calculatePaymentLines(
+        doc,
+        paymentOptions,
+        "cashPayment",
+        maxPaymentWidth
+      );
+    }
+
+    let installmentPaymentLines = 0;
+    if (paymentOptions.installmentPayment.paymentTitle != "") {
+      installmentPaymentLines = this.calculatePaymentLines(
+        doc,
+        paymentOptions,
+        "installmentPayment",
+        maxPaymentWidth
+      );
+    }
+
+    const paymentLines = Math.max(
+      cashPaymentPaymentLines,
+      installmentPaymentLines
+    );
+
+    const paymentHeight = paymentLines * this.SMALL_FONT_SIZE;
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      paymentHeight + 2 * this.TITLE_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+
+    currentPositionY = this.addTitle(doc, currentPositionY, optionTitle, true);
+
+    if (paymentOptions.cashPayment.paymentTitle != "") {
+      this.addPaymentInformation(
+        doc,
+        currentPositionY,
+        paymentOptions.cashPayment,
+        this.TAB_SIZE * 3,
+        paymentOptions.cashPayment.paymentTitle,
+        maxPaymentWidth
+      );
+    }
+
+    if (paymentOptions.installmentPayment.paymentTitle != "") {
+      this.addPaymentInformation(
+        doc,
+        currentPositionY,
+        paymentOptions.installmentPayment,
+        doc.internal.pageSize.width / 2 + this.TAB_SIZE,
+        paymentOptions.installmentPayment.paymentTitle,
+        maxPaymentWidth
+      );
+    }
+
+    currentPositionY += paymentHeight + 15;
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      3 * this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
+    doc.text("Qtde", 320, currentPositionY, {
+      align: "right",
+    });
+    doc.text(
+      "Preço",
+      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+
+    currentPositionY += 10;
+
+    option.listaProdutos.forEach((product) => {
+      currentPositionY = this.addProduct(doc, currentPositionY, product);
+    });
+
+    return (currentPositionY += 20);
+  }
+
+  //Função para adicionar informações de pagamento
+  addPaymentInformation(doc: jsPDF,
+    currentPositionY,
+    paymentOptions,
+    marginX,
+    title,
+    maxPaymentWidth) {
+    const paymentLines = paymentOptions?.paymentLines;
+
+    if (paymentLines) {
+      this.drawCheckBox(doc, marginX, currentPositionY);
+      let paymentY = currentPositionY + this.CHECKBOX_SIZE - this.CHECKBOX_SIZE * 0.1;
+
+      if (title) {
+        const paymentTitleLines = doc
+          .setFontSize(this.NORMAL_FONT_SIZE)
+          .setFont(undefined, "bold")
+          .splitTextToSize(title, maxPaymentWidth);
+        paymentTitleLines.forEach((line) => {
+          doc.text(line, marginX + this.CHECKBOX_SIZE + this.TAB_SIZE / 2, paymentY);
+          paymentY += this.SMALL_FONT_SIZE;
+        });
+      }
+
+      doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+      paymentLines.forEach((line) => {
+        const paymentLines = doc.splitTextToSize(line, maxPaymentWidth);
+        paymentLines.forEach((line) => {
+          doc.text(line, marginX + this.CHECKBOX_SIZE + this.TAB_SIZE / 2, paymentY, {
+            maxWidth: maxPaymentWidth,
+            lineHeightFactor: 1.5,
+          });
+          paymentY += this.SMALL_FONT_SIZE;
+        });
+      });
+
+      currentPositionY = paymentY;
+    }
+
+    return currentPositionY;
+  }
+
+  // Função para adicionar detalhes de um produto
+  addProduct(doc, currentPositionY, product) {
+    doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+    const maxDescriptionWidth = 260;
+
+    const productDescription = `${product.fabricante}/${product.produto} - ${product.descricao}`;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+
+    let descriptionY = currentPositionY;
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE
+      );
+
+    descriptionLines.forEach((line) => {
+      doc.text(line, 3 * this.TAB_SIZE, descriptionY, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+
+    doc.text(`${product.qtde}`, 319, currentPositionY, { align: "right" });
+
+    doc.text(
+      `${this.moedaUtils.formatarMoedaSemPrefixo(product.precoVenda)}`,
+      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    if (descriptionLines.length > 1) {
+      currentPositionY += this.SMALL_FONT_SIZE * (descriptionLines.length - 1);
+    }
+
+    return (currentPositionY += this.SMALL_FONT_SIZE + 3);
+  }
+
+  // Função para adicionar Disclaimer
+  addDisclaimer(doc, currentPositionY, disclaimerText) {
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      this.FOOTER_MARGIN + this.NORMAL_FONT_SIZE * 3
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+    const maxDisclaimerWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE;
+
+    doc
+      .setFillColor("#000")
+      .rect(
+        2 * this.TAB_SIZE,
+        currentPositionY,
+        doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+        1,
+        "F"
+      );
+
+    currentPositionY += this.NORMAL_FONT_SIZE * 1.2;
+
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text("Condições gerais:", 2 * this.TAB_SIZE, currentPositionY);
+
+    currentPositionY += this.NORMAL_FONT_SIZE;
+
+    doc.setFontSize(this.SMALL_FONT_SIZE).setFont(undefined, "normal");
+
+    const disclaimerLines = doc.splitTextToSize(
+      disclaimerText,
+      maxDisclaimerWidth
+    );
+
+    disclaimerLines.forEach((line) => {
+      if (doc.internal.pageSize.height - currentPositionY < this.FOOTER_MARGIN) {
+        currentPositionY = this.addPageTemplate(doc, undefined);
+      }
+      doc.text(line, 2 * this.TAB_SIZE, currentPositionY, {
+        maxWidth: maxDisclaimerWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      currentPositionY += this.SMALL_FONT_SIZE;
+    });
+  }
+
+  // Função para adicionar o rodapé em todas as páginas
+  addPageFooter(doc, generateDate) {
+    const totalPages = doc.internal.getNumberOfPages();
+
+    doc.setFontSize(this.SMALL_FONT_SIZE).setFont(undefined, "italic");
+
+    const footerDescription = `PDF gerado em ${this.getFormattedFooterDate(
+      generateDate
+    )}`;
+
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      const pageFooter = `Página ${i} de ${totalPages}`;
+
+      doc
+        .text(
+          footerDescription,
+          doc.internal.pageSize.width / 2 -
+          doc.getTextWidth(footerDescription) / 2,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 2
+        )
+        .text(
+          pageFooter,
+          doc.internal.pageSize.width - doc.getTextWidth(pageFooter) / 2 - 45,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 2
+        )
+        .setFillColor("#818181")
+        .rect(
+          2 * this.TAB_SIZE,
+          doc.internal.pageSize.height - this.FOOTER_MARGIN,
+          doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+          0.5,
+          "F"
+        );
+    }
+  }
+
+  // Função para adicionar um titulo
+  addTitle(doc, currentPositionY, title, withLine) {
+    doc
+      .setFontSize(this.TITLE_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text(title, 2 * this.TAB_SIZE, currentPositionY);
+
+    doc.setFontSize(this.NORMAL_FONT_SIZE).setFont(undefined, "normal");
+
+    if (withLine) {
+      doc
+        .setDrawColor("#000")
+        .line(
+          2 * this.TAB_SIZE,
+          currentPositionY + 5,
+          doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+          currentPositionY + 5
+        );
+    }
+
+    return (currentPositionY += this.TITLE_FONT_SIZE);
+  }
+
+  // Função para adicionar um valor com label
+  addLabeledData(doc: jsPDF, currentPositionY: number, data) {
+    doc.setFontSize(this.NORMAL_FONT_SIZE);
+
+    data.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      const labelWidth = doc
+        .text(label, 2 * this.TAB_SIZE, currentPositionY)
+        .getTextWidth(label);
+
+      doc.setFont(undefined, "normal");
+      doc.text(`${value}`, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY);
+      currentPositionY += this.NORMAL_FONT_SIZE;
+    });
+
+    return currentPositionY;
+  }
+
+  // Função para calcular linhas das opções de pagamento
+  calculatePaymentLines(doc: jsPDF, paymentOptions, option, maxWidth: number) {
+    let paymentLines = 0;
+
+    paymentOptions?.[option]?.paymentLines?.forEach((line) => {
+      const lines = doc
+        .setFontSize(this.SMALL_FONT_SIZE)
+        .splitTextToSize(line, maxWidth).length;
+      paymentLines += lines;
+    });
+
+    if (paymentOptions?.[option]?.paymentTitle) {
+      const paymentTitleLines = doc
+        .setFontSize(this.NORMAL_FONT_SIZE)
+        .setFont(undefined, "bold")
+        .splitTextToSize(paymentOptions?.[option]?.paymentTitle, maxWidth);
+
+      paymentLines += paymentTitleLines.length;
+    }
+
+    return paymentLines;
+  }
+
+  // Função para desenhar checkbox
+  drawCheckBox(doc: jsPDF, x: number, y: number) {
+    doc.setDrawColor("#000000");
+    doc.rect(x, y, this.CHECKBOX_SIZE, this.CHECKBOX_SIZE, "S");
+  }
+
+  // Função para obter a data formatada impressa no footer
+  getFormattedFooterDate(date: Date): string {
+    return new Intl.DateTimeFormat("pt-BR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    })
+      .format(date)
+      .replace(", ", " às ");
+  }
+
+  // Função para formatar data
+  getFormattedDate(date: Date): string {
+    return new Intl.DateTimeFormat("pt-BR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+    }).format(date);
+  }
+
+  // Função para formatar data no nome do arquivo
+  getFormattedDateFileName(date: Date): string {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear());
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}${month}${day}_${hours}${minutes}`;
   }
 }

@@ -235,7 +235,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     if (pagtoPrazo.length > 0) {
       this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
       this.formaPagto.setarQtdeParcelas();
-      this.novoOrcamentoService.qtdeParcelas;
       this.formaPagto.setarSiglaPagto();
     }
     this.formaPagto.atribuirFormasPagto();

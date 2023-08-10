@@ -562,7 +562,7 @@ debugger;
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
-      this.novoOrcamentoService.qtdeParcelas = 0;
+      this.novoOrcamentoService.qtdeParcelas = 1;
       return;
     }
     if (this.formaPagtoCriacaoAprazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
