@@ -10,6 +10,9 @@
                                 <button type="button" pButton icon="pi pi-fw pi-arrow-left" label="Voltar"
                                     (click)="voltar()"></button>
                                 &nbsp;
+                                <button type="button" pButton icon="pi pi-file-o" label="PDF"
+                                    (click)="getImageSizeAndGeneratePDF()"></button>
+                                &nbsp;
                                 <button type="button" pButton icon="pi pi-bars" label="Opções"
                                     (click)="menu.toggle($event)"></button>
                                 <p-menu #menu [popup]="true" [model]="items"></p-menu>
@@ -212,18 +215,19 @@
                                                     <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
 
                                                         <tr class="{{telaDesktop ? '' : 'font-size'}}">
-                                                            <td class="p-d-inline-flex"
+                                                            <td class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                                 [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
                                                                 <img src="{{imgUrl}}{{produto.urlImagem}}"
-                                                                    [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
+                                                                class="p-p-2"
+                                                                    [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td *ngIf="telaDesktop">
                                                                 <p
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td
@@ -352,18 +356,18 @@
                                                     <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
                                                         <tr class="{{telaDesktop ? '' : 'font-size'}}">
 
-                                                            <td class="p-d-inline-flex"
+                                                            <td class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                                 [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                <img src="{{imgUrl}}{{produto.urlImagem}}"
-                                                                    [ngStyle]="telaDesktop ? {'width':'80%'}: {'width':'40%'}" />
+                                                                <img src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
+                                                                    [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, '', produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td *ngIf="telaDesktop">
                                                                 <p
-                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricao)">
+                                                                    [innerHtml]="stringUtils.formatarDescricao(produto.fabricante, produto.fabricanteNome, produto.produto, produto.descricaoHtml)">
                                                                 </p>
                                                             </td>
                                                             <td

@@ -155,9 +155,9 @@
                 <li #notifications [ngClass]="{'active-top-menu':appMain.activeTopbarItem === notifications}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
                         <i class="topbar-icon pi pi-fw pi-bell"></i>
-                        <span class="topbar-badge animated rubberBand">{{qtdMensagem}}</span>
-                        <span class="topbar-item-name" *ngIf="qtdMensagem > 1">Notificações</span>
-                        <span class="topbar-item-name" *ngIf="qtdMensagem < 2">Notificação</span>
+                        <span class="topbar-badge animated rubberBand">{{appTopBarService.qtdMensagem}}</span>
+                        <span class="topbar-item-name" *ngIf="appTopBarService.qtdMensagem > 1">Notificações</span>
+                        <span class="topbar-item-name" *ngIf="appTopBarService.qtdMensagem < 2">Notificação</span>
                     </a>
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                         <li role="menuitem">
@@ -166,7 +166,7 @@
                                 <span>Mensagens não tratadas</span>
                             </a>
                         </li>
-                        <li role="menuitem" *ngIf="!!listaMensagemPendente.listaQtdeMensagemPendente && listaMensagemPendente.listaQtdeMensagemPendente.length > 0 && qtdeLojasUsuarioLogado > 1" >
+                        <li role="menuitem" *ngIf="!!appTopBarService.listaMensagemPendente.listaQtdeMensagemPendente && appTopBarService.listaMensagemPendente.listaQtdeMensagemPendente.length > 0 && qtdeLojasUsuarioLogado > 1" >
                             <a href="#" style="pointer-events: none;">
                                 <!-- <i class="pi pi-fw pi-envelope"></i> -->
                                 <span style="font-weight: 700;">Mensagens pendentes por lojas</span>
@@ -174,7 +174,7 @@
                             </a>
                         </li>
                         <ng-container *ngIf="qtdeLojasUsuarioLogado > 1">
-                            <li role="menuitem" *ngFor="let item of listaMensagemPendente.listaQtdeMensagemPendente" >
+                            <li role="menuitem" *ngFor="let item of appTopBarService.listaMensagemPendente.listaQtdeMensagemPendente" >
                                 <a href="#" style="pointer-events: none;">
                                     <i class="pi pi-fw pi-envelope"></i>
                                     <span *ngIf="item.qtde > 1">Loja: {{item.loja}} / Mensagens: {{item.qtde}}</span>

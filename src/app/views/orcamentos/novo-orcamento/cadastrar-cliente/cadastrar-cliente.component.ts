@@ -286,10 +286,14 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   }
 
   buscarParceirosPorVendedor(): Promise<OrcamentistaIndicadorDto[]> {
-    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS ||
-      this.usuario.permissoes.includes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
+    if (this.usuario.permissoes.includes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
       let loja: string = this.usuario.loja;
       return this.orcamentistaIndicadorService.buscarParceirosPorLoja(loja).toPromise();
+    }
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS){
+      let loja: string = this.usuario.loja;
+      let vendedor:string = this.autenticacaoService._usuarioLogado;
+      return this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise();
     }
   }
 
@@ -527,7 +531,6 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       });
     }
   }
-
 
   salvarOrcamento() {
 

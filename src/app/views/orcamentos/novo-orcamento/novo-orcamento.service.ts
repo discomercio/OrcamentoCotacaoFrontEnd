@@ -617,4 +617,89 @@ export class NovoOrcamentoService {
 
     return false;
   }
+
+  formatarFormaPagamentoImpressao(opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
+    let retorno = { titulo: "", linhasPagto: [] };
+    let texto: string = "";
+
+    opcaoOrcamentoCotacaoDto.formaPagto.some((fp) => {
+
+      let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+        let total = 0;
+        opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
+          let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
+          let precoBaseVenda = this.moedaUtils
+            .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
+          total += precoBaseVenda;
+        });
+        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
+
+        retorno.titulo = texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+        retorno.titulo = `${pagto.tipoPagamentoDescricao} ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
+        retorno.linhasPagto.push(`${pagto.tipoPagamentoDescricao} em ${fp.c_pc_qtde.toString()} X de ${this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor)}`);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+        let meioEntrada = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_entrada_forma_pagto)[0].descricao;
+        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_prestacao_forma_pagto)[0].descricao;
+
+        retorno.titulo = "Parcelado com entrada " + this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal);
+        retorno.linhasPagto.push(`Entrada: ${meioEntrada} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.o_pce_entrada_valor)}`);
+        retorno.linhasPagto.push(`Demais Prestações: ${meioPrestacao} em ${fPagto.c_pce_prestacao_qtde} X de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pce_prestacao_valor)}`);
+        retorno.linhasPagto.push(`Período entre Parcelas: ${fPagto.c_pce_prestacao_periodo} dias`);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
+      }
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+        let meioPrimPrest = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_prim_prest_forma_pagto)[0].descricao;
+        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_demais_prest_forma_pagto)[0].descricao;
+
+        retorno.titulo = "Parcelado sem entrada " + this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal);
+        retorno.linhasPagto.push(`1º Prestação: : ${meioPrimPrest} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_prim_prest_valor)}`);
+        retorno.linhasPagto.push(`vencendo após " + fPagto.c_pse_prim_prest_apos + " dias`);
+        retorno.linhasPagto.push(`Demais Prestações: ${meioPrestacao} em ${fPagto.c_pse_demais_prest_qtde} X de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_demais_prest_valor)}`);
+        retorno.linhasPagto.push(`Período entre Parcelas: ${fPagto.c_pse_demais_prest_periodo} dias`);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
+      }
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0].descricao;
+        
+          retorno.titulo = `Parcela única ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
+          retorno.linhasPagto.push(`${pagto.tipoPagamentoDescricao} em ${meio} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor)}`);
+          retorno.linhasPagto.push(`vencendo após ${fPagto.c_pu_vencto_apos} dias`);
+          if (!!fp.observacoesGerais) {
+            retorno.linhasPagto.push(fp.observacoesGerais);
+          }
+          return true;
+      }
+
+      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+        retorno.titulo = `${pagto.tipoPagamentoDescricao} ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
+        retorno.linhasPagto.push(`${pagto.tipoPagamentoDescricao} em ${fp.c_pc_maquineta_qtde.toString()} X de ${this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_maquineta_valor)}`);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
+      }
+    });
+    return retorno;
+  }
+
 }
