@@ -102,7 +102,7 @@ export class UsuarioEdicaoComponent implements OnInit {
   }
 
   buscarVendedorParceiroPorId(): Promise<Usuario> {
-    if(!this.bloqueiaParceiro) return null;
+    if (!this.bloqueiaParceiro) return null;
 
     return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorId(this.param).toPromise();
   }
@@ -190,6 +190,8 @@ export class UsuarioEdicaoComponent implements OnInit {
   atualizar() {
     if (!this.validacaoFormularioService.validaForm(this.form)) return;
 
+    this.carregando = true;
+
     let f = this.form.controls;
     this.usuario.nome = f.nome.value;
     this.usuario.ativo = (f.ativo.value == true);
@@ -210,20 +212,24 @@ export class UsuarioEdicaoComponent implements OnInit {
       this.orcamentistaIndicadorVendedorService.atualizar(this.usuario)
         .toPromise()
         .then((x) => {
+          this.carregando = false;
           this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
           this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
+          this.carregando = false;
           this.alertaService.mostrarErroInternet(e);
         });
     } else {
       this.orcamentistaIndicadorVendedorService.cadastrar(this.usuario)
         .toPromise()
         .then((x) => {
+          this.carregando = false;
           this.mensagemService.showSuccessViaToast("Cadastrado com sucesso!");
           this.router.navigate([`/usuarios/usuario-lista`]);
         })
         .catch((e) => {
+          this.carregando = false;
           this.alertaService.mostrarErroInternet(e);
         });
     }
