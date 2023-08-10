@@ -998,7 +998,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     doc.text(`${product.qtde}`, 319, currentPositionY, { align: "right" });
 
     doc.text(
-      `${this.getFormattedMoney(product.precoVenda)}`,
+      `${this.moedaUtils.formatarMoedaSemPrefixo(product.precoVenda)}`,
       doc.internal.pageSize.width - 3 * this.TAB_SIZE,
       currentPositionY,
       { align: "right" }
@@ -1198,10 +1198,5 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}${month}${day}_${hours}${minutes}`;
-  }
-
-  // Função para formatar valor monetário
-  getFormattedMoney(number: number): string {
-    return new Intl.NumberFormat("pt-BR").format(number);
   }
 }
