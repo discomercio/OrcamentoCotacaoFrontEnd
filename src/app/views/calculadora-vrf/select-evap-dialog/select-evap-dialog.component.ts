@@ -18,7 +18,8 @@ import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.
 export class SelectEvapDialogComponent implements OnInit {
 
   constructor(@Inject(DynamicDialogConfig) public option: DynamicDialogConfig,
-    public ref: DynamicDialogRef) {
+    public ref: DynamicDialogRef,
+    public readonly mensagemService: MensagemService) {
   }
 
   @ViewChild('dataTable') table: Table;
