@@ -56,7 +56,7 @@ export class MensageriaComponent {
 
   obterListaMensagem(idOrcamentoCotacao: number) {
     this.carregando = true;
-    const promise = [this.buscarListaMensagem(idOrcamentoCotacao)];
+    const promise = [this.buscarListaMensagem(idOrcamentoCotacao), this.marcarMensagemComoLida(idOrcamentoCotacao)];
     Promise.all(promise).then((r) => {
       this.setarListaMensagem(idOrcamentoCotacao, r[0]);
     }).catch((e) => {
@@ -103,31 +103,29 @@ export class MensageriaComponent {
     if (this.rotaPublica && this.guid) {
 
       this.mensageriaService.enviarMensagemRotaPublica(msg, this.guid).toPromise().then((r) => {
-        this.carregando = false;
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-          this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
       }).catch((r) => {
-        this.alertaService.mostrarErroInternet(r);
         this.carregando = false;
+        this.alertaService.mostrarErroInternet(r);
       }).finally(()=>{
-        this.marcarMensagemComoLida(this.idOrcamentoCotacao);
+        this.carregando = false;
+        this.obterListaMensagem(this.idOrcamentoCotacao);
       });
     } else {
       this.mensageriaService.enviarMensagem(msg).toPromise().then((r) => {
-        this.carregando = false;
         if (r != null) {
           this.mensagemService.showSuccessViaToast("Mensagem enviada sucesso!");
-          this.obterListaMensagem(this.idOrcamentoCotacao);
           this.mensagem.nativeElement.value = '';
         }
       }).catch((r) => {
         this.alertaService.mostrarErroInternet(r);
         this.carregando = false;
       }).finally(()=>{
-        this.marcarMensagemComoLida(this.idOrcamentoCotacao);
+        this.carregando = false;
+        this.obterListaMensagem(this.idOrcamentoCotacao);
       });
     }
   }
