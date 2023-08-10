@@ -1,9 +1,8 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AppMainComponent } from './app.main.component';
 import { AutenticacaoService } from './../service/autenticacao/autenticacao.service';
-import { MensageriaService } from './../service/mensageria/mensageria.service';
 import { DropDownItem } from '../views/orcamentos/models/DropDownItem';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
@@ -11,7 +10,6 @@ import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { AlertaService } from '../components/alert-dialog/alerta.service';
 import { ePermissao } from './../utilities/enums/ePermissao';
 import { Title } from "@angular/platform-browser";
-import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { ListaQuantidadeMensagemPendenteResponse } from '../dto/mensageria/lista-quantidade-mensagem-pendente-response';
 import { AppTopBarService } from './app.topBar.service';
 
@@ -19,7 +17,7 @@ import { AppTopBarService } from './app.topBar.service';
   selector: 'app-topbar',
   templateUrl: "app.topbar.component.html"
 })
-export class AppTopBarComponent implements OnInit, OnDestroy {
+export class AppTopBarComponent implements OnInit {
 
   constructor(
     public app: AppComponent,
@@ -53,10 +51,7 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
     this.populaComboLojas();
     this.buscarEstilo();
     this.qtdeLojasUsuarioLogado = this.autenticacaoService._lojasUsuarioLogado.length;
-    
   }
-
-  carregando: boolean = false;
 
   buscarEstilo() {
 
@@ -94,7 +89,6 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
       } else {
         this.meuDados = true;
       }
-
     }
   }
 
@@ -105,6 +99,7 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
   }
 
   logoffClick() {
+    this.appTopBarService.qtdMensagem = 0;
     this.autenticacaoService.authLogout();
     this.router.navigate(['/account/login'], { queryParams: {} });
   }
@@ -146,10 +141,5 @@ export class AppTopBarComponent implements OnInit, OnDestroy {
     this.autenticacaoService._lojaLogadoApoio = $event;
     this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
     this.router.navigate(["dashboards"]);
-  }
-
-  ngOnDestroy(){
-    // this.appTopBarService.sininho = false;
-    this.appTopBarService.qtdMensagem = 0;
   }
 }
