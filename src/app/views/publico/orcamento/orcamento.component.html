@@ -1,148 +1,157 @@
-<app-publico-header #publicHeader></app-publico-header>
+<div [ngClass]="{'carregando': carregando}">
+    <app-publico-header #publicHeader></app-publico-header>
+    <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" *ngIf="!validado">
+        <div class="p-grid p-jc-center">
+            <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
+                <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" style="min-height: calc(100vh - 100px);">
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" *ngIf="validado">
+        <div class="p-grid p-jc-center">
+            <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
+                <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" *ngIf="orcamento">
 
-<div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}" *ngIf="validado">
-    <div class="p-grid p-jc-center">
-        <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
-            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3" *ngIf="orcamento">
+                    <h5>&nbsp;&nbsp;Orçamento Nº {{orcamento.id}}</h5>
 
-                <h5>&nbsp;&nbsp;Orçamento Nº {{orcamento.id}}</h5>
+                    <div class="p-col-12">
+                        <div
+                            class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0">
+                            <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
+                                <div>
+                                    <h5>&nbsp;</h5>
+                                </div>
 
-                <div class="p-col-12">
-                    <div
-                        class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0">
-                        <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
-                            <div>
-                                <h5>&nbsp;</h5>
-                            </div>
+                                <div>
+                                    <span class="p-text-bold">Status:</span>
+                                    <span>
+                                        {{orcamento.statusDescricao}}</span>
+                                </div>
+                                <div>
+                                    <span class="p-text-bold">Data Criação:</span>
+                                    <span>
+                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataCadastro)}}</span>
+                                </div>
+                                <div>
+                                    <span class="p-text-bold">Validade:</span>
+                                    <span>
+                                        {{dataUtils.formata_data_DDMMYYY(orcamento.validade)}}
+                                    </span>
+                                </div>
+                                <br>
 
-                            <div>
-                                <span class="p-text-bold">Status:</span>
-                                <span>
-                                    {{orcamento.statusDescricao}}</span>
                             </div>
-                            <div>
-                                <span class="p-text-bold">Data Criação:</span>
-                                <span>
-                                    {{dataUtils.formata_data_DDMMYYY(orcamento.dataCadastro)}}</span>
-                            </div>
-                            <div>
-                                <span class="p-text-bold">Validade:</span>
-                                <span>
-                                    {{dataUtils.formata_data_DDMMYYY(orcamento.validade)}}
-                                </span>
-                            </div>
-                            <br>
+                            <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
+                                <div>
+                                    <h5><i class="pi pi-users"></i>&nbsp;Dados do Vendedor/Parceiro</h5>
+                                </div>
 
-                        </div>
-                        <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
-                            <div>
-                                <h5><i class="pi pi-users"></i>&nbsp;Dados do Vendedor/Parceiro</h5>
-                            </div>
-
-                            <div *ngIf="!orcamento.parceiro">
-                                <span class="p-text-bold">Vendedor:</span>
-                                <span>
-                                    {{orcamento.nomeIniciaisEmMaiusculasVendedor}}</span>
-                            </div>
-                            <div *ngIf="orcamento.parceiro">
-                                <span class="p-text-bold">Parceiro:</span>
-                                <span>
-                                    {{orcamento.razaoSocialNomeIniciaisEmMaiusculasParceiro}}</span>
-                            </div>
-                            <div *ngIf="orcamento.vendedorParceiro">
-                                <span class="p-text-bold">Vendedor Parceiro:</span>
-                                <span>
-                                    {{orcamento.vendedorParceiro}}</span>
-                            </div>
-                            <div>
-                                <span class="p-text-bold">Cadastrado Por:</span>
-                                <span>
-                                    {{orcamento.amigavelUsuarioCadastro}}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <br><br>
-
-                    <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0"
-                        *ngIf="orcamento">
-                        <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
-                            <h5><i class="pi pi-user"></i>&nbsp;Dados do Cliente</h5>
-
-                            <div>
-
-                                <span class="p-text-bold">Cliente:</span>
-                                <span>
-                                    {{orcamento.nomeCliente}}</span>
-                            </div>
-                            <div *ngIf="orcamento.nomeObra">
-                                <span class="p-text-bold">Obra:</span>
-                                <span>
-                                    {{orcamento.nomeObra}}</span>
-                            </div>
-
-                            <div *ngIf="orcamento.tipoCliente">
-                                <span class="p-text-bold">Tipo:</span>
-                                <span>
-                                    {{retornarTipoPessoa(orcamento.tipoCliente)}}</span>
-                            </div>
-
-                            <div *ngIf="orcamento.contribuinteIcms">
-                                <span class="p-text-bold">Contribuinte ICMS:</span>
-                                <span>
-                                    {{retornarContibuinteICMS(orcamento.contribuinteIcms)}}</span>
-                            </div>
-
-                            <div>
-                                <span class="p-text-bold">E-mail:</span>
-                                <span>
-                                    {{orcamento.email}}</span>
-                            </div>
-                            <div>
-                                <span class="p-text-bold">Telefone:</span>
-                                <span>
-                                    {{stringUtils.formataTextoTelefone(orcamento.telefone)}}
-                                </span>
-                            </div>
-
-                            <div *ngIf="orcamento.concordaWhatsapp == false">
-                                <span class="p-text-bold">Cliente autoriza contado via WhatsApp:</span>
-                                <span>
-                                    {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
-                            </div>
-
-                            <div *ngIf="orcamento.concordaWhatsapp == true">
-                                <span class="p-text-bold">Cliente concorda Unis pode enviar Whatsapp:</span>
-                                <span>
-                                    {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
+                                <div *ngIf="!orcamento.parceiro">
+                                    <span class="p-text-bold">Vendedor:</span>
+                                    <span>
+                                        {{orcamento.nomeIniciaisEmMaiusculasVendedor}}</span>
+                                </div>
+                                <div *ngIf="orcamento.parceiro">
+                                    <span class="p-text-bold">Parceiro:</span>
+                                    <span>
+                                        {{orcamento.razaoSocialNomeIniciaisEmMaiusculasParceiro}}</span>
+                                </div>
+                                <div *ngIf="orcamento.vendedorParceiro">
+                                    <span class="p-text-bold">Vendedor Parceiro:</span>
+                                    <span>
+                                        {{orcamento.vendedorParceiro}}</span>
+                                </div>
+                                <div>
+                                    <span class="p-text-bold">Cadastrado Por:</span>
+                                    <span>
+                                        {{orcamento.amigavelUsuarioCadastro}}</span>
+                                </div>
                             </div>
                         </div>
-                        <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
-                            <h5><i class="pi pi-send"></i>&nbsp;Dados de Entrega</h5>
+                        <br><br>
 
-                            <div>
-                                <span class="p-text-bold">UF (Entrega):</span>
-                                <span>
-                                    {{orcamento.uf}}</span>
+                        <div class="p-col-12 p-d-block p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-pt-2 p-px-0"
+                            *ngIf="orcamento">
+                            <div class="p-col-12 p-lg-6 p-md-6 p-py-0 p-sm-6">
+                                <h5><i class="pi pi-user"></i>&nbsp;Dados do Cliente</h5>
+
+                                <div>
+
+                                    <span class="p-text-bold">Cliente:</span>
+                                    <span>
+                                        {{orcamento.nomeCliente}}</span>
+                                </div>
+                                <div *ngIf="orcamento.nomeObra">
+                                    <span class="p-text-bold">Obra:</span>
+                                    <span>
+                                        {{orcamento.nomeObra}}</span>
+                                </div>
+
+                                <div *ngIf="orcamento.tipoCliente">
+                                    <span class="p-text-bold">Tipo:</span>
+                                    <span>
+                                        {{retornarTipoPessoa(orcamento.tipoCliente)}}</span>
+                                </div>
+
+                                <div *ngIf="orcamento.contribuinteIcms">
+                                    <span class="p-text-bold">Contribuinte ICMS:</span>
+                                    <span>
+                                        {{retornarContibuinteICMS(orcamento.contribuinteIcms)}}</span>
+                                </div>
+
+                                <div>
+                                    <span class="p-text-bold">E-mail:</span>
+                                    <span>
+                                        {{orcamento.email}}</span>
+                                </div>
+                                <div>
+                                    <span class="p-text-bold">Telefone:</span>
+                                    <span>
+                                        {{stringUtils.formataTextoTelefone(orcamento.telefone)}}
+                                    </span>
+                                </div>
+
+                                <div *ngIf="orcamento.concordaWhatsapp == false">
+                                    <span class="p-text-bold">Cliente autoriza contado via WhatsApp:</span>
+                                    <span>
+                                        {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
+                                </div>
+
+                                <div *ngIf="orcamento.concordaWhatsapp == true">
+                                    <span class="p-text-bold">Cliente concorda Unis pode enviar Whatsapp:</span>
+                                    <span>
+                                        {{retornarSimOuNao(orcamento.concordaWhatsapp)}}</span>
+                                </div>
                             </div>
-                            <div *ngIf="orcamento.dataEntregaImediata">
-                                <span class="p-text-bold">Data prevista de entrega:</span>
-                                <span>
-                                    {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
-                            </div>
-                            <div *ngIf="orcamento.stEntregaImediata">
-                                <span class="p-text-bold">Entrega Imediata:</span>
-                                <span>
-                                    {{retornarEntregaImediata(orcamento.stEntregaImediata)}}</span>
-                            </div>
-                            <br>
-                            <div>
-                                <span class="infoEstoque">Mediante confirmação de estoque</span>
+                            <div class="p-col-12 p-lg-6 p-md-6 p-py-0">
+                                <h5><i class="pi pi-send"></i>&nbsp;Dados de Entrega</h5>
+
+                                <div>
+                                    <span class="p-text-bold">UF (Entrega):</span>
+                                    <span>
+                                        {{orcamento.uf}}</span>
+                                </div>
+                                <div *ngIf="orcamento.dataEntregaImediata">
+                                    <span class="p-text-bold">Data prevista de entrega:</span>
+                                    <span>
+                                        {{dataUtils.formata_data_DDMMYYY(orcamento.dataEntregaImediata)}}</span>
+                                </div>
+                                <div *ngIf="orcamento.stEntregaImediata">
+                                    <span class="p-text-bold">Entrega Imediata:</span>
+                                    <span>
+                                        {{retornarEntregaImediata(orcamento.stEntregaImediata)}}</span>
+                                </div>
+                                <br>
+                                <div id="frase">
+                                    <div id="estoque"></div>
+                                    <div id="frete"></div>
+                                </div>
                             </div>
                         </div>
-                    </div>
 
-                    <div class="p-col-12 p-px-0 p-pt-2" *ngFor="let opcao of orcamento?.listaOpcoes; let i = index">
+                        <div class="p-col-12 p-px-0 p-pt-2" *ngFor="let opcao of orcamento?.listaOpcoes; let i = index">
 
                         <p-accordion>
                             <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)"
@@ -212,10 +221,11 @@
                                             </p-table>
                                         </div>
 
-                                        <div class="p-col-12 p-d-inline-flex p-px-0" style="background-color: #efefef;">
-                                            <div class="p-col-12 p-d-inline-flex p-jc-between p-jc-sm-end p-px-0">
-                                                <div class="p-col-6 p-px-0"
-                                                    *ngFor="let fp of opcao.formaPagto; let y = index">
+                                            <div class="p-col-12 p-d-inline-flex p-px-0"
+                                                style="background-color: #efefef;">
+                                                <div class="p-col-12 p-d-inline-flex p-jc-between p-jc-sm-end p-px-0">
+                                                    <div class="p-col-6 p-px-0"
+                                                        *ngFor="let fp of opcao.formaPagto; let y = index">
 
                                                     <div *ngIf="!opcao.aprovado" class="p-col-12 p-d-inline-flex"
                                                         style="min-height: calc(50% - 45px);">
@@ -265,53 +275,60 @@
                                                     </div>
                                                 </div>
 
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div *ngIf="!esconderBotaoAprovacao"
+                                            class="p-col-12 p-d-inline-flex p-jc-around">
+                                            <div>
+                                                <button pButton pRipple label="Aprovar esta opção de orçamento"
+                                                    class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
+                                                    icon="pi pi-check" (click)="aprovar(opcao)">
+                                                </button>
                                             </div>
                                         </div>
+                                    </ng-template>
+                                </p-accordionTab>
+                            </p-accordion>
 
-                                    </div>
-                                    <div *ngIf="!esconderBotaoAprovacao" class="p-col-12 p-d-inline-flex p-jc-around">
-                                        <div>
-                                            <button pButton pRipple label="Aprovar esta opção de orçamento"
-                                                class="{{!telaDesktop ? 'p-text-bold font-size p-button-success' : 'p-text-bold p-button-success'}}"
-                                                icon="pi pi-check" (click)="aprovar(opcao)">
-                                            </button>
-                                        </div>
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-col-12 p-lg-8 p-pb-0 p-order-2">
+                <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
+                    <div class="p-col-12">
+                        <p-accordion>
+                            <p-accordionTab>
+                                <ng-template pTemplate="header">
+                                    Condições gerais
+                                </ng-template>
+                                <ng-template pTemplate="content">
+                                    <div style="font-size:smaller" class="p-col-12">
+                                        {{orcamento.condicoesGerais}}
                                     </div>
                                 </ng-template>
                             </p-accordionTab>
                         </p-accordion>
-
-
-
                     </div>
-
                 </div>
             </div>
-        </div>
 
-        <div class="p-col-12 p-lg-8 p-pb-0 p-order-2">
+        </div>
+    </div>
+    <div class="p-grid p-jc-center">
+        <div class="p-col-12 p-lg-8 p-pb-0 p-order-1">
             <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3">
-                <div class="p-col-12">
-                    <p-accordion>
-                        <p-accordionTab>
-                            <ng-template pTemplate="header">
-                                Condições gerais
-                            </ng-template>
-                            <ng-template pTemplate="content">
-                                <div style="font-size:smaller" class="p-col-12">
-                                    {{orcamento.condicoesGerais}}
-                                </div>
-                            </ng-template>
-                        </p-accordionTab>
-                    </p-accordion>
+                <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
+                    <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
+                    </app-mensageria>
                 </div>
-
-            </div>
-            <div class="{{telaDesktop ? 'corpo' : 'p-py-3'}}">
-                <app-mensageria #mensagemComponente class="p-d-inline-flex p-jc-center">
-                </app-mensageria>
             </div>
         </div>
-
     </div>
 </div>

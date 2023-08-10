@@ -156,8 +156,8 @@
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">
                         <i class="topbar-icon pi pi-fw pi-bell"></i>
                         <span class="topbar-badge animated rubberBand">{{appTopBarService.qtdMensagem}}</span>
-                        <span class="topbar-item-name" *ngIf="qtdMensagem > 1">Notificações</span>
-                        <span class="topbar-item-name" *ngIf="qtdMensagem < 2">Notificação</span>
+                        <span class="topbar-item-name" *ngIf="appTopBarService.qtdMensagem > 1">Notificações</span>
+                        <span class="topbar-item-name" *ngIf="appTopBarService.qtdMensagem < 2">Notificação</span>
                     </a>
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                         <li role="menuitem">

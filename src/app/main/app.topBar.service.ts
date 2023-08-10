@@ -16,8 +16,9 @@ export class AppTopBarService {
     }
     dataUtils: DataUtils = new DataUtils();
     sininho: boolean;
+    iniciouSininho:boolean;
     public listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
-    qtdMensagem: any;
+    public qtdMensagem: number;
     interval: any = 0;
 
     ligarInterval() {
@@ -46,6 +47,7 @@ export class AppTopBarService {
             this.limparInterval();
             return;
         }
+        console.log("interval: " + this.interval);
         console.log(this.dataUtils.formata_data_e_talvez_hora_hhmmss(new Date()));
 
         this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
@@ -59,7 +61,9 @@ export class AppTopBarService {
                 this.qtdMensagem = this.listaMensagemPendente.listaQtdeMensagemPendente.reduce((soma, item) =>
                     soma + item.qtde, 0);
             }
-            else this.qtdMensagem = 0;
+            else {
+                this.qtdMensagem = 0;
+            }
 
         }).catch((e) => {
             this.limparInterval();
@@ -72,6 +76,7 @@ export class AppTopBarService {
 
     limparInterval() {
         clearInterval(this.interval);
+        console.log("desligando interval: " + this.interval);
         this.interval = 0;
         this.sininho = false;
         sessionStorage.setItem("sininho", "N");
