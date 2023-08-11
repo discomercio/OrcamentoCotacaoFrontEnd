@@ -1,6 +1,6 @@
 <div class="p-grid">
     <div class="p-col-12">
-        <div class="card">
+        <div class="card" [ngClass]="{'carregando' : carregando}">
 
             <h4 style="color: #007BFF"><i class="fa fa-image"></i>&nbsp;Imagem</h4>
         </div>
@@ -9,7 +9,7 @@
 
 <div class="p-grid p-d-lg-flex">
     <div class="p-col-12">
-        <div class="card">
+        <div class="card" [ngClass]="{'carregando' : carregando}">
             <div class="p-mb-3" class="p-ai-center p-d-flex p-justify-center p-mb-3">
                 <div class="product-item">
                     <div class="product-item-content" *ngIf="produtoDetalhe.imagem!= null">
@@ -38,7 +38,7 @@
 </div>
 <div class="p-grid">
     <div class="p-col-12">
-        <div class="card">
+        <div class="card" [ngClass]="{'carregando' : carregando}">
 
             <h4 style="color: #007BFF">
                 <i class="fa fa-info-circle" style="font-size:36px"></i>
@@ -49,7 +49,7 @@
 </div>
 <div class="p-grid">
     <div class="p-col-12">
-        <div class="card">
+        <div class="card" [ngClass]="{'carregando' : carregando}">
             <form [formGroup]="form">
                 <p align="right"><button pButton type="button" label="Voltar" icon="fa fa-reply"
                         (click)="voltarClick()"></button>&nbsp;
@@ -68,7 +68,7 @@
                             <p-dropdown id="dpdFabricante" [options]="fabricantes" formControlName="fabricante"
                                 placeholder="Selecione" optionValue="Fabricante" optionLabel="Descricao"
                                 [(ngModel)]="produtoDetalhe.Fabricante"></p-dropdown>
-                            
+
                             <!-- <input id="fabricante" name="descricao" type="text" pInputText placeholder="Fabricante"
                                 formControlName="fabricante" value="{{produtoDetalhe.Fabricante}}" /> -->
                         </div>
@@ -109,7 +109,7 @@
 <!-- PROPRIEDADES DO PRODUTO -->
 <div class="p-grid">
     <div class="p-col-12">
-        <div class="card">
+        <div class="card" [ngClass]="{'carregando' : carregando}">
             <h4 style="color: #007BFF"><i class="fa fa-gear" style="font-size:36px;"></i>&nbsp;Propriedades do Produto
             </h4>
         </div>
@@ -120,7 +120,7 @@
     <div class="p-col-12">
         <div class="card">
             <div class="p-col-12 p-px-0">
-                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0"
+                <div class="p-col-12 p-fluid p-formgrid p-lg-12 p-md-12 p-px-0" [ngClass]="{'carregando' : carregando}"
                     *ngFor="let lista of propriedades; let i=index">
                     <div class="p-text-bold" id="lbl-propriedade-{{lista.id}}">{{lista.descricao}}:</div>
                     <div id="elemento" *ngIf="lista.IdCfgTipoPropriedade == 0" class="p-col-12">
