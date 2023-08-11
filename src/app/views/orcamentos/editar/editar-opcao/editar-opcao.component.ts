@@ -264,6 +264,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
       if (!this.itens.novoOrcamentoService.verificarCalculoComissao()) {
+        
+
         this.atualizaComEdicaoComissao();
         return;
       }
