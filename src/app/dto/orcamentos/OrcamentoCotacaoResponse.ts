@@ -28,4 +28,5 @@ export class OrcamentoCotacaoResponse {
     instaladorInstala:number;
     erro:string;
     link:string;
+    comissao:boolean;
 }

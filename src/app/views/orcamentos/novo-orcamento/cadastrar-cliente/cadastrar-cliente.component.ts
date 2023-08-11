@@ -192,7 +192,8 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
       ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS],
-      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]]
+      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]],
+      comissao: [this.novoOrcamentoService.orcamentoCotacaoDto.comissao]
     });
   }
 
@@ -454,6 +455,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.validade = DataUtils.formata_dataString_para_formato_data(DataUtils.formatarTela(this.form.controls.Validade.value));
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.comissao = !this.form.controls.comissao.value ? false : true;
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
       if (this.filtro == "clone")
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.novoOrcamentoService.orcamentoCloneCotacaoDto.idIndicador.toString();
@@ -544,6 +546,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     }
 
     if (this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR) {
+      this.form.controls.comissao.setValue(false);
       this.form.controls.VendedorParceiro.setValue(null);
     }
 
