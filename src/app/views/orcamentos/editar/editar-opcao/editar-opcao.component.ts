@@ -114,6 +114,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.buscarFormaPagto();
       this.itens.inserirProduto();
       this.atribuirPercRT();
+      this.itens.novoOrcamentoService.descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
       this.cdref.detectChanges();
     });
   }
@@ -249,6 +250,12 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
     if (!this.validarDescontosProdutos()) {
       this.alertaService.mostrarMensagem("Existe produto que excede o desconto máximo permitido!");
+      this.itens.carregandoProds = false;
+      return;
+    }
+
+    if (this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT > this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
+      this.alertaService.mostrarMensagem("A comissão excedeu o máximo permitido!");
       this.itens.carregandoProds = false;
       return;
     }
