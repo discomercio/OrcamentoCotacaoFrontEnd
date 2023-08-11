@@ -47,14 +47,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     super(telaDesktopService);
   }
 
-  public constantes: Constantes = new Constantes();
+  constantes: Constantes = new Constantes();
   sub: Subscription;
-  carregando: boolean = false;
+  // carregando: boolean = false;
   orcamento: OrcamentoCotacaoDto;
   moedaUtils: MoedaUtils = new MoedaUtils();
   dataUtils: DataUtils = new DataUtils();
   stringUtils = StringUtils;
-  @ViewChild("mensagemComponente", { static: false }) mensagemComponente: MensageriaComponent;
+
   display: boolean = false;
   validado: boolean = false;
   desabiltarBotoes: boolean;
@@ -64,16 +64,183 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   private titleService: Title
   esconderBotaoAprovacao: boolean;
-
+  paramGuid: any;
+  activeState: boolean[] = [false, false, false];
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
+  @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
 
   ngOnInit(): void {
+    // this.mensagemComponente.carregando = true;
     this.imgUrl = this.produtoCatalogoService.imgUrl;
     this.esconderBotaoAprovacao = false;
-    this.carregando = true;
-    this.sub = this.activatedRoute.params.subscribe((param: any) => {
-      this.buscarOrcamentoPorGuid(param);
+    this.mensagemComponente.carregando= true;
+    this.paramGuid = this.activatedRoute.snapshot.params.guid;
+
+    let promise: any = [this.buscarOrcamento()];
+    Promise.all(promise).then((r: any) => {
+      this.setarOrcamento(r[0]);
+      this.autenticacaoService.setarToken(r[0].token);
+    }).catch((e) => {
+      this.mensagemComponente.carregando= false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.mensagemComponente.carregando= false;
+      this.verificarImagens();
+      this.promise2();
     });
+
+    // this.sub = this.activatedRoute.params.subscribe((param: any) => {
+    //   this.buscarOrcamentoPorGuid(param);
+    // });
+  }
+
+  promise2() {
+    this.mensagemComponente.carregando= true;
+    this.setarMensageria();
+
+    let promises: any = [
+      this.buscarEstilo(),
+      this.mensagemComponente.buscarListaMensagem(this.orcamento.id),
+      this.buscarParametro(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque),
+      this.buscarParametro(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete)];
+
+    Promise.all(promises).then((r: any) => {
+      this.setarLojaEstilo(r[0]);
+      this.mensagemComponente.setarListaMensagem(this.orcamento.id, r[1]);
+      this.setarMensagemEstoque(r[2]);
+      this.setarMensagemFrete(r[3]);
+    }).catch((e) => {
+      this.mensagemComponente.carregando= false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.mensagemComponente.carregando= false;
+      this.promise3();
+    });
+  }
+
+  promise3() {
+    this.mensagemComponente.carregando= true;
+    let promise = [this.mensagemComponente.marcarMensagemComoLida(this.paramGuid)];
+    Promise.all(promise).then((r) => {
+
+    }).catch((e) => {
+      this.mensagemComponente.carregando= false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.rolarChat();
+    })
+  }
+
+  buscarOrcamento(): Promise<OrcamentoCotacaoDto> {
+    return this.publicoService.buscarOrcamentoPorGuid(this.paramGuid).toPromise();
+  }
+
+  buscarEstilo(): Promise<lojaEstilo> {
+    return this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise();
+  }
+
+  buscarParametro(param: number): Promise<any> {
+    return this.orcamentoService
+      .buscarParametros(param, this.orcamento.loja, "publico")
+      .toPromise();
+  }
+
+  setarOrcamento(r: OrcamentoCotacaoDto) {
+    if (r != null) {
+      this.validado = true;
+      this.orcamento = r;
+
+      if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+        let opcaoAprovado: OrcamentoOpcaoDto;
+        this.orcamento.listaOpcoes.forEach(e => {
+          let pagtoAprovado = e.formaPagto.filter(x => x.aprovado)[0];
+          if (!!pagtoAprovado) {
+            opcaoAprovado = new OrcamentoOpcaoDto();
+            opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
+            opcaoAprovado.aprovado = true;
+          }
+        });
+      }
+      else {
+        this.aprovacaoPublicoService.orcamento = r;
+        this.aprovacaoPublicoService.paramGuid = this.paramGuid;
+        this.verificarFormasPagtos();
+      }
+
+      let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
+      let validade = this.orcamento.validade;
+      let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
+
+      if (this.orcamento.status == 1 && dataValidade < dataAtual) {
+        this.orcamento.statusDescricao = "Expirado";
+      }
+
+      if (this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual) {
+        this.esconderBotaoAprovacao = true;
+      }
+    } else {
+      this.mensagemComponente.carregando= false;
+      this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
+    }
+  }
+
+  setarLojaEstilo(r: lojaEstilo) {
+    if (!!r) {
+      this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
+      this.publicHeader.corCabecalho = r.corCabecalho + " !important";
+      this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
+    }
+  }
+
+  setarMensageria() {
+
+    this.mensagemComponente.permiteEnviarMensagem = true;
+
+    if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
+      this.desabiltarBotoes = true;
+    }
+
+    this.mensagemComponente.idOrcamentoCotacao = this.orcamento.mensageria.idOrcamentoCotacao;
+    this.mensagemComponente.idUsuarioRemetente = this.orcamento.mensageria.idUsuarioRemetente.toString();
+    this.mensagemComponente.idTipoUsuarioContextoRemetente = this.orcamento.mensageria.idTipoUsuarioContextoRemetente.toString();
+    this.mensagemComponente.idUsuarioDestinatario = this.orcamento.mensageria.idUsuarioDestinatario.toString();
+    this.mensagemComponente.idTipoUsuarioContextoDestinatario = this.orcamento.mensageria.idTipoUsuarioContextoDestinatario.toString();
+    this.mensagemComponente.rotaPublica = true;
+    this.mensagemComponente.guid = this.paramGuid;
+  }
+
+  setarMensagemEstoque(r: any) {
+    let valor = r[0].Valor;
+    let div = document.getElementById("estoque");
+    if (valor.indexOf("style=") > -1) {
+      let parser = new DOMParser();
+      let html = parser.parseFromString(valor, 'text/html');
+      let parag = html.getElementsByTagName("p");
+      div.appendChild(parag[0]);
+    }
+    else {
+      div.innerHTML = r[0].Valor;
+      div.classList.add("infoEstoque");
+    }
+  }
+
+  setarMensagemFrete(r: any) {
+    let valor = r[0].Valor;
+    let div = document.getElementById("frete");
+    while (div.firstChild) {
+      div.removeChild(div.firstChild);
+    };
+    if (valor.indexOf("style=") > -1) {
+      let parser = new DOMParser();
+      let html = parser.parseFromString(valor, 'text/html');
+      let parag = html.getElementsByTagName("p");
+      div.appendChild(parag[0]);
+    }
+    else {
+      div.innerHTML = r[0].Valor;
+      div.classList.add("infoEstoque");
+    }
   }
 
   ngAfterViewInit(): void {
@@ -127,121 +294,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  paramGuid: any;
-  buscarOrcamentoPorGuid(param) {
-
-    if (param.guid.length >= 32) {
-      this.publicoService.buscarOrcamentoPorGuid(param.guid).toPromise().then((r) => {
-
-        if (r != null) {
-          this.validado = true;
-          this.orcamento = r;
-
-          if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
-            let opcaoAprovado: OrcamentoOpcaoDto;
-            this.orcamento.listaOpcoes.forEach(e => {
-              let pagtoAprovado = e.formaPagto.filter(x => x.aprovado)[0];
-              if (!!pagtoAprovado) {
-                opcaoAprovado = new OrcamentoOpcaoDto();
-                opcaoAprovado = this.orcamento.listaOpcoes.filter(y => y.id == pagtoAprovado.idOpcao)[0];
-                opcaoAprovado.aprovado = true;
-              }
-            });
-          }
-          else {
-            this.aprovacaoPublicoService.orcamento = r;
-            this.aprovacaoPublicoService.paramGuid = param.guid;
-            this.paramGuid = param.guid;
-            this.verificarFormasPagtos();
-          }
-
-          let dataAtual = new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate());
-          let validade = this.orcamento.validade;
-          let dataValidade = new Date(new Date(validade).getFullYear(), new Date(validade).getMonth(), new Date(validade).getDate());
-
-          if (this.orcamento.status == 1 && dataValidade < dataAtual) {
-            this.orcamento.statusDescricao = "Expirado";
-          }
-
-          if (this.orcamento.status == 2 || this.orcamento.status == 3 || this.orcamento.status == 1 && dataValidade < dataAtual) {
-            this.esconderBotaoAprovacao = true;
-          }
-
-          this.lojaService.buscarLojaEstilo(this.orcamento.loja).toPromise().then((r) => {
-            if (!!r) {
-              this.publicHeader.imagemLogotipo = 'assets/layout/images/' + r.imagemLogotipo;
-              this.publicHeader.corCabecalho = r.corCabecalho + " !important";
-              this.favIcon.href = 'assets/layout/images/' + (r.imagemLogotipo.includes('Unis') ? "favicon-unis.ico" : "favicon-bonshop.ico");
-            }
-          });
-
-          if (this.mensagemComponente != undefined) {
-            this.mensagemComponente.permiteEnviarMensagem = true;
-
-            if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
-              this.desabiltarBotoes = true;
-              // this.mensagemComponente.permiteEnviarMensagem = false;
-            }
-
-
-            this.mensagemComponente.idOrcamentoCotacao = r.mensageria.idOrcamentoCotacao;
-            this.mensagemComponente.idUsuarioRemetente = r.mensageria.idUsuarioRemetente.toString();
-            this.mensagemComponente.idTipoUsuarioContextoRemetente = r.mensageria.idTipoUsuarioContextoRemetente.toString();
-            this.mensagemComponente.idUsuarioDestinatario = r.mensageria.idUsuarioDestinatario.toString();
-            this.mensagemComponente.idTipoUsuarioContextoDestinatario = r.mensageria.idTipoUsuarioContextoDestinatario.toString();
-            this.mensagemComponente.rotaPublica = true;
-            this.mensagemComponente.guid = param.guid;
-            this.mensagemComponente.obterListaMensagem(this.orcamento.id);
-          }
-
-          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque, this.orcamento.loja, "publico")
-            .toPromise()
-            .then((r) => {
-              let valor = r[0].Valor;
-              let div = document.getElementById("estoque");
-              if (valor.indexOf("style=") > -1) {
-                let parser = new DOMParser();
-                let html = parser.parseFromString(valor, 'text/html');
-                let parag = html.getElementsByTagName("p");
-                div.appendChild(parag[0]);
-              }
-              else {
-                div.innerHTML = r[0].Valor;
-                div.classList.add("infoEstoque");
-              }
-            });
-
-          this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, this.orcamento.loja, "publico")
-            .toPromise()
-            .then((r) => {
-              let valor = r[0].Valor;
-              let div = document.getElementById("frete");
-              while (div.firstChild) {
-                div.removeChild(div.firstChild);
-              };
-              if (valor.indexOf("style=") > -1) {
-                let parser = new DOMParser();
-                let html = parser.parseFromString(valor, 'text/html');
-                let parag = html.getElementsByTagName("p");
-                div.appendChild(parag[0]);
-              }
-              else {
-                div.innerHTML = r[0].Valor;
-                div.classList.add("infoEstoque");
-              }
-            });
-
-          this.verificarImagens();
-          this.autenticacaoService.setarToken(r.token);
-          this.carregando = false;
-        } else {
-          this.carregando = false;
-          this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
-        }
-      }).catch((r) => this.alertaService.mostrarErroInternet(r));
-    }
-  }
-
   verificarImagens() {
     for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
       this.orcamento.listaOpcoes[i].existeImagemProduto = false;
@@ -252,18 +304,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }
     }
-    // this.orcamento.listaOpcoes.forEach(opcao => {
-    //   if(temProduto) return;
-    //   opcao.listaProdutos.forEach(item => {
-    //     debugger;
-    //     if(!!item.urlImagem) {
-    //       temProduto = true;
-    //       opcao.existeImagemProduto = true;
-    //       break;
-    //     }
-    //     else opcao.existeImagemProduto = false;
-    //   });
-    // });
   }
 
   verificarFormasPagtos() {
@@ -306,7 +346,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         });
       }
     });
-    // this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`]);
   }
 
   verificarStatusEExpiracao(): boolean {
@@ -326,7 +365,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return true;
   }
 
-  activeState: boolean[] = [false, false, false];
   toggle(index: number) {
     if (this.activeState.toString().indexOf("true") == -1) return;
 
@@ -402,5 +440,4 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     return texto;
   }
-
 }
