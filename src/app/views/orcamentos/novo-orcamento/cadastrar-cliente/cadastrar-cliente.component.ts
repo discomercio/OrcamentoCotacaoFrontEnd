@@ -193,7 +193,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
       ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS],
       instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]],
-      comissao: [this.novoOrcamentoService.orcamentoCotacaoDto.comissao]
+      comissao: [this.novoOrcamentoService.orcamentoCotacaoDto.comissao != undefined ? this.novoOrcamentoService.orcamentoCotacaoDto.comissao : true]
     });
   }
 
@@ -291,9 +291,9 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       let loja: string = this.usuario.loja;
       return this.orcamentistaIndicadorService.buscarParceirosPorLoja(loja).toPromise();
     }
-    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS){
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       let loja: string = this.usuario.loja;
-      let vendedor:string = this.autenticacaoService._usuarioLogado;
+      let vendedor: string = this.autenticacaoService._usuarioLogado;
       return this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise();
     }
   }
@@ -528,7 +528,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
         this.carregando = false;
-      }).finally(()=>{
+      }).finally(() => {
         this.carregando = false;
       });
     }

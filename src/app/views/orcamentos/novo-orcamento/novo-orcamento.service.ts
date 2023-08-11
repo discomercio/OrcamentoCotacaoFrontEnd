@@ -89,6 +89,10 @@ export class NovoOrcamentoService {
     if (this.orcamentoCotacaoDto.parceiro == null || this.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) return;
 
     if (!this.editando) {
+      if(!this.orcamentoCotacaoDto.comissao){
+        this.opcaoOrcamentoCotacaoDto.percRT = 0;
+        return;
+      }
       if (this.percentualMaxComissao)
         this.opcaoOrcamentoCotacaoDto.percRT = this.percentualMaxComissao.percMaxComissao;
       return;
