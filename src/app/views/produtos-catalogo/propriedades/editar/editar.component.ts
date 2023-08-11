@@ -19,12 +19,9 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
 
   constructor(
-    private router: Router,
-    private fb: FormBuilder,
     private readonly activatedRoute: ActivatedRoute,
     private readonly produtoService: ProdutoCatalogoService,
     private readonly alertaService: AlertaService,
-    private readonly mensagemService: MensagemService,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService) { }
@@ -34,44 +31,50 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   public produtoPropriedade: ProdutoCatalogoPropriedade = new ProdutoCatalogoPropriedade();
   private id: number;
   public boolAtivo: boolean;
-  carregando: boolean = false;
-  @ViewChild("criarPropriedade") criarPropriedade: ProdutosCatalogoPropriedadesCriarComponent;
+  @ViewChild("criarPropriedade", { static: true }) criarPropriedade: ProdutosCatalogoPropriedadesCriarComponent;
 
   ngOnInit(): void {
-    
+
     if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.CatalogoPropriedadeIncluirEditar)) {
       this.sweetalertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       return;
     }
 
-    this.carregando = true;
+    this.criarPropriedade.carregando = true;
     this.id = this.activatedRoute.snapshot.params.id;
-    this.buscarPropriedadesPorId();
-  }
 
-  buscarPropriedadesPorId() {
-
-    this.produtoService.buscarPropriedadesPorId(this.id).toPromise().then((r) => {
-      if (r != null) {
-        this.produtoPropriedade = r[0];
-        this.criarPropriedade.produtoPropriedade = r[0];
-        this.criarPropriedade.criarForm();
-        this.criarPropriedade.form.controls.idTipoPropriedade.setValue(this.produtoPropriedade.IdCfgTipoPropriedade);
-        this.criarPropriedade.idTipoPropriedade = this.produtoPropriedade.IdCfgTipoPropriedade;
-        this.criarPropriedade.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
-        if (this.produtoPropriedade.produtoCatalogoPropriedadeOpcao != null) {
-          this.criarPropriedade.lstValoresValidos = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
-          this.criarPropriedade.lstValoresValidosApoioExclusao = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao.slice();
-        }
-
-        this.criarPropriedade.changeDataType();
-      }
-      this.carregando = false;
-    }).catch((r) => {
-      this.carregando = false;
-      this.alertaService.mostrarErroInternet(r);
+    let promises: any = [this.buscarPropriedadesPorId2(), this.criarPropriedade.buscarDataTypes(), this.criarPropriedade.buscarTipoPropriedades()];
+    Promise.all(promises).then((r:any)=>{
+      this.setarProdutoPropriedade(r[0]);
+      this.criarPropriedade.setarDataTypes(r[1]);
+      this.criarPropriedade.setarTipoPropriedades(r[2]);
+    }).catch((e)=>{
+      this.criarPropriedade.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(()=>{
+      this.criarPropriedade.carregando = false;
     });
   }
 
+  buscarPropriedadesPorId2(): Promise<ProdutoCatalogoPropriedade> {
+    return this.produtoService.buscarPropriedadesPorId(this.id).toPromise();
+  }
+
+  setarProdutoPropriedade(r: ProdutoCatalogoPropriedade) {
+    if (r != null) {
+      this.produtoPropriedade = r[0];
+      this.criarPropriedade.produtoPropriedade = r[0];
+      this.criarPropriedade.criarForm();
+      this.criarPropriedade.form.controls.idTipoPropriedade.setValue(this.produtoPropriedade.IdCfgTipoPropriedade);
+      this.criarPropriedade.idTipoPropriedade = this.produtoPropriedade.IdCfgTipoPropriedade;
+      this.criarPropriedade.idCfgDataType = this.produtoPropriedade.IdCfgDataType;
+      if (this.produtoPropriedade.produtoCatalogoPropriedadeOpcao != null) {
+        this.criarPropriedade.lstValoresValidos = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
+        this.criarPropriedade.lstValoresValidosApoioExclusao = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao.slice();
+      }
+
+      this.criarPropriedade.changeDataType();
+    }
+  }
 }
 

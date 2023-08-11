@@ -11,6 +11,7 @@ import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/P
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { DataType } from 'src/app/dto/produtos-catalogo/DataType';
 
 @Component({
   selector: 'app-criar-propriedade-produto',
@@ -32,7 +33,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
   public produtoPropriedade: ProdutoCatalogoPropriedade = new ProdutoCatalogoPropriedade();
-  carregando: boolean = false;
+  carregando: boolean;
   lstDataTypes: SelectItem[] = new Array();
   lstTipoPropriedadeCatalogo: SelectItem[] = new Array();
   lstValoresValidos: ProdutoCatalogoPropriedadeOpcao[] = new Array();
@@ -59,23 +60,44 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
 
     this.carregando = true;
     this.criarForm();
-    this.buscargDataTypes();
-    this.buscarTipoPropriedades();
-    //buscar t_CFG_TIPO_PERMISSAO_EDICAO_CADASTRO
+
+    if(!this.edicao){
+      let promise: any = [this.buscarDataTypes(), this.buscarTipoPropriedades()];
+      Promise.all(promise).then((r: any) => {
+        this.setarDataTypes(r[0]);
+        this.setarTipoPropriedades(r[1]);
+      }).catch((e) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      }).finally(() => {
+        this.carregando = false;
+      });
+    }
   }
 
-  buscargDataTypes() {
-    this.produtoService.buscarDataTypes().toPromise().then((r) => {
+  buscarDataTypes(): Promise<Array<DataType>> {
+    return this.produtoService.buscarDataTypes().toPromise();
+  }
 
-      if (r != null) {
-        this.lstDataTypes = this.montarListaParaSelectItem(r);
-      }
-      else {
-        this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de dado.");
-      }
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
-    });
+  buscarTipoPropriedades(): Promise<any[]> {
+    return this.produtoService.buscarTipoPropriedades().toPromise();
+  }
+
+  setarDataTypes(r: Array<DataType>) {
+    if (r != null) {
+      this.lstDataTypes = this.montarListaParaSelectItem(r);
+      return;
+    }
+    this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de dado.");
+  }
+
+  setarTipoPropriedades(r: any[]) {
+    if (r != null) {
+      this.lstTipoPropriedadeCatalogo = this.montarListaParaSelectItem(r);
+      return;
+    }
+
+    this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de propriedade.")
   }
 
   changeDataType() {
@@ -118,19 +140,6 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     }
 
     this.form.controls["valorValido"].updateValueAndValidity();
-  }
-
-  buscarTipoPropriedades() {
-    this.produtoService.buscarTipoPropriedades().toPromise().then((r) => {
-      if (r != null) {
-        this.lstTipoPropriedadeCatalogo = this.montarListaParaSelectItem(r);
-        // this.lstTipoPropriedadeCatalogo = r;
-
-      }
-      else this.alertaService.mostrarMensagem("Ops! Não encontramos a lista de tipo de propriedade.")
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
-    });
   }
 
   inserirClick() {
@@ -205,7 +214,6 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       });
   }
 
-
   editarClick() {
     if (this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1) {
       this.alertaService.mostrarMensagem("Não é permitido editar a de valores válidos para essa propriedade!");
@@ -220,7 +228,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
       this.mensagemService.showErrorViaToast(["Desculpe! Esse item não pode ser editado."]);
       return;
     }
-    
+
     this.valorValido = this.selectedValorValido[0].valor;
     this.ocultoOpcao = !this.selectedValorValido[0].oculto
 
@@ -245,14 +253,14 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     if (!this.validacaoFormularioService.validaForm(this.form)) {
       if (!this.form.controls.descricao.invalid) return;
     }
-    
+
     let propExiste = this.lstValoresValidos.filter(x => x.id == this.itemApoioEdicao.id);
-    
-    if(propExiste.length == 1){
+
+    if (propExiste.length == 1) {
       propExiste[0].valor = this.valorValido;
       propExiste[0].oculto = this.ocultoOpcao ? false : true;
     }
-    
+
     this.cancelarEdicaoClick();
     this.selectedValorValido = null;
 
