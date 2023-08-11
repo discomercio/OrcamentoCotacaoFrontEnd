@@ -64,32 +64,6 @@
                         <span class="topbar-item-name">Configurações</span>
                     </a>
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
-                        <!--
-                        <li role="menuitem">
-                            <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                <i class="pi pi-fw pi-palette"></i>
-                                <span>Change Theme</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                <i class="pi pi-fw pi-star-o"></i>
-                                <span>Favorites</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                <i class="pi pi-fw pi-lock"></i>
-                                <span>Lock Screen</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" (click)="appMain.onTopbarSubItemClick($event)">
-                                <i class="pi pi-fw pi-image"></i>
-                                <span>Wallpaper</span>
-                            </a>
-                        </li>
-                        -->
                         <li role="menuitem" *ngIf="meuDados">
                             <a href="#" [routerLink]="['/usuarios/usuario-meusdados']">
                                 <i class="pi pi-fw pi-user"></i>
@@ -110,47 +84,6 @@
                         </li>
                     </ul>
                 </li>
-                <!--
-                <li #messages [ngClass]="{'active-top-menu':appMain.activeTopbarItem === messages}">
-                    <a href="#" (click)="appMain.onTopbarItemClick($event,messages)">
-                        <i class="topbar-icon animated swing pi pi-fw pi-envelope"></i>
-                        <span class="topbar-badge animated rubberBand">5</span>
-                        <span class="topbar-item-name">Messages</span>
-                    </a>
-                    <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
-                        <li role="menuitem">
-                            <a href="#" class="topbar-message" (click)="appMain.onTopbarSubItemClick($event)">
-                                <img src="assets/layout/images/avatar1.png" width="35"/>
-                                <span>Give me a call</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" class="topbar-message" (click)="appMain.onTopbarSubItemClick($event)">
-                                <img src="assets/layout/images/avatar2.png" width="35"/>
-                                <span>Sales reports attached</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" class="topbar-message" (click)="appMain.onTopbarSubItemClick($event)">
-                                <img src="assets/layout/images/avatar3.png" width="35"/>
-                                <span>About your invoice</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" class="topbar-message" (click)="appMain.onTopbarSubItemClick($event)">
-                                <img src="assets/layout/images/avatar2.png" width="35"/>
-                                <span>Meeting today at 10pm</span>
-                            </a>
-                        </li>
-                        <li role="menuitem">
-                            <a href="#" class="topbar-message" (click)="appMain.onTopbarSubItemClick($event)">
-                                <img src="assets/layout/images/avatar4.png" width="35"/>
-                                <span>Out of office</span>
-                            </a>
-                        </li>
-                    </ul>
-                </li> -->
-
                 <span style="vertical-align: middle;color:white">Olá, {{nomeUsuario}}</span>
                 <li #notifications [ngClass]="{'active-top-menu':appMain.activeTopbarItem === notifications}">
                     <a href="#" (click)="appMain.onTopbarItemClick($event,notifications)">

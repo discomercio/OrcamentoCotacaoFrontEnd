@@ -10,7 +10,7 @@
                     <mat-form-field style="width: 25ch;" floatLabel="floatLabel()">
                         <mat-label>Forma de Pagamento *</mat-label>
                         <mat-select [(ngModel)]="enumFormaPagto" [ngModelOptions]="{standalone: true}" type="number"
-                            (ngModelChange)="recalcularValoresComCoeficiente($event); zerarTodosCampos()">
+                            (ngModelChange)="recalcularValoresComCoeficiente($event);">
                             <mat-option>Selecione</mat-option>
 
                             <mat-option *ngIf="formaPagtoDto?.ListaAvista" [value]="EnumFormaPagto.Avista">À vista

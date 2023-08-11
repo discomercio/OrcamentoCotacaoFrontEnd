@@ -1,5 +1,4 @@
-<section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop, 'carregando': salvando}">
-        <!-- [ngClass]="{'carregando': carregandoDto || carregandoProds}" -->
+<section [ngClass]="{'sectionDesktop': telaDesktop, 'sectionCelular': !telaDesktop, 'carregando': carregando}">
     <form style="display: contents;" *ngIf="prePedidoDto">
         <header>
             <ng-container *ngIf="criando; else tituloEditando">Criar Pedido</ng-container>
@@ -11,7 +10,8 @@
                 {{prePedidoDto.DadosCliente.Nome}}</div>
 
             <div>
-                <strong>Total do pedido: {{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedido())}}</strong>
+                <strong>Total do pedido:
+                    {{moedaUtils.formatarMoedaSemPrefixo(novoPrepedidoDadosService.totalPedido())}}</strong>
             </div>
             <div>
                 <br>
@@ -20,13 +20,13 @@
             <div>
                 <!-- ************   OBSERVAÇÕES   ************  -->
                 <mat-form-field class="edicao-endereco" floatLabel="floatLabel()" style="width: 25ch;">
-                    <textarea matInput type="text" placeholder="Observações adicionais do Pedido" (keyup) = "contarCaracter()"
-                        [ngModelOptions]="{standalone: true}" [(ngModel)]="prePedidoDto.DetalhesPrepedido.Observacoes"
-                        #autosize="cdkTextareaAutosize" maxlength="500" cdkTextareaAutosize cdkAutosizeMinRows="5"
-                        cdkAutosizeMaxRows="5"></textarea>
+                    <textarea matInput type="text" placeholder="Observações adicionais do Pedido"
+                        (keyup)="contarCaracter()" [ngModelOptions]="{standalone: true}"
+                        [(ngModel)]="prePedidoDto.DetalhesPrepedido.Observacoes" #autosize="cdkTextareaAutosize"
+                        maxlength="500" cdkTextareaAutosize cdkAutosizeMinRows="5" cdkAutosizeMaxRows="5"></textarea>
                 </mat-form-field>
                 <div style="font-size: x-small; color:rgba(0, 0, 0, 0.54); margin-left: 18%; margin-top: -1%">
-                    
+
                     <span>Limite de caracteres {{this.contador}} / 500</span>
                 </div>
 
@@ -42,10 +42,9 @@
                 <!-- NÃO APAGAR, POIS ESTAMOS ESPERANDO O CLIENTE CONFIRMAR QUE ESSE CAMPO SERÁ ALTERADO -->
                 <div class="umgrupoopcoes" [ngClass]="{'desab':EntregaImediata}">
                     <mat-form-field style="width: 10em;">
-                        <input matInput [readonly]="EntregaImediata" type="date" placeholder="Previsão de Entrega" 
-                        [required]="!EntregaImediata"
-                        [ngModelOptions]="{standalone: true}" [(ngModel)]="PrevisaoEntrega" id="entregaImediataData"
-                        (blur)="verificaEntregaImediata();">
+                        <input matInput [readonly]="EntregaImediata" type="date" placeholder="Previsão de Entrega"
+                            [required]="!EntregaImediata" [ngModelOptions]="{standalone: true}"
+                            [(ngModel)]="PrevisaoEntrega" id="entregaImediataData" (blur)="verificaEntregaImediata();">
                     </mat-form-field>
                 </div>
 
@@ -60,38 +59,19 @@
                         Instala
                     </mat-slide-toggle>
                 </div>
-                <!-- <div class="umgrupoopcoes">
-                    <mat-slide-toggle [(ngModel)]="GarantiaIndicador" [ngModelOptions]="{standalone: true}"> Garantia
-                        Indicador
-                    </mat-slide-toggle>
-                </div> -->
-                <!-- <div class="umgrupoopcoes">
-                    <mat-slide-toggle [(ngModel)]="EntregaImediata" [ngModelOptions]="{standalone: true}"> Entrega
-                        Imediata
-                    </mat-slide-toggle>
-                </div> -->
-
             </div>
             <div>
-
             </div>
-
         </article>
         <footer>
-            <a mat-raised-button color="accent" (click)="voltar()" style="background-color: #007bff !important;color: white !important;">
+            <a mat-raised-button color="accent" (click)="voltar()"
+                style="background-color: #007bff !important;color: white !important;">
                 <span class="pi pi-arrow-circle-left"> </span> Voltar
             </a>
-            <button mat-raised-button color="accent" (click)="continuar()" type="submit" [disabled]="salvando" style="background-color: #007bff !important;color: white !important;">
+            <button mat-raised-button color="accent" (click)="continuar()" type="submit" [disabled]="carregando"
+                style="background-color: #007bff !important;color: white !important;">
                 <span class="pi pi-save"> </span> Salvar
             </button>
         </footer>
-        <!-- <footer>
-            <a mat-raised-button color="accent" (click)="voltar()">
-                <mat-icon>arrow_back</mat-icon> Voltar
-            </a>
-            <button mat-raised-button color="accent" (click)="continuar()" type="submit">
-                <mat-icon>arrow_forward</mat-icon> Avançar
-            </button> 
-        </footer>-->
     </form>
 </section>

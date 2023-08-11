@@ -543,7 +543,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   aplicarDescontoGeral(e: Event) {
-
+    
     if (!this.novoOrcamentoService.verificarDescontoGeral()) return;
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
       let valor = ((e.target) as HTMLInputElement).value;
@@ -805,13 +805,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '').replace(/\./g, "");
     v = Number.parseFloat((v * 0.1) + '');
-
-    debugger;
-    if(v > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
-      v = this.antigoPercRT;
-      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.antigoPercRT);
-      this.mensagemService.showErrorViaToast(["A comissão informada excede o máximo permitido!"]);
-    }
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
     this.novoOrcamentoService.editarComissao = false;
