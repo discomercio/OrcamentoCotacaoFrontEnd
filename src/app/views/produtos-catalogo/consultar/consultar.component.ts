@@ -15,6 +15,8 @@ import { ProdutoCatalogoPropriedade } from '../../../dto/produtos-catalogo/Produ
 import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCatalogoListar";
 import { ProdutoCatalogoResponse } from '../../../dto/produtos-catalogo/ProdutoCatalogoResponse';
 import { LazyLoadEvent } from 'primeng/api';
+import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
+import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 
 @Component({
   selector: 'app-consultar',
@@ -25,9 +27,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
 
   constructor(
     private readonly service: ProdutoCatalogoService,
-    private fb: FormBuilder,
     private readonly router: Router,
-    private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly sweetAlertService: SweetalertService,
@@ -36,11 +36,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
   listaProdutoDto: ProdutoCatalogo[];
-  //registros: ProdutoAtivoDto[];
-  //registrosFiltrados: ProdutoAtivoDto[];
   cols: any[];
-  carregando: boolean = false;
-  //stringUtils = StringUtils;
+  carregando: boolean;
   produtoCatalogResponse: ProdutoCatalogoResponse[];
 
   fabricantes: Array<DropDownItem> = new Array<DropDownItem>();
@@ -67,6 +64,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
 
   urlAnterior: string;
   visualizando: boolean = false;
+  propriedades: ProdutoCatalogoPropriedade[];
 
   ngOnInit(): void {
 
@@ -76,12 +74,18 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       return;
     }
 
-
-
     this.carregando = true;
-    this.buscarPropriedades();
-    this.carregarFabricante();
-    this.carregando = false;
+    let promises: any = [this.buscarPropriedades(), this.buscarFabricantes()];
+    Promise.all(promises).then((r: any) => {
+      this.setarPropriedades(r[0]);
+      this.setarFabricantes(r[1]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+      this.promise2();
+    });
   }
 
   ngAfterViewInit(): void {
@@ -94,73 +98,77 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     this.cdr.detectChanges();
   }
 
-  // criarForm() {
-  //   this.form = this.fb.group({
-  //     CalculadoraVRF: [''],
-  //     TipoUnidade: [''],
-  //     DescargaCondensadora: [''],
-  //     Voltagem: [''],
-  //     CapacidadeBTU: [''],
-  //     Ciclo: [''],
-  //     LinhaProduto: ['']
-  //   });
-  // }
-
-  buscarPropriedades() {
-    this.service.buscarPropriedades().toPromise().then((proprieidade) => {
-      if (proprieidade != null) {
-
-        let descargaCondensadora = proprieidade.filter(x => x.id == 3);
-        let tipounidades = proprieidade.filter(x => x.id == 2);
-        let voltagens = proprieidade.filter(x => x.id == 4);
-        let capacidades = proprieidade.filter(x => x.id == 5);
-        let ciclos = proprieidade.filter(x => x.id == 6);
-
-        this.service.buscarOpcoes().toPromise().then((opcao) => {
-
-          if (opcao != null) {
-            opcao.forEach(e => {
-              if (!!e.valor) {
-                if (descargaCondensadora.length > 0 && e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
-                  this.descargacondensadoras.push({ Id: e.id, Value: e.valor });
-                }
-
-                if (voltagens.length > 0 && e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
-                  this.voltagens.push({ Id: e.id, Value: e.valor });
-                }
-
-                if (capacidades.length > 0 && e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
-                  this.capacidades.push({ Id: e.id, Value: e.valor });
-                }
-
-                if (ciclos.length > 0 && e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
-                  this.ciclos.push({ Id: e.id, Value: e.valor });
-                }
-
-                if (tipounidades.length > 0 && e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
-                  this.tipounidades.push({ Id: e.id, Value: e.valor });
-                }
-              }
-            });
-          }
-        });
-      }
-    }).catch((r) => {
-      this.alertaService.mostrarErroInternet(r);
+  promise2() {
+    this.carregando = true;
+    let promise: any = [this.buscarPropriedadesOpcoes()];
+    Promise.all(promise).then((r: any) => {
+      this.setarPropriedadeOpcoes(r[0]);
+    }).catch((e) => {
       this.carregando = false;
-    });
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    })
   }
 
-  carregarFabricante() {
-    this.service.buscarFabricantes().toPromise().then((r) => {
-      if (r != null) {
-        r.forEach(e => {
-          this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome });
-        });
-      }
-    }).catch((r) => {
-      this.alertaService.mostrarErroInternet(r);
-    });
+  buscarPropriedades(): Promise<ProdutoCatalogoPropriedade[]> {
+    return this.service.buscarPropriedades().toPromise();
+  }
+
+  buscarPropriedadesOpcoes(): Promise<ProdutoCatalogoPropriedadeOpcao[]> {
+    return this.service.buscarOpcoes().toPromise();
+  }
+
+  buscarFabricantes(): Promise<ProdutoCatalogoFabricante[]> {
+    return this.service.buscarFabricantes().toPromise()
+  }
+
+  setarPropriedades(r: ProdutoCatalogoPropriedade[]) {
+    if (r != null) {
+      this.propriedades = r;
+    }
+  }
+
+  setarPropriedadeOpcoes(r: ProdutoCatalogoPropriedadeOpcao[]) {
+    let descargaCondensadora = this.propriedades.filter(x => x.id == 3);
+    let tipounidades = this.propriedades.filter(x => x.id == 2);
+    let voltagens = this.propriedades.filter(x => x.id == 4);
+    let capacidades = this.propriedades.filter(x => x.id == 5);
+    let ciclos = this.propriedades.filter(x => x.id == 6);
+
+    if (r != null) {
+      r.forEach(e => {
+        if (!!e.valor) {
+          if (descargaCondensadora.length > 0 && e.id_produto_catalogo_propriedade == descargaCondensadora[0].id.toString()) {
+            this.descargacondensadoras.push({ Id: e.id, Value: e.valor });
+          }
+
+          if (voltagens.length > 0 && e.id_produto_catalogo_propriedade == voltagens[0].id.toString()) {
+            this.voltagens.push({ Id: e.id, Value: e.valor });
+          }
+
+          if (capacidades.length > 0 && e.id_produto_catalogo_propriedade == capacidades[0].id.toString()) {
+            this.capacidades.push({ Id: e.id, Value: e.valor });
+          }
+
+          if (ciclos.length > 0 && e.id_produto_catalogo_propriedade == ciclos[0].id.toString()) {
+            this.ciclos.push({ Id: e.id, Value: e.valor });
+          }
+
+          if (tipounidades.length > 0 && e.id_produto_catalogo_propriedade == tipounidades[0].id.toString()) {
+            this.tipounidades.push({ Id: e.id, Value: e.valor });
+          }
+        }
+      });
+    }
+  }
+
+  setarFabricantes(r: ProdutoCatalogoFabricante[]) {
+    if (r != null) {
+      r.forEach(e => {
+        this.fabricantes.push({ Id: e.Fabricante, Value: e.Nome });
+      });
+    }
   }
 
   buscarTodosProdutos(filtro: ProdutoCatalogoListar) {
@@ -184,8 +192,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       if (!!this.filtro.pagina)
         this.first = this.filtro.pagina * this.filtro.qtdeItensPorPagina;
     }).catch((r) => {
-      this.alertaService.mostrarErroInternet(r);
       this.carregando = false;
+      this.alertaService.mostrarErroInternet(r);
     });
   }
 
@@ -248,7 +256,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       this.buscarTodosProdutos(filtro);
     }
   }
-
 
   visualizarClick(id: number) {
     this.visualizando = true;
