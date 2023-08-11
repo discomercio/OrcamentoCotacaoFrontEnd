@@ -17,7 +17,7 @@ import { CepDto } from 'src/app/dto/ceps/CepDto';
 export class CepDialogComponent extends TelaDesktopBaseComponent implements OnInit {
 
   formatarEndereco: FormatarEndereco = new FormatarEndereco();
-  carregando: boolean = false;
+  carregando: boolean;
   // optionsCepLocalidades$ : Observable<string[]>;
 
   constructor(
@@ -29,6 +29,7 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
   }
 
   ngOnInit() {
+    this.carregando = true;
     this.buscarUfs();
   }
 
@@ -58,8 +59,13 @@ export class CepDialogComponent extends TelaDesktopBaseComponent implements OnIn
         else {
           this.alertaService.mostrarMensagem("Erro ao carregar a lista de Estados!")
         }
+        this.carregando = false;
+
       },
-      error: (r: string) => this.alertaService.mostrarErroInternet(r)
+      error: (r: string) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(r);
+      }
     });
   }
 

@@ -48,7 +48,7 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
 
 
   buscar() {
-    
+    this.carregando = true;
     this.permissaoService.buscarPermissaoIncluirPrePedido().toPromise().then(response => {
 
         this.permissaoIncluirPrePedidoResponse = response;
@@ -76,7 +76,7 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
         }
 
         //vamos fazer a busca
-        this.carregando = true;
+        
         this.buscarClienteService.buscar(this.clienteBusca).toPromise()
           .then((r) => {
             this.carregando = false;
@@ -107,18 +107,4 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
       }
     });    
   }
-    /*
-    this.carregando = false;
-    const dialogRef = this.dialog.open(ConfirmationDialogComponent, {
-      width: '380px',
-      data: `Este CNPJ/CPF ainda não está cadastrado. Deseja cadastrá-lo agora?s2`
-    });
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        //vamos cadastrar um novo
-        this.router.navigate(['cadastrar-cliente', this.clienteBusca], { relativeTo: this.activatedRoute })
-      }
-    });
-  }*/
-
 }

@@ -11,6 +11,7 @@ export class TelaDesktopService {
   private telaDesktop: boolean = true;
   private jaLido: boolean = false;
   private telaDesktopAnterior: boolean = true;
+  public carregando: boolean = false;
   constructor(private breakpointObserver: BreakpointObserver,
     private readonly router: Router) {
     this.breakpointObserver

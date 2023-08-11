@@ -25,16 +25,9 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
   styleUrls: ['./prepedidoconfirmar-cliente.component.scss']
 })
 export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent implements OnInit {
-
-  //dados
-  dadosClienteCadastroDto = new DadosClienteCadastroDto();
-  clienteCadastroDto = new ClienteCadastroDto();
-  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
-  public endCadastralClientePrepedidoDto = new EnderecoCadastralClientePrepedidoDto();
-
   constructor(private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
-    telaDesktopService: TelaDesktopService,
+    public telaDesktopService: TelaDesktopService,
     private readonly location: Location,
     public readonly dialog: MatDialog,
     private readonly alertaService: AlertaService,
@@ -44,89 +37,141 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     super(telaDesktopService);
   }
 
+  //dados
+  dadosClienteCadastroDto = new DadosClienteCadastroDto();
+  clienteCadastroDto = new ClienteCadastroDto();
+  enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
+  public endCadastralClientePrepedidoDto = new EnderecoCadastralClientePrepedidoDto();
+  private dadosClienteCadastroDtoIe: string;
+  private dadosClienteCadastroDtoProdutorRural: number;
+  private dadosClienteCadastroDtoContribuinte_Icms_Status: number;
+  public constantes = new Constantes();
+  //precisa do static: false porque está dentro de um ngif
+  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: ConfirmarEnderecoComponent;
+  //esta como undefined
+  @ViewChild("clienteCorpo", { static: false }) clienteCorpo: ClienteCorpoComponent;
+  //desabilita o botão para evitar duplo clique
+  desabilita = false;
+  //#region fase
+  /*
+  temos 2 fases: uma que confirma o cliente e a segunda que confirma o endereço de entrega
+  na especificação original, é uma tela só no desktop e duas telas no celular
+  talvez no desktop também fique em duas
+  aqui controlamos a transição entre as telas
+  */
+  fase1 = true;
+  fase2 = false;
+  fase1e2juntas = false;
+  //#endregion
+  converteu_tel_endCadastralClientePrepedidoDto = false;
+
   ngOnInit() {
+    this.telaDesktopService.carregando = true;
+    this.verificarFase();
 
     this.endCadastralClientePrepedidoDto = new EnderecoCadastralClientePrepedidoDto();
     this.dadosClienteCadastroDto = null;
     if (this.router.getCurrentNavigation()) {
       let clienteCadastroDto: ClienteCadastroDto = (this.router.getCurrentNavigation().extras.state) as ClienteCadastroDto;
       if (clienteCadastroDto && clienteCadastroDto.DadosCliente) {
-        //estramente, precisamos fazer por timeout
-        //é que, se for simplesmente setado, ele não "percebe" que foi carregado
-
-        setTimeout(() => {
-          this.dadosClienteCadastroDto = clienteCadastroDto.DadosCliente;
-
-          this.verificarCriarNovoPrepedido();
-        }, 0);
+        this.dadosClienteCadastroDto = clienteCadastroDto.DadosCliente;
+        this.verificarCriarNovoPrepedido();
+        this.atualizarDadosEnderecoTela();
         return;
       }
     }
+
     //se chegar como null é pq foi salvo como link; não temos dados para mostrar
     if (!this.dadosClienteCadastroDto) {
-
-      //voltamos para a tela anterior: router.navigate(["/novo-prepedido"]);
-      //ou melhor, fazemos a busca de novo!
-      const clienteBusca = this.activatedRoute.snapshot.params.cpfCnpj;
-
-      this.buscarClienteService.buscar(clienteBusca).toPromise()
-        .then((r) => {
-
-          if (r === null) {
-
-            //erro, voltamos para a tela anterior
-            this.router.navigate(["/novoprepedido"]);
-            return;
-          }
-          //cliente já existe
-          //quando para nesse ponto, já fomos direcionado para a tela "home"
-          //se tiver prepedido é pq veio de DetalhesPrepedido e precisamos passar para o serviço, 
-          //pois a loja do dadoscliente esta com o nome e não o código da loja e teremos problemas para buscar os produtos
-          if (this.novoPrepedidoDadosService.prePedidoDto != null)
-            this.novoPrepedidoDadosService.prePedidoDto.DadosCliente = r.DadosCliente;
-          this.dadosClienteCadastroDto = r.DadosCliente;
-          this.clienteCadastroDto = r;
-
-          this.endCadastralClientePrepedidoDto.Endereco_tipo_pessoa = this.dadosClienteCadastroDto.Tipo;
-          this.endCadastralClientePrepedidoDto.Endereco_nome = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
-            this.dadosClienteCadastroDto.Nome : "";
-          this.endCadastralClientePrepedidoDto.Endereco_cnpj_cpf = this.dadosClienteCadastroDto.Cnpj_Cpf;
-          this.endCadastralClientePrepedidoDto.Endereco_produtor_rural_status = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
-            this.dadosClienteCadastroDto.ProdutorRural : 0;
-
-          this.endCadastralClientePrepedidoDto.Endereco_contribuinte_icms_status =
-            this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ? this.dadosClienteCadastroDto.Contribuinte_Icms_Status : 0
-          this.endCadastralClientePrepedidoDto.Endereco_ie = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
-            this.dadosClienteCadastroDto.Ie : "";
-
-          this.verificarCriarNovoPrepedido();
-          this.salvarAtivoInicializar();
-        }).catch((r) => {
-          //erro, voltamos para a tela anterior
-          this.router.navigate(["/novoprepedido"]);
-        });
+      let promises = [this.buscarDadosCliente()];
+      Promise.all(promises).then((r) => {
+        this.setarDadosCliente(r[0]);
+      }).catch((e) => {
+        this.telaDesktopService.carregando = false;
+        this.router.navigate(["/novoprepedido"]);
+      }).finally(() => {
+        this.telaDesktopService.carregando = false;
+        this.verificarCriarNovoPrepedido();
+        this.salvarAtivoInicializar();
+        this.atualizarDadosEnderecoTela();
+      });
     }
     else {
       //inicializamos
       this.salvarAtivoInicializar();
-    }
-    //inicializar as fases
-    this.fase1 = true;
-    this.fase2 = false;
-    this.fase1e2juntas = false;
-    if (this.telaDesktop) {
-      this.fase1 = true;
-      this.fase2 = true;
-      this.fase1e2juntas = true;
     }
 
     //para pegar o enter
     document.getElementById("idcontinuar").focus();
   }
 
+  buscarDadosCliente(): Promise<ClienteCadastroDto> {
+    const clienteBusca = this.activatedRoute.snapshot.params.cpfCnpj;
+    return this.buscarClienteService.buscar(clienteBusca).toPromise();
+  }
+
+  setarDadosCliente(r: ClienteCadastroDto) {
+    if (r === null) {
+      this.router.navigate(["/novoprepedido"]);
+      return;
+    }
+
+    if (this.novoPrepedidoDadosService.prePedidoDto != null)
+      this.novoPrepedidoDadosService.prePedidoDto.DadosCliente = r.DadosCliente;
+    this.dadosClienteCadastroDto = r.DadosCliente;
+    this.clienteCadastroDto = r;
+
+    this.endCadastralClientePrepedidoDto.Endereco_tipo_pessoa = this.dadosClienteCadastroDto.Tipo;
+    this.endCadastralClientePrepedidoDto.Endereco_nome = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
+      this.dadosClienteCadastroDto.Nome : "";
+    this.endCadastralClientePrepedidoDto.Endereco_cnpj_cpf = this.dadosClienteCadastroDto.Cnpj_Cpf;
+    this.endCadastralClientePrepedidoDto.Endereco_produtor_rural_status = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
+      this.dadosClienteCadastroDto.ProdutorRural : 0;
+
+    this.endCadastralClientePrepedidoDto.Endereco_contribuinte_icms_status =
+      this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ? this.dadosClienteCadastroDto.Contribuinte_Icms_Status : 0
+    this.endCadastralClientePrepedidoDto.Endereco_ie = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF ?
+      this.dadosClienteCadastroDto.Ie : "";
+  }
+
+  atualizarDadosEnderecoTela() {
+    if (this.confirmarEndereco) {
+      this.telaDesktopService.carregando = true;
+      this.confirmarEndereco.setarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
+
+      let promises:any = [this.confirmarEndereco.buscarCep(this.enderecoEntregaDtoClienteCadastro.EndEtg_cep), 
+        this.confirmarEndereco.buscarJustificativaEntrega()];
+      Promise.all(promises).then((r:any) => {
+        this.confirmarEndereco.setarDadosCep(r[0]);
+        this.confirmarEndereco.setarJustificativaEntrega(r[1]);
+      }).catch((e) => {
+        this.telaDesktopService.carregando = false;
+      }).finally(() => {
+        this.telaDesktopService.carregando = false;
+      });
+    }
+  }
+
+  verificarFase() {
+    this.fase1 = true;
+    if (this.telaDesktop) {
+      this.fase2 = true;
+      this.fase1e2juntas = true;
+    }
+    else {
+      if (this.novoPrepedidoDadosService.clicadoBotaoVoltarDaTelaItens) {
+        this.fase1 = false;
+        this.fase2 = true;
+        this.novoPrepedidoDadosService.clicadoBotaoVoltarDaTelaItens = false;
+        return;
+      }
+      this.fase2 = false;
+      this.fase1e2juntas = false;
+    }
+  }
+
   verificarCriarNovoPrepedido() {
     if (!!this.novoPrepedidoDadosService.prePedidoDto) {
-
       let existente = this.novoPrepedidoDadosService.prePedidoDto.DadosCliente.Id;
       if (existente == this.dadosClienteCadastroDto.Id) {
         //nao criamos! usamos o que já está no serviço
@@ -138,19 +183,8 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
         if (this.novoPrepedidoDadosService.prePedidoDto.EnderecoCadastroClientePrepedido.Endereco_cnpj_cpf)
           this.endCadastralClientePrepedidoDto = this.novoPrepedidoDadosService.prePedidoDto.EnderecoCadastroClientePrepedido;
 
-        if (this.confirmarEndereco)
-          this.confirmarEndereco.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
-
         this.clienteCorpo.atualizarDadosEnderecoCadastralClienteTela(this.endCadastralClientePrepedidoDto);
 
-        //trata se estivermos voltando da tela de itens, para ficarmos na fase 2
-        //se estamos passando aqui é porque os dados já existem no novoPrepedidoDadosService
-        if (!this.telaDesktop && this.novoPrepedidoDadosService.clicadoBotaoVoltarDaTelaItens) {
-          this.fase1 = false;
-          this.fase2 = true;
-          this.fase1e2juntas = false;
-        }
-        this.novoPrepedidoDadosService.clicadoBotaoVoltarDaTelaItens = false;
         return;
       }
     }
@@ -159,23 +193,18 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
       this.endCadastralClientePrepedidoDto);
     //quando a tela é para celular o "this.confirmarEndereco" esta "undefined" e já da problema
     //comentei para teste
-    if (this.telaDesktop) {
-      this.confirmarEndereco.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
-      //vamos atualizar o end cadastral
-    }
+    // if (this.telaDesktop) {
+    //   this.confirmarEndereco.atualizarDadosEnderecoTela(this.enderecoEntregaDtoClienteCadastro);
+    //   //vamos atualizar o end cadastral
+    // }
   }
 
-  //#region salvar alterações no IE e Contribuinte_Icms_Status
-  //variáveis apra controlar salvarAtivo
   salvarAtivoInicializar() {
     this.dadosClienteCadastroDtoIe = this.dadosClienteCadastroDto.Ie;
     this.dadosClienteCadastroDtoProdutorRural = this.dadosClienteCadastroDto.ProdutorRural;
     this.dadosClienteCadastroDtoContribuinte_Icms_Status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status;
   }
-  private dadosClienteCadastroDtoIe: string;
-  private dadosClienteCadastroDtoProdutorRural: number;
-  private dadosClienteCadastroDtoContribuinte_Icms_Status: number;
-  public constantes = new Constantes();
+
   salvarAtivo(): boolean {
     //diz se o botão de salvar está ligado
     if (!this.dadosClienteCadastroDto) {
@@ -260,20 +289,6 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.alertaService.mostrarMensagem(msg);
   }
 
-  //#endregion
-
-  //#region fase
-  /*
-  temos 2 fases: uma que confirma o cliente e a segunda que confirma o endereço de entrega
-  na especificação original, é uma tela só no desktop e duas telas no celular
-  talvez no desktop também fique em duas
-  aqui controlamos a transição entre as telas
-  */
-  fase1 = true;
-  fase2 = false;
-  fase1e2juntas = false;
-  //#endregion
-
   voltar() {
     //voltamos apra a fase anterior
     //fazer uma variavel para receber um valor para saber para onde voltar
@@ -295,14 +310,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.confirmarEndereco.desconverterTelefonesEnderecoEntrega(this.enderecoEntregaDtoClienteCadastro);
 
   }
-  //precisa do static: false porque está dentro de um ngif
-  @ViewChild("confirmarEndereco", { static: false }) confirmarEndereco: ConfirmarEnderecoComponent;
 
-  //esta como undefined
-  @ViewChild("clienteCorpo", { static: false }) clienteCorpo: ClienteCorpoComponent;
-
-  //desabilita o botão para evitar duplo clique
-  desabilita = false;
   continuar(): void {
     //desabilita o botão para evitar duplo clique
     this.desabilita = true;
@@ -330,7 +338,7 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.continuarEfetivo();
   }
 
-  converteu_tel_endCadastralClientePrepedidoDto = false;
+
   continuarEfetivo(): void {
 
     let validacoes: string[] = new Array();
@@ -413,7 +421,6 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
     this.fase2 = true;
     this.fase1 = false;
     this.desabilita = false;
-
   }
 }
 

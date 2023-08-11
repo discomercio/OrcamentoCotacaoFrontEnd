@@ -430,10 +430,10 @@ export class ClienteCorpoComponent implements OnInit, OnChanges {
   @ViewChild("componenteCepDadosCadastrais", { static: false }) componenteCepDadosCadastrais: CepComponent;
 
   public podeAvancar(): boolean {
-    if (this.componenteCep.carregando)
+    if (this.componenteCep.telaDesktopService.carregando)
       return false;
     if (!!this.componenteCepDadosCadastrais) {
-      if (this.componenteCepDadosCadastrais.carregando)
+      if (this.componenteCepDadosCadastrais.telaDesktopService.carregando)
         return false;
     }
 
