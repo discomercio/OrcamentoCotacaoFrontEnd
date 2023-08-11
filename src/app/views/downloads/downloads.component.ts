@@ -3,18 +3,16 @@ import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.s
 import { Component, OnInit } from '@angular/core';
 import { DownloadsService } from 'src/app/service/downloads/downloads.service';
 import { TreeNode } from 'primeng/api/treenode';
-import { Router, ActivatedRoute } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import * as fileSaver from 'file-saver';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { Constantes } from 'src/app/utilities/constantes';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
-import { CdkTreeNode } from '@angular/cdk/tree';
-import { Console } from 'console';
+import { ObterEstruturaResponse } from 'src/app/dto/arquivo/ObterEstruturaResponse';
 
 @Component({
   selector: 'app-downloads',
@@ -27,38 +25,48 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     public readonly activatedRoute: ActivatedRoute,
     private fb: FormBuilder,
     private readonly validacaoFormGroup: ValidacaoFormularioService,
-    private readonly mensagemService: MensagemService,
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     telaDesktopService: TelaDesktopService,
-    private readonly sweetalertService: SweetalertService) {
+    private readonly sweetAlertService: SweetalertService) {
     super(telaDesktopService);
   }
 
-  public form: FormGroup;
-  public mensagemErro: string = "*Campo obrigatório.";
-  public uploadedFiles: any[] = [];
-  public estrutura: TreeNode[];
-  public estruturaSelecionada: TreeNode;
-  public cols: any[];
-  public novaPasta: boolean = false;
-  public edicao: boolean = false;
-  public ehArquivo: boolean = false;
-  public ehUpload: boolean = false;
-  public constantes: Constantes = new Constantes();
-  public pastaRaizInserida: boolean = false;
+  form: FormGroup;
+  mensagemErro: string = "*Campo obrigatório.";
+  uploadedFiles: any[] = [];
+  estrutura: TreeNode[];
+  estruturaSelecionada: TreeNode;
+  cols: any[];
+  novaPasta: boolean = false;
+  edicao: boolean = false;
+  ehArquivo: boolean = false;
+  ehUpload: boolean = false;
+  constantes: Constantes = new Constantes();
+  pastaRaizInserida: boolean = false;
   exibeBotaoUpload: boolean;
   exibeBotaoNovaPasta: boolean;
   exibeBotaoEditarArquivoPasta: boolean;
   exibeBotaoExcluirArquivoPasta: boolean;
   lojaLogado: string;
+  carregando: boolean;
 
   ngOnInit(): void {
+    this.carregando = true;
+    this.lojaLogado = this.autenticacaoService._lojaLogado;
     this.criarForm();
-    this.atualizarEstrutura();
     this.montarPastas();
     this.verificarPermissoes();
-    this.lojaLogado = this.autenticacaoService._lojaLogado;
+
+    let promise: any = [this.buscarArvore()];
+    Promise.all(promise).then((r: any) => {
+      this.setarArvore(r[0]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    });
   }
 
   criarForm() {
@@ -68,21 +76,6 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       txtNome: ['', [Validators.required]],
       txtDescricao: [''],
     });
-  }
-
-  atualizarEstrutura() {
-    this.downloadsService.buscarToTree().toPromise().then(response => {
-
-      if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
-        // return;
-      }
-
-      this.limparEstrutura();
-
-      this.estrutura = response.Childs;
-
-    }).catch((response) => this.alertaService.mostrarErroInternet(response));
   }
 
   montarPastas() {
@@ -102,18 +95,43 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.exibeBotaoExcluirArquivoPasta = this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos);
   }
 
-  novaPastaClick() {
+  buscarArvore(): Promise<ObterEstruturaResponse> {
+    return this.downloadsService.buscarToTree().toPromise();
+  }
 
+  setarArvore(r: ObterEstruturaResponse) {
+    if (!r.Sucesso) {
+      this.alertaService.mostrarMensagem(r.Mensagem);
+    }
+
+    this.limparEstrutura();
+    this.estrutura = r.Childs;
+  }
+
+  atualizarEstrutura() {
+    this.carregando = true;
+    let promise: any = [this.buscarArvore()];
+    Promise.all(promise).then((r: any) => {
+      this.setarArvore(r[0]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
+    });
+  }
+
+  novaPastaClick() {
     this.novaPasta = !this.novaPasta;
     this.ehUpload = false;
     this.edicao = false;
-
   }
 
   addPastaTable() {
 
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
+    this.carregando = true;
     let idPai = "";
 
     if (this.estruturaSelecionada != undefined) {
@@ -124,9 +142,9 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     let descricao = this.form.controls.descricaoPasta.value;
 
     this.downloadsService.novaPasta(idPai, nome, descricao, this.lojaLogado).toPromise().then(response => {
-
       if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
 
@@ -162,20 +180,25 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       this.estrutura = [...this.estrutura];
       this.novaPasta = false;
       this.form.reset();
-      this.atualizarEstrutura();
 
-    }).catch((r) => this.sweetalertService.aviso(r));
+      this.carregando = false;
+
+      this.atualizarEstrutura();
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   excluirClick() {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
-      this.sweetalertService.aviso("Selecione uma pasta, ou arquivo!");
+      this.alertaService.mostrarMensagem("Selecione uma pasta, ou arquivo!");
       return;
     }
 
-    this.sweetalertService.dialogo("", "Tem certeza que deseja excluir?").subscribe(result => {
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja excluir?").subscribe(result => {
 
       if (!result) {
         return;
@@ -191,22 +214,27 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (this.estruturaSelecionada.hasOwnProperty('children') && this.estruturaSelecionada.children.length > 0) {
-      this.sweetalertService.aviso("Não é possivel excluir pastas que possuem arquivos!");
+      this.alertaService.mostrarMensagem("Não é possivel excluir pastas que possuem arquivos!");
       return;
     }
+
+    this.carregando = true;
 
     this.downloadsService.excluir(this.estruturaSelecionada.data.key, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
 
+      this.carregando = false;
+
       if (this.ehArquivo) {
-        this.sweetalertService.sucesso("Arquivo excluído!");
+        this.sweetAlertService.sucesso("Arquivo excluído!");
       }
       else {
-        this.sweetalertService.sucesso("Pasta excluída!");
+        this.sweetAlertService.sucesso("Pasta excluída!");
       }
 
       if (this.estrutura.length == 1 && this.estrutura[0].children.length == 0) {
@@ -216,7 +244,10 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
         this.atualizarEstrutura();
       }
 
-    }).catch(e => this.sweetalertService.aviso(e));
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   limparEstrutura() {
@@ -225,7 +256,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     this.edicao = false;
   }
 
-  public controlaBotoes(rowData: any) {
+  controlaBotoes(rowData: any) {
 
     if (!this.estruturaSelecionada) {
       this.edicao = false;
@@ -244,7 +275,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
   editarClick() {
     if (!!this.estruturaSelecionada == false) {
-      this.sweetalertService.aviso("Selecione um arquivo ou pasta!");
+      this.alertaService.mostrarMensagem("Selecione um arquivo ou pasta!");
       return;
     }
 
@@ -263,19 +294,23 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     let nome = this.form.controls.txtNome.value;
     let descricao = this.form.controls.txtDescricao.value;
 
+    this.carregando = true;
+
     this.downloadsService.editar(id, nome, descricao, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
-
-      this.sweetalertService.sucesso(response.Mensagem);
+      this.carregando = false;
+      this.sweetAlertService.sucesso(response.Mensagem);
 
       this.atualizarEstrutura();
 
-    }).catch((r) => {
-      this.sweetalertService.aviso(r.error.Mensagem);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e.error.Mensagem);
     });
   }
 
@@ -283,7 +318,7 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.ArquivosDownloadIncluirEditarPastasArquivos)) return;
 
     if (!!this.estruturaSelecionada == false) {
-      this.sweetalertService.aviso("Selecione uma pasta!");
+      this.alertaService.mostrarMensagem("Selecione uma pasta!");
       return;
     }
 
@@ -294,33 +329,39 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
 
   myUploader(event) {
 
+    this.carregando = true;
     let idPai = this.estruturaSelecionada.data.key;
     let arquivo = event;
-    debugger;
+
     this.downloadsService.upload(idPai, arquivo, this.lojaLogado).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
 
+      this.carregando = false;
       this.ehUpload = false;
-      this.sweetalertService.sucesso(response.Mensagem);
+      this.sweetAlertService.sucesso(response.Mensagem);
 
       this.atualizarEstrutura();
 
-    }).catch((response) => {
-      this.sweetalertService.aviso(response);
+    }).catch((e) => {
+      this.carregando = false;
       this.ehUpload = false;
+      this.alertaService.mostrarErroInternet(e);
     });
   }
 
   downloadSelecionado(event) {
 
+    this.carregando = true;
     this.downloadsService.download(event.key).toPromise().then(response => {
 
       if (!response.Sucesso) {
-        this.sweetalertService.aviso(response.Mensagem);
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(response.Mensagem);
         return;
       }
 
@@ -344,11 +385,17 @@ export class DownloadsComponent extends TelaDesktopBaseComponent implements OnIn
       const blob = new Blob(byteArrays, { type: contentType });
       const url = window.URL.createObjectURL(blob);
       fileSaver.saveAs(blob, response.Nome);
-      this.sweetalertService.sucesso(response.Mensagem);
+
+      this.carregando = false;
+
+      this.sweetAlertService.sucesso(response.Mensagem);
       this.edicao = false;
       this.novaPasta = false;
       this.ehUpload = false;
 
-    }).catch((response) => this.sweetalertService.aviso(response));
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e)
+    });
   }
 }
