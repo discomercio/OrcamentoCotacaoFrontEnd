@@ -22,6 +22,7 @@ import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service'
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { Observable } from 'rxjs';
 import { ProdutoCalculadoraVrfRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel';
+import { Constantes } from 'src/app/utilities/constantes';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -47,13 +48,11 @@ export class CalculadoraVrfComponent implements OnInit {
   fabricantes: ProdutoCatalogoFabricante[];
   lstSimultaneidades: SelectItem[] = [];
   lstFabricantes: SelectItem[] = [];
-
   lstQtdeCondensadoras: SelectItem[] = [];
   lstOpcoes: ProdutoCatalogoPropriedadeOpcao[];
   lstVoltagens: SelectItem[] = [];
   lstDescargas: SelectItem[] = [];
-
-  carregando: boolean = false;
+  carregando: boolean;
   produtosPropriedadesAtivos: ProdutoCatalogoItemProdutosAtivosDados[];
   evaporadoras = new Array<ProdutoTabela>();
   condensadoras = new Array<ProdutoTabela>();
@@ -62,14 +61,12 @@ export class CalculadoraVrfComponent implements OnInit {
   evaporadorasSelecionadas = new Array<ProdutoTabela>();
   condensadorasSelecionadas = new Array<ProdutoTabela>();
   condensadorasFiltradas: ProdutoTabela[] = [];
-
   combinacaoCom3aparelhos: ProdutoTabela[];
   simultaneidadeCalculada3aparelhos: number;
   combinacaoCom2aparelhos: ProdutoTabela[];
   simultaneidadeCalculada2aparelhos: number;
   combinacaoCom1aparelhos: ProdutoTabela[];
   simultaneidadeCalculada1aparelho: number;
-
   totalKcalEvaporadoras: number;
   simultaneidade: string;
   qtdeCondensadora: number;
@@ -77,11 +74,9 @@ export class CalculadoraVrfComponent implements OnInit {
   descarga: number;
   fabricante: string;
   fabricanteSelecionado: string;
-
   stringUtils = StringUtils;
   moedaUtils = new MoedaUtils();
   mensagemErro: string = "*Campo obrigatório.";
-
   nomeCliente: string = '';
   nomeObra: string = '';
   telefone: string = '';
@@ -89,78 +84,124 @@ export class CalculadoraVrfComponent implements OnInit {
   observacao: string = '';
   instalador: string = '';
   telInstalador: string = '';
-
   mascaraTelefone: string;
   calculado: boolean = false;
   desabilita: boolean = false;
   lstCiclos: SelectItem[] = [];
   ciclo: string;
-
   opcao1: boolean = false;
   opcao2: boolean = false;
   opcao3: boolean = false;
   dataUtils: DataUtils = new DataUtils();
+  logo: string;
+  dataAtual: string;
+  textoRodape: string;
+  imprimindo: boolean = false;
+  constantes: Constantes = new Constantes();
 
-  gerandoPDF: boolean = false;
   ngOnInit(): void {
+    this.carregando = true;
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.criarForm2();
-    this.buscarProduto();
-    this.buscarOpcoes();
     this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
-    this.buscarLogoPDF(this.autenticacaoService._lojaLogado);
-    this.buscarTextoRodapePDF(this.autenticacaoService._lojaLogado);
-
     this.dataAtual = new Date().toLocaleString("pt-br");
-  }
 
-  logo: string;
-  dataAtual: string;
-  buscarLogoPDF(lojaLogada: string) {
-
-    let IdCfgParametro = 21;
-
-    this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise().then((r) => {
-      if (r != null) {
-        this.logo = "assets/layout/images/" + r[0]['Valor'];
-      }
+    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF()];
+    Promise.all(promise).then((r: any) => {
+      this.setarProdutos(r[0]);
+      this.setarOpcoes(r[1]);
+      this.setarLogoPDF(r[2]);
+      this.setarTextoRodapePDF(r[3]);
     }).catch((e) => {
+      this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
+    }).finally(() => {
+      this.carregando = false;
     });
   }
 
-  textoRodape: string;
-  buscarTextoRodapePDF(lojaLogada: string) {
-    let IdCfgParametro = 22
-
-    this.orcamentoService.buscarParametros(IdCfgParametro, lojaLogada, null).toPromise().then((r) => {
-      if (r != null) {
-        this.textoRodape = r[0]['Valor'];
-        this.buscarLogoPDF(lojaLogada);
-      }
-    }).catch((e) => {
-      this.alertaService.mostrarErroInternet(e);
+  criarForm() {
+    this.form = this.fb.group({
+      fabricanteSelecionado: ['', [Validators.required]]
     });
   }
 
-  montarDadosParaPDF(produto: ProdutoTabela[]) {
-    let retorno = [];
-
-    produto.forEach(x => {
-      if (x.totalKcal == undefined) {
-        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.kcal]
-        retorno.push(dado);
-      }
-      if (x.totalKcal > 0) {
-        let dado = [this.stringUtils.formatarDescricao(x.fabricante, '', x.produto, x.descricao), x.qtde, x.btu, x.kcal, x.totalKcal]
-        retorno.push(dado);
-      }
+  criarForm2() {
+    this.form2 = this.fb.group({
+      voltagem: ['', [Validators.required]],
+      descarga: ['', [Validators.required]],
+      simultaneidade: ['', [Validators.required]],
+      qtdeCondensadora: ['', [Validators.required]],
+      ciclo: ['', [Validators.required]]
     });
-    return retorno;
   }
-  imprimindo: boolean = false;
+
+  buscarSimultaneidades() {
+    this.lstSimultaneidades.push(
+      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
+      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
+      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
+      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
+      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
+    );
+  }
+
+  buscarQtdeMaxCondensadoras() {
+    this.lstQtdeCondensadoras.push({ title: "1", value: 1, label: "1" },
+      { title: "2", value: 2, label: "2" },
+      { title: "3", value: 3, label: "3" });
+  }
+
+  buscarProdutos(): Promise<ProdutoCatalogoItemProdutosAtivosDados[]> {
+    let request: ProdutoCalculadoraVrfRequestViewModel = new ProdutoCalculadoraVrfRequestViewModel();
+    request.propriedadeOculta = null;
+    request.propriedadeOcultaItem = null;
+    return this.produtoService.listarProdutosPropriedadesAtivos(request).toPromise()
+  }
+
+  buscarOpcoes(): Promise<ProdutoCatalogoPropriedadeOpcao[]> {
+    return this.produtoService.buscarOpcoes().toPromise();
+  }
+
+  buscarLogoPDF(): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
+  }
+
+  buscarTextoRodapePDF(): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_TextoDisclaimer;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
+  }
+
+  setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
+    if (r != null) {
+      this.produtosDados = r;
+      this.filtrarProdutosVrf();
+    }
+  }
+
+  setarOpcoes(r: ProdutoCatalogoPropriedadeOpcao[]) {
+    if (r != null) {
+      this.lstOpcoes = r;
+      this.buscarVoltagens();
+      this.buscarDescargas();
+      this.buscarCiclos();
+    }
+  }
+
+  setarLogoPDF(r: any) {
+    if (r != null) {
+      this.logo = "assets/layout/images/" + r[0]['Valor'];
+    }
+  }
+
+  setarTextoRodapePDF(r: any) {
+    if (r != null) {
+      this.textoRodape = r[0]['Valor'];
+    }
+  }
 
   mostrarImpressao() {
     if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
@@ -169,7 +210,6 @@ export class CalculadoraVrfComponent implements OnInit {
     }
     this.imprimindo = true;
   }
-
 
   gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
 
@@ -312,38 +352,6 @@ export class CalculadoraVrfComponent implements OnInit {
     this.gerarPDF2paginas(doc, margins, alturaPagina);
   }
 
-  criarForm() {
-    this.form = this.fb.group({
-      fabricanteSelecionado: ['', [Validators.required]]
-    });
-  }
-
-  criarForm2() {
-    this.form2 = this.fb.group({
-      voltagem: ['', [Validators.required]],
-      descarga: ['', [Validators.required]],
-      simultaneidade: ['', [Validators.required]],
-      qtdeCondensadora: ['', [Validators.required]],
-      ciclo: ['', [Validators.required]]
-    });
-  }
-
-  buscarProduto() {
-    this.carregando = true;
-    let request:ProdutoCalculadoraVrfRequestViewModel = new ProdutoCalculadoraVrfRequestViewModel();
-    request.propriedadeOculta = null;
-    request.propriedadeOcultaItem = null;
-    this.produtoService.listarProdutosPropriedadesAtivos(request).toPromise().then((r) => {
-      if (r != null) {
-        this.produtosDados = r;
-        this.filtrarProdutosVrf();
-      }
-    }).catch((e) => {
-      this.carregando = false;
-      this.alertaService.mostrarErroInternet(e);
-    });
-  }
-
   filtrarProdutosVrf() {
     this.produtosVrf = this.produtosDados.filter(x => x.idPropriedade == 1 && x.idValorPropriedadeOpcao == 12);
 
@@ -423,7 +431,7 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   buscarEvaporadoras() {
-    
+
     this.produtosVrf.forEach(x => {
       let evap = this.produtosDados.filter(e => e.produto == x.produto && e.idPropriedade == 2 && e.idValorPropriedadeOpcao == 22);
 
@@ -462,17 +470,6 @@ export class CalculadoraVrfComponent implements OnInit {
     });
   }
 
-  buscarOpcoes() {
-    this.produtoService.buscarOpcoes().toPromise().then((r) => {
-      if (r != null) {
-        this.lstOpcoes = r;
-        this.buscarVoltagens();
-        this.buscarDescargas();
-        this.buscarCiclos();
-      }
-    }).catch((r) => this.alertaService.mostrarErroInternet(r));
-  }
-
   buscarFabricantes() {
     this.produtoService.buscarFabricantes().toPromise().then((r) => {
       if (r != null) {
@@ -498,16 +495,6 @@ export class CalculadoraVrfComponent implements OnInit {
     });
   }
 
-  buscarSimultaneidades() {
-    this.lstSimultaneidades.push(
-      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
-      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
-      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
-      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
-      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
-    );
-  }
-
   buscarVoltagens() {
     let voltagens = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 4);
 
@@ -526,12 +513,6 @@ export class CalculadoraVrfComponent implements OnInit {
       let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
       this.lstDescargas.push(opcao);
     });
-  }
-
-  buscarQtdeMaxCondensadoras() {
-    this.lstQtdeCondensadoras.push({ title: "1", value: 1, label: "1" },
-      { title: "2", value: 2, label: "2" },
-      { title: "3", value: 3, label: "3" });
   }
 
   filtrarEvaporadoras(): ProdutoTabela[] {
@@ -707,32 +688,32 @@ export class CalculadoraVrfComponent implements OnInit {
         this.carregando = false;
         return;
       }
-  
+
       let somaCapacidadeEvaporadoras = this.evaporadorasSelecionadas
         .reduce((sum, current) => sum + (Number.parseFloat(current.kw) * current.qtde), 0);
-  
+      somaCapacidadeEvaporadoras = Math.round(somaCapacidadeEvaporadoras);
+
       let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
       let simultaneidadeMinFloat = Number.parseFloat(simultaneidadeMin);
-  
+
       let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
       let simultaneidadeMaxFloat = Number.parseFloat(simultaneidadeMax);
-  
+
       this.filtrarCondensadoras();
-  
-      let capacidadeMinima = somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100);
-      
+      let capacidadeMinima = Math.round(somaCapacidadeEvaporadoras / (simultaneidadeMaxFloat / 100));
+
       this.combinacaoCom1aparelhos = this.buscarMelhorCombinacao1Condensadora(capacidadeMinima, this.condensadorasFiltradas,
         simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
-  
+
       if (this.qtdeCondensadora > 1) {
         this.combinacaoCom2aparelhos = this.buscarMelhorCombinacao2Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
           simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
-  
+
         if (this.qtdeCondensadora == 3)
           this.combinacaoCom3aparelhos = this.buscarMelhorCombinacao3Condensadoras(capacidadeMinima, this.condensadorasFiltradas,
             simultaneidadeMaxFloat, simultaneidadeMinFloat, somaCapacidadeEvaporadoras);
       }
-  
+
       //caso o cálculo seja para 1 condensadora, já deve setar a selação para incluir no PDF
       if (this.qtdeCondensadora == 1) this.opcao1 = true;
 
@@ -1016,11 +997,6 @@ export class CalculadoraVrfComponent implements OnInit {
     });
 
     return retorno;
-  }
-
-  somarTotalCondensadoras(lstCondensadora: ProdutoTabela[]) {
-    return lstCondensadora
-      .reduce((sum, current) => sum + (Number.parseFloat(current.kcal) * current.qtde), 0);
   }
 
   voltar() {
