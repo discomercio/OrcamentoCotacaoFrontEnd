@@ -37,7 +37,7 @@ export class UsuarioListaComponent implements OnInit {
   usuariosApoio: Array<OrcamentistaIndicadorVendedorDto> = new Array<OrcamentistaIndicadorVendedorDto>();
   cols: any[];
   perfil: SelectItem;
-  carregando: boolean = false;
+  carregando: boolean;
   tipo: UsuarioTipo = 'todos';
   permite: boolean = false;
   pesquisa: string;
@@ -46,59 +46,49 @@ export class UsuarioListaComponent implements OnInit {
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
       this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
-      this.router.navigate(['orcamentos/listar/orcamentos']);
+      this.router.navigate(['dashboards']);
       return;
     }
 
+    this.carregando = true;
+
     this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
     this.criarColunas();
-    this.buscarUsuarios();
+    let promise = [this.buscarUsuarios()];
+    Promise.all(promise).then((r)=>{
+      this.setarUsuarios(r[0]);
+    }).catch((e)=>{
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+    }).finally(()=>{
+      this.carregando = false;
+    });
   }
 
-  buscarUsuarios() {
+  buscarUsuarios(): Promise<OrcamentistaIndicadorVendedorDto[]> {
     if (this.autenticacaoService._tipoUsuario != 1) {
-      this.orcamentistaIndicadorVendedorService
+      return this.orcamentistaIndicadorVendedorService
         .buscarVendedoresParceirosPorParceiroELoja(this.autenticacaoService._parceiro, this.autenticacaoService._lojaLogado)
-        .toPromise()
-        .then((r) => {
-          if (r == null) {
-            this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
-            return;
-          }
-          this.usuarios = this.montarStringBusca(r);
-        }).catch((e) => {
-          this.alertaService.mostrarErroInternet(e);
-        });
+        .toPromise();
     }
     else {
       if (this.autenticacaoService.verificarPermissoes(ePermissao.SelecionarQualquerIndicadorDaLoja)) {
-        this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorloja(this.autenticacaoService._lojaLogado)
-          .toPromise()
-          .then((r) => {
-            if (r == null) {
-              this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
-              return;
-            }
-            this.usuarios = this.montarStringBusca(r);
-          }).catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
-          });
-      }
-      else {
-        this.orcamentistaIndicadorVendedorService
+        return this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorloja(this.autenticacaoService._lojaLogado)
+          .toPromise();
+      } else {
+        return this.orcamentistaIndicadorVendedorService
           .buscarVendedoresParceirosPorVendedorELoja(this.autenticacaoService._usuarioLogado, this.autenticacaoService._lojaLogado)
-          .toPromise()
-          .then((r) => {
-            if (r == null) {
-              this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
-              return;
-            }
-            this.usuarios = this.montarStringBusca(r);
-          }).catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
-          });
+          .toPromise();
       }
     }
+  }
+
+  setarUsuarios(r: OrcamentistaIndicadorVendedorDto[]) {
+    if (r == null) {
+      this.alertaService.mostrarMensagem("Nenhum usuário encontrado!");
+      return;
+    }
+    this.usuarios = this.montarStringBusca(r);
   }
 
   criarColunas() {
@@ -151,15 +141,16 @@ export class UsuarioListaComponent implements OnInit {
   }
 
   excluirClick(orcamentista: OrcamentistaIndicadorVendedorDto) {
-    this.sweetAlertService.dialogo("", "Deseja excluir permanentemente este cadastro de usuário?").subscribe((r)=>{
-      if(!r){
+    this.sweetAlertService.dialogo("", "Deseja excluir permanentemente este cadastro de usuário?").subscribe((r) => {
+      if (!r) {
         return;
       }
-
+      this.carregando = true;
       let request = new OrcamentistaIndicadorVendedorDeleteRequest();
       request.idIndicadorVendedor = orcamentista.id;
-      this.orcamentistaIndicadorVendedorService.excluir(request).toPromise().then((r)=>{
-        if(!r.Sucesso){
+      this.orcamentistaIndicadorVendedorService.excluir(request).toPromise().then((r) => {
+        if (!r.Sucesso) {
+          this.carregando = false;
           this.sweetAlertService.aviso(r.Mensagem);
           return;
         }
@@ -167,12 +158,12 @@ export class UsuarioListaComponent implements OnInit {
         this.sweetAlertService.sucesso("Usuário exlcuído com sucesso!");
         this.first = 0;
         this.pesquisa = undefined;
+        this.carregando = false;
         this.ngOnInit();
-      }).catch((e)=>{
+      }).catch((e) => {
+        this.carregando = false;
         this.alertaService.mostrarErroInternet(e);
-      })
-    })
-
-      
+      });
+    });
   }
 }
