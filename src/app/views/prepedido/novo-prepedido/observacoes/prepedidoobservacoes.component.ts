@@ -12,6 +12,7 @@ import { PrepedidoBuscarService } from 'src/app/service/prepedido/prepedido-busc
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/prepedido/ClienteCadastro/EnderecoEntregaDTOClienteCadastro';
 import { Constantes } from 'src/app/dto/prepedido/Constantes';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 
 @Component({
@@ -30,36 +31,42 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
     public readonly dialog: MatDialog,
     telaDesktopService: TelaDesktopService,
     public readonly prepedidoBuscarService: PrepedidoBuscarService,
-    private _ngZone: NgZone
+    private _ngZone: NgZone,
+    private readonly sweetAlertService: SweetalertService
   ) {
     super(telaDesktopService, router, novoPrepedidoDadosService);
   }
+
+  @ViewChild('autosize', { static: true }) autosize: CdkTextareaAutosize;
+  constantes = new Constantes();
+  EntregaImediata: boolean;
+  BemDeUso_Consumo: boolean;
+  InstaladorInstala: boolean;
+  PrevisaoEntrega: string = "";
+  contador: number = 0;
+  carregando: boolean;
 
   ngOnInit() {
     this.verificarEmProcesso();
     this.dadosDoModelo();
   }
 
-  @ViewChild('autosize', { static: true }) autosize: CdkTextareaAutosize;
   triggerResize() {
     // Wait for changes to be applied, then trigger textarea resize.
     this._ngZone.onStable.pipe(take(1))
       .subscribe(() => this.autosize.resizeToFitContent(true));
   }
 
-  public etg_imediata: boolean = false;
-
-
   //#region navegação
   voltar() {
     this.dadosParaModelo();
     this.location.back();
   }
-  salvando: boolean;
+
   continuar() {
-    this.salvando = true;
+    this.carregando = true;
     if (!this.dadosParaModelo()) {
-      this.salvando = false;
+      this.carregando = false;
       return false;
     }
     if (!this.novoPrepedidoDadosService.prePedidoDto.EnderecoEntrega.OutroEndereco) {
@@ -78,53 +85,41 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
           //se tiver 1 item e nenhum espaço, é o numero do prepedido criado
           if (r[0].length > 9 || r.length != 1 || r[0].indexOf(" ") >= 0) {
             this.alertaService.mostrarMensagem("Erros ao salvar. \nLista de erros: \n" + r.join("\n"));
-            this.salvando = false;
+            this.carregando = false;
             return;
           }
           else {
-            this.salvando = false;
-            this.alertaService.mostrarMensagem("Pedido criado com sucesso.");
+            this.carregando = false;
+            this.sweetAlertService.sucesso("Pedido criado com sucesso.");
             localStorage.setItem('ultima_url', document.URL);
             this.router.navigate(["prepedido/detalhes/" + r[0]]);
           }
         }
 
       },
-      error: (r) => { this.alertaService.mostrarErroInternet(r); this.salvando = false; }
+      error: (r) => {
+        this.carregando = false;
+        this.alertaService.mostrarErroInternet(r);
+      }
     });
-    // this.dadosParaModelo();
-
-    // this.router.navigate(["../confirmar-prepedido"], { relativeTo: this.activatedRoute });
   }
-  //#endregion
 
-
-  constantes = new Constantes();
-
-  //para converter da estrutura de dados para os controles do slider da tela
-  public EntregaImediata: boolean;
-  public BemDeUso_Consumo: boolean;
-  public InstaladorInstala: boolean;
-  // public GarantiaIndicador: boolean;
   dadosDoModelo() {
 
     if (this.prePedidoDto.DetalhesPrepedido.EntregaImediata != "NÃO" ||
       this.prePedidoDto.DetalhesPrepedido.EntregaImediata == undefined) {
       this.EntregaImediata = true;
     }
-    // this.BemDeUso_Consumo = false;
     if (this.prePedidoDto.DetalhesPrepedido.BemDeUso_Consumo != "NÃO" ||
       this.prePedidoDto.DetalhesPrepedido.BemDeUso_Consumo == undefined) {
       this.BemDeUso_Consumo = true;
     }
-    // this.InstaladorInstala = false;
     if (this.prePedidoDto.DetalhesPrepedido.InstaladorInstala != "NÃO" ||
       this.prePedidoDto.DetalhesPrepedido.InstaladorInstala == undefined) {
       this.InstaladorInstala = true;
     }
   }
 
-  public PrevisaoEntrega: string = "";
   dadosParaModelo() {
     if (!this.verificaEntregaImediata())
       return false;
@@ -139,19 +134,14 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
       this.prePedidoDto.DetalhesPrepedido.InstaladorInstala = this.constantes.COD_INSTALADOR_INSTALA_SIM.toString();
     }
 
-    // this.prePedidoDto.DetalhesPrepedido.GarantiaIndicador = this.constantes.COD_GARANTIA_INDICADOR_STATUS__NAO.toString();
-    // if (this.GarantiaIndicador) {
-    //   this.prePedidoDto.DetalhesPrepedido.GarantiaIndicador = this.constantes.COD_GARANTIA_INDICADOR_STATUS__SIM.toString();
-    // }
     return true;
   }
-  public contador: number = 0;
-  public contarCaracter(): void {
+
+  contarCaracter(): void {
     this.contador = this.prePedidoDto.DetalhesPrepedido.Observacoes.length;
   }
 
-  required: boolean;
-  public verificaEntregaImediata(): boolean {
+  verificaEntregaImediata(): boolean {
     let retorno: boolean = true;
 
     if (this.EntregaImediata) {
@@ -180,5 +170,4 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
     }
     return retorno;
   }
-
 }
