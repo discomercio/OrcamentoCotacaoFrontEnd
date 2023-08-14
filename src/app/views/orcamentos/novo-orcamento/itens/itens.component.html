@@ -9,29 +9,26 @@
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0"
                 *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR">
                 <span class="p-text-bold p-pr-1">Comissão: </span>
-                <p *ngIf="!novoOrcamentoService.editarComissao" class="p-m-0">
+                <p *ngIf="!novoOrcamentoService.editandoComissao" class="p-m-0">
                     {{moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                     % </p>
-                <div *ngIf="novoOrcamentoService.editarComissao" class="p-col-2 p-inputgroup">
+                <div *ngIf="novoOrcamentoService.editandoComissao" class="p-col-2 p-inputgroup">
                     <input type="text" pInputText class="p-text-right"
                         [value]="moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
                         (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
                     <span class="p-inputgroup-addon">%</span>
                 </div>
-                <div *ngIf="param != 'novo' && param != 'clone' && habilitarComissao">
+                <div>
+                    <button *ngIf="!novoOrcamentoService.editandoComissao" pButton type="button" icon="pi pi-user-edit"
+                        (click)="liberarEdicaoComissao()" pTooltip="Editar comissão"
+                        class="p-button-text p-p-0"></button>
                     <button
-                        *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && !novoOrcamentoService.editarComissao && !novoOrcamentoService.descontaComissao"
-                        pButton type="button" icon="pi pi-user-edit" (click)="liberarEdicaoComissao()"
-                        pTooltip="Editar comissão" class="p-button-text p-p-0"></button>
-                    <button
-                        *ngIf="novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null && novoOrcamentoService.editarComissao"
+                        *ngIf="novoOrcamentoService.editandoComissao"
                         pButton type="button" icon="pi pi-times" (click)="liberarEdicaoComissao()"
                         class="p-button-text p-p-0"></button>
                 </div>
             </div>
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0"
-                >
-                <!-- *ngIf="!!novoOrcamentoService.orcamentoCotacaoDto?.parceiro && novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.constantes.SEM_INDICADOR" -->
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0">
                 <span class="p-text-bold p-pr-1">Desconto médio: </span>
                 <p>{{moedaUtils.formatarValorDuasCasaReturnZero(novoOrcamentoService.descontoMedio)}}</p>
             </div>

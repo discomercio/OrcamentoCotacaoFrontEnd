@@ -313,7 +313,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
     }
-debugger;
+    debugger;
     this.setarQtdeMaxParcelasEDias();
 
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
@@ -406,6 +406,11 @@ debugger;
       return;
     }
 
+    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT > this.novoOrcamentoService.percentualMaxComissao.percMaxComissao) {
+      this.alertaService.mostrarMensagem("A comissão excedeu o máximo permitido!");
+      return;
+    }
+
     if (!this.novoOrcamentoService.validarDescontosProdutos()) {
       this.mensagemService.showErrorViaToast([`Existe produto que excede o máximo permitido!`]);
       return;
@@ -413,16 +418,19 @@ debugger;
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-      if (this.novoOrcamentoService.verificarCalculoComissao() &&
-        this.novoOrcamentoService.descontouComissao(this.novoOrcamentoService.calcularPercentualComissaoValidacao())) {
-        let descontoMedio = this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.novoOrcamentoService.calcularDescontoMedio());
-        let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para
-            ${this.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.novoOrcamentoService.calcularPercentualComissaoValidacao())}%. Confirma a redução da comissão?`;
-        
-            this.sweetalertService.dialogo("", pergunta).subscribe(result => {
-          if (!result) return;
+        let comissao = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
+        let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
+        let comissaoMaisDesconto = comissao + descontoMedio;
+      if (comissaoMaisDesconto > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
+        let novoPercRT = this.novoOrcamentoService.calcularPercentualComissaoValidacao();
+        let pergunta = `Para manter o desconto médio de ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
+        ${this.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoPercRT)}%. Confirma a redução da comissão?`;
+        this.sweetalertService.dialogo("", pergunta).subscribe(result => {
+          if (!result) {
+            return;
+          }
 
-          this.novoOrcamentoService.calcularPercentualComissao();
+          this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = novoPercRT;
           this.gravarOpcao();
         });
       }
@@ -432,6 +440,7 @@ debugger;
   }
 
   gravarOpcao() {
+
     this.atribuirFormasPagto();
 
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.push(this.novoOrcamentoService.opcaoOrcamentoCotacaoDto);

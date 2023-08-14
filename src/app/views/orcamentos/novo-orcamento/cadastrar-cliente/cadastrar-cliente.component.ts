@@ -79,6 +79,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   carregando: boolean;
   dataEntrega = true;
   filtro: string;
+  chaveComissao: boolean;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -118,6 +119,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   }
 
   verificarParam(param: any) {
+
     if (param.filtro == undefined) {
 
       if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined ||
@@ -134,7 +136,12 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
         this.mostrarInstaladorInstala = true;
       }
+
+      this.chaveComissao = false;
+      return;
     }
+
+    this.chaveComissao = true;
 
     if (param.filtro == "novo") {
       this.filtro = param.filtro;

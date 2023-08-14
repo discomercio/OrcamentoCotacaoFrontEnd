@@ -82,7 +82,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   selecProdInfo = new SelecProdInfo();
   param: string;
   habilitarClone: boolean = false;
-  habilitarComissao: boolean = true;
   editando: boolean = false;
   mostrarPercrt: boolean = false;
   produtoRequest: ProdutoRequest;
@@ -140,6 +139,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       }
       if (param.filtro == "novo" || param.filtro == "iniciar") {
         retorno = "novo";
+        this.novoOrcamentoService.editandoComissao = false;
         this.novoOrcamentoService.editando = false;
         this.formaPagto.editando = false;
       }
@@ -172,7 +172,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) &&
         !this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
         this.novoOrcamentoService.setarPercentualComissao();
-        this.novoOrcamentoService.calcularPercentualComissao();
       }
     }
   }
@@ -785,12 +784,12 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   liberarEdicaoComissao() {
-    if (this.novoOrcamentoService.editarComissao) {
-      this.novoOrcamentoService.editarComissao = false;
+    if (this.novoOrcamentoService.editandoComissao) {
+      this.novoOrcamentoService.editandoComissao = false;
       return;
     }
 
-    this.novoOrcamentoService.editarComissao = true;
+    this.novoOrcamentoService.editandoComissao = true;
   }
 
   formataComissao(e: Event) {
@@ -807,6 +806,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     v = Number.parseFloat((v * 0.1) + '');
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
-    this.novoOrcamentoService.editarComissao = false;
+    this.novoOrcamentoService.editandoComissao = false;
   }
 }
