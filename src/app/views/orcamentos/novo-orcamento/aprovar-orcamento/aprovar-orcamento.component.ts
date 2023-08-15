@@ -809,7 +809,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     doc.setTextColor("000").setFont('Helvetica', "normal");
 
-    return (currentPositionY += this.NORMAL_FONT_SIZE + 30);
+    return (currentPositionY += this.NORMAL_FONT_SIZE + 10);
   }
 
   // Função para adicionar uma opção do orçamento
@@ -819,6 +819,41 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     optionTitle: string,
     paymentOptions) {
     const maxPaymentWidth = doc.internal.pageSize.width / 2 - 4 * this.TAB_SIZE;
+
+    currentPositionY = this.addTitle(doc, currentPositionY, optionTitle, true);
+
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
+    doc.text("Qtde", 320, currentPositionY, {
+      align: "right",
+    });
+    doc.text(
+      "Preço",
+      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+
+    currentPositionY += 10;
+
+    option.listaProdutos.forEach((product) => {
+      currentPositionY = this.addProduct(doc, currentPositionY, product);
+    });
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        currentPositionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        currentPositionY - this.SMALL_FONT_SIZE
+      );
 
     let cashPaymentPaymentLines = 0;
     if (paymentOptions.cashPayment.paymentTitle != "") {
@@ -846,15 +881,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     );
 
     const paymentHeight = paymentLines * this.SMALL_FONT_SIZE;
-
     if (
       doc.internal.pageSize.height - currentPositionY <
       paymentHeight + 2 * this.TITLE_FONT_SIZE + this.FOOTER_MARGIN
     ) {
       currentPositionY = this.addPageTemplate(doc, undefined);
     }
-
-    currentPositionY = this.addTitle(doc, currentPositionY, optionTitle, true);
 
     if (paymentOptions.cashPayment.paymentTitle != "") {
       this.addPaymentInformation(
@@ -877,41 +909,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         maxPaymentWidth
       );
     }
+    currentPositionY += paymentHeight;
 
-    currentPositionY += paymentHeight + 15;
-
-    if (
-      doc.internal.pageSize.height - currentPositionY <
-      3 * this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
-    ) {
-      currentPositionY = this.addPageTemplate(doc, undefined);
-    }
-
-    doc
-      .setFontSize(this.NORMAL_FONT_SIZE)
-      .setTextColor("#000")
-      .setFont(undefined, "bold");
-
-    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
-    doc.text("Qtde", 320, currentPositionY, {
-      align: "right",
-    });
-    doc.text(
-      "Preço",
-      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
-      currentPositionY,
-      {
-        align: "right",
-      }
-    );
-
-    currentPositionY += 10;
-
-    option.listaProdutos.forEach((product) => {
-      currentPositionY = this.addProduct(doc, currentPositionY, product);
-    });
-
-    return (currentPositionY += 20);
+    return (currentPositionY += 15);
   }
 
   //Função para adicionar informações de pagamento
