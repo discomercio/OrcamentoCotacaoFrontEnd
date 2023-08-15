@@ -509,9 +509,9 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
-  ngOnDestroy() {
-    this.inscricao.unsubscribe();
-  }
+  // ngOnDestroy() {
+  //   this.inscricao.unsubscribe();
+  // }
 
   exportXlsx() {
     this.montarListaParaExport(true);
