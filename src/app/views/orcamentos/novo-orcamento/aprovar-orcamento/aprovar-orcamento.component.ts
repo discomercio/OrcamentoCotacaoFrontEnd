@@ -911,7 +911,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
     currentPositionY += paymentHeight;
 
-    return (currentPositionY += 15);
+    return (currentPositionY += 20);
   }
 
   //Função para adicionar informações de pagamento
@@ -1119,7 +1119,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         );
     }
 
-    return (currentPositionY += this.TITLE_FONT_SIZE);
+    return (currentPositionY += this.TITLE_FONT_SIZE + 5);
   }
 
   // Função para adicionar um valor com label
