@@ -217,7 +217,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     ref.onClose.subscribe((resultado: any) => {
       if (resultado) {
         this.addListaProdutosClonados(resultado.produtos);
-        this.addFormaPagtoClonados(resultado.formasPagtos);
       }
     });
   }
