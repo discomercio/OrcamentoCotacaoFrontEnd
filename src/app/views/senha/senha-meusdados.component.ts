@@ -27,6 +27,7 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
   public usuarioSenha: UsuarioSenha;
   public form: FormGroup;
   public mensagemErro: string = "*Campo obrigatório.";
+  carregando: boolean;
 
   ngOnInit(): void {
     this.usuarioSenha = new UsuarioSenha();
@@ -63,6 +64,7 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    this.carregando = true;
     var chave = this.criptoService.gerarChave();
 
     let f = this.form.controls;
@@ -80,7 +82,6 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
       this.usuarioSenha.confirmacaoSenha)
       .toPromise()
       .then((x) => {
-
         if (x.Sucesso) {
           this.mensagemService.showSuccessViaToast(x.MensagemRetorno);
           sessionStorage.setItem("senhaExpirada", "N");
@@ -89,15 +90,14 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
           }, 3500);
         }
         else {
-          debugger;
           var mensagensErro = new Array<string>();
           mensagensErro.push(x.MensagemRetorno);
-
           this.mensagemService.showErrorViaToast(mensagensErro);
         }
+        this.carregando = false;
       })
       .catch((e) => {
-        
+        this.carregando = false;
         var mensagensErro = new Array<string>();
         mensagensErro.push(e.error);
 
