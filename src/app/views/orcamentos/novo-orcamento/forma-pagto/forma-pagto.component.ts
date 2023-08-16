@@ -313,7 +313,6 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produtos!");
       return;
     }
-    debugger;
     this.setarQtdeMaxParcelasEDias();
 
     this.novoOrcamentoService.calcularParcelas(this.buscarQtdeParcelas());
