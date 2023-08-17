@@ -310,6 +310,9 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         this.mensagemService.showErrorViaToast([r]);
         return;
       }
+      this.carregando = false;
+      this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
+      this.router.navigate(["//produtos-catalogo/listar"]);
     }).catch((r) => {
       this.carregando = false;
       if (r.error.message == undefined) {
@@ -317,13 +320,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
         return;
       }
       this.sweetAlertService.aviso(r.error.message);
-    }).finally(() => {
-      this.carregando = false;
-      this.mensagemService.showSuccessViaToast("Atualizado com sucesso!");
-      this.router.navigate(["//produtos-catalogo/listar"]);
     });
-
-
   }
 
   onChange(idProdutoCatalogoPropriedade, idProdutoCatalogoPropriedadeOpcao, idCfgTipoPropriedade, valor) {
