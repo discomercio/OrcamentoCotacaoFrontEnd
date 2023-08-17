@@ -296,13 +296,12 @@ export class ProdutosCatalogoCriarComponent implements OnInit {
         this.alertaService.mostrarMensagem(r.Mensagem);
         return;
       }
-    }).catch((e) => {
-      this.carregando = false;
-      this.alertaService.mostrarErroInternet(e);
-    }).finally(() => {
       this.carregando = false;
       this.mensagemService.showSuccessViaToast("Produto criado com sucesso!");
       this.router.navigate(["//produtos-catalogo/listar"]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
     });
   }
 
