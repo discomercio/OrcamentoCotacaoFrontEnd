@@ -241,7 +241,7 @@ export class NovoOrcamentoService {
             .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
           total += precoBaseVenda;
         });
-        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
+        let meio = pagto.meios.filter(m => m.id == fPagto.op_av_forma_pagto)[0].descricao;
         texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         return true;
       }
@@ -544,7 +544,7 @@ export class NovoOrcamentoService {
             .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
           total += precoBaseVenda;
         });
-        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_av_forma_pagto)[0].descricao;
+        let meio = pagto.meios.filter(m => m.id == fPagto.op_av_forma_pagto)[0].descricao;
 
         retorno.titulo = texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         if (!!fp.observacoesGerais) {

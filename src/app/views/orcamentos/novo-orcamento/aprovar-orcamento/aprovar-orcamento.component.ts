@@ -405,7 +405,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
 
         if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-          let meio = pagto[0].meios.filter(m => m.id == Number.parseInt(opcoes[i].formaPagto[y].op_av_forma_pagto));
+          let meio = pagto[0].meios.filter(m => m.id == opcoes[i].formaPagto[y].op_av_forma_pagto);
           if (meio.length == 0) {
             opcoesEditar[i] = false;
           }

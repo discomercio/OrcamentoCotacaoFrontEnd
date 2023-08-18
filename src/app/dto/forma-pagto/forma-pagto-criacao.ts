@@ -1,8 +1,8 @@
-export class FormaPagtoCriacao{
-    id:number;
-    idOpcao:number;
+export class FormaPagtoCriacao {
+    id: number;
+    idOpcao: number;
     qtde_Parcelas: number;//Todos usam essa qtde
-    op_av_forma_pagto: string; //meio pagto
+    op_av_forma_pagto: number; //meio pagto
     op_pu_forma_pagto: string;
     c_pu_valor: number | null;
     c_pu_vencto_apos: number | null;
@@ -26,6 +26,7 @@ export class FormaPagtoCriacao{
     c_forma_pagto: string;//Descrição da forma de pagto
     descricao_meio_pagto: string;
     tipo_parcelamento: number;
-    observacoesGerais:string;
-    aprovado:boolean;
+    observacoesGerais: string;
+    aprovado: boolean;
+    habilitado: boolean = false;
 }

@@ -135,6 +135,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   setarTipoPagto() {
+    this.formaPagtoCriacaoAvista.tipo_parcelamento = this.formasPagtoAVista.idTipoPagamento;
+    this.formaPagtoCriacaoAvista.op_av_forma_pagto = this.formasPagtoAVista.meios[0].id;
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.formasPagtoAPrazo[0].idTipoPagamento;
 
     let temParceiro = false;
@@ -297,7 +299,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   calcularValorAvista() {
-    if (!this.checkedAvista) return;
+    // if (!this.checkedAvista) return;
     this.formaPagtoCriacaoAvista.tipo_parcelamento = 1;
     if (this.formaPagtoCriacaoAvista.tipo_parcelamento) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
@@ -417,9 +419,9 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.constantes.SEM_INDICADOR) {
-        let comissao = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
-        let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
-        let comissaoMaisDesconto = comissao + descontoMedio;
+      let comissao = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
+      let descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
+      let comissaoMaisDesconto = comissao + descontoMedio;
       if (comissaoMaisDesconto > this.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
         let novoPercRT = this.novoOrcamentoService.calcularPercentualComissaoValidacao();
         let pergunta = `Para manter o desconto médio de ${this.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
@@ -452,13 +454,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     let lstFormaPagtoCriacao: FormaPagtoCriacao[] = new Array<FormaPagtoCriacao>();
     lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAprazo);
 
-    if (this.checkedAvista && this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
+    if (this.formaPagtoCriacaoAvista.tipo_parcelamento && this.formaPagtoCriacaoAvista.tipo_parcelamento == 1) {
       lstFormaPagtoCriacao.push(this.formaPagtoCriacaoAvista);
-    }
-    if (!this.checkedAvista) {
-      lstFormaPagtoCriacao.forEach((e, i) => {
-        if (e.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) lstFormaPagtoCriacao.splice(i, 1);
-      });
     }
 
     this.novoOrcamentoService.atribuirOpcaoPagto(lstFormaPagtoCriacao, this.formaPagamento);
@@ -480,13 +477,19 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   validarFormasPagto(pagtoPrazo: FormaPagtoCriacao, pagtoAvista: FormaPagtoCriacao): boolean {
+
+    if(!pagtoPrazo.habilitado && !pagtoAvista.habilitado){
+      this.alertaService.mostrarMensagem("É necessário selecionar ao menos uma forma de pagamento!");
+      return false;
+    }
+
     if (pagtoAvista.observacoesGerais && !pagtoAvista.tipo_parcelamento) {
       this.alertaService.mostrarMensagem("Para incluir uma observação para pagamento á vista, " +
         "é necessário que seja selecionado a opção para pagamento á vista!");
       return false;
     }
 
-    if (this.checkedAvista && pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+    if (pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
       if (!pagtoAvista.op_av_forma_pagto) {
         this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
         return false;
