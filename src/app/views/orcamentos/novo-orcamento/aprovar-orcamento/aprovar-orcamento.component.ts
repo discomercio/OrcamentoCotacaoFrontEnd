@@ -387,7 +387,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return opcoesEditar;
   }
 
-  verificarFormaPagtoEdicaoOpcao(opcoesEditar:Array<boolean>, r: FormaPagto[]):Array<boolean>{
+  verificarFormaPagtoEdicaoOpcao(opcoesEditar: Array<boolean>, r: FormaPagto[]): Array<boolean> {
     //Comparar formas de pagtos por usuário com as formas de pagtos cadastradas nas opções
     //se não existir qualquer forma de pagto da opção, o usuário não pode editar a opção
     let opcoes = this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto;
@@ -399,7 +399,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
 
         let pagto = r.filter(p => p.idTipoPagamento == opcoes[i].formaPagto[y].tipo_parcelamento);
-        if(pagto.length == 0){
+        if (pagto.length == 0) {
           opcoesEditar[i] = false;
           continue;
         }
@@ -499,13 +499,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
             }
 
             let maxQtdeParcelas = meioPagtoDemaisPrestacoes[0].qtdeMaxParcelas;
-            if(!maxQtdeParcelas){
+            if (!maxQtdeParcelas) {
               opcoesEditar[i] = true;
               continue;
             }
 
             let qtdeParcelasDemaisPrestacoesOpcao = opcoes[i].formaPagto[y].c_pse_demais_prest_qtde;
-            if(qtdeDiasDemaisPrestacoesOpcao > maxQtdeParcelas){
+            if (qtdeDiasDemaisPrestacoesOpcao > maxQtdeParcelas) {
               opcoesEditar[i] = false;
             }
           }
@@ -514,9 +514,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           }
         }
 
-        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA){
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
           let meioPagtoOpcao = pagto[0].meios.filter(x => x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pu_forma_pagto));
-          if(meioPagtoOpcao.length == 0){
+          if (meioPagtoOpcao.length == 0) {
             opcoesEditar[i] = false;
             continue;
           }
@@ -528,12 +528,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
           }
 
           let qtdeDiasOpcao = opcoes[i].formaPagto[y].c_pu_vencto_apos;
-          if(qtdeDiasOpcao > maxQtdeDias){
+          if (qtdeDiasOpcao > maxQtdeDias) {
             opcoesEditar[i] = false;
           }
         }
 
-        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA){
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
           let maxQtdeParcelas = pagto[0].meios[0].qtdeMaxParcelas;
           if (!maxQtdeParcelas) {
             opcoesEditar[i] = true;
@@ -778,15 +778,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }
       option.formaPagto.forEach((p) => {
-        if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
-          pagtos.cashPayment.paymentTitle = pagto.titulo;
-          pagtos.cashPayment.paymentLines = pagto.linhasPagto;
-        }
-        else {
-          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
-          pagtos.installmentPayment.paymentTitle = pagto.titulo;
-          pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+        if(p.habilitado){
+          if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+            let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+            pagtos.cashPayment.paymentTitle = pagto.titulo;
+            pagtos.cashPayment.paymentLines = pagto.linhasPagto;
+          }
+          else {
+            let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+            pagtos.installmentPayment.paymentTitle = pagto.titulo;
+            pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+          }
         }
       });
       currentPositionY = this.addOption(
@@ -1031,6 +1033,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         doc.internal.pageSize.width - 3 * this.TAB_SIZE,
         currentPositionY - this.SMALL_FONT_SIZE
       );
+
 
     let cashPaymentPaymentLines = 0;
     if (paymentOptions.cashPayment.paymentTitle != "") {

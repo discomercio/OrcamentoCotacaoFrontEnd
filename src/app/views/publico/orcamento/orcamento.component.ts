@@ -308,8 +308,11 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   verificarFormasPagtos() {
     this.orcamento.listaOpcoes.forEach(opcao => {
-      if (opcao.formaPagto.length == 1) opcao.pagtoSelecionado = opcao.formaPagto[0];
-    })
+      let pagtosHabilitados = opcao.formaPagto.filter(x => x.habilitado);
+      if(pagtosHabilitados.length == 1){
+        opcao.pagtoSelecionado = pagtosHabilitados[0];
+      }
+    });
   }
 
   aprovar(opcao: OrcamentoOpcaoDto) {
