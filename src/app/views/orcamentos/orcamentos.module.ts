@@ -30,11 +30,12 @@ import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.componen
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
-import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
 import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
 import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-opcoes-dialog/select-clone-opcoes-dialog.component';
+import { BuscaComponent } from './novo-orcamento/cliente/busca/busca.component';
+import { AprovarClienteOrcamentoComponent } from './novo-orcamento/cliente/aprovar-cliente-orcamento/aprovar-cliente-orcamento.component';
 
 @NgModule({
   declarations: [
@@ -47,10 +48,11 @@ import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-
     NovoOrcamentoComponent,
     FormaPagtoComponent,
     OpcoesComponent,
-    AprovacaoOrcamentoClienteComponent,
     EditarOpcaoComponent,
     EditarClienteComponent,
-    SelectCloneOpcoesDialogComponent
+    SelectCloneOpcoesDialogComponent,
+    BuscaComponent,
+    AprovarClienteOrcamentoComponent
   ],
   imports: [
     SharedModule,

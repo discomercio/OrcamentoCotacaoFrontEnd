@@ -622,7 +622,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     if (!this.opcaoPagto) {
     }
-    this.sweetalertService.aviso("Funcionalidade não implementada.");
+
+    this.router.navigate(["orcamentos/cliente/busca"]);
+    // this.sweetalertService.aviso("Funcionalidade não implementada.");
   }
 
   prorrogar() {
