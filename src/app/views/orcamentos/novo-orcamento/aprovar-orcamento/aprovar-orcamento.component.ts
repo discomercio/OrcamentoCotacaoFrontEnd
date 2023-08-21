@@ -617,14 +617,21 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  aprovar(orcamento) {
+  aprovar(opcaoSelecionada:OrcamentosOpcaoResponse) {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento)) return;
 
     if (!this.opcaoPagto) {
+      this.alertaService.mostrarMensagem("É necessário selecionar uma forma de pagamento!");
+      return;
     }
 
-    this.router.navigate(["orcamentos/cliente/busca"]);
-    // this.sweetalertService.aviso("Funcionalidade não implementada.");
+    opcaoSelecionada.formaPagto.forEach(element => {
+      if(element.id == this.opcaoPagto){
+        element.aprovado = true;
+      }
+    });
+    
+    this.router.navigate(["orcamentos/cliente/busca", this.idOrcamentoCotacao]);
   }
 
   prorrogar() {

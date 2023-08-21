@@ -23,6 +23,7 @@ import { totalmem } from 'os';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { parse } from '@fortawesome/fontawesome-svg-core';
 import { ItensComponent } from './itens/itens.component';
+import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
 
 @Injectable({
   providedIn: 'root'
@@ -48,6 +49,7 @@ export class NovoOrcamentoService {
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
   public moedaUtils: MoedaUtils = new MoedaUtils();
+  public dadosClienteCadastroDto: DadosClienteCadastroDto;
 
   tipoUsuario: number;
   percMaxComissaoEDescontoUtilizar: number;
@@ -59,7 +61,7 @@ export class NovoOrcamentoService {
   formaPagamento: FormaPagto[];
   usuarioLogado: Usuario;
   descontoGeral: number;
-  editandoComissao:boolean;
+  editandoComissao: boolean;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
@@ -88,7 +90,7 @@ export class NovoOrcamentoService {
     if (this.orcamentoCotacaoDto.parceiro == null || this.orcamentoCotacaoDto.parceiro == this.constantes.SEM_INDICADOR) return;
 
     if (!this.editando) {
-      if(!this.orcamentoCotacaoDto.comissao){
+      if (!this.orcamentoCotacaoDto.comissao) {
         this.opcaoOrcamentoCotacaoDto.percRT = 0;
         return;
       }
@@ -365,11 +367,11 @@ export class NovoOrcamentoService {
   calcularPercentualComissaoValidacao() {
     let descMedio = this.calcularDescontoMedio();
 
-      if (this.percMaxComissaoEDescontoUtilizar) {
-        let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
-        let comissao = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
-        return this.moedaUtils.formatarDecimal(comissao);
-      }
+    if (this.percMaxComissaoEDescontoUtilizar) {
+      let descMax = this.percMaxComissaoEDescontoUtilizar - this.percentualMaxComissao.percMaxComissao;
+      let comissao = this.percentualMaxComissao.percMaxComissao - (descMedio - descMax);
+      return this.moedaUtils.formatarDecimal(comissao);
+    }
   }
 
   verificarUsuarioEnvolvido(): boolean {
@@ -590,14 +592,14 @@ export class NovoOrcamentoService {
 
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
         let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0].descricao;
-        
-          retorno.titulo = `Parcela única ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
-          retorno.linhasPagto.push(`${pagto.tipoPagamentoDescricao} em ${meio} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor)}`);
-          retorno.linhasPagto.push(`vencendo após ${fPagto.c_pu_vencto_apos} dias`);
-          if (!!fp.observacoesGerais) {
-            retorno.linhasPagto.push(fp.observacoesGerais);
-          }
-          return true;
+
+        retorno.titulo = `Parcela única ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
+        retorno.linhasPagto.push(`${pagto.tipoPagamentoDescricao} em ${meio} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor)}`);
+        retorno.linhasPagto.push(`vencendo após ${fPagto.c_pu_vencto_apos} dias`);
+        if (!!fp.observacoesGerais) {
+          retorno.linhasPagto.push(fp.observacoesGerais);
+        }
+        return true;
       }
 
       if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {

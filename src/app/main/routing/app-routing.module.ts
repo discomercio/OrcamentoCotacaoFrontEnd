@@ -79,8 +79,8 @@ import { AprovarClienteOrcamentoComponent } from 'src/app/views/orcamentos/novo-
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                     { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
-                                    { path: "cliente/busca", canActivate: [AuthGuard], component: BuscaComponent },
-                                    { path: "cliente/aprovar-cliente-orcamento", canActivate: [AuthGuard], component: AprovarClienteOrcamentoComponent },
+                                    { path: "cliente/busca/:id", canActivate: [AuthGuard], component: BuscaComponent },
+                                    { path: "cliente/aprovar-cliente-orcamento/:id", canActivate: [AuthGuard], component: AprovarClienteOrcamentoComponent },
                                 ]
                             },
 
