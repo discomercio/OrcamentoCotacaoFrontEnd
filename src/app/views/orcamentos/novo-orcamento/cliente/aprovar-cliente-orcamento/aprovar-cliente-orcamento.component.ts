@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
 import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
@@ -15,6 +15,12 @@ import { EnderecoCadastralClientePrepedidoDto } from 'src/app/dto/prepedido/prep
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { EnderecoEntregaDtoClienteCadastro } from 'src/app/dto/clientes/EnderecoEntregaDTOClienteCadastro';
 import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
+import { FormatarTelefone } from 'src/app/utilities/formatarTelefone';
+import { ValidacoesClienteUtils } from 'src/app/utilities/validacoesClienteUtils';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
+import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
+import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 
 @Component({
   selector: 'app-aprovar-cliente-orcamento',
@@ -28,7 +34,10 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     private router: Router,
     private fb: FormBuilder,
     public readonly validacaoFormularioService: ValidacaoFormularioService,
-    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService) { }
+    private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
+    private readonly orcamentoService: OrcamentosService,
+    private readonly alertaService: AlertaService,
+    private readonly sweetAlertService: SweetalertService) { }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
   @ViewChild("enderecoEntrega", { static: false }) enderecoEntrega: EnderecoEntregaComponent;
@@ -49,12 +58,11 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
   listaContribuinteICMS: any[];
   idOrcamento: number;
   bloqueioIcms: boolean;
+  alcadaSuperior: boolean;
+  dadosCliente: DadosClienteCadastroDto = new DadosClienteCadastroDto();
+  mensagemErro: string = '*Campo obrigatório';
 
   ngOnInit(): void {
-
-    //VERIFICAR SE O CLIENTE EXISTE
-    //SE EXISTE, vamos mostrar os dados cadastrados e esconder o campo CPF ou CNPJ 
-    //SE NÃO EXISTE, vamos esconder o card dos dados cadastrados, esconder o botão de copiar os dados e mostrar o campo CPF ou CNPJ
 
     this.idOrcamento = Number.parseInt(this.activatedRoute.snapshot.params.id);
     if (!this.novoOrcamentoService.orcamentoCotacaoDto.id) {
@@ -71,7 +79,6 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       this.dadosClienteCadastroDto = this.novoOrcamentoService.orcamentoAprovacao.clienteCadastroDto.DadosCliente;
     }
 
-    debugger;
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF) {
       this.clientePF = true;
       this.mascaraCPFCNPJ = StringUtils.inputMaskCPF();
@@ -87,8 +94,15 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
     this.criarListaContrinuiteICMS();
     this.criarForm();
-    this.verificarAlcadaDescontoSuperior();
+    this.alcadaSuperior = this.verificarAlcadaDescontoSuperior();
     this.verificarContribuinteICMS();
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.which == 13 || event.keyCode == 13) {
+      this.salvar();
+    }
   }
 
   criarForm() {
@@ -246,5 +260,225 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
     this.enderecoCadastralCliente.St_memorizacao_completa_enderecos = true;
 
+  }
+
+  salvar() {
+
+    this.carregando = true;
+
+    if (!this.validarForms()) return;
+
+    if (!this.validarAlcadaEUf()) return;
+
+    this.converterTelefonesParaDadosClienteCadastroDto();
+    this.dadosClienteCadastroDto.Cep = this.cepComponente.Cep;
+    this.dadosClienteCadastroDto.Endereco = this.cepComponente.Endereco;
+    this.dadosClienteCadastroDto.Numero = this.cepComponente.Numero;
+    this.dadosClienteCadastroDto.Complemento = this.cepComponente.Complemento;
+    this.dadosClienteCadastroDto.Bairro = this.cepComponente.Bairro;
+    this.dadosClienteCadastroDto.Cidade = this.cepComponente.Cidade;
+    this.dadosClienteCadastroDto.Uf = this.cepComponente.Uf;
+    this.dadosClienteCadastroDto.ProdutorRural = this.clientePF ?
+      this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_NAO : this.constantes.COD_ST_CLIENTE_PRODUTOR_RURAL_INICIAL;
+    this.dadosClienteCadastroDto.Indicador_Orcamentista = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
+    this.dadosClienteCadastroDto.Vendedor = this.novoOrcamentoService.orcamentoCotacaoDto.vendedor;
+    this.dadosClienteCadastroDto.Loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
+
+    // this.dadosClienteCadastroDto.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
+    this.dadosClienteCadastroDto.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
+
+    if (!this.validarDadosClienteCadastro()) return;
+
+    if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco)
+      this.converterTelefonesEnderecoEntrega();
+
+    let aprovacaoOrcamento = new AprovacaoOrcamentoDto();
+    aprovacaoOrcamento.idOrcamento = this.novoOrcamentoService.orcamentoAprovacao.idOrcamento;
+    aprovacaoOrcamento.idOpcao = this.novoOrcamentoService.orcamentoAprovacao.idOpcao;
+    aprovacaoOrcamento.idFormaPagto = this.novoOrcamentoService.orcamentoAprovacao.idFormaPagto;
+    aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
+    aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosClienteCadastroDto));
+    aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
+
+    this.desconverterTelefones();
+    if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      this.desconverterTelefonesEnderecoEntrega();
+    }
+
+
+    this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "interno").toPromise().then((r) => {
+      //tem mensagem de erro ?
+      if (r != null) {
+        this.alertaService.mostrarMensagem(r.join("<br>"));
+        this.carregando = false;
+        return;
+      }
+      this.carregando = false;
+      this.sweetAlertService.sucesso("Orçamento aprovado com sucesso!");
+      this.router.navigate(["orcamentos/aprovar-orcamento", this.idOrcamento]);
+    }).catch((e) => {
+      this.carregando = false;
+      this.alertaService.mostrarErroInternet(e);
+      return;
+    });
+  }
+
+  validarForms(): boolean {
+    let formEntrega = this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco ?
+      this.enderecoEntrega.validarForm() : true;
+    if (this.clientePF) {
+      let formPf = this.validacaoFormularioService.validaForm(this.formPF);
+      let formCep = this.cepComponente.validarForm();
+
+
+      if (!formPf || !formCep || !formEntrega) {
+        this.carregando = false;
+        return false;
+      }
+    }
+    else {
+      let formPj = this.validacaoFormularioService.validaForm(this.formPJ);
+      let formCep = this.cepComponente.validarForm();
+
+      if (!formPj || !formCep || !formEntrega) {
+        this.carregando = false;
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  validarDadosClienteCadastro(): boolean {
+    let validacoes = ValidacoesClienteUtils.ValidarDadosClienteCadastroDto(this.dadosClienteCadastroDto, null, this.clientePF, this.cepComponente.lstCidadeIBGE);
+
+    if (validacoes.length > 0) {
+      if (validacoes.length == 1) {
+        this.desconverterTelefones();
+        this.carregando = false;
+        this.alertaService.mostrarMensagem("Lista de erros: <br>" + validacoes.join("<br>"));
+        return false;
+      }
+    }
+
+    if (this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      if (this.clientePF) this.passarDadosPF()
+
+      let validacoes: string[] = [];
+      validacoes = validacoes.concat(this.enderecoEntrega.validarEnderecoEntrega(this.cepComponente.lstCidadeIBGE))
+      if (validacoes.length > 0) {
+        this.carregando = false;
+        this.alertaService.mostrarMensagem(validacoes.join("<br>"));
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  validarAlcadaEUf(): boolean {
+    if (this.alcadaSuperior && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      if (this.enderecoEntrega.componenteCep.Uf != this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf) {
+        this.alertaService.mostrarMensagem("A UF de endereço de entrega deve ser a mesma informada no orçamento!");
+        this.carregando = false;
+        return false;
+      }
+    }
+    if (this.alcadaSuperior && !this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
+      if (this.cepComponente.Uf != this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.uf) {
+        this.alertaService.mostrarMensagem("A UF do cadastro de cliente deve ser a mesma informada no orçamento!");
+        this.carregando = false;
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  passarDadosPF() {
+    //passar os dados caso cliente PF
+    //vamos passar automático
+    this.enderecoEntrega.form.controls.endNome.setValue(this.dadosClienteCadastroDto.Nome);
+    this.enderecoEntrega.form.controls.cpfCnpj.setValue(this.dadosClienteCadastroDto.Cnpj_Cpf);
+    this.enderecoEntrega.form.controls.icmsEntrega.setValue(1);
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tipo_pessoa = this.dadosClienteCadastroDto.Tipo;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_nome = this.dadosClienteCadastroDto.Nome;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_cnpj_cpf = this.dadosClienteCadastroDto.Cnpj_Cpf;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_rg = this.dadosClienteCadastroDto.Rg;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_email = this.dadosClienteCadastroDto.Email;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_email_xml = this.dadosClienteCadastroDto.EmailXml;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_produtor_rural_status = this.dadosClienteCadastroDto.ProdutorRural;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_contribuinte_icms_status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ie = this.dadosClienteCadastroDto.Ie;
+  }
+
+  converterTelefonesParaDadosClienteCadastroDto() {
+
+    let s1 = FormatarTelefone.SepararTelefone(this.dadosClienteCadastroDto.TelefoneResidencial);
+    this.dadosClienteCadastroDto.TelefoneResidencial = s1.Telefone;
+    this.dadosClienteCadastroDto.DddResidencial = s1.Ddd;
+
+    let s2 = FormatarTelefone.SepararTelefone(this.dadosClienteCadastroDto.Celular);
+    this.dadosClienteCadastroDto.Celular = s2.Telefone;
+    this.dadosClienteCadastroDto.DddCelular = s2.Ddd;
+
+    let s3 = FormatarTelefone.SepararTelefone(this.dadosClienteCadastroDto.TelComercial);
+    this.dadosClienteCadastroDto.TelComercial = s3.Telefone;
+    this.dadosClienteCadastroDto.DddComercial = s3.Ddd;
+
+    let s4 = FormatarTelefone.SepararTelefone(this.dadosClienteCadastroDto.TelComercial2);
+    this.dadosClienteCadastroDto.TelComercial2 = s4.Telefone;
+    this.dadosClienteCadastroDto.DddComercial2 = s4.Ddd;
+
+  }
+
+  desconverterTelefones() {
+    this.dadosClienteCadastroDto.TelefoneResidencial = this.dadosClienteCadastroDto.DddResidencial + this.dadosClienteCadastroDto.TelefoneResidencial;
+    this.dadosClienteCadastroDto.Celular = this.dadosClienteCadastroDto.DddCelular + this.dadosClienteCadastroDto.Celular;
+    this.dadosClienteCadastroDto.TelComercial = this.dadosClienteCadastroDto.DddComercial + this.dadosClienteCadastroDto.TelComercial;
+    this.dadosClienteCadastroDto.TelComercial2 = this.dadosClienteCadastroDto.DddComercial2 + this.dadosClienteCadastroDto.TelComercial2;
+  }
+
+  converterTelefonesEnderecoEntrega() {
+
+    let s1 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res = s1.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res = s1.Ddd;
+
+    let s2 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel = s2.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel = s2.Ddd;
+
+    let s3 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com = s3.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com = s3.Ddd;
+
+    let s4 = FormatarTelefone.SepararTelefone(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2);
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 = s4.Telefone;
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 = s4.Ddd;
+
+  }
+
+  desconverterTelefonesEnderecoEntrega() {
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_res +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_res;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_cel +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_cel;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com;
+
+    this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2 =
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_ddd_com_2 +
+      this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2;
+  }
+
+  voltar(){
+    window.history.back();
   }
 }

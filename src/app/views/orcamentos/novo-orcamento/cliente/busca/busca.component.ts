@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { NovoOrcamentoService } from '../../novo-orcamento.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -52,20 +52,25 @@ export class BuscaComponent implements OnInit {
     }
 
     this.carregando = false;
-    this.foco = true;
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  keyEvent(event: KeyboardEvent) {
+    if (event.which == 13 || event.keyCode == 13) {
+      this.buscarCliente();
+    }
   }
 
   buscarCliente() {
 
-    //dá erro se não tiver nenhum dígito
-    if (StringUtils.retorna_so_digitos(this.cpfCnpj).trim() === "") {
-      this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido ou vazio.`, '250px', null);
+    if(!this.cpfCnpj){
+      this.alertaService.mostrarMensagem(`Favor preencher o ${this.labelTipoCliente}`);
       return;
     }
 
     //valida
     if (!CpfCnpjUtils.cnpj_cpf_ok(this.cpfCnpj)) {
-      this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido.`, '250px', null);
+      this.alertaService.mostrarMensagem(`CNPJ/CPF inválido.`);
       return;
     }
 
@@ -87,5 +92,9 @@ export class BuscaComponent implements OnInit {
         this.carregando = false;
         this.alertaService.mostrarErroInternet(r);
       });
+  }
+
+  voltar(){
+    window.history.back();
   }
 }
