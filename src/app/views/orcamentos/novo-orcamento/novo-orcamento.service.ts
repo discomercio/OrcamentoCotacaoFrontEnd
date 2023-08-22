@@ -24,6 +24,7 @@ import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { parse } from '@fortawesome/fontawesome-svg-core';
 import { ItensComponent } from './itens/itens.component';
 import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,6 @@ export class NovoOrcamentoService {
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
   public moedaUtils: MoedaUtils = new MoedaUtils();
-  public dadosClienteCadastroDto: DadosClienteCadastroDto;
 
   tipoUsuario: number;
   percMaxComissaoEDescontoUtilizar: number;
@@ -62,6 +62,7 @@ export class NovoOrcamentoService {
   usuarioLogado: Usuario;
   descontoGeral: number;
   editandoComissao: boolean;
+  orcamentoAprovacao: AprovacaoOrcamentoDto;
 
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();

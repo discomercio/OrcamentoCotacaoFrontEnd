@@ -1,43 +1,468 @@
 <div [ngClass]="{'carregando': carregando}">
     <div class="p-grid p-jc-center">
         <div class="p-col-12 p-pb-0 p-order-1">
-            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3 corpo">
+            <div *ngIf="clienteCadastrado" class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3 corpo">
                 <div class="p-p-0 p-col-12 p-d-inline-flex p-jc-between">
                     <h4>Confirmar cliente</h4>
                 </div>
                 <div *ngIf="clientePF">
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">Nome:</p>
                         &nbsp;
                         <span>{{dadosClienteCadastroDto?.Nome}}</span>
                     </div>
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">CPF:</p>
                         &nbsp;
-                        <span>{{cpfCnpjUtils.cnpj_cpf_formata(dadosClienteCadastroDto?.Cnpj_Cpf)}}</span>
+                        <span>{{cnpj_cpf_formatado()}}</span>
                     </div>
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">Endereço:</p>
                         &nbsp;
-                        <span>{{dadosClienteCadastroDto?.cpfCnpj}}</span>
+                        <span>{{clienteCadastroUtils.formata_endereco(dadosClienteCadastroDto)}}</span>
                     </div>
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">Telefones:</p>
                         &nbsp;
-                        <span>{{dadosClienteCadastroDto?.cpfCnpj}}</span>
+                        <span>{{clienteCadastroUtils.telefone1(dadosClienteCadastroDto)}}</span>
+                        <span>&nbsp;/&nbsp;{{clienteCadastroUtils.telefone2(dadosClienteCadastroDto)}}</span>
+                        <span>&nbsp;/&nbsp;{{clienteCadastroUtils.telefoneCelular(dadosClienteCadastroDto)}}</span>
                     </div>
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">Observação:</p>
                         &nbsp;
-                        <span>{{dadosClienteCadastroDto?.cpfCnpj}}</span>
+                        <span>{{dadosClienteCadastroDto?.Observacao_Filiacao}}</span>
                     </div>
-                    <div class="p-col-12 p-px-0 p-d-inline-flex">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
                         <p class="p-text-bold">E-mail:</p>
                         &nbsp;
-                        <span>{{dadosClienteCadastroDto?.cpfCnpj}}</span>
+                        <span>{{dadosClienteCadastroDto?.Email}}</span>
                     </div>
                 </div>
-                
+                <div *ngIf="!clientePF">
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Razão social:</p>
+                        &nbsp;
+                        <span>{{dadosClienteCadastroDto?.Nome}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">CNPJ:</p>
+                        &nbsp;
+                        <span>{{cnpj_cpf_formatado()}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Endereço:</p>
+                        &nbsp;
+                        <span>{{clienteCadastroUtils.formata_endereco(dadosClienteCadastroDto)}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Telefones:</p>
+                        &nbsp;
+                        <span>{{clienteCadastroUtils.telefone1(dadosClienteCadastroDto)}}</span>
+                        <span>&nbsp;/&nbsp;{{clienteCadastroUtils.telefone2(dadosClienteCadastroDto)}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Observação:</p>
+                        &nbsp;
+                        <span>{{dadosClienteCadastroDto?.Observacao_Filiacao}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Nome da pessoa para contato na empresa:</p>
+                        &nbsp;
+                        <span>{{dadosClienteCadastroDto?.Contato}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">E-mail:</p>
+                        &nbsp;
+                        <span>{{dadosClienteCadastroDto?.Email}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">Contribuinte ICMS:</p>
+                        &nbsp;
+                        <span>{{buscarContribuinteICMS()}}</span>
+                    </div>
+                    <div class="p-col-12 p-p-0 p-d-inline-flex">
+                        <p class="p-text-bold">I.E.:</p>
+                        &nbsp;
+                        <span>{{dadosClienteCadastroDto?.Ie}}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="card p-p-0 p-p-lg-3 p-p-md-3 p-p-sm-3 corpo">
+                <div class="p-p-0 p-col-12 p-d-inline-flex p-jc-between">
+                    <h4>Dados cadastrais</h4>
+                    <div *ngIf="clienteCadastrado" class="p-field">
+                        <button pButton type="button" label="Dados cadastrais" icon="pi pi-copy"
+                            (click)="copiarDados()"></button>
+                    </div>
+                </div>
+                <div *ngIf="clientePF">
+                    <form [formGroup]="formPF">
+                        <div class="card p-col-12">
+                            <!-- CLIENTE PF -->
+                            <div class="p-col-12 p-py-0">
+                                <div class="p-fluid p-grid p-py-2">
+                                    <!-- Cliente PF => nome | cpf | rg -->
+                                    <div class="p-field p-col-12 p-as-end p-py-0">
+                                        <label for="nome">Nome</label>
+                                        <input id="nome" type="text" formControlName="nome"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_nome" pInputText>
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'nome')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.nome.errors?.required">{{mensagemErro}}</small>
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.nome.errors?.maxlength">*Quantidade de
+                                                caracteres
+                                                excede o limite de
+                                                {{formPF.controls.nome.errors.maxlength.requiredLength}}
+                                                caracteres</small>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                        <label for="cpfCnpj">CPF</label>
+                                        <p-inputMask id="cpfCnpj" type="text" formControlName="cpfCnpj"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_cnpj_cpf"
+                                            mask="{{mascaraCPFCNPJ}}">
+                                        </p-inputMask>
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'cpfCnpj')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                            <small class="p-error" *ngIf="formPF.controls.cpfCnpj.errors?.cpfCnpj">
+                                                *CPF inválido</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- CEP cadastro -->
+                            <div class="p-col-12 p-py-0">
+                                <app-cep #cepComponente></app-cep>
+                            </div>
+                            <!-- Email | Emailxml -->
+                            <div class="p-col-12 p-py-0">
+                                <div class="p-fluid p-grid p-py-2">
+                                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
+                                        <label for="email">E-mail</label>
+                                        <input id="email" type="text"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_email"
+                                            formControlName="email" pInputText maxlength="60">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'email')">
+                                            <small class="p-error" *ngIf="formPF.controls.email.errors?.email">E-mail
+                                                inválido</small>
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.email.errors?.maxlength">*Quantidade de
+                                                caracteres
+                                                excede o limite de
+                                                {{formPF.controls.email.errors.maxlength.requiredLength}}
+                                                caracteres</small>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
+                                        <label for="emailXml">E-mail (XML)</label>
+                                        <input id="emailXml" type="text"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_email_xml" pInputText
+                                            maxlength="60" formControlName="emailXml">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'emailXml')">
+                                            <small class="p-error" *ngIf="formPF.controls.emailXml.errors?.email">E-mail
+                                                inválido</small>
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.emailXml.errors?.maxlength">*Quantidade de
+                                                caracteres
+                                                excede o limite de
+                                                {{formPF.controls.emailXml.errors.maxlength.requiredLength}}
+                                                caracteres</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
+                            <div class="p-col-12 p-py-0">
+                                <div class="p-fluid p-grid">
+                                    <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                        <label for="foneResidencial">Fone residencial</label>
+                                        <input id="foneResidencial" type="text" formControlName="telResidencial"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_tel_res" pInputText
+                                            mask="{{mascaraTelefone}}">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'telResidencial')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.telResidencial.errors?.required">{{mensagemErro}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                        <label for="celular">Celular</label>
+                                        <input id="celular" type="text" formControlName="celular"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_tel_cel" pInputText
+                                            mask="{{mascaraTelefone}}">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'celular')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.celular.errors?.required">{{mensagemErro}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                        <label for="foneComercial">Fone comercial</label>
+                                        <input id="foneComercial" type="text" formControlName="telComercial"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_tel_com" pInputText
+                                            mask="{{mascaraTelefone}}">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'telComercial')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.telComercial.errors?.required">{{mensagemErro}}</small>
+                                        </div>
+                                    </div>
+                                    <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                        <label for="ramal">Ramal</label>
+                                        <input id="ramal" type="text" formControlName="ramal"
+                                            [(ngModel)]="enderecoCadastralCliente.Endereco_ramal_com" pInputText
+                                            maxlength="4">
+                                        <div class="p-text-truncate"
+                                            *ngIf="validacaoFormularioService.verificaCampo(formPF,'ramal')">
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.ramal.errors?.required">{{mensagemErro}}</small>
+                                            <small class="p-error"
+                                                *ngIf="formPF.controls.ramal.errors?.maxlength">*Quantidade de
+                                                caracteres
+                                                excede o limite de
+                                                {{formPF.controls.ramal.errors.maxlength.requiredLength}}
+                                                caracteres</small>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div *ngIf="!clientePF">
+                    <form [formGroup]="formPJ">
+                        <div class="p-col-12 p-py-0">
+                            <div class="p-fluid p-grid p-py-2">
+                                <!-- Cliente PJ => razão social | cnpj -->
+                                <div class="p-field p-col-12 p-lg-8 p-md-8 p-sm-8 p-as-baseline p-py-0">
+                                    <label for="razao">Razão social</label>
+                                    <input id="razao" type="text" formControlName="razao"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_nome" pInputText>
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'razao')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.razao.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.razao.errors?.maxlength">*Quantidade
+                                            de
+                                            caracteres
+                                            excede o limite de {{formPJ.controls.razao.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                                <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-baseline p-py-0">
+                                    <label for="cpfCnpj">CNPJ</label>
+                                    <p-inputMask id="cpfCnpj" type="text"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_cnpj_cpf"
+                                        mask="{{mascaraCPFCNPJ}}" formControlName="cpfCnpj">
+                                    </p-inputMask>
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'cpfCnpj')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.cpfCnpj.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error" *ngIf="formPJ.controls.cpfCnpj.errors?.cpfCnpj">
+                                            *CNPJ inválido</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- CEP cadastro -->
+                        <div class="p-col-12 p-py-0">
+                            <app-cep #cepComponente></app-cep>
+                        </div>
+                        <!-- Contato na empresa -->
+                        <div class="p-col-12 p-py-0">
+                            <div class="p-fluid p-grid p-py-2">
+                                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                                    <label for="contato">Nome da pessoa para contato na empresa</label>
+                                    <input id="contato" type="text" formControlName="contato"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_contato" pInputText
+                                        maxlength="60">
+                                    <div *ngIf="validacaoFormularioService.verificaCampo(formPJ,'contato')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.contato.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.contato.errors?.maxlength">*Quantidade
+                                            de
+                                            caracteres
+                                            excede o limite de
+                                            {{formPJ.controls.contato.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Email | Emailxml -->
+                        <div class="p-col-12 p-py-0">
+                            <div class="p-fluid p-grid p-py-2">
+                                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                                    <label for="email">E-mail</label>
+                                    <input id="email" type="text" formControlName="email"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_email" pInputText maxlength="60">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'email')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.email.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error" *ngIf="formPJ.controls.email.errors?.email">E-mail
+                                            inválido</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.email.errors?.maxlength">*Quantidade
+                                            de
+                                            caracteres
+                                            excede o limite de {{formPJ.controls.email.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                                    <label for="emailXml">E-mail (XML)</label>
+                                    <input id="emailXml" type="text" formControlName="emailXml"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_email_xml" pInputText
+                                        maxlength="60">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'emailXml')">
+                                        <small class="p-error" *ngIf="formPJ.controls.emailXml.errors?.email">E-mail
+                                            inválido</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.emailXml.errors?.maxlength">*Quantidade de
+                                            caracteres
+                                            excede o limite de
+                                            {{formPJ.controls.emailXml.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- PJ => Telefone 1 | Ramal | Telefone 2 | Ramal -->
+                        <div class="p-col-12 p-py-0">
+                            <div class="p-fluid p-grid">
+                                <div class="p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                    <label for="fone1">Telefone 1</label>
+                                    <input id="fone1" type="text" formControlName="tel1"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_tel_com" pInputText
+                                        mask="{{mascaraTelefone}}" maxlength="16">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'tel1')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.tel1.errors?.required">{{mensagemErro}}</small>
+                                    </div>
+                                </div>
+                                <div class="p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                                    <label for="ramal">Ramal</label>
+                                    <input id="ramal" type="text" pInputText maxlength="4" formControlName="ramal1"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_ramal_com">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal1')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.ramal1.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.ramal1.errors?.maxlength">*Quantidade
+                                            de
+                                            caracteres
+                                            excede o limite de
+                                            {{formPJ.controls.ramal1.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                                <div class="p-col-6 p-field p-lg-3 p-md-3 p-sm-6 p-py-0">
+                                    <label for="fone2">Telefone 2</label>
+                                    <input id="fone2" type="text" formControlName="tel2"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_tel_com_2" pInputText
+                                        mask="{{mascaraTelefone}}" maxlength="16">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'tel2')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.tel2.errors?.required">{{mensagemErro}}</small>
+                                    </div>
+                                </div>
+                                <div class="p-col-6 p-field p-lg-2 p-md-2 p-py-0 p-sm-3">
+                                    <label for="ramal2">Ramal</label>
+                                    <input id="ramal2" type="text" pInputText maxlength="4" formControlName="ramal2"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_ramal_com_2">
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'ramal2')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.ramal2.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.ramal2.errors?.maxlength">*Quantidade
+                                            de
+                                            caracteres
+                                            excede o limite de
+                                            {{formPJ.controls.ramal2.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Contribuinte ICMS | IE -->
+                        <div class="p-col-12 p-py-0">
+                            <div class="fluid p-grid">
+                                <div class="p-field p-fluid p-col-12 p-lg-4 p-md-4 p-sm-6">
+                                    <label for="icmsPJ">Contribuinte ICMS</label>
+                                    <p-dropdown id="icmsPJ" [options]="listaContribuinteICMS" placeholder="Selecione"
+                                        [showClear]="true" formControlName="icms" optionValue="value"
+                                        optionLabel="label"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_contribuinte_icms_status"
+                                        [disabled]="bloqueioIcms">
+                                    </p-dropdown>
+                                    <div class="p-text-truncate"
+                                        *ngIf="validacaoFormularioService.verificaCampo(formPJ,'icms')">
+                                        <small class="p-error" *ngIf="formPJ.controls.icms.errors?.required">
+                                            {{mensagemErro}}
+                                        </small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.icms.errors?.max || formPJ.controls.icms.errors?.min">
+                                            {{mensagemErro}}
+                                        </small>
+                                    </div>
+                                </div>
+
+                                <div class="p-field p-fluid p-col-6 p-lg-3 p-md-3 p-sm-6">
+                                    <label for="iePJ">IE</label>
+                                    <input id="iePJ" type="text" pInputText maxlength="20"
+                                        formControlName="inscricaoEstadual"
+                                        [disabled]="enderecoCadastralCliente.Endereco_contribuinte_icms_status == constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO"
+                                        [(ngModel)]="enderecoCadastralCliente.Endereco_ie">
+                                    <div *ngIf="validacaoFormularioService.verificaCampo(formPJ,'inscricaoEstadual')">
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.inscricaoEstadual.errors?.required">{{mensagemErro}}</small>
+                                        <small class="p-error"
+                                            *ngIf="formPJ.controls.inscricaoEstadual.errors?.maxlength">*Quantidade de
+                                            caracteres
+                                            excede o limite de
+                                            {{formPJ.controls.inscricaoEstadual.errors.maxlength.requiredLength}}
+                                            caracteres</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!-- endereço de entrega -->
+            <div class="p-col-12">
+                <app-endereco-entrega [tipoPf]="clientePF" [origem]="'interno'" class="p-grid"
+                    [loja]="novoOrcamentoService.orcamentoCotacaoDto?.loja"
+                    [enderecoEntregaDtoClienteCadastro]="enderecoEntregaDtoClienteCadastro" #enderecoEntrega>
+                </app-endereco-entrega>
+            </div>
+            <div class="p-grid">
+                <div class="p-col-12 p-d-inline-flex p-jc-around">
+                    <div>
+                        <button type="button" pButton icon="pi pi-fw pi-arrow-left" label="Voltar"
+                        (click)="voltar()"></button>
+                    </div>
+                    <div>
+                        <button pButton pRipple label="Salvar" icon="pi pi-save" (click)="salvar()"
+                            [disabled]="desabilitaBotao"></button>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

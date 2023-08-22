@@ -37,6 +37,7 @@ import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orc
 import jsPDF from 'jspdf';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { ScrollPanel } from 'primeng/scrollpanel';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -78,7 +79,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
-  opcaoPagto: number;
   @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
   exibeBotaoEditar: boolean;
@@ -254,6 +254,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
       // this.editarOpcoes = this.verificarEdicaoOpcao(r);
+      this.verificarFormasPagtos();
     }
   }
 
@@ -620,17 +621,18 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   aprovar(opcaoSelecionada:OrcamentosOpcaoResponse) {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento)) return;
 
-    if (!this.opcaoPagto) {
+    if (!opcaoSelecionada.pagtoSelecionado) {
       this.alertaService.mostrarMensagem("É necessário selecionar uma forma de pagamento!");
       return;
     }
-
-    opcaoSelecionada.formaPagto.forEach(element => {
-      if(element.id == this.opcaoPagto){
-        element.aprovado = true;
-      }
-    });
     
+    let orcamentoAprovacao = new AprovacaoOrcamentoDto();
+    orcamentoAprovacao.idOpcao = opcaoSelecionada.id;
+    orcamentoAprovacao.idFormaPagto = opcaoSelecionada.pagtoSelecionado.id;
+    orcamentoAprovacao.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.id;
+
+    this.novoOrcamentoService.orcamentoAprovacao = orcamentoAprovacao;
+
     this.router.navigate(["orcamentos/cliente/busca", this.idOrcamentoCotacao]);
   }
 
@@ -1389,5 +1391,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}${month}${day}_${hours}${minutes}`;
+  }
+
+  verificarFormasPagtos() {
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
+      let pagtosHabilitados = opcao.formaPagto.filter(x => x.habilitado);
+      if(pagtosHabilitados.length == 1){
+        opcao.pagtoSelecionado = pagtosHabilitados[0];
+      }
+    });
   }
 }

@@ -1,5 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { FormataTelefone } from 'src/app/utilities/formatarString/formata-telefone';
+import { Component, OnInit } from '@angular/core';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { NovoOrcamentoService } from '../../novo-orcamento.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
@@ -7,7 +6,7 @@ import { Constantes } from 'src/app/utilities/constantes';
 import { CpfCnpjUtils } from 'src/app/utilities/cpfCnpjUtils';
 import { ClienteService } from 'src/app/service/cliente/cliente.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
+import { ClienteCadastroDto } from 'src/app/dto/clientes/ClienteCadastroDto';
 
 @Component({
   selector: 'app-busca',
@@ -24,14 +23,13 @@ export class BuscaComponent implements OnInit {
     private readonly alertaService: AlertaService
   ) { }
 
-  @Output() inputValue = new EventEmitter();
   mascaraCPFCNPJ: string;
   carregando: boolean;
   constantes = new Constantes();
-  cpfCnpj: string;
   labelTipoCliente: string;
-  idOrcamento:string;
-
+  idOrcamento: string;
+  cpfCnpj: string;
+  foco:boolean;
   ngOnInit(): void {
     this.carregando = true;
 
@@ -41,7 +39,7 @@ export class BuscaComponent implements OnInit {
       this.router.navigate(["orcamentos/aprovar-orcamento", this.idOrcamento]);
       return;
     }
-    
+
     //verificar se o orçamento está preenchido
     //verificar se cliente do orçamento é pf ou pj
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF) {
@@ -54,6 +52,7 @@ export class BuscaComponent implements OnInit {
     }
 
     this.carregando = false;
+    this.foco = true;
   }
 
   buscarCliente() {
@@ -75,17 +74,13 @@ export class BuscaComponent implements OnInit {
     this.clienteService.buscar(this.cpfCnpj).toPromise()
       .then((r) => {
         this.carregando = false;
-        if (r === null) {
-          return;
+
+        this.novoOrcamentoService.orcamentoAprovacao.clienteCadastroDto = new ClienteCadastroDto();
+        if (r !== null) {
+          this.novoOrcamentoService.orcamentoAprovacao.clienteCadastroDto.DadosCliente = r.DadosCliente;
         }
 
-        this.novoOrcamentoService.dadosClienteCadastroDto = new DadosClienteCadastroDto();
-        this.novoOrcamentoService.dadosClienteCadastroDto = r.DadosCliente;
         this.router.navigate(['orcamentos/cliente/aprovar-cliente-orcamento', this.idOrcamento]);
-          
-        //cliente já existe
-        //verificar se daqui conseguimos zerar o 
-        //this.router.navigate(['confirmar-cliente', StringUtils.retorna_so_digitos(r.DadosCliente.Cnpj_Cpf)], { relativeTo: this.activatedRoute, state: r })
       }).catch((r) => {
         //deu erro na busca
         //ou não achou nada...
