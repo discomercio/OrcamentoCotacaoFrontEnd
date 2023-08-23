@@ -6,7 +6,7 @@
                 <div class="p-text-nowrap p-xl-1 espaco">
                     <p-checkbox name="{{formasPagtoAVista.idTipoPagamento}}"
                         value="{{formasPagtoAVista.idTipoPagamento}}" inputId="{{formasPagtoAVista.idTipoPagamento}}"
-                        (onChange)="calcularValorAvista()" [(ngModel)]="checkedAvista" binary="true">
+                        (onChange)="calcularValorAvista()" [(ngModel)]="formaPagtoCriacaoAvista.habilitado" binary="true">
                     </p-checkbox>
                     <label class="font-size p-mx-2 p-as-center"
                         for="{{formasPagtoAVista.idTipoPagamento}}">{{formasPagtoAVista.tipoPagamentoDescricao}}</label>
@@ -37,7 +37,7 @@
         <div class="p-field-checkbox p-d-block">
             <div class="p-col-12 p-grid p-ai-center ">
                 <div class="p-text-nowrap p-xl-1 espaco p-pr-1">
-                    <p-checkbox name="" value="2" inputId="2" [disabled]="true" binary="true" [(ngModel)]="checked">
+                    <p-checkbox name="" value="2" inputId="2" binary="true" [(ngModel)]="formaPagtoCriacaoAprazo.habilitado">
                     </p-checkbox>
                     <label class="font-size p-mx-2 p-as-center" for="2">A Prazo</label>
                 </div>

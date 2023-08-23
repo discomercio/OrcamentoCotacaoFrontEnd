@@ -37,6 +37,7 @@ import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orc
 import jsPDF from 'jspdf';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { ScrollPanel } from 'primeng/scrollpanel';
+import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -78,7 +79,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
-  opcaoPagto: number;
   @Input() desabiltarBotoes: boolean;
   @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
   exibeBotaoEditar: boolean;
@@ -253,7 +253,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (r != null) {
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
-      this.editarOpcoes = this.verificarEdicaoOpcao(r);
+      // this.editarOpcoes = this.verificarEdicaoOpcao(r);
+      this.verificarFormasPagtos();
     }
   }
 
@@ -282,9 +283,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       apelidoParceiro = orcamento.parceiro;
     }
 
-    const promises: any[] = [this.buscarParceiro(), this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
-      tipoUsuario, apelido, apelidoParceiro), this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao),
-    this.buscarParametroLogoImpressao(orcamento.loja), this.buscarParametroFraseEstoque(orcamento.loja), this.buscarParametroFraseFrete(orcamento.loja)];
+    const promises: any[] = [this.buscarParceiro(),
+    this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
+      tipoUsuario, apelido, apelidoParceiro),
+    this.mensagemComponente.marcarMensagemComoLida(this.idOrcamentoCotacao),
+    this.buscarParametroLogoImpressao(orcamento.loja), this.buscarParametroFraseEstoque(orcamento.loja),
+    this.buscarParametroFraseFrete(orcamento.loja),
+    this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
+      this.autenticacaoService._tipoUsuario, apelido, apelidoParceiro)];
 
     Promise.all(promises).then((r) => {
       this.setarParceiro(r[0]);
@@ -292,6 +298,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarImagemLogoImpressao(r[3][0].Valor);
       this.setarFraseEstoque(r[4][0].Valor);
       this.setarFraseFrete(r[5][0].Valor);
+      this.editarOpcoes = this.validarEdicao(r[6]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.mensagemComponente.carregando = false;
@@ -374,6 +381,177 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.fraseFrete = frase;
   }
 
+  validarEdicao(r: FormaPagto[]) {
+    let opcoesEditar = this.verificarAlcadaEdicaoOpcao(this.novoOrcamentoService.orcamentoCotacaoDto);
+    opcoesEditar = this.verificarFormaPagtoEdicaoOpcao(opcoesEditar, r);
+
+    return opcoesEditar;
+  }
+
+  verificarFormaPagtoEdicaoOpcao(opcoesEditar: Array<boolean>, r: FormaPagto[]): Array<boolean> {
+    //Comparar formas de pagtos por usuário com as formas de pagtos cadastradas nas opções
+    //se não existir qualquer forma de pagto da opção, o usuário não pode editar a opção
+    let opcoes = this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto;
+    for (let i = 0; i < opcoes.length; i++) {
+      for (let y = 0; y < opcoes[i].formaPagto.length; y++) {
+        //se usuário não tiver permissão nem válida os pagamentos
+        if (!opcoesEditar[i]) {
+          continue;
+        }
+
+        let pagto = r.filter(p => p.idTipoPagamento == opcoes[i].formaPagto[y].tipo_parcelamento);
+        if (pagto.length == 0) {
+          opcoesEditar[i] = false;
+          continue;
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+          let meio = pagto[0].meios.filter(m => m.id == opcoes[i].formaPagto[y].op_av_forma_pagto);
+          if (meio.length == 0) {
+            opcoesEditar[i] = false;
+          }
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+          let maxQtdeParcelas = pagto[0].meios[0].qtdeMaxParcelas;
+          if (!maxQtdeParcelas) {
+            opcoesEditar[i] = true;
+            continue;
+          }
+
+          let qtdeParcelas = opcoes[i].formaPagto[y].c_pc_qtde;
+          if (qtdeParcelas > maxQtdeParcelas) {
+            opcoesEditar[i] = false;
+          }
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+          let meioPagtoEntrada = pagto[0].meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_ENTRADA &&
+            x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pce_entrada_forma_pagto));
+          if (meioPagtoEntrada.length == 0) {
+            opcoesEditar[i] = false;
+            continue;
+          }
+
+          let meioPagtoDemaisPrestacoes = pagto[0].meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
+            x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pce_prestacao_forma_pagto));
+          if (meioPagtoDemaisPrestacoes.length > 0) {
+            let maxQtdeParcelas = meioPagtoDemaisPrestacoes[0].qtdeMaxParcelas;
+            if (!maxQtdeParcelas) {
+              opcoesEditar[i] = true;
+              continue;
+            }
+
+            let qtdeParcelasOpcao = opcoes[i].formaPagto[y].c_pce_prestacao_qtde;
+            if (qtdeParcelasOpcao > maxQtdeParcelas) {
+              opcoesEditar[i] = false;
+              continue;
+            }
+            let maxQtdeDias = meioPagtoDemaisPrestacoes[0].qtdeMaxDias;
+            if (!maxQtdeParcelas) {
+              opcoesEditar[i] = true;
+              continue;
+            }
+
+            let qtdeDiasOpcao = opcoes[i].formaPagto[y].c_pce_prestacao_periodo;
+            if (qtdeDiasOpcao > maxQtdeDias) {
+              opcoesEditar[i] = false;
+            }
+          }
+          else {
+            opcoesEditar[i] = false;
+          }
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+          let meioPagtoPrimPrestacao = pagto[0].meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_PRIM_PRESTACOES &&
+            x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pse_prim_prest_forma_pagto));
+          if (meioPagtoPrimPrestacao.length > 0) {
+            let maxQtdeDias = meioPagtoPrimPrestacao[0].qtdeMaxDias;
+            if (!maxQtdeDias) {
+              opcoesEditar[i] = true;
+              continue;
+            }
+
+            let qtdeDiasPrimOpcao = opcoes[i].formaPagto[y].c_pse_prim_prest_apos;
+            if (qtdeDiasPrimOpcao > maxQtdeDias) {
+              opcoesEditar[i] = false;
+              continue;
+            }
+          }
+          else {
+            opcoesEditar[i] = false;
+            continue;
+          }
+
+          let meioPagtoDemaisPrestacoes = pagto[0].meios.filter(x => x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES &&
+            x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pse_demais_prest_forma_pagto));
+          if (meioPagtoDemaisPrestacoes.length > 0) {
+            let maxQtdeDias = meioPagtoDemaisPrestacoes[0].qtdeMaxDias;
+            if (!maxQtdeDias) {
+              opcoesEditar[i] = true;
+              continue;
+            }
+
+            let qtdeDiasDemaisPrestacoesOpcao = opcoes[i].formaPagto[y].c_pse_demais_prest_periodo;
+            if (qtdeDiasDemaisPrestacoesOpcao > maxQtdeDias) {
+              opcoesEditar[i] = false;
+              continue;
+            }
+
+            let maxQtdeParcelas = meioPagtoDemaisPrestacoes[0].qtdeMaxParcelas;
+            if (!maxQtdeParcelas) {
+              opcoesEditar[i] = true;
+              continue;
+            }
+
+            let qtdeParcelasDemaisPrestacoesOpcao = opcoes[i].formaPagto[y].c_pse_demais_prest_qtde;
+            if (qtdeDiasDemaisPrestacoesOpcao > maxQtdeParcelas) {
+              opcoesEditar[i] = false;
+            }
+          }
+          else {
+            opcoesEditar[i] = false;
+          }
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+          let meioPagtoOpcao = pagto[0].meios.filter(x => x.id == Number.parseInt(opcoes[i].formaPagto[y].op_pu_forma_pagto));
+          if (meioPagtoOpcao.length == 0) {
+            opcoesEditar[i] = false;
+            continue;
+          }
+
+          let maxQtdeDias = meioPagtoOpcao[0].qtdeMaxDias;
+          if (!maxQtdeDias) {
+            opcoesEditar[i] = true;
+            continue;
+          }
+
+          let qtdeDiasOpcao = opcoes[i].formaPagto[y].c_pu_vencto_apos;
+          if (qtdeDiasOpcao > maxQtdeDias) {
+            opcoesEditar[i] = false;
+          }
+        }
+
+        if (pagto[0].idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+          let maxQtdeParcelas = pagto[0].meios[0].qtdeMaxParcelas;
+          if (!maxQtdeParcelas) {
+            opcoesEditar[i] = true;
+            continue;
+          }
+
+          let qtdeParcelas = opcoes[i].formaPagto[y].c_pc_maquineta_qtde;
+          if (qtdeParcelas > maxQtdeParcelas) {
+            opcoesEditar[i] = false;
+          }
+        }
+      }
+    }
+
+    return opcoesEditar;
+  }
+
   clonarOrcamento() {
     this.idOrcamentoCotacao;
     this.router.navigate(["orcamentos/cadastrar-cliente", "clone"]);
@@ -418,7 +596,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (instaladorInstala == this.constantes.COD_INSTALADOR_INSTALA_SIM) return "Sim";
   }
 
-  verificarEdicaoOpcao(orcamento: OrcamentoCotacaoResponse): Array<boolean> {
+  verificarAlcadaEdicaoOpcao(orcamento: OrcamentoCotacaoResponse): Array<boolean> {
 
     let permissaoEdicao = this.permissaoOrcamentoResponse.EditarOpcaoOrcamento;
     let opcoes = new Array<boolean>();
@@ -440,12 +618,22 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  aprovar(orcamento) {
+  aprovar(opcaoSelecionada:OrcamentosOpcaoResponse) {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento)) return;
 
-    if (!this.opcaoPagto) {
+    if (!opcaoSelecionada.pagtoSelecionado) {
+      this.alertaService.mostrarMensagem("É necessário selecionar uma forma de pagamento!");
+      return;
     }
-    this.sweetalertService.aviso("Funcionalidade não implementada.");
+    
+    let orcamentoAprovacao = new AprovacaoOrcamentoDto();
+    orcamentoAprovacao.idOpcao = opcaoSelecionada.id;
+    orcamentoAprovacao.idFormaPagto = opcaoSelecionada.pagtoSelecionado.id;
+    orcamentoAprovacao.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.id;
+
+    this.novoOrcamentoService.orcamentoAprovacao = orcamentoAprovacao;
+
+    this.router.navigate(["orcamentos/cliente/busca", this.idOrcamentoCotacao]);
   }
 
   prorrogar() {
@@ -601,15 +789,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }
       option.formaPagto.forEach((p) => {
-        if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
-          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
-          pagtos.cashPayment.paymentTitle = pagto.titulo;
-          pagtos.cashPayment.paymentLines = pagto.linhasPagto;
-        }
-        else {
-          let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
-          pagtos.installmentPayment.paymentTitle = pagto.titulo;
-          pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+        if(p.habilitado){
+          if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+            let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+            pagtos.cashPayment.paymentTitle = pagto.titulo;
+            pagtos.cashPayment.paymentLines = pagto.linhasPagto;
+          }
+          else {
+            let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
+            pagtos.installmentPayment.paymentTitle = pagto.titulo;
+            pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+          }
         }
       });
       currentPositionY = this.addOption(
@@ -809,7 +999,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     doc.setTextColor("000").setFont('Helvetica', "normal");
 
-    return (currentPositionY += this.NORMAL_FONT_SIZE + 30);
+    return (currentPositionY += this.NORMAL_FONT_SIZE + 10);
   }
 
   // Função para adicionar uma opção do orçamento
@@ -819,6 +1009,42 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     optionTitle: string,
     paymentOptions) {
     const maxPaymentWidth = doc.internal.pageSize.width / 2 - 4 * this.TAB_SIZE;
+
+    currentPositionY = this.addTitle(doc, currentPositionY, optionTitle, true);
+
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
+    doc.text("Qtde", 320, currentPositionY, {
+      align: "right",
+    });
+    doc.text(
+      "Preço",
+      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+
+    currentPositionY += 10;
+
+    option.listaProdutos.forEach((product) => {
+      currentPositionY = this.addProduct(doc, currentPositionY, product);
+    });
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        currentPositionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        currentPositionY - this.SMALL_FONT_SIZE
+      );
+
 
     let cashPaymentPaymentLines = 0;
     if (paymentOptions.cashPayment.paymentTitle != "") {
@@ -846,15 +1072,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     );
 
     const paymentHeight = paymentLines * this.SMALL_FONT_SIZE;
-
     if (
       doc.internal.pageSize.height - currentPositionY <
       paymentHeight + 2 * this.TITLE_FONT_SIZE + this.FOOTER_MARGIN
     ) {
       currentPositionY = this.addPageTemplate(doc, undefined);
     }
-
-    currentPositionY = this.addTitle(doc, currentPositionY, optionTitle, true);
 
     if (paymentOptions.cashPayment.paymentTitle != "") {
       this.addPaymentInformation(
@@ -877,39 +1100,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         maxPaymentWidth
       );
     }
-
-    currentPositionY += paymentHeight + 15;
-
-    if (
-      doc.internal.pageSize.height - currentPositionY <
-      3 * this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
-    ) {
-      currentPositionY = this.addPageTemplate(doc, undefined);
-    }
-
-    doc
-      .setFontSize(this.NORMAL_FONT_SIZE)
-      .setTextColor("#000")
-      .setFont(undefined, "bold");
-
-    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
-    doc.text("Qtde", 320, currentPositionY, {
-      align: "right",
-    });
-    doc.text(
-      "Preço",
-      doc.internal.pageSize.width - 3 * this.TAB_SIZE,
-      currentPositionY,
-      {
-        align: "right",
-      }
-    );
-
-    currentPositionY += 10;
-
-    option.listaProdutos.forEach((product) => {
-      currentPositionY = this.addProduct(doc, currentPositionY, product);
-    });
+    currentPositionY += paymentHeight;
 
     return (currentPositionY += 20);
   }
@@ -1119,7 +1310,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         );
     }
 
-    return (currentPositionY += this.TITLE_FONT_SIZE);
+    return (currentPositionY += this.TITLE_FONT_SIZE + 5);
   }
 
   // Função para adicionar um valor com label
@@ -1200,5 +1391,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const minutes = String(date.getMinutes()).padStart(2, "0");
 
     return `${year}${month}${day}_${hours}${minutes}`;
+  }
+
+  verificarFormasPagtos() {
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
+      let pagtosHabilitados = opcao.formaPagto.filter(x => x.habilitado);
+      if(pagtosHabilitados.length == 1){
+        opcao.pagtoSelecionado = pagtosHabilitados[0];
+      }
+    });
   }
 }

@@ -1,4 +1,4 @@
-<div class="p-grid">
+<div class="p-grid" [ngClass]="{'carregando': carregando}">
     <div class="p-col-12">
         <div class="card">
             <h4>Alterar Senha</h4>
@@ -37,12 +37,8 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'novaSenha')">
                                 <small class="p-error"
                                     *ngIf="form.controls.novaSenha.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.novaSenha.errors?.minlength">A senha deve
+                                <small class="p-error" *ngIf="form.controls.novaSenha.errors?.pattern">A senha deve
                                     ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
-                                <small class="p-error" *ngIf="form.controls.novaSenha.errors?.maxlength">Quantidade de
-                                    caracteres
-                                    excede a o limite de
-                                    {{form.controls.novaSenha.errors.maxlength.requiredLength}}</small>
                             </div>
                         </span>
                     </div>
@@ -58,14 +54,8 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(form,'confirmacao')">
                                 <small class="p-error"
                                     *ngIf="form.controls.confirmacao.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.minlength">A senha deve
+                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.pattern">A senha deve
                                     ter de 8 a 15 caracteres com pelo menos uma letra e um número!</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.maxlength">Quantidade de
-                                    caracteres
-                                    excede a o limite de
-                                    {{form.controls.confirmacao.errors.maxlength.requiredLength}}</small>
-                                <small class="p-error" *ngIf="form.controls.confirmacao.errors?.confirmacao">
-                                    A confirmação de senha não está correta.</small>
                             </div>
                         </span>
                     </div>

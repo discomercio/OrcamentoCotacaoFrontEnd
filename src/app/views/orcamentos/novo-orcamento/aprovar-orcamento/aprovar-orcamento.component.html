@@ -217,8 +217,7 @@
                                                         <tr class="{{telaDesktop ? '' : 'font-size'}}">
                                                             <td class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                                 [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                <img src="{{imgUrl}}{{produto.urlImagem}}"
-                                                                class="p-p-2"
+                                                                <img src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
                                                                     [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
@@ -417,32 +416,33 @@
                                                 <div class="p-col-12 p-d-inline-flex p-jc-between p-jc-sm-end p-px-0">
                                                     <div class="p-col-6 p-px-0"
                                                         *ngFor="let fp of orcamento.formaPagto; let y = index">
-                                                        <div class="p-col-12 p-d-inline-flex"
-                                                            style="min-height: calc(100% - 45px);">
-                                                            <div
-                                                                class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
-                                                                <p-radioButton [inputId]="y" [value]="y"
-                                                                    [disabled]="desabiltarBotoes"
-                                                                    [(ngModel)]="opcaoPagto">
-                                                                </p-radioButton>
-                                                            </div>
-                                                            <div class="p-col-10 p-as-center">
+                                                        <div *ngIf="fp.habilitado">
+                                                            <div class="p-col-12 p-d-inline-flex"
+                                                                style="min-height: calc(100% - 45px);">
                                                                 <div
-                                                                    [innerHtml]="novoOrcamentoService.formatarFormaPagamento(orcamento, fp)">
+                                                                    class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center">
+                                                                    <p-radioButton [inputId]="y" [value]="fp"
+                                                                        [disabled]="desabiltarBotoes"
+                                                                        [(ngModel)]="orcamento.pagtoSelecionado">
+                                                                    </p-radioButton>
                                                                 </div>
-                                                            </div>
+                                                                <div class="p-col-10 p-as-center">
+                                                                    <div
+                                                                        [innerHtml]="novoOrcamentoService.formatarFormaPagamento(orcamento, fp)">
+                                                                    </div>
+                                                                </div>
 
-                                                        </div>
-                                                        <div class="p-col-12 p-d-inline-flex">
-                                                            <div class="p-col-2 p-m-1 p-text-center">
-                                                                <span class="p-text-bold">OBS:</span>
                                                             </div>
-                                                            <div class="p-col-10" style="word-wrap: break-word;">
-                                                                <span>{{fp.observacoesGerais}}</span>
+                                                            <div class="p-col-12 p-d-inline-flex">
+                                                                <div class="p-col-2 p-m-1 p-text-center">
+                                                                    <span class="p-text-bold">OBS:</span>
+                                                                </div>
+                                                                <div class="p-col-10" style="word-wrap: break-word;">
+                                                                    <span>{{fp.observacoesGerais}}</span>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
                                         </div>

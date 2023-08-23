@@ -260,6 +260,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     if (this.cicloSelecionado) {
       ProdutoTela.AtualizarVisiveis(lista, "/" + this.cicloSelecionado + "/");
       let filtrados = lista.filter(f => f.visivel == true);
+      
       retorno = filtrados;
 
       const key = "produtoDto";
@@ -277,8 +278,26 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
   filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
-
-    ProdutoTela.AtualizarVisiveis(lista, digitado);
+    
+    if (digitado != "" && digitado.length >= 2) {
+      for (let i = 0; i < lista.length; i++) {
+        lista[i].visivel = false;
+        if (lista[i].produtoDto.produto.indexOf(digitado) > -1 && lista[i].produtoDto.unitarioVendavel) {
+          lista[i].visivel = true;
+          continue;
+        }
+        else if (lista[i].Filhos.length > 0) {
+          let filho = lista[i].Filhos.filter(x => x.produto.indexOf(digitado) > -1);
+          if(filho.length > 0){
+            lista[i].visivel = true;
+              continue;
+          }
+        }
+        else {
+          lista[i].visivel = false;
+        }
+      }
+    }
     retorno = lista.filter(f => f.visivel == true);
 
     return retorno;

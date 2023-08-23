@@ -30,11 +30,18 @@ import { NovoOrcamentoComponent } from './novo-orcamento/novo-orcamento.componen
 import { InputSwitchModule } from 'primeng/inputswitch';
 import { FormaPagtoComponent } from './novo-orcamento/forma-pagto/forma-pagto.component';
 import { OpcoesComponent } from './novo-orcamento/opcoes/opcoes.component';
-import { AprovacaoOrcamentoClienteComponent } from './aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { EditarOpcaoComponent } from './editar/editar-opcao/editar-opcao.component';
 import { EditarClienteComponent } from './editar/editar-cliente/editar-cliente.component';
 import { SelectProdDialogComponent } from './novo-orcamento/select-prod-dialog/select-prod-dialog.component';
 import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-opcoes-dialog/select-clone-opcoes-dialog.component';
+import { BuscaComponent } from './novo-orcamento/cliente/busca/busca.component';
+import { AprovarClienteOrcamentoComponent } from './novo-orcamento/cliente/aprovar-cliente-orcamento/aprovar-cliente-orcamento.component';
+import { CepComponent } from '../cep/cep/cep.component';
+import { EnderecoEntregaComponent } from '../cliente/endereco-entrega/endereco-entrega.component';
+import { PublicoOrcamentoComponent } from '../publico/orcamento/orcamento.component';
+import { PublicoCadastroClienteComponent } from '../publico/cadastro-cliente/cadastro-cliente.component';
+import { PublicoHeaderComponent } from '../publico/header/header.component';
+import { CepDialogComponent } from '../cep/cep-dialog/cep-dialog.component';
 
 @NgModule({
   declarations: [
@@ -47,10 +54,17 @@ import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-
     NovoOrcamentoComponent,
     FormaPagtoComponent,
     OpcoesComponent,
-    AprovacaoOrcamentoClienteComponent,
     EditarOpcaoComponent,
     EditarClienteComponent,
-    SelectCloneOpcoesDialogComponent
+    SelectCloneOpcoesDialogComponent,
+    PublicoOrcamentoComponent,
+    PublicoHeaderComponent,
+    PublicoCadastroClienteComponent,
+    BuscaComponent,
+    AprovarClienteOrcamentoComponent,
+    CepComponent,
+    CepDialogComponent,
+    EnderecoEntregaComponent
   ],
   imports: [
     SharedModule,
@@ -71,8 +85,8 @@ import { SelectCloneOpcoesDialogComponent } from './novo-orcamento/select-clone-
     TabViewModule,
     AutoCompleteModule,
     MultiSelectModule,
-    InputSwitchModule,
+    InputSwitchModule
   ],
-  providers:[DialogService, DatePipe]
+  providers: [DialogService, DatePipe]
 })
 export class OrcamentosModule { }

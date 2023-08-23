@@ -79,6 +79,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   carregando: boolean;
   dataEntrega = true;
   filtro: string;
+  chaveComissao: boolean;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -118,6 +119,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
   }
 
   verificarParam(param: any) {
+
     if (param.filtro == undefined) {
 
       if (this.novoOrcamentoService.orcamentoCotacaoDto == undefined ||
@@ -134,7 +136,12 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
         this.mostrarInstaladorInstala = true;
       }
+
+      this.chaveComissao = false;
+      return;
     }
+
+    this.chaveComissao = true;
 
     if (param.filtro == "novo") {
       this.filtro = param.filtro;
@@ -192,7 +199,8 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       EntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.entregaImediata],
       DataEntregaImediata: [this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata != null ? new Date(this.novoOrcamentoService.orcamentoCotacaoDto.dataEntregaImediata) : null],
       ContribuinteICMS: [clienteOrcamentoCotacao.contribuinteICMS],
-      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]]
+      instaladorInstala: [this.novoOrcamentoService.orcamentoCotacaoDto.instaladorInstala ?? this.constantes.COD_INSTALADOR_INSTALA_NAO_DEFINIDO, !this.verificarInstaladorInstala() ? [] : [Validators.required, Validators.min(this.constantes.COD_INSTALADOR_INSTALA_NAO)]],
+      comissao: [this.novoOrcamentoService.orcamentoCotacaoDto.comissao != undefined ? this.novoOrcamentoService.orcamentoCotacaoDto.comissao : true]
     });
   }
 
@@ -290,9 +298,9 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       let loja: string = this.usuario.loja;
       return this.orcamentistaIndicadorService.buscarParceirosPorLoja(loja).toPromise();
     }
-    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS){
+    if (this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       let loja: string = this.usuario.loja;
-      let vendedor:string = this.autenticacaoService._usuarioLogado;
+      let vendedor: string = this.autenticacaoService._usuarioLogado;
       return this.orcamentistaIndicadorService.buscarParceirosPorVendedor(vendedor, loja).toPromise();
     }
   }
@@ -454,6 +462,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     this.novoOrcamentoService.orcamentoCotacaoDto.validade = DataUtils.formata_dataString_para_formato_data(DataUtils.formatarTela(this.form.controls.Validade.value));
     this.novoOrcamentoService.orcamentoCotacaoDto.observacoesGerais = this.form.controls.ObservacoesGerais.value;
     this.novoOrcamentoService.orcamentoCotacaoDto.vendedor = this.form.controls.Vendedor.value;
+    this.novoOrcamentoService.orcamentoCotacaoDto.comissao = !this.form.controls.comissao.value ? false : true;
     if (this.tipoUsuario == this.constantes.PARCEIRO_VENDEDOR) {
       if (this.filtro == "clone")
         this.novoOrcamentoService.orcamentoCotacaoDto.parceiro = this.novoOrcamentoService.orcamentoCloneCotacaoDto.idIndicador.toString();
@@ -526,7 +535,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
       }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
         this.carregando = false;
-      }).finally(()=>{
+      }).finally(() => {
         this.carregando = false;
       });
     }
@@ -544,6 +553,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
     }
 
     if (this.form.controls.Parceiro.value == this.constantes.SEM_INDICADOR) {
+      this.form.controls.comissao.setValue(false);
       this.form.controls.VendedorParceiro.setValue(null);
     }
 

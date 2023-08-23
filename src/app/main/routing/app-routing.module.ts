@@ -31,7 +31,6 @@ import { CadastrarClienteComponent } from 'src/app/views/orcamentos/novo-orcamen
 import { ItensComponent } from 'src/app/views/orcamentos/novo-orcamento/itens/itens.component';
 import { VisualizarOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/visualizar-orcamento/visualizar-orcamento.component';
 import { ProdutosCatalogoConsultarComponent } from 'src/app/views/produtos-catalogo/consultar/consultar.component';
-import { AprovacaoOrcamentoClienteComponent } from 'src/app/views/orcamentos/aprovacao-orcamento-cliente/aprovacao-orcamento-cliente.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { PublicoOrcamentoComponent } from 'src/app/views/publico/orcamento/orcamento.component';
 import { CalculadoraVrfComponent } from 'src/app/views/calculadora-vrf/calculadora-vrf.component';
@@ -52,6 +51,8 @@ import { ClienteComponent2 } from 'src/app/views/prepedido/cliente/cliente/clien
 import { ClienteCorpoComponent } from 'src/app/views/prepedido/cliente/cliente-corpo/cliente-corpo.component';
 import { SenhaMeusdadosComponent } from 'src/app/views/senha/senha-meusdados.component';
 import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-cliente/cadastro-cliente.component';
+import { BuscaComponent } from 'src/app/views/orcamentos/novo-orcamento/cliente/busca/busca.component';
+import { AprovarClienteOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/cliente/aprovar-cliente-orcamento/aprovar-cliente-orcamento.component';
 
 @NgModule({
     imports: [
@@ -60,7 +61,6 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
                 path: '', component: AppComponent,
                 children: [
                     { path: 'account/login', component: LoginComponent, },
-                    { path: 'orcamentos/aprovacao-orcamento-cliente', component: AprovacaoOrcamentoClienteComponent },
                     { path: 'publico/orcamento/:guid', component: PublicoOrcamentoComponent },
                     { path: 'publico/cadastro-cliente/:guid', component: PublicoCadastroClienteComponent },
                     { path: 'publico/cadastro-cliente-sucesso', component: PublicoCadastroClienteSucessoComponent },
@@ -79,6 +79,8 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
                                     { path: "aprovar-orcamento/:id", canActivate: [AuthGuard], component: AprovarOrcamentoComponent },
                                     { path: "editar/editar-opcao/:id", canActivate: [AuthGuard], component: EditarOpcaoComponent },
                                     { path: "editar/editar-cliente", canActivate: [AuthGuard], component: EditarClienteComponent },
+                                    { path: "cliente/busca/:id", canActivate: [AuthGuard], component: BuscaComponent },
+                                    { path: "cliente/aprovar-cliente-orcamento/:id", canActivate: [AuthGuard], component: AprovarClienteOrcamentoComponent },
                                 ]
                             },
 

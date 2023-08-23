@@ -79,7 +79,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
     this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
     this.itens.novoOrcamentoService.editando = true;
-    this.verificarCalculoComissao();
   }
 
   setarParametrosBuscaProdutos() {
@@ -138,34 +137,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null) {
       this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.opcaoOrcamento.percRT;
     }
-  }
-
-  verificarCalculoComissao(): boolean {
-
-    if (this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != this.itens.constantes.SEM_INDICADOR &&
-      this.itens.novoOrcamentoService.orcamentoCotacaoDto?.parceiro != null) {
-
-      if (this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior1) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior2) ||
-        this.autenticacaoService.usuario.permissoes.includes(ePermissao.DescontoSuperior3)) {
-        this.itens.novoOrcamentoService.descontaComissao = false;
-        return false;
-      }
-
-      let usuarioEnvolvido = this.itens.novoOrcamentoService.verificarUsuarioEnvolvido();
-      if (usuarioEnvolvido) {
-        this.itens.novoOrcamentoService.descontaComissao = false;
-        this.itens.novoOrcamentoService.editarComissao = false;
-        this.itens.habilitarComissao = false;
-        return true;
-      }
-    }
-
-    //não tem parceiro
-    //não calcula comissão
-    //não tem percRT
-    this.itens.novoOrcamentoService.descontaComissao = false;
-    return false;
   }
 
   setarProdutosOpcao() {
@@ -263,64 +234,28 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     //se tem parceiro
     if (this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
       this.itens.novoOrcamentoService.orcamentoCotacaoDto.parceiro != this.itens.constantes.SEM_INDICADOR) {
-      if (!this.itens.novoOrcamentoService.verificarCalculoComissao()) {
-        
+      let comissao = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
+      let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
+      let comissaoMaisDesconto = Number.parseFloat(this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(comissao + descontoMedio));
+      
+      if (comissaoMaisDesconto > this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
+        let novoPercRT = this.itens.novoOrcamentoService.calcularPercentualComissaoValidacao();
+        let pergunta = `Para manter o desconto médio de ${this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
+          ${this.itens.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoPercRT)}%. Confirma a redução da comissão?`;
+        this.sweetalertService.dialogo("", pergunta).subscribe(result => {
+          if (!result) {
+            this.itens.carregandoProds = false;
+            return;
+          }
 
-        this.atualizaComEdicaoComissao();
-        return;
+          this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = novoPercRT;
+          this.atualizarOpcao();
+        });
       }
-
-      if (this.itens.novoOrcamentoService.verificarCalculoComissao()) {
-        this.atualizaSemEdicaoComissao();
-        return;
-      }
+      else this.atualizarOpcao();
     }
     else
       this.atualizarOpcao();
-
-
-  }
-
-  atualizaComEdicaoComissao() {
-    let percRT = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT.toFixed(2);
-    if (!this.itens.novoOrcamentoService.validarComissao(percRT)) {
-      let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
-      let limiteComissao = (this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao - (descontoMedio -
-        (this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar - this.itens.novoOrcamentoService.percentualMaxComissao.percMaxComissao))).toFixed(2);
-
-      let pergunta = `Para manter o desconto médio de ${this.itens.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
-        ${this.itens.novoOrcamentoService.moedaUtils.formatarPorcentagemUmaCasaReturnZero(Number.parseFloat(limiteComissao))}%. Confirma a redução da comissão?`;
-
-      this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
-        if (!result) {
-          this.itens.carregandoProds = false;
-          return;
-        }
-
-        this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = Number.parseFloat(limiteComissao);
-        this.atualizarOpcao();
-      });
-    }
-    else this.atualizarOpcao();
-  }
-
-  atualizaSemEdicaoComissao() {
-    let antigoPercRT = this.itens.antigoPercRT;
-    let atualPercRT = this.itens.novoOrcamentoService.calcularPercentualComissaoValidacao();
-    if (atualPercRT < antigoPercRT) {
-      let descontoMedio = this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(this.itens.novoOrcamentoService.calcularDescontoMedio());
-      let pergunta = `Para manter o desconto médio de ${descontoMedio}% a comissão será reduzida para 
-      ${this.itens.moedaUtils.formatarPorcentagemUmaCasaReturnZero(atualPercRT)}%. Confirma a redução da comissão?`;
-      this.itens.formaPagto.sweetalertService.dialogo("", pergunta).subscribe(result => {
-        if (!result) {
-          this.itens.carregandoProds = false;
-          return;
-        }
-        this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = atualPercRT;
-        this.atualizarOpcao();
-      });
-    }
-    else this.atualizarOpcao();
   }
 
   atualizarOpcao() {
@@ -354,7 +289,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     if (descontoMaior) return false;
 
     return true;
-
   }
 
   voltar() {
