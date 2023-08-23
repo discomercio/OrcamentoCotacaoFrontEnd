@@ -85,7 +85,7 @@ export class OrcamentosService {
   aprovarOrcamento(aprovacaoDto: AprovacaoOrcamentoDto, origem: string): Observable<string[]> {
     if (origem == "publico")
       return this.http.post<string[]>(`${this.appSettingsService.config.apiUrl}publico/aprovarOrcamento`, aprovacaoDto);
-
-    //aqui podemos incluir a chamada com token
+    else
+    return this.http.post<string[]>(`${this.appSettingsService.config.apiUrl}Orcamento/aprovarOrcamento`, aprovacaoDto);
   }
 }
