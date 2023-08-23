@@ -235,59 +235,6 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
     this.dadosClienteCadastroDto = this.dadosCliente;
     this.desconverterTelefones();
-
-    // this.enderecoCadastralCliente.Endereco_cep = this.dadosCliente.Cep;
-    // this.enderecoCadastralCliente.Endereco_logradouro = this.dadosCliente.Endereco;
-    // this.enderecoCadastralCliente.Endereco_numero = this.dadosCliente.Numero;
-    // this.enderecoCadastralCliente.Endereco_bairro = this.dadosCliente.Bairro;
-    // this.enderecoCadastralCliente.Endereco_cidade = this.dadosCliente.Cidade;
-    // this.enderecoCadastralCliente.Endereco_uf = this.dadosCliente.Uf;
-    // this.enderecoCadastralCliente.Endereco_complemento = this.dadosCliente.Complemento;
-    // this.enderecoCadastralCliente.Endereco_cnpj_cpf = this.dadosCliente.Cnpj_Cpf;
-
-    // this.enderecoCadastralCliente.Endereco_nome = this.dadosCliente.Nome;
-    // this.enderecoCadastralCliente.Endereco_rg = this.dadosCliente.Rg;
-    // this.enderecoCadastralCliente.Endereco_tipo_pessoa = this.dadosCliente.Tipo;
-
-    // this.enderecoCadastralCliente.Endereco_ddd_cel = "";
-    // this.enderecoCadastralCliente.Endereco_ddd_res = "";
-    // if (this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF) {
-    //   this.enderecoCadastralCliente.Endereco_tel_cel = this.dadosClienteCadastroDto.DddCelular != null ?
-    //     this.dadosClienteCadastroDto.DddCelular + this.dadosClienteCadastroDto.Celular : "";
-
-    //   this.enderecoCadastralCliente.Endereco_tel_res = this.dadosClienteCadastroDto.DddResidencial != null ?
-    //     this.dadosClienteCadastroDto.DddResidencial + this.dadosClienteCadastroDto.TelefoneResidencial : "";
-    // }
-
-
-    // this.enderecoCadastralCliente.Endereco_ddd_com = "";
-    // this.enderecoCadastralCliente.Endereco_tel_com = this.dadosClienteCadastroDto.DddComercial != null && this.dadosClienteCadastroDto.TelComercial != null ?
-    //   this.dadosClienteCadastroDto.DddComercial + this.dadosClienteCadastroDto.TelComercial : "";
-    // this.enderecoCadastralCliente.Endereco_ramal_com = this.dadosClienteCadastroDto.Ramal;
-
-    // this.enderecoCadastralCliente.Endereco_ddd_com_2 = "";
-
-    // this.enderecoCadastralCliente.Endereco_tel_com_2 =
-    //   this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ && this.dadosClienteCadastroDto.DddComercial2 != null ?
-    //     this.dadosClienteCadastroDto.DddComercial2 + this.dadosClienteCadastroDto.TelComercial2 : "";
-
-    // this.enderecoCadastralCliente.Endereco_ramal_com_2 = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ ?
-    //   this.dadosClienteCadastroDto.Ramal2 : "";
-
-    // this.enderecoCadastralCliente.Endereco_email = this.dadosClienteCadastroDto.Email;
-    // this.enderecoCadastralCliente.Endereco_email_xml = this.dadosClienteCadastroDto.EmailXml;
-
-
-    // this.enderecoCadastralCliente.Endereco_produtor_rural_status = this.dadosClienteCadastroDto.ProdutorRural;
-
-    // this.enderecoCadastralCliente.Endereco_contribuinte_icms_status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status;
-
-    // this.enderecoCadastralCliente.Endereco_ie = this.dadosClienteCadastroDto.Ie;
-
-    // this.enderecoCadastralCliente.Endereco_contato = this.dadosClienteCadastroDto.Contato;
-
-    // this.enderecoCadastralCliente.St_memorizacao_completa_enderecos = true;
-
   }
 
   salvar() {
