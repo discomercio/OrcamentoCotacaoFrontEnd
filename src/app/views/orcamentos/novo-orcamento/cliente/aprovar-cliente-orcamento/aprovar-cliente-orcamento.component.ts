@@ -29,7 +29,7 @@ import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.servi
 })
 export class AprovarClienteOrcamentoComponent implements OnInit {
 
-  constructor(private novoOrcamentoService: NovoOrcamentoService,
+  constructor(public novoOrcamentoService: NovoOrcamentoService,
     private readonly activatedRoute: ActivatedRoute,
     private router: Router,
     private fb: FormBuilder,
@@ -305,7 +305,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       this.desconverterTelefonesEnderecoEntrega();
     }
 
-
+debugger;
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "interno").toPromise().then((r) => {
       //tem mensagem de erro ?
       if (r != null) {
