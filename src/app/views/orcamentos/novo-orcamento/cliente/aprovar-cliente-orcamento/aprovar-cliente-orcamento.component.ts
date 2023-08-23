@@ -21,6 +21,7 @@ import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 
 @Component({
   selector: 'app-aprovar-cliente-orcamento',
@@ -37,7 +38,8 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
     private readonly orcamentoService: OrcamentosService,
     private readonly alertaService: AlertaService,
-    private readonly sweetAlertService: SweetalertService) { }
+    private readonly sweetAlertService: SweetalertService,
+    private readonly autenticacaoService: AutenticacaoService) { }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
   @ViewChild("enderecoEntrega", { static: false }) enderecoEntrega: EnderecoEntregaComponent;
@@ -76,7 +78,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     }
     else {
       this.clienteCadastrado = true;
-      this.dadosClienteCadastroDto = this.novoOrcamentoService.orcamentoAprovacao.clienteCadastroDto.DadosCliente;
+      this.dadosCliente = this.novoOrcamentoService.orcamentoAprovacao.clienteCadastroDto.DadosCliente;
     }
 
     if (this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo == this.constantes.ID_PF) {
@@ -92,17 +94,40 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.carregando = false;
 
+    this.inicializarDadosClienteCadastroDto();
     this.criarListaContrinuiteICMS();
     this.criarForm();
     this.alcadaSuperior = this.verificarAlcadaDescontoSuperior();
     this.verificarContribuinteICMS();
   }
 
-  @HostListener('window:keyup', ['$event'])
-  keyEvent(event: KeyboardEvent) {
-    if (event.which == 13 || event.keyCode == 13) {
-      this.salvar();
-    }
+  // @HostListener('window:keyup', ['$event'])
+  // keyEvent(event: KeyboardEvent) {
+  //   if (event.which == 13 || event.keyCode == 13) {
+  //     this.salvar();
+  //   }
+  // }
+
+  inicializarDadosClienteCadastroDto() {
+    this.dadosClienteCadastroDto = new DadosClienteCadastroDto();
+    this.dadosClienteCadastroDto.Nome = "";
+    this.dadosClienteCadastroDto.Tipo = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo;
+    this.dadosClienteCadastroDto.Cnpj_Cpf = !this.clienteCadastrado ? "" : this.dadosCliente.Cnpj_Cpf;
+    this.dadosClienteCadastroDto.Rg = "";
+    this.dadosClienteCadastroDto.Email = "";
+    this.dadosClienteCadastroDto.EmailXml = "";
+    this.dadosClienteCadastroDto.DddResidencial = "";
+    this.dadosClienteCadastroDto.TelefoneResidencial = "";
+    this.dadosClienteCadastroDto.DddCelular = "";
+    this.dadosClienteCadastroDto.Celular = "";
+    this.dadosClienteCadastroDto.DddComercial = "";
+    this.dadosClienteCadastroDto.TelComercial = "";
+    this.dadosClienteCadastroDto.Ramal = "";
+    this.dadosClienteCadastroDto.DddComercial2 = "";
+    this.dadosClienteCadastroDto.TelComercial2 = "";
+    this.dadosClienteCadastroDto.Ramal2 = "";
+    this.dadosClienteCadastroDto.Observacao_Filiacao = "";
+    this.dadosClienteCadastroDto.ProdutorRural = 0;
   }
 
   criarForm() {
@@ -112,7 +137,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
       this.formPF = this.fb.group({
         nome: ["", [Validators.required, Validators.maxLength(60)]],
-        cpfCnpj: ["", [Validators.required]],
+        cpfCnpj: [!this.clienteCadastrado ? "" : this.dadosCliente.Cnpj_Cpf, [Validators.required]],
         rg: [""],
         email: ["", [Validators.email, Validators.maxLength(60)]],
         emailXml: ["", [Validators.email, Validators.maxLength(60)]],
@@ -130,7 +155,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     }
     this.formPJ = this.fb.group({
       razao: ["", [Validators.required, Validators.maxLength(60)]],
-      cpfCnpj: ["", [Validators.required]],
+      cpfCnpj: [!this.clienteCadastrado ? "" : this.dadosCliente.Cnpj_Cpf, [Validators.required]],
       tel1: [""],
       ramal1: ["", [Validators.maxLength(4)]],
       tel2: [""],
@@ -138,7 +163,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       contato: ["", [Validators.required, Validators.maxLength(30)]],
       email: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
       emailXml: ["", [Validators.email]],
-      icms: [this.enderecoCadastralCliente.Endereco_contribuinte_icms_status, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
+      icms: [this.dadosCliente.Contribuinte_Icms_Status, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: ["", [Validators.maxLength(20)]]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
   }
@@ -170,10 +195,10 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
   }
 
   cnpj_cpf_formatado(): string {
-    if (!this.dadosClienteCadastroDto || !this.dadosClienteCadastroDto.Cnpj_Cpf) {
+    if (!this.dadosCliente || !this.dadosCliente.Cnpj_Cpf) {
       return "";
     }
-    return CpfCnpjUtils.cnpj_cpf_formata(this.dadosClienteCadastroDto.Cnpj_Cpf);
+    return CpfCnpjUtils.cnpj_cpf_formata(this.dadosCliente.Cnpj_Cpf);
   }
 
   buscarContribuinteICMS() {
@@ -199,66 +224,69 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
   copiarDados(): void {
 
-    this.cepComponente.Cep = this.dadosClienteCadastroDto.Cep
-    this.cepComponente.Endereco = this.dadosClienteCadastroDto.Endereco;
-    this.cepComponente.Numero = this.dadosClienteCadastroDto.Numero;
-    this.cepComponente.Bairro = this.dadosClienteCadastroDto.Bairro;
-    this.cepComponente.Cidade = this.dadosClienteCadastroDto.Cidade;
-    this.cepComponente.Uf = this.dadosClienteCadastroDto.Uf;
-    this.cepComponente.Complemento = this.dadosClienteCadastroDto.Complemento;
+    this.cepComponente.Cep = this.dadosCliente.Cep
+    this.cepComponente.Endereco = this.dadosCliente.Endereco;
+    this.cepComponente.Numero = this.dadosCliente.Numero;
+    this.cepComponente.Bairro = this.dadosCliente.Bairro;
+    this.cepComponente.Cidade = this.dadosCliente.Cidade;
+    this.cepComponente.Uf = this.dadosCliente.Uf;
+    this.cepComponente.Complemento = this.dadosCliente.Complemento;
     this.cepComponente.cep_retorno = this.dadosClienteCadastroDto.Cep;
 
-    this.enderecoCadastralCliente.Endereco_cep = this.dadosClienteCadastroDto.Cep;
-    this.enderecoCadastralCliente.Endereco_logradouro = this.dadosClienteCadastroDto.Endereco;
-    this.enderecoCadastralCliente.Endereco_numero = this.dadosClienteCadastroDto.Numero;
-    this.enderecoCadastralCliente.Endereco_bairro = this.dadosClienteCadastroDto.Bairro;
-    this.enderecoCadastralCliente.Endereco_cidade = this.dadosClienteCadastroDto.Cidade;
-    this.enderecoCadastralCliente.Endereco_uf = this.dadosClienteCadastroDto.Uf;
-    this.enderecoCadastralCliente.Endereco_complemento = this.dadosClienteCadastroDto.Complemento;
-    this.enderecoCadastralCliente.Endereco_cnpj_cpf = this.dadosClienteCadastroDto.Cnpj_Cpf;
+    this.dadosClienteCadastroDto = this.dadosCliente;
+    this.desconverterTelefones();
 
-    this.enderecoCadastralCliente.Endereco_nome = this.dadosClienteCadastroDto.Nome;
-    this.enderecoCadastralCliente.Endereco_rg = this.dadosClienteCadastroDto.Rg;
-    this.enderecoCadastralCliente.Endereco_tipo_pessoa = this.dadosClienteCadastroDto.Tipo;
+    // this.enderecoCadastralCliente.Endereco_cep = this.dadosCliente.Cep;
+    // this.enderecoCadastralCliente.Endereco_logradouro = this.dadosCliente.Endereco;
+    // this.enderecoCadastralCliente.Endereco_numero = this.dadosCliente.Numero;
+    // this.enderecoCadastralCliente.Endereco_bairro = this.dadosCliente.Bairro;
+    // this.enderecoCadastralCliente.Endereco_cidade = this.dadosCliente.Cidade;
+    // this.enderecoCadastralCliente.Endereco_uf = this.dadosCliente.Uf;
+    // this.enderecoCadastralCliente.Endereco_complemento = this.dadosCliente.Complemento;
+    // this.enderecoCadastralCliente.Endereco_cnpj_cpf = this.dadosCliente.Cnpj_Cpf;
 
-    this.enderecoCadastralCliente.Endereco_ddd_cel = "";
-    this.enderecoCadastralCliente.Endereco_ddd_res = "";
-    if (this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF) {
-      this.enderecoCadastralCliente.Endereco_tel_cel = this.dadosClienteCadastroDto.DddCelular != null ?
-        this.dadosClienteCadastroDto.DddCelular + this.dadosClienteCadastroDto.Celular : "";
+    // this.enderecoCadastralCliente.Endereco_nome = this.dadosCliente.Nome;
+    // this.enderecoCadastralCliente.Endereco_rg = this.dadosCliente.Rg;
+    // this.enderecoCadastralCliente.Endereco_tipo_pessoa = this.dadosCliente.Tipo;
 
-      this.enderecoCadastralCliente.Endereco_tel_res = this.dadosClienteCadastroDto.DddResidencial != null ?
-        this.dadosClienteCadastroDto.DddResidencial + this.dadosClienteCadastroDto.TelefoneResidencial : "";
-    }
+    // this.enderecoCadastralCliente.Endereco_ddd_cel = "";
+    // this.enderecoCadastralCliente.Endereco_ddd_res = "";
+    // if (this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PF) {
+    //   this.enderecoCadastralCliente.Endereco_tel_cel = this.dadosClienteCadastroDto.DddCelular != null ?
+    //     this.dadosClienteCadastroDto.DddCelular + this.dadosClienteCadastroDto.Celular : "";
 
-
-    this.enderecoCadastralCliente.Endereco_ddd_com = "";
-    this.enderecoCadastralCliente.Endereco_tel_com = this.dadosClienteCadastroDto.DddComercial != null && this.dadosClienteCadastroDto.TelComercial != null ?
-      this.dadosClienteCadastroDto.DddComercial + this.dadosClienteCadastroDto.TelComercial : "";
-    this.enderecoCadastralCliente.Endereco_ramal_com = this.dadosClienteCadastroDto.Ramal;
-
-    this.enderecoCadastralCliente.Endereco_ddd_com_2 = "";
-
-    this.enderecoCadastralCliente.Endereco_tel_com_2 =
-      this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ && this.dadosClienteCadastroDto.DddComercial2 != null ?
-        this.dadosClienteCadastroDto.DddComercial2 + this.dadosClienteCadastroDto.TelComercial2 : "";
-
-    this.enderecoCadastralCliente.Endereco_ramal_com_2 = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ ?
-      this.dadosClienteCadastroDto.Ramal2 : "";
-
-    this.enderecoCadastralCliente.Endereco_email = this.dadosClienteCadastroDto.Email;
-    this.enderecoCadastralCliente.Endereco_email_xml = this.dadosClienteCadastroDto.EmailXml;
+    //   this.enderecoCadastralCliente.Endereco_tel_res = this.dadosClienteCadastroDto.DddResidencial != null ?
+    //     this.dadosClienteCadastroDto.DddResidencial + this.dadosClienteCadastroDto.TelefoneResidencial : "";
+    // }
 
 
-    this.enderecoCadastralCliente.Endereco_produtor_rural_status = this.dadosClienteCadastroDto.ProdutorRural;
+    // this.enderecoCadastralCliente.Endereco_ddd_com = "";
+    // this.enderecoCadastralCliente.Endereco_tel_com = this.dadosClienteCadastroDto.DddComercial != null && this.dadosClienteCadastroDto.TelComercial != null ?
+    //   this.dadosClienteCadastroDto.DddComercial + this.dadosClienteCadastroDto.TelComercial : "";
+    // this.enderecoCadastralCliente.Endereco_ramal_com = this.dadosClienteCadastroDto.Ramal;
 
-    this.enderecoCadastralCliente.Endereco_contribuinte_icms_status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status;
+    // this.enderecoCadastralCliente.Endereco_ddd_com_2 = "";
 
-    this.enderecoCadastralCliente.Endereco_ie = this.dadosClienteCadastroDto.Ie;
+    // this.enderecoCadastralCliente.Endereco_tel_com_2 =
+    //   this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ && this.dadosClienteCadastroDto.DddComercial2 != null ?
+    //     this.dadosClienteCadastroDto.DddComercial2 + this.dadosClienteCadastroDto.TelComercial2 : "";
 
-    this.enderecoCadastralCliente.Endereco_contato = this.dadosClienteCadastroDto.Contato;
+    // this.enderecoCadastralCliente.Endereco_ramal_com_2 = this.dadosClienteCadastroDto.Tipo == this.constantes.ID_PJ ?
+    //   this.dadosClienteCadastroDto.Ramal2 : "";
 
-    this.enderecoCadastralCliente.St_memorizacao_completa_enderecos = true;
+    // this.enderecoCadastralCliente.Endereco_email = this.dadosClienteCadastroDto.Email;
+    // this.enderecoCadastralCliente.Endereco_email_xml = this.dadosClienteCadastroDto.EmailXml;
+
+
+    // this.enderecoCadastralCliente.Endereco_produtor_rural_status = this.dadosClienteCadastroDto.ProdutorRural;
+
+    // this.enderecoCadastralCliente.Endereco_contribuinte_icms_status = this.dadosClienteCadastroDto.Contribuinte_Icms_Status;
+
+    // this.enderecoCadastralCliente.Endereco_ie = this.dadosClienteCadastroDto.Ie;
+
+    // this.enderecoCadastralCliente.Endereco_contato = this.dadosClienteCadastroDto.Contato;
+
+    // this.enderecoCadastralCliente.St_memorizacao_completa_enderecos = true;
 
   }
 
@@ -285,7 +313,8 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.dadosClienteCadastroDto.Loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
 
     // this.dadosClienteCadastroDto.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
-    this.dadosClienteCadastroDto.UsuarioCadastro = this.constantes.USUARIO_CADASTRO_CLIENTE;
+
+    this.dadosClienteCadastroDto.UsuarioCadastro = `[${this.autenticacaoService._tipoUsuario}] ${this.autenticacaoService._idUsuarioLogado}`;
 
     if (!this.validarDadosClienteCadastro()) return;
 
@@ -305,9 +334,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       this.desconverterTelefonesEnderecoEntrega();
     }
 
-debugger;
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "interno").toPromise().then((r) => {
-      //tem mensagem de erro ?
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
         this.carregando = false;
@@ -478,7 +505,7 @@ debugger;
       this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.EndEtg_tel_com_2;
   }
 
-  voltar(){
+  voltar() {
     window.history.back();
   }
 }

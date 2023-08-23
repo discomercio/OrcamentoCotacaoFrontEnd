@@ -58,7 +58,7 @@ export class Constantes {
     public COD_ST_CLIENTE_PRODUTOR_RURAL_NAO = 1;
     public COD_ST_CLIENTE_PRODUTOR_RURAL_SIM = 2;
 
-    public USUARIO_CADASTRO_CLIENTE = "Cliente";
+    public USUARIO_CADASTRO_CLIENTE = "[4] Cliente";
 
     public COD_INSTALADOR_INSTALA_NAO_DEFINIDO = 0;
     public COD_INSTALADOR_INSTALA_NAO = 1;
