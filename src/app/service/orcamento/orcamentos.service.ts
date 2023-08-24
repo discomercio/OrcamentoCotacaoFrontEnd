@@ -15,6 +15,7 @@ import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { CadastroOrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/CadastroOrcamentoCotacaoResponse';
 import { AtualizarOrcamentoOpcaoResponse } from 'src/app/dto/orcamentos/AtualizarOrcamentoOpcaoResponse';
+import { ExcluirOrcamentoResponse } from 'src/app/dto/orcamentos/excluir-orcamento-response';
 
 @Injectable({
   providedIn: 'root'
@@ -87,5 +88,9 @@ export class OrcamentosService {
       return this.http.post<string[]>(`${this.appSettingsService.config.apiUrl}publico/aprovarOrcamento`, aprovacaoDto);
     else
     return this.http.post<string[]>(`${this.appSettingsService.config.apiUrl}Orcamento/aprovarOrcamento`, aprovacaoDto);
+  }
+
+  excluirOrcamento(orcamento:OrcamentoCotacaoResponse):Observable<ExcluirOrcamentoResponse>{
+    return this.http.post<ExcluirOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/excluir`, orcamento);
   }
 }

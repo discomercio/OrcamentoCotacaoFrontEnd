@@ -87,6 +87,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   exibeBotaoNenhumaOpcao: boolean;
   exibeBotaoClonar: boolean;
   exibeBotaoReenviar: boolean;
+  exibeBotaoExcluir: boolean;
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
@@ -169,6 +170,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         command: () => this.reenviarOrcamento()
       },
       {
+        label: 'Excluir', icon: 'pi pi-fw pi-trash',
+        visible: this.exibeBotaoExcluir,
+        command: () => this.excluirOrcamento()
+      },
+      {
         label: 'Nenhuma',
         visible: this.exibeBotaoNenhumaOpcao
       }
@@ -244,6 +250,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
     this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
     this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
+    this.exibeBotaoExcluir = this.permissaoOrcamentoResponse.ExcluirOrcamento
 
     this.carrregarBotoneira();
   }
@@ -253,7 +260,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (r != null) {
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
-      // this.editarOpcoes = this.verificarEdicaoOpcao(r);
+      this.verificarDisponibilidadeOrcamento();
       this.verificarFormasPagtos();
     }
   }
@@ -618,14 +625,14 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  aprovar(opcaoSelecionada:OrcamentosOpcaoResponse) {
+  aprovar(opcaoSelecionada: OrcamentosOpcaoResponse) {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.AprovarOrcamento)) return;
 
     if (!opcaoSelecionada.pagtoSelecionado) {
       this.alertaService.mostrarMensagem("É necessário selecionar uma forma de pagamento!");
       return;
     }
-    
+
     let orcamentoAprovacao = new AprovacaoOrcamentoDto();
     orcamentoAprovacao.idOpcao = opcaoSelecionada.id;
     orcamentoAprovacao.idFormaPagto = opcaoSelecionada.pagtoSelecionado.id;
@@ -789,7 +796,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         }
       }
       option.formaPagto.forEach((p) => {
-        if(p.habilitado){
+        if (p.habilitado) {
           if (p.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
             let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
             pagtos.cashPayment.paymentTitle = pagto.titulo;
@@ -1396,9 +1403,38 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   verificarFormasPagtos() {
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(opcao => {
       let pagtosHabilitados = opcao.formaPagto.filter(x => x.habilitado);
-      if(pagtosHabilitados.length == 1){
+      if (pagtosHabilitados.length == 1) {
         opcao.pagtoSelecionado = pagtosHabilitados[0];
       }
     });
+  }
+
+  excluirOrcamento(){
+
+    this.sweetalertService.dialogo("", "Confirma a exclusão do orçamento?").subscribe(result => {
+      if (!result) return;
+      this.mensagemComponente.carregando = true;
+      this.orcamentoService.excluirOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r)=>{
+        this.mensagemComponente.carregando = false;
+        if(!r.Sucesso){
+          this.alertaService.mostrarMensagem(r.Mensagem);
+          return;
+        }
+  
+        this.sweetalertService.sucesso("Orçamento excluído com sucesso!");
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+      }).catch((e)=>{
+        this.mensagemComponente.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      });
+
+    });
+  }
+
+  verificarDisponibilidadeOrcamento(){
+    if(this.novoOrcamentoService.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
+      this.alertaService.mostrarMensagem(`Orçamento ${this.novoOrcamentoService.orcamentoCotacaoDto.id} foi excluído!`);
+      this.router.navigate(['orcamentos/listar/orcamentos']);
+    }
   }
 }
