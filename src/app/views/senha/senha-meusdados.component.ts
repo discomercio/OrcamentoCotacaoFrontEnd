@@ -53,9 +53,9 @@ export class SenhaMeusdadosComponent implements OnInit, AfterViewInit {
 
   criarForm() {
     this.form = this.fb.group({
-      senha: [this.usuarioSenha.senha, [Validators.required, Validators.pattern("^(?=.*[Aa - Zz])(?=.*[0-9]).{8,15}$")]],
-      novaSenha: [this.usuarioSenha.novaSenha, [Validators.required, Validators.pattern("^(?=.*[Aa - Zz])(?=.*[0-9]).{8,15}$")]],
-      confirmacao: [this.usuarioSenha.confirmacaoSenha, [Validators.required, Validators.pattern("^(?=.*[Aa - Zz])(?=.*[0-9]).{8,15}$")]]
+      senha: [this.usuarioSenha.senha, [Validators.required, Validators.pattern("^(?=.*[aA-zZ])(?=.*[0-9]).{8,15}$")]],
+      novaSenha: ["", [Validators.required, Validators.pattern("^(?=.*[aA-zZ])(?=.*[0-9]).{8,15}$")]],
+      confirmacao: [this.usuarioSenha.confirmacaoSenha, [Validators.required, Validators.pattern("^(?=.*[aA-zZ])(?=.*[0-9]).{8,15}$")]]
     })
   }
 
