@@ -153,6 +153,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       });
       return;
     }
+    
     this.formPJ = this.fb.group({
       razao: ["", [Validators.required, Validators.maxLength(60)]],
       cpfCnpj: [!this.clienteCadastrado ? "" : this.dadosCliente.Cnpj_Cpf, [Validators.required]],
@@ -170,6 +171,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
 
   verificarContribuinteICMS() {
     if (!this.clientePF) {
+      this.dadosClienteCadastroDto.Contribuinte_Icms_Status = this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.contribuinteICMS;
       this.bloqueioIcms = this.verificarAlcadaDescontoSuperior();
     }
   }
@@ -233,7 +235,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.cepComponente.Complemento = this.dadosCliente.Complemento;
     this.cepComponente.cep_retorno = this.dadosClienteCadastroDto.Cep;
 
-    this.dadosClienteCadastroDto = this.dadosCliente;
+    this.dadosClienteCadastroDto = Object.assign({}, this.dadosCliente);
     this.desconverterTelefones();
   }
 
