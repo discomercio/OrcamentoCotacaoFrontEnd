@@ -148,6 +148,12 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   setarOrcamento(r: OrcamentoCotacaoDto) {
     if (r != null) {
+      if(r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
+        this.mensagemComponente.carregando= false;
+        this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
+        return;
+      }
+
       this.validado = true;
       this.orcamento = r;
 
