@@ -3,6 +3,10 @@ import { ListaQuantidadeMensagemPendenteResponse } from "../dto/mensageria/lista
 import { MensageriaService } from "../service/mensageria/mensageria.service";
 import { AlertaService } from "../components/alert-dialog/alerta.service";
 import { DataUtils } from "../utilities/formatarString/data-utils";
+import { environment } from 'src/environments/environment';
+import { SistemaService } from "../service/sistema/sistema.service";
+import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
+
 
 @Injectable({
     providedIn: 'root'
@@ -11,6 +15,8 @@ export class AppTopBarService {
     constructor(
         private readonly mensageriaService: MensageriaService,
         private readonly alertaService: AlertaService,
+        public readonly sistemaService: SistemaService,
+        public appSettingsService: AppSettingsService
     ) {
         this.sininho = sessionStorage.getItem("sininho") == "S" ? true : false;
     }
@@ -20,6 +26,8 @@ export class AppTopBarService {
     public listaMensagemPendente: ListaQuantidadeMensagemPendenteResponse = new ListaQuantidadeMensagemPendenteResponse();
     public qtdMensagem: number;
     interval: any = 0;
+    public versaoFront: string;
+    public versaoApi: string;
 
     ligarInterval() {
         
@@ -32,6 +40,7 @@ export class AppTopBarService {
             this.interval = setInterval(() => {
                 if (this.interval > 0) {
                     this.obterQuantidadeMensagemPendente();
+                    this.buscarVersao();
                     this.sininho = true;
                 } else {
                     this.limparInterval();
@@ -47,8 +56,11 @@ export class AppTopBarService {
             this.limparInterval();
             return;
         }
-        console.log("interval: " + this.interval);
-        console.log(this.dataUtils.formata_data_e_talvez_hora_hhmmss(new Date()));
+
+        if(!this.appSettingsService.config.ambienteProducao){
+            console.log("interval: " + this.interval);
+            console.log(this.dataUtils.formata_data_e_talvez_hora_hhmmss(new Date()));
+        }
 
         this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
             if (!r.Sucesso) {
@@ -80,5 +92,24 @@ export class AppTopBarService {
         this.interval = 0;
         this.sininho = false;
         sessionStorage.setItem("sininho", "N");
+    }
+
+    buscarVersao() {
+        if(!this.appSettingsService.config.ambienteProducao){
+            console.log("buscando versão");
+        }
+        this.versaoFront = environment.version;
+        this.sistemaService.retornarVersao().toPromise().then((r) => {
+            if (r != null) {
+                this.versaoApi = r.versao;
+                this.sistemaService.versaoFrontTxt = r.versaoFront;
+                if (this.versaoFront != this.sistemaService.versaoFrontTxt) {
+                    this.alertaService.mostrarErroPacote();
+                    return;
+                }
+            }
+        }).catch((e) => {
+            this.alertaService.mostrarErroInternet(e);
+        });
     }
 }
