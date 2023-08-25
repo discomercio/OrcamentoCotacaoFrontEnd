@@ -61,7 +61,7 @@ export class AppTopBarService {
             console.log("interval: " + this.interval);
             console.log(this.dataUtils.formata_data_e_talvez_hora_hhmmss(new Date()));
         }
-
+console.log("foi buscar")
         this.mensageriaService.obterQuantidadeMensagemPendentePorLoja().toPromise().then((r) => {
             if (!r.Sucesso) {
                 this.alertaService.mostrarMensagem(r.Mensagem);

@@ -117,7 +117,7 @@ export class OrcamentosListarComponent implements OnInit {
   clicouPesquisar: boolean;
   carregando: boolean;
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
-  filtroParceirosApoio:string[];
+  filtroParceirosApoio: string[];
 
   ngOnInit(): void {
     this.carregando = true;
@@ -177,7 +177,7 @@ export class OrcamentosListarComponent implements OnInit {
       });
       this.cboFiltradoVendedores = this.cboVendedores;
     }
-    
+
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
@@ -420,7 +420,7 @@ export class OrcamentosListarComponent implements OnInit {
     if (this.parametro == "PENDENTES") this.filtro.nomeColunaOrdenacao = this.cols[1].field;
 
     if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      
+
       this.filtroParceirosApoio = this.filtro.Parceiros;
       let filtroParceiro = this.filtro.Parceiros;
       this.filtro.Parceiros = new Array();

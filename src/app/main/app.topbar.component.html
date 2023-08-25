@@ -94,7 +94,7 @@
                     </a>
                     <ul class="layout-menu" [ngClass]="{'fadeInDown':!appMain.isMobile()}">
                         <li role="menuitem">
-                            <a href="#/orcamentos/listar/msgPendentes">
+                            <a (click)="listarOrcamentos()">
                                 <i class="pi pi-fw pi-sliders-h"></i>
                                 <span>Mensagens não tratadas</span>
                             </a>
