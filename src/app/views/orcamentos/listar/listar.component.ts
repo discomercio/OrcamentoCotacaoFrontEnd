@@ -185,10 +185,10 @@ export class OrcamentosListarComponent implements OnInit {
     if (this.parametro == "ORCAMENTOS") {
       if (this.autenticacaoService._usuarioLogado) {
         if (status != null) {
+          status = status.filter(x => x.Id != this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO);
           status.forEach(e => {
             this.cboStatus.push({ Id: e.Id, Value: e.Value });
           });
-          this.cboStatus.push({ Id: 4, Value: "Expirado" });
         }
       }
     }
