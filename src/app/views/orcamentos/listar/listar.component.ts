@@ -122,11 +122,11 @@ export class OrcamentosListarComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregando = true;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
 
     const promises = [this.buscarConfigValidade(),
     this.buscarVendedores(), this.buscarStatus(), this.buscarParceiros()];
@@ -147,7 +147,6 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
     this.buscarMensagens();
 
