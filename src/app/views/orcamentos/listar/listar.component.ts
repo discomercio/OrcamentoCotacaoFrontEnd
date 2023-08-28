@@ -118,6 +118,7 @@ export class OrcamentosListarComponent implements OnInit {
   carregando: boolean;
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
   filtroParceirosApoio: string[];
+  paramMsgPendentes:boolean;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -298,8 +299,19 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   buscarMensagens() {
-    this.cboMensagens.push({ Id: 0, Value: "Não" });
-    this.cboMensagens.push({ Id: 1, Value: "Sim" });
+    // if(this.paramMsgPendentes){
+      
+    // }
+    if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+      this.cboMensagens.push({ Id: 3, Value: "Sim - Todas" });
+      this.cboMensagens.push({ Id: 2, Value: "Sim - Somente as minhas" });
+      this.cboMensagens.push({ Id: 1, Value: "Sim - Somente de terceiros" });
+      this.cboMensagens.push({ Id: 0, Value: "Não" });
+    }
+    else{
+      this.cboMensagens.push({ Id: 0, Value: "Não" });
+      this.cboMensagens.push({ Id: 1, Value: "Sim" });
+    }
 
     this.buscarDatas();
   }
@@ -322,8 +334,17 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (this.parametro == "MSGPENDENTES") {
       this.parametro = "ORCAMENTOS";
-      this.filtro.Mensagem = "Sim";
+      if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+        this.filtro.Mensagem = "Sim - Somente as minhas";
+      }
+      else{
+        this.filtro.Mensagem = "Sim";
+      }
+      this.paramMsgPendentes = true;
+      return;
     }
+
+    this.paramMsgPendentes = false;
   }
 
   criarForm() {
