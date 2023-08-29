@@ -433,7 +433,10 @@ export class OrcamentosListarComponent implements OnInit {
     else this.filtro.DtFim = null;
 
     this.filtro.Origem = this.parametro;
-    this.filtro.Loja = this.autenticacaoService._lojaLogado;
+    
+    if(this.autenticacaoService._tipoUsuario == this.constantes.VENDEDOR_UNIS){
+      this.filtro.Loja = this.autenticacaoService._lojaLogado;
+    }
     this.filtro.pagina = 0;
     this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
     if (this.parametro == "ORCAMENTOS") this.filtro.nomeColunaOrdenacao = this.cols[0].field;
