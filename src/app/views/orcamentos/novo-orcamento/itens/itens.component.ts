@@ -468,15 +468,18 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   formatarDesc(e: Event, item: ProdutoOrcamentoDto): void {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
+    v = valor.replace(/[^0-9]/g, '');
     if (!isNaN(v)) {
       v = (v / 100).toFixed(2) + '';
       item.descDado = v;
+      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(v);
     }
   }
 
   digitouDesc(e: Event, item: ProdutoOrcamentoDto): void {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
+    v = valor.replace(/[^0-9]/g, '');
     v = (v / 100).toFixed(2) + '';
     //se o desconto for digitado estamos alterando o valor de venda e não devemos mais alterar esse valor
     if (item.descDado == 0 || item.descDado.toString() == '') {
@@ -529,13 +532,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   formataDescontoGeral(e: Event) {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
-
+    v = valor.replace(/[^0-9]/g, '');
     if (v == "") {
       this.novoOrcamentoService.descontoGeral = 0;
     }
 
     if (!isNaN(v)) {
       v = (v / 100).toFixed(2) + '';
+      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(v);
       this.novoOrcamentoService.descontoGeral = Number.parseFloat(v);
     }
   }

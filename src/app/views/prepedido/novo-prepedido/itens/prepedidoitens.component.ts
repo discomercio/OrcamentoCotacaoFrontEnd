@@ -414,9 +414,11 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   formatarDesc(e: Event, i: PrepedidoProdutoDtoPrepedido) {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
+    v = valor.replace(/[^0-9]/g, '');
     if (!isNaN(v)) {
       v = (v / 100).toFixed(2) + '';
       i.Desc_Dado = v;
+      ((e.target) as HTMLInputElement).value = this.moedaUtils.formatarValorDuasCasaReturnZero(v);
     }
   }
 
