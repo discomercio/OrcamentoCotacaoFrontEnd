@@ -142,4 +142,9 @@ export class AppTopBarComponent implements OnInit {
     this.autenticacaoService.buscarEstilo(this.autenticacaoService._lojaLogado);
     this.router.navigate(["dashboards"]);
   }
+
+  listarOrcamentos(){
+    this.appTopBarService.obterQuantidadeMensagemPendente();
+    this.router.navigate(["orcamentos/listar/msgPendentes"]);
+  }
 }

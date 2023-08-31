@@ -2,7 +2,6 @@ import { Component, Renderer2 } from '@angular/core';
 import { MenuService } from './app.menu.service';
 import { PrimeNGConfig } from 'primeng/api';
 import { AppComponent } from './app.component';
-import { environment } from 'src/environments/environment';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { SistemaService } from '../service/sistema/sistema.service';
 import { AppTopBarService } from './app.topBar.service';
@@ -41,24 +40,21 @@ export class AppMainComponent {
     configClick: boolean;
     carregando: boolean;
 
-    public versaoFront: string;
-    public versaoApi: string;
-
     constructor(public renderer: Renderer2, private menuService: MenuService,
         private primengConfig: PrimeNGConfig, public app: AppComponent,
-        public readonly sistemaService: SistemaService,
-        private readonly alertaService: AlertaService,
         public readonly appTopBarService: AppTopBarService,
         public readonly autenticacaoService: AutenticacaoService
     ) {
 
-        this.buscarVersao();
+        
 
         if (!this.appTopBarService.iniciouSininho && this.autenticacaoService.authEstaLogado()) {
             this.appTopBarService.iniciouSininho = true;
             this.appTopBarService.obterQuantidadeMensagemPendente();
             this.appTopBarService.ligarInterval();
         }
+
+        this.appTopBarService.buscarVersao();
     }
 
     onLayoutClick() {
@@ -83,35 +79,22 @@ export class AppMainComponent {
             this.configActive = false;
         }
 
+        if(this.menuClick){
+            this.appTopBarService.buscarVersao();
+        }
+
         if (!this.menuClick && !this.configClick && !this.topbarItemClick &&
             !this.appTopBarService.sininho && this.autenticacaoService.authEstaLogado()) {
             sessionStorage.setItem("sininho", "S");
             this.appTopBarService.sininho = true;
             this.appTopBarService.obterQuantidadeMensagemPendente();
+            this.appTopBarService.buscarVersao();
             this.appTopBarService.ligarInterval();
         }
 
         this.configClick = false;
         this.topbarItemClick = false;
         this.menuClick = false;
-
-        this.buscarVersao();
-    }
-
-    buscarVersao() {
-        this.versaoFront = environment.version;
-        this.sistemaService.retornarVersao().toPromise().then((r) => {
-            if (r != null) {
-                this.versaoApi = r.versao;
-                this.sistemaService.versaoFrontTxt = r.versaoFront;
-                if (this.versaoFront != this.sistemaService.versaoFrontTxt) {
-                    this.alertaService.mostrarErroPacote();
-                    return;
-                }
-            }
-        }).catch((e) => {
-            this.alertaService.mostrarErroInternet(e);
-        });
     }
 
     onMenuButtonClick(event) {

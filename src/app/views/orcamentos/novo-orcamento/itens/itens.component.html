@@ -128,14 +128,14 @@
                             </tr>
                             <tr *ngIf="estoqueExcedido(p)" class="alerta">
                                 <td colspan="8" class="font-size">AVISO: Quantidade solicitada é maior que o estoque
-                                    disponível!</td>
+                                    disponível do produto: {{stringUtils.formatarDescricao(p.fabricante, null, p.produto, null)}}</td>
                             </tr>
                             <tr *ngIf="produtoTemAviso(p)">
                                 <td colspan="8" class="font-size alerta">AVISO: {{mensagemAlerta}}</td>
                             </tr>
                             <tr *ngIf="qtdeVendaPermitida(p)" class="alerta">
                                 <td colspan="8" class="font-size">AVISO: Quantidade solicitada excede a quantidade
-                                    máxima de venda permitida!</td>
+                                    máxima de venda permitida para o produto: {{stringUtils.formatarDescricao(p.fabricante, null, p.produto, null)}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">

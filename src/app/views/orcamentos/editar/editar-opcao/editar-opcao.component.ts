@@ -76,9 +76,11 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   setarOpcao() {
     this.opcaoOrcamento = this.itens.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.idOpcaoOrcamentoCotacao)[0];
+    this.opcaoOrcamento.loja = this.itens.novoOrcamentoService.orcamentoCotacaoDto.loja;
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
     this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
     this.itens.novoOrcamentoService.editando = true;
+    debugger;
   }
 
   setarParametrosBuscaProdutos() {
@@ -260,7 +262,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   atualizarOpcao() {
 
-    this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
+    // this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.autenticacaoService._lojaLogado;
+    this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.loja = this.opcaoOrcamento.loja;
     this.itens.orcamentosService.atualizarOrcamentoOpcao(this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto).toPromise().then((r) => {
       if (!r.Sucesso) {
         this.sweetalertService.aviso(r.Mensagem);

@@ -109,8 +109,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       this.fabricantes.push({ Id: e.fabricante, Value: e.fabricante_Nome });
     });
 
-    const key = "Id";
+    const key = "Value";
     this.fabricantes = [... new Map(this.fabricantes.map(item => [item[key], item])).values()];
+    this.fabricantes.sort((a, b) => a.Value.toUpperCase().localeCompare(b.Value.toUpperCase()));
   }
 
   buscarCategorias() {
@@ -146,20 +147,31 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
           let filhotesSimples = produtosSimples.filter(f => filhotes.includes(f.produto));
           filhotesSimples.forEach(el => {
             if (el.ciclo) {
-              this.ciclos.push({ Id: el.ciclo, Value: el.cicloDescricao });
+              if(!el.cicloDescricao){
+                this.ciclos.push({ Id: el.ciclo, Value: el.ciclo });
+              }
+              else{
+                this.ciclos.push({ Id: el.ciclo, Value: el.cicloDescricao });
+              }
             }
           });
         }
       }
       else {
         if (e.ciclo) {
-          this.ciclos.push({ Id: e.ciclo, Value: e.cicloDescricao });
+          if(!e.cicloDescricao){
+            this.ciclos.push({ Id: e.ciclo, Value: e.ciclo });
+          }
+          else{
+            this.ciclos.push({ Id: e.ciclo, Value: e.cicloDescricao });
+          }
         }
       }
     });
 
     const key = "Id";
     this.ciclos = [... new Map(this.ciclos.map(item => [item[key], item])).values()];
+    this.ciclos.sort((a, b) => a.Value.toUpperCase().localeCompare(b.Value.toUpperCase()));
   }
 
   montarCapacidades() {
@@ -189,6 +201,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     const key = "Id";
     this.capacidades = [... new Map(this.capacidades.map(item => [item[key], item])).values()];
+    this.capacidades.sort((a, b) => Number.parseInt(a.Id.toString()) - Number.parseInt(b.Id.toString()) );
   }
 
   pesquisar() {

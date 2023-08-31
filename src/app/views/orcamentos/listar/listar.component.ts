@@ -117,15 +117,16 @@ export class OrcamentosListarComponent implements OnInit {
   clicouPesquisar: boolean;
   carregando: boolean;
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
-  filtroParceirosApoio:string[];
+  filtroParceirosApoio: string[];
+  paramMsgPendentes:boolean;
 
   ngOnInit(): void {
     this.carregando = true;
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.inscricao = this.activatedRoute.params.subscribe((param: any) => { this.iniciarFiltro(param); });
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
 
     const promises = [this.buscarConfigValidade(),
     this.buscarVendedores(), this.buscarStatus(), this.buscarParceiros()];
@@ -146,7 +147,6 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
-    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.setarCamposDoForm();
     this.buscarMensagens();
 
@@ -177,7 +177,7 @@ export class OrcamentosListarComponent implements OnInit {
       });
       this.cboFiltradoVendedores = this.cboVendedores;
     }
-    
+
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
@@ -298,8 +298,19 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   buscarMensagens() {
-    this.cboMensagens.push({ Id: 0, Value: "Não" });
-    this.cboMensagens.push({ Id: 1, Value: "Sim" });
+    // if(this.paramMsgPendentes){
+      
+    // }
+    if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+      this.cboMensagens.push({ Id: 3, Value: "Sim - Todas" });
+      this.cboMensagens.push({ Id: 2, Value: "Sim - Somente as minhas" });
+      this.cboMensagens.push({ Id: 1, Value: "Sim - Somente de terceiros" });
+      this.cboMensagens.push({ Id: 0, Value: "Não" });
+    }
+    else{
+      this.cboMensagens.push({ Id: 0, Value: "Não" });
+      this.cboMensagens.push({ Id: 1, Value: "Sim" });
+    }
 
     this.buscarDatas();
   }
@@ -322,8 +333,17 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (this.parametro == "MSGPENDENTES") {
       this.parametro = "ORCAMENTOS";
-      this.filtro.Mensagem = "Sim";
+      if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+        this.filtro.Mensagem = "Sim - Somente as minhas";
+      }
+      else{
+        this.filtro.Mensagem = "Sim";
+      }
+      this.paramMsgPendentes = true;
+      return;
     }
+
+    this.paramMsgPendentes = false;
   }
 
   criarForm() {
@@ -413,14 +433,17 @@ export class OrcamentosListarComponent implements OnInit {
     else this.filtro.DtFim = null;
 
     this.filtro.Origem = this.parametro;
-    this.filtro.Loja = this.autenticacaoService._lojaLogado;
+    
+    if(this.autenticacaoService._tipoUsuario == this.constantes.VENDEDOR_UNIS){
+      this.filtro.Loja = this.autenticacaoService._lojaLogado;
+    }
     this.filtro.pagina = 0;
     this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
     if (this.parametro == "ORCAMENTOS") this.filtro.nomeColunaOrdenacao = this.cols[0].field;
     if (this.parametro == "PENDENTES") this.filtro.nomeColunaOrdenacao = this.cols[1].field;
 
     if (this.tipoUsuario == this.constantes.GESTOR || this.tipoUsuario == this.constantes.VENDEDOR_UNIS) {
-      
+
       this.filtroParceirosApoio = this.filtro.Parceiros;
       let filtroParceiro = this.filtro.Parceiros;
       this.filtro.Parceiros = new Array();
