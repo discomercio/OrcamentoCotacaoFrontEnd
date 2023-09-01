@@ -25,6 +25,7 @@ export class ProdutoTela {
             //somente pode ter uma entrada do pai no array
             this.Filhos = filhosDiretos[0].filhos;
             this.Filhos.forEach(p => {
+                this.visivel = false;
                 this.stringBusca += "/" + p.produto +
                     `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
                     `/${p.ciclo?.toLocaleLowerCase()}/` +
@@ -41,7 +42,7 @@ export class ProdutoTela {
     //se esta está visível
     public visivel = true;
 
-    public qtde = 1;
+    public qtde = 0;
     //os filhos que esse cara tem
     public Filhos: ProdutoFilhoDto[];
 

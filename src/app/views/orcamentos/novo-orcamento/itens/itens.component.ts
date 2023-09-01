@@ -89,6 +89,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   mostrando: boolean = false;
   desabilitarEnvio: boolean = false;
   antigoPercRT: number;
+  clicouAddProdutos: boolean = false;
 
   @ViewChild("formaPagto", { static: true }) formaPagto: FormaPagtoComponent;
   @ViewChild("opcoes", { static: true }) opcoes: OpcoesComponent;
@@ -264,8 +265,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.produtoRequest.dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
   }
 
-  buscarProdutos(editando:boolean): Promise<ProdutoComboDto> {
-    if(editando) return this.produtoService.buscarProdutosOrcamentoEdicao(this.produtoRequest).toPromise();
+  buscarProdutos(editando: boolean): Promise<ProdutoComboDto> {
+    if (editando) return this.produtoService.buscarProdutosOrcamentoEdicao(this.produtoRequest).toPromise();
     return this.produtoService.buscarProdutosCompostosXSimples(this.produtoRequest).toPromise();
   }
 
@@ -281,25 +282,28 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   adicionarProduto(): void {
-    this.carregandoProds = true;
-    if (!this.produtoComboDto) {
-      const promise = [this.buscarProdutos(false)];
-      Promise.all(promise).then((r: any) => {
-        this.setarProdutos(r[0]);
-        if (!this.editando) {
-          this.mostrarProdutos(null);
-        }
-      }).catch((e) => {
-        this.alertaService.mostrarErroInternet(e);
+
+    if (!this.clicouAddProdutos) {
+      this.carregandoProds = true;
+      if (!this.produtoComboDto) {
+        const promise = [this.buscarProdutos(false)];
+        Promise.all(promise).then((r: any) => {
+          this.setarProdutos(r[0]);
+          if (!this.editando) {
+            this.mostrarProdutos(null);
+          }
+        }).catch((e) => {
+          this.alertaService.mostrarErroInternet(e);
+          this.carregandoProds = false;
+        }).finally(() => {
+          this.carregandoProds = false;
+          return;
+        });
+      }
+      else {
+        this.mostrarProdutos(null);
         this.carregandoProds = false;
-      }).finally(() => {
-        this.carregandoProds = false;
-        return;
-      });
-    }
-    else {
-      this.mostrarProdutos(null);
-      this.carregandoProds = false;
+      }
     }
   }
 
@@ -318,20 +322,25 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   mostrarProdutos(linha: ProdutoOrcamentoDto) {
+    this.clicouAddProdutos = true;
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
     this.selecProdInfo.ClicouOk = false;
-    let largura: string = this.novoOrcamentoService.onResize() ? "" : "65vw";
+    let largura: string = this.novoOrcamentoService.onResize();
+
     const ref = this.dialogService.open(SelectProdDialogComponent,
       {
         width: largura,
         styleClass: 'dynamicDialog',
-        data: this.selecProdInfo
+        data: this.selecProdInfo,
+        closeOnEscape: false,
+        closable: false
       });
 
     ref.onClose.subscribe((resultado: ProdutoTela) => {
       if (resultado) {
         this.addProdutoSelecionado(resultado);
       }
+      this.clicouAddProdutos = false;
     });
   }
 
@@ -388,16 +397,16 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   inserirProduto(): void {
 
     let dataRefCoeficiente = DataUtils.formata_dataString_para_formato_data(new Date().toLocaleString("pt-br").slice(0, 10));
-    if (!this.editando){
+    if (!this.editando) {
       this.carregandoProds = true;
       let request = this.setarCoeficienteRequest(dataRefCoeficiente);
       const promise = [this.buscarCoeficientes2(request)];
-      Promise.all(promise).then((r:any)=>{
+      Promise.all(promise).then((r: any) => {
         this.setarCoeficienteResponse(r[0]);
-      }).catch((e)=>{
+      }).catch((e) => {
         this.alertaService.mostrarErroInternet(e);
         this.carregandoProds = false;
-      }).finally(()=>{
+      }).finally(() => {
         this.carregandoProds = false;
       });
     }
@@ -415,11 +424,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     return coeficienteRequest;
   }
 
-  buscarCoeficientes2(coeficienteRequest:CoeficienteRequest):Promise<CoeficienteDto[]>{
+  buscarCoeficientes2(coeficienteRequest: CoeficienteRequest): Promise<CoeficienteDto[]> {
     return this.produtoService.buscarCoeficientes(coeficienteRequest).toPromise()
   }
 
-  setarCoeficienteResponse(r:CoeficienteDto[]){
+  setarCoeficienteResponse(r: CoeficienteDto[]) {
     if (r != null) {
 
       if (!this.editando) {
@@ -496,7 +505,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       this.mensagemService.showErrorViaToast([`O desconto no item ${item.fabricante}/${item.produto} excede o máximo permitido!`]);
       return;
     }
-    
+
     item.descDado = Number.parseFloat(v);
 
     if (item.descDado > 100) {
@@ -545,7 +554,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   aplicarDescontoGeral(e: Event) {
-    
+
     if (!this.novoOrcamentoService.verificarDescontoGeral()) return;
     this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
       let valor = ((e.target) as HTMLInputElement).value;
