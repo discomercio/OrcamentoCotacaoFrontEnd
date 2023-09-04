@@ -214,22 +214,23 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       return;
     }
 
-    if(this.selecionados && this.selecionados.length > 0){
-      this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r)=>{
-        if(!r) {
+    if (this.selecionados && this.selecionados.length > 0) {
+      this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r) => {
+        if (!r) {
           return;
         }
-        else{
+        else {
+          this.selecionados = new Array<ProdutoTela>();
           this.buscarProdutos();
         }
       });
     }
-    else{
+    else {
       this.buscarProdutos();
     }
   }
 
-  buscarProdutos(){
+  buscarProdutos() {
     this.prodsArrayApoio.forEach(x => {
       x.qtde = 0;
     })
@@ -377,14 +378,34 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   addProduto() {
-    // precisa guardar os codigos de produto para fazer um distinct,
-    // vamos guardar os produtos já separadamente?? se sim, criar no "novoOrcamentoService" pois assim,
-    // saberemos se estamos ultrapassando o limite
     debugger;
     if (this.selecionados && this.selecionados.length > 0) {
+      let qtdeItens: number = 0;
       this.selecionados.forEach(p => {
+        if (p.Filhos.length > 0) {
+          p.Filhos.forEach(x => {
+            let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
+            if (!produto) {
+              this.novoOrcamentoService.controleProduto.push(x.produto);
+              qtdeItens++;
+            }
+          });
+        }
+        else {
+          let produto = this.novoOrcamentoService.controleProduto.filter(c => c == p.produtoDto.produto)[0];
+          if (!produto) {
+            this.novoOrcamentoService.controleProduto.push(p.produtoDto.produto);
+            qtdeItens++;
+          }
+        }
 
+        if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
+          this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
+          this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
+          return;
+        }
       });
+      this.ref.close(this.selecionados);
       return;
     }
     // if (this.selecionado) {
@@ -495,17 +516,18 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
-  fechar(){
-    if(this.selecionados && this.selecionados.length > 0){
-      this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r)=>{
-        if(!r) {
+  fechar() {
+    if (this.selecionados && this.selecionados.length > 0) {
+      this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r) => {
+        if (!r) {
           return;
         }
-        else{
+        else {
+          this.selecionados = new Array<ProdutoTela>();
           this.ref.close(this.selecionados);
         }
       });
-    }else{
+    } else {
       this.ref.close(this.selecionados);
     }
   }
