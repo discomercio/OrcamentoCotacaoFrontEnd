@@ -26,10 +26,10 @@ export class ProdutoTela {
             this.Filhos = filhosDiretos[0].filhos;
             this.Filhos.forEach(p => {
                 this.visivel = false;
-                this.stringBusca += "/" + p.produto +
-                    `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
-                    `/${p.ciclo?.toLocaleLowerCase()}/` +
-                    `/${p.capacidade}/`;
+                // this.stringBusca += "/" + p.produto +
+                //     `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
+                //     `/${p.ciclo?.toLocaleLowerCase()}/` +
+                //     `/${p.capacidade}/`;
             });
         }
     }

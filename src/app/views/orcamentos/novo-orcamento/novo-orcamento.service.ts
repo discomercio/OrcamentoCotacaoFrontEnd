@@ -64,6 +64,13 @@ export class NovoOrcamentoService {
   editandoComissao: boolean;
   orcamentoAprovacao: AprovacaoOrcamentoDto;
 
+
+  fabricantesSelecionados: Array<string>;
+  categoriasSelecionadas: Array<string>;
+  cicloSelecionado: string;
+  capacidadesSelecionadas: Array<string>;
+  produto: string;
+
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.orcamentoCotacaoDto.entregaImediata = true;

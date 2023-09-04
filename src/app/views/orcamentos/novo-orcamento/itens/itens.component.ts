@@ -207,7 +207,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   mostrarOpcoesClone() {
     this.selecProdInfo.produtoComboDto = this.produtoComboDto;
-    let largura: string = this.novoOrcamentoService.onResize() ? "" : "85vw";
+    let largura: string = this.novoOrcamentoService.onResize();
     const ref = this.dialogService.open(SelectCloneOpcoesDialogComponent,
       {
         width: largura,
