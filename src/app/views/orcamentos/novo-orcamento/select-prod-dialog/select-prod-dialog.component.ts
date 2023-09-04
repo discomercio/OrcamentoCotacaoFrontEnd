@@ -378,7 +378,6 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   addProduto() {
-    debugger;
     if (this.selecionados && this.selecionados.length > 0) {
       let qtdeItens: number = 0;
       this.selecionados.forEach(p => {
@@ -408,32 +407,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       this.ref.close(this.selecionados);
       return;
     }
-    // if (this.selecionado) {
-    //   let qtdeItens: number = 0;
-    //   if (this.selecionado.Filhos.length > 0) {
-    //     this.selecionado.Filhos.forEach(x => {
-    //       let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
-    //       if (!produto) {
-    //         this.novoOrcamentoService.controleProduto.push(x.produto);
-    //         qtdeItens++;
-    //       }
-    //     });
-    //   }
-    //   else {
-    //     let produto = this.novoOrcamentoService.controleProduto.filter(c => c == this.selecionado.produtoDto.produto)[0];
-    //     if (!produto) {
-    //       this.novoOrcamentoService.controleProduto.push(this.selecionado.produtoDto.produto);
-    //       qtdeItens++;
-    //     }
-    //   }
-    //   if (this.novoOrcamentoService.controleProduto.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
-    //     this.novoOrcamentoService.controleProduto.splice(this.novoOrcamentoService.controleProduto.length - qtdeItens, qtdeItens);
-    //     this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
-    //     return;
-    //   }
-    //   this.ref.close(this.selecionado);
-    //   return;
-    // }
+    
     let msg: string[] = new Array();
     msg.push("Por favor, selecione um produto!");
     this.mensagemService.showErrorViaToast(msg);

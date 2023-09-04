@@ -336,9 +336,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         closable: false
       });
 
-    ref.onClose.subscribe((resultado: ProdutoTela) => {
-      if (resultado) {
-        this.addProdutoSelecionado(resultado);
+    ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
+      if (resultados && resultados.length > 0) {
+        this.addProdutosSelecionados(resultados);
       }
       this.clicouAddProdutos = false;
     });
@@ -365,14 +365,17 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     return produtoOrcamento;
   }
 
-  addProdutoSelecionado(produto: ProdutoTela) {
-    let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == produto.produtoDto.produto)[0];
+  addProdutosSelecionados(produtos: Array<ProdutoTela>) {
 
-    let produtoOrcamento: ProdutoOrcamentoDto = this.montarProdutoParaAdicionar(produto);
+    produtos.forEach(p => {
+      let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == p.produtoDto.produto)[0];
 
-    if (this.arrumarProdutosRepetidos(produtoOrcamento)) return;
-
-    this.inserirProduto();
+      let produtoOrcamento: ProdutoOrcamentoDto = this.montarProdutoParaAdicionar(p);
+  
+      if (this.arrumarProdutosRepetidos(produtoOrcamento)) return;
+  
+      this.inserirProduto();
+    });
   }
 
   arrumarProdutosRepetidos(produto: ProdutoOrcamentoDto): boolean {
