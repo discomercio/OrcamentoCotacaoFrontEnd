@@ -67,6 +67,7 @@ export class Constantes {
 
     public ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf = 21;
     public ModuloOrcamentoCotacao_CalculadoraVrf_TextoDisclaimer = 22;
+    public ModuloOrcamentoCotacao_CalculadoraVrf_FaixaSimultaneidade = 23;
     public ModuloOrcamentoCotacao_Cliente_AceitePoliticaCredito = 27;
     public ModuloOrcamentoCotacao_Cliente_AceitePoliticaPrivacidadeDados = 28;
     public ModuloOrcamentoCotacao_Cliente_PF_AvisoPreenchimentoDadosCadastrais = 29;

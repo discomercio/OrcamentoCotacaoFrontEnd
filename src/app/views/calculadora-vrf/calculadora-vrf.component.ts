@@ -104,16 +104,17 @@ export class CalculadoraVrfComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.criarForm2();
-    this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
     this.dataAtual = new Date().toLocaleString("pt-br");
 
-    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF()];
+    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF(),
+    this.buscarRangeSimultaneidade()];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
       this.setarOpcoes(r[1]);
       this.setarLogoPDF(r[2]);
       this.setarTextoRodapePDF(r[3]);
+      this.setarRangeSimultaneidade(r[4]);
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -136,16 +137,6 @@ export class CalculadoraVrfComponent implements OnInit {
       qtdeCondensadora: ['', [Validators.required]],
       ciclo: ['', [Validators.required]]
     });
-  }
-
-  buscarSimultaneidades() {
-    this.lstSimultaneidades.push(
-      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
-      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
-      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
-      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
-      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
-    );
   }
 
   buscarQtdeMaxCondensadoras() {
@@ -175,6 +166,11 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
   }
 
+  buscarRangeSimultaneidade(): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_FaixaSimultaneidade;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
+  }
+
   setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
     if (r != null) {
       this.produtosDados = r;
@@ -200,6 +196,18 @@ export class CalculadoraVrfComponent implements OnInit {
   setarTextoRodapePDF(r: any) {
     if (r != null) {
       this.textoRodape = r[0]['Valor'];
+    }
+  }
+
+  setarRangeSimultaneidade(r: any) {
+    if (r != null) {
+      let splitRange = r[0].Valor.split("|");
+      splitRange.forEach(x => {
+        let splitItem = x.split("~");
+        let min = splitItem[0];
+        let max = splitItem[1];
+        this.lstSimultaneidades.push({ title: `${min} a ${max}`, value: `${min}|${max}`, label: `${min} a ${max}` });
+      });
     }
   }
 
@@ -604,8 +612,10 @@ export class CalculadoraVrfComponent implements OnInit {
     let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
 
     ciclos.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstCiclos.push(opcao);
+      if (!!x.valor) {
+        let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+        this.lstCiclos.push(opcao);
+      }
     });
   }
 
