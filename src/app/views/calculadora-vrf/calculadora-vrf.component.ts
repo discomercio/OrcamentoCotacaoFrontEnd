@@ -730,7 +730,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadora1.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat)
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat)
         candidatas.push([prodUnificado, simultaneidade]);
     });
 
@@ -753,7 +753,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadoras2.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat) {
         candidatas.push([prodUnificado, simultaneidade]);
       }
     });
@@ -779,7 +779,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadoras3.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat) {
         candidatas.push([prodUnificado, simultaneidade]);
       }
     });
