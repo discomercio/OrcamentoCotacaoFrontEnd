@@ -10,7 +10,7 @@
                 <label for="fabricante">Fabricante</label>
                 <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione"
                     optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
-                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true" (onChange)="onChangeFabricantes()"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true" (onChange)="onChangeFabricantes($event)"
                     [ngModelOptions]="{standalone: true}"></p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">

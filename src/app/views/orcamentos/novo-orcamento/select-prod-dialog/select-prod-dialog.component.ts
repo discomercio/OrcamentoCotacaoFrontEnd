@@ -487,6 +487,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
   @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if (event.which == 13) {
+      let el = (event.srcElement) as HTMLElement;
+      if(el.classList.contains("p-multiselect-item")) return;
+
       this.pesquisar();
       event.cancelBubble = true;
       event.stopPropagation();
