@@ -37,7 +37,7 @@
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">
                 <div class="">
-                    <button pButton type="button" label="Pesquisar" icon="pi pi-search" (click)="pesquisar()"></button>
+                    <button pButton id="pesquisar" type="button" label="Pesquisar" icon="pi pi-search" (click)="pesquisar()"></button>
                 </div>
             </div>
         </div>
@@ -112,16 +112,22 @@
 
             </p-table>
         </div>
-        <div class="p-col-12 p-d-inline-flex p-jc-end p-px-0 p-py-2">
-            <div class="p-p-2">
-                <button type="text" pButton label="Adicionar" icon="pi pi-plus" (click)="addProduto()"
-                    style="width: auto"></button>
+        <div class="p-col-12 p-grid p-jc-around p-mx-0 p-px-0 p-mx-0">
+            <div class="p-col-6 p-px-0">
+                <span>Selecionado(s): {{selecionados.length}} produto(s)</span>
             </div>
-            <div class="p-p-2">
-                <button type="text" pButton label="Fechar" icon="pi pi-times" (click)="fechar()"
-                    style="width: auto"></button>
+            <div class="p-col-6 p-d-inline-flex p-jc-end p-px-0 p-py-2">
+                <div class="p-p-2">
+                    <button type="text" pButton label="Adicionar" icon="pi pi-plus" (click)="addProduto()"
+                        style="width: auto"></button>
+                </div>
+                <div class="p-py-2">
+                    <button type="text" pButton label="Fechar" icon="pi pi-times" (click)="fechar()"
+                        style="width: auto"></button>
+                </div>
             </div>
         </div>
+        
     </div>
 
 </div>

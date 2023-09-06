@@ -44,7 +44,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   public prodsArray: ProdutoTela[] = new Array();
   prodsArrayApoio: ProdutoTela[] = new Array();
   public moedaUtils: MoedaUtils = new MoedaUtils();
-  selecionados: Array<ProdutoTela>;
+  selecionados: Array<ProdutoTela> = new Array<ProdutoTela>();
   codigo: string;
   public ProdutoTelaFabrProd = ProdutoTela.FabrProd;
   stringUtils = StringUtils;
@@ -252,7 +252,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsArray = { ...this.prodsArrayApoio };
     let lstParaFiltro = Object.assign([], this.prodsArray);
 
-    if (this.novoOrcamentoService.produto && this.novoOrcamentoService.produto.length >= 2) {
+    if (this.novoOrcamentoService.produto && this.novoOrcamentoService.produto.length >= 1) {
       lstParaFiltro = this.filtrarPorProduto(this.novoOrcamentoService.produto, lstParaFiltro);
     }
 
@@ -334,7 +334,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (digitado != "" && digitado.length >= 2) {
+    if (digitado != "" && digitado.length >= 1) {
       for (let i = 0; i < lista.length; i++) {
         lista[i].visivel = false;
         if (lista[i].produtoDto.produto.indexOf(digitado) > -1 && lista[i].produtoDto.unitarioVendavel) {
@@ -489,7 +489,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     if (event.which == 13) {
       let el = (event.srcElement) as HTMLElement;
       if(el.classList.contains("p-multiselect-item")) return;
-
+      if(el.getAttribute("id") != "produto" && el.getAttribute("id") != "pesquisar") return;
+      if(el.getAttribute("id") == "produto"){
+        let input = (event.target) as HTMLInputElement;
+        if(!input.value) return;
+      }
+      
       this.pesquisar();
       event.cancelBubble = true;
       event.stopPropagation();

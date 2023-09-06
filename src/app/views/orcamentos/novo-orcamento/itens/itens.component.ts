@@ -333,7 +333,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         styleClass: 'dynamicDialog',
         data: this.selecProdInfo,
         closeOnEscape: false,
-        closable: false
+        closable: false,
+        showHeader:false
       });
 
     ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
