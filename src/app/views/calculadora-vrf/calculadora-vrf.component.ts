@@ -379,11 +379,11 @@ export class CalculadoraVrfComponent implements OnInit {
         let produtoTabela = new ProdutoTabela();
         produtoTabela.id = lista[0].id;
         produtoTabela.fabricante = lista[0].fabricante;
-        produtoTabela.linhaBusca = produtoTabela.fabricante;
+        produtoTabela.linhaBusca = `|${this.constantes.fFabr}${produtoTabela.fabricante}|`;
         produtoTabela.produto = lista[0].produto;
-        produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.produto;
+        produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProd}${produtoTabela.produto}|`;
         produtoTabela.descricao = lista[0].descricao;
-        produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.descricao;
+        produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDesc}${produtoTabela.descricao}|`;
         produtoTabela.qtde = 0;
 
         let voltagem: boolean = false;
@@ -393,41 +393,41 @@ export class CalculadoraVrfComponent implements OnInit {
 
         lista.forEach(l => {
 
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProp}${(l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao)}|`;
 
           if (l.idPropriedade == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
             produtoTabela.voltagem = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fVolt}${l.idValorPropriedadeOpcao}|`;
           }
 
           if (l.idPropriedade == 3) {
             descarga = true;
             produtoTabela.descarga = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDescar}${l.idValorPropriedadeOpcao}|`;
           }
 
           if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kw = l.valorPropriedade.replace(",", ".");
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fKw}${produtoTabela.kw}|`;
           }
 
           if (l.idPropriedade == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kcal = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fKcal}${produtoTabela.kcal}|`;
           }
 
           if (l.idPropriedade == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.hp = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fHp}${produtoTabela.hp}|`;
           }
 
           if (l.idPropriedade == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fCiclo}${l.idValorPropriedadeOpcao}|`;
           }
         });
 
@@ -452,11 +452,11 @@ export class CalculadoraVrfComponent implements OnInit {
           let produtoTabela = new ProdutoTabela();
           produtoTabela.id = lista[0].id;
           produtoTabela.fabricante = lista[0].fabricante;
-          produtoTabela.linhaBusca = produtoTabela.fabricante;
+          produtoTabela.linhaBusca = `|${this.constantes.fFabr}${produtoTabela.fabricante}|`;
           produtoTabela.produto = lista[0].produto;
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.produto;
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProd}${produtoTabela.produto}|`;
           produtoTabela.descricao = lista[0].descricao;
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.descricao;
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDesc}${produtoTabela.descricao}|`;
 
           lista.forEach(l => {
             if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
@@ -470,7 +470,7 @@ export class CalculadoraVrfComponent implements OnInit {
               produtoTabela.kcal = l.valorPropriedade;
             }
 
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProp}${(l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao)}|`;
           });
           this.evaporadoras.push(produtoTabela);
         }
@@ -628,9 +628,9 @@ export class CalculadoraVrfComponent implements OnInit {
     }
 
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.fabricante == this.fabricanteSelecionado);
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.ciclo + "|"));
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.voltagem.toString()));
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.descarga.toString()));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fCiclo}${this.ciclo}|`));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fVolt}${this.voltagem.toString()}|`));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fDescar}${this.descarga.toString()}|`));
   }
 
   limparFiltros() {
