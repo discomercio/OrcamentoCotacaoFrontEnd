@@ -49,6 +49,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   editando: boolean = false;
   @Input() edicao: boolean;
   @ViewChild("inputValorValido") inputValorValido: ElementRef;
+  permissaoEdicaoCadastro:boolean;
 
   ngOnInit(): void {
 
@@ -62,6 +63,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     this.criarForm();
 
     if(!this.edicao){
+    this.permissaoEdicaoCadastro = true;
       let promise: any = [this.buscarDataTypes(), this.buscarTipoPropriedades()];
       Promise.all(promise).then((r: any) => {
         this.setarDataTypes(r[0]);
@@ -342,7 +344,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
     prop.IdCfgTipoPropriedade = this.idTipoPropriedade;
     prop.IdCfgTipoPermissaoEdicaoCadastro = this.edicao ? this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro : 0;
     prop.descricao = this.form.controls.descricao.value;
-    prop.usuario_cadastro = this.autenticacaoService._usuarioLogado;
+    prop.usuario_cadastro = this.edicao? this.produtoPropriedade.usuario_cadastro : this.autenticacaoService._usuarioLogado;
     prop.oculto = this.form.controls.ocultoPropriedade.value ? false : true;
     prop.ordem = this.form.controls.ordem.value;
 

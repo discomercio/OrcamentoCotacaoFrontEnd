@@ -63,6 +63,7 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
   setarProdutoPropriedade(r: ProdutoCatalogoPropriedade) {
     if (r != null) {
       this.produtoPropriedade = r[0];
+      
       this.criarPropriedade.produtoPropriedade = r[0];
       this.criarPropriedade.criarForm();
       this.criarPropriedade.form.controls.idTipoPropriedade.setValue(this.produtoPropriedade.IdCfgTipoPropriedade);
@@ -71,6 +72,12 @@ export class ProdutosCatalogoPropriedadesEditarComponent implements OnInit {
       if (this.produtoPropriedade.produtoCatalogoPropriedadeOpcao != null) {
         this.criarPropriedade.lstValoresValidos = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao;
         this.criarPropriedade.lstValoresValidosApoioExclusao = this.produtoPropriedade.produtoCatalogoPropriedadeOpcao.slice();
+      }
+      if(this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 1){
+        this.criarPropriedade.permissaoEdicaoCadastro = false;
+      }
+      if(this.produtoPropriedade.IdCfgTipoPermissaoEdicaoCadastro == 0){
+        this.criarPropriedade.permissaoEdicaoCadastro = true;
       }
 
       this.criarPropriedade.changeDataType();
