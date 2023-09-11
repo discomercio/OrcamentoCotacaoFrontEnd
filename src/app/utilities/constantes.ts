@@ -67,6 +67,7 @@ export class Constantes {
 
     public ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf = 21;
     public ModuloOrcamentoCotacao_CalculadoraVrf_TextoDisclaimer = 22;
+    public ModuloOrcamentoCotacao_CalculadoraVrf_FaixaSimultaneidade = 23;
     public ModuloOrcamentoCotacao_Cliente_AceitePoliticaCredito = 27;
     public ModuloOrcamentoCotacao_Cliente_AceitePoliticaPrivacidadeDados = 28;
     public ModuloOrcamentoCotacao_Cliente_PF_AvisoPreenchimentoDadosCadastrais = 29;
@@ -76,4 +77,17 @@ export class Constantes {
     public ModuloOrcamentoCotacao_Orcamento_LogoPdf = 41;
     public ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque = 39;
     public ModuloOrcamentoCotacao_Disclaimer_Frete = 40;
+
+
+    //Utilizando somente para calculadoraVRF
+    public fFabr = "fFabr:";
+    public fProd = "fProd:";
+    public fDesc = "fDesc:";
+    public fVolt = "fVolt:";
+    public fDescar = "fDescar:";
+    public fKw = "fKw:";
+    public fKcal = "fKcal:";
+    public fHp = "fHp:";
+    public fCiclo = "fCiclo:"
+    public fProp = "fProp:";
 }

@@ -64,6 +64,13 @@ export class NovoOrcamentoService {
   editandoComissao: boolean;
   orcamentoAprovacao: AprovacaoOrcamentoDto;
 
+
+  fabricantesSelecionados: Array<string>;
+  categoriasSelecionadas: Array<string>;
+  cicloSelecionado: string;
+  capacidadesSelecionadas: Array<string>;
+  produto: string;
+
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.orcamentoCotacaoDto.entregaImediata = true;
@@ -411,10 +418,9 @@ export class NovoOrcamentoService {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if (window.innerWidth <= 641) {
-      return true;
-    }
-    return false;
+    if (window.innerWidth <= 640) return "90vw";
+    if (window.innerWidth > 640 && window.innerWidth <= 940) return "88vw";
+    if (window.innerWidth > 940) return "65vw";
   }
 
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {

@@ -81,10 +81,10 @@
                         <div class="p-col-12" *ngIf="idTipoPropriedade == 1 && idCfgDataType != null">
                             <div class="p-col-12 p-d-inline-flex p-grid p-py-0">
                                 <div class="p-col-12 p-p-0">
-                                    <div class="p-col-12 p-d-inline-flex p-grid p-pr-0 p-px-0 p-py-0">
+                                    <div class="p-col-12 p-d-inline-flex p-grid p-pr-0 p-px-0 p-py-0" [ngClass]="{'desabilita': !permissaoEdicaoCadastro}">
                                         <div class="p-field p-lg-6 p-md-6 p-pr-0 p-py-0">
                                             <label for="valorValido">Valor válido</label>
-                                            <input #inputValorValido id="valorValido" type="text"
+                                            <input #inputValorValido id="valorValido" type="text" 
                                                 formControlName="valorValido" [(ngModel)]="valorValido" pInputText>
                                             <div class="p-text-truncate"
                                                 *ngIf="validacaoFormularioService.verificaCampo(form,'valorValido')">
