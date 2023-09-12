@@ -77,6 +77,10 @@ export class NovoOrcamentoService {
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
     this.lstProdutosSelecionados = new Array();
+    this.fabricantesSelecionados = new Array();
+    this.categoriasSelecionadas = new Array();
+    this.cicloSelecionado = undefined;
+    this.produto = undefined;
   }
 
   criarNovoOrcamentoItem() {
