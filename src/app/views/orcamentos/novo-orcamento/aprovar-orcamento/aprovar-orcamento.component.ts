@@ -88,6 +88,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   exibeBotaoClonar: boolean;
   exibeBotaoReenviar: boolean;
   exibeBotaoExcluir: boolean;
+  exibeBotaoAnular: boolean;
   items: MenuItem[];
   condicoesGerais: string;
   statusOrcamento: string;
@@ -175,6 +176,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         command: () => this.excluirOrcamento()
       },
       {
+        label: 'Anular', icon: 'pi pi-fw pi-trash',
+        visible: this.exibeBotaoAnular,
+        command: () => this.anularOrcamentoAprovado()
+      },
+      {
         label: 'Nenhuma',
         visible: this.exibeBotaoNenhumaOpcao
       }
@@ -250,7 +256,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.exibeBotaoNenhumaOpcao = this.permissaoOrcamentoResponse.NenhumaOpcaoOrcamento;
     this.exibeBotaoReenviar = this.permissaoOrcamentoResponse.ReenviarOrcamento;
     this.desabiltarBotoes = this.permissaoOrcamentoResponse.DesabilitarBotoes;
-    this.exibeBotaoExcluir = this.permissaoOrcamentoResponse.ExcluirOrcamento
+    this.exibeBotaoExcluir = this.permissaoOrcamentoResponse.ExcluirOrcamento;
+    this.exibeBotaoAnular = this.permissaoOrcamentoResponse.AnularOrcamentoAprovado;
 
     this.carrregarBotoneira();
   }
@@ -1409,21 +1416,21 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
-  excluirOrcamento(){
+  excluirOrcamento() {
 
     this.sweetalertService.dialogo("", "Confirma a exclusão do orçamento?").subscribe(result => {
       if (!result) return;
       this.mensagemComponente.carregando = true;
-      this.orcamentoService.excluirOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r)=>{
+      this.orcamentoService.excluirOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
         this.mensagemComponente.carregando = false;
-        if(!r.Sucesso){
+        if (!r.Sucesso) {
           this.alertaService.mostrarMensagem(r.Mensagem);
           return;
         }
-  
+
         this.sweetalertService.sucesso("Orçamento excluído com sucesso!");
         this.router.navigate(['orcamentos/listar/orcamentos']);
-      }).catch((e)=>{
+      }).catch((e) => {
         this.mensagemComponente.carregando = false;
         this.alertaService.mostrarErroInternet(e);
       });
@@ -1431,8 +1438,29 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
-  verificarDisponibilidadeOrcamento(){
-    if(this.novoOrcamentoService.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
+  anularOrcamentoAprovado(){
+    this.sweetalertService.dialogo("", "Deseja realmente anular este orçamento?").subscribe(result =>{
+      if (!result) return;
+      this.mensagemComponente.carregando = true;
+
+      this.orcamentoService.anularOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto).toPromise().then((r) => {
+        this.mensagemComponente.carregando = false;
+        if (!r.Sucesso) {
+          this.alertaService.mostrarMensagem(r.Mensagem);
+          return;
+        }
+
+        this.sweetalertService.sucesso("Orçamento anulado com sucesso!");
+        this.router.navigate(['orcamentos/listar/orcamentos']);
+      }).catch((e) => {
+        this.mensagemComponente.carregando = false;
+        this.alertaService.mostrarErroInternet(e);
+      });
+    });
+  }
+
+  verificarDisponibilidadeOrcamento() {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO) {
       this.alertaService.mostrarMensagem(`Orçamento ${this.novoOrcamentoService.orcamentoCotacaoDto.id} foi excluído!`);
       this.router.navigate(['orcamentos/listar/orcamentos']);
     }

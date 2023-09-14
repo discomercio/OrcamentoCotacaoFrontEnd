@@ -93,4 +93,8 @@ export class OrcamentosService {
   excluirOrcamento(orcamento:OrcamentoCotacaoResponse):Observable<ExcluirOrcamentoResponse>{
     return this.http.post<ExcluirOrcamentoResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/excluir`, orcamento);
   }
+
+  anularOrcamento(orcamento:OrcamentoCotacaoResponse):Observable<any>{
+    return this.http.post<any>(`${this.appSettingsService.config.apiUrl}Orcamento/anular`, orcamento)
+  }
 }
