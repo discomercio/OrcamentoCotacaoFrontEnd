@@ -79,6 +79,7 @@ export class NovoOrcamentoService {
     this.lstProdutosSelecionados = new Array();
     this.fabricantesSelecionados = new Array();
     this.categoriasSelecionadas = new Array();
+    this.capacidadesSelecionadas = new Array();
     this.cicloSelecionado = undefined;
     this.produto = undefined;
   }

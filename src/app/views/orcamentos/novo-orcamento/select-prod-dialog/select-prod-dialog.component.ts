@@ -107,7 +107,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       this.fabricantes.push({ Id: e.fabricante, Value: e.fabricante_Nome });
     });
 
-    if(this.novoOrcamentoService.fabricantesSelecionados && this.novoOrcamentoService.fabricantesSelecionados.length > 0){
+    if (this.novoOrcamentoService.fabricantesSelecionados && this.novoOrcamentoService.fabricantesSelecionados.length > 0) {
       this.fabricantesSelecionados = this.novoOrcamentoService.fabricantesSelecionados;
     }
 
@@ -129,7 +129,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         this.categorias.push({ Id: x.codigo, Value: x.descricao });
       });
 
-      if(this.novoOrcamentoService.categoriasSelecionadas && this.novoOrcamentoService.categoriasSelecionadas.length > 0){
+      if (this.novoOrcamentoService.categoriasSelecionadas && this.novoOrcamentoService.categoriasSelecionadas.length > 0) {
         this.categoriasSelecionadas = this.novoOrcamentoService.categoriasSelecionadas;
       }
       this.carregando = false;
@@ -206,7 +206,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     });
 
 
-    if(this.novoOrcamentoService.capacidadesSelecionadas && this.novoOrcamentoService.capacidadesSelecionadas.length > 0){
+    if (this.novoOrcamentoService.capacidadesSelecionadas && this.novoOrcamentoService.capacidadesSelecionadas.length > 0) {
       this.capacidadesSelecionadas = this.novoOrcamentoService.capacidadesSelecionadas;
     }
 
@@ -291,9 +291,14 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     if (this.novoOrcamentoService.categoriasSelecionadas && this.novoOrcamentoService.categoriasSelecionadas.length > 0) {
       this.novoOrcamentoService.categoriasSelecionadas.forEach(x => {
-        ProdutoTela.AtualizarVisiveis(lista, "/" + x + "/");
-        let filtrados = lista.filter(f => f.visivel == true);
-        retorno = retorno.concat(filtrados);
+        let p = lista.filter(f => x == f.produtoDto.codGrupoSubgrupo);
+        if (p && p.length > 0) {
+          p.forEach(f => {
+            if (f.visivel && f.produtoDto.unitarioVendavel) {
+              retorno.push(f);
+            }
+          });
+        }
       });
 
       const key = "produtoDto";
@@ -313,8 +318,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
     if (this.novoOrcamentoService.cicloSelecionado) {
-      ProdutoTela.AtualizarVisiveis(lista, "/" + this.novoOrcamentoService.cicloSelecionado + "/");
-      let filtrados = lista.filter(f => f.visivel == true);
+
+      let filtrados = lista.filter(x => this.novoOrcamentoService.cicloSelecionado == x.produtoDto.ciclo && x.visivel && x.produtoDto.unitarioVendavel);
 
       retorno = filtrados;
 
@@ -334,18 +339,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (digitado != "" && digitado.length >= 1) {
-      for (let i = 0; i < lista.length; i++) {
-        lista[i].visivel = false;
-        if (lista[i].produtoDto.produto.indexOf(digitado) > -1 && lista[i].produtoDto.unitarioVendavel) {
-          lista[i].visivel = true;
-          continue;
-        }
-        else {
-          lista[i].visivel = false;
-        }
-      }
-    }
+    ProdutoTela.AtualizarVisiveis(lista, digitado); 
     retorno = lista.filter(f => f.visivel == true);
 
     return retorno;
@@ -355,10 +349,16 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
     if (this.novoOrcamentoService.capacidadesSelecionadas && this.novoOrcamentoService.capacidadesSelecionadas.length > 0) {
+
       this.novoOrcamentoService.capacidadesSelecionadas.forEach(x => {
-        ProdutoTela.AtualizarVisiveis(lista, "/" + x + "/");
-        let filtrados = lista.filter(f => f.visivel == true);
-        retorno = retorno.concat(filtrados);
+        let p = lista.filter(f => Number.parseInt(x) == f.produtoDto.capacidade);
+        if (p && p.length > 0) {
+          p.forEach(f => {
+            if (f.visivel && f.produtoDto.unitarioVendavel) {
+              retorno.push(f);
+            }
+          });
+        }
       });
 
       const key = "produtoDto";
@@ -488,13 +488,13 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   @HostListener('document:keydown.enter', ['$event']) onKeydownHandler(event: KeyboardEvent) {
     if (event.which == 13) {
       let el = (event.srcElement) as HTMLElement;
-      if(el.classList.contains("p-multiselect-item")) return;
-      if(el.getAttribute("id") != "produto" && el.getAttribute("id") != "pesquisar") return;
-      if(el.getAttribute("id") == "produto"){
+      if (el.classList.contains("p-multiselect-item")) return;
+      if (el.getAttribute("id") != "produto" && el.getAttribute("id") != "pesquisar") return;
+      if (el.getAttribute("id") == "produto") {
         let input = (event.target) as HTMLInputElement;
-        if(!input.value) return;
+        if (!input.value) return;
       }
-      
+
       this.pesquisar();
       event.cancelBubble = true;
       event.stopPropagation();
