@@ -79,14 +79,17 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     let promise: any = [this.buscarOrcamento()];
     Promise.all(promise).then((r: any) => {
       this.setarOrcamento(r[0]);
-      this.autenticacaoService.setarToken(r[0].token);
     }).catch((e) => {
       this.mensagemComponente.carregando= false;
+      debugger
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.mensagemComponente.carregando= false;
-      this.verificarImagens();
-      this.promise2();
+
+      if(this.orcamento) {
+        this.verificarImagens();
+        this.promise2();
+      }
     });
 
     // this.sub = this.activatedRoute.params.subscribe((param: any) => {
@@ -148,6 +151,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   setarOrcamento(r: OrcamentoCotacaoDto) {
     if (r != null) {
+      this.autenticacaoService.setarToken(r[0].token);
+
       if(r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
         this.mensagemComponente.carregando= false;
         this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
@@ -200,7 +205,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   setarMensageria() {
-
+    if(this.orcamento)
     this.mensagemComponente.permiteEnviarMensagem = true;
 
     if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
@@ -301,12 +306,14 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   verificarImagens() {
-    for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
-      this.orcamento.listaOpcoes[i].existeImagemProduto = false;
-      for (let y = 0; y < this.orcamento.listaOpcoes[i].listaProdutos.length; y++) {
-        if (!!this.orcamento.listaOpcoes[i].listaProdutos[y].urlImagem) {
-          this.orcamento.listaOpcoes[i].existeImagemProduto = true;
-          break;
+    if(this.orcamento){
+      for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
+        this.orcamento.listaOpcoes[i].existeImagemProduto = false;
+        for (let y = 0; y < this.orcamento.listaOpcoes[i].listaProdutos.length; y++) {
+          if (!!this.orcamento.listaOpcoes[i].listaProdutos[y].urlImagem) {
+            this.orcamento.listaOpcoes[i].existeImagemProduto = true;
+            break;
+          }
         }
       }
     }

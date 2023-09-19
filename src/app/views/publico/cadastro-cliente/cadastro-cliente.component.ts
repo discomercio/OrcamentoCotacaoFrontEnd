@@ -146,13 +146,16 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   verificarAlcadaDescontoSuperior(): boolean {
     let retorno = false;
-    let opcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
-    if (opcao && opcao.id != 0) {
-      let produtos = opcao.listaProdutos.filter(x => x.idOperacaoAlcadaDescontoSuperior != null && x.idOperacaoAlcadaDescontoSuperior != 0);
-      if (produtos.length > 0) {
-        retorno = true;
+    if(this.aprovacaoPublicoService.orcamento){
+      let opcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
+      if (opcao && opcao.id != 0) {
+        let produtos = opcao.listaProdutos.filter(x => x.idOperacaoAlcadaDescontoSuperior != null && x.idOperacaoAlcadaDescontoSuperior != 0);
+        if (produtos.length > 0) {
+          retorno = true;
+        }
       }
     }
+    
     return retorno;
   }
 
