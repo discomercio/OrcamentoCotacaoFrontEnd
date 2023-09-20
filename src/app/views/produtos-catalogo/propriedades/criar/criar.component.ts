@@ -313,7 +313,7 @@ export class ProdutosCatalogoPropriedadesCriarComponent implements OnInit {
   }
 
   voltarClick(): void {
-    this.sweetAlertService.dialogo("", "Tem certeza que deseja cancelar essa operção?").subscribe(result => {
+    this.sweetAlertService.dialogo("", "Tem certeza que deseja cancelar essa operação?").subscribe(result => {
       if (result) this.router.navigate(["//produtos-catalogo/propriedades/listar"]);
 
       if (!result) {
