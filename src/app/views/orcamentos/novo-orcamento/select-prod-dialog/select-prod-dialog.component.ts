@@ -11,8 +11,6 @@ import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { DropDownItem } from '../../models/DropDownItem';
-//import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
-//import { arrayToHash } from '@fullcalendar/core/util/object';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { GrupoSubgrupoProdutoRequest } from 'src/app/dto/produtos/grupo-subgrupo-produto-request';
@@ -56,6 +54,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   ciclos: Array<DropDownItem> = new Array<DropDownItem>();
   capacidadesSelecionadas: Array<string>;
   capacidades: Array<DropDownItem> = new Array<DropDownItem>();
+  cicloSelecionado: string;
+  produto: string;
 
   carregando: boolean;
   cat: string;
@@ -74,6 +74,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   public combo: ProdutoComboDto = new ProdutoComboDto();
 
   public limiteMaximo = 1000 * 1000;
+
   transferirDados() {
 
     const limite = this.limiteMaximo;
@@ -107,8 +108,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       this.fabricantes.push({ Id: e.fabricante, Value: e.fabricante_Nome });
     });
 
-    if (this.novoOrcamentoService.fabricantesSelecionados && this.novoOrcamentoService.fabricantesSelecionados.length > 0) {
-      this.fabricantesSelecionados = this.novoOrcamentoService.fabricantesSelecionados;
+    if (this.fabricantesSelecionados && this.fabricantesSelecionados.length > 0) {
+      this.fabricantesSelecionados = this.fabricantesSelecionados;
     }
 
     const key = "Value";
@@ -129,8 +130,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         this.categorias.push({ Id: x.codigo, Value: x.descricao });
       });
 
-      if (this.novoOrcamentoService.categoriasSelecionadas && this.novoOrcamentoService.categoriasSelecionadas.length > 0) {
-        this.categoriasSelecionadas = this.novoOrcamentoService.categoriasSelecionadas;
+      if (this.categoriasSelecionadas && this.categoriasSelecionadas.length > 0) {
+        this.categoriasSelecionadas = this.categoriasSelecionadas;
       }
       this.carregando = false;
     }).catch((e) => {
@@ -206,8 +207,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     });
 
 
-    if (this.novoOrcamentoService.capacidadesSelecionadas && this.novoOrcamentoService.capacidadesSelecionadas.length > 0) {
-      this.capacidadesSelecionadas = this.novoOrcamentoService.capacidadesSelecionadas;
+    if (this.capacidadesSelecionadas && this.capacidadesSelecionadas.length > 0) {
+      this.capacidadesSelecionadas = this.capacidadesSelecionadas;
     }
 
     const key = "Id";
@@ -217,11 +218,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
   pesquisar() {
 
-    if (!this.novoOrcamentoService.produto &&
-      (!this.novoOrcamentoService.fabricantesSelecionados || this.novoOrcamentoService.fabricantesSelecionados.length == 0) &&
-      (!this.novoOrcamentoService.categoriasSelecionadas || this.novoOrcamentoService.categoriasSelecionadas.length == 0) &&
-      (!this.novoOrcamentoService.cicloSelecionado || this.novoOrcamentoService.cicloSelecionado.length == 0) &&
-      (!this.novoOrcamentoService.capacidadesSelecionadas || this.novoOrcamentoService.capacidadesSelecionadas.length == 0)) {
+    if (!this.produto &&
+      (!this.fabricantesSelecionados || this.fabricantesSelecionados.length == 0) &&
+      (!this.categoriasSelecionadas || this.categoriasSelecionadas.length == 0) &&
+      (!this.cicloSelecionado || this.cicloSelecionado.length == 0) &&
+      (!this.capacidadesSelecionadas || this.capacidadesSelecionadas.length == 0)) {
       this.alertaService.mostrarMensagem("Preencha pelo menos um filtro para pesquisa!");
       return;
     }
@@ -252,8 +253,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsArray = { ...this.prodsArrayApoio };
     let lstParaFiltro = Object.assign([], this.prodsArray);
 
-    if (this.novoOrcamentoService.produto && this.novoOrcamentoService.produto.length >= 1) {
-      lstParaFiltro = this.filtrarPorProduto(this.novoOrcamentoService.produto, lstParaFiltro);
+    if (this.produto && this.produto.length >= 1) {
+      lstParaFiltro = this.filtrarPorProduto(this.produto, lstParaFiltro);
     }
 
     let lstFabr = new Array<ProdutoTela>();
@@ -272,8 +273,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorFabricante(lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (this.novoOrcamentoService.fabricantesSelecionados && this.novoOrcamentoService.fabricantesSelecionados.length > 0) {
-      let produtosFiltrados = lista.filter(x => this.novoOrcamentoService.fabricantesSelecionados.includes(x.produtoDto.fabricante));
+    if (this.fabricantesSelecionados && this.fabricantesSelecionados.length > 0) {
+      let produtosFiltrados = lista.filter(x => this.fabricantesSelecionados.includes(x.produtoDto.fabricante));
       produtosFiltrados.forEach(x => {
         x.visivel = true;
       });
@@ -289,15 +290,40 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorCategorias(lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (this.novoOrcamentoService.categoriasSelecionadas && this.novoOrcamentoService.categoriasSelecionadas.length > 0) {
-      this.novoOrcamentoService.categoriasSelecionadas.forEach(x => {
-        let p = lista.filter(f => x == f.produtoDto.codGrupoSubgrupo);
-        if (p && p.length > 0) {
-          p.forEach(f => {
-            if (f.visivel && f.produtoDto.unitarioVendavel) {
-              retorno.push(f);
+    if (this.categoriasSelecionadas && this.categoriasSelecionadas.length > 0) {
+      this.categoriasSelecionadas.forEach(x => {
+        let split = x.split("§");
+        if (split.length > 1) {
+          let pp = lista.filter(f => split[0] == f.produtoDto.grupo && split[1] == f.produtoDto.subgrupo);
+          if (pp && pp.length > 0) {
+            pp.forEach(f => {
+              if (f.visivel && f.produtoDto.unitarioVendavel) {
+                retorno.push(f);
+              }
+            });
+          }
+        }
+        else {
+          if (split[0] && !split[1]) {
+            let pp = lista.filter(f => split[0] == f.produtoDto.grupo && !f.produtoDto.subgrupo);
+            if (pp && pp.length > 0) {
+              pp.forEach(f => {
+                if (f.visivel && f.produtoDto.unitarioVendavel) {
+                  retorno.push(f);
+                }
+              });
             }
-          });
+          }
+          if (!split[0] && split[1]) {
+            let pp = lista.filter(f => !f.produtoDto.grupo && split[1] == f.produtoDto.subgrupo);
+            if (pp && pp.length > 0) {
+              pp.forEach(f => {
+                if (f.visivel && f.produtoDto.unitarioVendavel) {
+                  retorno.push(f);
+                }
+              });
+            }
+          }
         }
       });
 
@@ -317,9 +343,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorCiclo(lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (this.novoOrcamentoService.cicloSelecionado) {
+    if (this.cicloSelecionado) {
 
-      let filtrados = lista.filter(x => this.novoOrcamentoService.cicloSelecionado == x.produtoDto.ciclo && x.visivel && x.produtoDto.unitarioVendavel);
+      let filtrados = lista.filter(x => this.cicloSelecionado == x.produtoDto.ciclo && x.visivel && x.produtoDto.unitarioVendavel);
 
       retorno = filtrados;
 
@@ -339,7 +365,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorProduto(digitado: string, lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    ProdutoTela.AtualizarVisiveis(lista, digitado); 
+    ProdutoTela.AtualizarVisiveis(lista, digitado);
     retorno = lista.filter(f => f.visivel == true);
 
     return retorno;
@@ -348,9 +374,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   filtrarPorCapacidades(lista: ProdutoTela[]) {
     let retorno: ProdutoTela[] = new Array<ProdutoTela>();
 
-    if (this.novoOrcamentoService.capacidadesSelecionadas && this.novoOrcamentoService.capacidadesSelecionadas.length > 0) {
+    if (this.capacidadesSelecionadas && this.capacidadesSelecionadas.length > 0) {
 
-      this.novoOrcamentoService.capacidadesSelecionadas.forEach(x => {
+      this.capacidadesSelecionadas.forEach(x => {
         let p = lista.filter(f => Number.parseInt(x) == f.produtoDto.capacidade);
         if (p && p.length > 0) {
           p.forEach(f => {
@@ -409,13 +435,33 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
           return;
         }
       });
-      this.ref.close(this.selecionados);
+      // this.ref.close(this.selecionados);
+
+      this.option.contentStyle(this.selecionados);
+
+      //perciso limpar os produtos selecionados
+      this.limparListaTela();
+
       return;
     }
 
     let msg: string[] = new Array();
     msg.push("Por favor, selecione um produto!");
     this.mensagemService.showErrorViaToast(msg);
+  }
+
+  limparListaTela() {
+    this.selecionados.forEach(x => {
+      let linha = document.getElementById(`linha_tabela_${x.produtoDto.produto}`) as HTMLElement;
+      linha.classList.remove("p-highlight");
+      ((linha.children[1].children[1]) as HTMLInputElement).value = "0";
+    });
+
+    this.prodsTela.forEach(x => {
+      x.qtde = 0;
+    });
+
+    this.selecionados = new Array<ProdutoTela>();
   }
 
   produtoDescr(fabricante: string, produto: string) {
@@ -511,23 +557,13 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         }
         else {
           this.selecionados = new Array<ProdutoTela>();
-          this.ref.close(this.selecionados);
+          this.ref.close();
         }
       });
     } else {
-      this.ref.close(this.selecionados);
+      this.ref.close();
     }
   }
 
-  onChangeCategoria() {
-    this.novoOrcamentoService.categoriasSelecionadas = this.categoriasSelecionadas;
-  }
 
-  onChangeFabricantes() {
-    this.novoOrcamentoService.fabricantesSelecionados = this.fabricantesSelecionados;
-  }
-
-  onChangeCapacidade() {
-    this.novoOrcamentoService.capacidadesSelecionadas = this.capacidadesSelecionadas;
-  }
 }
