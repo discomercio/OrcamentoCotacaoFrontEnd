@@ -334,7 +334,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         data: this.selecProdInfo,
         closeOnEscape: false,
         closable: false,
-        showHeader:false
+        showHeader:false,
+        contentStyle:(resultado:ProdutoTela[])=>{
+          if (resultado && resultado.length > 0) {
+            this.addProdutosSelecionados(resultado);
+          }
+          this.clicouAddProdutos = false;
+        }
       });
 
     ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
