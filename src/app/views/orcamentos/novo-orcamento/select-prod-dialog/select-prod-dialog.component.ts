@@ -292,13 +292,38 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     if (this.categoriasSelecionadas && this.categoriasSelecionadas.length > 0) {
       this.categoriasSelecionadas.forEach(x => {
-        let p = lista.filter(f => x == f.produtoDto.codGrupoSubgrupo);
-        if (p && p.length > 0) {
-          p.forEach(f => {
-            if (f.visivel && f.produtoDto.unitarioVendavel) {
-              retorno.push(f);
+        let split = x.split("§");
+        if (split.length > 1) {
+          let pp = lista.filter(f => split[0] == f.produtoDto.grupo && split[1] == f.produtoDto.subgrupo);
+          if (pp && pp.length > 0) {
+            pp.forEach(f => {
+              if (f.visivel && f.produtoDto.unitarioVendavel) {
+                retorno.push(f);
+              }
+            });
+          }
+        }
+        else {
+          if (split[0] && !split[1]) {
+            let pp = lista.filter(f => split[0] == f.produtoDto.grupo && !f.produtoDto.subgrupo);
+            if (pp && pp.length > 0) {
+              pp.forEach(f => {
+                if (f.visivel && f.produtoDto.unitarioVendavel) {
+                  retorno.push(f);
+                }
+              });
             }
-          });
+          }
+          if (!split[0] && split[1]) {
+            let pp = lista.filter(f => !f.produtoDto.grupo && split[1] == f.produtoDto.subgrupo);
+            if (pp && pp.length > 0) {
+              pp.forEach(f => {
+                if (f.visivel && f.produtoDto.unitarioVendavel) {
+                  retorno.push(f);
+                }
+              });
+            }
+          }
         }
       });
 
@@ -416,7 +441,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
       //perciso limpar os produtos selecionados
       this.limparListaTela();
-      
+
       return;
     }
 
@@ -425,17 +450,17 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.mensagemService.showErrorViaToast(msg);
   }
 
-  limparListaTela(){
+  limparListaTela() {
     this.selecionados.forEach(x => {
       let linha = document.getElementById(`linha_tabela_${x.produtoDto.produto}`) as HTMLElement;
       linha.classList.remove("p-highlight");
       ((linha.children[1].children[1]) as HTMLInputElement).value = "0";
     });
 
-    this.prodsTela.forEach(x =>{
+    this.prodsTela.forEach(x => {
       x.qtde = 0;
     });
-    
+
     this.selecionados = new Array<ProdutoTela>();
   }
 
