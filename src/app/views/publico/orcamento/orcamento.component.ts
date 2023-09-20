@@ -81,7 +81,6 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarOrcamento(r[0]);
     }).catch((e) => {
       this.mensagemComponente.carregando= false;
-      debugger
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.mensagemComponente.carregando= false;
@@ -151,7 +150,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   setarOrcamento(r: OrcamentoCotacaoDto) {
     if (r != null) {
-      this.autenticacaoService.setarToken(r[0].token);
+      this.autenticacaoService.setarToken(r.token);
 
       if(r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
         this.mensagemComponente.carregando= false;
