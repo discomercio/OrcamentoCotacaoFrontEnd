@@ -120,6 +120,22 @@
                 "routerLink": [
                     "/calculadora-vrf"
                 ]
+            },
+            {
+                "label": "Consultas",
+                "icon": "fa fa-list-alt",
+                "routerLink": [
+                    "/consultas"
+                ],
+                "items": [
+                    {
+                        "label": "Itens do orçamento",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/itens-orcamentos"
+                        ]
+                    }
+                ]
             }
         ]
     }
