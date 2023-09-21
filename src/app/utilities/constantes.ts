@@ -90,4 +90,7 @@ export class Constantes {
     public fHp = "fHp:";
     public fCiclo = "fCiclo:"
     public fProp = "fProp:";
+
+    public TODAS_OPCOES = "Todas"
+    public OPCOES_APROVADAS = "Somente aprovadas";
 }
