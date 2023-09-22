@@ -26,4 +26,5 @@ export class Filtro {
     idBaseBusca: string;
 
     OpcoesOrcamento: string;
+    ComIndicador:boolean;
 }

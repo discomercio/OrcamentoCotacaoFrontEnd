@@ -14,6 +14,7 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
 @Component({
   selector: 'app-itens-orcamentos',
@@ -27,7 +28,7 @@ export class ItensOrcamentosComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly orcamentoService: OrcamentosService,
     private readonly usuarioService: UsuariosService,
-    private readonly orcamentistaIndicadorService:OrcamentistaIndicadorService) { }
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
 
   carregando: boolean;
   constantes: Constantes = new Constantes();
@@ -43,16 +44,17 @@ export class ItensOrcamentosComponent implements OnInit {
   cboFiltradoVendedores: Array<DropDownItem> = [];
   cboParceiros: Array<DropDownItem> = [];
   cboVendedoresParceiros: Array<DropDownItem> = [];
-  cboMensagens: Array<DropDownItem> = [];
+  cboComIndicador: Array<DropDownItem> = [];
   cboDatas: Array<DropDownItem> = [];
   cboOpcoes: Array<DropDownItem> = [];
   dtInicio: Date;
   dtFim: Date;
   configValidade: ValidadeOrcamento;
-  fraseRegistros:string = `Foram encontrados [qtdeRegistros] registros`;
-  fraseInicial:string = "Clique em Pesquisar para consultar os registros";
-  clicouPesquisar:boolean = false;
-  qtdeRegistros:number = 0;
+  fraseRegistros: string = `Foram encontrados [qtdeRegistros] registros`;
+  fraseInicial: string = "Clique em Pesquisar para consultar os registros";
+  clicouPesquisar: boolean = false;
+  qtdeRegistros: number = 0;
+  filtroParceirosApoio: string[];
 
   ngOnInit(): void {
     this.carregando = true;
@@ -73,7 +75,7 @@ export class ItensOrcamentosComponent implements OnInit {
       this.setarLojas();
       this.setarStatus(r[0]);
       this.setarVendedores(r[1]);
-      this.setarMensagens();
+      this.setarOpcoes();
       this.setarParceiros(r[2]);
       this.setarOpcoesOrcamento();
       this.setarConfigValidade(r[3]);
@@ -144,7 +146,7 @@ export class ItensOrcamentosComponent implements OnInit {
     this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
   }
 
-  setarMensagens() {
+  setarOpcoes() {
     this.cboOpcoes.push({ Id: 0, Value: this.constantes.TODAS_OPCOES });
     this.cboOpcoes.push({ Id: 1, Value: this.constantes.OPCOES_APROVADAS });
   }
@@ -162,9 +164,9 @@ export class ItensOrcamentosComponent implements OnInit {
     }
   }
 
-  setarOpcoesOrcamento(){
-    this.cboMensagens.push({ Id: 0, Value: "Não" });
-    this.cboMensagens.push({ Id: 1, Value: "Sim" });
+  setarOpcoesOrcamento() {
+    this.cboComIndicador.push({ Id: 0, Value: "Não" });
+    this.cboComIndicador.push({ Id: 1, Value: "Sim" });
   }
 
   setarConfigValidade(config: ValidadeOrcamento) {
@@ -175,17 +177,51 @@ export class ItensOrcamentosComponent implements OnInit {
     this.dtFim = new Date();
   }
 
-  pesquisar(){
+  pesquisar() {
     this.sweetAlertService.aviso("Estamos implementando!");
 
     this.clicouPesquisar = true;
+    this.qtdeRegistros = 25;
+    // this.setarFiltro();
   }
 
-  exportXlsx(){
-    this.sweetAlertService.aviso("Estamos implementando!");
+  setarFiltro() {
+
+    if (this.dtInicio) {
+      this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
+    } else this.filtro.DtInicio = null;
+
+    if (this.dtFim) {
+      this.filtro.DtFim = DataUtils.formataParaFormulario(new Date(this.dtFim));
+    }
+    else this.filtro.DtFim = null;
+
+    this.filtroParceirosApoio = this.filtro.Parceiros;
+    let filtroParceiro = this.filtro.Parceiros;
+    this.filtro.Parceiros = new Array();
+    if (filtroParceiro) {
+      filtroParceiro.forEach(x => {
+        this.filtro.Parceiros.push(x);
+      });
+    }
+    this.filtro.Exportar = false;
   }
 
-  exportCsv(){
+  buscarLista(filtro: Filtro) {
+    this.carregando = true;
+
+    this.carregando = false;
+  }
+
+  exportXlsx() {
     this.sweetAlertService.aviso("Estamos implementando!");
+    this.qtdeRegistros = 0;
+    this.clicouPesquisar = false;
+  }
+
+  exportCsv() {
+    this.sweetAlertService.aviso("Estamos implementando!");
+    this.qtdeRegistros = 0;
+    this.clicouPesquisar = false;
   }
 }

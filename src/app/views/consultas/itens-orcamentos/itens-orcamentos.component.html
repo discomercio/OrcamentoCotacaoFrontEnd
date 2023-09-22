@@ -31,7 +31,7 @@
                         </div>
                         <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-4 p-as-end">
                             <label for="filtroParceiro">Com parceiro</label>
-                            <p-dropdown [options]="cboMensagens" [(ngModel)]="filtro.Mensagem" [showClear]="true"
+                            <p-dropdown [options]="cboComIndicador" [(ngModel)]="filtro.ComIndicador" [showClear]="true"
                                 optionValue="Value" optionLabel="Value" placeholder="Selecione">
                             </p-dropdown>
                         </div>
@@ -84,7 +84,7 @@
                 </div>
                 <br />
                 <br />
-                <div class="p-col-12 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-around">
+                <div *ngIf="qtdeRegistros > 0" class="p-col-12 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-around">
                     <div class="p-as-center">
                         <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
                             class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
