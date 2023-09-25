@@ -53,7 +53,7 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
   }
 
   buscarTodosProdutos() {
-      this.service.buscarPropriedades().toPromise().then((r) => {
+    this.service.buscarPropriedades().toPromise().then((r) => {
       if (r != null) {
         this.listaPropriedadesProdutoDto = r;
         this.carregando = false;
@@ -96,12 +96,15 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
       else {
         let loja = this.autenticacaoService._lojaLogado;
         this.service.excluirPropriedades(id, loja).toPromise().then((resp) => {
-
-          if(resp) {
-            this.sweetalertService.sucesso("Propriedade excluída com sucesso.");  
-            this.carregando = true;
-            this.buscarTodosProdutos();
+          if (!resp.Sucesso) {
+            this.carregando = false;
+            this.alertaService.mostrarMensagem(resp.Mensagem);
+            return;
           }
+
+          this.sweetalertService.sucesso("Propriedade excluída com sucesso.");
+          this.carregando = true;
+          this.buscarTodosProdutos();
 
         }).catch((r) => this.alertaService.mostrarErroInternet(r));
       }
