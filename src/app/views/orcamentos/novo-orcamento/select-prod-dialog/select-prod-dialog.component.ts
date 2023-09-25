@@ -527,7 +527,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       linha.classList.add("p-highlight");
     }
     v = v
-    produto.qtde = v;
+    produto.qtde = Number.parseInt(v);
     ((e.target) as HTMLInputElement).value = v;
   }
 
