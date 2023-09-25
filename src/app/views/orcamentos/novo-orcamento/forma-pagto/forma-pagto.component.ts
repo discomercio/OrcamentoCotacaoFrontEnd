@@ -171,10 +171,14 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   selectAprazo() {
 
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
+
+    let habilitado = this.formaPagtoCriacaoAprazo.habilitado;
+
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
 
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.tipoAPrazo;
     this.novoOrcamentoService.qtdeParcelas = 0;
+    this.formaPagtoCriacaoAprazo.habilitado = habilitado;
 
     this.setarSiglaPagto();
     this.calcularParcelas();
