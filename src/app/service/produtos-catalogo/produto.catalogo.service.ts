@@ -209,8 +209,8 @@ export class ProdutoCatalogoService {
         return this.http.get<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ObterPropriedadesUtilizadosPorProdutos/${id}`);
     }
 
-    excluirPropriedades(id: number, loja: string): Observable<any> {
-        return this.http.post<any>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id, loja: loja });
+    excluirPropriedades(id: number, loja: string): Observable<ProdutoCatalogoPropriedadeOpcaoResponse> {
+        return this.http.post<ProdutoCatalogoPropriedadeOpcaoResponse>(`${this.appSettingsService.config.apiUrl}produtocatalogo/ExcluirPropriedades/${id}`, { idPropriedade: id, loja: loja });
     }
 
     buscarGruposProdutos():Observable<ProdutosGruposResponse>{
