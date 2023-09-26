@@ -15,6 +15,11 @@ import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orc
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { ValidadeOrcamento } from 'src/app/dto/config-orcamento/validade-orcamento';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
+import { GrupoSubgrupoProdutoRequest } from 'src/app/dto/produtos/grupo-subgrupo-produto-request';
+import { ProdutoService } from 'src/app/service/produto/produto.service';
+import { ListaGruposSubgruposProdutosResponse } from 'src/app/dto/produtos/lista-grupos-subgrupos-produtos-response';
+import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
+import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 
 @Component({
   selector: 'app-itens-orcamentos',
@@ -28,7 +33,9 @@ export class ItensOrcamentosComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly orcamentoService: OrcamentosService,
     private readonly usuarioService: UsuariosService,
-    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
+    private readonly produtoService: ProdutoService,
+    private readonly produtoCatalogoService: ProdutoCatalogoService) { }
 
   carregando: boolean;
   constantes: Constantes = new Constantes();
@@ -50,11 +57,13 @@ export class ItensOrcamentosComponent implements OnInit {
   dtInicio: Date;
   dtFim: Date;
   configValidade: ValidadeOrcamento;
-  fraseRegistros: string = `Foram encontrados [qtdeRegistros] registros`;
+  fraseRegistros: string = `Foram encontrados [] registros`;
   fraseInicial: string = "Clique em Pesquisar para consultar os registros";
   clicouPesquisar: boolean = false;
   qtdeRegistros: number = 0;
   filtroParceirosApoio: string[];
+  cboCategorias: Array<DropDownItem> = new Array<DropDownItem>();
+  cboFabricantes: Array<DropDownItem> = new Array<DropDownItem>();
 
   ngOnInit(): void {
     this.carregando = true;
@@ -70,7 +79,8 @@ export class ItensOrcamentosComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
 
-    const promises = [this.buscarStatus(), this.buscarVendedores(), this.buscarParceiros(), this.buscarConfigValidade()];
+    const promises = [this.buscarStatus(), this.buscarVendedores(), this.buscarParceiros(), this.buscarConfigValidade(),
+    this.buscarCategorias(), this.buscarFabricantes()];
     Promise.all(promises).then((r: Array<any>) => {
       this.setarLojas();
       this.setarStatus(r[0]);
@@ -79,6 +89,8 @@ export class ItensOrcamentosComponent implements OnInit {
       this.setarParceiros(r[2]);
       this.setarOpcoesOrcamento();
       this.setarConfigValidade(r[3]);
+      this.setarCategorias(r[4]);
+      this.setarFabricantes(r[5]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;
@@ -96,19 +108,27 @@ export class ItensOrcamentosComponent implements OnInit {
   buscarVendedores(): Promise<UsuariosPorListaLojasResponse> {
     if (this.admModulo) {
       let request = new UsuariosPorListaLojasRequest();
-      request.lojas = [];
-      request.lojas.push(this.autenticacaoService._lojaLogado);
 
       return this.usuarioService.buscarVendedoresPorListaLojas(request).toPromise();
     }
   }
 
   buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
-    return this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise()
+    return this.orcamentistaIndicadorService.buscarParceirosHabilitados().toPromise()
   }
 
   buscarConfigValidade(): Promise<ValidadeOrcamento> {
     return this.orcamentoService.buscarConfigValidade(this.autenticacaoService._lojaLogado).toPromise();
+  }
+
+  buscarCategorias(): Promise<ListaGruposSubgruposProdutosResponse> {
+    let request = new GrupoSubgrupoProdutoRequest();
+    request.lojas = this.usuario.lojas;
+    return this.produtoService.buscarGruposSubgruposProdutosPorLojas(request).toPromise();
+  }
+
+  buscarFabricantes(): Promise<ProdutoCatalogoFabricante[]> {
+    return this.produtoCatalogoService.buscarFabricantes().toPromise();
   }
 
   setarStatus(status: Array<any>) {
@@ -124,7 +144,7 @@ export class ItensOrcamentosComponent implements OnInit {
     let lojasUsuario = this.autenticacaoService.usuario.lojas;
     lojasUsuario.forEach(x => {
       this.cboLojas.push({ Id: x, Value: x });
-    })
+    });
   }
 
   setarVendedores(vendedores: UsuariosPorListaLojasResponse) {
@@ -172,9 +192,28 @@ export class ItensOrcamentosComponent implements OnInit {
   setarConfigValidade(config: ValidadeOrcamento) {
     this.configValidade = config;
 
-    let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsultaFiltroPesquisa * 24 * 60 * 60 * 1000);
+    let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);
     this.dtInicio = dtIni;
     this.dtFim = new Date();
+  }
+
+  setarCategorias(r: ListaGruposSubgruposProdutosResponse) {
+    if (!r.Sucesso) {
+      this.sweetAlertService.aviso(r.Mensagem);
+      return;
+    }
+
+    r.listaGruposSubgruposProdutos.forEach(x => {
+      this.cboCategorias.push({ Id: x.codigo, Value: x.descricao });
+    });
+  }
+
+  setarFabricantes(r: ProdutoCatalogoFabricante[]) {
+    if (r != null) {
+      r.forEach(x => {
+        this.cboFabricantes.push({ Id: x.Fabricante, Value: x.Nome });
+      })
+    }
   }
 
   pesquisar() {
@@ -182,19 +221,35 @@ export class ItensOrcamentosComponent implements OnInit {
 
     this.clicouPesquisar = true;
     this.qtdeRegistros = 25;
+    this.fraseRegistros = this.fraseRegistros.replace("[]", this.qtdeRegistros.toString());
     // this.setarFiltro();
   }
 
   setarFiltro() {
-
+    if (!this.dtInicio && !this.dtFim) {
+      this.alertaService.mostrarMensagem("É necessário preencher ao menos um filtro de data de criação");
+      return;
+    }
+    if (this.dtInicio && this.dtFim) {
+      let diferenca = new Date(DataUtils.formataParaFormulario(this.dtFim)).valueOf() - new Date(DataUtils.formataParaFormulario(this.dtInicio)).valueOf();
+      let difDias = diferenca / (1000 * 60 * 60 * 24);
+      if (this.configValidade.MaxPeriodoConsulta_RelatorioGerencial < difDias) {
+        this.alertaService.mostrarMensagem(`A diferença entre as datas de "Início da criação" e "Fim da criação" ultrapassa o período de ${this.configValidade.MaxPeriodoConsulta_RelatorioGerencial} de dias!`);
+        return;
+      }
+    }
     if (this.dtInicio) {
       this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
-    } else this.filtro.DtInicio = null;
-
+    }
+    else {
+      this.filtro.DtInicio = new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);
+    }
     if (this.dtFim) {
       this.filtro.DtFim = DataUtils.formataParaFormulario(new Date(this.dtFim));
     }
-    else this.filtro.DtFim = null;
+    else {
+      this.filtro.DtFim = new Date(this.dtInicio.valueOf() + this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);;
+    }
 
     this.filtroParceirosApoio = this.filtro.Parceiros;
     let filtroParceiro = this.filtro.Parceiros;
@@ -205,10 +260,15 @@ export class ItensOrcamentosComponent implements OnInit {
       });
     }
     this.filtro.Exportar = false;
+
+    
+    this.buscarLista(this.filtro);
   }
 
   buscarLista(filtro: Filtro) {
     this.carregando = true;
+
+    
 
     this.carregando = false;
   }

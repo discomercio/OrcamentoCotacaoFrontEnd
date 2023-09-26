@@ -27,4 +27,6 @@ export class Filtro {
 
     OpcoesOrcamento: string;
     ComIndicador:boolean;
+    Fabricantes:string[];
+    Categorias:string[];
 }

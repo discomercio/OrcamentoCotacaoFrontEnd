@@ -37,4 +37,9 @@ export class OrcamentistaIndicadorService {
   buscarParceirosPorIdVendedor(filtro:BuscarParceiroRequest):Observable<OrcamentistasComboResponse>{
     return this.http.post<OrcamentistasComboResponse>(`${this.appSettingsService.config.apiUrl}OrcamentistaEindicador/buscarParceirosPorIdVendedor`, filtro);
   }
+
+  buscarParceirosHabilitados(){
+    return this.http.get<OrcamentistaIndicadorDto[]>(this.appSettingsService.config.apiUrl + 'OrcamentistaEindicador/buscarParceirosHabilitados');
+  }
 }
+

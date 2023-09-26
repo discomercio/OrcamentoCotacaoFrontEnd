@@ -97,4 +97,8 @@ export class OrcamentosService {
   anularOrcamento(orcamento:OrcamentoCotacaoResponse):Observable<any>{
     return this.http.post<any>(`${this.appSettingsService.config.apiUrl}Orcamento/anular`, orcamento)
   }
+
+  buscarRelatorioItensOrcamento(filtro: any): Observable<OrcamentoCotacaoListaResponse> {
+    return this.http.post<OrcamentoCotacaoListaResponse>(`${this.appSettingsService.config.apiUrl}Orcamento/relatorioItensOrcamento`, filtro);
+  }
 }
