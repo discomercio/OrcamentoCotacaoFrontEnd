@@ -20,6 +20,7 @@ import { ProdutoService } from 'src/app/service/produto/produto.service';
 import { ListaGruposSubgruposProdutosResponse } from 'src/app/dto/produtos/lista-grupos-subgrupos-produtos-response';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
+import { RelatorioItensOrcamento } from 'src/app/dto/orcamentos/relatorio-itens-orcamento';
 
 @Component({
   selector: 'app-itens-orcamentos',
@@ -64,6 +65,7 @@ export class ItensOrcamentosComponent implements OnInit {
   filtroParceirosApoio: string[];
   cboCategorias: Array<DropDownItem> = new Array<DropDownItem>();
   cboFabricantes: Array<DropDownItem> = new Array<DropDownItem>();
+  relatorioItensOrcamento: RelatorioItensOrcamento;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -77,7 +79,7 @@ export class ItensOrcamentosComponent implements OnInit {
 
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
-    this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
+    this.admModulo = this.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais);
 
     const promises = [this.buscarStatus(), this.buscarVendedores(), this.buscarParceiros(), this.buscarConfigValidade(),
     this.buscarCategorias(), this.buscarFabricantes()];
@@ -217,12 +219,11 @@ export class ItensOrcamentosComponent implements OnInit {
   }
 
   pesquisar() {
-    this.sweetAlertService.aviso("Estamos implementando!");
+    // this.sweetAlertService.aviso("Estamos implementando!");
 
     this.clicouPesquisar = true;
-    this.qtdeRegistros = 25;
-    this.fraseRegistros = this.fraseRegistros.replace("[]", this.qtdeRegistros.toString());
-    // this.setarFiltro();
+    
+    this.setarFiltro();
   }
 
   setarFiltro() {
@@ -261,6 +262,9 @@ export class ItensOrcamentosComponent implements OnInit {
     }
     this.filtro.Exportar = false;
 
+    if(!this.filtro.Lojas){
+      this.filtro.Lojas = this.autenticacaoService._lojasUsuarioLogado;
+    }
     
     this.buscarLista(this.filtro);
   }
@@ -268,9 +272,21 @@ export class ItensOrcamentosComponent implements OnInit {
   buscarLista(filtro: Filtro) {
     this.carregando = true;
 
-    
-
-    this.carregando = false;
+    filtro.LojaLogada = this.autenticacaoService._lojaLogado;
+    this.orcamentoService.buscarRelatorioItensOrcamento(filtro).toPromise().then((r)=>{
+      this.carregando = false;
+      if(!r.Sucesso){
+        this.alertaService.mostrarMensagem(r.Mensagem);
+        return;
+      }
+debugger;
+      this.qtdeRegistros = r.listaItensOrcamento.length;
+      this.fraseRegistros = this.fraseRegistros.replace("[]", this.qtdeRegistros.toString());
+      this.relatorioItensOrcamento = r;
+    }).catch((e) =>{
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    });
   }
 
   exportXlsx() {

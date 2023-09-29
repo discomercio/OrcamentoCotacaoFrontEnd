@@ -29,4 +29,6 @@ export class Filtro {
     ComIndicador:boolean;
     Fabricantes:string[];
     Categorias:string[];
+
+    LojaLogada:string;
 }
