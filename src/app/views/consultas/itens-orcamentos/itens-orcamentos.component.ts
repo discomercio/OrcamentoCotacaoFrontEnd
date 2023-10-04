@@ -21,6 +21,8 @@ import { ListaGruposSubgruposProdutosResponse } from 'src/app/dto/produtos/lista
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 import { RelatorioItensOrcamento } from 'src/app/dto/orcamentos/relatorio-itens-orcamento';
+import { ItensOrcamento } from 'src/app/dto/orcamentos/itens-orcamento';
+import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
 
 @Component({
   selector: 'app-itens-orcamentos',
@@ -36,7 +38,8 @@ export class ItensOrcamentosComponent implements OnInit {
     private readonly usuarioService: UsuariosService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly produtoService: ProdutoService,
-    private readonly produtoCatalogoService: ProdutoCatalogoService) { }
+    private readonly produtoCatalogoService: ProdutoCatalogoService,
+    private readonly exportExcelService: ExportExcelService) { }
 
   carregando: boolean;
   constantes: Constantes = new Constantes();
@@ -47,6 +50,7 @@ export class ItensOrcamentosComponent implements OnInit {
   tipoUsuario: number;
 
   cboLojas: Array<DropDownItem> = [];
+  lojasApoio:string[];
   cboStatus: Array<DropDownItem> = [];
   cboVendedores: Array<DropDownItem> = [];
   cboFiltradoVendedores: Array<DropDownItem> = [];
@@ -58,11 +62,13 @@ export class ItensOrcamentosComponent implements OnInit {
   dtInicio: Date;
   dtFim: Date;
   configValidade: ValidadeOrcamento;
-  fraseRegistros: string = `Foram encontrados [] registros`;
+  fraseRegistrosBase: string = `Foram encontrados [] registros`;
+  fraseRegistros : string;
   fraseInicial: string = "Clique em Pesquisar para consultar os registros";
   clicouPesquisar: boolean = false;
   qtdeRegistros: number = 0;
   filtroParceirosApoio: string[];
+  filtroCategoriasApoio: string[];
   cboCategorias: Array<DropDownItem> = new Array<DropDownItem>();
   cboFabricantes: Array<DropDownItem> = new Array<DropDownItem>();
   relatorioItensOrcamento: RelatorioItensOrcamento;
@@ -178,7 +184,7 @@ export class ItensOrcamentosComponent implements OnInit {
       parceiros.forEach(x => {
         if (!!x.nome) {
           if (!this.cboParceiros.find(f => f.Value == x.nome))
-            this.cboParceiros.push({ Id: "", Value: x.nome });
+            this.cboParceiros.push({ Id: x.idIndicador, Value: x.nome });
         }
       });
 
@@ -260,10 +266,13 @@ export class ItensOrcamentosComponent implements OnInit {
         this.filtro.Parceiros.push(x);
       });
     }
+
     this.filtro.Exportar = false;
 
-    if(!this.filtro.Lojas){
+    if(!this.lojasApoio){
       this.filtro.Lojas = this.autenticacaoService._lojasUsuarioLogado;
+    }else{
+      this.filtro.Lojas = this.lojasApoio;
     }
     
     this.buscarLista(this.filtro);
@@ -271,7 +280,8 @@ export class ItensOrcamentosComponent implements OnInit {
 
   buscarLista(filtro: Filtro) {
     this.carregando = true;
-
+    this.qtdeRegistros = 0;
+    this.fraseRegistros = null;
     filtro.LojaLogada = this.autenticacaoService._lojaLogado;
     this.orcamentoService.buscarRelatorioItensOrcamento(filtro).toPromise().then((r)=>{
       this.carregando = false;
@@ -279,8 +289,9 @@ export class ItensOrcamentosComponent implements OnInit {
         this.alertaService.mostrarMensagem(r.Mensagem);
         return;
       }
-debugger;
+
       this.qtdeRegistros = r.listaItensOrcamento.length;
+      this.fraseRegistros = this.fraseRegistrosBase;
       this.fraseRegistros = this.fraseRegistros.replace("[]", this.qtdeRegistros.toString());
       this.relatorioItensOrcamento = r;
     }).catch((e) =>{
@@ -290,13 +301,14 @@ debugger;
   }
 
   exportXlsx() {
-    this.sweetAlertService.aviso("Estamos implementando!");
+    this.exportExcelService.exportAsXLSXFile(this.relatorioItensOrcamento.listaItensOrcamento, `relatorio-itens-orcamentos`);
+
     this.qtdeRegistros = 0;
     this.clicouPesquisar = false;
   }
 
   exportCsv() {
-    this.sweetAlertService.aviso("Estamos implementando!");
+    this.exportExcelService.exportAsCSVFile(this.relatorioItensOrcamento.listaItensOrcamento, `relatorio-itens-orcamentos`);
     this.qtdeRegistros = 0;
     this.clicouPesquisar = false;
   }

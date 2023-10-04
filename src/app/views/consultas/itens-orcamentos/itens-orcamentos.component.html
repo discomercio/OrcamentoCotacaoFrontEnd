@@ -33,7 +33,7 @@
                             <label for="filtro">Lojas</label>
                             <p-multiSelect [options]="cboLojas" placeholder="Selecione"
                                 emptyFilterMessage="Nenhum item encontrado" [showHeader]="false" optionValue="Id"
-                                optionLabel="Value" [(ngModel)]="filtro.Lojas"
+                                optionLabel="Value" [(ngModel)]="lojasApoio"
                                 emptyFilterMessage="Nenhum item encontrado">
                             </p-multiSelect>
                         </div>
@@ -62,7 +62,7 @@
                         <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end">
                             <label>Parceiro</label>
                             <p-multiSelect [options]="cboParceiros" [(ngModel)]="filtro.Parceiros"
-                                defaultLabel="Selecione" optionValue="Value" optionLabel="Value"
+                                defaultLabel="Selecione" optionValue="Id" optionLabel="Value"
                                 emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
                                 resetFilterOnHide="true">
                             </p-multiSelect>
