@@ -21,8 +21,8 @@ import { ListaGruposSubgruposProdutosResponse } from 'src/app/dto/produtos/lista
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoFabricante';
 import { RelatorioItensOrcamento } from 'src/app/dto/orcamentos/relatorio-itens-orcamento';
-import { ItensOrcamento } from 'src/app/dto/orcamentos/itens-orcamento';
 import { ExportExcelService } from 'src/app/service/export-files/export-excel.service';
+import * as XLSX from 'xlsx';
 
 @Component({
   selector: 'app-itens-orcamentos',
@@ -50,7 +50,7 @@ export class ItensOrcamentosComponent implements OnInit {
   tipoUsuario: number;
 
   cboLojas: Array<DropDownItem> = [];
-  lojasApoio:string[];
+  lojasApoio: string[];
   cboStatus: Array<DropDownItem> = [];
   cboVendedores: Array<DropDownItem> = [];
   cboFiltradoVendedores: Array<DropDownItem> = [];
@@ -63,7 +63,7 @@ export class ItensOrcamentosComponent implements OnInit {
   dtFim: Date;
   configValidade: ValidadeOrcamento;
   fraseRegistrosBase: string = `Foram encontrados [] registros`;
-  fraseRegistros : string;
+  fraseRegistros: string;
   fraseInicial: string = "Clique em Pesquisar para consultar os registros";
   clicouPesquisar: boolean = false;
   qtdeRegistros: number = 0;
@@ -228,7 +228,7 @@ export class ItensOrcamentosComponent implements OnInit {
     // this.sweetAlertService.aviso("Estamos implementando!");
 
     this.clicouPesquisar = true;
-    
+
     this.setarFiltro();
   }
 
@@ -269,12 +269,12 @@ export class ItensOrcamentosComponent implements OnInit {
 
     this.filtro.Exportar = false;
 
-    if(!this.lojasApoio){
+    if (!this.lojasApoio) {
       this.filtro.Lojas = this.autenticacaoService._lojasUsuarioLogado;
-    }else{
+    } else {
       this.filtro.Lojas = this.lojasApoio;
     }
-    
+
     this.buscarLista(this.filtro);
   }
 
@@ -283,9 +283,9 @@ export class ItensOrcamentosComponent implements OnInit {
     this.qtdeRegistros = 0;
     this.fraseRegistros = null;
     filtro.LojaLogada = this.autenticacaoService._lojaLogado;
-    this.orcamentoService.buscarRelatorioItensOrcamento(filtro).toPromise().then((r)=>{
+    this.orcamentoService.buscarRelatorioItensOrcamento(filtro).toPromise().then((r) => {
       this.carregando = false;
-      if(!r.Sucesso){
+      if (!r.Sucesso) {
         this.alertaService.mostrarMensagem(r.Mensagem);
         return;
       }
@@ -294,14 +294,59 @@ export class ItensOrcamentosComponent implements OnInit {
       this.fraseRegistros = this.fraseRegistrosBase;
       this.fraseRegistros = this.fraseRegistros.replace("[]", this.qtdeRegistros.toString());
       this.relatorioItensOrcamento = r;
-    }).catch((e) =>{
+    }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.carregando = false;
     });
   }
 
   exportXlsx() {
-    this.exportExcelService.exportAsXLSXFile(this.relatorioItensOrcamento.listaItensOrcamento, `relatorio-itens-orcamentos`);
+    let json = [];
+    this.relatorioItensOrcamento.listaItensOrcamento.forEach(x => {
+      let item = {
+        Loja: { t: 'n', v: x.Loja },
+        Orcamento: { t: 'n', v: x.Orcamento },
+        PrePedido: x.PrePedido,
+        Pedido: x.Pedido,
+        Status: x.Status,
+        Vendedor: x.Vendedor,
+        Indicador: x.Indicador,
+        IndicadorVendedor: x.IndicadorVendedor,
+        UsuarioCadastro: x.UsuarioCadastro,
+        IdCliente: { t: 'n', v: x.IdCliente },
+        UF: x.UF,
+        TipoCliente: x.TipoCliente,
+        ContribuinteIcms: x.ContribuinteIcms,
+        EntregaImediata: x.EntregaImediata,
+        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: x.PrevisaoEntrega, z: "dd/MM/yyyy" } : null,
+        InstaladorInstala: x.InstaladorInstala,
+        NumOpcaoOrcamento: { t: 'n', v: x.NumOpcaoOrcamento },
+        FormaPagtoAVista: x.FormaPagtoAVista,
+        FormaPagtoAPrazo: x.FormaPagtoAPrazo,
+        QtdeParcelasFormaPagtoAPrazo: x.QtdeParcelasFormaPagtoAPrazo ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazo } : null,
+        OpcaoAprovada: x.OpcaoAprovada,
+        FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
+        Fabricante: x.Fabricante,
+        Produto: x.Produto,
+        Qtde: { t: 'n', v: x.Qtde },
+        DescricaoProduto: x.DescricaoProduto,
+        Categoria: x.Categoria,
+        PrecoListaUnitAVista: x.PrecoListaUnitAVista ? { t: 'n', v: x.PrecoListaUnitAVista, z: "R$ #,##0.00" } : null,
+        PrecoListaUnitAPrazo: x.PrecoListaUnitAPrazo ? { t: 'n', v: x.PrecoListaUnitAPrazo, z: "R$ #,##0.00" } : null,
+        PrecoNFUnitAVista: x.PrecoNFUnitAVista ? { t: 'n', v: x.PrecoNFUnitAVista, z: "R$ #,##0.00" } : null,
+        PrecoNFUnitAPrazo: x.PrecoNFUnitAPrazo ? { t: 'n', v: x.PrecoNFUnitAPrazo, z: "R$ #,##0.00" } : null,
+        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista /100, z: "0.00%" } : null,
+        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo /100, z: "0.00%" } : null,
+        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista/100, z: "0.00%" } : null,
+        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo/100, z: "0.00%" } : null,
+        Comissao: x.Comissao ? { t: 'n', v: x.Comissao/100, z: "0.0%" } : null,
+        DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
+        Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
+      }
+
+      json.push(item);
+    })
+    this.exportExcelService.exportAsXLSXFile(json, `relatorio-itens-orcamentos`);
 
     this.qtdeRegistros = 0;
     this.clicouPesquisar = false;

@@ -13,9 +13,9 @@ export class ItensOrcamento{
     TipoCliente:string;
     ContribuinteIcms:string;
     EntregaImediata:string;
-    PrevisaoEntrega:string;
+    PrevisaoEntrega:Date;
     InstaladorInstala:string;
-    NumOpcaoOrcamento:number|string;
+    NumOpcaoOrcamento:number;
     FormaPagtoAVista:string;
     FormaPagtoAPrazo:string;
     QtdeParcelasFormaPagtoAPrazo:number|string;
@@ -23,20 +23,18 @@ export class ItensOrcamento{
     FormaPagtoOpcaoAprovada:string;
     Fabricante:string;
     Produto:string;
-    Qtde:number|string;
+    Qtde:number;
     DescricaoProduto:string;
     Categoria:string;
-    PrecoListaUnitAVista:string;
-    PrecoListaUnitAPrazo:string;
-    precoNFUniAvista:string;
-    precoNFUnitAprazo:string;
-    PrecoNFUnitAVista:string;
-    PrecoNFUnitAPrazo:string;
-    DescontoAVista:string;
-    DescontoAPrazo:string;
-    DescSuperiorAVista:string;
-    DescSuperiorAPrazo:string;
-    Comissao:number|string;
-    DataCadastro:string;
-    Validade:string
+    PrecoListaUnitAVista:number;
+    PrecoListaUnitAPrazo:number;
+    PrecoNFUnitAVista:number;
+    PrecoNFUnitAPrazo:number;
+    DescontoAVista:number;
+    DescontoAPrazo:number;
+    DescSuperiorAVista:number;
+    DescSuperiorAPrazo:number;
+    Comissao:number;
+    DataCadastro:Date;
+    Validade:Date
 }
