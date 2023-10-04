@@ -4,7 +4,6 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
-import { Observable } from 'rxjs';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -19,11 +18,7 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
-import { totalmem } from 'os';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
-import { parse } from '@fortawesome/fontawesome-svg-core';
-import { ItensComponent } from './itens/itens.component';
-import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 
 @Injectable({
@@ -411,10 +406,9 @@ export class NovoOrcamentoService {
 
   @HostListener('window:resize', ['$event'])
   onResize() {
-    if (window.innerWidth <= 641) {
-      return true;
-    }
-    return false;
+    if (window.innerWidth <= 640) return "90vw";
+    if (window.innerWidth > 640 && window.innerWidth <= 940) return "88vw";
+    if (window.innerWidth > 940) return "65vw";
   }
 
   permiteEnviarMensagem(dataValidade, dataMaxTrocaMsg): boolean {
@@ -564,7 +558,6 @@ export class NovoOrcamentoService {
     if (pagtoS?.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
       let meioEntrada = pagtoBase.meios.filter(m => m.id.toString() == fPagto.op_pce_entrada_forma_pagto)[0].descricao;
       let meioPrestacao = pagtoBase.meios.filter(m => m.id.toString() == fPagto.op_pce_prestacao_forma_pagto)[0].descricao;
-
       retorno.titulo = "Parcelado com entrada " + this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal);
       retorno.linhasPagto.push(`Entrada: ${meioEntrada} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.o_pce_entrada_valor)}`);
       retorno.linhasPagto.push(`Demais Prestações: ${meioPrestacao} em ${fPagto.c_pce_prestacao_qtde} X de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pce_prestacao_valor)}`);
@@ -576,7 +569,6 @@ export class NovoOrcamentoService {
     if (pagtoS?.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
       let meioPrimPrest = pagtoBase.meios.filter(m => m.id.toString() == fPagto.op_pse_prim_prest_forma_pagto)[0].descricao;
       let meioPrestacao = pagtoBase.meios.filter(m => m.id.toString() == fPagto.op_pse_demais_prest_forma_pagto)[0].descricao;
-
       retorno.titulo = "Parcelado sem entrada " + this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal);
       retorno.linhasPagto.push(`1º Prestação: : ${meioPrimPrest} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_prim_prest_valor)}`);
       retorno.linhasPagto.push(`vencendo após " + fPagto.c_pse_prim_prest_apos + " dias`);
@@ -588,7 +580,6 @@ export class NovoOrcamentoService {
     }
     if (pagtoS?.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
       let meio = pagtoBase.meios.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0].descricao;
-
       retorno.titulo = `Parcela única ${this.moedaUtils.formatarMoedaComPrefixo(opcaoOrcamentoCotacaoDto.vlTotal)}`;
       retorno.linhasPagto.push(`${pagtoBase.tipoPagamentoDescricao} em ${meio} no valor de ${this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor)}`);
       retorno.linhasPagto.push(`vencendo após ${fPagto.c_pu_vencto_apos} dias`);
@@ -603,7 +594,7 @@ export class NovoOrcamentoService {
         retorno.linhasPagto.push(pagtoS.observacoesGerais);
       }
     }
-    
+
     return retorno;
   }
 }

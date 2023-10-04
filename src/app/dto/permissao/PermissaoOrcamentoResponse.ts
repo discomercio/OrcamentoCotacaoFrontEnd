@@ -11,6 +11,7 @@ export class PermissaoOrcamentoResponse {
     NenhumaOpcaoOrcamento: boolean;
     DesabilitarBotoes: boolean;
     ExcluirOrcamento: boolean;
+    AnularOrcamentoAprovado:boolean;
     Sucesso: boolean;
     Mensagem: string;
 }

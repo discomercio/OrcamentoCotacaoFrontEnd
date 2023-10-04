@@ -6,3 +6,8 @@
 ::ng-deep .p-orderlist-droppoint {
     height: 12px !important;
 }
+
+.desabilita{
+    pointer-events: none;
+    opacity: 0.5;;
+}

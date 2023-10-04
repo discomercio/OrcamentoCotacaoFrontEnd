@@ -104,16 +104,17 @@ export class CalculadoraVrfComponent implements OnInit {
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
     this.criarForm2();
-    this.buscarSimultaneidades();
     this.buscarQtdeMaxCondensadoras();
     this.dataAtual = new Date().toLocaleString("pt-br");
 
-    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF()];
+    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF(),
+    this.buscarRangeSimultaneidade()];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
       this.setarOpcoes(r[1]);
       this.setarLogoPDF(r[2]);
       this.setarTextoRodapePDF(r[3]);
+      this.setarRangeSimultaneidade(r[4]);
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -136,16 +137,6 @@ export class CalculadoraVrfComponent implements OnInit {
       qtdeCondensadora: ['', [Validators.required]],
       ciclo: ['', [Validators.required]]
     });
-  }
-
-  buscarSimultaneidades() {
-    this.lstSimultaneidades.push(
-      { title: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}`, value: `${eSimultaneidade.Oitenta}|${eSimultaneidade.Noventa}`, label: `${eSimultaneidade.Oitenta} a ${eSimultaneidade.Noventa}` },
-      { title: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}`, value: `${eSimultaneidade.NoventaEUm}|${eSimultaneidade.Cem}`, label: `${eSimultaneidade.NoventaEUm} a ${eSimultaneidade.Cem}` },
-      { title: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}`, value: `${eSimultaneidade.CentoEUm}|${eSimultaneidade.CentoEDez}`, label: `${eSimultaneidade.CentoEUm} a ${eSimultaneidade.CentoEDez}` },
-      { title: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}`, value: `${eSimultaneidade.CentoEOnze}|${eSimultaneidade.CentoEVinte}`, label: `${eSimultaneidade.CentoEOnze} a ${eSimultaneidade.CentoEVinte}` },
-      { title: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}`, value: `${eSimultaneidade.CentoEVinteEUm}|${eSimultaneidade.CentoETrinta}`, label: `${eSimultaneidade.CentoEVinteEUm} a ${eSimultaneidade.CentoETrinta}` }
-    );
   }
 
   buscarQtdeMaxCondensadoras() {
@@ -175,6 +166,11 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
   }
 
+  buscarRangeSimultaneidade(): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_FaixaSimultaneidade;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
+  }
+
   setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
     if (r != null) {
       this.produtosDados = r;
@@ -200,6 +196,18 @@ export class CalculadoraVrfComponent implements OnInit {
   setarTextoRodapePDF(r: any) {
     if (r != null) {
       this.textoRodape = r[0]['Valor'];
+    }
+  }
+
+  setarRangeSimultaneidade(r: any) {
+    if (r != null) {
+      let splitRange = r[0].Valor.split("|");
+      splitRange.forEach(x => {
+        let splitItem = x.split("~");
+        let min = splitItem[0];
+        let max = splitItem[1];
+        this.lstSimultaneidades.push({ title: `${min} a ${max}`, value: `${min}|${max}`, label: `${min} a ${max}` });
+      });
     }
   }
 
@@ -371,11 +379,11 @@ export class CalculadoraVrfComponent implements OnInit {
         let produtoTabela = new ProdutoTabela();
         produtoTabela.id = lista[0].id;
         produtoTabela.fabricante = lista[0].fabricante;
-        produtoTabela.linhaBusca = produtoTabela.fabricante;
+        produtoTabela.linhaBusca = `|${this.constantes.fFabr}${produtoTabela.fabricante}|`;
         produtoTabela.produto = lista[0].produto;
-        produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.produto;
+        produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProd}${produtoTabela.produto}|`;
         produtoTabela.descricao = lista[0].descricao;
-        produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.descricao;
+        produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDesc}${produtoTabela.descricao}|`;
         produtoTabela.qtde = 0;
 
         let voltagem: boolean = false;
@@ -385,41 +393,41 @@ export class CalculadoraVrfComponent implements OnInit {
 
         lista.forEach(l => {
 
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProp}${(l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao)}|`;
 
           if (l.idPropriedade == 4 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             voltagem = true;
             produtoTabela.voltagem = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fVolt}${l.idValorPropriedadeOpcao}|`;
           }
 
           if (l.idPropriedade == 3) {
             descarga = true;
             produtoTabela.descarga = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDescar}${l.idValorPropriedadeOpcao}|`;
           }
 
           if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kw = l.valorPropriedade.replace(",", ".");
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kw;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fKw}${produtoTabela.kw}|`;
           }
 
           if (l.idPropriedade == 10 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.kcal = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.kcal;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fKcal}${produtoTabela.kcal}|`;
           }
 
           if (l.idPropriedade == 11 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             kw = true;
             produtoTabela.hp = l.valorPropriedade;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.hp;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fHp}${produtoTabela.hp}|`;
           }
 
           if (l.idPropriedade == 6 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
             ciclo = true;
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + l.idValorPropriedadeOpcao;
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fCiclo}${l.idValorPropriedadeOpcao}|`;
           }
         });
 
@@ -444,11 +452,11 @@ export class CalculadoraVrfComponent implements OnInit {
           let produtoTabela = new ProdutoTabela();
           produtoTabela.id = lista[0].id;
           produtoTabela.fabricante = lista[0].fabricante;
-          produtoTabela.linhaBusca = produtoTabela.fabricante;
+          produtoTabela.linhaBusca = `|${this.constantes.fFabr}${produtoTabela.fabricante}|`;
           produtoTabela.produto = lista[0].produto;
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.produto;
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProd}${produtoTabela.produto}|`;
           produtoTabela.descricao = lista[0].descricao;
-          produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + produtoTabela.descricao;
+          produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fDesc}${produtoTabela.descricao}|`;
 
           lista.forEach(l => {
             if (l.idPropriedade == 7 && (l.valorPropriedade != null && l.valorPropriedade != '')) {
@@ -462,7 +470,7 @@ export class CalculadoraVrfComponent implements OnInit {
               produtoTabela.kcal = l.valorPropriedade;
             }
 
-            produtoTabela.linhaBusca = produtoTabela.linhaBusca + "|" + (l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao);
+            produtoTabela.linhaBusca = `${produtoTabela.linhaBusca}|${this.constantes.fProp}${(l.idValorPropriedadeOpcao == 0 ? l.valorPropriedade : l.idValorPropriedadeOpcao)}|`;
           });
           this.evaporadoras.push(produtoTabela);
         }
@@ -604,8 +612,10 @@ export class CalculadoraVrfComponent implements OnInit {
     let ciclos = this.lstOpcoes.filter(x => Number.parseInt(x.id_produto_catalogo_propriedade) == 6)
 
     ciclos.forEach(x => {
-      let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
-      this.lstCiclos.push(opcao);
+      if (!!x.valor) {
+        let opcao: SelectItem = { title: x.valor, value: x.id, label: x.valor };
+        this.lstCiclos.push(opcao);
+      }
     });
   }
 
@@ -618,9 +628,9 @@ export class CalculadoraVrfComponent implements OnInit {
     }
 
     this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.fabricante == this.fabricanteSelecionado);
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.ciclo + "|"));
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.voltagem.toString()));
-    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(this.descarga.toString()));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fCiclo}${this.ciclo}|`));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fVolt}${this.voltagem.toString()}|`));
+    this.condensadorasFiltradas = this.condensadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fDescar}${this.descarga.toString()}|`));
   }
 
   limparFiltros() {
@@ -730,7 +740,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadora1.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat)
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat)
         candidatas.push([prodUnificado, simultaneidade]);
     });
 
@@ -753,7 +763,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadoras2.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat) {
         candidatas.push([prodUnificado, simultaneidade]);
       }
     });
@@ -779,7 +789,7 @@ export class CalculadoraVrfComponent implements OnInit {
     condensadoras3.forEach(x => {
       let prodUnificado = this.unificarEquipamentosIguais(x).slice();
       let simultaneidade = this.calcularSimultaneidade(prodUnificado, capacidadeTotalEvaps);
-      if (simultaneidade <= simultaneidadeMaxFloat && simultaneidade >= simultaneidadeMinFloat) {
+      if (Math.round(simultaneidade) <= simultaneidadeMaxFloat && Math.round(simultaneidade) >= simultaneidadeMinFloat) {
         candidatas.push([prodUnificado, simultaneidade]);
       }
     });

@@ -1,10 +1,10 @@
-import { Component, AfterContentInit, ViewChild, ElementRef, Input, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, ElementRef, Input } from '@angular/core';
 import { MensageriaDto } from 'src/app/dto/mensageria/mensageria';
 import { MensageriaService } from 'src/app/service/mensageria/mensageria.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-import { Usuario } from 'src/app/dto/usuarios/usuario';
-import { ScrollPanel, ScrollPanelModule } from 'primeng/scrollpanel';
+import { ScrollPanel } from 'primeng/scrollpanel';
+import { AppTopBarService } from 'src/app/main/app.topBar.service';
 
 @Component({
   selector: 'app-mensageria',
@@ -50,6 +50,7 @@ export class MensageriaComponent {
     public readonly mensageriaService: MensageriaService,
     private readonly alertaService: AlertaService,
     private readonly mensagemService: MensagemService,
+    private readonly appTopBarService:AppTopBarService
   ) { }
 
   @ViewChild("mensagem") mensagem: ElementRef;
@@ -135,6 +136,7 @@ export class MensageriaComponent {
     this.mensageriaService.obterListaMensagem(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
 
       if (r != null && r.length > 0) {
+        this.appTopBarService.obterQuantidadeMensagemPendente();
         if (r[0]['PendenciaTratada'] == true) {
           this.mensageriaService.desmarcarPendenciaTratada(this.idOrcamentoCotacao.toString()).toPromise().then((r) => {
             if (r != null) {

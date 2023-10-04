@@ -96,6 +96,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
       // this.zerarCamposEndEntrega();
       //vamos fazer a busca
       this.carregando = true;
+      this.limparCampos();
 
       this.cepService.buscarCep(this.Cep, null, null, null, "publico").toPromise()
         .then((r) => {
@@ -107,8 +108,7 @@ export class CepComponent extends TelaDesktopBaseComponent implements OnInit {
             this.alertaService.mostrarMensagem("CEP inválido ou não encontrado.")
             return;
           }
-
-          this.limparCampos();
+          
           this.passarValores(r[0]);
 
         }).catch((r) => {

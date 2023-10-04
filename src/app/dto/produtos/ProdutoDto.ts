@@ -11,7 +11,8 @@ export class ProdutoDto {
     qtdeMaxVenda: number = 0;
     descDado: number | null;
     qtde:number;
-    codGrupoSubgrupo:string;
+    grupo:string;
+    subgrupo:string;
     descricaoGrupoSubgrupo:string;
     capacidade:number;
     ciclo:string;
