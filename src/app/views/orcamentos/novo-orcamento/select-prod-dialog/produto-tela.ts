@@ -8,14 +8,6 @@ export class ProdutoTela {
      * Constroi a partir de um ProdutoDto
      */
     constructor(public produtoDto: ProdutoDto, produtoCompostoDto: ProdutoCompostoDto[]) {
-
-        // this.stringBusca = produtoDto != undefined ?
-        //     ProdutoTela.StringSimples(
-        //         ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) +
-        //         StringUtils.TextoDeHtml(produtoDto.descricaoHtml)) +
-        //     `/${produtoDto.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
-        //     `/${produtoDto.ciclo?.toLocaleLowerCase()}/` +
-        //     `/${produtoDto.capacidade}/` : "";
         this.stringBusca = produtoDto != undefined ?
             ProdutoTela.StringSimples(
                 ProdutoTela.FabrProd(produtoDto.fabricante, produtoDto.fabricante_Nome, produtoDto.produto) +
@@ -30,10 +22,6 @@ export class ProdutoTela {
             this.Filhos = filhosDiretos[0].filhos;
             this.Filhos.forEach(p => {
                 this.visivel = false;
-                // this.stringBusca += "/" + p.produto +
-                //     `/${p.codGrupoSubgrupo?.toLocaleLowerCase()}/` +
-                //     `/${p.ciclo?.toLocaleLowerCase()}/` +
-                //     `/${p.capacidade}/`;
             });
         }
     }

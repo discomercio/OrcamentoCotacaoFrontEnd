@@ -4,7 +4,6 @@ import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { Constantes } from 'src/app/utilities/constantes';
 import { OrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/OrcamentoCotacaoResponse';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
-import { Observable } from 'rxjs';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -19,11 +18,7 @@ import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { Usuario } from 'src/app/dto/usuarios/usuario';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
-import { totalmem } from 'os';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
-import { parse } from '@fortawesome/fontawesome-svg-core';
-import { ItensComponent } from './itens/itens.component';
-import { DadosClienteCadastroDto } from 'src/app/dto/clientes/DadosClienteCadastroDto';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 
 @Injectable({
@@ -64,24 +59,12 @@ export class NovoOrcamentoService {
   editandoComissao: boolean;
   orcamentoAprovacao: AprovacaoOrcamentoDto;
 
-
-  fabricantesSelecionados: Array<string>;
-  categoriasSelecionadas: Array<string>;
-  cicloSelecionado: string;
-  capacidadesSelecionadas: Array<string>;
-  produto: string;
-
   criarNovo() {
     this.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     this.orcamentoCotacaoDto.entregaImediata = true;
     this.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto = new ClienteOrcamentoCotacaoDto();
     this.orcamentoCotacaoDto.listaOrcamentoCotacaoDto = new Array<OrcamentosOpcaoResponse>();
     this.lstProdutosSelecionados = new Array();
-    this.fabricantesSelecionados = new Array();
-    this.categoriasSelecionadas = new Array();
-    this.capacidadesSelecionadas = new Array();
-    this.cicloSelecionado = undefined;
-    this.produto = undefined;
   }
 
   criarNovoOrcamentoItem() {

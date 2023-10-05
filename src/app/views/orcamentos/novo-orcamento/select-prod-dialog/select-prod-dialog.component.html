@@ -3,27 +3,27 @@
         <div class="p-col-12 p-field p-grid p-pr-0">
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-as-end">
                 <label for="produto">Produto ou código</label>
-                <input id="produto" type="text" pInputText [(ngModel)]="novoOrcamentoService.produto"
+                <input id="produto" type="text" pInputText [(ngModel)]="produto"
                     [ngModelOptions]="{standalone: true}" />
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-as-end">
                 <label for="fabricante">Fabricante</label>
                 <p-multiSelect [options]="fabricantes" [(ngModel)]="fabricantesSelecionados" defaultLabel="Selecione"
                     optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
-                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true" (onChange)="onChangeFabricantes()"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
                     [ngModelOptions]="{standalone: true}"></p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">
                 <label for="grupo">Categoria</label>
                 <p-multiSelect [options]="categorias" [(ngModel)]="categoriasSelecionadas" defaultLabel="Selecione"
                     optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
-                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true" (onChange)="onChangeCategoria()"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
                     [ngModelOptions]="{standalone: true}">
                 </p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-as-end">
                 <label for="ciclo">Ciclo</label>
-                <p-dropdown [options]="ciclos" [(ngModel)]="novoOrcamentoService.cicloSelecionado" [showClear]="true" optionValue="Id"
+                <p-dropdown [options]="ciclos" [(ngModel)]="cicloSelecionado" [showClear]="true" optionValue="Id"
                     optionLabel="Value" placeholder="Selecione" emptyMessage="Nenhum item encontrado"
                     [ngModelOptions]="{standalone: true}">
                 </p-dropdown>
@@ -31,7 +31,7 @@
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">
                 <label for="capacidade">Capacidade</label>
                 <p-multiSelect [options]="capacidades" [(ngModel)]="capacidadesSelecionadas" defaultLabel="Selecione"
-                    optionLabel="Value" optionValue="Id" [ngModelOptions]="{standalone: true}" (onChange)="onChangeCapacidade()"
+                    optionLabel="Value" optionValue="Id" [ngModelOptions]="{standalone: true}" 
                     emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
                     resetFilterOnHide="true"></p-multiSelect>
             </div>
@@ -67,7 +67,7 @@
                             <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                 <span class="pi pi-minus-circle p-px-1" (click)="subtrairQtde(p)"> </span>
                                 <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
-                                    (keyup)="formatarQtde($event, p)" />
+                                    (keyup)="formatarQtde($event, p)" id="qtde"/>
                                 <span class="pi pi-plus-circle p-px-1" (click)="addQtde(p)"> </span>
                             </td>
                             <td class="{{telaDesktop ? 'p-jc-between p-text-nowrap' : 'p-d-inline-flex p-jc-between'}}">
