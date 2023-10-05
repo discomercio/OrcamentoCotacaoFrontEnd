@@ -345,15 +345,59 @@ export class ItensOrcamentosComponent implements OnInit {
       }
 
       json.push(item);
-    })
-    this.exportExcelService.exportAsXLSXFile(json, `relatorio-itens-orcamentos`);
+    });
+    this.exportExcelService.exportAsXLSXFile(json, `relatorio-itens-orcamentos`, true);
 
     this.qtdeRegistros = 0;
     this.clicouPesquisar = false;
   }
 
   exportCsv() {
-    this.exportExcelService.exportAsCSVFile(this.relatorioItensOrcamento.listaItensOrcamento, `relatorio-itens-orcamentos`);
+    let json = [];
+    this.relatorioItensOrcamento.listaItensOrcamento.forEach(x => {
+      let item = {
+        Loja: { t: 'n', v: x.Loja },
+        Orcamento: { t: 'n', v: x.Orcamento },
+        PrePedido: x.PrePedido,
+        Pedido: x.Pedido,
+        Status: x.Status,
+        Vendedor: x.Vendedor,
+        Indicador: x.Indicador,
+        IndicadorVendedor: x.IndicadorVendedor,
+        UsuarioCadastro: x.UsuarioCadastro,
+        IdCliente: { t: 'n', v: x.IdCliente },
+        UF: x.UF,
+        TipoCliente: x.TipoCliente,
+        ContribuinteIcms: x.ContribuinteIcms,
+        EntregaImediata: x.EntregaImediata,
+        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: x.PrevisaoEntrega, z: "dd/MM/yyyy" } : null,
+        InstaladorInstala: x.InstaladorInstala,
+        NumOpcaoOrcamento: { t: 'n', v: x.NumOpcaoOrcamento },
+        FormaPagtoAVista: x.FormaPagtoAVista,
+        FormaPagtoAPrazo: x.FormaPagtoAPrazo,
+        QtdeParcelasFormaPagtoAPrazo: x.QtdeParcelasFormaPagtoAPrazo ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazo } : null,
+        OpcaoAprovada: x.OpcaoAprovada,
+        FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
+        Fabricante: x.Fabricante,
+        Produto: x.Produto,
+        Qtde: { t: 'n', v: x.Qtde },
+        DescricaoProduto: x.DescricaoProduto,
+        Categoria: x.Categoria,
+        PrecoListaUnitAVista: x.PrecoListaUnitAVista ? { t: 'n', v: x.PrecoListaUnitAVista, z: "R$ #,##0.00" } : null,
+        PrecoListaUnitAPrazo: x.PrecoListaUnitAPrazo ? { t: 'n', v: x.PrecoListaUnitAPrazo, z: "R$ #,##0.00" } : null,
+        PrecoNFUnitAVista: x.PrecoNFUnitAVista ? { t: 'n', v: x.PrecoNFUnitAVista, z: "R$ #,##0.00" } : null,
+        PrecoNFUnitAPrazo: x.PrecoNFUnitAPrazo ? { t: 'n', v: x.PrecoNFUnitAPrazo, z: "R$ #,##0.00" } : null,
+        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista /100, z: "0.00%" } : null,
+        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo /100, z: "0.00%" } : null,
+        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista/100, z: "0.00%" } : null,
+        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo/100, z: "0.00%" } : null,
+        Comissao: x.Comissao ? { t: 'n', v: x.Comissao/100, z: "0.0%" } : null,
+        DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
+        Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
+      }
+      json.push(item);
+    });
+    this.exportExcelService.exportAsCSVFile(json, `relatorio-itens-orcamentos`, true);
     this.qtdeRegistros = 0;
     this.clicouPesquisar = false;
   }
