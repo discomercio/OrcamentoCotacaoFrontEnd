@@ -392,7 +392,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       return this.novoOrcamentoService.lstProdutosSelecionados.some(x => {
         const index = this.novoOrcamentoService.lstProdutosSelecionados.findIndex(f => f.produto == produto.produto);
         if (x.produto == produto.produto) {
-          x.qtde++;
+          x.qtde = x.qtde + produto.qtde;
           this.digitouQte(x);
           return true;
         }
