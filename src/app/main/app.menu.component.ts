@@ -86,7 +86,7 @@ export class AppMenuComponent implements OnInit {
                             }
                         }
 
-                        if(this.autenticacaoService._tipoUsuario != this.constantes.VENDEDOR_UNIS){
+                        if (!this.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais)){
                             if (x.items[i].label == eMenu.Consultas) {
                                 x.items.splice(i, 1);
                                 // for(let y = 0; y< x.items[i].items.length; y++){
