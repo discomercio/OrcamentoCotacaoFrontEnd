@@ -76,7 +76,7 @@ export class ItensOrcamentosComponent implements OnInit {
   ngOnInit(): void {
     this.carregando = true;
 
-    if (this.autenticacaoService._tipoUsuario != this.constantes.VENDEDOR_UNIS) {
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais))  {
       this.carregando = false;
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       window.history.back();
