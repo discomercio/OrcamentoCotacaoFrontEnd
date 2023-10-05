@@ -578,10 +578,10 @@ export class OrcamentosListarComponent implements OnInit {
       this.carregando = false;
 
       if (excel) {
-        this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos");
+        this.exportExcelService.exportAsXLSXFile(lstExport, "Lista de Orçamentos", false);
       }
       else {
-        this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos");
+        this.exportExcelService.exportAsCSVFile(lstExport, "Lista de Orçamentos", false);
       }
     }).catch((r) => {
       this.carregando = false;
