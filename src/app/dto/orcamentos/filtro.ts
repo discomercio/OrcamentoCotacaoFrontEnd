@@ -2,20 +2,20 @@ export class Filtro {
     Origem: string;
     Vendedor: string;
     Parceiro: string;
-    IdIndicadorVendedor:number;
-    VendedorParceiro:string;
+    IdIndicadorVendedor: number;
+    VendedorParceiro: string;
     Loja: string;
-
+    Lojas: string[];
     Status: string[];
     Nome_numero: string;
     Vendedores: string[];
     Parceiros: string[];
     VendedorParceiros: string[];
     Mensagem: string;
-    DtInicio: Date|string;
-    DtFim: Date|string;
-    DtInicioExpiracao:Date;
-    DtFimExpiracao:Date;
+    DtInicio: Date | string;
+    DtFim: Date | string;
+    DtInicioExpiracao: Date;
+    DtFimExpiracao: Date;
     Exportar: boolean;
 
     pagina: number;
@@ -23,5 +23,12 @@ export class Filtro {
     nomeColunaOrdenacao: string;
     ordenacaoAscendente: boolean;
 
-    idBaseBusca:string;
+    idBaseBusca: string;
+
+    OpcoesOrcamento: string;
+    ComIndicador:boolean;
+    Fabricantes:string[];
+    Categorias:string[];
+
+    LojaLogada:string;
 }

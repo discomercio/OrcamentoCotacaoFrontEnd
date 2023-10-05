@@ -4,4 +4,5 @@ export class ValidadeOrcamento {
     QtdeMaxProrrogacao: number;
     QtdeGlobalValidade: number;
     MaxPeriodoConsultaFiltroPesquisa:number;
+    MaxPeriodoConsulta_RelatorioGerencial:number;
 }

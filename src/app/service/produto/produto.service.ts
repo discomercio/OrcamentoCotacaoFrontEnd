@@ -33,4 +33,8 @@ export class ProdutoService {
   buscarProdutosOrcamentoEdicao(request:ProdutoRequest):Observable<ProdutoComboDto> {
     return this.http.post<ProdutoComboDto>(this.appSettingsService.config.apiUrl  + "Produto/buscarProdutosOrcamentoEdicao", request);
   }
+
+  buscarGruposSubgruposProdutosPorLojas(request:GrupoSubgrupoProdutoRequest):Observable<ListaGruposSubgruposProdutosResponse>{
+    return this.http.post<ListaGruposSubgruposProdutosResponse>(`${this.appSettingsService.config.apiUrl}produto/buscarGruposSubgruposProdutosPorLojas`, request); 
+  }
 }
