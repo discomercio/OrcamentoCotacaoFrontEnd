@@ -42,7 +42,7 @@
                     <label class="font-size p-mx-2 p-as-center" for="2">A Prazo</label>
                 </div>
                 <div class="p-col-12 p-lg-5 p-md-5 p-sm-5 p-px-0">
-                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo" [disabled]="editando"
+                    <p-dropdown class="p-mx-3 p-col-8 p-lg-4" id="aprazo" [options]="formasPagtoAPrazo"
                         optionLabel="tipoPagamentoDescricao" placeholder="Selecione" (onChange)="selectAprazo()"
                         [(ngModel)]="formaPagtoCriacaoAprazo.tipo_parcelamento" optionValue="idTipoPagamento">
                     </p-dropdown>
@@ -271,7 +271,4 @@
     <div *ngIf="!editando" class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
         <button pButton pRipple label="Adicionar Opção de Orçamento" (click)="incluirOpcao()"></button>
     </div>
-    <!-- <div *ngIf="editando" class="p-pt-4 p-col-lg-3 p-col-md-3 p-col-sm-12 p-as-end">
-        <button pButton pRipple label="Salvar Opção de Orçamento" (click)="salvarOpcao()"></button>
-    </div> -->
 </div>
