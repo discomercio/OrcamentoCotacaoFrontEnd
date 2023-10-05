@@ -341,4 +341,17 @@ export class DataUtils {
         let ss = data.getSeconds();
         return yyyy_mm_dd + "_" + hora + "-" + min + "-" + ss;
     }
+
+    public static dataLocalParaArquivo(data: Date): string {
+        let dia = data.getDate().toString(),
+            diaF = (dia.length == 1) ? '0' + dia : dia,
+            mes = (data.getMonth() + 1).toString(), //+1 pois no getMonth Janeiro começa com zero.
+            mesF = (mes.length == 1) ? '0' + mes : mes,
+            anoF = data.getFullYear(),
+            hora = (data.getHours()).toString(),
+            horaF = (hora.length == 1) ? '0' + hora: hora,
+            min = (data.getMinutes()).toString(),
+            minF = (min.length == 1) ? '0' + min : min;
+        return `${anoF}${mesF}${diaF}_${horaF}${minF}`;
+    }
 }
