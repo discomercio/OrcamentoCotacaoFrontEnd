@@ -134,6 +134,13 @@
                         "routerLink": [
                             "/consultas/itens-orcamentos"
                         ]
+                    },
+                    {
+                        "label": "Dados do orçamento",
+                        "icon": "fa fa-list-alt",
+                        "routerLink": [
+                            "/consultas/dados-orcamentos"
+                        ]
                     }
                 ]
             }
