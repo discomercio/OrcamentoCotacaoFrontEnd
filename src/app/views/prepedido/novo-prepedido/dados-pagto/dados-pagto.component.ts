@@ -355,6 +355,11 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
   }
 
   recalcularValoresComCoeficiente(enumFP: number): void {
+    if (this.novoPrepedidoDadosService.prePedidoDto.ListaProdutos &&
+      this.novoPrepedidoDadosService.prePedidoDto.ListaProdutos.length == 0) {
+        this.alertaService.mostrarMensagem("Favor selecionar um Produto!");
+        return;
+    }
     //na mudança da forma de pagto iremos zerar todos os campos
     this.zerarTodosCampos();
     if (!!enumFP) {
@@ -366,7 +371,7 @@ export class DadosPagtoComponent extends PassoPrepedidoBase implements OnInit {
       this.lstMsg.push("Carregando dados....");
       this.telaDesktopService.carregando = true;
       this.buscarNovoCoeficiente((coefciente: CoeficienteDto[][]) => {
-        
+
         this.coeficienteDtoNovo = coefciente;
         this.lstMsg = new Array();
         this.lstMsg = this.lstNovoCoeficiente.CalcularTotalProdutosComCoeficiente(this.formaPagtoNum, this.coeficienteDtoNovo,
