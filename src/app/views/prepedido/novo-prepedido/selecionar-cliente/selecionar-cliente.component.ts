@@ -55,23 +55,27 @@ export class SelecionarClienteComponent extends TelaDesktopBaseComponent impleme
 
         if (!this.permissaoIncluirPrePedidoResponse.Sucesso) {
           this.alertaService.mostrarMensagem(this.permissaoIncluirPrePedidoResponse.Mensagem);
+          this.carregando = false;
           return;
         }
 
         if (!this.permissaoIncluirPrePedidoResponse.IncluirPrePedido) {
           this.alertaService.mostrarMensagem("Não encontramos a permissão necessária para acessar essa funcionalidade!");
+          this.carregando = false;
           return;
         }
 
         //dá erro se não tiver nenhum dígito
         if (StringUtils.retorna_so_digitos(this.clienteBusca).trim() === "") {
           this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido ou vazio.`, '250px', null);
+          this.carregando = false;
           return;
         }
 
         //valida
         if (!CpfCnpjUtils.cnpj_cpf_ok(this.clienteBusca)) {
           this.alertaService.mostrarMensagemComLargura(`CNPJ/CPF inválido.`, '250px', null);
+          this.carregando = false;
           return;
         }
 
