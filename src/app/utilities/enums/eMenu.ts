@@ -12,5 +12,6 @@ export enum eMenu {
     VendedorParceiro = "Vendedores do parceiro",
     ProdutosConsultar = "Consultar",
     Consultas = "Consultas",
-    ItensOrcamentos = "Itens do orçamento"
+    ItensOrcamentos = "Itens do orçamento",
+    DadosOrcamentos = "Dados do orçamento"
 }

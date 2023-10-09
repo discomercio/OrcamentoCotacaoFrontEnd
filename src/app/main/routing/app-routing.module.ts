@@ -54,6 +54,7 @@ import { PublicoCadastroClienteComponent } from 'src/app/views/publico/cadastro-
 import { BuscaComponent } from 'src/app/views/orcamentos/novo-orcamento/cliente/busca/busca.component';
 import { AprovarClienteOrcamentoComponent } from 'src/app/views/orcamentos/novo-orcamento/cliente/aprovar-cliente-orcamento/aprovar-cliente-orcamento.component';
 import { ItensOrcamentosComponent } from 'src/app/views/consultas/itens-orcamentos/itens-orcamentos.component';
+import { DadosOrcamentosComponent } from 'src/app/views/consultas/dados-orcamentos/dados-orcamentos.component';
 
 @NgModule({
     imports: [
@@ -186,7 +187,8 @@ import { ItensOrcamentosComponent } from 'src/app/views/consultas/itens-orcament
                             },
                             {
                                 path: 'consultas', canActivate: [AuthGuard], children: [
-                                    { path: 'itens-orcamentos', component: ItensOrcamentosComponent, canActivate: [AuthGuard] }
+                                    { path: 'itens-orcamentos', component: ItensOrcamentosComponent, canActivate: [AuthGuard] },
+                                    { path: 'dados-orcamentos', component: DadosOrcamentosComponent, canActivate: [AuthGuard] }
                                 ]
                             }
                         ]
