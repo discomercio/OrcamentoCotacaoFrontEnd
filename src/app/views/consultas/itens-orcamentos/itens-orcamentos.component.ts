@@ -76,7 +76,7 @@ export class ItensOrcamentosComponent implements OnInit {
   ngOnInit(): void {
     this.carregando = true;
 
-    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais))  {
+    if (!this.autenticacaoService.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais)) {
       this.carregando = false;
       this.sweetAlertService.aviso("Não encontramos a permissão necessária para acessar essa funcionalidade!");
       window.history.back();
@@ -201,7 +201,7 @@ export class ItensOrcamentosComponent implements OnInit {
     this.configValidade = config;
 
     let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);
-    this.dtInicio = dtIni;
+    // this.dtInicio = dtIni;
     this.dtFim = new Date();
   }
 
@@ -237,14 +237,7 @@ export class ItensOrcamentosComponent implements OnInit {
       this.alertaService.mostrarMensagem("É necessário preencher ao menos um filtro de data de criação");
       return;
     }
-    if (this.dtInicio && this.dtFim) {
-      let diferenca = new Date(DataUtils.formataParaFormulario(this.dtFim)).valueOf() - new Date(DataUtils.formataParaFormulario(this.dtInicio)).valueOf();
-      let difDias = diferenca / (1000 * 60 * 60 * 24);
-      if (this.configValidade.MaxPeriodoConsulta_RelatorioGerencial < difDias) {
-        this.alertaService.mostrarMensagem(`A diferença entre as datas de "Início da criação" e "Fim da criação" ultrapassa o período de ${this.configValidade.MaxPeriodoConsulta_RelatorioGerencial} de dias!`);
-        return;
-      }
-    }
+
     if (this.dtInicio) {
       this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
     }
@@ -256,6 +249,13 @@ export class ItensOrcamentosComponent implements OnInit {
     }
     else {
       this.filtro.DtFim = new Date(this.dtInicio.valueOf() + this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);;
+    }
+    
+    let diferenca = new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtFim))).valueOf() - new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtInicio))).valueOf();
+    let difDias = diferenca / (1000 * 60 * 60 * 24);
+    if (this.configValidade.MaxPeriodoConsulta_RelatorioGerencial < difDias) {
+      this.alertaService.mostrarMensagem(`A diferença entre as datas de "Início da criação" e "Fim da criação" ultrapassa o período de ${this.configValidade.MaxPeriodoConsulta_RelatorioGerencial} de dias!`);
+      return;
     }
 
     this.filtroParceirosApoio = this.filtro.Parceiros;
@@ -335,11 +335,11 @@ export class ItensOrcamentosComponent implements OnInit {
         PrecoListaUnitAPrazo: x.PrecoListaUnitAPrazo ? { t: 'n', v: x.PrecoListaUnitAPrazo, z: "R$ #,##0.00" } : null,
         PrecoNFUnitAVista: x.PrecoNFUnitAVista ? { t: 'n', v: x.PrecoNFUnitAVista, z: "R$ #,##0.00" } : null,
         PrecoNFUnitAPrazo: x.PrecoNFUnitAPrazo ? { t: 'n', v: x.PrecoNFUnitAPrazo, z: "R$ #,##0.00" } : null,
-        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista /100, z: "0.00%" } : null,
-        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo /100, z: "0.00%" } : null,
-        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista/100, z: "0.00%" } : null,
-        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo/100, z: "0.00%" } : null,
-        Comissao: x.Comissao ? { t: 'n', v: x.Comissao/100, z: "0.0%" } : null,
+        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista / 100, z: "0.00%" } : null,
+        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo / 100, z: "0.00%" } : null,
+        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista / 100, z: "0.00%" } : null,
+        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo / 100, z: "0.00%" } : null,
+        Comissao: x.Comissao ? { t: 'n', v: x.Comissao / 100, z: "0.0%" } : null,
         DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
         Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
       }
@@ -387,11 +387,11 @@ export class ItensOrcamentosComponent implements OnInit {
         PrecoListaUnitAPrazo: x.PrecoListaUnitAPrazo ? { t: 'n', v: x.PrecoListaUnitAPrazo, z: "R$ #,##0.00" } : null,
         PrecoNFUnitAVista: x.PrecoNFUnitAVista ? { t: 'n', v: x.PrecoNFUnitAVista, z: "R$ #,##0.00" } : null,
         PrecoNFUnitAPrazo: x.PrecoNFUnitAPrazo ? { t: 'n', v: x.PrecoNFUnitAPrazo, z: "R$ #,##0.00" } : null,
-        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista /100, z: "0.00%" } : null,
-        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo /100, z: "0.00%" } : null,
-        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista/100, z: "0.00%" } : null,
-        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo/100, z: "0.00%" } : null,
-        Comissao: x.Comissao ? { t: 'n', v: x.Comissao/100, z: "0.0%" } : null,
+        DescontoAVista: x.DescontoAVista ? { t: 'n', v: x.DescontoAVista / 100, z: "0.00%" } : null,
+        DescontoAPrazo: x.DescontoAPrazo ? { t: 'n', v: x.DescontoAPrazo / 100, z: "0.00%" } : null,
+        DescSuperiorAVista: x.DescSuperiorAVista ? { t: 'n', v: x.DescSuperiorAVista / 100, z: "0.00%" } : null,
+        DescSuperiorAPrazo: x.DescSuperiorAPrazo ? { t: 'n', v: x.DescSuperiorAPrazo / 100, z: "0.00%" } : null,
+        Comissao: x.Comissao ? { t: 'n', v: x.Comissao / 100, z: "0.0%" } : null,
         DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
         Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
       }
