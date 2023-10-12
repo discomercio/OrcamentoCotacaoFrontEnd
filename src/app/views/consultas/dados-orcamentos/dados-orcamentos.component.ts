@@ -181,7 +181,7 @@ export class DadosOrcamentosComponent implements OnInit {
     this.configValidade = config;
 
     let dtIni = new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);
-    this.dtInicio = dtIni;
+    // this.dtInicio = dtIni;
     this.dtFim = new Date();
   }
 
@@ -196,14 +196,7 @@ export class DadosOrcamentosComponent implements OnInit {
       this.alertaService.mostrarMensagem("É necessário preencher ao menos um filtro de data de criação");
       return;
     }
-    if (this.dtInicio && this.dtFim) {
-      let diferenca = new Date(DataUtils.formataParaFormulario(this.dtFim)).valueOf() - new Date(DataUtils.formataParaFormulario(this.dtInicio)).valueOf();
-      let difDias = diferenca / (1000 * 60 * 60 * 24);
-      if (this.configValidade.MaxPeriodoConsulta_RelatorioGerencial < difDias) {
-        this.alertaService.mostrarMensagem(`A diferença entre as datas de "Início da criação" e "Fim da criação" ultrapassa o período de ${this.configValidade.MaxPeriodoConsulta_RelatorioGerencial} de dias!`);
-        return;
-      }
-    }
+
     if (this.dtInicio) {
       this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
     }
@@ -215,6 +208,13 @@ export class DadosOrcamentosComponent implements OnInit {
     }
     else {
       this.filtro.DtFim = new Date(this.dtInicio.valueOf() + this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);;
+    }
+
+    let diferenca = new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtFim))).valueOf() - new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtInicio))).valueOf();
+    let difDias = diferenca / (1000 * 60 * 60 * 24);
+    if (this.configValidade.MaxPeriodoConsulta_RelatorioGerencial < difDias) {
+      this.alertaService.mostrarMensagem(`A diferença entre as datas de "Início da criação" e "Fim da criação" ultrapassa o período de ${this.configValidade.MaxPeriodoConsulta_RelatorioGerencial} de dias!`);
+      return;
     }
 
     this.filtroParceirosApoio = this.filtro.Parceiros;
@@ -313,7 +313,7 @@ export class DadosOrcamentosComponent implements OnInit {
         FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
         ValorFormaPagtoOpcaoAprovada: x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null,
         QtdeParcelasFormaOpcaoAprovada: x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null,
-        StatusDescSuperiorOpcaoAprovada : x.StatusDescSuperiorOpcaoAprovada,
+        StatusDescSuperiorOpcaoAprovada: x.StatusDescSuperiorOpcaoAprovada,
         DescMedioDescSuperiorOpcaoAprovada: x.DescMedioDescSuperiorOpcaoAprovada ? { t: 'n', v: x.DescMedioDescSuperiorOpcaoAprovada / 100, z: "0.00%" } : null,
         DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
         Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
@@ -381,7 +381,7 @@ export class DadosOrcamentosComponent implements OnInit {
         FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
         ValorFormaPagtoOpcaoAprovada: x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null,
         QtdeParcelasFormaOpcaoAprovada: x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null,
-        StatusDescSuperiorOpcaoAprovada : x.StatusDescSuperiorOpcaoAprovada,
+        StatusDescSuperiorOpcaoAprovada: x.StatusDescSuperiorOpcaoAprovada,
         DescMedioDescSuperiorOpcaoAprovada: x.DescMedioDescSuperiorOpcaoAprovada ? { t: 'n', v: x.DescMedioDescSuperiorOpcaoAprovada / 100, z: "0.00%" } : null,
         DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
         Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
