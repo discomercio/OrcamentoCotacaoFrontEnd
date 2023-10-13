@@ -316,6 +316,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.formaPagtoCriacaoAvista.tipo_parcelamento = 1;
     if (this.formaPagtoCriacaoAvista.tipo_parcelamento) {
       this.totalAvista = this.novoOrcamentoService.totalAVista();
+      this.novoOrcamentoService.formaPagtoCriacaoAvistaApoio = this.formaPagtoCriacaoAvista;
       return;
     }
     else {
