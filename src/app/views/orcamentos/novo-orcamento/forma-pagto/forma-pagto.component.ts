@@ -214,6 +214,9 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         let meio = meiosPagtoEntrada
           .filter(x => x.id.toString() == this.formaPagtoCriacaoAprazo.op_pce_prestacao_forma_pagto &&
             x.idTipoParcela == this.constantes.COD_MEIO_PAGTO_DEMAIS_PRESTACOES)[0];
+        if (!meio) {
+          return;
+        }
         if (meio.qtdeMaxParcelas != null)
           this.qtdeMaxParcelas = meio.qtdeMaxParcelas;
         if (meio.qtdeMaxDias != null)
@@ -403,7 +406,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   }
 
   incluirOpcao() {
-
+    //COLOCAR VALIDAÇÃO DE FORMAS DE PAGAMENTOS
     if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
       return;
@@ -478,7 +481,10 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   limparCampos() {
 
     this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
+    this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
+
     this.formaPagtoCriacaoAvista = new FormaPagtoCriacao();
+    this.novoOrcamentoService.formaPagtoCriacaoAvistaApoio = new FormaPagtoCriacao();
     this.meioDemaisPrestacoes = new Array<MeiosPagto>();
     this.totalAvista = 0;
     this.novoOrcamentoService.descontoGeral = 0;
@@ -487,10 +493,13 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
     this.novoOrcamentoService.controleProduto = new Array<string>();
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
+    this.novoOrcamentoService.lstProdutosSelecionadosApoio = new Array();
     this.novoOrcamentoService.setarPercentualComissao();
+    this.novoOrcamentoService.percRTApoio = 0;
   }
 
   validarFormasPagto(pagtoPrazo: FormaPagtoCriacao, pagtoAvista: FormaPagtoCriacao): boolean {
+
 
     if (!pagtoPrazo.habilitado && !pagtoAvista.habilitado) {
       this.alertaService.mostrarMensagem("É necessário selecionar ao menos uma forma de pagamento!");
@@ -503,10 +512,26 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return false;
     }
 
+    let validaPagto = this.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo.tipo_parcelamento)[0];
+    if (!validaPagto) {
+      this.alertaService.mostrarMensagem("Favor preencher os dados para pagamento a prazo!");
+      return;
+    }
+
     if (pagtoAvista.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
       if (!pagtoAvista.op_av_forma_pagto) {
         this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
         return false;
+      }
+      else {
+        let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
+        if (!!pagto && pagto.length > 0) {
+          let meio = pagto[0].meios.filter(x => x.id == pagtoAvista.op_av_forma_pagto)[0];
+          if (!meio) {
+            this.alertaService.mostrarMensagem("É necessário selecionar um meio de pagamento para pagamento á vista!");
+            return;
+          }
+        }
       }
     }
     if (pagtoPrazo.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
@@ -524,6 +549,16 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
         this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento da entrada!");
         return false;
       }
+      else {
+        let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA);
+        if (!!pagto && pagto.length > 0) {
+          let meio = pagto[0].meios.filter(x => x.id == Number.parseInt(pagtoPrazo.op_pce_entrada_forma_pagto))[0];
+          if (!meio) {
+            this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento da entrada!");
+            return;
+          }
+        }
+      }
       if (!pagtoPrazo.o_pce_entrada_valor || pagtoPrazo.o_pce_entrada_valor <= 0) {
         this.alertaService.mostrarMensagem("Informe o valor da entrada!");
         return false;
@@ -531,6 +566,16 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (!pagtoPrazo.op_pce_prestacao_forma_pagto) {
         this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento para demais prestações!");
         return false;
+      }
+      else {
+        let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA);
+        if (!!pagto && pagto.length > 0) {
+          let meio = pagto[0].meios.filter(x => x.id == Number.parseInt(pagtoPrazo.op_pce_prestacao_forma_pagto))[0];
+          if (!meio) {
+            this.alertaService.mostrarMensagem("Para pagamento com entrada é necessário informar o meio de pagamento para demais prestações!");
+            return;
+          }
+        }
       }
       if (!pagtoPrazo.c_pce_prestacao_qtde || pagtoPrazo.c_pce_prestacao_qtde <= 0) {
         this.alertaService.mostrarMensagem("Informe a quantidade de prestações!");
@@ -549,6 +594,16 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       if (!pagtoPrazo.op_pu_forma_pagto) {
         this.alertaService.mostrarMensagem("É necessário informar o meio de pagamento para pagamento com parcela única!");
         return false;
+      }
+      else {
+        let pagto = this.formaPagamento.filter(x => x.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA);
+        if (!!pagto && pagto.length > 0) {
+          let meio = pagto[0].meios.filter(x => x.id == Number.parseInt(pagtoPrazo.op_pu_forma_pagto))[0];
+          if (!meio) {
+            this.alertaService.mostrarMensagem("É necessário informar o meio de pagamento para pagamento com parcela única!");
+            return;
+          }
+        }
       }
       if (!pagtoPrazo.c_pu_valor || pagtoPrazo.c_pu_valor <= 0) {
         this.alertaService.mostrarMensagem("O valor da parcela única está incorreto!");

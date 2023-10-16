@@ -794,17 +794,22 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   voltar() {
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null && 
-      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT && 
-      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT != 0 ) {
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT &&
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT != 0) {
       this.novoOrcamentoService.percRTApoio = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
     }
 
-    this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
-    this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = JSON.parse(JSON.stringify(this.formaPagto.formaPagtoCriacaoAprazo));
+    // Pode ser que seja necessária a revisão da forma de pagamento devido às alterações nos dados do cliente! Deseja realmente voltar 
+    this.sweetalertService.dialogo("", "Pode ser que seja necessária a revisão da forma de pagamento devido às alterações nos dados do cliente!<br> Deseja realmente voltar?").subscribe((r) => {
+      if (!r) return;
 
-    this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
+      this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
+      this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = JSON.parse(JSON.stringify(this.formaPagto.formaPagtoCriacaoAprazo));
+
+      this.novoOrcamentoService.lstProdutosSelecionados = new Array();
+      this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
+    });
   }
 
   liberarEdicaoComissao() {
@@ -854,6 +859,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   addFormaPagtoSelecionados(formasPagtos: any[]) {
+
     let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
     if (pagtoAvista.length > 0) {
       this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista[0];
@@ -863,6 +869,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
     if (pagtoPrazo.length > 0) {
       this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
+      this.formaPagto.setarQtdeMaxParcelasEDias();
       this.formaPagto.setarQtdeParcelas();
       this.formaPagto.cdref.detectChanges();
       this.cdref.detectChanges();
