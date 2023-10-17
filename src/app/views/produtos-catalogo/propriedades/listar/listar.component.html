@@ -5,7 +5,7 @@
                 Lista de Propriedades
                 &nbsp;<button pButton style="align-content: flex-end;" icon="fa fa-plus" (click)="criarClick()" pTooltip="Criar propriedades"></button>
             </h4>
-            <p-table #dt1 [value]="listaPropriedadesProdutoDto" [responsive]="true" responsiveLayout="stack" draggableRows="true"
+            <p-table #dt1 [value]="listaPropriedadesProdutoDto" [responsive]="false" responsiveLayout="stack" draggableRows="true"
                      [ngClass]="{'carregando': carregando}" breakpoint="680px"
                      styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0" draggableColumns="true">
                 <ng-template pTemplate="header">
