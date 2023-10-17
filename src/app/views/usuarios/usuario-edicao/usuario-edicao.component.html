@@ -8,13 +8,14 @@
 
                     <div class="p-field p-col-6 p-lg-12 p-md-6 p-sm-6" *ngIf="usuarioInterno">
                         <label for="parca">Parceiro</label>
-                            <p-dropdown id="parca" [options]="parceiros" [(ngModel)]="parceiro" formControlName="parceiro"
-                                placeholder="{{parceiroSelecionado}}" (onChange)="onChangeParceiros($event)"
-                                [readonly]="bloqueiaParceiro">
-                            </p-dropdown>
-                            <div *ngIf="validacaoFormularioService.verificaCampo(form,'parceiro')">
-                                <small class="p-error" *ngIf="form.controls.parceiro.errors?.required">{{mensagemErro}}</small>
-                            </div>
+                        <p-dropdown id="parca" [options]="parceiros" [(ngModel)]="parceiro" formControlName="parceiro"
+                            placeholder="{{parceiroSelecionado}}" (onChange)="onChangeParceiros($event)"
+                            [readonly]="bloqueiaParceiro">
+                        </p-dropdown>
+                        <div *ngIf="validacaoFormularioService.verificaCampo(form,'parceiro')">
+                            <small class="p-error"
+                                *ngIf="form.controls.parceiro.errors?.required">{{mensagemErro}}</small>
+                        </div>
                     </div>
 
                     <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
@@ -92,31 +93,37 @@
                             possuir no mínimo {{form.controls.dddCel_telefoneCel.errors.minlength.requiredLength}}
                             caracteres!</small>
                     </div>
-                    <div class="p-col-12 p-formgroup-inline">
-                        <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" [value]="true" formControlName="ativo" inputId="ativoTrue">
-                            </p-radioButton>
-                            <label for="ativo">Ativo</label>
+                    <div class="p-col-12 p-d-inline-flex p-formgroup-inline">
+                        <div class="p-d-inline-flex p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-between p-jc-lg-start p-jc-md-start p-lg-4 p-md-4 p-sm-4">
+                            <div class="p-field-radiobutton ">
+                                <p-radioButton name="ativo" [value]="true" formControlName="ativo" inputId="ativoTrue">
+                                </p-radioButton>
+                                <label for="ativo">Ativo</label>
+                            </div>
+
+                            <div class="p-field-radiobutton ">
+                                <p-radioButton name="ativo" [value]="false" formControlName="ativo"
+                                    inputId="ativoFalse">
+                                </p-radioButton>
+                                <label for="ativo">Inativo</label>
+                            </div>
                         </div>
 
-                        <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="ativo" [value]="false" formControlName="ativo" inputId="ativoFalse">
-                            </p-radioButton>
-                            <label for="ativo">Inativo</label>
-                        </div>
 
-                        <div class="p-field-radiobutton p-mb-1" style="margin-left: 80px;">
-                            <p-radioButton name="StLoginBloqueadoAutomatico" [disabled]="true" [value]="true"
-                                formControlName="StLoginBloqueadoAutomatico" inputId="trueSt">
-                            </p-radioButton>
-                            <label for="StLoginBloqueadoAutomatico">Bloqueado</label>
-                        </div>
+                        <div class="p-d-inline-flex p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-jc-between p-jc-lg-start p-jc-md-start p-lg-4 p-md-4 p-sm-4">
+                            <div class="p-field-radiobutton ">
+                                <p-radioButton name="StLoginBloqueadoAutomatico" [disabled]="true" [value]="true"
+                                    formControlName="StLoginBloqueadoAutomatico" inputId="trueSt">
+                                </p-radioButton>
+                                <label for="StLoginBloqueadoAutomatico">Bloqueado</label>
+                            </div>
 
-                        <div class="p-field-radiobutton p-mb-1">
-                            <p-radioButton name="StLoginBloqueadoAutomatico" [value]="false"
-                                formControlName="StLoginBloqueadoAutomatico" inputId="falseSt">
-                            </p-radioButton>
-                            <label for="StLoginBloqueadoAutomatico">Desbloqueado</label>
+                            <div class="p-field-radiobutton ">
+                                <p-radioButton name="StLoginBloqueadoAutomatico" [value]="false"
+                                    formControlName="StLoginBloqueadoAutomatico" inputId="falseSt">
+                                </p-radioButton>
+                                <label for="StLoginBloqueadoAutomatico">Desbloqueado</label>
+                            </div>
                         </div>
 
                     </div>
