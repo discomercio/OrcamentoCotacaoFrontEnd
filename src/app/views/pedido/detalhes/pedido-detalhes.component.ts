@@ -12,21 +12,24 @@ import { FormatarEndereco } from 'src/app/utilities/formatarString/formata-ender
 import { Constantes } from 'src/app/utilities/constantes';
 import { PermissaoService } from 'src/app/service/permissao/permissao.service';
 import { PermissaoPedidoResponse } from 'src/app/dto/permissao/PermissaoPedidoResponse';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
 
 @Component({
   selector: 'app-pedido-detalhes',
   templateUrl: './pedido-detalhes.component.html',
   styleUrls: ['./pedido-detalhes.component.scss']
 })
-export class PedidoDetalhesComponent implements OnInit {
+export class PedidoDetalhesComponent extends TelaDesktopBaseComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
     public readonly pedidoService: PedidoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly alertaService: AlertaService,
     private location: Location,
     private router: Router,
-    private readonly permissaoService: PermissaoService
-  ) { }
+    private readonly permissaoService: PermissaoService,
+    telaDesktopService: TelaDesktopService
+  ) { super(telaDesktopService) }
 
 
   dataFormatarTela = DataUtils.formatarTela;

@@ -1,4 +1,4 @@
-<div class="content-area">
+<div class="content-area" [ngStyle]="!telaDesktop ?  {'display': 'inline-block'} : {'':''}">
     <div class="nossobody" *ngIf="pedido">
         <section id="myPrint">
             <br>
@@ -6,7 +6,7 @@
                 <button pButton type="button" label="Versão para impressão" icon="fa fa-print"
                     onclick="window.print();"></button>
             </div><br>
-            <div id="printable" name="printable">
+            <div id="printable" name="printable" class="p-p-3">
                 <div class="nossobody-before">
                     As informações aqui contidas são confidenciais e protegidas pelo sigilo legal. A divulgação,
                     distribuição ou
