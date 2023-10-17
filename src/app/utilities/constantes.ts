@@ -93,4 +93,6 @@ export class Constantes {
 
     public TODAS_OPCOES = "Todas"
     public OPCOES_APROVADAS = "Somente aprovadas";
+
+    public QTDE_MAX_ITENS_CRIACAO_ORCAMENTO = 999999999;
 }

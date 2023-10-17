@@ -456,7 +456,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
-    if (item.qtde <= 0) item.qtde = 1;
+    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
 
     // item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
