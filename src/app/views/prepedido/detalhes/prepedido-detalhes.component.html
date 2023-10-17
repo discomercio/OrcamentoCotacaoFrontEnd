@@ -1,5 +1,5 @@
-<div class="content-area" style="display: grid">
-    <div class="nossobody" [ngClass]="{'carregando': carregando}">
+<div class="content-area" >
+    <div class="nossobody" [ngClass]="{'carregando': carregando}" [ngStyle]="telaDesktop ? {'':''} : {'display':'block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'}">
 
         <section id="myPrint">
             <br>
