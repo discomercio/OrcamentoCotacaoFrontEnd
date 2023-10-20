@@ -421,7 +421,7 @@ export class OrcamentosListarComponent implements OnInit {
 
   pesquisaAuto() {
     let url = sessionStorage.getItem("urlAnterior");
-    if (!!url && url.indexOf("orcamentos/aprovar-orcamento") > -1) {
+    if (!!url && (url.indexOf("orcamentos/aprovar-orcamento") > -1 || url.indexOf("prepedido/detalhes/") > -1 || url.indexOf("pedido/detalhes/") > -1)) {
       let json = sessionStorage.getItem("filtro");
       this.filtro = JSON.parse(json);
 

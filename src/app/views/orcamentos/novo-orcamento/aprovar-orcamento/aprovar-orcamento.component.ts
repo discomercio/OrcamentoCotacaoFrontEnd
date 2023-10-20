@@ -1,5 +1,4 @@
 
-import { AfterViewInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Component, OnInit, Input, ViewChild } from "@angular/core";
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
@@ -38,6 +37,7 @@ import jsPDF from 'jspdf';
 import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoResponse';
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
+import { AppComponent } from 'src/app/main/app.component';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -60,7 +60,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     private readonly permissaoService: PermissaoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly produtoCatalogoService: ProdutoCatalogoService,
-    private router: Router) {
+    private router: Router,
+    private readonly appComponent: AppComponent) {
     super(telaDesktopService);
   }
   public form: FormGroup;
@@ -103,6 +104,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   fraseFrete: string;
 
   ngOnInit(): void {
+
     this.mensagemComponente.carregando = true;
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
@@ -726,6 +728,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   voltar() {
+    if (this.router.url.indexOf('orcamentos/listar/orcamentos') != -1 &&
+      this.router.url.indexOf('orcamentos/listar/pendentes') != -1 &&
+      this.router.url.indexOf('orcamentos/listar/pedidos') != -1) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+    }
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
     sessionStorage.setItem("urlAnterior", this.router.url);
     this.location.back();
@@ -1438,8 +1446,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     });
   }
 
-  anularOrcamentoAprovado(){
-    this.sweetalertService.dialogo("", "Deseja realmente anular este orçamento?").subscribe(result =>{
+  anularOrcamentoAprovado() {
+    this.sweetalertService.dialogo("", "Deseja realmente anular este orçamento?").subscribe(result => {
       if (!result) return;
       this.mensagemComponente.carregando = true;
 
@@ -1463,6 +1471,16 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (this.novoOrcamentoService.orcamentoCotacaoDto.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO) {
       this.alertaService.mostrarMensagem(`Orçamento ${this.novoOrcamentoService.orcamentoCotacaoDto.id} foi excluído!`);
       this.router.navigate(['orcamentos/listar/orcamentos']);
+    }
+  }
+
+  ngOnDestroy() {
+    if (this.router.url.indexOf('orcamentos/listar/orcamentos') == -1 &&
+      this.router.url.indexOf('orcamentos/listar/pendentes') == -1 &&
+      this.router.url.indexOf('orcamentos/listar/pedidos') == -1) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+      debugger;
     }
   }
 }
