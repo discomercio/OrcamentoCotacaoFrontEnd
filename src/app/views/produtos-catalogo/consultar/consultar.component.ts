@@ -1,12 +1,10 @@
-import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { Table } from 'primeng/table';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { NavigationStart, Router, RoutesRecognized } from '@angular/router';
+import { FormGroup } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
-import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
 import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
-import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
@@ -23,7 +21,7 @@ import { ProdutoCatalogoFabricante } from 'src/app/dto/produtos-catalogo/Produto
   templateUrl: './consultar.component.html',
   styleUrls: ['./consultar.component.scss']
 })
-export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit {
+export class ProdutosCatalogoConsultarComponent implements OnInit {
 
   constructor(
     private readonly service: ProdutoCatalogoService,
@@ -88,16 +86,6 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
     });
   }
 
-  ngAfterViewInit(): void {
-    let url = sessionStorage.getItem("urlAnterior");
-    if (!!url && url.indexOf("/produtos-catalogo/visualizar") > -1) {
-      let json = sessionStorage.getItem("filtro");
-      this.filtro = JSON.parse(json);
-      this.buscarTodosProdutos(this.filtro);
-    }
-    this.cdr.detectChanges();
-  }
-
   promise2() {
     this.carregando = true;
     let promise: any = [this.buscarPropriedadesOpcoes()];
@@ -108,7 +96,18 @@ export class ProdutosCatalogoConsultarComponent implements OnInit, AfterViewInit
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.carregando = false;
-    })
+      this.pesquisaAuto();
+    });
+  }
+
+  pesquisaAuto(){
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && url.indexOf("/produtos-catalogo/visualizar") > -1) {
+      let json = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(json);
+      this.buscarTodosProdutos(this.filtro);
+    }
+    this.cdr.detectChanges();
   }
 
   buscarPropriedades(): Promise<ProdutoCatalogoPropriedade[]> {
