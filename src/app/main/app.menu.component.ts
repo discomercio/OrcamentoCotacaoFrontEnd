@@ -85,6 +85,16 @@ export class AppMenuComponent implements OnInit {
                                 x.items.splice(i, 1);
                             }
                         }
+
+                        if (!this.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais)){
+                            if (x.items[i].label == eMenu.Consultas) {
+                                x.items.splice(i, 1);
+                                // for(let y = 0; y< x.items[i].items.length; y++){
+                                    
+
+                                // }
+                            }
+                        }
                     }
                 });
             }

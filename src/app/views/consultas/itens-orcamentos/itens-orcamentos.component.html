@@ -1,0 +1,118 @@
+<div class="p-grid" [ngClass]="{'carregando': carregando}">
+    <div class="p-col-12">
+        <div class="card corpo">
+            <h4>Itens do Orçamento</h4>
+            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 ">
+                <div class="p-col-12">
+                    <div class="p-grid">
+                        <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                            <label for="dataInicio">Início da criação</label>
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="dtInicio" [showIcon]="true">
+                            </p-calendar>
+                        </div>
+                        <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                            <label for="dataFinal">Fim da criação</label>
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="dtFim" [showIcon]="true">
+                            </p-calendar>
+                        </div>
+                        <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                            <label for="dataInicio">Início da expiração</label>
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicioExpiracao" [showIcon]="true">
+                            </p-calendar>
+                        </div>
+                        <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6">
+                            <label for="dataFinal">Fim da expiração</label>
+                            <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFimExpiracao" [showIcon]="true">
+                            </p-calendar>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12">
+                    <div class="p-grid">
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end">
+                            <label for="filtro">Lojas</label>
+                            <p-multiSelect [options]="cboLojas" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" optionValue="Id"
+                                optionLabel="Value" [(ngModel)]="lojasApoio"
+                                emptyFilterMessage="Nenhum item encontrado">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end">
+                            <label for="filtro">Status</label>
+                            <p-multiSelect [options]="cboStatus" placeholder="Selecione"
+                                emptyFilterMessage="Nenhum item encontrado" optionValue="Id"
+                                optionLabel="Value" [(ngModel)]="filtro.Status"
+                                emptyFilterMessage="Nenhum item encontrado">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo">
+                            <label for="filtroVendedor">Vendedor</label>
+                            <p-multiSelect [options]="cboVendedores" [(ngModel)]="filtro.Vendedores"
+                                defaultLabel="Selecione" optionLabel="Value" optionValue="Id"
+                                emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
+                                resetFilterOnHide="true">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                            <label for="filtroParceiro">Com parceiro</label>
+                            <p-dropdown [options]="cboComIndicador" [(ngModel)]="filtro.ComIndicador" [showClear]="true"
+                                optionValue="Id" optionLabel="Value" placeholder="Selecione">
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end">
+                            <label>Parceiro</label>
+                            <p-multiSelect [options]="cboParceiros" [(ngModel)]="filtro.Parceiros"
+                                defaultLabel="Selecione" optionValue="Id" optionLabel="Value"
+                                emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
+                                resetFilterOnHide="true">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                            <label for="filtroParceiro">Opções do orçamento</label>
+                            <p-dropdown [options]="cboOpcoes" [(ngModel)]="filtro.OpcoesOrcamento" [showClear]="true"
+                                optionValue="Value" optionLabel="Value" placeholder="Selecione">
+                            </p-dropdown>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-2 p-md-3 p-sm-4 p-as-end">
+                            <label for="fabricante">Fabricante</label>
+                            <p-multiSelect [options]="cboFabricantes" [(ngModel)]="filtro.Fabricantes" defaultLabel="Selecione"
+                                optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
+                                emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                                [ngModelOptions]="{standalone: true}"></p-multiSelect>
+                        </div>
+                        <div class="p-field p-col-4 p-lg-2 p-md-3 p-sm-4 p-pr-md-0 p-pr-sm-0 p-as-end">
+                            <label for="grupo">Categoria</label>
+                            <p-multiSelect [options]="cboCategorias" [(ngModel)]="filtro.Categorias" defaultLabel="Selecione"
+                                optionLabel="Value" optionValue="Id" emptyMessage="Nenhum item encontrado"
+                                emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                                [ngModelOptions]="{standalone: true}">
+                            </p-multiSelect>
+                        </div>
+                        <div class="p-col-4 p-lg-3 p-md-12 p-sm-4 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-end p-mx-0 p-px-0">
+                            <div class="p-as-center p-pt-2 p-pt-lg-4">
+                                <button pButton type="button" label="Pesquisar" icon="pi pi-search"
+                                    (click)="pesquisar()"></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="p-col-12 p-text-center p-text-bold">
+                    <span *ngIf="!clicouPesquisar">{{fraseInicial}}</span>
+                    <span *ngIf="clicouPesquisar">{{fraseRegistros}}</span>
+                </div>
+                <br />
+                <br />
+                <div *ngIf="qtdeRegistros > 0" class="p-col-12 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-around">
+                    <div class="p-as-center">
+                        <button type="button" pButton pRipple icon="pi pi-file-excel" (click)="exportXlsx()"
+                            class="p-button-success p-mr-2" label="Exportar para XLS" tooltipPosition="bottom"></button>
+                    </div>
+                    <div class="p-as-center">
+                        <button type="button" pButton pRipple icon="pi pi-file-o" (click)="exportCsv()" class="p-mr-2"
+                            label="Exportar para CSV" tooltipPosition="bottom"></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

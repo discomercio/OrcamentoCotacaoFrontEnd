@@ -16,6 +16,9 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 import { CadastroOrcamentoCotacaoResponse } from 'src/app/dto/orcamentos/CadastroOrcamentoCotacaoResponse';
 import { AtualizarOrcamentoOpcaoResponse } from 'src/app/dto/orcamentos/AtualizarOrcamentoOpcaoResponse';
 import { ExcluirOrcamentoResponse } from 'src/app/dto/orcamentos/excluir-orcamento-response';
+import { Filtro } from 'src/app/dto/orcamentos/filtro';
+import { RelatorioItensOrcamento } from 'src/app/dto/orcamentos/relatorio-itens-orcamento';
+import { RelatorioDadosOrcamento } from 'src/app/dto/orcamentos/relatorio-dados-orcamento';
 
 @Injectable({
   providedIn: 'root'
@@ -96,5 +99,13 @@ export class OrcamentosService {
 
   anularOrcamento(orcamento:OrcamentoCotacaoResponse):Observable<any>{
     return this.http.post<any>(`${this.appSettingsService.config.apiUrl}Orcamento/anular`, orcamento)
+  }
+
+  buscarRelatorioItensOrcamento(filtro: Filtro): Observable<RelatorioItensOrcamento> {
+    return this.http.post<RelatorioItensOrcamento>(`${this.appSettingsService.config.apiUrl}Relatorios/relatorioItensOrcamento`, filtro);
+  }
+
+  buscarRelatorioDadosOrcamento(filtro: Filtro): Observable<RelatorioDadosOrcamento> {
+    return this.http.post<RelatorioDadosOrcamento>(`${this.appSettingsService.config.apiUrl}Relatorios/relatorioDadosOrcamento`, filtro);
   }
 }

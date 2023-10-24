@@ -90,4 +90,9 @@ export class Constantes {
     public fHp = "fHp:";
     public fCiclo = "fCiclo:"
     public fProp = "fProp:";
+
+    public TODAS_OPCOES = "Todas"
+    public OPCOES_APROVADAS = "Somente aprovadas";
+    
+    public BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL = 28;
 }

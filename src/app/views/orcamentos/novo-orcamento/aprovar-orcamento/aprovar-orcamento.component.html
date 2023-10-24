@@ -208,7 +208,8 @@
                                                             <th class="p-col-4">Produto</th>
                                                             <th class="p-col-1 p-text-center">Qtde</th>
                                                             <th class="p-col-1 p-text-center">Desc</th>
-                                                            <th class="p-col-2 p-text-center">Preço</th>
+                                                            <th class="p-col-2 p-text-center">VL Unitário</th>
+                                                            <th class="p-col-2 p-text-center">Vl Total</th>
                                                         </tr>
                                                     </ng-template>
 
@@ -251,10 +252,19 @@
                                                                 class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
                                                                 <span class="p-column-title"
                                                                     [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                    Preço
+                                                                    Vl Unitário
                                                                 </span>
                                                                 <p>
                                                                     {{moedaUtils.formatarMoedaSemPrefixo(produto.precoNF)}}
+                                                                </p>
+                                                            </td>
+                                                            <td
+                                                                class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
+                                                                <span class="p-column-title"
+                                                                    [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
+                                                                    Vl Total
+                                                                </span>
+                                                                <p>{{moedaUtils.formatarMoedaSemPrefixo(produto.totalItem)}}
                                                                 </p>
                                                             </td>
                                                             <div *ngIf="!telaDesktop && orcamento.listaProdutos.length -1 > rowIndex "
@@ -349,7 +359,8 @@
                                                             <th class="p-col-4">Produto</th>
                                                             <th class="p-col-1 p-text-center">Qtde</th>
                                                             <th class="p-col-1 p-text-center">Desc</th>
-                                                            <th class="p-col-2 p-text-center">Preço</th>
+                                                            <th class="p-col-2 p-text-center">Vl Unitário</th>
+                                                            <th class="p-col-2 p-text-center">Vl Total</th>
                                                         </tr>
                                                     </ng-template>
                                                     <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
@@ -391,10 +402,19 @@
                                                                 class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
                                                                 <span class="p-column-title"
                                                                     [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                    Preço
+                                                                    Vl Unitário
                                                                 </span>
                                                                 <p>
                                                                     {{moedaUtils.formatarMoedaSemPrefixo(produto.precoNF)}}
+                                                                </p>
+                                                            </td>
+                                                            <td
+                                                                class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
+                                                                <span class="p-column-title"
+                                                                    [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
+                                                                    Vl Total
+                                                                </span>
+                                                                <p>{{moedaUtils.formatarMoedaSemPrefixo(produto.totalItem)}}
                                                                 </p>
                                                             </td>
                                                             <div *ngIf="!telaDesktop && orcamento.listaProdutos.length -1 > rowIndex "

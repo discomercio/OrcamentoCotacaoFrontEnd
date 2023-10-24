@@ -1032,18 +1032,25 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       .setFont(undefined, "bold");
 
     doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
-    doc.text("Qtde", 320, currentPositionY, {
+    doc.text("Qtde", 300, currentPositionY, {
       align: "right",
     });
     doc.text(
-      "Preço",
+      "VL Unitário",
+      363,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+    doc.text(
+      "VL Total",
       doc.internal.pageSize.width - 3 * this.TAB_SIZE,
       currentPositionY,
       {
         align: "right",
       }
     );
-
     currentPositionY += 10;
 
     option.listaProdutos.forEach((product) => {
@@ -1202,10 +1209,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       descriptionY += this.SMALL_FONT_SIZE;
     });
 
-    doc.text(`${product.qtde}`, 319, currentPositionY, { align: "right" });
+    doc.text(`${product.qtde}`, 299, currentPositionY, { align: "right" });
 
     doc.text(
       `${this.moedaUtils.formatarMoedaSemPrefixo(product.precoVenda)}`,
+      362,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    doc.text(
+      `${this.moedaUtils.formatarMoedaSemPrefixo(product.totalItem)}`,
       doc.internal.pageSize.width - 3 * this.TAB_SIZE,
       currentPositionY,
       { align: "right" }

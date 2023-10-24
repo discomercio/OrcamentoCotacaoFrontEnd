@@ -4,6 +4,7 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { ProdutoCatalogoPropriedadeOpcao } from 'src/app/dto/produtos-catalogo/ProdutoCatalogoPropriedadeOpcao';
 import { ProdutoTabela } from 'src/app/dto/produtos-catalogo/ProdutoTabela';
+import { Constantes } from 'src/app/utilities/constantes';
 import { MoedaUtils } from 'src/app/utilities/formatarString/moeda-utils';
 import { StringUtils } from 'src/app/utilities/formatarString/string-utils';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
@@ -35,7 +36,8 @@ export class SelectEvapDialogComponent implements OnInit {
   descarga: string;
   voltagem: string;
   btu: string;
-  kcal:string;
+  kcal: string;
+  constantes = new Constantes();
 
   ngOnInit(): void {
     this.evaporadorasPassadas = this.option.data.evaps;
@@ -85,10 +87,10 @@ export class SelectEvapDialogComponent implements OnInit {
 
     let evaporadorasFiltradas: ProdutoTabela[] = this.evaporadorasPassadas;
 
-    if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.linhaProduto + "|"));
-    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.btu + "|"));
-    if (this.kcal) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes("|" + this.kcal + "|"));
-    
+    if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.linhaProduto}|`));
+    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.btu}|`));
+    if (this.kcal) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.kcal}|`));
+
     this.evaporadoras = evaporadorasFiltradas;
   }
 

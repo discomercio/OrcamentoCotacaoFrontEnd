@@ -39,6 +39,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   public constantes: Constantes = new Constantes();
   formaPagamento: FormaPagto[] = new Array();
   editando: boolean;
+  mostrarBotaoAddOpcao: boolean;
   formasPagtoAPrazo: FormaPagto[] = new Array();
   formasPagtoAVista: FormaPagto = new FormaPagto();
   qtdeMaxParcelaCartaoVisa: number = 0;
@@ -171,10 +172,18 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
   selectAprazo() {
 
     this.tipoAPrazo = this.formaPagtoCriacaoAprazo.tipo_parcelamento;
-
     let habilitado = this.formaPagtoCriacaoAprazo.habilitado;
+    if (this.editando) {
+      let idPagto = this.formaPagtoCriacaoAprazo.id;
+      let idOpcao = this.formaPagtoCriacaoAprazo.idOpcao;
 
-    this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
+      this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
+      this.formaPagtoCriacaoAprazo.id = idPagto;
+      this.formaPagtoCriacaoAprazo.idOpcao = idOpcao;
+      this.formaPagtoCriacaoAprazo.habilitado = habilitado;
+    } else {
+      this.formaPagtoCriacaoAprazo = new FormaPagtoCriacao();
+    }
 
     this.formaPagtoCriacaoAprazo.tipo_parcelamento = this.tipoAPrazo;
     this.novoOrcamentoService.qtdeParcelas = 0;
@@ -482,7 +491,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   validarFormasPagto(pagtoPrazo: FormaPagtoCriacao, pagtoAvista: FormaPagtoCriacao): boolean {
 
-    if(!pagtoPrazo.habilitado && !pagtoAvista.habilitado){
+    if (!pagtoPrazo.habilitado && !pagtoAvista.habilitado) {
       this.alertaService.mostrarMensagem("É necessário selecionar ao menos uma forma de pagamento!");
       return false;
     }

@@ -80,7 +80,6 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto = this.opcaoOrcamento;
     this.itens.antigoPercRT = this.opcaoOrcamento.percRT;
     this.itens.novoOrcamentoService.editando = true;
-    debugger;
   }
 
   setarParametrosBuscaProdutos() {

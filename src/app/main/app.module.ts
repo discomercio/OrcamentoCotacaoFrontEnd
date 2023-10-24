@@ -82,6 +82,8 @@ import { StoreModule } from "@ngrx/store";
 import { IndexReducer } from "../dto/index.store";
 import { AppSettingsService } from "../utilities/appsettings/appsettings.service";
 import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashboard-orcamento.component";
+import { ItensOrcamentosComponent } from "../views/consultas/itens-orcamentos/itens-orcamentos.component";
+import { DadosOrcamentosComponent } from "../views/consultas/dados-orcamentos/dados-orcamentos.component";
 
 @NgModule({
     imports: [
@@ -133,7 +135,9 @@ import { DashboardOrcamentoComponent } from "../views/dashboard/orcamento/dashbo
         PedidoDetalhesComponent,
         ProdutosCatalogoClonarComponent,
         SenhaMeusdadosComponent,
-        DashboardOrcamentoComponent
+        DashboardOrcamentoComponent,
+        ItensOrcamentosComponent, 
+        DadosOrcamentosComponent
     ],
     providers: [
         // {

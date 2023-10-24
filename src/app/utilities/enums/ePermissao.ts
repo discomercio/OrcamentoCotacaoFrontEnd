@@ -23,5 +23,6 @@ export enum ePermissao {
     RelOrcamentosVigente = "103200",
     RelOrcamentosExpirados = "103300",
     RelOrcamentosMensagemPendente = "103400",
-    RelOrcamentosCadastrados = "102900"
+    RelOrcamentosCadastrados = "102900",
+    RelatoriosGerenciais = "103700"
 }
