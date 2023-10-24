@@ -19,6 +19,8 @@ import { ProdutoCatalogoListar } from "src/app/dto/produtos-catalogo/ProdutoCata
 import { ListaProdutoCatalogoListarResponse } from "src/app/dto/produtos-catalogo/lista-produto-catalogo-listar-response";
 import { ConsultaProdutoCatalogoAtivoRequest } from "src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-request";
 import { ConsultaProdutoCatalogoAtivoResponse } from "src/app/dto/produtos-catalogo/consulta-produto-catalogo-ativo-response";
+import { PropriedadeRequest } from "src/app/dto/produtos-catalogo/propriedade-request";
+import { ListPropriedadeResponse } from "src/app/dto/produtos-catalogo/lista-propriedade-response";
 
 @Injectable({
     providedIn: "root",
@@ -124,6 +126,12 @@ export class ProdutoCatalogoService {
     buscarPropriedades(): Observable<ProdutoCatalogoPropriedade[]> {
         return this.http.get<ProdutoCatalogoPropriedade[]>(
             `${this.appSettingsService.config.apiUrl}produto/propriedades`
+        );
+    }
+
+    listarPropriedades(filtro:PropriedadeRequest):Observable<ListPropriedadeResponse>{
+        return this.http.post<ListPropriedadeResponse>(
+            `${this.appSettingsService.config.apiUrl}produto/listar-propriedades`, filtro
         );
     }
 

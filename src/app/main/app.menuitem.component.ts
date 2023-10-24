@@ -129,7 +129,8 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
                 this.item.routerLink[0].indexOf("orcamentos/listar/pendentes") > -1 ||
                 this.item.routerLink[0].indexOf("orcamentos/listar/pedidos") > -1 ||
                 this.item.routerLink[0].indexOf("/produtos-catalogo/consultar") > -1 ||
-                this.item.routerLink[0].indexOf("/produtos-catalogo/listar") > -1) {
+                this.item.routerLink[0].indexOf("/produtos-catalogo/listar") > -1 ||
+                this.item.routerLink[0].indexOf("/produtos-catalogo/propriedades/listar") > -1) {
                 sessionStorage.removeItem("filtro");
                 sessionStorage.removeItem("urlAnterior");
             }
