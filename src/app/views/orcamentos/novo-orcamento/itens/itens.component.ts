@@ -859,7 +859,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   addFormaPagtoSelecionados(formasPagtos: any[]) {
-
+    
     let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
     if (pagtoAvista.length > 0) {
       this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista[0];
@@ -868,6 +868,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
     if (pagtoPrazo.length > 0) {
+      let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo[0].tipo_parcelamento);
+      if (pagtoExiste.length == 0) return;
+
       this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
       this.formaPagto.setarQtdeMaxParcelasEDias();
       this.formaPagto.setarQtdeParcelas();
