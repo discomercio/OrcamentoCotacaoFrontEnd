@@ -260,6 +260,20 @@ export class DadosOrcamentosComponent implements OnInit {
   }
 
   exportXlsx() {
+    this.exportExcelService.exportAsXLSXFile(this.criarJsonParaExportar(), `relatorio-dados-orcamentos`, true);
+
+    this.qtdeRegistros = 0;
+    this.clicouPesquisar = false;
+  }
+
+  exportCsv() {
+    this.exportExcelService.exportAsCSVFile(this.criarJsonParaExportar(), `relatorio-dados-orcamentos`, true);
+
+    this.qtdeRegistros = 0;
+    this.clicouPesquisar = false;
+  }
+
+  criarJsonParaExportar(): any[] {
     let json = [];
     this.relatorioDadosOrcamento.listaDadosOrcamento.forEach(x => {
       let item = {
@@ -276,13 +290,13 @@ export class DadosOrcamentosComponent implements OnInit {
         UF: x.UF,
         TipoCliente: x.TipoCliente,
         ContribuinteIcms: x.ContribuinteIcms,
-        QtdeMsgPendente : { t: 'n', v: x.QtdeMsgPendente },
+        QtdeMsgPendente: { t: 'n', v: x.QtdeMsgPendente },
         EntregaImediata: x.EntregaImediata,
-        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: x.PrevisaoEntrega, z: "dd/MM/yyyy" } : null,
+        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: new Date(new Date(x.PrevisaoEntrega).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null,
         InstaladorInstala: x.InstaladorInstala,
         ComissaoOpcao1: x.ComissaoOpcao1 ? { t: 'n', v: x.ComissaoOpcao1 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao1: x.DescMedioAVistaOpcao1 ? {t:'n', v:x.DescMedioAVistaOpcao1 / 100, z:"0.00%"} : null,
-        DescMedioAPrazoOpcao1: x.DescMedioAPrazoOpcao1 ? {t:'n', v:x.DescMedioAPrazoOpcao1 / 100, z:"0.00%"} : null,
+        DescMedioAVistaOpcao1: x.DescMedioAVistaOpcao1 ? { t: 'n', v: x.DescMedioAVistaOpcao1 / 100, z: "0.00%" } : null,
+        DescMedioAPrazoOpcao1: x.DescMedioAPrazoOpcao1 ? { t: 'n', v: x.DescMedioAPrazoOpcao1 / 100, z: "0.00%" } : null,
         FormaPagtoAVistaOpcao1: x.FormaPagtoAVistaOpcao1,
         ValorFormaPagtoAVistaOpcao1: x.ValorFormaPagtoAVistaOpcao1 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao1, z: "R$ #,##0.00" } : null,
         StatusDescSuperiorAVistaOpcao1: x.StatusDescSuperiorAVistaOpcao1,
@@ -291,8 +305,8 @@ export class DadosOrcamentosComponent implements OnInit {
         QtdeParcelasFormaPagtoAPrazoOpcao1: x.QtdeParcelasFormaPagtoAPrazoOpcao1 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao1 } : null,
         StatusDescSuperiorAPrazoOpcao1: x.StatusDescSuperiorAPrazoOpcao1,
         ComissaoOpcao2: x.ComissaoOpcao2 ? { t: 'n', v: x.ComissaoOpcao2 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao2: x.DescMedioAVistaOpcao2 ? {t:'n', v:x.DescMedioAVistaOpcao2 / 100, z:"0.00%"} : null,
-        DescMedioAPrazoOpcao2: x.DescMedioAPrazoOpcao2 ? {t:'n', v:x.DescMedioAPrazoOpcao2 / 100, z:"0.00%"} : null,
+        DescMedioAVistaOpcao2: x.DescMedioAVistaOpcao2 ? { t: 'n', v: x.DescMedioAVistaOpcao2 / 100, z: "0.00%" } : null,
+        DescMedioAPrazoOpcao2: x.DescMedioAPrazoOpcao2 ? { t: 'n', v: x.DescMedioAPrazoOpcao2 / 100, z: "0.00%" } : null,
         FormaPagtoAVistaOpcao2: x.FormaPagtoAVistaOpcao2,
         ValorFormaPagtoAVistaOpcao2: x.ValorFormaPagtoAVistaOpcao2 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao2, z: "R$ #,##0.00" } : null,
         StatusDescSuperiorAVistaOpcao2: x.StatusDescSuperiorAVistaOpcao2,
@@ -301,8 +315,8 @@ export class DadosOrcamentosComponent implements OnInit {
         QtdeParcelasFormaPagtoAPrazoOpcao2: x.QtdeParcelasFormaPagtoAPrazoOpcao2 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao2 } : null,
         StatusDescSuperiorAPrazoOpcao2: x.StatusDescSuperiorAPrazoOpcao2,
         ComissaoOpcao3: x.ComissaoOpcao3 ? { t: 'n', v: x.ComissaoOpcao3 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao3: x.DescMedioAVistaOpcao3 ? {t:'n', v:x.DescMedioAVistaOpcao3 / 100, z:"0.00%"} : null,
-        DescMedioAPrazoOpcao3: x.DescMedioAPrazoOpcao3 ? {t:'n', v:x.DescMedioAPrazoOpcao3 / 100, z:"0.00%"} : null,
+        DescMedioAVistaOpcao3: x.DescMedioAVistaOpcao3 ? { t: 'n', v: x.DescMedioAVistaOpcao3 / 100, z: "0.00%" } : null,
+        DescMedioAPrazoOpcao3: x.DescMedioAPrazoOpcao3 ? { t: 'n', v: x.DescMedioAPrazoOpcao3 / 100, z: "0.00%" } : null,
         FormaPagtoAVistaOpcao3: x.FormaPagtoAVistaOpcao3,
         ValorFormaPagtoAVistaOpcao3: x.ValorFormaPagtoAVistaOpcao3 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao3, z: "R$ #,##0.00" } : null,
         StatusDescSuperiorAVistaOpcao3: x.StatusDescSuperiorAVistaOpcao3,
@@ -312,81 +326,29 @@ export class DadosOrcamentosComponent implements OnInit {
         StatusDescSuperiorAPrazoOpcao3: x.StatusDescSuperiorAPrazoOpcao3,
         OpcaoAprovada: x.OpcaoAprovada ? { t: 'n', v: x.OpcaoAprovada } : null,
         ComissaoOpcaoAprovada: x.ComissaoOpcaoAprovada ? { t: 'n', v: x.ComissaoOpcaoAprovada / 100, z: "0.0%" } : null,
-        DescMedioOpcaoAprovada: x.DescMedioOpcaoAprovada ? {t:'n', v:x.DescMedioOpcaoAprovada / 100, z:"0.00%"} : null,
+        DescMedioOpcaoAprovada: x.DescMedioOpcaoAprovada ? { t: 'n', v: x.DescMedioOpcaoAprovada / 100, z: "0.00%" } : null,
         FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
         ValorFormaPagtoOpcaoAprovada: x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null,
         QtdeParcelasFormaOpcaoAprovada: x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null,
         StatusDescSuperiorOpcaoAprovada: x.StatusDescSuperiorOpcaoAprovada,
-        DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
-        Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
+        DataCadastro: x.DataCadastro ? { t: 'd', v: new Date(new Date(x.DataCadastro).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null,
+        Validade: x.Validade ? { t: 'd', v: new Date(new Date(x.Validade).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null
       }
 
       json.push(item);
     });
-    this.exportExcelService.exportAsXLSXFile(json, `relatorio-dados-orcamentos`, true);
+    /*
+     *  ESTAMOS ADICIONANDO 28 SEGUNDOS NAS DATA, POIS EXISTE UM BUG NA LIB AO CONVERTER DATA NA GERAÇÃO DE EXCEL
+     *  AS DATAS NÃO TEM HORA, MINUTOS E SEGUNDOS
+     *  OCORRIA QUE AS DATAS ESTAVAM PERDENDO UM DIA
+     *  Ex.:
+     *      entrada => 2023-10-09 00:00:00
+     *      saida => 2023-10-08 23:59:32
+     *      
+     *  APLICANDO ESSE AJUSTE, AS DATAS NO EXCEL NÃO DEVEM CONTER HORA, MINUTOS E SEGUNDOS
+     *  CASO OCORRA DE SURGIR HORA, MINUTOS E SEGUNDOS, DEVEMOS CONVERSAR NOVAMENTE COM O HAMILTON SOBRE O OCORRIDO.
+     */
 
-    this.qtdeRegistros = 0;
-    this.clicouPesquisar = false;
-  }
-
-  exportCsv() {
-    let json = [];
-    this.relatorioDadosOrcamento.listaDadosOrcamento.forEach(x => {
-      let item = {
-        Loja: { t: 'n', v: x.Loja },
-        Orcamento: { t: 'n', v: x.Orcamento },
-        Status: x.Status,
-        PrePedido: x.PrePedido,
-        Pedido: x.Pedido,
-        Vendedor: x.Vendedor,
-        Indicador: x.Indicador,
-        IndicadorVendedor: x.IndicadorVendedor,
-        IdCliente: x.IdCliente,
-        UsuarioCadastro: x.UsuarioCadastro,
-        UF: x.UF,
-        TipoCliente: x.TipoCliente,
-        ContribuinteIcms: x.ContribuinteIcms,
-        EntregaImediata: x.EntregaImediata,
-        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: x.PrevisaoEntrega, z: "dd/MM/yyyy" } : null,
-        InstaladorInstala: x.InstaladorInstala,
-        ComissaoOpcao1: x.ComissaoOpcao1 ? { t: 'n', v: x.ComissaoOpcao1 / 100, z: "0.0%" } : null,
-        FormaPagtoAVistaOpcao1: x.FormaPagtoAVistaOpcao1,
-        ValorFormaPagtoAVistaOpcao1: x.ValorFormaPagtoAVistaOpcao1 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao1, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao1: x.StatusDescSuperiorAVistaOpcao1,
-        FormaPagtoAPrazoOpcao1: x.FormaPagtoAPrazoOpcao1,
-        ValorFormaPagtoAPrazoOpcao1: x.ValorFormaPagtoAPrazoOpcao1 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao1, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao1: x.QtdeParcelasFormaPagtoAPrazoOpcao1 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao1 } : null,
-        StatusDescSuperiorAPrazoOpcao1: x.StatusDescSuperiorAPrazoOpcao1,
-        ComissaoOpcao2: x.ComissaoOpcao2 ? { t: 'n', v: x.ComissaoOpcao2 / 100, z: "0.0%" } : null,
-        FormaPagtoAVistaOpcao2: x.FormaPagtoAVistaOpcao2,
-        ValorFormaPagtoAVistaOpcao2: x.ValorFormaPagtoAVistaOpcao2 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao2, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao2: x.StatusDescSuperiorAVistaOpcao2,
-        FormaPagtoAPrazoOpcao2: x.FormaPagtoAPrazoOpcao2,
-        ValorFormaPagtoAPrazoOpcao2: x.ValorFormaPagtoAPrazoOpcao2 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao2, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao2: x.QtdeParcelasFormaPagtoAPrazoOpcao2 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao2 } : null,
-        StatusDescSuperiorAPrazoOpcao2: x.StatusDescSuperiorAPrazoOpcao2,
-        ComissaoOpcao3: x.ComissaoOpcao3 ? { t: 'n', v: x.ComissaoOpcao3 / 100, z: "0.0%" } : null,
-        FormaPagtoAVistaOpcao3: x.FormaPagtoAVistaOpcao3,
-        ValorFormaPagtoAVistaOpcao3: x.ValorFormaPagtoAVistaOpcao3 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao3, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao3: x.StatusDescSuperiorAVistaOpcao3,
-        FormaPagtoAPrazoOpcao3: x.FormaPagtoAPrazoOpcao3,
-        ValorFormaPagtoAPrazoOpcao3: x.ValorFormaPagtoAPrazoOpcao3 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao3, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao3: x.QtdeParcelasFormaPagtoAPrazoOpcao3 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao3 } : null,
-        StatusDescSuperiorAPrazoOpcao3: x.StatusDescSuperiorAPrazoOpcao3,
-        OpcaoAprovada: x.OpcaoAprovada ? { t: 'n', v: x.OpcaoAprovada } : null,
-        FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
-        ValorFormaPagtoOpcaoAprovada: x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaOpcaoAprovada: x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null,
-        StatusDescSuperiorOpcaoAprovada: x.StatusDescSuperiorOpcaoAprovada,
-        DataCadastro: x.DataCadastro ? { t: 'd', v: x.DataCadastro, z: "dd/MM/yyyy" } : null,
-        Validade: x.Validade ? { t: 'd', v: x.Validade, z: "dd/MM/yyyy" } : null
-      }
-
-      json.push(item);
-    });
-    this.exportExcelService.exportAsCSVFile(json, `relatorio-dados-orcamentos`, true);
-
-    this.qtdeRegistros = 0;
-    this.clicouPesquisar = false;
+    return json;
   }
 }
