@@ -19,7 +19,8 @@
                     [(ngModel)]="kcal" [showClear]="true">
                 </p-dropdown>
             </div>
-            <div class="p-as-end p-col-6 p-d-inline-flex p-field p-grid p-jc-end p-lg-3 p-md-12 p-pr-md-0 p-pr-sm-0 p-sm-12 p-sm-4">
+            <div
+                class="p-as-end p-col-6 p-d-inline-flex p-field p-grid p-jc-end p-lg-3 p-md-12 p-pr-md-0 p-pr-sm-0 p-sm-12 p-sm-4">
                 <div class="p-col-9 p-lg-8 p-md-2 p-px-0 p-sm-3">
                     <button pButton id="pesquisar" type="button" label="Pesquisar" icon="pi pi-search"
                         (click)="pesquisar()"></button>
@@ -51,7 +52,7 @@
                         <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                             <span class="pi pi-minus-circle p-px-1" (click)="subtrairQtde(p)"> </span>
                             <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
-                                (keyup)="formatarQtde($event, p)" id="qtde"/>
+                                (keyup)="formatarQtde($event, p)" id="qtde" />
                             <span class="pi pi-plus-circle p-px-1" (click)="addQtde(p)"> </span>
                         </td>
                         <td class="p-text-center p-py-0">
@@ -77,11 +78,13 @@
             </div>
             <div class="p-col-6 p-d-inline-flex p-jc-end p-px-0 p-py-2">
                 <div class="p-p-2">
+                    <p-button icon="pi pi-plus" (click)="addProduto()" *ngIf="!telaDesktop"></p-button>
                     <button type="text" pButton label="Adicionar" icon="pi pi-plus" (click)="addProduto()"
-                        style="width: auto"></button>
+                        *ngIf="telaDesktop" style="width: auto"></button>
                 </div>
                 <div class="p-py-2">
-                    <button type="text" pButton label="Fechar" icon="pi pi-times" (click)="fechar()"
+                    <p-button icon="pi pi-times" (click)="fechar()" *ngIf="!telaDesktop"></p-button>
+                    <button type="text" pButton label="Fechar" icon="pi pi-times" (click)="fechar()" *ngIf="telaDesktop"
                         style="width: auto"></button>
                 </div>
             </div>
