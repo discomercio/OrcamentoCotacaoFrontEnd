@@ -334,12 +334,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         }
       });
 
-    // ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
-    //   if (resultados && resultados.length > 0) {
-    //     this.addProdutosSelecionados(resultados);
-    //   }
-    //   this.clicouAddProdutos = false;
-    // });
+    ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
+      this.clicouAddProdutos = false;
+    });
   }
 
   montarProdutoParaAdicionar(produto: ProdutoTela): ProdutoOrcamentoDto {
