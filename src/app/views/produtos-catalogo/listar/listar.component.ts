@@ -81,6 +81,8 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     this.urlAnterior = sessionStorage.getItem("urlAnterior");
     this.carregando = true;
 
+    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+
     this.carregarImagem();
     this.carregarAtivo();
 
@@ -198,7 +200,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   buscarTodosProdutos(filtro: ProdutoCatalogoListar) {
-
+    debugger;
     sessionStorage.setItem("filtro", JSON.stringify(filtro));
     this.carregando = true;
     this.produtoCatalogResponse = new Array<ProdutoCatalogoResponse>();
@@ -264,9 +266,8 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     produtoCatalogoListar.cicloSelecionado = this.filtro.cicloSelecionado;
     produtoCatalogoListar.imagemSelecionado = this.filtro.imagemSelecionado;
     produtoCatalogoListar.ativoSelecionado = this.filtro.ativoSelecionado;
-    produtoCatalogoListar.pagina = 0;
-    produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
-    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+    produtoCatalogoListar.pagina = this.filtro.pagina;
+    produtoCatalogoListar.qtdeItensPorPagina = this.filtro.qtdeItensPorPagina;
 
     this.first = 0;
     return produtoCatalogoListar;
@@ -278,7 +279,6 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     if (!!this.produtoCatalogResponse && this.produtoCatalogResponse.length > 0) {
       filtro.pagina = event.first / event.rows;
       filtro.qtdeItensPorPagina = event.rows;
-      this.qtdePorPaginaSelecionado = event.rows;
       this.filtro = filtro;
       this.buscarTodosProdutos(filtro);
     }
