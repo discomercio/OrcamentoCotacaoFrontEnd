@@ -95,4 +95,6 @@ export class Constantes {
     public OPCOES_APROVADAS = "Somente aprovadas";
 
     public QTDE_MAX_ITENS_CRIACAO_ORCAMENTO = 999999999;
+    
+    public BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL = 28;
 }
