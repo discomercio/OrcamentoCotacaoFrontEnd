@@ -12,7 +12,7 @@
                 <p *ngIf="!novoOrcamentoService.editandoComissao" class="p-m-0">
                     {{moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)}}
                     % </p>
-                <div *ngIf="novoOrcamentoService.editandoComissao" class="p-col-2 p-inputgroup">
+                <div *ngIf="novoOrcamentoService.editandoComissao" class="p-inputgroup p-col-5 p-lg-2 p-md-2 p-sm-3">
                     <input type="text" pInputText class="p-text-right"
                         [value]="moedaUtils.formatarPorcentagemUmaCasaReturnZero(novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT)"
                         (keyup)="formataComissao($event)" (blur)="editarComissao($event)">
@@ -49,7 +49,7 @@
                 <div class="p-col-12 p-px-0">
                     <div *ngIf="!telaDesktop" class="font-size p-text-right p-text-bold p-md-12 p-sm-12">Quantidade de
                         itens:
-                        {{lstProdutos?.length}}</div>
+                        {{novoOrcamentoService.lstProdutosSelecionados?.length}}</div>
                     <p-table #dataTable [value]="novoOrcamentoService.lstProdutosSelecionados" [responsive]="true"
                         responsiveLayout="stack" autoLayout="true" styleClass="p-datatable-customers p-datatable-sm"
                         [rows]="10" [filterDelay]="0">
@@ -177,11 +177,6 @@
                     </p-table>
                     <div *ngIf="!telaDesktop && novoOrcamentoService.lstProdutosSelecionados?.length > 0"
                         style="border: 1px solid #cecece; border-radius: 0.5rem" class="p-mt-4 p-p-2">
-                        <div class="p-d-flex p-jc-between p-text-bold font-size">
-                            <span>Comissão</span>
-                            <span>{{novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT}}</span>
-                        </div>
-
                         <div class="p-d-flex p-jc-between p-text-bold font-size">
                             <span>Total</span>
                             <span>{{moedaUtils.formatarMoedaSemPrefixo(novoOrcamentoService.totalPedido())}}</span>

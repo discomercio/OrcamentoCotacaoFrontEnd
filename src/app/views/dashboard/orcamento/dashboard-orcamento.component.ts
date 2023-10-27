@@ -6,6 +6,8 @@ import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { ChartModule } from 'primeng/chart';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 
 @Component({
   selector: 'app-dashboard-orcamento',
@@ -13,13 +15,15 @@ import { ChartModule } from 'primeng/chart';
   styleUrls: ['./dashboard-orcamento.component.scss']
 })
 
-export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
+export class DashboardOrcamentoComponent extends TelaDesktopBaseComponent implements OnInit, AfterViewInit {
   constructor(
     private readonly location: Location,
     private readonly dashboardOrcamentoService: DashboardOrcamentoService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-    private readonly sweetalertService: SweetalertService) {
+    private readonly sweetalertService: SweetalertService,
+    telaDesktopService: TelaDesktopService) {
+    super(telaDesktopService)
   }
 
   public caixa1: number;
@@ -83,7 +87,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
           }
         ]
       };
-    }else{
+    } else {
       this.basicData = {
         labels: ['A expirar em até 72h', 'A expirar a partir de 72 horas'],
         datasets: [
@@ -127,7 +131,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
           caixa3++;
         }
 
@@ -184,14 +188,14 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
       var caixa2 = 0;
       var caixa3 = 0;
       var caixa4 = 0;
-      
-      
+
+
       while (indice < response.length) {
 
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
           caixa3++;
         }
 
@@ -253,7 +257,7 @@ export class DashboardOrcamentoComponent implements OnInit, AfterViewInit {
         var dataExpiracaoOrcamento = response[indice].DtExpiracao.toString().slice(0, 10);
 
         // [Expirados 72h]
-        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento<= dataTresDiasDepois) {
+        if (dataExpiracaoOrcamento >= dataAtual && dataExpiracaoOrcamento <= dataTresDiasDepois) {
           caixa3++;
         }
 

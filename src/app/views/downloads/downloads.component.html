@@ -9,13 +9,16 @@
                     class="p-as-end p-mr-2" (click)="uploadClick();"
                     [ngClass]="{'p-button-icon-only':!telaDesktop, 'p-button-outlined':this.ehUpload}"></button>
 
+                <button pButton pRipple icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}" class="p-as-end" *ngIf="!telaDesktop"
+                    (click)="novaPastaClick()" [ngClass]="{'p-button-outlined': novaPasta}"></button>
                 <button pButton pRipple label="{{!this.novaPasta ? 'Nova pasta': 'Cancelar'}}"
-                    icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}" *ngIf="!ehArquivo && exibeBotaoNovaPasta"
-                    class="p-as-end" (click)="novaPastaClick()"
-                    [ngClass]="{'p-button-icon-only':!telaDesktop, 'altura':!telaDesktop, 'p-button-outlined':this.novaPasta}"></button>&nbsp;
+                    icon="{{!this.novaPasta? 'pi pi-plus' : 'pi pi-times'}}"
+                    *ngIf="!ehArquivo && exibeBotaoNovaPasta && telaDesktop" class="p-as-end" (click)="novaPastaClick()"
+                    [ngClass]="{'altura':!telaDesktop, 'p-button-outlined':this.novaPasta}"></button>&nbsp;
 
-                <button pButton pRipple label="Editar" icon="pi pi-pencil" *ngIf="exibeBotaoEditarArquivoPasta && !edicao"
-                    class="p-as-end" (click)="editarClick()" [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
+                <button pButton pRipple label="Editar" icon="pi pi-pencil"
+                    *ngIf="exibeBotaoEditarArquivoPasta && !edicao" class="p-as-end" (click)="editarClick()"
+                    [ngClass]="{'p-button-icon-only':!telaDesktop}"></button>
 
                 <button pButton pRipple label="Cancelar" icon="pi pi-times" *ngIf="edicao"
                     class="p-as-end p-button-outlined" (click)="editarClick()"
@@ -44,15 +47,15 @@
 
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtNome">Nome</label>
-                            <input id="txtNome" maxlength="255" type="text" pInputText value="{{this.estruturaSelecionada.data.name}}"
-                                formControlName="txtNome" />
+                            <input id="txtNome" maxlength="255" type="text" pInputText
+                                value="{{this.estruturaSelecionada.data.name}}" formControlName="txtNome" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtNome')">{{mensagemErro}}</small>
                         </div>
                         <div class="p-field p-col-12 p-lg-3 p-md-3 p-sm-3">
                             <label class="p-d-block" for="txtDescricao">Descrição</label>
-                            <input id="txtDescricao"  maxlength="500" type="text" pInputText value={{this.estruturaSelecionada.data.descricao}}
-                                formControlName="txtDescricao" />
+                            <input id="txtDescricao" maxlength="500" type="text" pInputText
+                                value={{this.estruturaSelecionada.data.descricao}} formControlName="txtDescricao" />
                             <small class="p-error"
                                 *ngIf="validacaoFormGroup.verificaCampo(form,'txtDescricao')">{{mensagemErro}}</small>
                         </div>
@@ -61,7 +64,8 @@
                             <button pButton pRipple label="Salvar" icon="pi pi-save"
                                 (click)="editarSalvarClick()"></button>
                         </div>
-                        <div class="p-field p-col-12  p-lg-3 p-as-end p-md-3 p-sm-3" *ngIf="exibeBotaoExcluirArquivoPasta">
+                        <div class="p-field p-col-12  p-lg-3 p-as-end p-md-3 p-sm-3"
+                            *ngIf="exibeBotaoExcluirArquivoPasta">
                             <button pButton pRipple label="Excluir" icon="pi pi-trash" class="p-button-danger"
                                 (click)="excluirClick()"></button>
                         </div>
@@ -69,8 +73,9 @@
                 </div>
             </form>
             <div class="p-fluid p-formgrid p-grid" *ngIf="ehUpload">
-                <p-fileUpload  class="p-col-12" id="arquivo" name="arquivo" [customUpload]="true" (uploadHandler)="myUploader($event)"
-                    fileLimit="1" accept=".pdf" maxFileSize="52428800" chooseLabel="Carregar" cancelLabel="Cancelar">
+                <p-fileUpload class="p-col-12" id="arquivo" name="arquivo" [customUpload]="true"
+                    (uploadHandler)="myUploader($event)" fileLimit="1" accept=".pdf" maxFileSize="52428800"
+                    chooseLabel="Carregar" cancelLabel="Cancelar">
                     <ng-template pTemplate="content">
                         <ul *ngIf="uploadedFiles.length">
                             <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
@@ -78,8 +83,9 @@
                     </ng-template>
                 </p-fileUpload>
             </div>
-            
-            <p-treeTable [value]="estrutura" [columns]="cols" selectionMode="single" [(selection)]="estruturaSelecionada" dataKey="key">
+
+            <p-treeTable [value]="estrutura" [columns]="cols" selectionMode="single"
+                [(selection)]="estruturaSelecionada" dataKey="key">
                 <ng-template pTemplate="header" let-columns>
                     <tr *ngIf="telaDesktop">
                         <th *ngFor="let col of columns" [ngStyle]="{'display': col.visible}"
