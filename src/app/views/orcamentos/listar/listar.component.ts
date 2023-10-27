@@ -131,6 +131,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
+    this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
 
     const promises = [this.buscarConfigValidade(),
     this.buscarVendedores(), this.buscarStatus(), this.buscarParceiros()];
@@ -477,6 +478,8 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   pesquisar() {
+    this.filtro.pagina = 0;
+    this.first = 0;
     this.setarFiltro();
     this.filtro.idBaseBusca = null;
     this.buscarLista(this.filtro);
@@ -536,7 +539,6 @@ export class OrcamentosListarComponent implements OnInit {
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
-    this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
     this.first = 0;
   }
 
@@ -546,7 +548,6 @@ export class OrcamentosListarComponent implements OnInit {
 
       this.filtro.pagina = event.first / event.rows;
       this.filtro.qtdeItensPagina = event.rows;
-      this.qtdePorPaginaSelecionado = event.rows;
       if (!!event.sortField) {
         this.filtro.nomeColunaOrdenacao = event.sortField;
         this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
