@@ -91,6 +91,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   desabilitarEnvio: boolean = false;
   antigoPercRT: number;
   clicouAddProdutos: boolean = false;
+  voltou: boolean = false;
 
   @ViewChild("formaPagto", { static: true }) formaPagto: FormaPagtoComponent;
   @ViewChild("opcoes", { static: true }) opcoes: OpcoesComponent;
@@ -118,11 +119,15 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         if (this.param == "clone") {
           this.buscarProdutosAutomatico();
         }
-        if (this.novoOrcamentoService.lstProdutosSelecionadosApoio &&
-          this.novoOrcamentoService.lstProdutosSelecionadosApoio.length > 0) {
-          this.setarPreenchimentoOpcao();
+        //aqui devemos buscar da session e validar se existe
+        let json = sessionStorage.getItem("filtro");
+        if (!!json) {
+          let modelo = JSON.parse(json);
+          let produtos = modelo[0].produtos;
+          if (produtos && produtos.length > 0) {
+            this.setarPreenchimentoOpcao();
+          }
         }
-
       });
     }
   }
@@ -801,10 +806,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.sweetalertService.dialogo("", "Pode ser que seja necessária a revisão da forma de pagamento devido às alterações nos dados do cliente!<br> Deseja realmente voltar?").subscribe((r) => {
       if (!r) return;
 
-      this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
-      this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = JSON.parse(JSON.stringify(this.formaPagto.formaPagtoCriacaoAprazo));
+      //aqui devemos armazenar os produtos selecionados e pagtos 
+      sessionStorage.setItem("filtro", JSON.stringify([{ "produtos": this.novoOrcamentoService.lstProdutosSelecionadosApoio, "pagtos": [{ "avista": this.formaPagto.formaPagtoCriacaoAvista, "aprazo": this.formaPagto.formaPagtoCriacaoAprazo }] }]));
+      // this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
+      // this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = JSON.parse(JSON.stringify(this.formaPagto.formaPagtoCriacaoAprazo));
 
       this.novoOrcamentoService.lstProdutosSelecionados = new Array();
+      this.voltou = true;
       this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
     });
   }
@@ -840,6 +848,11 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     const promise = [this.buscarProdutos(false)];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
+      let json = sessionStorage.getItem("filtro");
+      let modelo = JSON.parse(json);
+      let produtos = modelo[0].produtos;
+
+      this.novoOrcamentoService.lstProdutosSelecionadosApoio = produtos;
       this.novoOrcamentoService.lstProdutosSelecionados = this.novoOrcamentoService.lstProdutosSelecionadosApoio;
       this.inserirProduto();
       this.novoOrcamentoService.descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
@@ -856,24 +869,33 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   addFormaPagtoSelecionados(formasPagtos: any[]) {
-    
-    let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
-    if (pagtoAvista.length > 0) {
-      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista[0];
+    let json = sessionStorage.getItem("filtro");
+    let modelo = JSON.parse(json);
+    let pagtos = modelo[0].pagtos;
+
+    let pagtoAvista = pagtos[0].avista;
+    if (!!pagtoAvista) {
+      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista;
       this.formaPagto.calcularValorAvista();
     }
 
-    let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
-    if (pagtoPrazo.length > 0) {
-      let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo[0].tipo_parcelamento);
+    let pagtoPrazo = pagtos[0].aprazo;
+    if (!!pagtoPrazo) {
+      let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo.tipo_parcelamento);
       if (pagtoExiste.length == 0) return;
 
-      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
+      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo;
       this.formaPagto.setarQtdeMaxParcelasEDias();
       this.formaPagto.setarQtdeParcelas();
       this.formaPagto.cdref.detectChanges();
       this.cdref.detectChanges();
       this.formaPagto.setarSiglaPagto();
+    }
+  }
+
+  ngOnDestroy() {
+    if(!this.voltou){
+      sessionStorage.removeItem("filtro");
     }
   }
 }
