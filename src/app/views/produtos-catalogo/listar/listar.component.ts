@@ -225,6 +225,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   pesquisar() {
+    this.filtro.pagina = 0;
     let filtro = this.setarFiltro();
     this.buscarTodosProdutos(filtro);
   }
