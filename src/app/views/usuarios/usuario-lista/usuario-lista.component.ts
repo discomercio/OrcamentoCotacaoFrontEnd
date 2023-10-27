@@ -102,6 +102,8 @@ export class UsuarioListaComponent implements OnInit {
   }
 
   filtrar() {
+    this.filtro.pagina = 0;
+    this.first = 0;
     this.buscarLista(this.filtro);
   }
 
