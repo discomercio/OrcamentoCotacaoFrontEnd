@@ -509,6 +509,10 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       v = 0;
     }
 
+    if(Number.parseInt(v) > this.novoOrcamentoService.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO){
+      v = 0;
+    }
+
     if (!this.selecionados) {
       this.selecionados = new Array<ProdutoTela>();
     }
