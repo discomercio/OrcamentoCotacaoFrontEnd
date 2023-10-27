@@ -16,7 +16,7 @@
                     (click)="filtrar()"></button>
                 </div>
             </div>
-            <p-table #dt1 [value]="listaPropriedade" [responsive]="true" responsiveLayout="stack" draggableRows="true"
+            <p-table #dt1 [value]="listaPropriedade" [responsive]="false" responsiveLayout="stack" draggableRows="true"
                 breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
                 [rows]="filtro.qtdeItensPagina" [paginator]="true" draggableColumns="true" [lazy]="true"
                 (onLazyLoad)="buscarRegistros($event)" [(first)]="first" [showCurrentPageReport]="true"
