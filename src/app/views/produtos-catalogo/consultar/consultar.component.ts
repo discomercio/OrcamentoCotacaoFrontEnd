@@ -72,6 +72,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       return;
     }
 
+    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+
     this.carregando = true;
     let promises: any = [this.buscarPropriedades(), this.buscarFabricantes()];
     Promise.all(promises).then((r: any) => {
@@ -197,6 +199,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
   }
 
   pesquisar() {
+    this.filtro.pagina = 0;
+    this.first = 0;
     let filtro = this.setarFiltro();
     this.buscarTodosProdutos(filtro);
   }
@@ -237,10 +241,8 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     produtoCatalogoListar.descargaCondensadoraSelecionado = this.filtro.descargaCondensadoraSelecionado;
     produtoCatalogoListar.cicloSelecionado = this.filtro.cicloSelecionado;
     produtoCatalogoListar.ativoSelecionado = "true";
-    produtoCatalogoListar.pagina = 0;
-    produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
-    
-    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+    produtoCatalogoListar.qtdeItensPorPagina = this.filtro.qtdeItensPorPagina;
+
     this.first = 0;
     this.cdr.detectChanges();
     return produtoCatalogoListar;
@@ -252,7 +254,7 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
       filtro.pagina = event.first / event.rows;
       this.filtro.pagina = filtro.pagina;
       filtro.qtdeItensPorPagina = event.rows;
-      this.filtro.qtdeItensPorPagina = event.rows;
+      this.filtro = filtro;
       this.buscarTodosProdutos(filtro);
     }
   }
