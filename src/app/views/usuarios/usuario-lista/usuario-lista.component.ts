@@ -42,6 +42,7 @@ export class UsuarioListaComponent implements OnInit {
   permite: boolean = false;
   pesquisa: string;
   first: number = 0;
+  realizandoAcao: boolean = false;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
@@ -55,13 +56,14 @@ export class UsuarioListaComponent implements OnInit {
     this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
     this.criarColunas();
     let promise = [this.buscarUsuarios()];
-    Promise.all(promise).then((r)=>{
+    Promise.all(promise).then((r) => {
       this.setarUsuarios(r[0]);
-    }).catch((e)=>{
+    }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
-    }).finally(()=>{
+    }).finally(() => {
       this.carregando = false;
+      this.setarFiltro();
     });
   }
 
@@ -114,8 +116,16 @@ export class UsuarioListaComponent implements OnInit {
     return lista;
   }
 
-  pesquisar() {
+  setarFiltro(){
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && url.indexOf("/usuarios/usuario-edicao") > -1) {
+      let json = sessionStorage.getItem("filtro");
+      this.pesquisa = json;
+      this.pesquisar();
+    }
+  }
 
+  pesquisar() {
     if (this.pesquisa && this.pesquisa.length > 3) {
       this.usuarios = new Array<OrcamentistaIndicadorVendedorDto>();
       this.usuariosApoio.forEach(x => {
@@ -123,6 +133,8 @@ export class UsuarioListaComponent implements OnInit {
           this.usuarios.push(x);
         }
       });
+      sessionStorage.setItem("filtro", this.pesquisa);
+
       this.first = 0;
       return;
     }
@@ -132,6 +144,9 @@ export class UsuarioListaComponent implements OnInit {
   }
 
   editarUsuario(orcamentista: OrcamentistaIndicadorVendedorDto) {
+    this.realizandoAcao = true;
+    sessionStorage.setItem("urlAnterior", "/usuarios/usuario-edicao");
+
     if (!!orcamentista) {
       this.router.navigate(['/usuarios/usuario-edicao', orcamentista.id]);
     }
@@ -165,5 +180,12 @@ export class UsuarioListaComponent implements OnInit {
         this.alertaService.mostrarErroInternet(e);
       });
     });
+  }
+
+  ngOnDestroy() {
+    if (!this.realizandoAcao) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+    }
   }
 }

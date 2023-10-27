@@ -16,7 +16,7 @@
                     </tr>
                     <tr>
                         <th>
-                            <input pInputText type="text" class="p-lg-7" (input)="dt1.filter($event.target.value, 'descricao', 'contains')" [value]="dt1.filters['descricao']?.value" placeholder="Busca por descrição" class="p-column-filter">
+                            <input pInputText type="text" class="p-lg-7" (input)="filtrar($event)" [(ngModel)]="filtro" placeholder="Busca por descrição" class="p-column-filter">
                         </th>
                         <th>
                             <div class="p-lg-1">&nbsp;</div>
