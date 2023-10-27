@@ -279,6 +279,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
       filtro.pagina = event.first / event.rows;
       filtro.qtdeItensPorPagina = event.rows;
       this.qtdePorPaginaSelecionado = event.rows;
+      this.filtro = filtro;
       this.buscarTodosProdutos(filtro);
     }
   }
