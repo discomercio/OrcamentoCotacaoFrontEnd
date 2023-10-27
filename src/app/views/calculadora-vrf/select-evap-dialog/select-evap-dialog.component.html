@@ -1,4 +1,97 @@
-<div class="container">
+<div class="p-col-12" [ngClass]="{'carregando': carregando}">
+    <div class="p-col-12 p-fluid p-formgrid p-mx-0 p-px-0">
+        <div class="p-field p-grid p-pr-0">
+            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
+                <label>Linha de produto</label>
+                <p-dropdown [options]="lstLinhaProdutos" placeholder="Selecione" optionLabel="label" optionValue="value"
+                    [(ngModel)]="linhaProduto" [showClear]="true">
+                </p-dropdown>
+            </div>
+            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
+                <label>Capacidade (BTU/h)</label>
+                <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="value"
+                    [(ngModel)]="btu" [showClear]="true">
+                </p-dropdown>
+            </div>
+            <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
+                <label>Kcal/h</label>
+                <p-dropdown [options]="lstKcals" placeholder="Selecione" optionLabel="label" optionValue="value"
+                    [(ngModel)]="kcal" [showClear]="true">
+                </p-dropdown>
+            </div>
+            <div
+                class="p-as-end p-col-6 p-d-inline-flex p-field p-grid p-jc-end p-lg-3 p-md-12 p-pr-md-0 p-pr-sm-0 p-sm-12 p-sm-4">
+                <div class="p-col-9 p-lg-8 p-md-2 p-px-0 p-sm-3">
+                    <button pButton id="pesquisar" type="button" label="Pesquisar" icon="pi pi-search"
+                        (click)="pesquisar()"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="p-col-12">
+        <div
+            style="max-height: calc(100vh - 300px); min-height: calc(100vh - 300px); overflow:auto; border: 1px solid #cecece;">
+            <p-table #dt1 [value]="evaporadorasFiltradas" [responsive]="true" responsiveLayout="stack"
+                styleClass="p-datatable-customers p-datatable-sm" autoLayout="true" [filterDelay]="0">
+                <ng-template pTemplate="header" class="p-text-center" let-p>
+                    <tr>
+                        <th class="p-text-left p-col-6 p-py-0">Produto</th>
+                        <th class="p-text-center p-col-4">Qtde</th>
+                        <th class="p-text-center p-col-1 p-py-0">Capacidade <br>(BTU/h)</th>
+                        <th class="p-text-center p-col-1 p-py-0">Kcal/h</th>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="body" let-p>
+                    <tr class="" [pSelectableRow]="p" id="linha_tabela_{{p.produto}}">
+                        <td class="p-text-left p-py-2">
+                            <p class="p-ml-2"
+                                [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
+                            </p>
+
+                        </td>
+                        <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
+                            <span class="pi pi-minus-circle p-px-1" (click)="subtrairQtde(p)"> </span>
+                            <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
+                                (keyup)="formatarQtde($event, p)" id="qtde" />
+                            <span class="pi pi-plus-circle p-px-1" (click)="addQtde(p)"> </span>
+                        </td>
+                        <td class="p-text-center p-py-0">
+                            {{p.btu}}
+                        </td>
+                        <td class="p-text-center p-py-0">
+                            {{p.kcal}}
+                        </td>
+                    </tr>
+                </ng-template>
+                <ng-template pTemplate="emptymessage">
+                    <tr>
+                        <td colspan="7" class="p-text-center">
+                            Clique em Pesquisar para listar produtos, utilize os filtros para agilizar a pesquisa.
+                        </td>
+                    </tr>
+                </ng-template>
+            </p-table>
+        </div>
+        <div class="p-col-12 p-grid p-jc-around p-mx-0 p-px-0 p-mx-0">
+            <div class="p-col-6 p-px-0">
+                <span>Selecionado(s): {{selecionados.length}} produto(s)</span>
+            </div>
+            <div class="p-col-6 p-d-inline-flex p-jc-end p-px-0 p-py-2">
+                <div class="p-p-2">
+                    <p-button icon="pi pi-plus" (click)="addProduto()" *ngIf="!telaDesktop"></p-button>
+                    <button type="text" pButton label="Adicionar" icon="pi pi-plus" (click)="addProduto()"
+                        *ngIf="telaDesktop" style="width: auto"></button>
+                </div>
+                <div class="p-py-2">
+                    <p-button icon="pi pi-times" (click)="fechar()" *ngIf="!telaDesktop"></p-button>
+                    <button type="text" pButton label="Fechar" icon="pi pi-times" (click)="fechar()" *ngIf="telaDesktop"
+                        style="width: auto"></button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <div class="container">
     <div class="p-col-12 p-px-0">
         <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-d-xl-inline-flex p-fluid 
                 p-formgrid p-grid p-lg-12 p-mx-0 p-px-0 p-py-0 p-xl-12">
@@ -53,7 +146,7 @@
                             <p class="p-ml-2"
                                 [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
                             </p>
-                            
+
                         </td>
                         <td class="p-text-center p-py-0">
                             {{p.btu}}
@@ -71,4 +164,4 @@
         <div class="p-col-12 p-text-center">
             <button type="text" pButton label="Ok" (click)="addProduto()" style="width: auto"></button>
         </div>
-    </div>
+    </div> -->
