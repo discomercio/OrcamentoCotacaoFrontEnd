@@ -464,7 +464,9 @@ export class OrcamentosListarComponent implements OnInit {
         // this.buscarVendedoresDoParceiro(this.filtro.Parceiros);
       }
 
-      this.filtro.pagina = 0;
+      if (!this.filtro.pagina || this.filtro.pagina == 0)
+        this.filtro.pagina = 0;
+
       this.cdr.detectChanges();
       this.filtro.idBaseBusca = null;
       this.buscarLista(this.filtro);
@@ -530,6 +532,7 @@ export class OrcamentosListarComponent implements OnInit {
     if (this.VendedorParceiros && this.VendedorParceiros.length > 0) {
       this.filtro.VendedorParceiros = this.VendedorParceiros;
     }
+
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
@@ -558,9 +561,6 @@ export class OrcamentosListarComponent implements OnInit {
       if (this.filtro.idBaseBusca == null && this.parametro == "PEDIDOS")
         this.filtro.idBaseBusca = this.lstDtoFiltrada[0].NumPedido;
 
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
-        this.filtro.pagina = 0;
-      }
       this.buscarLista(this.filtro);
     }
   }
@@ -587,10 +587,13 @@ export class OrcamentosListarComponent implements OnInit {
       this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
       this.mostrarQtdePorPagina = true;
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
-        this.first = 0;
-        this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
-      }
+      // if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
+      //   this.first = 0;
+      //   this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
+      // }
+
+      if (!!this.filtro.pagina)
+        this.first = this.filtro.pagina * this.filtro.qtdeItensPagina;
 
       this.lstDtoFiltrada = this.lstDto;
       // this.filtro.Parceiros = this.filtroParceirosApoio;

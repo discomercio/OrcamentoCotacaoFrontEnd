@@ -5,17 +5,34 @@
                 &nbsp;<button pButton *ngIf="permite" style="align-content: flex-end;" icon="fa fa-plus" (click)="editarUsuario()"
                     pTooltip="Novo usuário"></button>
             </h4>
-            <div class="p-fluid">
-                <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6">
-                    <label for="texto">Pesquisar por</label>
-                    <input id="texto" type="text" pInputText [(ngModel)]="pesquisa" (change)="pesquisar()"
-                        (keyup)="pesquisar()" placeholder="Parceiro, nome, e-mail, responsável, ativo" />
+            <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-jc-around">
+                <div class="p-col-12 p-grid p-lg-9 p-md-9 p-px-0 p-sm-9">
+                    <div class="p-as-end p-col-6 p-field p-lg-6 p-md-6 p-pl-0 p-sm-6">
+                        <label for="texto">Pesquisar por</label>
+                        <input id="texto" type="text" pInputText [(ngModel)]="filtro.pesquisa"
+                            placeholder="Parceiro, nome, e-mail, responsável" />
+                    </div>
+                    <div class="p-as-end p-col-6 p-field p-lg-4 p-md-4 p-sm-4">
+                        <label>Ativo</label>
+                        <p-dropdown [options]="cboAtivos" [(ngModel)]="filtro.ativo" [showClear]="true"
+                            optionValue="Id" optionLabel="Value" placeholder="Selecione">
+                        </p-dropdown>
+                    </div>
                 </div>
+                <div class="p-col-12 p-grid p-jc-end p-lg-3 p-md-3 p-sm-12 p-px-0">
+                    <div class="p-px-0 p-as-center">
+                        <button pButton type="button" label="Pesquisar" icon="pi pi-search"
+                        (click)="filtrar()"></button>
+                    </div>
+                </div>
+                
             </div>
-            
-            <p-table #dt1 [value]="usuarios" [responsive]="false" responsiveLayout="stack"
-                [ngClass]="{'carregando': carregando}" breakpoint="680px" autoLayout="true" [(first)]="first"
-                styleClass="p-datatable-customers p-datatable-striped" [rows]="10" [paginator]="true" [filterDelay]="0">
+            <p-table #dt1 [value]="usuarioLista" [responsive]="true" responsiveLayout="stack" draggableRows="true"
+                breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
+                [rows]="filtro.qtdeItensPagina" [paginator]="true" draggableColumns="true" [lazy]="true"
+                (onLazyLoad)="buscarRegistros($event)" [(first)]="first" [showCurrentPageReport]="true"
+                [rowsPerPageOptions]="[5,10,20]" [totalRecords]="qtdeRegistros"
+                currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}">
                 <ng-template pTemplate="header">
                     <tr class="font-size">
                         <th>Parceiro</th>

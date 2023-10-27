@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
 import { OrcamentistaIndicadorVendedorDeleteRequest } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-request';
 import { OrcamentistaIndicadorVendedorDeleteResponse } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor-delete-response';
+import { UsuariosRequest } from 'src/app/dto/usuarios/usuarios-request';
+import { ListaOrcamentistaVendedorResponse } from 'src/app/dto/orcamentista-indicador-vendedor/lista-orcamentista-vendedor-response';
 
 @Injectable({
   providedIn: 'root'
@@ -64,5 +66,9 @@ export class OrcamentistaIndicadorVendedorService {
 
   excluir(request:OrcamentistaIndicadorVendedorDeleteRequest):Observable<OrcamentistaIndicadorVendedorDeleteResponse>{
     return this.http.post<OrcamentistaIndicadorVendedorDeleteResponse>(this.appSettingsService.config.apiUrl + 'OrcamentistaEIndicadorVendedor/delete', request);
+  }
+
+  buscarVendedoresParceiro(request:UsuariosRequest):Observable<ListaOrcamentistaVendedorResponse>{
+    return this.http.post<ListaOrcamentistaVendedorResponse>(`${this.appSettingsService.config.apiUrl}OrcamentistaEIndicadorVendedor/listar-orcamentista-vendedor`, request);
   }
 }

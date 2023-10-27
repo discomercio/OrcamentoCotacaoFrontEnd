@@ -239,9 +239,10 @@ export class ProdutosCatalogoConsultarComponent implements OnInit {
     produtoCatalogoListar.ativoSelecionado = "true";
     produtoCatalogoListar.pagina = 0;
     produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+    
     this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
-
     this.first = 0;
+    this.cdr.detectChanges();
     return produtoCatalogoListar;
   }
 

@@ -9,6 +9,9 @@ import { ProdutoCatalogoPropriedade } from 'src/app/dto/produtos-catalogo/Produt
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
+import { LazyLoadEvent } from 'primeng/api';
+import { PropriedadeRequest } from 'src/app/dto/produtos-catalogo/propriedade-request';
+import { PropriedadeResponse } from 'src/app/dto/produtos-catalogo/propriedade-response';
 
 @Component({
   selector: 'app-listar-produtos',
@@ -29,12 +32,18 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
   @ViewChild('dataTable') table: Table;
   public form: FormGroup;
-  listaPropriedadesProdutoDto: ProdutoCatalogoPropriedade[];
-  listaPropriedadesProdutoApoioDto: ProdutoCatalogoPropriedade[] = new Array();
+  listaPropriedade: Array<PropriedadeResponse>;
+  listaPropriedadeApoio: Array<PropriedadeResponse> = new Array();
   cols: any[];
   carregando: boolean = false;
   realizandoAcao: boolean = false;
-  filtro: string = "";
+  // filtro: string = "";
+  pagina: number = 0;
+  first: number = 0;
+  qtdePorPaginaInicial: number = 10;
+  qtdeRegistros: number = 0;
+  filtro: PropriedadeRequest = new PropriedadeRequest();
+  qtdePorPaginaSelecionado: number = 10;
 
   ngOnInit(): void {
 
@@ -45,7 +54,7 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
     this.carregando = true;
     this.criarTabela();
-    this.buscarTodosProdutos();
+    this.setarFiltro();
   }
 
   criarTabela() {
@@ -56,34 +65,55 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
     ]
   }
 
-  buscarTodosProdutos() {
-    this.service.buscarPropriedades().toPromise().then((r) => {
-      if (r != null) {
-        this.listaPropriedadesProdutoDto = r;
-        this.listaPropriedadesProdutoApoioDto = JSON.parse(JSON.stringify(r));
+  setarFiltro() {
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && (url.indexOf("/produtos-catalogo/propriedades/editar") > -1 ||
+      url.indexOf("/produtos-catalogo/propriedades/criar") > -1)) {
+      let json = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(json);
+    }
+    else {
+      this.filtro.pagina = 0;
+      this.filtro.descricao = "";
+      this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
+      this.filtro.ordenacaoAscendente = false;
+    }
 
-        let url = sessionStorage.getItem("urlAnterior");
-        if (!!url && (url.indexOf("/produtos-catalogo/propriedades/editar") > -1 ||
-          url.indexOf("/produtos-catalogo/propriedades/criar") > -1)) {
-          let json = sessionStorage.getItem("filtro");
-          this.filtro = json;
-        }
-        this.filtrar();
+    this.buscarLista(this.filtro);
+  }
+
+  filtrar() {
+    this.buscarLista(this.filtro);
+  }
+
+  buscarLista(filtro: PropriedadeRequest) {
+    sessionStorage.setItem("filtro", JSON.stringify(filtro));
+    this.service.listarPropriedades(filtro).toPromise().then((r) => {
+      if (r.Sucesso) {
+        this.listaPropriedade = r.listaPropriedades;
+        this.listaPropriedadeApoio = JSON.parse(JSON.stringify(r.listaPropriedades));
+        this.qtdeRegistros = r.qtdeRegistros;
         this.carregando = false;
+        
+        if (!!this.filtro.pagina)
+          this.first = this.filtro.pagina * this.filtro.qtdeItensPagina;
       }
     }).catch((r) => this.alertaService.mostrarErroInternet(r));
   }
 
-  filtrar() {
+  buscarRegistros(event: LazyLoadEvent) {
+    if (!this.listaPropriedade) return;
+    this.filtro.pagina = event.first / event.rows;
+    this.filtro.qtdeItensPagina = event.rows;
+    this.qtdePorPaginaSelecionado = event.rows;
+    if (!!event.sortField) {
+      this.filtro.nomeColuna = event.sortField;
+      this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
+    } else {
+      this.filtro.ordenacaoAscendente = false;
+    }
 
-    sessionStorage.setItem("filtro", this.filtro);
-    let lstFiltrada = this.listaPropriedadesProdutoApoioDto.filter(x => x.descricao.toLocaleLowerCase().indexOf(this.filtro) > -1);
-    if (lstFiltrada.length > 0) {
-      this.listaPropriedadesProdutoDto = lstFiltrada;
-    }
-    else {
-      this.listaPropriedadesProdutoDto = this.listaPropriedadesProdutoApoioDto;
-    }
+    this.buscarLista(this.filtro);
   }
 
   editarClick(id: any) {
@@ -133,7 +163,7 @@ export class ProdutosCatalogoPropriedadesListarComponent implements OnInit {
 
           this.sweetalertService.sucesso("Propriedade excluída com sucesso.");
           this.carregando = true;
-          this.buscarTodosProdutos();
+          this.buscarLista(this.filtro);
 
         }).catch((r) => this.alertaService.mostrarErroInternet(r));
       }
