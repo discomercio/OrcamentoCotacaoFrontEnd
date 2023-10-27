@@ -18,7 +18,7 @@
             </div>
             <p-table #dt1 [value]="listaPropriedade" [responsive]="true" responsiveLayout="stack" draggableRows="true"
                 breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
-                [rows]="qtdePorPaginaInicial" [paginator]="true" draggableColumns="true" [lazy]="true"
+                [rows]="filtro.qtdeItensPagina" [paginator]="true" draggableColumns="true" [lazy]="true"
                 (onLazyLoad)="buscarRegistros($event)" [(first)]="first" [showCurrentPageReport]="true"
                 [rowsPerPageOptions]="[5,10,20]" [totalRecords]="qtdeRegistros"
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}">
