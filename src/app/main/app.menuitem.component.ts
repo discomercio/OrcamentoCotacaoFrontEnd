@@ -1,10 +1,10 @@
-import {ChangeDetectorRef, Component, Input, OnDestroy, OnInit} from '@angular/core';
-import {NavigationEnd, Router} from '@angular/router';
-import {animate, state, style, transition, trigger} from '@angular/animations';
-import {Subscription} from 'rxjs';
-import {filter} from 'rxjs/operators';
-import {MenuService} from './app.menu.service';
-import {AppMainComponent} from './app.main.component';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
+import { animate, state, style, transition, trigger } from '@angular/animations';
+import { Subscription } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { MenuService } from './app.menu.service';
+import { AppMainComponent } from './app.main.component';
 
 @Component({
     /* tslint:disable:component-selector */
@@ -124,6 +124,19 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
     }
 
     itemClick(event: Event) {
+        if (!!this.item.routerLink) {
+            if (this.item.routerLink[0].indexOf("orcamentos/listar/orcamentos") > -1 ||
+                this.item.routerLink[0].indexOf("orcamentos/listar/pendentes") > -1 ||
+                this.item.routerLink[0].indexOf("orcamentos/listar/pedidos") > -1 ||
+                this.item.routerLink[0].indexOf("/produtos-catalogo/consultar") > -1 ||
+                this.item.routerLink[0].indexOf("/produtos-catalogo/listar") > -1 ||
+                this.item.routerLink[0].indexOf("/produtos-catalogo/propriedades/listar") > -1 ||
+                this.item.routerLink[0].indexOf("/usuarios/usuario-lista") > -1 ||
+                this.item.routerLink[0].indexOf("/orcamentos/cadastrar-cliente/") > -1) {
+                sessionStorage.removeItem("filtro");
+                sessionStorage.removeItem("urlAnterior");
+            }
+        }
         // avoid processing disabled items
         if (this.item.disabled) {
             event.preventDefault();
@@ -140,7 +153,7 @@ export class AppMenuitemComponent implements OnInit, OnDestroy {
 
         // execute command
         if (this.item.command) {
-            this.item.command({originalEvent: event, item: this.item});
+            this.item.command({ originalEvent: event, item: this.item });
         }
 
         // toggle active state

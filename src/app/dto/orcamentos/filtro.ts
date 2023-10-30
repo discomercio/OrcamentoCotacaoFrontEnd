@@ -14,8 +14,8 @@ export class Filtro {
     Mensagem: string;
     DtInicio: Date | string;
     DtFim: Date | string;
-    DtInicioExpiracao: Date;
-    DtFimExpiracao: Date;
+    DtInicioExpiracao: Date | string;
+    DtFimExpiracao: Date | string;
     Exportar: boolean;
 
     pagina: number;
@@ -26,9 +26,9 @@ export class Filtro {
     idBaseBusca: string;
 
     OpcoesOrcamento: string;
-    ComIndicador:boolean;
-    Fabricantes:string[];
-    Categorias:string[];
+    ComIndicador: boolean;
+    Fabricantes: string[];
+    Categorias: string[];
 
-    LojaLogada:string;
+    LojaLogada: string;
 }

@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { MensagemService } from 'src/app/utilities/mensagem/mensagem.service';
-import { ProdutoCatalogo } from '../../../dto/produtos-catalogo/ProdutoCatalogo';
 import { ProdutoCatalogoService } from 'src/app/service/produtos-catalogo/produto.catalogo.service';
 import { Filtro } from 'src/app/dto/orcamentos/filtro';
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
@@ -69,6 +68,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   qtdeRegistros: number;
   urlAnterior: any;
   filtro: ProdutoCatalogoListar = new ProdutoCatalogoListar();
+  realizandoAcao: boolean = false;
 
   ngOnInit(): void {
 
@@ -80,6 +80,8 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
 
     this.urlAnterior = sessionStorage.getItem("urlAnterior");
     this.carregando = true;
+
+    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
 
     this.carregarImagem();
     this.carregarAtivo();
@@ -111,7 +113,20 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
       this.carregando = false;
+      this.pesquisaAuto();
     });
+  }
+
+  pesquisaAuto() {
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && (url.indexOf("/produtos-catalogo/editar") > -1 || 
+    url.indexOf("/produtos-catalogo/clonar") > -1 ||
+    url.indexOf("/produtos-catalogo/criar") > -1)) {
+      let json = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(json);
+      this.buscarTodosProdutos(this.filtro);
+      this.cdr.detectChanges();
+    }
   }
 
   buscarPropriedades(): Promise<ProdutoCatalogoPropriedade[]> {
@@ -185,7 +200,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   buscarTodosProdutos(filtro: ProdutoCatalogoListar) {
-
+    debugger;
     sessionStorage.setItem("filtro", JSON.stringify(filtro));
     this.carregando = true;
     this.produtoCatalogResponse = new Array<ProdutoCatalogoResponse>();
@@ -210,6 +225,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   pesquisar() {
+    this.filtro.pagina = 0;
     let filtro = this.setarFiltro();
     this.buscarTodosProdutos(filtro);
   }
@@ -251,9 +267,8 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     produtoCatalogoListar.cicloSelecionado = this.filtro.cicloSelecionado;
     produtoCatalogoListar.imagemSelecionado = this.filtro.imagemSelecionado;
     produtoCatalogoListar.ativoSelecionado = this.filtro.ativoSelecionado;
-    produtoCatalogoListar.pagina = 0;
-    produtoCatalogoListar.qtdeItensPorPagina = this.qtdePorPaginaInicial;
-    this.filtro.qtdeItensPorPagina = this.qtdePorPaginaInicial;
+    produtoCatalogoListar.pagina = this.filtro.pagina;
+    produtoCatalogoListar.qtdeItensPorPagina = this.filtro.qtdeItensPorPagina;
 
     this.first = 0;
     return produtoCatalogoListar;
@@ -265,7 +280,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     if (!!this.produtoCatalogResponse && this.produtoCatalogResponse.length > 0) {
       filtro.pagina = event.first / event.rows;
       filtro.qtdeItensPorPagina = event.rows;
-      this.qtdePorPaginaSelecionado = event.rows;
+      this.filtro = filtro;
       this.buscarTodosProdutos(filtro);
     }
   }
@@ -275,10 +290,14 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   editarClick(id: any) {
+    this.realizandoAcao = true;
+    sessionStorage.setItem("urlAnterior", "/produtos-catalogo/editar");
     this.router.navigate(["/produtos-catalogo/editar", id]);
   }
 
   clonarClick(id: any) {
+    this.realizandoAcao = true;
+    sessionStorage.setItem("urlAnterior", "/produtos-catalogo/clonar");
     this.router.navigate(["/produtos-catalogo/clonar", id]);
   }
 
@@ -306,6 +325,15 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   criarClick() {
+    this.realizandoAcao = true;
+    sessionStorage.setItem("urlAnterior", "/produtos-catalogo/criar");
     this.router.navigate(["/produtos-catalogo/criar"]);
+  }
+
+  ngOnDestroy() {
+    if (!this.realizandoAcao) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+    }
   }
 }

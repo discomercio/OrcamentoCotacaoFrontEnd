@@ -1,5 +1,5 @@
-<div class="content-area">
-    <div class="nossobody" [ngClass]="{'carregando': carregando}">
+<div class="content-area" >
+    <div class="nossobody" [ngClass]="{'carregando': carregando}" [ngStyle]="telaDesktop ? {'':''} : {'display':'block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'}">
 
         <section id="myPrint">
             <br>
@@ -8,7 +8,7 @@
                     onclick="window.print();"></button>
             </div> -->
             <br>
-            <div id="printable" name="printable">
+            <div id="printable" name="printable" class="p-p-3">
                 <div class="nossobody-before">
                     As informações aqui contidas são confidenciais e protegidas pelo sigilo legal. A divulgação,
                     distribuição ou

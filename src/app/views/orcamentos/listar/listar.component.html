@@ -45,7 +45,7 @@
                             [ngClass]="{'carregando':carregandoVendedoresParceiros}"
                             *ngIf="tipoUsuario != constantes.PARCEIRO_VENDEDOR">
                             <label for="filtroLoja">Vendedor do Parceiro</label>
-                            <p-multiSelect [options]="cboVendedoresParceiros" [(ngModel)]="filtro.VendedorParceiros"
+                            <p-multiSelect [options]="cboVendedoresParceiros" [(ngModel)]="VendedorParceiros"
                                 defaultLabel="Selecione" optionValue="Id" optionLabel="Value"
                                 emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
                                 resetFilterOnHide="true">
@@ -62,14 +62,14 @@
                                 <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6"
                                     *ngIf="parametro == 'ORCAMENTOS'">
                                     <label for="dataInicio">Início da expiração</label>
-                                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtInicioExpiracao"
+                                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="dtInicioExpiracao"
                                         [showIcon]="true">
                                     </p-calendar>
                                 </div>
                                 <div class="p-as-end p-field p-col-6 p-lg-3 p-md-3 p-sm-6"
                                     *ngIf="parametro == 'ORCAMENTOS'">
                                     <label for="dataFinal">Fim da expiração</label>
-                                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="filtro.DtFimExpiracao"
+                                    <p-calendar dateFormat="dd/mm/yy" [(ngModel)]="dtFimExpiracao"
                                         [showIcon]="true">
                                     </p-calendar>
 
@@ -104,9 +104,9 @@
             </div>
             <!-- </form> -->
 
-            <p-table #dt1 id="dt1" [value]="lstDtoFiltrada" [columns]="cols" [responsive]="true" [customSort]="true"
+            <p-table #dt1 id="dt1" [value]="lstDtoFiltrada" [columns]="cols" [responsive]="false" [customSort]="true"
                 responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
-                styleClass="p-datatable-customers p-datatable-striped" [rows]="qtdePorPaginaInicial" [paginator]="true"
+                styleClass="p-datatable-customers p-datatable-striped" [rows]="filtro.qtdeItensPagina" [paginator]="true"
                 [showCurrentPageReport]="mostrarQtdePorPagina" [rowsPerPageOptions]="[5,10,20]"
                 [totalRecords]="qtdeRegistros"
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}" [lazy]="true"

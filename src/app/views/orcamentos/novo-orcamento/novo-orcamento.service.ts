@@ -40,11 +40,15 @@ export class NovoOrcamentoService {
   public limiteQtdeProdutoOpcao: number = 12;
   public pageItens: number = 3;
   public lstProdutosSelecionados: ProdutoOrcamentoDto[] = new Array();
+  public lstProdutosSelecionadosApoio: ProdutoOrcamentoDto[];
+  public formaPagtoCriacaoAprazoApoio: FormaPagtoCriacao;
+  public formaPagtoCriacaoAvistaApoio: FormaPagtoCriacao;
   public coeficientes: Array<CoeficienteDto>;
   public siglaPagto: string;
   public qtdeParcelas: number;
   public configValidade: ValidadeOrcamento;
   public moedaUtils: MoedaUtils = new MoedaUtils();
+  public percRTApoio: number;
 
   tipoUsuario: number;
   percMaxComissaoEDescontoUtilizar: number;

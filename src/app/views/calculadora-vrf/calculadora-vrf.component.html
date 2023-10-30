@@ -69,21 +69,21 @@
             </form>
             <div *ngIf="evaporadorasSelecionadas.length > 0" class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0">
                 <div class="p-col-12 p-px-0 p-my-2">
-                    <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="true" responsiveLayout="stack"
+                    <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="false" responsiveLayout="stack"
                         [ngClass]="{'carregando': carregando}" styleClass="p-datatable-customers p-datatable-striped"
-                        [rows]="10" [filterDelay]="0">
+                        [rows]="10" [filterDelay]="0" autoLayout="true">
                         <ng-template pTemplate="header" let-p>
                             <tr class="font-size">
                                 <th class="p-text-left p-col-4 p-py-0">Produto</th>
                                 <th class="p-text-right p-py-0 p-col-2">Qtde</th>
                                 <th class="p-text-center p-py-0 p-col-2">Capacidade <br> (BTU/h)</th>
-                                <th class="p-text-center p-py-0 p-col-3">Capacidade(Kcal/h)</th>
+                                <th class="p-text-center p-py-0 p-col-3">Capacidade <br>(Kcal/h)</th>
                                 <th class="p-text-center p-py-0 p-col-1">Ações</th>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="body" let-p let-index="rowIndex">
-                            <tr class="font-size" [pSelectableRow]="p">
-                                <td class="p-text-left p-d-inline-flex p-pl-2">
+                            <tr class="font-size">
+                                <td class="p-text-left p-d-inline-flex p-pl-2 p-text-nowrap">
                                     <p class="p-ml-2"
                                         [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
                                     </p>
@@ -356,7 +356,7 @@
 <!-- PARA IMPRESSÃO -->
 <div class="p-grid" *ngIf="imprimindo">
     <div class="p-col-12 p-pb-0">
-        <div class="card p-text-center">
+        <div class="card p-text-center" style="max-width: 100%; overflow: auto;">
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-jc-between">
                 <div>
                     <button pButton type="button" icon="fa fa-left" (click)="voltar()" label="Voltar"></button>
@@ -417,8 +417,8 @@
                             <span class="p-text-bold">Evaporadoras</span>
                         </div>
                         <div class="p-col-12 p-px-0">
-                            <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="true"
-                                responsiveLayout="stack" [ngClass]="{'carregando': carregando}"
+                            <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="false"
+                                responsiveLayout="stack" [ngClass]="{'carregando': carregando}" 
                                 styleClass="p-datatable-customers" [rows]="10" [filterDelay]="0">
                                 <ng-template pTemplate="header" let-p>
                                     <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
@@ -430,7 +430,7 @@
                                             Capacidade<br>
                                             (BTU/h)</th>
                                         <th class="p-text-center p-py-0 p-col-2" style="background-color: #cecece">
-                                            Capacidade
+                                            Capacidade<br>
                                             (kcal/h)</th>
                                     </tr>
                                 </ng-template>
@@ -462,7 +462,7 @@
                                 </span>
                             </div>
                         </div>
-                        <p-table #dataTable [value]="combinacaoCom1aparelhos" [responsive]="true"
+                        <p-table #dataTable [value]="combinacaoCom1aparelhos" [responsive]="false"
                             responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
                             styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                             <ng-template pTemplate="header">
@@ -516,7 +516,7 @@
                                 </span>
                             </div>
                         </div>
-                        <p-table #dataTable2 [value]="combinacaoCom2aparelhos" [responsive]="true"
+                        <p-table #dataTable2 [value]="combinacaoCom2aparelhos" [responsive]="false"
                             responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
                             styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                             <ng-template pTemplate="header">
@@ -570,7 +570,7 @@
                                 </span>
                             </div>
                         </div>
-                        <p-table #dataTable3 [value]="combinacaoCom3aparelhos" [responsive]="true"
+                        <p-table #dataTable3 [value]="combinacaoCom3aparelhos" [responsive]="false"
                             responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
                             styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
                             <ng-template pTemplate="header">
@@ -621,7 +621,7 @@
     </div>
 </div>
 
-<div id="div-pai" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 530.3px;">
+<div *ngIf="imprimindo" id="div-pai" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 530.3px;">
 
 </div>
-<div id="div-filho" class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;width: 530.3px;font-family: Arial, Helvetica, sans-serif;"></div>
+<div *ngIf="imprimindo" id="div-filho" class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;width: 530.3px;font-family: Arial, Helvetica, sans-serif;"></div>

@@ -14,13 +14,15 @@ import { PrePedidoDto } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/
 import { PermissaoService } from 'src/app/service/permissao/permissao.service';
 import { PermissaoPrePedidoResponse } from 'src/app/dto/permissao/PermissaoPrePedidoResponse';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 
 @Component({
   selector: 'app-prepedido-detalhes',
   templateUrl: './prepedido-detalhes.component.html',
   styleUrls: ['./prepedido-detalhes.component.scss']
 })
-export class PrepedidoDetalhesComponent implements OnInit {
+export class PrepedidoDetalhesComponent extends TelaDesktopBaseComponent implements OnInit {
   constructor(private readonly activatedRoute: ActivatedRoute,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly prepedidoService: PrepedidoService,
@@ -28,8 +30,9 @@ export class PrepedidoDetalhesComponent implements OnInit {
     private router: Router,
     private location: Location,
     private readonly permissaoService: PermissaoService,
-    private readonly sweetalertService: SweetalertService
-  ) { }
+    private readonly sweetalertService: SweetalertService,
+    telaDesktopService: TelaDesktopService
+  ) { super(telaDesktopService) }
 
   numeroPrepedido = "";
   prepedido: PrePedidoDto;

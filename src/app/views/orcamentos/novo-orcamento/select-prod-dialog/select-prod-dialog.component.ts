@@ -408,10 +408,10 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsTela = { ...this.prodsArray.filter(f => f.visivel == true) };
   }
 
-  addProduto() {
-    if (this.selecionados && this.selecionados.length > 0) {
+  addProduto(selecionados:ProdutoTela[]) {
+    if (selecionados && selecionados.length > 0) {
       let qtdeItens: number = 0;
-      this.selecionados.forEach(p => {
+      selecionados.forEach(p => {
         if (p.Filhos.length > 0) {
           p.Filhos.forEach(x => {
             let produto = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
@@ -506,6 +506,10 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     let v: any = valor.replace(/,/g, '');
     v = valor.replace(/[^0-9]/g, '');
     if (!v) {
+      v = 0;
+    }
+
+    if(Number.parseInt(v) > this.novoOrcamentoService.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO){
       v = 0;
     }
 

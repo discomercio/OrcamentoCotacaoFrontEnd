@@ -23,6 +23,7 @@ import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { Observable } from 'rxjs';
 import { ProdutoCalculadoraVrfRequestViewModel } from 'src/app/dto/produtos-catalogo/ProdutoCalculadoraVrfRequestViewModel';
 import { Constantes } from 'src/app/utilities/constantes';
+import { NovoOrcamentoService } from '../orcamentos/novo-orcamento/novo-orcamento.service';
 
 @Component({
   selector: 'app-calculadora-vrf',
@@ -40,7 +41,8 @@ export class CalculadoraVrfComponent implements OnInit {
     public dialogService: DialogService,
     private readonly sweetalertService: SweetalertService,
     private readonly autenticacaoService: AutenticacaoService,
-    private readonly orcamentoService: OrcamentosService
+    private readonly orcamentoService: OrcamentosService,
+    private readonly novoOrcamentoService: NovoOrcamentoService
   ) { }
 
   form: FormGroup;
@@ -98,8 +100,10 @@ export class CalculadoraVrfComponent implements OnInit {
   textoRodape: string;
   imprimindo: boolean = false;
   constantes: Constantes = new Constantes();
+  clicouEvaporadora:boolean;
 
   ngOnInit(): void {
+    this.clicouEvaporadora = false;
     this.carregando = true;
     this.mascaraTelefone = FormataTelefone.mascaraTelefone();
     this.criarForm();
@@ -535,22 +539,35 @@ export class CalculadoraVrfComponent implements OnInit {
       return;
     }
 
+    if(this.clicouEvaporadora) return;
+
+    this.clicouEvaporadora = true;
+    let largura: string = this.novoOrcamentoService.onResize();
     const ref = this.dialogService.open(SelectEvapDialogComponent,
       {
-        width: "80%",
-        data: { evaps: this.filtrarEvaporadoras(), opcoes: this.lstOpcoes }
+        width: largura,
+        styleClass: 'dynamicDialog',
+        data: { evaps: this.filtrarEvaporadoras(), opcoes: this.lstOpcoes },
+        closeOnEscape: false,
+        closable: false,
+        showHeader: false,
+        contentStyle: (resultado: ProdutoTabela[]) => {
+          if (resultado && resultado.length > 0) {
+            this.addEvapsSelecionadas(resultado);
+          }
+        }
       });
 
-    ref.onClose.subscribe((resultado: ProdutoTabela) => {
-      if (resultado) {
-
-        this.arrumarProdutosRepetidos(resultado);
-        this.digitouQte(resultado);
-        this.limparCombinacoesCondensadoras();
-      }
+    ref.onClose.subscribe((r) => {
+      this.clicouEvaporadora = false;
     });
+  }
 
-
+  addEvapsSelecionadas(produtos: Array<ProdutoTabela>) {
+    produtos.forEach(p => {
+      this.arrumarProdutosRepetidos(p);
+      this.digitouQte(p);
+    });
   }
 
   removerItem(index: number) {
@@ -587,7 +604,7 @@ export class CalculadoraVrfComponent implements OnInit {
     if (repetidos.length >= 1) {
       this.evaporadorasSelecionadas.forEach(x => {
         if (x.produto == produto.produto) {
-          x.qtde = x.qtde == undefined ? 1 : x.qtde + 1;
+          x.qtde = x.qtde == undefined ? 1 : Number.parseInt(x.qtde.toString()) + Number.parseInt(produto.qtde.toString());
           this.digitouQte(x);
           return;
         }
@@ -601,7 +618,7 @@ export class CalculadoraVrfComponent implements OnInit {
       produto2.id = produto.id;
       produto2.kcal = produto.kcal;
       produto2.kw = produto.kw;
-      produto2.qtde = 1;
+      produto2.qtde = produto.qtde;
       produto2.linhaBusca = produto.linhaBusca;
       produto2.linhaProduto = produto.linhaProduto;
       this.evaporadorasSelecionadas.push(produto2);

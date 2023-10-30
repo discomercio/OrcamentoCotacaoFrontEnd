@@ -72,6 +72,7 @@ export class OrcamentosListarComponent implements OnInit {
   selectedFiltros: SelectItem;
   lstFiltro: SelectItem[];
   filtro: Filtro = new Filtro();
+  VendedorParceiros: string[];
   cols: any[];
 
   lstDto: Array<ListaDto> = new Array();
@@ -114,11 +115,14 @@ export class OrcamentosListarComponent implements OnInit {
 
   dtInicio: Date;
   dtFim: Date;
+  dtInicioExpiracao: Date;
+  dtFimExpiracao: Date;
   clicouPesquisar: boolean;
   carregando: boolean;
   listaCodigoDescricao: Array<CodigoDescricaoRequest> = new Array<CodigoDescricaoRequest>();
   filtroParceirosApoio: string[];
-  paramMsgPendentes:boolean;
+  paramMsgPendentes: boolean;
+  visualizando: boolean = false;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -127,6 +131,7 @@ export class OrcamentosListarComponent implements OnInit {
     this.criarTabela();
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
+    this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
 
     const promises = [this.buscarConfigValidade(),
     this.buscarVendedores(), this.buscarStatus(), this.buscarParceiros()];
@@ -141,7 +146,7 @@ export class OrcamentosListarComponent implements OnInit {
       this.carregando = false;
     }).finally(() => {
       this.carregando = false;
-      this.pesquisar();
+      this.pesquisaAuto();
     });
 
     this.criarTabela();
@@ -299,15 +304,15 @@ export class OrcamentosListarComponent implements OnInit {
 
   buscarMensagens() {
     // if(this.paramMsgPendentes){
-      
+
     // }
-    if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+    if (this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR) {
       this.cboMensagens.push({ Id: 3, Value: "Sim - Todas" });
       this.cboMensagens.push({ Id: 2, Value: "Sim - Somente as minhas" });
       this.cboMensagens.push({ Id: 1, Value: "Sim - Somente de terceiros" });
       this.cboMensagens.push({ Id: 0, Value: "Não" });
     }
-    else{
+    else {
       this.cboMensagens.push({ Id: 0, Value: "Não" });
       this.cboMensagens.push({ Id: 1, Value: "Sim" });
     }
@@ -333,10 +338,10 @@ export class OrcamentosListarComponent implements OnInit {
 
     if (this.parametro == "MSGPENDENTES") {
       this.parametro = "ORCAMENTOS";
-      if(this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR){
+      if (this.tipoUsuario != this.constantes.PARCEIRO_VENDEDOR) {
         this.filtro.Mensagem = "Sim - Somente as minhas";
       }
-      else{
+      else {
         this.filtro.Mensagem = "Sim";
       }
       this.paramMsgPendentes = true;
@@ -415,7 +420,66 @@ export class OrcamentosListarComponent implements OnInit {
     });
   }
 
+  pesquisaAuto() {
+    let url = sessionStorage.getItem("urlAnterior");
+    if (!!url && (url.indexOf("orcamentos/aprovar-orcamento") > -1 || url.indexOf("prepedido/detalhes/") > -1 || url.indexOf("pedido/detalhes/") > -1)) {
+      let json = sessionStorage.getItem("filtro");
+      this.filtro = JSON.parse(json);
+
+      if (this.filtro.DtInicio) {
+        this.dtInicio = new Date(DataUtils.formata_formulario_date(this.filtro.DtInicio.toString()));
+      } else this.dtInicio = null;
+
+      if (this.filtro.DtFim) {
+        this.dtFim = new Date(DataUtils.formata_formulario_date(this.filtro.DtFim.toString()));
+      }
+      else this.filtro.DtFim = null;
+
+      if (this.filtro.DtInicioExpiracao) {
+        this.dtInicioExpiracao = new Date(DataUtils.formata_formulario_date(this.filtro.DtInicioExpiracao.toString()));
+      } else this.dtInicioExpiracao = null;
+
+      if (this.filtro.DtFimExpiracao) {
+        this.dtFimExpiracao = new Date(DataUtils.formata_formulario_date(this.filtro.DtFimExpiracao.toString()));
+      }
+      else this.dtFimExpiracao = null;
+
+      if (this.filtro.Parceiros && this.filtro.Parceiros.length > 0) {
+        this.carregandoVendedoresParceiros = true;
+
+        this.orcamentistaIndicadorVendedorService.buscarVendedoresParceirosPorParceiros(this.filtro.Parceiros).toPromise().then((r) => {
+          if (r != null) {
+            r.forEach(x => {
+              if (!!x.nome) {
+                if (!this.cboVendedoresParceiros.find(f => f.Value == x.nome))
+                  this.cboVendedoresParceiros.push({ Id: x.id, Value: x.nome });
+              }
+            });
+            this.carregandoVendedoresParceiros = false;
+            this.VendedorParceiros = this.filtro.VendedorParceiros;
+          }
+        }).catch((e) => {
+          this.sweetAlertService.aviso(e.error.Mensagem);
+          this.carregandoVendedoresParceiros = false;
+        });
+        // this.buscarVendedoresDoParceiro(this.filtro.Parceiros);
+      }
+
+      if (!this.filtro.pagina || this.filtro.pagina == 0)
+        this.filtro.pagina = 0;
+
+      this.cdr.detectChanges();
+      this.filtro.idBaseBusca = null;
+      this.buscarLista(this.filtro);
+    }
+    else {
+      this.pesquisar();
+    }
+  }
+
   pesquisar() {
+    this.filtro.pagina = 0;
+    this.first = 0;
     this.setarFiltro();
     this.filtro.idBaseBusca = null;
     this.buscarLista(this.filtro);
@@ -432,13 +496,22 @@ export class OrcamentosListarComponent implements OnInit {
     }
     else this.filtro.DtFim = null;
 
+    if (this.dtInicioExpiracao) {
+      this.filtro.DtInicioExpiracao = DataUtils.formataParaFormulario(new Date(this.dtInicioExpiracao));
+    } else this.filtro.DtInicioExpiracao = null;
+
+    if (this.dtFimExpiracao) {
+      this.filtro.DtFimExpiracao = DataUtils.formataParaFormulario(new Date(this.dtFimExpiracao));
+    }
+    else this.filtro.DtFimExpiracao = null;
+
     this.filtro.Origem = this.parametro;
-    
-    if(this.autenticacaoService._tipoUsuario == this.constantes.VENDEDOR_UNIS){
+
+    if (this.autenticacaoService._tipoUsuario == this.constantes.VENDEDOR_UNIS) {
       this.filtro.Loja = this.autenticacaoService._lojaLogado;
     }
     this.filtro.pagina = 0;
-    this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
+    // this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
     if (this.parametro == "ORCAMENTOS") this.filtro.nomeColunaOrdenacao = this.cols[0].field;
     if (this.parametro == "PENDENTES") this.filtro.nomeColunaOrdenacao = this.cols[1].field;
 
@@ -458,6 +531,11 @@ export class OrcamentosListarComponent implements OnInit {
         });
       }
     }
+
+    if (this.VendedorParceiros && this.VendedorParceiros.length > 0) {
+      this.filtro.VendedorParceiros = this.VendedorParceiros;
+    }
+
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
@@ -470,7 +548,6 @@ export class OrcamentosListarComponent implements OnInit {
 
       this.filtro.pagina = event.first / event.rows;
       this.filtro.qtdeItensPagina = event.rows;
-      this.qtdePorPaginaSelecionado = event.rows;
       if (!!event.sortField) {
         this.filtro.nomeColunaOrdenacao = event.sortField;
         this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
@@ -485,9 +562,6 @@ export class OrcamentosListarComponent implements OnInit {
       if (this.filtro.idBaseBusca == null && this.parametro == "PEDIDOS")
         this.filtro.idBaseBusca = this.lstDtoFiltrada[0].NumPedido;
 
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
-        this.filtro.pagina = 0;
-      }
       this.buscarLista(this.filtro);
     }
   }
@@ -498,6 +572,8 @@ export class OrcamentosListarComponent implements OnInit {
 
     this.lstDto = new Array();
     this.lstDtoFiltrada = new Array();
+
+    sessionStorage.setItem("filtro", JSON.stringify(filtro));
 
     this.orcamentoService.buscarRegistros(filtro).toPromise().then((r) => {
 
@@ -512,13 +588,16 @@ export class OrcamentosListarComponent implements OnInit {
       this.qtdeRegistros = r.qtdeRegistros;
       this.carregando = false;
       this.mostrarQtdePorPagina = true;
-      if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
-        this.first = 0;
-        this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
-      }
+      // if (this.qtdePorPaginaInicial != this.qtdePorPaginaSelecionado) {
+      //   this.first = 0;
+      //   this.qtdePorPaginaInicial = this.qtdePorPaginaSelecionado;
+      // }
+
+      if (!!this.filtro.pagina)
+        this.first = this.filtro.pagina * this.filtro.qtdeItensPagina;
 
       this.lstDtoFiltrada = this.lstDto;
-      this.filtro.Parceiros = this.filtroParceirosApoio;
+      // this.filtro.Parceiros = this.filtroParceirosApoio;
     }).catch((r) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(r);
@@ -531,10 +610,6 @@ export class OrcamentosListarComponent implements OnInit {
       x.linhaBusca += "/" + x.Cliente_Obra.toLowerCase() + "/";
     });
   }
-
-  // ngOnDestroy() {
-  //   this.inscricao.unsubscribe();
-  // }
 
   exportXlsx() {
     this.montarListaParaExport(true);
@@ -590,14 +665,20 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   orcamento_OnClick(id) {
+    this.visualizando = true;
+    sessionStorage.setItem("urlAnterior", "orcamentos/aprovar-orcamento");
     this.router.navigate(["orcamentos/aprovar-orcamento", id]);
   }
 
   prepedido_OnClick(id) {
+    this.visualizando = true;
+    sessionStorage.setItem("urlAnterior", "prepedido/detalhes/");
     this.router.navigate(["prepedido/detalhes/", id]);
   }
 
   pedido_OnClick(id) {
+    this.visualizando = true;
+    sessionStorage.setItem("urlAnterior", "pedido/detalhes/");
     this.router.navigate(["pedido/detalhes/", id]);
   }
 
@@ -613,5 +694,12 @@ export class OrcamentosListarComponent implements OnInit {
     }
 
     this.cboFiltradoVendedores = filtrado;
+  }
+
+  ngOnDestroy() {
+    if (!this.visualizando) {
+      sessionStorage.removeItem("filtro");
+      sessionStorage.removeItem("urlAnterior");
+    }
   }
 }

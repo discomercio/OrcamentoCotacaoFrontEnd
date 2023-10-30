@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { NavigationStart, Router } from '@angular/router';
 import { PrimeNGConfig } from 'primeng/api';
+import { Subscription } from 'rxjs';
 
 @Component({
     selector: 'app-root',
@@ -15,10 +17,25 @@ export class AppComponent implements OnInit {
     ripple = true;
 
     inputStyle = 'outlined';
-    _apiURL = ""
+    _apiURL = "";
+
+    subscription: Subscription;
+    browserRefresh: boolean;
+
+
     constructor(
         private primengConfig: PrimeNGConfig,
-    ) { }
+        private router: Router
+    ) {
+        this.subscription = this.router.events.subscribe((event) => {
+            if (event instanceof NavigationStart) {
+                if (!router.navigated) {
+                    sessionStorage.removeItem("filtro");
+                    sessionStorage.removeItem("urlAnterior");
+                }
+            }
+        });
+    }
 
     ngOnInit() {
         this.primengConfig.setTranslation({

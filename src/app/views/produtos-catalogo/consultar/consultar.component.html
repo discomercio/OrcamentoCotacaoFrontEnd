@@ -65,7 +65,7 @@
                 </div>
             </div>
 
-            <p-table #dt1 [value]="produtoCatalogResponse" [responsive]="true" [customSort]="true"
+            <p-table #dt1 [value]="produtoCatalogResponse" [responsive]="false" [customSort]="true"
                 responsiveLayout="stack" breakpoint="680px" [(first)]="first" autoLayout="true"
                 styleClass="p-datatable-customers p-datatable-striped" [rows]="filtro.qtdeItensPorPagina"
                 [paginator]="true" [showCurrentPageReport]="mostrarQtdePorPagina" [rowsPerPageOptions]="[5,10,20]"

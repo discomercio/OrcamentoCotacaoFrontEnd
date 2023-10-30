@@ -38,6 +38,7 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 import { ePermissao } from 'src/app/utilities/enums/ePermissao';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
 import { CoeficienteDto } from 'src/app/dto/produtos/coeficienteDto';
+import { FormaPagtoCriacao } from 'src/app/dto/forma-pagto/forma-pagto-criacao';
 
 @Component({
   // changeDetection: ChangeDetectionStrategy.OnPush,
@@ -90,6 +91,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   desabilitarEnvio: boolean = false;
   antigoPercRT: number;
   clicouAddProdutos: boolean = false;
+  voltou: boolean = false;
 
   @ViewChild("formaPagto", { static: true }) formaPagto: FormaPagtoComponent;
   @ViewChild("opcoes", { static: true }) opcoes: OpcoesComponent;
@@ -99,7 +101,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     if (this.param) {
       this.carregandoProds = true;
-      this.iniciarNovo();
+      if (!this.iniciarNovo()) return;
       this.novoOrcamentoService.criarNovoOrcamentoItem();
       this.novoOrcamentoService.descontoGeral = 0;
 
@@ -117,19 +119,30 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         if (this.param == "clone") {
           this.buscarProdutosAutomatico();
         }
+        //aqui devemos buscar da session e validar se existe
+        let json = sessionStorage.getItem("filtro");
+        if (!!json) {
+          let modelo = JSON.parse(json);
+          let produtos = modelo[0].produtos;
+          if (produtos && produtos.length > 0) {
+            this.setarPreenchimentoOpcao();
+          }
+        }
       });
     }
   }
 
-  iniciarNovo() {
-    if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto) {
+  iniciarNovo(): boolean {
+    if (!this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto ||
+      !this.novoOrcamentoService.orcamentoCotacaoDto.clienteOrcamentoCotacaoDto.tipo) {
       this.router.navigate(["orcamentos/cadastrar-cliente", "novo"]);
-      return;
+      return false;
     }
 
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
+    return true;
   }
 
   verificarParam(): string {
@@ -220,23 +233,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         this.addListaProdutosClonados(resultado.produtos);
       }
     });
-  }
-
-  addFormaPagtoClonados(formasPagtos: any[]) {
-    let pagtoAvista = formasPagtos.filter(x => x.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA);
-    if (pagtoAvista.length > 0) {
-      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista[0];
-      this.formaPagto.checkedAvista = true;
-      this.formaPagto.calcularValorAvista();
-    }
-
-    let pagtoPrazo = formasPagtos.filter(x => x.tipo_parcelamento != this.constantes.COD_FORMA_PAGTO_A_VISTA);
-    if (pagtoPrazo.length > 0) {
-      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo[0];
-      this.formaPagto.setarQtdeParcelas();
-      this.formaPagto.setarSiglaPagto();
-    }
-    this.formaPagto.atribuirFormasPagto();
   }
 
   addListaProdutosClonados(lstProdutosClonados: ProdutoTela[]) {
@@ -334,8 +330,8 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
         data: this.selecProdInfo,
         closeOnEscape: false,
         closable: false,
-        showHeader:false,
-        contentStyle:(resultado:ProdutoTela[])=>{
+        showHeader: false,
+        contentStyle: (resultado: ProdutoTela[]) => {
           if (resultado && resultado.length > 0) {
             this.addProdutosSelecionados(resultado);
           }
@@ -344,9 +340,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       });
 
     ref.onClose.subscribe((resultados: Array<ProdutoTela>) => {
-      if (resultados && resultados.length > 0) {
-        this.addProdutosSelecionados(resultados);
-      }
       this.clicouAddProdutos = false;
     });
   }
@@ -378,9 +371,9 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       let filtro2 = this.produtoComboDto.produtosSimples.filter(x => x.produto == p.produtoDto.produto)[0];
 
       let produtoOrcamento: ProdutoOrcamentoDto = this.montarProdutoParaAdicionar(p);
-  
+
       if (this.arrumarProdutosRepetidos(produtoOrcamento)) return;
-  
+
       this.inserirProduto();
     });
   }
@@ -400,6 +393,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     }
     else {
       this.novoOrcamentoService.lstProdutosSelecionados.push(produto);
+      this.novoOrcamentoService.lstProdutosSelecionadosApoio = this.novoOrcamentoService.lstProdutosSelecionados;
       return false;
     }
   }
@@ -456,7 +450,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
-    if (item.qtde <= 0) item.qtde = 1;
+    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
 
     // item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
@@ -684,6 +678,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   removerItem(index: number) {
     let produto = this.novoOrcamentoService.lstProdutosSelecionados.splice(index, 1)[0];
+    this.novoOrcamentoService.lstProdutosSelecionadosApoio = this.novoOrcamentoService.lstProdutosSelecionados;
 
     this.removerProdutoDaListaControle(produto);
     this.atualizarRemocao();
@@ -801,8 +796,25 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   voltar() {
-    this.novoOrcamentoService.lstProdutosSelecionados = new Array();
-    this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null &&
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT &&
+      this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT != 0) {
+      this.novoOrcamentoService.percRTApoio = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
+    }
+
+    // Pode ser que seja necessária a revisão da forma de pagamento devido às alterações nos dados do cliente! Deseja realmente voltar 
+    this.sweetalertService.dialogo("", "Pode ser que seja necessária a revisão da forma de pagamento devido às alterações nos dados do cliente!<br> Deseja realmente voltar?").subscribe((r) => {
+      if (!r) return;
+
+      //aqui devemos armazenar os produtos selecionados e pagtos 
+      sessionStorage.setItem("filtro", JSON.stringify([{ "produtos": this.novoOrcamentoService.lstProdutosSelecionadosApoio, "pagtos": [{ "avista": this.formaPagto.formaPagtoCriacaoAvista, "aprazo": this.formaPagto.formaPagtoCriacaoAprazo }] }]));
+      // this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = new FormaPagtoCriacao();
+      // this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio = JSON.parse(JSON.stringify(this.formaPagto.formaPagtoCriacaoAprazo));
+
+      this.novoOrcamentoService.lstProdutosSelecionados = new Array();
+      this.voltou = true;
+      this.router.navigate(["orcamentos/cadastrar-cliente", this.param]);
+    });
   }
 
   liberarEdicaoComissao() {
@@ -829,5 +841,61 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = v;
     this.novoOrcamentoService.editandoComissao = false;
+  }
+
+  setarPreenchimentoOpcao() {
+    this.carregandoProds = true;
+    const promise = [this.buscarProdutos(false)];
+    Promise.all(promise).then((r: any) => {
+      this.setarProdutos(r[0]);
+      let json = sessionStorage.getItem("filtro");
+      let modelo = JSON.parse(json);
+      let produtos = modelo[0].produtos;
+
+      this.novoOrcamentoService.lstProdutosSelecionadosApoio = produtos;
+      this.novoOrcamentoService.lstProdutosSelecionados = this.novoOrcamentoService.lstProdutosSelecionadosApoio;
+      this.inserirProduto();
+      this.novoOrcamentoService.descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
+      if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null && this.novoOrcamentoService.percRTApoio) {
+        this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT = this.novoOrcamentoService.percRTApoio;
+      }
+      this.addFormaPagtoSelecionados([this.novoOrcamentoService.formaPagtoCriacaoAvistaApoio, this.novoOrcamentoService.formaPagtoCriacaoAprazoApoio]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregandoProds = false;
+    }).finally(() => {
+      this.carregandoProds = false;
+    });
+  }
+
+  addFormaPagtoSelecionados(formasPagtos: any[]) {
+    let json = sessionStorage.getItem("filtro");
+    let modelo = JSON.parse(json);
+    let pagtos = modelo[0].pagtos;
+
+    let pagtoAvista = pagtos[0].avista;
+    if (!!pagtoAvista) {
+      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista;
+      this.formaPagto.calcularValorAvista();
+    }
+
+    let pagtoPrazo = pagtos[0].aprazo;
+    if (!!pagtoPrazo) {
+      let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo.tipo_parcelamento);
+      if (pagtoExiste.length == 0) return;
+
+      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo;
+      this.formaPagto.setarQtdeMaxParcelasEDias();
+      this.formaPagto.setarQtdeParcelas();
+      this.formaPagto.cdref.detectChanges();
+      this.cdref.detectChanges();
+      this.formaPagto.setarSiglaPagto();
+    }
+  }
+
+  ngOnDestroy() {
+    if(!this.voltou){
+      sessionStorage.removeItem("filtro");
+    }
   }
 }
