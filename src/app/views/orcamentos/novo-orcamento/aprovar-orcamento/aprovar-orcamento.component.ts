@@ -76,7 +76,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   idOrcamentoCotacao: number;
   razaoSocialParceiro: string;
   formaPagamento: FormaPagto[] = new Array();
-  activeState: boolean[] = [false, false, false];
+  activeState: boolean[] = [true, true, true];
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
@@ -623,15 +623,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
 
     return opcoes;
-  }
-
-  toggle(index: number) {
-    if (this.activeState.toString().indexOf("true") == -1) return;
-
-    for (let i = 0; i < this.activeState.length; i++) {
-      if (i == index) this.activeState[i] = true;
-      else this.activeState[i] = false;
-    }
   }
 
   aprovar(opcaoSelecionada: OrcamentosOpcaoResponse) {

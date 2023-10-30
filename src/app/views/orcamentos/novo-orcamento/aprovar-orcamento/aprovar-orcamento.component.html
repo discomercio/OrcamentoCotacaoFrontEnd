@@ -198,9 +198,15 @@
 
                             <p-accordion *ngIf="statusOrcamento == 'Aprovado'">
 
-                                <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
+                                <p-accordionTab [(selected)]="activeState[i]">
                                     <ng-template pTemplate="header">
-                                        Opção {{i + 1}}
+                                        <div>
+                                            Opção {{i + 1}}
+                                        </div>
+                                        <div>
+                                            &nbsp;&nbsp;&nbsp;
+                                            (Aprovada)
+                                        </div>
                                         <div class="p-ml-auto p-p-0 p-text-right">
                                             <span>{{moedaUtils.formatarMoedaComPrefixo(orcamento.vlTotal)}}</span>
                                         </div>
@@ -306,7 +312,7 @@
                                                                 style="min-height: calc(100% - 45px);">
                                                                 <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
                                                                     *ngIf="fp.aprovado">
-                                                                    <i class="pi pi-check" style="color: green;"></i>
+                                                                    <i class="pi pi-check" style="color: green; font-size: 2rem;"></i>
                                                                 </div>
                                                                 <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
                                                                     *ngIf="!fp.aprovado">
@@ -314,7 +320,7 @@
                                                                 </div>
 
                                                                 <div class="p-col-10 p-as-center">
-                                                                    <div
+                                                                    <div *ngIf="!!novoOrcamentoService.formaPagamento"
                                                                         [innerHtml]="novoOrcamentoService.formatarFormaPagamento(orcamento, fp)">
                                                                     </div>
                                                                 </div>
@@ -349,7 +355,7 @@
                             <!-- qualquer outro status-->
                             <p-accordion *ngIf="statusOrcamento != 'Aprovado'">
 
-                                <p-accordionTab [(selected)]="activeState[i]" (click)="toggle(i, aberto)">
+                                <p-accordionTab [(selected)]="activeState[i]">
                                     <ng-template pTemplate="header">
                                         <div id="oppp" [ngStyle]="!telaDesktop ? {'font-size':'80%'} : {'':''}">
                                             Opção {{i + 1}}
@@ -467,7 +473,7 @@
                                                                     </p-radioButton>
                                                                 </div>
                                                                 <div class="p-col-10 p-as-center">
-                                                                    <div
+                                                                    <div *ngIf="!!novoOrcamentoService.formaPagamento"
                                                                         [innerHtml]="novoOrcamentoService.formatarFormaPagamento(orcamento, fp)">
                                                                     </div>
                                                                 </div>
