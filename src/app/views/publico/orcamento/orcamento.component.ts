@@ -65,7 +65,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   private titleService: Title
   esconderBotaoAprovacao: boolean;
   paramGuid: any;
-  activeState: boolean[] = [false, false, false];
+  activeState: boolean[] = [true, true, true];
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
   @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
 
@@ -73,19 +73,19 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     // this.mensagemComponente.carregando = true;
     this.imgUrl = this.produtoCatalogoService.imgUrl;
     this.esconderBotaoAprovacao = false;
-    this.mensagemComponente.carregando= true;
+    this.mensagemComponente.carregando = true;
     this.paramGuid = this.activatedRoute.snapshot.params.guid;
 
     let promise: any = [this.buscarOrcamento()];
     Promise.all(promise).then((r: any) => {
       this.setarOrcamento(r[0]);
     }).catch((e) => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
 
-      if(this.orcamento) {
+      if (this.orcamento) {
         this.verificarImagens();
         this.promise2();
       }
@@ -97,7 +97,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   promise2() {
-    this.mensagemComponente.carregando= true;
+    this.mensagemComponente.carregando = true;
     this.setarMensageria();
 
     let promises: any = [
@@ -112,24 +112,24 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarMensagemEstoque(r[2]);
       this.setarMensagemFrete(r[3]);
     }).catch((e) => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.promise3();
     });
   }
 
   promise3() {
-    this.mensagemComponente.carregando= true;
+    this.mensagemComponente.carregando = true;
     let promise = [this.mensagemComponente.marcarMensagemComoLida(this.paramGuid)];
     Promise.all(promise).then((r) => {
 
     }).catch((e) => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.alertaService.mostrarErroInternet(e);
     }).finally(() => {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.mensagemComponente.rolarChat();
     })
   }
@@ -152,8 +152,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (r != null) {
       this.autenticacaoService.setarToken(r.token);
 
-      if(r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO){
-        this.mensagemComponente.carregando= false;
+      if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_EXCLUIDO) {
+        this.mensagemComponente.carregando = false;
         this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
         return;
       }
@@ -190,7 +190,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.esconderBotaoAprovacao = true;
       }
     } else {
-      this.mensagemComponente.carregando= false;
+      this.mensagemComponente.carregando = false;
       this.sweetalertService.aviso("Orçamento não está mais disponível para visualização ou link inválido");
     }
   }
@@ -204,8 +204,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   setarMensageria() {
-    if(this.orcamento)
-    this.mensagemComponente.permiteEnviarMensagem = true;
+    if (this.orcamento)
+      this.mensagemComponente.permiteEnviarMensagem = true;
 
     if (this.orcamento.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
       this.desabiltarBotoes = true;
@@ -305,7 +305,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   verificarImagens() {
-    if(this.orcamento){
+    if (this.orcamento) {
       for (let i = 0; i < this.orcamento.listaOpcoes.length; i++) {
         this.orcamento.listaOpcoes[i].existeImagemProduto = false;
         for (let y = 0; y < this.orcamento.listaOpcoes[i].listaProdutos.length; y++) {
@@ -321,7 +321,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   verificarFormasPagtos() {
     this.orcamento.listaOpcoes.forEach(opcao => {
       let pagtosHabilitados = opcao.formaPagto.filter(x => x.habilitado);
-      if(pagtosHabilitados.length == 1){
+      if (pagtosHabilitados.length == 1) {
         opcao.pagtoSelecionado = pagtosHabilitados[0];
       }
     });
@@ -380,19 +380,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return true;
   }
 
-  toggle(index: number) {
-    if (this.activeState.toString().indexOf("true") == -1) return;
-
-    for (let i = 0; i < this.activeState.length; i++) {
-      if (i == index) this.activeState[i] = true;
-      else this.activeState[i] = false;
-    }
-  }
-
-  formatarFormaPagamento(orcamento, opcao: OrcamentosOpcaoResponse, fPagto: FormaPagtoCriacao) {
+  formatarFormaPagamento(orcamento, opcao: OrcamentoOpcaoDto, fPagto: FormaPagtoCriacao) {
 
     let texto: string = "";
-
+    
     opcao.formaPagto.some((fp) => {
 
       let pagto = orcamento.listaFormasPagto.filter(f => f?.idTipoPagamento == fPagto?.tipo_parcelamento)[0];
