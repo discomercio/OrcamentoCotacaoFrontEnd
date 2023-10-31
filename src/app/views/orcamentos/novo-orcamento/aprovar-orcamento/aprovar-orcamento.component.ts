@@ -272,7 +272,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.verificarDisponibilidadeOrcamento();
       this.verificarFormasPagtos();
       this.verificarOpcaoAprovada();
-      // debugger;
     }
   }
 
@@ -790,17 +789,23 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
     // Loop para adicionar as opções disponíveis
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach((option, index) => {
-      const optionTitle = `Opção ${index + 1}`;
+      let optionTitle = `Opção ${index + 1}`;
+
+      if (option.aprovado) {
+        optionTitle = optionTitle + "   (Aprovada)";
+      }
 
       // Adicionar opção
       let pagtos = {
         cashPayment: {
           paymentTitle: "",
           paymentLines: [],
+          aprovado: false
         },
         installmentPayment: {
           paymentTitle: "",
           paymentLines: [],
+          aprovado: false
         }
       }
       option.formaPagto.forEach((p) => {
@@ -809,11 +814,17 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
             let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
             pagtos.cashPayment.paymentTitle = pagto.titulo;
             pagtos.cashPayment.paymentLines = pagto.linhasPagto;
+            if (p.aprovado) {
+              pagtos.cashPayment.aprovado = true;
+            }
           }
           else {
             let pagto = this.novoOrcamentoService.formatarFormaPagamentoImpressao(option, p);
             pagtos.installmentPayment.paymentTitle = pagto.titulo;
             pagtos.installmentPayment.paymentLines = pagto.linhasPagto;
+            if (p.aprovado) {
+              pagtos.installmentPayment.aprovado = true;
+            }
           }
         }
       });
@@ -1137,7 +1148,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     const paymentLines = paymentOptions?.paymentLines;
 
     if (paymentLines) {
-      this.drawCheckBox(doc, marginX, currentPositionY);
+      this.drawCheckBox(doc, marginX, currentPositionY, paymentOptions.aprovado);
       let paymentY = currentPositionY + this.CHECKBOX_SIZE - this.CHECKBOX_SIZE * 0.1;
 
       if (title) {
@@ -1384,9 +1395,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   // Função para desenhar checkbox
-  drawCheckBox(doc: jsPDF, x: number, y: number) {
+  drawCheckBox(doc: jsPDF, x: number, y: number, aprovado: boolean) {
     doc.setDrawColor("#000000");
-    doc.rect(x, y, this.CHECKBOX_SIZE, this.CHECKBOX_SIZE, "S");
+    if (aprovado)
+      doc.rect(x, y, this.CHECKBOX_SIZE, this.CHECKBOX_SIZE, "FD");
+    else
+      doc.rect(x, y, this.CHECKBOX_SIZE, this.CHECKBOX_SIZE, "S");
   }
 
   // Função para obter a data formatada impressa no footer
@@ -1433,8 +1447,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   verificarOpcaoAprovada() {
     this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(f => {
-      f.formaPagto.forEach(p =>{
-        if(p.aprovado){
+      f.formaPagto.forEach(p => {
+        if (p.aprovado) {
           f.aprovado = true;
         }
       })
@@ -1497,7 +1511,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.router.url.indexOf('orcamentos/listar/pedidos') == -1) {
       sessionStorage.removeItem("filtro");
       sessionStorage.removeItem("urlAnterior");
-      debugger;
     }
   }
 }
