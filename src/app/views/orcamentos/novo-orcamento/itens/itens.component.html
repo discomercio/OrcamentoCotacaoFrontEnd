@@ -58,10 +58,10 @@
                                 <th class="">Produto</th>
                                 <th class="p-text-right">Qtde</th>
                                 <!-- <th class="p-text-right">Preço NF</th> -->
-                                <th class="p-text-right">Vl Lista</th>
+                                <th class="p-text-right">VL Lista</th>
                                 <th class="p-text-right">Desc %</th>
-                                <th class="p-text-right">Vl Venda</th>
-                                <th class="p-text-right">Vl Total</th>
+                                <th class="p-text-right">VL Venda</th>
+                                <th class="p-text-right">VL Total</th>
                                 <th *ngIf="!editando" class="p-text-right">Excluir</th>
                             </tr>
                         </ng-template>
@@ -104,7 +104,7 @@
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title"
-                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">Vl
+                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents', 'white-space': 'nowrap'}">VL
                                         Venda</span>
                                     <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" pInputText
                                         id="vlVenda" type="text"
@@ -113,7 +113,7 @@
                                         (blur)="digitouPreco_Venda($event,p)" />
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                                    <span class="p-column-title">Vl Total:</span>
+                                    <span class="p-column-title">VL Total:</span>
                                     <div class="p-text-right">
                                         {{moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
                                     </div>
