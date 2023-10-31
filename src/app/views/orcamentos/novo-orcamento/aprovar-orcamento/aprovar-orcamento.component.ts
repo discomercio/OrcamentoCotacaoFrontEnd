@@ -271,6 +271,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
       this.verificarDisponibilidadeOrcamento();
       this.verificarFormasPagtos();
+      this.verificarOpcaoAprovada();
+      // debugger;
     }
   }
 
@@ -1427,6 +1429,16 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
         opcao.pagtoSelecionado = pagtosHabilitados[0];
       }
     });
+  }
+
+  verificarOpcaoAprovada() {
+    this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(f => {
+      f.formaPagto.forEach(p =>{
+        if(p.aprovado){
+          f.aprovado = true;
+        }
+      })
+    })
   }
 
   excluirOrcamento() {
