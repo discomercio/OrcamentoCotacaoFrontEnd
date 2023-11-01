@@ -295,6 +295,10 @@ export class OrcamentosListarComponent implements OnInit {
           }
         });
         this.carregandoVendedoresParceiros = false;
+
+        if(this.filtro.VendedorParceiros && this.filtro.VendedorParceiros.length > 0){
+          this.VendedorParceiros = this.filtro.VendedorParceiros;
+        }
       }
     }).catch((e) => {
       this.sweetAlertService.aviso(e.error.Mensagem);
@@ -532,10 +536,7 @@ export class OrcamentosListarComponent implements OnInit {
       }
     }
 
-    if (this.VendedorParceiros && this.VendedorParceiros.length > 0) {
-      this.filtro.VendedorParceiros = this.VendedorParceiros;
-    }
-
+    this.filtro.VendedorParceiros = this.VendedorParceiros;
     this.filtro.ordenacaoAscendente = false;
     this.filtro.Exportar = false;
     this.filtro.pagina = 0;
