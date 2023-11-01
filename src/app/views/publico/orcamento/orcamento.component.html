@@ -181,7 +181,7 @@
                                                             <th class="p-col-4">Produto</th>
                                                             <th class="p-col-1 p-text-center">Qtde</th>
                                                             <th class="p-col-2 p-text-center">VL Unitário</th>
-                                                            <th class="p-col-2 p-text-center">Vl Total</th>
+                                                            <th class="p-col-2 p-text-center">VL Total</th>
                                                         </tr>
                                                     </ng-template>
                                                     <ng-template pTemplate="body" let-produto let-rowIndex="rowIndex">
@@ -224,7 +224,7 @@
                                                                 class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-between'}} p-text-center">
                                                                 <span class="p-column-title"
                                                                     [ngStyle]="!telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                    Vl Total
+                                                                    VL Total
                                                                 </span>
                                                                 <p>{{moedaUtils.formatarMoedaSemPrefixo(produto.totalItem)}}
                                                                 </p>

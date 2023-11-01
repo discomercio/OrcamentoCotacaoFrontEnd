@@ -17,10 +17,10 @@
                         <th class="">Produto</th>
                         <th class="p-text-right">Qtde</th>
                         <th class="p-text-right">Preço NF</th>
-                        <th class="p-text-right">Vl Lista</th>
+                        <th class="p-text-right">VL Lista</th>
                         <th class="p-text-right">Desc%</th>
-                        <th class="p-text-right">Vl Venda</th>
-                        <th class="p-text-right">Vl Total</th>
+                        <th class="p-text-right">VL Venda</th>
+                        <th class="p-text-right">VL Total</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-p>
@@ -68,14 +68,14 @@
                         </td>
                         <td class="{{telaDesktop ? 'p-jc-between': p.mostrarCampos ? 'p-d-inline-flex p-jc-between' : 'p-jc-between'}}"
                             [ngStyle]="telaDesktop ? {'display':'table-cell'}:p.mostrarCampos ? {'display':'inline-flex'} : {'display':'none'}">
-                            <span class="p-column-title p-ml-4">Vl Venda</span>
+                            <span class="p-column-title p-ml-4">VL Venda</span>
                             <div class="p-text-right">
                                 {{novoOrcamentoService.moedaUtils.formatarMoedaSemPrefixo(p.precoVenda)}}
                             </div>
                         </td>
                         <td class="{{telaDesktop ? 'p-jc-between': p.mostrarCampos ? 'p-d-inline-flex p-jc-between' : 'p-jc-between'}}"
                             [ngStyle]="telaDesktop ? {'display':'table-cell'}:p.mostrarCampos ? {'display':'inline-flex'} : {'display':'none'}">
-                            <span class="p-column-title p-ml-4">Vl Total:</span>
+                            <span class="p-column-title p-ml-4">VL Total:</span>
                             <div class="p-text-right">
                                 {{novoOrcamentoService.moedaUtils.formatarMoedaSemPrefixo(p.totalItem)}}
                             </div>
