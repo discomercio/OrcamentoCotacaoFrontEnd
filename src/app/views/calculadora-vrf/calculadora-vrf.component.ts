@@ -553,6 +553,7 @@ export class CalculadoraVrfComponent implements OnInit {
         showHeader: false,
         contentStyle: (resultado: ProdutoTabela[]) => {
           if (resultado && resultado.length > 0) {
+            debugger;
             this.addEvapsSelecionadas(resultado);
           }
         }
@@ -618,6 +619,7 @@ export class CalculadoraVrfComponent implements OnInit {
       produto2.id = produto.id;
       produto2.kcal = produto.kcal;
       produto2.kw = produto.kw;
+      produto2.btu = produto.btu;
       produto2.qtde = produto.qtde;
       produto2.linhaBusca = produto.linhaBusca;
       produto2.linhaProduto = produto.linhaProduto;
