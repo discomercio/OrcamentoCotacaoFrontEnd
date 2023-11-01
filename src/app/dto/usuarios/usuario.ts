@@ -21,5 +21,6 @@ export class Usuario {
     tipoUsuario: number;
     unidadeNegocio: string;
     StLoginBloqueadoAutomatico: boolean = false;
+    NomeAmigavel:string;
 }
 

@@ -65,7 +65,8 @@ export class AppTopBarComponent implements OnInit {
       this.alertaService.mostrarMensagem("Ops! Parece que não conseguimos carregar a loja do usuário!");
       return;
     }
-    this.nomeUsuario = usuario.nome;
+    
+    this.nomeUsuario = usuario.NomeAmigavel;
     this.lojaService.buscarLojaEstilo(usuario.loja).toPromise().then((r) => {
       if (!!r) {
 

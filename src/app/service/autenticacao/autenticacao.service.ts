@@ -48,6 +48,7 @@ export class AutenticacaoService {
   public _lojasUsuarioLogado: Array<string> = (sessionStorage.getItem('lojas') ? sessionStorage.getItem('lojas').split(',') : null);
   public _lojaEstilo: lojaEstilo = new lojaEstilo();
   public _idUsuarioLogado: number;
+  public _nomeAmigavel:string;
   favIcon: HTMLLinkElement = document.querySelector('#favIcon');
   public _tipoUsuario: number;
 
@@ -65,6 +66,7 @@ export class AutenticacaoService {
     this.unidade_negocio = (user && user.unidade_negocio) ? user.unidade_negocio : null;
     this._tipoUsuario = (user && user.TipoUsuario) ? user.TipoUsuario : null;
     this._idUsuarioLogado = (user && user.Id) ? user.Id : 0;
+    this._nomeAmigavel = (user && user.NomeAmigavel) ? user.NomeAmigavel : this._usuarioLogado;
 
     if(this._lojasUsuarioLogado.length == 1){
       this._lojaLogado = this._lojasUsuarioLogado[0];
@@ -122,7 +124,8 @@ export class AutenticacaoService {
         this.usuario.idParceiro = this._parceiro;
         this.usuario.loja = this._lojaLogado;
         this.usuario.lojas = this._lojasUsuarioLogado;
-
+        this.usuario.NomeAmigavel = this._nomeAmigavel;
+        
         this.verificarExpiracao(
           this._tipoUsuario, this._usuarioLogado)
           .toPromise()
