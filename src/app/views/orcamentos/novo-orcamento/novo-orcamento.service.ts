@@ -535,7 +535,6 @@ export class NovoOrcamentoService {
 
     let pagtoS = opcaoOrcamentoCotacaoDto.formaPagto.filter(p => p.tipo_parcelamento == fPagto.tipo_parcelamento)[0];
     let pagtoBase = this.formaPagamento.filter(p => p.idTipoPagamento == fPagto.tipo_parcelamento)[0];
-    debugger;
 
     if (pagtoS.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
       let total = 0;
