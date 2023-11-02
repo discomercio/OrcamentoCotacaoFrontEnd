@@ -408,7 +408,19 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsTela = { ...this.prodsArray.filter(f => f.visivel == true) };
   }
 
-  addProduto(selecionados:ProdutoTela[]) {
+  addProduto(selecionados: ProdutoTela[]) {
+    let invalidos = selecionados.filter(x => !x.qtdeValida);
+    if (invalidos && invalidos.length > 0) {
+      let produtos: string;
+      invalidos.forEach(f => {
+        produtos = produtos && produtos.length > 0 ? `${produtos}, ${f.produtoDto.produto}`: f.produtoDto.produto;
+      });
+      if (produtos && produtos.length > 0) {
+         produtos = invalidos.length > 1 ? `Os produtos ${produtos} excedem o máximo de caracteres!` : `O produto ${produtos} execede o máximo de caracteres!`;
+        this.alertaService.mostrarMensagem(produtos);
+        return;
+      }
+    }
     if (selecionados && selecionados.length > 0) {
       let qtdeItens: number = 0;
       selecionados.forEach(p => {
@@ -454,7 +466,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.selecionados.forEach(x => {
       let linha = document.getElementById(`linha_tabela_${x.produtoDto.produto}`) as HTMLElement;
       linha.classList.remove("p-highlight");
-      ((linha.children[1].children[1]) as HTMLInputElement).value = "0";
+      ((linha.children[1].children[0].children[0].children[1]) as HTMLInputElement).value = "0";
     });
 
     this.prodsTela.forEach(x => {
@@ -480,6 +492,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     produto.qtde++;
 
+    produto.qtdeValida = this.verificarQtdeItem(produto, produto.qtde);
+    if (!produto.qtdeValida) linha.classList.remove("p-highlight");
+
     let selecionado = this.selecionados.filter(x => x.produtoDto.produto == produto.produtoDto.produto)[0];
     if (!selecionado) {
       this.selecionados.push(produto);
@@ -491,25 +506,45 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     if (!this.selecionados) return;
     if (produto.qtde == 0) return;
 
+    let linha = document.getElementById(`linha_tabela_${produto.produtoDto.produto}`) as HTMLElement;
     if ((produto.qtde - 1) == 0) {
       //desmarcar
-      let linha = document.getElementById(`linha_tabela_${produto.produtoDto.produto}`) as HTMLElement;
       linha.classList.remove("p-highlight");
       this.selecionados = this.selecionados.filter(x => x.produtoDto.produto != produto.produtoDto.produto);
     }
 
     produto.qtde--;
+    produto.qtdeValida = this.verificarQtdeItem(produto, produto.qtde);
+    if (produto.qtdeValida && produto.qtde > 0) {
+      linha.classList.add("p-highlight");
+    }
   }
+
+  verificarQtdeItem(produto: ProdutoTela, qtde: number) {
+    let itemQtde = document.getElementById(`qtde_${produto.produtoDto.produto}`) as HTMLElement;
+    if (qtde > this.novoOrcamentoService.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) {
+      console.log(qtde);
+      itemQtde.classList.add("ng-dirty");
+      itemQtde.classList.add("ng-invalid");
+      itemQtde.classList.add("ng-touched");
+      // this.validaQtde = false;
+      return false;
+    }
+    else {
+      itemQtde.classList.remove("ng-dirty");
+      itemQtde.classList.remove("ng-invalid");
+      itemQtde.classList.remove("ng-touched");
+      // this.validaQtde = true;
+    }
+    return true;
+  }
+
 
   formatarQtde(e: Event, produto: ProdutoTela): void {
     let valor = ((e.target) as HTMLInputElement).value;
     let v: any = valor.replace(/,/g, '');
     v = valor.replace(/[^0-9]/g, '');
     if (!v) {
-      v = 0;
-    }
-
-    if(Number.parseInt(v) > this.novoOrcamentoService.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO){
       v = 0;
     }
 
@@ -530,6 +565,10 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       }
       linha.classList.add("p-highlight");
     }
+
+    produto.qtdeValida = this.verificarQtdeItem(produto, Number.parseInt(v));
+    if (!produto.qtdeValida) linha.classList.remove("p-highlight");
+
     v = v
     produto.qtde = Number.parseInt(v);
     ((e.target) as HTMLInputElement).value = v;
@@ -554,7 +593,9 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   fechar() {
-    if (this.selecionados && this.selecionados.length > 0) {
+
+    let validos = this.selecionados.filter(x => x.qtdeValida);
+    if (this.selecionados && this.selecionados.length > 0 && validos && validos.length > 0) {
       this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r) => {
         if (!r) {
           return;

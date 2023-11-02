@@ -31,13 +31,14 @@
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">
                 <label for="capacidade">Capacidade</label>
                 <p-multiSelect [options]="capacidades" [(ngModel)]="capacidadesSelecionadas" defaultLabel="Selecione"
-                    optionLabel="Value" optionValue="Id" [ngModelOptions]="{standalone: true}" 
+                    optionLabel="Value" optionValue="Id" [ngModelOptions]="{standalone: true}"
                     emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
                     resetFilterOnHide="true"></p-multiSelect>
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-pr-md-0 p-pr-sm-0 p-as-end">
                 <div class="">
-                    <button pButton id="pesquisar" type="button" label="Pesquisar" icon="pi pi-search" (click)="pesquisar()"></button>
+                    <button pButton id="pesquisar" type="button" label="Pesquisar" icon="pi pi-search"
+                        (click)="pesquisar()"></button>
                 </div>
             </div>
         </div>
@@ -46,10 +47,10 @@
         <div
             style="max-height: calc(100vh - 300px); min-height: calc(100vh - 300px); overflow:auto; border: 1px solid #cecece;">
             <p-table #dataTable [value]="prodsTela" [responsive]="true" responsiveLayout="stack" autoLayout="true"
-                styleClass="p-datatable-customers p-datatable-sm" [filterDelay]="0">
+                styleClass="p-datatable-customers p-datatable-sm" [filterDelay]="0" class="tab">
                 <ng-template pTemplate="header">
                     <tr>
-                        <th>Descrição</th>
+                        <th style="width: 100%; max-width: 59%;">Descrição</th>
                         <th class="p-text-center">Qtde</th>
                         <th class="p-text-center">Preço</th>
                     </tr>
@@ -64,11 +65,20 @@
                                     [innerHtml]="stringUtils.formatarDescricao(p.produtoDto.fabricante, p.produtoDto.fabricante_Nome, p.produtoDto.produto, p.produtoDto.descricaoHtml)">
                                 </p>
                             </td>
-                            <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                                <span class="pi pi-minus-circle p-px-1 p-as-center" (click)="subtrairQtde(p)"> </span>
-                                <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
-                                    (keyup)="formatarQtde($event, p)" id="qtde"/>
-                                <span class="pi pi-plus-circle p-px-1 p-as-center" (click)="addQtde(p)"> </span>
+                            <td class="{{telaDesktop ? '' : 'p-d-inline-flex p-jc-around '}}">
+                                <div class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between p-grid'}}">
+                                    <div class="{{telaDesktop ? '' : 'p-col-12 p-d-inline-flex p-jc-around p-p-0'}}">
+                                        <span class="pi pi-minus-circle p-px-1 p-as-center" (click)="subtrairQtde(p)">
+                                        </span>
+                                        <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
+                                            (keyup)="formatarQtde($event, p)" id="qtde_{{p.produtoDto.produto}}" />
+                                        <span class="pi pi-plus-circle p-px-1 p-as-center" (click)="addQtde(p)"> </span>
+                                    </div>
+                                    <div *ngIf="!p.qtdeValida" class="{{telaDesktop ? '' : 'p-col-12 p-p-0 p-text-center'}}">
+                                        <small class="p-error">Excede o máximo de caracteres</small>
+                                    </div>
+                                </div>
+                                
                             </td>
                             <td class="{{telaDesktop ? 'p-jc-between p-text-nowrap' : 'p-d-inline-flex p-jc-between'}}">
                                 <span class="p-column-title">VL Lista:</span>
@@ -119,8 +129,8 @@
             <div class="p-col-6 p-d-inline-flex p-jc-end p-px-0 p-py-2">
                 <div class="p-p-2">
                     <p-button icon="pi pi-plus" (click)="addProduto(selecionados)" *ngIf="!telaDesktop"></p-button>
-                    <button *ngIf="telaDesktop" type="text" pButton label="Adicionar" icon="pi pi-plus" (click)="addProduto(selecionados)"
-                        style="width: auto"></button>
+                    <button *ngIf="telaDesktop" type="text" pButton label="Adicionar" icon="pi pi-plus"
+                        (click)="addProduto(selecionados)" style="width: auto"></button>
                 </div>
                 <div class="p-py-2">
                     <p-button icon="pi pi-times" (click)="fechar()" *ngIf="!telaDesktop"></p-button>
@@ -129,7 +139,7 @@
                 </div>
             </div>
         </div>
-        
+
     </div>
 
 </div>

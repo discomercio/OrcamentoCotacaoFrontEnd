@@ -450,7 +450,22 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
-    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
+    // if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
+    let input = document.getElementById(`qtde_${item.produto}`) as HTMLElement;
+    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO)
+    {
+      input.classList.add("ng-dirty");
+      input.classList.add("ng-invalid");
+      input.classList.add("ng-touched");
+      item.qtdeValida = false;
+      return;
+    }
+    else{
+      input.classList.remove("ng-dirty");
+      input.classList.remove("ng-invalid");
+      input.classList.remove("ng-touched");
+      item.qtdeValida = true;
+    }
 
     // item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
@@ -854,6 +869,10 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
       this.novoOrcamentoService.lstProdutosSelecionadosApoio = produtos;
       this.novoOrcamentoService.lstProdutosSelecionados = this.novoOrcamentoService.lstProdutosSelecionadosApoio;
+      this.cdref.detectChanges();
+      this.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
+        this.digitouQte(x);
+      })
       this.inserirProduto();
       this.novoOrcamentoService.descontoMedio = this.novoOrcamentoService.calcularDescontoMedio();
       if (this.novoOrcamentoService.orcamentoCotacaoDto.parceiro != null && this.novoOrcamentoService.percRTApoio) {

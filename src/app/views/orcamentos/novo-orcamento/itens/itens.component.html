@@ -22,10 +22,8 @@
                     <button *ngIf="!novoOrcamentoService.editandoComissao" pButton type="button" icon="pi pi-user-edit"
                         (click)="liberarEdicaoComissao()" pTooltip="Editar comissão"
                         class="p-button-text p-p-0"></button>
-                    <button
-                        *ngIf="novoOrcamentoService.editandoComissao"
-                        pButton type="button" icon="pi pi-times" (click)="liberarEdicaoComissao()"
-                        class="p-button-text p-p-0"></button>
+                    <button *ngIf="novoOrcamentoService.editandoComissao" pButton type="button" icon="pi pi-times"
+                        (click)="liberarEdicaoComissao()" class="p-button-text p-p-0"></button>
                 </div>
             </div>
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-p-0">
@@ -75,12 +73,23 @@
                                         [innerHtml]="stringUtils.formatarDescricao(p.fabricante, p.fabricanteNome, p.produto, p.descricao)">
                                     </p>
                                 </td>
-                                <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                                    <span class="p-column-title"
-                                        [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
-                                    <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}" id="qtde"
-                                        type="number" pInputText placeholder="" [value]="p.Qtde" [(ngModel)]="p.qtde"
-                                        (change)="digitouQte(p)" [disabled]="carregandoProds" />
+                                <td>
+                                    <div class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}"
+                                        style="width: 100% !important;">
+                                        <span class="p-column-title"
+                                            [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
+                                        <div>
+                                            <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}"
+                                                id="qtde_{{p.produto}}" type="number" pInputText placeholder="" [value]="p.Qtde"
+                                                [(ngModel)]="p.qtde" (change)="digitouQte(p)"
+                                                [disabled]="carregandoProds" />
+                                            <div *ngIf="!p.qtdeValida"
+                                                class="{{telaDesktop ? 'p-text-left' : 'p-text-right'}}">
+                                                <small class="p-error">Excede o máximo de caracteres</small>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </td>
                                 <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
                                     <span class="p-column-title">VL Lista:</span>
@@ -128,14 +137,16 @@
                             </tr>
                             <tr *ngIf="estoqueExcedido(p)" class="alerta">
                                 <td colspan="8" class="font-size">AVISO: Quantidade solicitada é maior que o estoque
-                                    disponível do produto: {{stringUtils.formatarDescricao(p.fabricante, null, p.produto, null)}}</td>
+                                    disponível do produto: {{stringUtils.formatarDescricao(p.fabricante, null,
+                                    p.produto, null)}}</td>
                             </tr>
                             <tr *ngIf="produtoTemAviso(p)">
                                 <td colspan="8" class="font-size alerta">AVISO: {{mensagemAlerta}}</td>
                             </tr>
                             <tr *ngIf="qtdeVendaPermitida(p)" class="alerta">
                                 <td colspan="8" class="font-size">AVISO: Quantidade solicitada excede a quantidade
-                                    máxima de venda permitida para o produto: {{stringUtils.formatarDescricao(p.fabricante, null, p.produto, null)}}</td>
+                                    máxima de venda permitida para o produto:
+                                    {{stringUtils.formatarDescricao(p.fabricante, null, p.produto, null)}}</td>
                             </tr>
                         </ng-template>
                         <ng-template pTemplate="footer" class="font-size">

@@ -416,6 +416,21 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Por favor, selecione ao menos um produto!");
       return;
     }
+
+    let invalidos = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO);
+    if (invalidos && invalidos.length > 0) {
+      let produtos: string;
+      invalidos.forEach(f => {
+        produtos = produtos && produtos.length > 0 ? `${produtos}, ${f.produto}` : f.produto;
+      });
+      
+      if (produtos && produtos.length > 0) {
+        produtos = invalidos.length > 1 ? `Os produtos ${produtos} excedem o máximo de caracteres!` : `O produto ${produtos} execede o máximo de caracteres!`;
+        this.alertaService.mostrarMensagem(produtos);
+        return;
+      }
+    }
+
     if (!this.formaPagtoCriacaoAprazo && this.formaPagtoCriacaoAprazo.tipo_parcelamento == 0) {
       this.novoOrcamentoService.mensagemService.showWarnViaToast("Forma de pagamento a prazo é obrigatória!");
       return;
