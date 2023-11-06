@@ -141,7 +141,10 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   setarProdutosOpcao() {
-    this.opcaoOrcamento.listaProdutos.forEach(x => { if (x.descDado > 0) x.alterouPrecoVenda = true; });
+    this.opcaoOrcamento.listaProdutos.forEach(x => { 
+      if (x.descDado > 0) x.alterouPrecoVenda = true; 
+      x.qtdeValida = true;
+    });
     this.itens.novoOrcamentoService.lstProdutosSelecionados = this.opcaoOrcamento.listaProdutos;
   }
 
