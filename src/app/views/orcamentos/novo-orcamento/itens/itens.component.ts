@@ -875,26 +875,30 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
     let pagtoAvista = pagtos[0].avista;
     if (!!pagtoAvista) {
-      this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista;
-      this.formaPagto.calcularValorAvista();
+      let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoAvista.tipo_parcelamento)[0];
+      let meioExiste = pagtoExiste.meios.filter(x => x.id == pagtoAvista.op_av_forma_pagto);
+      if (meioExiste.length > 0) {
+        this.formaPagto.formaPagtoCriacaoAvista = pagtoAvista;
+        this.formaPagto.calcularValorAvista();
+      }
     }
 
     let pagtoPrazo = pagtos[0].aprazo;
     if (!!pagtoPrazo) {
       let pagtoExiste = this.formaPagto.formaPagamento.filter(x => x.idTipoPagamento == pagtoPrazo.tipo_parcelamento);
-      if (pagtoExiste.length == 0) return;
-
-      this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo;
-      this.formaPagto.setarQtdeMaxParcelasEDias();
-      this.formaPagto.setarQtdeParcelas();
-      this.formaPagto.cdref.detectChanges();
-      this.cdref.detectChanges();
-      this.formaPagto.setarSiglaPagto();
+      if (pagtoExiste.length > 0) {
+        this.formaPagto.formaPagtoCriacaoAprazo = pagtoPrazo;
+        this.formaPagto.setarQtdeMaxParcelasEDias();
+        this.formaPagto.setarQtdeParcelas();
+        this.formaPagto.cdref.detectChanges();
+        this.cdref.detectChanges();
+        this.formaPagto.setarSiglaPagto();
+      }
     }
   }
 
   ngOnDestroy() {
-    if(!this.voltou){
+    if (!this.voltou) {
       sessionStorage.removeItem("filtro");
     }
   }
