@@ -19,4 +19,5 @@ export class ProdutoOrcamentoDto {
     mostrarCampos: boolean = false;
     idOperacaoAlcadaDescontoSuperior: number;
     urlImagem:string;
+    qtdeValida:boolean = true;
 }

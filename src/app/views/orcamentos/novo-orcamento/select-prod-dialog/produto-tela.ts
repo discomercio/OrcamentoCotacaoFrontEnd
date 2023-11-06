@@ -25,7 +25,7 @@ export class ProdutoTela {
             });
         }
     }
-
+    public qtdeValida: boolean = true;
     public vendavel: boolean = true;
 
     //a busca é feita contra esta string

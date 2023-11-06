@@ -134,14 +134,16 @@ export class NovoOrcamentoService {
     let totalItem = 0;
     let precoVenda = 0;
     if (!item.alterouPrecoVenda) {
-      produtosDto.forEach(x => {
-        let precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * item.coeficienteDeCalculo);
-        let precoVenda = this.moedaUtils.formatarDecimal(precoLista * (1 - item.descDado / 100));
-        let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
-        totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
-      });
-
-      item.totalItem = totalItem;
+      if(produtosDto){
+        produtosDto.forEach(x => {
+          let precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * item.coeficienteDeCalculo);
+          let precoVenda = this.moedaUtils.formatarDecimal(precoLista * (1 - item.descDado / 100));
+          let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
+          totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
+        });
+  
+        item.totalItem = totalItem;
+      }
     }
     if (item.alterouPrecoVenda) {
 
