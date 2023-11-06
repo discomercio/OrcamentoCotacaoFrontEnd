@@ -423,12 +423,27 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       invalidos.forEach(f => {
         produtos = produtos && produtos.length > 0 ? `${produtos}, ${f.produto}` : f.produto;
       });
-      
+
       if (produtos && produtos.length > 0) {
         produtos = invalidos.length > 1 ? `Os produtos ${produtos} excedem o máximo de caracteres!` : `O produto ${produtos} execede o máximo de caracteres!`;
         this.alertaService.mostrarMensagem(produtos);
         return;
       }
+    }
+
+    let validouTodosProdutos: boolean = true;
+    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+      let produtoDto = this.novoOrcamentoService.selecProdInfo.produtoComboDto.produtosSimples.filter(p => p.produto == x.produto);
+      if (produtoDto && produtoDto.length > 0) {
+        if (x.qtde > produtoDto[0].qtdeMaxVenda) {
+          validouTodosProdutos = false;
+        }
+      }
+    });
+
+    if(!validouTodosProdutos){
+      this.alertaService.mostrarMensagem("Há produto(s) que excede(m) a quantidade máxima permitida por produto!");
+      return;
     }
 
     if (!this.formaPagtoCriacaoAprazo && this.formaPagtoCriacaoAprazo.tipo_parcelamento == 0) {
