@@ -11,4 +11,5 @@ export class OrcamentoOpcaoDto {
     aprovado:boolean;
     existeImagemProduto:boolean;
     pagtoSelecionado:FormaPagtoCriacao;
+    sequencia:number;
 }

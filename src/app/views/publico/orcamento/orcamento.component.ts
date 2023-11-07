@@ -356,7 +356,9 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
         this.router.navigate([`publico/cadastro-cliente/${this.paramGuid}`], {
           queryParams: {
             idOpcao: opcao.id,
-            idFormaPagto: opcao.pagtoSelecionado.id
+            idFormaPagto: opcao.pagtoSelecionado.id,
+            pagtoAprovadoTexto : opcao.pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA ? "a vista" : "a prazo",
+            sequencia: opcao.sequencia
           }
         });
       }
