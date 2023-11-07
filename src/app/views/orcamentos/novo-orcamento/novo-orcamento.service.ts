@@ -20,6 +20,7 @@ import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { ProdutoComboDto } from 'src/app/dto/produtos/ProdutoComboDto';
 import { ProdutoDto } from 'src/app/dto/produtos/ProdutoDto';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
+import { SelecProdInfo } from './select-prod-dialog/selec-prod-info';
 
 @Injectable({
   providedIn: 'root'
@@ -49,6 +50,7 @@ export class NovoOrcamentoService {
   public configValidade: ValidadeOrcamento;
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public percRTApoio: number;
+  public selecProdInfo = new SelecProdInfo();
 
   tipoUsuario: number;
   percMaxComissaoEDescontoUtilizar: number;

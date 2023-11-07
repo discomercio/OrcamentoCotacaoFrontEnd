@@ -213,6 +213,23 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
 
   salvarOpcao() {
     this.itens.carregandoProds = true;
+
+    let validouTodosProdutos: boolean = true;
+    this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+      let produtoDto = this.itens.novoOrcamentoService.produtoComboDto.produtosSimples.filter(p => p.produto == x.produto);
+      if (produtoDto && produtoDto.length > 0) {
+        if (x.qtde > produtoDto[0].qtdeMaxVenda) {
+          validouTodosProdutos = false;
+        }
+      }
+    });
+
+    if(!validouTodosProdutos){
+      this.itens.carregandoProds = false;
+      this.alertaService.mostrarMensagem("Há produto(s) que excede(m) a quantidade máxima permitida por produto!");
+      return;
+    }
+
     if (!this.itens.formaPagto.validarFormasPagto(this.itens.formaPagto.formaPagtoCriacaoAprazo, this.itens.formaPagto.formaPagtoCriacaoAvista)) {
       this.itens.carregandoProds = false;
       return;

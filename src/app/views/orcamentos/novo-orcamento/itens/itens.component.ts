@@ -80,7 +80,6 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   dtOptions: any = {};
   produtoComboDto: ProdutoComboDto;
   carregandoProds = true;
-  selecProdInfo = new SelecProdInfo();
   param: string;
   habilitarClone: boolean = false;
   editando: boolean = false;
@@ -219,13 +218,13 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   mostrarOpcoesClone() {
-    this.selecProdInfo.produtoComboDto = this.produtoComboDto;
+    this.novoOrcamentoService.selecProdInfo.produtoComboDto = this.produtoComboDto;
     let largura: string = this.novoOrcamentoService.onResize();
     const ref = this.dialogService.open(SelectCloneOpcoesDialogComponent,
       {
         width: largura,
         styleClass: 'dynamicDialog',
-        data: this.selecProdInfo
+        data: this.novoOrcamentoService.selecProdInfo
       });
 
     ref.onClose.subscribe((resultado: any) => {
@@ -319,15 +318,15 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
 
   mostrarProdutos(linha: ProdutoOrcamentoDto) {
     this.clicouAddProdutos = true;
-    this.selecProdInfo.produtoComboDto = this.produtoComboDto;
-    this.selecProdInfo.ClicouOk = false;
+    this.novoOrcamentoService.selecProdInfo.produtoComboDto = this.produtoComboDto;
+    this.novoOrcamentoService.selecProdInfo.ClicouOk = false;
     let largura: string = this.novoOrcamentoService.onResize();
 
     const ref = this.dialogService.open(SelectProdDialogComponent,
       {
         width: largura,
         styleClass: 'dynamicDialog',
-        data: this.selecProdInfo,
+        data: this.novoOrcamentoService.selecProdInfo,
         closeOnEscape: false,
         closable: false,
         showHeader: false,
