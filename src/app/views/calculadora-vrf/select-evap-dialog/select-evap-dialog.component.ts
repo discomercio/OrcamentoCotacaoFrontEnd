@@ -88,11 +88,6 @@ export class SelectEvapDialogComponent extends TelaDesktopBaseComponent implemen
 
   pesquisar() {
 
-    if (!this.linhaProduto && !this.btu && !this.kcal) {
-      this.alertaService.mostrarMensagem("Preencha pelo menos um filtro para pesquisa!");
-      return;
-    }
-
     if (this.selecionados && this.selecionados.length > 0) {
       this.sweetAlertService.dialogo("", "Os itens selecionados não foram adicionados.<br> Pretende continuar?").subscribe((r) => {
         if (!r) {
