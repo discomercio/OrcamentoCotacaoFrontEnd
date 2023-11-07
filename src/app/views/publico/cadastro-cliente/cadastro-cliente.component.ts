@@ -73,6 +73,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
+  pagtoAprovadoTexto:string;
+  sequencia:number;
   orientacaoPreenchimento: string;
   termoPrivacidade: string;
   privacidade: boolean = false;
@@ -94,6 +96,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.activatedRoute.queryParams.subscribe(params => {
       this.idOpcao = parseInt(params.idOpcao);
       this.idFormaPagto = parseInt(params.idFormaPagto);
+      this.pagtoAprovadoTexto = params.pagtoAprovadoTexto;
+      this.sequencia = params.sequencia;
     });
 
 
@@ -357,12 +361,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
     aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosCliente));
     aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
+    aprovacaoOrcamento.opcaoSequencia = this.sequencia;
+    aprovacaoOrcamento.pagtoAprovadoTexto = this.pagtoAprovadoTexto;
 
     this.desconverterTelefones();
     if (this.TipoCliente == this.constantes.ID_PJ && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();
     }
-    
 
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "publico").toPromise().then((r) => {
       //tem mensagem de erro ?

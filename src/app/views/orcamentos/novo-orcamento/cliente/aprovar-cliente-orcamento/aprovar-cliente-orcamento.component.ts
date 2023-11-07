@@ -284,7 +284,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();
     }
-debugger;
+
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "interno").toPromise().then((r) => {
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));
