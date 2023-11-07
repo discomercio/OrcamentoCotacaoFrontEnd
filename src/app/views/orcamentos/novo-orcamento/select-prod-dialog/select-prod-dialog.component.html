@@ -3,7 +3,7 @@
         <div class="p-col-12 p-field p-grid p-pr-0">
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-as-end">
                 <label for="produto">Produto ou código</label>
-                <input id="produto" type="text" pInputText [(ngModel)]="produto"
+                <input id="produto" type="text" pInputText [(ngModel)]="produto" pAutoFocus [autofocus]="focoProduto"
                     [ngModelOptions]="{standalone: true}" />
             </div>
             <div class="p-field p-col-12 p-lg-2 p-md-3 p-sm-6 p-as-end">
@@ -71,7 +71,7 @@
                                         <span class="pi pi-minus-circle p-px-1 p-as-center" (click)="subtrairQtde(p)">
                                         </span>
                                         <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
-                                            (keyup)="formatarQtde($event, p)" id="qtde_{{p.produtoDto.produto}}" />
+                                            (keyup)="formatarQtde($event, p)" id="qtdeS_{{p.produtoDto.produto}}" pAutoFocus [autofocus]="focoQtde"/>
                                         <span class="pi pi-plus-circle p-px-1 p-as-center" (click)="addQtde(p)"> </span>
                                     </div>
                                     <div *ngIf="!p.qtdeValida" class="{{telaDesktop ? '' : 'p-col-12 p-p-0 p-text-center'}}">
@@ -130,7 +130,7 @@
                 <div class="p-p-2">
                     <p-button icon="pi pi-plus" (click)="addProduto(selecionados)" *ngIf="!telaDesktop"></p-button>
                     <button *ngIf="telaDesktop" type="text" pButton label="Adicionar" icon="pi pi-plus"
-                        (click)="addProduto(selecionados)" style="width: auto"></button>
+                        (click)="addProduto(selecionados)" style="width: auto" id="btnAdd" pAutoFocus [autofocus]="true"></button>
                 </div>
                 <div class="p-py-2">
                     <p-button icon="pi pi-times" (click)="fechar()" *ngIf="!telaDesktop"></p-button>
