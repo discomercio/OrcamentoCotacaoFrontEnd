@@ -638,6 +638,9 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     orcamentoAprovacao.idOpcao = opcaoSelecionada.id;
     orcamentoAprovacao.idFormaPagto = opcaoSelecionada.pagtoSelecionado.id;
     orcamentoAprovacao.idOrcamento = this.novoOrcamentoService.orcamentoCotacaoDto.id;
+    orcamentoAprovacao.pagtoAprovadoTexto =
+      opcaoSelecionada.pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA ? "a vista" : "a prazo";
+    orcamentoAprovacao.opcaoSequencia = opcaoSelecionada.sequencia;
 
     this.novoOrcamentoService.orcamentoAprovacao = orcamentoAprovacao;
 

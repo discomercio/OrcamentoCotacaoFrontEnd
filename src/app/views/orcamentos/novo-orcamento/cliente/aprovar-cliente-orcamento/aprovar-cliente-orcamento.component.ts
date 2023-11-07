@@ -277,12 +277,14 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     aprovacaoOrcamento.clienteCadastroDto = new ClienteCadastroDto();
     aprovacaoOrcamento.clienteCadastroDto.DadosCliente = JSON.parse(JSON.stringify(this.dadosClienteCadastroDto));
     aprovacaoOrcamento.enderecoEntregaDto = JSON.parse(JSON.stringify(this.enderecoEntrega.enderecoEntregaDtoClienteCadastro));
+    aprovacaoOrcamento.opcaoSequencia = this.novoOrcamentoService.orcamentoAprovacao.opcaoSequencia;
+    aprovacaoOrcamento.pagtoAprovadoTexto = this.novoOrcamentoService.orcamentoAprovacao.pagtoAprovadoTexto;
 
     this.desconverterTelefones();
     if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();
     }
-
+debugger;
     this.orcamentoService.aprovarOrcamento(aprovacaoOrcamento, "interno").toPromise().then((r) => {
       if (r != null) {
         this.alertaService.mostrarMensagem(r.join("<br>"));

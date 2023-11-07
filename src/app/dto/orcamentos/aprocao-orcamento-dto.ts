@@ -5,7 +5,9 @@ import { EnderecoEntregaDtoClienteCadastro } from "../clientes/EnderecoEntregaDT
 export class AprovacaoOrcamentoDto{
     idOrcamento:number;
     idOpcao:number;
+    opcaoSequencia:number;
     idFormaPagto:number;
+    pagtoAprovadoTexto:string;
     clienteCadastroDto:ClienteCadastroDto;
     enderecoEntregaDto:EnderecoEntregaDtoClienteCadastro;
     guid: string;
