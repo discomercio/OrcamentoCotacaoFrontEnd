@@ -407,8 +407,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
 
   incluirOpcao() {
     //COLOCAR VALIDAÇÃO DE FORMAS DE PAGAMENTOS
-    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == 3) {
-      this.novoOrcamentoService.mensagemService.showWarnViaToast("É permitido incluir somente 3 opções de orçamento!");
+    if (this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.length == this.novoOrcamentoService.configValidade.LimiteQtdeMaxOpcaoOrcamento) {
+      this.novoOrcamentoService.mensagemService.showWarnViaToast(`É permitido incluir somente ${this.novoOrcamentoService.configValidade.LimiteQtdeMaxOpcaoOrcamento} opções de orçamento!`);
       return;
     }
     if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
