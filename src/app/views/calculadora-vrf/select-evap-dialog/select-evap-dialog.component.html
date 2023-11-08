@@ -50,16 +50,30 @@
 
                         </td>
                         <td class="{{telaDesktop ? 'p-jc-between' : 'p-d-inline-flex p-jc-between'}}">
-                            <span class="pi pi-minus-circle p-px-1" (click)="subtrairQtde(p)"> </span>
+                            <span class="pi pi-minus-circle p-as-center p-px-1" (click)="subtrairQtde(p)"> </span>
                             <input class="p-col-5 p-text-right" type="text" pInputText [(ngModel)]="p.qtde"
                                 (keyup)="formatarQtde($event, p)" id="qtde" />
-                            <span class="pi pi-plus-circle p-px-1" (click)="addQtde(p)"> </span>
+                            <span class="pi pi-plus-circle p-as-center p-px-1" (click)="addQtde(p)"> </span>
                         </td>
-                        <td class="p-text-center p-py-0">
-                            {{p.btu}}
+                        <td class="p-py-0">
+                            <div *ngIf="telaDesktop" class="p-text-center">
+                                {{p.btu}}
+                            </div>
+                            <div *ngIf="!telaDesktop" class="p-d-inline-flex p-jc-between" style="width: 100%;">
+                                <span class="p-column-title">Capacidade (BTU/h):</span>
+                                <span>{{p.btu}}</span>
+                            </div>
+
                         </td>
-                        <td class="p-text-center p-py-0">
-                            {{p.kcal}}
+                        <td class="p-py-0">
+                            <div *ngIf="telaDesktop" class="p-text-center">
+                                {{p.kcal}}
+                            </div>
+                            <div *ngIf="!telaDesktop" class="p-d-inline-flex p-jc-between" style="width: 100%;">
+                                <span class="p-column-title">Capacidade (Kcal/h):</span>
+                                <span>{{p.kcal}}</span>
+                            </div>
+
                         </td>
                     </tr>
                 </ng-template>
