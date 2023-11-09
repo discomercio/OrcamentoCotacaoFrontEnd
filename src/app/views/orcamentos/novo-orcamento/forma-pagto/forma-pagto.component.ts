@@ -432,7 +432,7 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     }
 
     let validouTodosProdutos: boolean = true;
-    this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+    this.novoOrcamentoService.listaProdutosDesmembrados.forEach(x => {
       let produtoDto = this.novoOrcamentoService.selecProdInfo.produtoComboDto.produtosSimples.filter(p => p.produto == x.produto);
       if (produtoDto && produtoDto.length > 0) {
         if (x.qtde > produtoDto[0].qtdeMaxVenda) {
@@ -521,7 +521,8 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
     this.checkedAvista = false;
     this.setarTipoPagto();
 
-    this.novoOrcamentoService.controleProduto = new Array<string>();
+    this.novoOrcamentoService.listaProdutosQtdeApoio = new Array();
+    this.novoOrcamentoService.listaProdutosDesmembrados = new Array();
     this.novoOrcamentoService.lstProdutosSelecionados = new Array();
     this.novoOrcamentoService.lstProdutosSelecionadosApoio = new Array();
     this.novoOrcamentoService.setarPercentualComissao();

@@ -80,6 +80,45 @@ export class SelectCloneOpcoesDialogComponent extends TelaDesktopBaseComponent i
       let texto = "Os produtos abaixo não estão mais a venda!\n"+ itensInexistententes.join('\n');
       this.alertaService.mostrarMensagem(texto);
     }
+
+    this.novoOrcamentoService.listaProdutosDesmembrados = new Array();
+    this.novoOrcamentoService.listaProdutosQtdeApoio = new Array();
+    retorno.forEach(p => {
+      let itemExiste = this.novoOrcamentoService.listaProdutosQtdeApoio.filter(x => x.produto == p.produtoDto.produto);
+      if(itemExiste.length > 0){
+        itemExiste[0].qtde = itemExiste[0].qtde + p.qtde;
+      }else{
+        this.novoOrcamentoService.listaProdutosQtdeApoio.push({produto: p.produtoDto.produto, qtde : p.qtde});
+      }
+
+      if (p.Filhos.length > 0) {
+        p.Filhos.forEach(x => {
+          let filhoteExiste = this.novoOrcamentoService.listaProdutosDesmembrados.filter(e => e.produto == x.produto);
+          if (filhoteExiste.length > 0) {
+            let qtdeAdicionar = p.qtde * x.qtde;
+            filhoteExiste[0].qtde = filhoteExiste[0].qtde + qtdeAdicionar;
+          }
+          else {
+            let novo = new ProdutoOrcamentoDto();
+            novo.produto = x.produto;
+            novo.qtde = p.qtde * x.qtde;
+            this.novoOrcamentoService.listaProdutosDesmembrados.push(novo);
+          }
+        });
+      }
+      else {
+        let simplesExiste = this.novoOrcamentoService.listaProdutosDesmembrados.filter(e => e.produto == p.produtoDto.produto);
+        if (simplesExiste.length > 0) {
+          simplesExiste[0].qtde = simplesExiste[0].qtde + p.qtde;
+        }
+        else {
+          let novo = new ProdutoOrcamentoDto();
+          novo.produto = p.produtoDto.produto;
+          novo.qtde = p.qtde * p.qtde;
+          this.novoOrcamentoService.listaProdutosDesmembrados.push(novo);
+        }
+      }
+    });
     //retornar o item
     return retorno;
   }
