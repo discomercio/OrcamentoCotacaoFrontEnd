@@ -11,6 +11,7 @@ import { ProdutoRequest } from 'src/app/dto/produtos/produtoRequest';
 import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 import { PercMaxDescEComissaoResponseViewModel } from 'src/app/dto/percentual-comissao';
 import { ProdutoService } from 'src/app/service/produto/produto.service';
+import { ProdutoOrcamentoDto } from 'src/app/dto/produtos/ProdutoOrcamentoDto';
 
 @Component({
   selector: 'app-editar-opcao',
@@ -115,6 +116,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       this.itens.inserirProduto();
       this.atribuirPercRT();
       this.itens.novoOrcamentoService.descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
+      this.setarListasProdutoControle();
       this.cdref.detectChanges();
     });
   }
@@ -141,8 +143,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
   }
 
   setarProdutosOpcao() {
-    this.opcaoOrcamento.listaProdutos.forEach(x => { 
-      if (x.descDado > 0) x.alterouPrecoVenda = true; 
+    this.opcaoOrcamento.listaProdutos.forEach(x => {
+      if (x.descDado > 0) x.alterouPrecoVenda = true;
       x.qtdeValida = true;
     });
     this.itens.novoOrcamentoService.lstProdutosSelecionados = this.opcaoOrcamento.listaProdutos;
@@ -214,11 +216,52 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
     }
   }
 
+  setarListasProdutoControle() {
+    this.itens.novoOrcamentoService.listaProdutosDesmembrados = new Array();
+    this.itens.novoOrcamentoService.listaProdutosQtdeApoio = new Array();
+
+    this.itens.novoOrcamentoService.lstProdutosSelecionados.forEach(x => {
+      this.itens.novoOrcamentoService.listaProdutosQtdeApoio.push({ produto: x.produto, qtde: x.qtde });
+
+      let produtoDto = this.itens.novoOrcamentoService.produtoComboDto.produtosCompostos.filter(p => p.paiProduto == x.produto);
+      if (produtoDto.length > 0) {
+        //pegar os filhotes e ir calculando a qtde e adicionando na lista de desmembrados
+        produtoDto.forEach(s => {
+          s.filhos.forEach(f => {
+            let produtoExiste = this.itens.novoOrcamentoService.listaProdutosDesmembrados.filter(p => p.produto == f.produto);
+            if (produtoExiste.length > 0) {
+              let qtdeCalculada = x.qtde * f.qtde;
+              produtoExiste[0].qtde = produtoExiste[0].qtde + qtdeCalculada;
+            } else {
+              let novo = new ProdutoOrcamentoDto();
+              novo.produto = f.produto;
+              novo.qtde = x.qtde * f.qtde;
+              this.itens.novoOrcamentoService.listaProdutosDesmembrados.push(novo)
+            }
+          });
+        });
+      } else {
+        let produtoExiste = this.itens.novoOrcamentoService.listaProdutosDesmembrados.filter(p => p.produto == x.produto);
+        if (produtoExiste.length > 0) {
+          produtoExiste[0].qtde = produtoExiste[0].qtde + x.qtde;
+        }
+        else {
+          let novo = new ProdutoOrcamentoDto();
+          novo.produto = x.produto;
+          novo.qtde = x.qtde;
+          this.itens.novoOrcamentoService.listaProdutosDesmembrados.push(novo)
+        }
+      }
+    });
+    debugger;
+  }
+
   salvarOpcao() {
     this.itens.carregandoProds = true;
 
     let validouTodosProdutos: boolean = true;
-    this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.forEach(x => {
+    debugger;
+    this.itens.novoOrcamentoService.listaProdutosDesmembrados.forEach(x => {
       let produtoDto = this.itens.novoOrcamentoService.produtoComboDto.produtosSimples.filter(p => p.produto == x.produto);
       if (produtoDto && produtoDto.length > 0) {
         if (x.qtde > produtoDto[0].qtdeMaxVenda) {
@@ -226,8 +269,8 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
         }
       }
     });
-
-    if(!validouTodosProdutos){
+    
+    if (!validouTodosProdutos) {
       this.itens.carregandoProds = false;
       this.alertaService.mostrarMensagem("Há produto(s) que excede(m) a quantidade máxima permitida por produto!");
       return;
@@ -258,7 +301,7 @@ export class EditarOpcaoComponent implements OnInit, AfterViewInit {
       let comissao = this.itens.novoOrcamentoService.opcaoOrcamentoCotacaoDto.percRT;
       let descontoMedio = this.itens.novoOrcamentoService.calcularDescontoMedio();
       let comissaoMaisDesconto = Number.parseFloat(this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(comissao + descontoMedio));
-      
+
       if (comissaoMaisDesconto > this.itens.novoOrcamentoService.percMaxComissaoEDescontoUtilizar) {
         let novoPercRT = this.itens.novoOrcamentoService.calcularPercentualComissaoValidacao();
         let pergunta = `Para manter o desconto médio de ${this.itens.novoOrcamentoService.moedaUtils.formatarValorDuasCasaReturnZero(descontoMedio)}% a comissão será reduzida para
