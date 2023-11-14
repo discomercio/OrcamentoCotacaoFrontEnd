@@ -14,4 +14,5 @@ export class OrcamentosOpcaoResponse {
     loja:string;
     aprovado: boolean;
     pagtoSelecionado:FormaPagtoCriacao;
+    sequencia:number;
 }
