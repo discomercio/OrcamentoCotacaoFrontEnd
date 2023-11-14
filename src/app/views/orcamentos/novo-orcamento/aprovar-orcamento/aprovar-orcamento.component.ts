@@ -76,7 +76,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   idOrcamentoCotacao: number;
   razaoSocialParceiro: string;
   formaPagamento: FormaPagto[] = new Array();
-  activeState: boolean[] = [true, true, true];
+  activeState: boolean[] = [];
   moedaUtils: MoedaUtils = new MoedaUtils();
   stringUtils = StringUtils;
   constantes: Constantes = new Constantes();
@@ -269,6 +269,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     if (r != null) {
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
+
+      this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(x =>{
+        this.activeState.push(true);
+      });
+
       this.verificarDisponibilidadeOrcamento();
       this.verificarFormasPagtos();
       this.verificarOpcaoAprovada();
