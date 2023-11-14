@@ -57,9 +57,13 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   capacidades: Array<DropDownItem> = new Array<DropDownItem>();
   cicloSelecionado: string;
   produto: string;
-
+  focoProduto: boolean;
+  focoQtde: boolean;
+  focoBtnAdd: boolean;
   carregando: boolean;
   cat: string;
+  digitado: string = "";
+
   ngOnInit(): void {
     this.carregando = true;
     this.displayModal = true;
@@ -71,6 +75,8 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.transferirDados();
 
     this.novoOrcamentoService.pageItens = this.telaDesktop ? 3 : 6;
+
+    this.focoProduto = true;
   }
   public combo: ProdutoComboDto = new ProdutoComboDto();
 
@@ -269,6 +275,18 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
     this.prodsTela = lstCap;
     this.prodsTela = this.prodsTela.sort((a, b) => a.produtoDto.produto.localeCompare(b.produtoDto.produto));
+    this.cdref.detectChanges();
+    if (this.prodsTela.length == 1) {
+      this.focoQtde = true;
+      let inputQtde = document.getElementById(`qtdeS_${this.prodsTela[0].produtoDto.produto}`) as HTMLInputElement;
+      this.addQtde(this.prodsTela[0]);
+      //por algum motivo o select() não reflete nem com this.cdref.detectChanges()
+      //por isso o timeout
+      setTimeout(() => {
+        inputQtde.focus();
+        inputQtde.select();
+      }, 100);
+    }
   }
 
   filtrarPorFabricante(lista: ProdutoTela[]) {
@@ -401,7 +419,6 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     return retorno;
   }
 
-  digitado: string = "";
   digitouProd(e: Event) {
     this.digitado = ((e.target) as HTMLInputElement).value;
     ProdutoTela.AtualizarVisiveis(this.prodsArray, this.digitado);
@@ -479,12 +496,30 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       return;
     }
 
+    let elfoco = document.getElementById("btnAdd") as HTMLElement;
+    if (elfoco.autofocus) {
+      elfoco.blur();
+      this.focoBtnAdd = false;
+      this.focoQtde = false;
+      this.produto = "";
+      this.fabricantesSelecionados = new Array();
+      this.categoriasSelecionadas = new Array();
+      this.cicloSelecionado = "";
+      this.capacidadesSelecionadas = new Array();
+      this.focoProduto = true;
+      (document.getElementById("produto") as HTMLElement).focus();
+      this.prodsTela = new Array();
+      this.cdref.detectChanges();
+      return;
+    }
+
     let msg: string[] = new Array();
     msg.push("Por favor, selecione um produto!");
     this.mensagemService.showErrorViaToast(msg);
   }
 
   limparListaTela() {
+
     this.selecionados.forEach(x => {
       let linha = document.getElementById(`linha_tabela_${x.produtoDto.produto}`) as HTMLElement;
       linha.classList.remove("p-highlight");
@@ -543,24 +578,21 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   verificarQtdeItem(produto: ProdutoTela, qtde: number) {
-    let itemQtde = document.getElementById(`qtde_${produto.produtoDto.produto}`) as HTMLElement;
+    let itemQtde = document.getElementById(`qtdeS_${produto.produtoDto.produto}`) as HTMLElement;
     if (qtde > this.novoOrcamentoService.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) {
       console.log(qtde);
       itemQtde.classList.add("ng-dirty");
       itemQtde.classList.add("ng-invalid");
       itemQtde.classList.add("ng-touched");
-      // this.validaQtde = false;
       return false;
     }
     else {
       itemQtde.classList.remove("ng-dirty");
       itemQtde.classList.remove("ng-invalid");
       itemQtde.classList.remove("ng-touched");
-      // this.validaQtde = true;
     }
     return true;
   }
-
 
   formatarQtde(e: Event, produto: ProdutoTela): void {
     let valor = ((e.target) as HTMLInputElement).value;
@@ -600,17 +632,39 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     if (event.which == 13) {
       let el = (event.srcElement) as HTMLElement;
       if (el.classList.contains("p-multiselect-item")) return;
-      if (el.getAttribute("id") != "produto" && el.getAttribute("id") != "pesquisar") return;
-      if (el.getAttribute("id") == "produto") {
-        let input = (event.target) as HTMLInputElement;
-        if (!input.value) return;
+
+      if (!el.getAttribute("id") && el.getAttribute("id") != "produto" &&
+        el.getAttribute("id") != "pesquisar" &&
+        el.getAttribute("id").indexOf("qtdeS_") == -1) {
+        return;
       }
 
-      this.pesquisar();
-      event.cancelBubble = true;
-      event.stopPropagation();
-      event.preventDefault();//esse cara que fez a diferença
-      event.stopImmediatePropagation();
+      if (el.getAttribute("id") == "produto" || el.getAttribute("id").indexOf("qtdeS_") > -1) {
+        let input = (event.target) as HTMLInputElement;
+
+        if (el.getAttribute("id") == "produto") {
+          if (!input.value) return;
+
+          this.cdref.detectChanges();
+          this.pesquisar();
+          event.cancelBubble = true;
+          event.stopPropagation();
+          event.preventDefault();//esse cara que fez a diferença
+          event.stopImmediatePropagation();
+          this.focoProduto = false;
+        }
+
+        if (el.getAttribute("id").indexOf("qtdeS_") > -1 && this.prodsTela.length == 1) {
+          el.blur();
+          this.cdref.detectChanges();
+          this.addProduto(this.selecionados);
+          this.focoQtde = false;
+
+          let btn = document.getElementById("btnAdd") as HTMLElement;
+          btn.focus();
+          this.focoBtnAdd = true;
+        }
+      }
     }
   }
 
@@ -631,6 +685,4 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       this.ref.close();
     }
   }
-
-
 }
