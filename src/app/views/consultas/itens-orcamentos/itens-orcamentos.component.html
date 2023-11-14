@@ -45,7 +45,7 @@
                                 emptyFilterMessage="Nenhum item encontrado">
                             </p-multiSelect>
                         </div>
-                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo">
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo && acessoUniversal">
                             <label for="filtroVendedor">Vendedor</label>
                             <p-multiSelect [options]="cboVendedores" [(ngModel)]="filtro.Vendedores"
                                 defaultLabel="Selecione" optionLabel="Value" optionValue="Id"
@@ -88,7 +88,7 @@
                                 [ngModelOptions]="{standalone: true}">
                             </p-multiSelect>
                         </div>
-                        <div class="p-col-4 p-lg-3 p-md-12 p-sm-4 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-end p-mx-0 p-px-0">
+                        <div class="p-col-4 p-lg-3 p-md-12 p-sm-4 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-end p-mx-0 p-px-0" style="width: 100%;">
                             <div class="p-as-center p-pt-2 p-pt-lg-4">
                                 <button pButton type="button" label="Pesquisar" icon="pi pi-search"
                                     (click)="pesquisar()"></button>
