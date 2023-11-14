@@ -14,6 +14,13 @@ import { LazyLoadEvent } from 'primeng/api';
 import { UsuariosRequest } from 'src/app/dto/usuarios/usuarios-request';
 import { OrcamentistaVendedorResponse } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-vendedor-response';
 import { DropDownItem } from '../../orcamentos/models/DropDownItem';
+import { UsuariosPorListaLojasResponse } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-response';
+import { UsuariosPorListaLojasRequest } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-request';
+import { Usuario } from 'src/app/dto/usuarios/usuario';
+import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
+import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
+import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
+import { Constantes } from 'src/app/utilities/constantes';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -27,7 +34,9 @@ export class UsuarioListaComponent implements OnInit {
     private readonly alertaService: AlertaService,
     private readonly autenticacaoService: AutenticacaoService,
     private readonly router: Router,
-    private readonly sweetAlertService: SweetalertService) { }
+    private readonly sweetAlertService: SweetalertService,
+    private readonly usuarioService: UsuariosService,
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
 
   @ViewChild('dataTable') table: Table;
   cols: any[];
@@ -41,6 +50,14 @@ export class UsuarioListaComponent implements OnInit {
   filtro: UsuariosRequest = new UsuariosRequest();
   usuarioLista: Array<OrcamentistaVendedorResponse> = new Array();
   cboAtivos: Array<DropDownItem> = [];
+  admModulo: boolean;
+  usuario = new Usuario();
+  tipoUsuario: number;
+  cboVendedores: Array<DropDownItem> = [];
+  cboParceiros: Array<DropDownItem> = [];
+  constantes: Constantes = new Constantes();
+  idValuesTmp = 0;
+  cboBloqueados: Array<DropDownItem> = [];
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
@@ -50,16 +67,37 @@ export class UsuarioListaComponent implements OnInit {
     }
 
     this.carregando = true;
-
+    this.tipoUsuario = this.autenticacaoService._tipoUsuario;
+    this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.permite = this.autenticacaoService.verificarPermissoes(ePermissao.CadastroVendedorParceiroIncluirEditar);
+    this.admModulo = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
     this.criarColunas();
     this.criarFiltroAtivo();
-    this.setarFiltro();
+    this.criarFiltroBloqueado();
+
+    const promises: any = [this.buscarVendedores(), this.buscarParceiros()];
+    Promise.all(promises).then((r: Array<any>) => {
+      this.setarVendedores(r[0]);
+      this.setarParceiros(r[1]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+      this.carregando = false;
+    }).finally(() => {
+      this.carregando = false;
+      // this.pesquisaAuto();
+      this.setarFiltro();
+    });
+
   }
 
   criarFiltroAtivo() {
     this.cboAtivos.push({ Id: 1, Value: "Sim" });
     this.cboAtivos.push({ Id: 0, Value: "Não" });
+  }
+
+  criarFiltroBloqueado() {
+    this.cboBloqueados.push({ Id: 1, Value: "Sim" });
+    this.cboBloqueados.push({ Id: 0, Value: "Não" });
   }
 
   criarColunas() {
@@ -70,6 +108,51 @@ export class UsuarioListaComponent implements OnInit {
       { field: 'vendedorResponsavel', header: 'Responsável' },
       { field: 'ativoLabel', header: 'Ativo', width: '60px' }
     ];
+  }
+
+  buscarVendedores(): Promise<UsuariosPorListaLojasResponse> {
+    if (this.admModulo) {
+      let request = new UsuariosPorListaLojasRequest();
+      request.lojas = [];
+      request.lojas.push(this.autenticacaoService._lojaLogado);
+
+      return this.usuarioService.buscarVendedoresPorListaLojas(request).toPromise();
+    }
+  }
+
+  buscarParceiros(): Promise<OrcamentistaIndicadorDto[]> {
+    return this.orcamentistaIndicadorService.buscarParceirosPorLoja(this.autenticacaoService._lojaLogado).toPromise()
+  }
+
+  setarVendedores(vendedores: UsuariosPorListaLojasResponse) {
+    if (this.tipoUsuario.toString() == this.constantes.PARCEIRO.toString() ||
+      this.tipoUsuario.toString() == this.constantes.PARCEIRO_VENDEDOR.toString()) return;
+
+    if (vendedores && !vendedores.Sucesso) {
+      this.sweetAlertService.aviso(vendedores.Mensagem);
+      return;
+    }
+    if (this.admModulo) {
+      this.cboVendedores = new Array<any>();
+      vendedores.usuarios.forEach(x => {
+        this.cboVendedores.push({ Id: x.id, Value: x.vendedor });
+      });
+    }
+
+    this.cboVendedores = this.cboVendedores.sort((a, b) => (a.Value < b.Value ? -1 : 1));
+  }
+
+  setarParceiros(parceiros: Array<OrcamentistaIndicadorDto>) {
+    if (parceiros != null) {
+      parceiros.forEach(x => {
+        if (!!x.nome) {
+          if (!this.cboParceiros.find(f => f.Value == x.nome) && x.nome != this.constantes.SEM_INDICADOR)
+            this.cboParceiros.push({ Id: (this.idValuesTmp++).toString(), Value: x.nome });
+        }
+      });
+
+      this.cboParceiros = this.cboParceiros.sort((a, b) => a.Value.localeCompare(b.Value, 'pt'));
+    }
   }
 
   setarFiltro() {
@@ -118,10 +201,10 @@ export class UsuarioListaComponent implements OnInit {
         return;
       }
 
-      if(this.filtro.pagina == 0 && r.listaOrcamentistaVendedor.length == 0){
+      if (this.filtro.pagina == 0 && r.listaOrcamentistaVendedor.length == 0) {
         this.first = 0;
       }
-      if(this.filtro.pagina > 0 && r.listaOrcamentistaVendedor.length == 0){
+      if (this.filtro.pagina > 0 && r.listaOrcamentistaVendedor.length == 0) {
         this.filtro.pagina--;
         this.buscarLista(this.filtro);
         return;
@@ -183,7 +266,7 @@ export class UsuarioListaComponent implements OnInit {
         this.sweetAlertService.sucesso("Usuário exlcuído com sucesso!");
         this.carregando = false;
 
-        if((this.usuarioLista.length - 1 == 0)){
+        if ((this.usuarioLista.length - 1 == 0)) {
           this.filtro.pagina--;
         }
 

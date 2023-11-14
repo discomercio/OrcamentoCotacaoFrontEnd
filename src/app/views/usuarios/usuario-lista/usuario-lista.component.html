@@ -5,27 +5,50 @@
                 &nbsp;<button pButton *ngIf="permite" style="align-content: flex-end;" icon="fa fa-plus"
                     (click)="editarUsuario()" pTooltip="Novo usuário"></button>
             </h4>
-            <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-jc-around">
-                <div class="p-col-12 p-grid p-lg-9 p-md-9 p-px-0 p-sm-9">
-                    <div class="p-as-end p-col-6 p-field p-lg-6 p-md-6 p-pl-0 p-sm-6">
-                        <label for="texto">Pesquisar por</label>
-                        <input id="texto" type="text" pInputText [(ngModel)]="filtro.pesquisa"
-                            placeholder="Parceiro, nome, e-mail, responsável" />
-                    </div>
-                    <div class="p-as-end p-col-6 p-field p-lg-4 p-md-4 p-sm-4">
-                        <label>Ativo</label>
-                        <p-dropdown [options]="cboAtivos" [(ngModel)]="filtro.ativo" [showClear]="true" optionValue="Id"
-                            optionLabel="Value" placeholder="Selecione">
-                        </p-dropdown>
-                    </div>
+            <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-grid">
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo">
+                    <label for="filtroVendedor">Vendedor</label>
+                    <p-multiSelect [options]="cboVendedores" [(ngModel)]="filtro.Vendedores"
+                        defaultLabel="Selecione" optionLabel="Value" optionValue="Id"
+                        emptyMessage="Nenhum item encontrado" emptyFilterMessage="Nenhum item encontrado"
+                        resetFilterOnHide="true">
+                    </p-multiSelect>
                 </div>
-                <div class="p-col-12 p-grid p-jc-end p-lg-3 p-md-3 p-sm-12 p-px-0">
-                    <div class="p-px-0 p-as-center">
-                        <button pButton type="button" label="Pesquisar" icon="pi pi-search"
-                            (click)="filtrar()"></button>
-                    </div>
+                <div class="p-field p-col-6 p-lg-3 p-md-3 p-sm-4 p-as-end"
+                    *ngIf="tipoUsuario == constantes.GESTOR || tipoUsuario == constantes.VENDEDOR_UNIS">
+                    <label>Parceiro</label>
+                    <p-multiSelect [options]="cboParceiros" [(ngModel)]="filtro.Parceiros" defaultLabel="Selecione"
+                        optionValue="Value" optionLabel="Value" emptyMessage="Nenhum item encontrado"
+                        emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                        (onPanelHide)="cboParceiro_onChange()">
+                    </p-multiSelect>
                 </div>
-
+                <div class="p-field p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
+                    <label for="texto">Nome/E-mail</label>
+                    <input id="texto" type="text" pInputText [(ngModel)]="filtro.pesquisa"
+                        placeholder="Parceiro, nome, e-mail, responsável" />
+                </div>
+                <div class="p-as-end p-col-6 p-field p-lg-2 p-md-3 p-sm-3">
+                    <label>Ativo</label>
+                    <p-dropdown [options]="cboAtivos" [(ngModel)]="filtro.ativo" [showClear]="true" optionValue="Id"
+                        optionLabel="Value" placeholder="Selecione">
+                    </p-dropdown>
+                </div>
+                <div class="p-as-end p-col-6 p-field p-lg-2 p-md-3 p-sm-3">
+                    <label>Bloqueado</label>
+                    <p-dropdown [options]="cboBloqueados" [(ngModel)]="filtro.stLoginBloqueadoAutomatico" [showClear]="true" optionValue="Id"
+                        optionLabel="Value" placeholder="Selecione">
+                    </p-dropdown>
+                </div>
+                <!-- <div class="p-col-12 p-grid p-lg-9 p-md-9 p-px-0 p-sm-9">
+                    
+                </div> -->
+            </div>
+            <div class="p-col-12 p-grid p-jc-end p-px-0">
+                <div class="p-px-0 p-as-center">
+                    <button pButton type="button" label="Pesquisar" icon="pi pi-search"
+                        (click)="filtrar()"></button>
+                </div>
             </div>
             <p-table #dt1 [value]="usuarioLista" [responsive]="false" responsiveLayout="stack" draggableRows="true"
                 breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
@@ -40,6 +63,9 @@
                         <th>E-mail</th>
                         <th>Responsável</th>
                         <th>Ativo</th>
+                        <th>Bloqueado</th>
+                        <th>Data de criação</th>
+                        <th>Último login</th>
                         <th class="p-text-center">Ações</th>
                     </tr>
                 </ng-template>
@@ -49,7 +75,10 @@
                         <td>{{lista.nome}}</td>
                         <td>{{lista.email}}</td>
                         <td>{{lista.vendedorResponsavel}}</td>
-                        <td>{{lista.ativoLabel}}</td>
+                        <td class="p-text-center">{{lista.ativoLabel}}</td>
+                        <td class="p-text-center">{{lista.ativoLabel}}</td> 
+                        <td class="p-text-center">{{lista.ativoLabel}}</td>
+                        <td class="p-text-center">{{lista.ativoLabel}}</td>
                         <td class="p-text-center">
                             <div class="p-d-inline-flex">
                                 <button pButton style="align-content: flex-end;" icon="fa fa-edit"
