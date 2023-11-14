@@ -37,7 +37,8 @@ export class NovoOrcamentoService {
   public opcaoOrcamentoCotacaoDto: OrcamentosOpcaoResponse = new OrcamentosOpcaoResponse();
   public constantes: Constantes = new Constantes();
   public mostrarOpcoes: boolean;
-  public controleProduto: Array<string> = new Array();
+  public listaProdutosQtdeApoio = [];
+  public listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
   public limiteQtdeProdutoOpcao: number = 12;
   public pageItens: number = 3;
   public lstProdutosSelecionados: ProdutoOrcamentoDto[] = new Array();
@@ -136,14 +137,14 @@ export class NovoOrcamentoService {
     let totalItem = 0;
     let precoVenda = 0;
     if (!item.alterouPrecoVenda) {
-      if(produtosDto){
+      if (produtosDto) {
         produtosDto.forEach(x => {
           let precoLista = this.moedaUtils.formatarDecimal(x.precoListaBase * item.coeficienteDeCalculo);
           let precoVenda = this.moedaUtils.formatarDecimal(precoLista * (1 - item.descDado / 100));
           let totalComDesconto = this.moedaUtils.formatarDecimal(precoVenda * x.qtde);
           totalItem = this.moedaUtils.formatarDecimal(totalItem + totalComDesconto);
         });
-  
+
         item.totalItem = totalItem;
       }
     }

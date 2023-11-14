@@ -141,6 +141,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
+    
+    if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto) {
+      if (!this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos ||
+        this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
+        this.novoOrcamentoService.listaProdutosDesmembrados = new Array();
+        this.novoOrcamentoService.listaProdutosQtdeApoio = new Array();
+      }
+    }
     return true;
   }
 
@@ -237,17 +245,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   addListaProdutosClonados(lstProdutosClonados: ProdutoTela[]) {
     let produtoOrcamento: ProdutoOrcamentoDto[] = new Array<ProdutoOrcamentoDto>();
 
-    lstProdutosClonados.forEach(produto => {
-      let item = this.montarProdutoParaAdicionar(produto)
-      if (!this.arrumarProdutosRepetidos(item))
-        produtoOrcamento.push(item);
-    });
-
-    this.inserirProduto();
-
-    produtoOrcamento.forEach(item => {
-      this.digitouQte(item);
-    });
+    this.addProdutosSelecionados(lstProdutosClonados);
   }
 
   setarParametrosBuscaProdutos() {
@@ -451,20 +449,21 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   digitouQte(item: ProdutoOrcamentoDto): void {
     // if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
     let input = document.getElementById(`qtde_${item.produto}`) as HTMLElement;
-    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO)
-    {
+    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) {
       input.classList.add("ng-dirty");
       input.classList.add("ng-invalid");
       input.classList.add("ng-touched");
       item.qtdeValida = false;
       return;
     }
-    else{
+    else {
       input.classList.remove("ng-dirty");
       input.classList.remove("ng-invalid");
       input.classList.remove("ng-touched");
       item.qtdeValida = true;
     }
+
+    this.controlarQtdeListaControle(item);
 
     // item.alterouPrecoVenda = true;
     let itemCalculado = this.novoOrcamentoService.calcularTotalItem(item);//calcula totalItem
@@ -473,6 +472,29 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.formaPagto.setarValorParcela(this.novoOrcamentoService.totalPedido() / this.novoOrcamentoService.qtdeParcelas);
     this.formaPagto.calcularValorAvista();
     this.novoOrcamentoService.calcularDescontoMedio();
+  }
+
+  controlarQtdeListaControle(item: ProdutoOrcamentoDto) {
+    let itemControle = this.novoOrcamentoService.listaProdutosQtdeApoio.filter(x => x.produto == item.produto)[0];
+
+    let prodFilter = this.produtoComboDto.produtosCompostos.filter(x => x.paiProduto == item.produto)[0];
+    if (prodFilter) {
+      prodFilter.filhos.forEach(x => {
+        let filhote = this.novoOrcamentoService.listaProdutosDesmembrados.filter(s => s.produto == x.produto);
+        if (filhote.length > 0) {
+          let qtdeRemover = itemControle.qtde * x.qtde;
+          filhote[0].qtde = filhote[0].qtde - qtdeRemover;
+          let qtdeAdicionar = item.qtde * x.qtde;
+          filhote[0].qtde = filhote[0].qtde + qtdeAdicionar;
+        }
+      });
+    }
+    else {
+      let itemSimples = this.novoOrcamentoService.listaProdutosDesmembrados.filter(s => s.produto == item.produto);
+      itemSimples[0].qtde = item.qtde;
+    }
+
+    itemControle.qtde = item.qtde;
   }
 
   digitouPreco_NF(e: Event, item: ProdutoOrcamentoDto): void {
@@ -701,35 +723,31 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   removerProdutoDaListaControle(produto: ProdutoOrcamentoDto) {
+
+    let itemExiste = this.novoOrcamentoService.listaProdutosQtdeApoio.filter(x => x.produto == produto.produto);
+    let index = this.novoOrcamentoService.listaProdutosQtdeApoio.indexOf(itemExiste[0]);
+    this.novoOrcamentoService.listaProdutosQtdeApoio.splice(index, 1);
+
     let prodFilter = this.produtoComboDto.produtosCompostos.filter(x => x.paiProduto == produto.produto)[0];
     if (prodFilter) {
       prodFilter.filhos.forEach(x => {
-        let filho = this.novoOrcamentoService.controleProduto.filter(c => c == x.produto)[0];
-        let prodSelecionado = this.novoOrcamentoService.lstProdutosSelecionados.filter(s => s.produto == x.produto)[0];
-        if (filho && !prodSelecionado) {
-          let index = this.novoOrcamentoService.controleProduto.indexOf(filho);
-          this.novoOrcamentoService.controleProduto.splice(index, 1);
+        let filhote = this.novoOrcamentoService.listaProdutosDesmembrados.filter(s => s.produto == x.produto);
+        if (filhote.length > 0) {
+          //calcular a qtde para descontar ou remover o produto
+          let qtdeARemover = produto.qtde * x.qtde;
+          if ((filhote[0].qtde - qtdeARemover) <= 0) {
+            let index = this.novoOrcamentoService.listaProdutosDesmembrados.indexOf(filhote[0]);
+            this.novoOrcamentoService.listaProdutosDesmembrados.splice(index, 1);
+          } else {
+            filhote[0].qtde = filhote[0].qtde - qtdeARemover;
+          }
         }
       });
     }
     else {
-      let index: number;
-      let filho: ProdutoFilhoDto;
-
-      this.produtoComboDto.produtosCompostos.some(x => {
-        filho = x.filhos.filter(f => f.produto == produto.produto)[0];
-        if (filho) {
-          let pai = this.novoOrcamentoService.lstProdutosSelecionados.filter(p => p.produto == x.paiProduto)[0];
-          if (!pai) {
-            filho = null;
-          }
-          return true;
-        }
-      });
-      if (!filho) {
-        index = this.novoOrcamentoService.controleProduto.indexOf(produto.produto);
-        this.novoOrcamentoService.controleProduto.splice(index, 1);
-      }
+      let index = this.novoOrcamentoService.listaProdutosDesmembrados
+        .indexOf(this.novoOrcamentoService.listaProdutosDesmembrados.filter(x => x.produto == produto.produto)[0]);
+      this.novoOrcamentoService.listaProdutosDesmembrados.splice(index, 1);
     }
   }
 
