@@ -2,8 +2,8 @@
     <div class="p-col-12">
         <div class="card">
             <h4>Usuários
-                &nbsp;<button pButton *ngIf="permite" style="align-content: flex-end;" icon="fa fa-plus" (click)="editarUsuario()"
-                    pTooltip="Novo usuário"></button>
+                &nbsp;<button pButton *ngIf="permite" style="align-content: flex-end;" icon="fa fa-plus"
+                    (click)="editarUsuario()" pTooltip="Novo usuário"></button>
             </h4>
             <div class="p-col-12 p-d-lg-inline-flex p-d-md-inline-flex p-d-sm-inline-flex p-fluid p-jc-around">
                 <div class="p-col-12 p-grid p-lg-9 p-md-9 p-px-0 p-sm-9">
@@ -14,18 +14,18 @@
                     </div>
                     <div class="p-as-end p-col-6 p-field p-lg-4 p-md-4 p-sm-4">
                         <label>Ativo</label>
-                        <p-dropdown [options]="cboAtivos" [(ngModel)]="filtro.ativo" [showClear]="true"
-                            optionValue="Id" optionLabel="Value" placeholder="Selecione">
+                        <p-dropdown [options]="cboAtivos" [(ngModel)]="filtro.ativo" [showClear]="true" optionValue="Id"
+                            optionLabel="Value" placeholder="Selecione">
                         </p-dropdown>
                     </div>
                 </div>
                 <div class="p-col-12 p-grid p-jc-end p-lg-3 p-md-3 p-sm-12 p-px-0">
                     <div class="p-px-0 p-as-center">
                         <button pButton type="button" label="Pesquisar" icon="pi pi-search"
-                        (click)="filtrar()"></button>
+                            (click)="filtrar()"></button>
                     </div>
                 </div>
-                
+
             </div>
             <p-table #dt1 [value]="usuarioLista" [responsive]="false" responsiveLayout="stack" draggableRows="true"
                 breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
@@ -51,10 +51,12 @@
                         <td>{{lista.vendedorResponsavel}}</td>
                         <td>{{lista.ativoLabel}}</td>
                         <td class="p-text-center">
-                            <button pButton style="align-content: flex-end;" icon="fa fa-edit"
-                                (click)="editarUsuario(lista)" pTooltip="Editar"></button>&nbsp;
-                            <button *ngIf="permite" pButton style="align-content: flex-end;" icon="fa fa-trash"
-                                (click)="excluirClick(lista)" pTooltip="Excluir"></button>&nbsp;
+                            <div class="p-d-inline-flex">
+                                <button pButton style="align-content: flex-end;" icon="fa fa-edit"
+                                    (click)="editarUsuario(lista)" pTooltip="Editar"></button>&nbsp;
+                                <button *ngIf="permite" pButton style="align-content: flex-end;" icon="fa fa-trash"
+                                    (click)="excluirClick(lista)" pTooltip="Excluir"></button>&nbsp;
+                            </div>
                         </td>
                     </tr>
                 </ng-template>
