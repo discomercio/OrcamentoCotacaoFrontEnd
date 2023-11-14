@@ -65,7 +65,7 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   private titleService: Title
   esconderBotaoAprovacao: boolean;
   paramGuid: any;
-  activeState: boolean[] = [true, true, true];
+  activeState: boolean[] = [];
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
   @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
 
@@ -160,6 +160,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       this.validado = true;
       this.orcamento = r;
+
+      this.orcamento.listaOpcoes.forEach(x => {
+        this.activeState.push(true);
+      });
 
       if (r.status == this.constantes.STATUS_ORCAMENTO_COTACAO_APROVADO) {
         let opcaoAprovado: OrcamentoOpcaoDto;
