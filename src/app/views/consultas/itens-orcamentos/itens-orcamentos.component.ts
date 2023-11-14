@@ -46,6 +46,7 @@ export class ItensOrcamentosComponent implements OnInit {
 
   filtro: Filtro = new Filtro();
   admModulo: boolean;
+  acessoUniversal:boolean;
   usuario = new Usuario();
   tipoUsuario: number;
 
@@ -86,6 +87,7 @@ export class ItensOrcamentosComponent implements OnInit {
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.admModulo = this.usuario.permissoes.includes(ePermissao.RelatoriosGerenciais);
+    this.acessoUniversal = this.usuario.permissoes.includes(ePermissao.AcessoUniversalOrcamentoPedidoPrepedidoConsultar);
 
     const promises = [this.buscarStatus(), this.buscarVendedores(), this.buscarParceiros(), this.buscarConfigValidade(),
     this.buscarCategorias(), this.buscarFabricantes()];
@@ -242,13 +244,13 @@ export class ItensOrcamentosComponent implements OnInit {
       this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(this.dtInicio));
     }
     else {
-      this.filtro.DtInicio = new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);
+      this.filtro.DtInicio = DataUtils.formataParaFormulario(new Date(Date.now() - this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000));
     }
     if (this.dtFim) {
       this.filtro.DtFim = DataUtils.formataParaFormulario(new Date(this.dtFim));
     }
     else {
-      this.filtro.DtFim = new Date(this.dtInicio.valueOf() + this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000);;
+      this.filtro.DtFim = DataUtils.formataParaFormulario(new Date(this.dtInicio.valueOf() + this.configValidade.MaxPeriodoConsulta_RelatorioGerencial * 24 * 60 * 60 * 1000));
     }
     
     let diferenca = new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtFim))).valueOf() - new Date(DataUtils.formataParaFormulario(new Date(this.filtro.DtInicio))).valueOf();
