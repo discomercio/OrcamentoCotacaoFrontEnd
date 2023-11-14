@@ -45,7 +45,7 @@
                                 emptyFilterMessage="Nenhum item encontrado">
                             </p-multiSelect>
                         </div>
-                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo">
+                        <div class="p-field p-col-4 p-lg-3 p-md-3 p-sm-4 p-as-end" *ngIf="admModulo && acessoUniversal">
                             <label for="filtroVendedor">Vendedor</label>
                             <p-multiSelect [options]="cboVendedores" [(ngModel)]="filtro.Vendedores"
                                 defaultLabel="Selecione" optionLabel="Value" optionValue="Id"
@@ -67,13 +67,7 @@
                                 resetFilterOnHide="true">
                             </p-multiSelect>
                         </div>
-                        <!-- <div class="p-field p-col-4 p-lg-2 p-md-3 p-sm-4 p-as-end">
-                            <label for="filtroParceiro">Opções do orçamento</label>
-                            <p-dropdown [options]="cboOpcoes" [(ngModel)]="filtro.OpcoesOrcamento" [showClear]="true"
-                                optionValue="Value" optionLabel="Value" placeholder="Selecione">
-                            </p-dropdown>
-                        </div> -->
-                        <div class="p-col-4 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-end p-lg-9 p-md-9 p-mx-0 p-px-0 p-sm-4">
+                        <div class="p-col-4 p-d-inline-flex p-fluid p-formgrid p-grid p-jc-end p-lg-9 p-md-9 p-mx-0 p-px-0 p-sm-4" style="width: 100%;">
                             <div class="p-as-center p-pt-2 p-pt-lg-4">
                                 <button pButton type="button" label="Pesquisar" icon="pi pi-search"
                                     (click)="pesquisar()"></button>
