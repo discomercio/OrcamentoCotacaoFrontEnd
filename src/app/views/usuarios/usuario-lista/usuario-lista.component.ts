@@ -1,7 +1,7 @@
 import { AutenticacaoService } from 'src/app/service/autenticacao/autenticacao.service';
 import { OrcamentistaIndicadorVendedorDto } from 'src/app/dto/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor';
 import { OrcamentistaIndicadorVendedorService } from '../../../service/orcamentista-indicador-vendedor/orcamentista-indicador-vendedor.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { AlertaService } from 'src/app/components/alert-dialog/alerta.service';
 import { Router } from '@angular/router';
@@ -37,7 +37,8 @@ export class UsuarioListaComponent implements OnInit {
     private readonly router: Router,
     private readonly sweetAlertService: SweetalertService,
     private readonly usuarioService: UsuariosService,
-    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService) { }
+    private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
+    private readonly cdr: ChangeDetectorRef) { }
 
   @ViewChild('dataTable') table: Table;
   cols: any[];
@@ -59,6 +60,7 @@ export class UsuarioListaComponent implements OnInit {
   constantes: Constantes = new Constantes();
   idValuesTmp = 0;
   cboBloqueados: Array<DropDownItem> = [];
+  colunaSort: number;
 
   ngOnInit(): void {
     if (!this.autenticacaoService.verificarPermissoes(ePermissao.UsuarioVendedorParceiro)) {
@@ -180,13 +182,19 @@ export class UsuarioListaComponent implements OnInit {
       this.filtro.pesquisa = "";
       this.filtro.qtdeItensPagina = this.qtdePorPaginaInicial;
       this.filtro.ordenacaoAscendente = false;
+      this.colunaSort = this.filtro.ordenacaoAscendente ? -1 : 1;
+      this.filtro.nomeColuna = "Nome";
+      this.cdr.detectChanges();
     }
 
     this.buscarLista(this.filtro);
   }
 
   filtrar() {
-    
+    this.filtro.nomeColuna = "Nome";
+    this.filtro.ordenacaoAscendente = false;
+    this.colunaSort = this.filtro.ordenacaoAscendente ? -1 : 1;
+    this.cdr.detectChanges();
     this.filtro.pagina = 0;
     this.first = 0;
     this.buscarLista(this.filtro);
@@ -213,7 +221,7 @@ export class UsuarioListaComponent implements OnInit {
       }
       this.usuarioLista = r.listaOrcamentistaVendedor;
       this.qtdeRegistros = r.qtdeRegistros;
-      
+
       if (!!this.filtro.pagina)
         this.first = this.filtro.pagina * this.filtro.qtdeItensPagina;
 
@@ -231,8 +239,8 @@ export class UsuarioListaComponent implements OnInit {
     if (!!event.sortField) {
       this.filtro.nomeColuna = event.sortField;
       this.filtro.ordenacaoAscendente = event.sortOrder > 0 ? true : false;
-    } else {
-      this.filtro.ordenacaoAscendente = false;
+      this.colunaSort = this.filtro.ordenacaoAscendente ? -1 : 1;
+      this.cdr.detectChanges();
     }
 
     this.buscarLista(this.filtro);

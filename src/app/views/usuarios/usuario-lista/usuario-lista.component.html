@@ -54,18 +54,18 @@
                 breakpoint="680px" autoLayout="true" styleClass="p-datatable-customers p-datatable-striped"
                 [rows]="filtro.qtdeItensPagina" [paginator]="true" draggableColumns="true" [lazy]="true"
                 (onLazyLoad)="buscarRegistros($event)" [(first)]="first" [showCurrentPageReport]="true"
-                [rowsPerPageOptions]="[5,10,20]" [totalRecords]="qtdeRegistros"
+                [rowsPerPageOptions]="[5,10,20]" [totalRecords]="qtdeRegistros" [customSort]="true" sortField="{{filtro.nomeColuna}}" 
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}">
                 <ng-template pTemplate="header">
-                    <tr class="font-size">
-                        <th class="p-text-center">Parceiro</th>
-                        <th class="p-text-center">Nome</th>
-                        <th class="p-text-center">E-mail</th>
-                        <th class="p-text-center">Responsável</th>
-                        <th class="p-text-center">Ativo</th>
-                        <th class="p-text-center">Bloqueado</th>
-                        <th class="p-text-center">Data de criação</th>
-                        <th class="p-text-center">Último login</th>
+                    <tr class="font-size p-text-nowrap">
+                        <th pSortableColumn="Parceiro" class="p-text-center">Parceiro<p-sortIcon field="Parceiro"></p-sortIcon></th>
+                        <th pSortableColumn="Nome" class="p-text-center">Nome<p-sortIcon field="Nome"></p-sortIcon></th>
+                        <th pSortableColumn="E-mail" class="p-text-center">E-mail<p-sortIcon field="E-mail"></p-sortIcon></th>
+                        <th pSortableColumn="Responsavel" class="p-text-center">Responsável<p-sortIcon field="Responsavel"></p-sortIcon></th>
+                        <th pSortableColumn="Ativo" class="p-text-center">Ativo<p-sortIcon field="Ativo"></p-sortIcon></th>
+                        <th pSortableColumn="Bloqueado" class="p-text-center">Bloqueado<p-sortIcon field="Bloqueado"></p-sortIcon></th>
+                        <th pSortableColumn="DataCriacao" class="p-text-center">Data de criação<p-sortIcon field="DataCriacao"></p-sortIcon></th>
+                        <th pSortableColumn="UltimoLogin" class="p-text-center">Último login<p-sortIcon field="UltimoLogin"></p-sortIcon></th>
                         <th class="p-text-center">Ações</th>
                     </tr>
                 </ng-template>
