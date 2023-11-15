@@ -26,7 +26,7 @@
                 <div class="p-field p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
                     <label for="texto">Nome/E-mail</label>
                     <input id="texto" type="text" pInputText [(ngModel)]="filtro.pesquisa"
-                        placeholder="Parceiro, nome, e-mail, responsável" />
+                        placeholder="Nome ou e-mail" />
                 </div>
                 <div class="p-as-end p-col-6 p-field p-lg-2 p-md-3 p-sm-3">
                     <label>Ativo</label>
@@ -58,27 +58,27 @@
                 currentPageReportTemplate="Mostrando {last} itens no total {totalRecords}">
                 <ng-template pTemplate="header">
                     <tr class="font-size">
-                        <th>Parceiro</th>
-                        <th>Nome</th>
-                        <th>E-mail</th>
-                        <th>Responsável</th>
-                        <th>Ativo</th>
-                        <th>Bloqueado</th>
-                        <th>Data de criação</th>
-                        <th>Último login</th>
+                        <th class="p-text-center">Parceiro</th>
+                        <th class="p-text-center">Nome</th>
+                        <th class="p-text-center">E-mail</th>
+                        <th class="p-text-center">Responsável</th>
+                        <th class="p-text-center">Ativo</th>
+                        <th class="p-text-center">Bloqueado</th>
+                        <th class="p-text-center">Data de criação</th>
+                        <th class="p-text-center">Último login</th>
                         <th class="p-text-center">Ações</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
                     <tr class="p-selectable-row">
-                        <td>{{lista.parceiro}}</td>
-                        <td>{{lista.nome}}</td>
-                        <td>{{lista.email}}</td>
-                        <td>{{lista.vendedorResponsavel}}</td>
+                        <td class="p-text-center">{{lista.parceiro}}</td>
+                        <td class="p-text-center">{{lista.nome}}</td>
+                        <td class="p-text-center">{{lista.email}}</td>
+                        <td class="p-text-center">{{lista.vendedorResponsavel}}</td>
                         <td class="p-text-center">{{lista.ativoLabel}}</td>
-                        <td class="p-text-center">{{lista.ativoLabel}}</td> 
-                        <td class="p-text-center">{{lista.ativoLabel}}</td>
-                        <td class="p-text-center">{{lista.ativoLabel}}</td>
+                        <td class="p-text-center">{{lista.bloqueado}}</td> 
+                        <td class="p-text-center">{{dataUtils.formata_data_e_talvez_hora_hhmmss(lista.dtCriacao)}}</td>
+                        <td class="p-text-center">{{lista.ultimoLogin ? dataUtils.formata_data_e_talvez_hora_hhmmss(lista.ultimoLogin) : ''}}</td>
                         <td class="p-text-center">
                             <div class="p-d-inline-flex">
                                 <button pButton style="align-content: flex-end;" icon="fa fa-edit"

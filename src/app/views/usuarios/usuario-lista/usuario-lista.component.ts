@@ -21,6 +21,7 @@ import { UsuariosService } from 'src/app/service/usuarios/usuarios.service';
 import { OrcamentistaIndicadorDto } from 'src/app/dto/orcamentista-indicador/orcamentista-indicador';
 import { OrcamentistaIndicadorService } from 'src/app/service/orcamentista-indicador/orcamentista-indicador.service';
 import { Constantes } from 'src/app/utilities/constantes';
+import { DataUtils } from 'src/app/utilities/formatarString/data-utils';
 
 @Component({
   selector: 'app-usuario-lista',
@@ -89,7 +90,7 @@ export class UsuarioListaComponent implements OnInit {
     });
 
   }
-
+  dataUtils: DataUtils = new DataUtils();
   criarFiltroAtivo() {
     this.cboAtivos.push({ Id: 1, Value: "Sim" });
     this.cboAtivos.push({ Id: 0, Value: "Não" });
@@ -185,6 +186,7 @@ export class UsuarioListaComponent implements OnInit {
   }
 
   filtrar() {
+    
     this.filtro.pagina = 0;
     this.first = 0;
     this.buscarLista(this.filtro);
@@ -211,7 +213,7 @@ export class UsuarioListaComponent implements OnInit {
       }
       this.usuarioLista = r.listaOrcamentistaVendedor;
       this.qtdeRegistros = r.qtdeRegistros;
-
+      
       if (!!this.filtro.pagina)
         this.first = this.filtro.pagina * this.filtro.qtdeItensPagina;
 

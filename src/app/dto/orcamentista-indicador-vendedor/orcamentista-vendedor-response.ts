@@ -1,4 +1,4 @@
-export class OrcamentistaVendedorResponse{
+export class OrcamentistaVendedorResponse {
     id: number = 0;
     nome: string = "";
     indicador: number;
@@ -6,6 +6,9 @@ export class OrcamentistaVendedorResponse{
     email: string = "";
     ativoLabel: string = "NÂO";
     parceiro: string;
-    stringBusca:string;
-    vendedorResponsavel:string;
+    stringBusca: string;
+    vendedorResponsavel: string;
+    bloqueado: string;
+    dtCriacao: string | Date;
+    ultimoLogin: string | Date;
 }
