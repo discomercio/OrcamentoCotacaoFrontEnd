@@ -211,9 +211,9 @@ export class PrePedidoConfirmarClienteComponent extends TelaDesktopBaseComponent
       return false;
     }
     //se estiver com NULL é pq ainda não pegou os valores
-    if (this.dadosClienteCadastroDtoIe == null) {
-      return false;
-    }
+    // if (this.dadosClienteCadastroDtoIe == null) {
+    //   return false;
+    // }
     if (this.dadosClienteCadastroDtoIe !== this.dadosClienteCadastroDto.Ie) {
       return true;
     }
