@@ -240,7 +240,11 @@
                                                         <tr class="{{telaDesktop ? '' : 'font-size'}}">
                                                             <td class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                                 [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                <img src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
+                                                                <img *ngIf="!telaDesktop && produto.urlImagem != 'sem-imagem.png'"
+                                                                    src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
+                                                                    [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
+                                                                <img *ngIf="telaDesktop"
+                                                                    src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
                                                                     [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
@@ -312,7 +316,8 @@
                                                                 style="min-height: calc(100% - 45px);">
                                                                 <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
                                                                     *ngIf="fp.aprovado">
-                                                                    <i class="pi pi-check" style="color: green; font-size: 2rem;"></i>
+                                                                    <i class="pi pi-check"
+                                                                        style="color: green; font-size: 2rem;"></i>
                                                                 </div>
                                                                 <div class="p-as-lg-center p-col-2 p-m-1 p-p-0 p-text-center"
                                                                     *ngIf="!fp.aprovado">
@@ -394,7 +399,11 @@
 
                                                             <td class="p-d-inline-flex p-col-12 p-p-0 p-jc-around"
                                                                 [ngStyle]="telaDesktop ? {'display':'contents'} : {'':''}">
-                                                                <img src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
+                                                                <img *ngIf="!telaDesktop && produto.urlImagem != 'sem-imagem.png'"
+                                                                    src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
+                                                                    [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
+                                                                <img *ngIf="telaDesktop"
+                                                                    src="{{imgUrl}}{{produto.urlImagem}}" class="p-p-2"
                                                                     [ngStyle]="telaDesktop ? {'max-width':'80%', 'max-height':'175px'}: {'width':'40%'}" />
 
                                                                 <p *ngIf="!telaDesktop"
