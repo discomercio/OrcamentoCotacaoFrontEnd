@@ -39,13 +39,10 @@ export class SelectEvapDialogComponent extends TelaDesktopBaseComponent implemen
   lstLinhaProdutos: SelectItem[] = [];
   lstKcals: SelectItem[] = [];
   moedaUtils = new MoedaUtils();
-  linhaProduto: string;
   linhaProdutos: string[] = new Array();
   descarga: string;
   voltagem: string;
-  btu: string;
   btus: string[] = new Array();
-  kcal: string;
   kcals: string[] = new Array();
   constantes = new Constantes();
   selecionados: Array<ProdutoTabela> = new Array<ProdutoTabela>();
