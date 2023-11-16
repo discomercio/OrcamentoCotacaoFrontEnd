@@ -124,6 +124,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     url.indexOf("/produtos-catalogo/criar") > -1)) {
       let json = sessionStorage.getItem("filtro");
       this.filtro = JSON.parse(json);
+      if(!this.filtro) this.filtro = new ProdutoCatalogoListar();
       this.buscarTodosProdutos(this.filtro);
       this.cdr.detectChanges();
     }
@@ -200,7 +201,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
   }
 
   buscarTodosProdutos(filtro: ProdutoCatalogoListar) {
-    debugger;
+    
     sessionStorage.setItem("filtro", JSON.stringify(filtro));
     this.carregando = true;
     this.produtoCatalogResponse = new Array<ProdutoCatalogoResponse>();
