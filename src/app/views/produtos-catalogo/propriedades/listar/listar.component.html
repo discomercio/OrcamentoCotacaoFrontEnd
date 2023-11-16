@@ -8,12 +8,11 @@
             </h4>
             <div class="p-col-12 p-grid p-jc-between">
                 <div class="p-lg-7 p-px-0">
-                    <input pInputText type="text" [(ngModel)]="filtro.descricao"
-                        placeholder="Busca por descrição" class="p-column-filter">
+                    <input pInputText type="text" [(ngModel)]="filtro.descricao" placeholder="Busca por descrição"
+                        class="p-column-filter">
                 </div>
                 <div class="p-col-3 p-px-0 p-text-right">
-                    <button pButton type="button" label="Pesquisar" icon="pi pi-search"
-                    (click)="filtrar()"></button>
+                    <button pButton type="button" label="Pesquisar" icon="pi pi-search" (click)="filtrar()"></button>
                 </div>
             </div>
             <p-table #dt1 [value]="listaPropriedade" [responsive]="false" responsiveLayout="stack" draggableRows="true"
@@ -29,7 +28,7 @@
                         </th>
                         <th pSortableColumn="ativo" class="p-py-1" style="text-align: center">Ativo <p-sortIcon
                                 field="Ativo"></p-sortIcon></th>
-                        <th class="p-py-2 p-lg-2" style="text-align: right">Ações</th>
+                        <th class="p-py-2 p-lg-2 p-text-center">Ações</th>
                     </tr>
                 </ng-template>
                 <ng-template pTemplate="body" let-lista>
@@ -38,11 +37,14 @@
                             {{lista.descricao}}</td>
                         <td style="text-align: center" pDraggable="eventos" (onDragStart)="dragStart($event)">
                             {{lista.oculto == true ? 'Não': 'Sim'}}</td>
-                        <td style="text-align: right">
-                            <button pButton style="align-content: flex-end;" icon="fa fa-edit"
-                                (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
-                            <button pButton style="align-content: flex-end;" icon="pi pi-trash ng-star-inserted"
-                                (click)=excluirClick(this.lista.id) pTooltip="Exlcuir"></button>&nbsp;
+                        <td class="p-text-center">
+                            <div class="p-d-inline-flex">
+                                <button pButton style="align-content: flex-end;" icon="fa fa-edit"
+                                    (click)=editarClick(this.lista.id) pTooltip="Editar"></button>&nbsp;
+                                <button pButton style="align-content: flex-end;" icon="pi pi-trash ng-star-inserted"
+                                    (click)=excluirClick(this.lista.id) pTooltip="Exlcuir"></button>&nbsp;
+                            </div>
+
                         </td>
                     </tr>
                 </ng-template>
