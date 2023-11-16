@@ -3,21 +3,24 @@
         <div class="p-field p-grid p-pr-0">
             <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
                 <label>Linha de produto</label>
-                <p-dropdown [options]="lstLinhaProdutos" placeholder="Selecione" optionLabel="label" optionValue="value"
-                    [(ngModel)]="linhaProduto" [showClear]="true">
-                </p-dropdown>
+                <p-multiSelect [options]="lstLinhaProdutos" [(ngModel)]="linhaProdutos" defaultLabel="Selecione"
+                    optionLabel="label" optionValue="value" emptyMessage="Nenhum item encontrado"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                    [ngModelOptions]="{standalone: true}"></p-multiSelect>
             </div>
             <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
                 <label>Capacidade (BTU/h)</label>
-                <p-dropdown [options]="lstBtus" placeholder="Selecione" optionLabel="label" optionValue="value"
-                    [(ngModel)]="btu" [showClear]="true">
-                </p-dropdown>
+                <p-multiSelect [options]="lstBtus" [(ngModel)]="btus" defaultLabel="Selecione"
+                    optionLabel="label" optionValue="value" emptyMessage="Nenhum item encontrado"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                    [ngModelOptions]="{standalone: true}"></p-multiSelect>
             </div>
             <div class="p-as-end p-col-6 p-field p-lg-3 p-md-4 p-sm-4">
                 <label>Capacidade (Kcal/h)</label>
-                <p-dropdown [options]="lstKcals" placeholder="Selecione" optionLabel="label" optionValue="value"
-                    [(ngModel)]="kcal" [showClear]="true">
-                </p-dropdown>
+                <p-multiSelect [options]="lstKcals" [(ngModel)]="kcals" defaultLabel="Selecione"
+                    optionLabel="label" optionValue="value" emptyMessage="Nenhum item encontrado"
+                    emptyFilterMessage="Nenhum item encontrado" resetFilterOnHide="true"
+                    [ngModelOptions]="{standalone: true}"></p-multiSelect>
             </div>
             <div
                 class="p-as-end p-col-6 p-d-inline-flex p-field p-grid p-jc-end p-lg-3 p-md-12 p-pr-md-0 p-pr-sm-0 p-sm-12 p-sm-4">

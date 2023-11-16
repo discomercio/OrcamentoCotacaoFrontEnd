@@ -39,11 +39,11 @@ export class SelectEvapDialogComponent extends TelaDesktopBaseComponent implemen
   lstLinhaProdutos: SelectItem[] = [];
   lstKcals: SelectItem[] = [];
   moedaUtils = new MoedaUtils();
-  linhaProduto: string;
+  linhaProdutos: string[] = new Array();
   descarga: string;
   voltagem: string;
-  btu: string;
-  kcal: string;
+  btus: string[] = new Array();
+  kcals: string[] = new Array();
   constantes = new Constantes();
   selecionados: Array<ProdutoTabela> = new Array<ProdutoTabela>();
 
@@ -106,17 +106,75 @@ export class SelectEvapDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   buscarProdutos() {
-    // this.evaporadorasPassadas.forEach(x =>{
-    //   x.qtde = 0;
-    // });
-
     let evaporadorasFiltradas: ProdutoTabela[] = JSON.parse(JSON.stringify(this.evaporadorasPassadas));
 
-    if (this.linhaProduto) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.linhaProduto}|`));
-    if (this.btu) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.btu}|`));
-    if (this.kcal) evaporadorasFiltradas = evaporadorasFiltradas.filter(x => x.linhaBusca.includes(`|${this.constantes.fProp}${this.kcal}|`));
+    if (this.linhaProdutos.length == 0 && this.btus.length == 0 && this.kcals.length == 0) {
+      this.evaporadorasFiltradas = evaporadorasFiltradas;
+      return
+    }
 
-    this.evaporadorasFiltradas = evaporadorasFiltradas;
+    let listaLinhaProduto = this.filtrarPorLinhaProduto(evaporadorasFiltradas);
+    let listaBtu = this.filtrarPorBtu(listaLinhaProduto);
+    let listaKcal = this.filtrarPorKcal(listaBtu);
+
+    this.evaporadorasFiltradas = listaKcal.sort((a, b) => a.produto.localeCompare(b.produto));
+  }
+
+  filtrarPorLinhaProduto(lista: ProdutoTabela[]) {
+    let retorno: ProdutoTabela[] = new Array<ProdutoTabela>();
+    if (this.linhaProdutos.length > 0) {
+      this.linhaProdutos.forEach(x => {
+        let prop = `|${this.constantes.fProp}${x}|`;
+        let evap = lista.filter(x => x.linhaBusca.includes(prop));
+        if (evap.length > 0) {
+          evap.forEach(e => {
+            retorno.push(e);
+          });
+        }
+      });
+    } else {
+      retorno = lista;
+    }
+
+    return retorno;
+  }
+
+  filtrarPorBtu(lista: ProdutoTabela[]) {
+    let retorno: ProdutoTabela[] = new Array<ProdutoTabela>();
+    if (this.btus.length > 0) {
+      this.btus.forEach(x => {
+        let prop = `|${this.constantes.fProp}${x}|`;
+        let evap = lista.filter(x => x.linhaBusca.includes(prop));
+        if (evap.length > 0) {
+          evap.forEach(e => {
+            retorno.push(e);
+          });
+        }
+      });
+    }else {
+      retorno = lista;
+    }
+
+    return retorno;
+  }
+
+  filtrarPorKcal(lista: ProdutoTabela[]) {
+    let retorno: ProdutoTabela[] = new Array<ProdutoTabela>();
+    if (this.kcals.length > 0) {
+      this.kcals.forEach(x => {
+        let prop = `|${this.constantes.fProp}${x}|`;
+        let evap = lista.filter(x => x.linhaBusca.includes(prop));
+        if (evap.length > 0) {
+          evap.forEach(e => {
+            retorno.push(e);
+          });
+        }
+      });
+    }else {
+      retorno = lista;
+    }
+
+    return retorno;
   }
 
   addQtde(produto: ProdutoTabela) {
