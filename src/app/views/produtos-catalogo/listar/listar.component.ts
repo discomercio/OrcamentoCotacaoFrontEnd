@@ -317,7 +317,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
         if (r != null && r == true) {
           this.mensagemService.showSuccessViaToast("Produto excluído com sucesso!");
           this.carregando = false;
-          this.pesquisar();
+          this.buscarTodosProdutos(this.filtro);
         }
       }).catch((r) => {
         this.carregando = false;
