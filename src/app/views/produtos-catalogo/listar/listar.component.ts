@@ -123,8 +123,11 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
     url.indexOf("/produtos-catalogo/clonar") > -1 ||
     url.indexOf("/produtos-catalogo/criar") > -1)) {
       let json = sessionStorage.getItem("filtro");
-      this.filtro = JSON.parse(json);
-      if(!this.filtro) this.filtro = new ProdutoCatalogoListar();
+      let filtro = JSON.parse(json);
+      if(!filtro) {
+        return;
+      }
+      this.filtro = filtro; 
       this.buscarTodosProdutos(this.filtro);
       this.cdr.detectChanges();
     }
@@ -314,7 +317,7 @@ export class ProdutosCatalogoListarComponent implements OnInit, AfterViewInit {
         if (r != null && r == true) {
           this.mensagemService.showSuccessViaToast("Produto excluído com sucesso!");
           this.carregando = false;
-          this.pesquisar();
+          this.buscarTodosProdutos(this.filtro);
         }
       }).catch((r) => {
         this.carregando = false;
