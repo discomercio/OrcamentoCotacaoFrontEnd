@@ -654,11 +654,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.orcamentoService.prorrogarOrcamento(this.novoOrcamentoService.orcamentoCotacaoDto.id, this.autenticacaoService._lojaLogado).toPromise().then((r) => {
         if (r != null) {
           if (r.tipo == "WARN") {
-            this.mensagemService.showWarnViaToast(r.mensagem);
+            this.alertaService.mostrarMensagem(r.mensagem);
+            // this.mensagemService.showWarnViaToast(r.mensagem);
           } else {
             if (r?.mensagem?.includes('|')) {
               let msg = r.mensagem.split('|');
-              this.mensagemService.showSuccessViaToast(msg[1]);
+              // this.mensagemService.showSuccessViaToast(msg[1]);
+              this.sweetalertService.sucesso(msg[1]);
               this.novoOrcamentoService.orcamentoCotacaoDto.validade = msg[0];
             }
           }
