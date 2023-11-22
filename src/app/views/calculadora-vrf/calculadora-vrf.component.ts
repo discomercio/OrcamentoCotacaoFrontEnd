@@ -100,7 +100,10 @@ export class CalculadoraVrfComponent implements OnInit {
   textoRodape: string;
   imprimindo: boolean = false;
   constantes: Constantes = new Constantes();
-  clicouEvaporadora:boolean;
+  clicouEvaporadora: boolean;
+
+
+  imagem: any;
 
   ngOnInit(): void {
     this.clicouEvaporadora = false;
@@ -111,14 +114,14 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarQtdeMaxCondensadoras();
     this.dataAtual = new Date().toLocaleString("pt-br");
 
-    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF(),
-    this.buscarRangeSimultaneidade()];
+    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarTextoRodapePDF(),
+    this.buscarRangeSimultaneidade(), this.buscarParametroLogoImpressao(this.autenticacaoService._lojaLogado)];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
       this.setarOpcoes(r[1]);
-      this.setarLogoPDF(r[2]);
-      this.setarTextoRodapePDF(r[3]);
-      this.setarRangeSimultaneidade(r[4]);
+      this.setarTextoRodapePDF(r[2]);
+      this.setarRangeSimultaneidade(r[3]);
+      this.setarImagemLogoImpressao(r[4])
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -175,6 +178,11 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
   }
 
+  buscarParametroLogoImpressao(loja: string): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, loja, null).toPromise();
+  }
+
   setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
     if (r != null) {
       this.produtosDados = r;
@@ -215,13 +223,24 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
+  setarImagemLogoImpressao(r: any) {
+    if (r != null) {
+      this.imagem = "assets/layout/images/" + r[0]['Valor'];
+    }
+  }
+
   mostrarImpressao() {
     if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
       this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
       return;
     }
-    this.imprimindo = true;
+    // this.imprimindo = true;
+
+    this.getImageSizeAndGeneratePDF();
+
   }
+
+  
 
   gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
 
@@ -539,7 +558,7 @@ export class CalculadoraVrfComponent implements OnInit {
       return;
     }
 
-    if(this.clicouEvaporadora) return;
+    if (this.clicouEvaporadora) return;
 
     this.clicouEvaporadora = true;
     let largura: string = this.novoOrcamentoService.onResize();
@@ -553,7 +572,6 @@ export class CalculadoraVrfComponent implements OnInit {
         showHeader: false,
         contentStyle: (resultado: ProdutoTabela[]) => {
           if (resultado && resultado.length > 0) {
-            debugger;
             this.addEvapsSelecionadas(resultado);
           }
         }
@@ -1030,5 +1048,564 @@ export class CalculadoraVrfComponent implements OnInit {
 
   voltar() {
     this.imprimindo = false;
+  }
+
+  TAB_SIZE = 10;
+  NORMAL_FONT_SIZE = 10;
+  TITLE_FONT_SIZE = 14;
+  SUBTITLE_FONT_SIZE = 12;
+  SMALL_FONT_SIZE = 8;
+  FOOTER_MARGIN = this.SMALL_FONT_SIZE * 3;
+
+  getImageSizeAndGeneratePDF() {
+    // this.getImageSize2(this.imagem);
+    let img = new Image();
+    img.src = this.imagem;
+
+    this.getImageSize(this.imagem).then(({ source, height, width }) => {
+      this.generatePDF({ source, height, width });
+    });
+  }
+
+  // Função para pegar tamanho da imagem
+  getImageSize(source: string): any {
+    return new Promise((resolve) => {
+
+      const image = new Image();
+      image.onload = () => {
+        const height = image.height * 0.75;
+        const width = image.width * 0.75;
+
+        resolve({ source, height, width });
+      };
+      image.src = source;
+    });
+  }
+
+  generatePDF(image) {
+    const generateDate = new Date();
+
+    const doc = this.createPDF();
+
+    let currentPositionY = this.addPageTemplate(doc, image);
+
+    currentPositionY = this.addBudgetInfo(doc, currentPositionY);
+    doc.save(
+      `calculo_vrf_${this.getFormattedDateFileName(generateDate)}.pdf`
+    );
+  }
+
+  createPDF(): jsPDF {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      format: "a4",
+      unit: "px",
+    });
+
+    doc.deletePage(1);
+    return doc;
+  }
+
+  addPageTemplate(doc: jsPDF, image) {
+    doc.addPage();
+
+    // Adicionar imagem na primeira pagina
+    if (doc.getNumberOfPages() === 1 && image?.source) {
+      doc.addImage(
+        image.source,
+        "PNG",
+        doc.internal.pageSize.width - image.width - (this.TAB_SIZE + this.TAB_SIZE),
+        this.TAB_SIZE,
+        image.width,
+        image.height
+      );
+    }
+
+    // Adicionar moldura do relatorio
+    doc
+      .setFillColor("#000")
+      .rect(
+        this.TAB_SIZE,
+        this.TAB_SIZE,
+        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - 2 * this.TAB_SIZE,
+        "S"
+      );
+
+    return 3 * this.TAB_SIZE;
+  }
+
+  addBudgetInfo(doc: jsPDF, currentPositionY: number) {
+    currentPositionY = this.addTitle(doc, currentPositionY, "Dimensionamento sistema VRF", true);
+
+    currentPositionY = this.addSubtitle(doc, currentPositionY, "Dados do cliente", undefined, undefined);
+
+    const budgetInfo = [
+      ["Nome:", 'Gabriel Prada Teodoro'],
+      ["E-mail:", "gabriel.parada.teodoro@gmail.com"],
+      ["Telefone:", "(11) 98160-3313"],
+      ["Instalador:", "Instalador"],
+      ["Telefone instalador:", "(11) 98160-3313"],
+    ];
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo);
+
+    currentPositionY += this.TAB_SIZE;
+
+    currentPositionY = this.addSubtitle(doc, currentPositionY, "Parâmetros de dimensionamento", undefined, undefined);
+    const budgetInfo2 = [
+      ["Nome:", 'Samsung'],
+      ["Voltagem:", "220V"],
+      ["Tipo de descarga:", "Vertical"],
+      ["Ciclo:", "Quente/Frio"],
+      ["Faixa simultaneidade:", "101% a 110%"],
+    ];
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo2);
+
+    currentPositionY += this.TAB_SIZE;
+
+    const budgetInfo3 = [
+      ["Observações:", 'Teste de observação para ver como ficará'],
+    ];
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo3);
+
+    currentPositionY += this.TAB_SIZE * 2;
+
+    //incluir evaporadoras
+    currentPositionY = this.addEvaporadoras(doc, currentPositionY);
+
+    //incluir as combinações
+    currentPositionY = this.addCombinacoes(doc, currentPositionY);
+
+    //colocar o texto antes do rodapé
+    this.addTextoRodape(doc);
+
+    const generateDate = new Date();
+    this.addPageFooter(doc, generateDate);
+
+    return (currentPositionY += 50);
+  }
+
+  addTitle(doc, currentPositionY, title, withLine) {
+    doc
+      .setFontSize(this.TITLE_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text(title, 2 * this.TAB_SIZE, currentPositionY);
+
+    doc.setFontSize(this.NORMAL_FONT_SIZE).setFont(undefined, "normal");
+
+    if (withLine) {
+      doc
+        .setDrawColor("#000")
+        .line(
+          2 * this.TAB_SIZE,
+          currentPositionY + 5,
+          doc.getTextWidth(title) * 1.7,
+          currentPositionY + 5
+        );
+    }
+
+    return (currentPositionY += this.TITLE_FONT_SIZE + 10);
+  }
+
+  addSubtitle(doc, currentPositionY, title, withLine, twoTitle) {
+    doc
+      .setFontSize(this.SUBTITLE_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text(title, 2 * this.TAB_SIZE, currentPositionY);
+
+    if (!!twoTitle) {
+      let twoTitleWidth = doc.getTextWidth(twoTitle);
+      doc
+        .setFontSize(this.SUBTITLE_FONT_SIZE)
+        .setFont(undefined, "bold")
+        .text(twoTitle, doc.internal.pageSize.width - twoTitleWidth - (this.TAB_SIZE * 2), currentPositionY);
+    }
+
+    doc.setFontSize(this.NORMAL_FONT_SIZE).setFont(undefined, "normal");
+
+    if (withLine) {
+      doc
+        .setDrawColor("#000")
+        .line(
+          2 * this.TAB_SIZE,
+          currentPositionY + 5,
+          doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+          currentPositionY + 5
+        );
+    }
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE);
+  }
+
+  addLabeledData(doc: jsPDF, currentPositionY: number, data) {
+    doc.setFontSize(this.NORMAL_FONT_SIZE);
+
+    data.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      const labelWidth = doc
+        .text(label, 2 * this.TAB_SIZE, currentPositionY)
+        .getTextWidth(label);
+
+      doc.setFont(undefined, "normal");
+      doc.text(`${value}`, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY);
+      currentPositionY += this.NORMAL_FONT_SIZE;
+    });
+
+    return currentPositionY;
+  }
+
+  getFormattedDateFileName(date: Date): string {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear());
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}${month}${day}_${hours}${minutes}`;
+  }
+
+  addEvaporadoras(doc: jsPDF, currentPositionY: number) {
+    let optionTitle = `Evaporadoras`;
+    currentPositionY = this.addSubtitle(doc, currentPositionY, optionTitle, true, undefined);
+
+    currentPositionY = this.addHeaderEvapsPDF(doc, currentPositionY);
+
+    let btuTotal = 0;
+    let kcalTotal = 0;
+    this.evaporadorasSelecionadas.forEach((product) => {
+      currentPositionY = this.addProdutoEvap(doc, currentPositionY, product);
+      btuTotal += Number.parseInt(product.btu);
+      kcalTotal += Number.parseInt(product.kcal);
+    });
+
+    currentPositionY += 5;
+
+    const budgetInfo = [
+      ["Capacidade total (BTU/h):", `${btuTotal}`],
+      ["Capacidade total (kCal/h):", `${kcalTotal}`],
+    ];
+    currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
+
+    currentPositionY += this.TAB_SIZE * 2;
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE - 2);
+  }
+
+  addHeaderEvapsPDF(doc: jsPDF, currentPositionY: number) {
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
+    doc.text("Qtde", 250, currentPositionY, {
+      align: "right",
+    });
+    doc.text(
+      "Capacidade (BTU/h)",
+      333,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+    doc.text(
+      "Capacidade (kCal/h)",
+      doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+
+    return currentPositionY += 10;
+  }
+
+  addProdutoEvap(doc, currentPositionY, product: ProdutoTabela) {
+    doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+    const maxDescriptionWidth = 260;
+
+    const productDescription = `${product.fabricante}/${product.produto} - ${product.descricao}`;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+
+    let descriptionY = currentPositionY;
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE
+      );
+
+    descriptionLines.forEach((line) => {
+      doc.text(line, 3 * this.TAB_SIZE, descriptionY, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+
+    doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
+
+    doc.text(
+      `${product.btu}`,
+      332,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    doc.text(
+      `${product.kcal}`,
+      doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    if (descriptionLines.length > 1) {
+      currentPositionY += this.SMALL_FONT_SIZE * (descriptionLines.length - 1);
+    }
+
+    return (currentPositionY += this.SMALL_FONT_SIZE + 3);
+  }
+
+  addLabeledDataEvaps(doc: jsPDF, currentPositionY: number, data) {
+    doc.setFontSize(this.SMALL_FONT_SIZE);
+
+
+    data.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      const valueWidth = doc.getTextWidth(value);
+      const labelWidth = doc.getTextWidth(label);
+      doc.text(label, doc.internal.pageSize.width - 3 * this.TAB_SIZE - valueWidth - 2, currentPositionY, { align: "right" })
+
+      doc.setFont(undefined, "normal");
+
+      doc.text(`${value}`, doc.internal.pageSize.width - 3 * this.TAB_SIZE, currentPositionY, { align: "right" });
+      currentPositionY += this.SMALL_FONT_SIZE;
+    });
+
+    return currentPositionY;
+  }
+
+  addCombinacoes(doc: jsPDF, currentPositionY: number) {
+    let combinacoes = [this.combinacaoCom1aparelhos, this.combinacaoCom2aparelhos, this.combinacaoCom3aparelhos];
+    combinacoes.forEach((c: ProdutoTabela[], index) => {
+      if (c.length > 0) {
+        let optionTitle = `Opção com ${index + 1} condensadora`;
+        // let simultaneidade = 
+        currentPositionY = this.addSubtitle(doc, currentPositionY, optionTitle, true, `Simultaneidade: ${this.simultaneidadeCalculada2aparelhos}%`);
+
+        currentPositionY = this.addHeaderCondPDF(doc, currentPositionY);
+
+        let kcalTotal = 0;
+        let hpTotal = 0;
+        c.forEach((product) => {
+          currentPositionY = this.addProdutoCond(doc, currentPositionY, product);
+          hpTotal += Number.parseInt(product.hp);
+          kcalTotal += !!product.kcal ? Number.parseInt(product.kcal) : 0;
+        });
+
+        const budgetInfo = [
+          ["Capacidade total (kCal/h):", `${kcalTotal}`],
+          ["Potência total (HP):", `${hpTotal}`],
+        ];
+
+        currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
+
+        currentPositionY += this.TAB_SIZE;
+      }
+
+    });
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE - 2);
+  }
+
+  addHeaderCondPDF(doc: jsPDF, currentPositionY: number) {
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
+    doc.text("Qtde", 250, currentPositionY, {
+      align: "right",
+    });
+    doc.text(
+      "Capacidade (kCal/h)",
+      333,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+    doc.text(
+      "Potência (HP)",
+      doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
+      currentPositionY,
+      {
+        align: "right",
+      }
+    );
+
+    return currentPositionY += 10;
+  }
+
+  addProdutoCond(doc: jsPDF, currentPositionY, product: ProdutoTabela) {
+    doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+    const maxDescriptionWidth = 260;
+
+    const productDescription = `${product.fabricante}/${product.produto} - ${product.descricao}`;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
+
+    let descriptionY = currentPositionY;
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE
+      );
+
+    descriptionLines.forEach((line) => {
+      doc.text(line, 3 * this.TAB_SIZE, descriptionY, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+
+    doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
+
+    doc.text(
+      `${!!product.kcal ? product.kcal : 0}`,
+      332,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    doc.text(
+      `${product.hp}`,
+      doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    if (descriptionLines.length > 1) {
+      currentPositionY += this.SMALL_FONT_SIZE * (descriptionLines.length - 1);
+    }
+
+    return (currentPositionY += this.SMALL_FONT_SIZE + 3);
+  }
+
+  addTextoRodape(doc: jsPDF) {
+
+    doc
+      .setDrawColor("#000")
+      .line(
+        2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6,
+        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6
+      );
+
+    const maxDescriptionWidth = 380;
+
+    const productDescription = this.textoRodape;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    let descriptionY = doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 4;
+    descriptionLines.forEach((line) => {
+      doc
+      .setFontSize(this.SMALL_FONT_SIZE)
+      .text(line, this.TAB_SIZE * 3 + maxDescriptionWidth / 2, descriptionY - 5, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+         align: "center" 
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+  }
+
+  addPageFooter(doc, generateDate) {
+    const totalPages = doc.internal.getNumberOfPages();
+
+    doc.setFontSize(this.SMALL_FONT_SIZE).setFont(undefined, "italic");
+
+    const footerDescription = `PDF gerado em ${this.getFormattedFooterDate(
+      generateDate
+    )}`;
+
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      const pageFooter = `Página ${i} de ${totalPages}`;
+
+      doc
+        .text(
+          footerDescription,
+          doc.internal.pageSize.width / 2 -
+          doc.getTextWidth(footerDescription) / 2,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 1.8
+        )
+        .text(
+          pageFooter,
+          doc.internal.pageSize.width - doc.getTextWidth(pageFooter) / 2 - 45,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 1.8
+        )
+        .setFillColor("#818181")
+        .rect(
+          2 * this.TAB_SIZE,
+          doc.internal.pageSize.height - this.FOOTER_MARGIN,
+          doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+          0.5,
+          "F"
+        );
+    }
+  }
+
+  getFormattedFooterDate(date: Date): string {
+    return new Intl.DateTimeFormat("pt-BR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    })
+      .format(date)
+      .replace(", ", " às ");
   }
 }
