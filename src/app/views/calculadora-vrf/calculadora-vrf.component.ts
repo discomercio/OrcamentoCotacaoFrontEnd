@@ -229,160 +229,6 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  mostrarImpressao() {
-    if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
-      this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
-      return;
-    }
-    // this.imprimindo = true;
-
-    this.getImageSizeAndGeneratePDF();
-
-  }
-
-  
-
-  gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
-
-    doc.html(htmlPdf, {
-      margin: [margins.top, margins.right, margins.bottom, margins.left],
-      callback: (doc) => {
-        doc.text('página 1', 520.3 / 2, 842 - 20);
-        doc.save('calculo_vrf');
-        let x: string = doc.output('bloburl').toString();
-        window.open(x);
-        this.imprimindo = false;
-      }
-    });
-    return;
-  }
-
-  gerarPDF2paginas(doc: jsPDF, margins: any, alturaPagina: number) {
-
-
-    let logo = document.getElementById("logo").cloneNode(true) as HTMLElement;
-    let titulo = document.getElementById("titulo").cloneNode(true) as HTMLElement;
-    let formulario = document.getElementById("formulario").cloneNode(true) as HTMLElement;
-    let opcao1;
-    let opcao2;
-    let opcao3;
-
-    let filho = document.getElementById("div-filho");
-    let filho2 = filho.cloneNode(true) as HTMLElement;
-
-    filho.append(logo);
-    filho.append(titulo);
-    filho.append(formulario);
-
-    filho2.append(logo.cloneNode(true) as HTMLElement);
-    let evaps = document.getElementById("evaps");
-    if (filho.clientHeight + evaps.clientHeight > alturaPagina) {
-      filho2.append(evaps.cloneNode(true) as HTMLElement);
-    }
-    else {
-      filho.append(evaps.cloneNode(true) as HTMLElement);
-    }
-
-    if (this.opcao1) {
-      opcao1 = document.getElementById("opcao1");
-      if (filho2.clientHeight > 0) {
-        //evaps jão esta na folha2
-        filho2.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao1.clientHeight > alturaPagina) {
-        //jogamos para outra página
-        filho2.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-      else {
-        filho.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    if (this.opcao2) {
-      opcao2 = document.getElementById("opcao2");
-      if (filho2.clientHeight > 0) {
-        //evaps jão esta na folha2
-        filho2.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao2.clientHeight > alturaPagina) {
-        //jogamos para outra página
-        filho2.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-      else {
-        filho.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    if (this.opcao3) {
-      opcao3 = document.getElementById("opcao3");
-
-      if (filho2.clientHeight > 0) {
-        filho2.append(opcao3.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao3.clientHeight > alturaPagina) {
-        filho2.append(opcao3.cloneNode(true) as HTMLElement);
-
-      }
-      else {
-        filho.append(opcao3.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    let rodape = document.getElementById("rodape");
-    filho2.append(rodape.cloneNode(true) as HTMLElement);
-
-    let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
-    pai.append(filho.cloneNode(true) as HTMLElement);
-
-    doc.html(pai, {
-      margin: [margins.top, margins.right, margins.bottom, margins.left],
-      callback: (doc) => {
-        doc.text('página 1', 520.3 / 2, 842 - 20);
-        doc.addPage('pt', 'p');
-        doc.html(filho2, {
-          margin: [0, margins.right, margins.bottom, margins.left],
-          callback: (doc) => {
-            doc.text('página 2', 520.3 / 2, 842 - 25);
-            doc.save('calculo_vrf');
-            let x: string = doc.output('bloburl').toString();
-            window.open(x);
-            while (filho.hasChildNodes()) {
-              filho.removeChild(filho.firstChild);
-            };
-            this.imprimindo = false;
-          }, y: 855
-        });
-      }, html2canvas: { scale: 1 }
-    });
-  }
-
-  exportPdf() {
-
-    let doc = new jsPDF('p', 'pt', 'a4');
-
-    let margins = {
-      top: 40,
-      bottom: 40,
-      left: 40,
-      right: 40
-    };
-
-    let alturaPagina = 842 - 80;
-    doc.setProperties({ title: "calculo_vrf" });
-    doc.setFontSize(2);
-
-    let htmlPdf = document.getElementById("html-pdf");
-
-    let altHtmlPdf = htmlPdf.clientHeight;
-
-    if (altHtmlPdf < alturaPagina) {
-      this.gerarPDF1pagina(doc, htmlPdf, margins);
-      return;
-    }
-
-    this.gerarPDF2paginas(doc, margins, alturaPagina);
-  }
-
   filtrarProdutosVrf() {
     this.produtosVrf = this.produtosDados.filter(x => x.idPropriedade == 1 && x.idValorPropriedadeOpcao == 12);
 
@@ -1057,18 +903,22 @@ export class CalculadoraVrfComponent implements OnInit {
   SMALL_FONT_SIZE = 8;
   FOOTER_MARGIN = this.SMALL_FONT_SIZE * 3;
 
-  getImageSizeAndGeneratePDF() {
+  buscarImagemPDF() {
+    if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
+      this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
+      return;
+    }
     // this.getImageSize2(this.imagem);
     let img = new Image();
     img.src = this.imagem;
 
-    this.getImageSize(this.imagem).then(({ source, height, width }) => {
-      this.generatePDF({ source, height, width });
+    this.buscarTamanhoImagem(this.imagem).then(({ source, height, width }) => {
+      this.gerarPDF({ source, height, width });
     });
   }
 
   // Função para pegar tamanho da imagem
-  getImageSize(source: string): any {
+  buscarTamanhoImagem(source: string): any {
     return new Promise((resolve) => {
 
       const image = new Image();
@@ -1082,20 +932,20 @@ export class CalculadoraVrfComponent implements OnInit {
     });
   }
 
-  generatePDF(image) {
-    const generateDate = new Date();
+  gerarPDF(image) {
+    const data = new Date();
 
-    const doc = this.createPDF();
+    const doc = this.crriarPDF();
 
-    let currentPositionY = this.addPageTemplate(doc, image);
+    let currentPositionY = this.addPaginaPDF(doc, image);
 
-    currentPositionY = this.addBudgetInfo(doc, currentPositionY);
+    currentPositionY = this.addInformacoes(doc, currentPositionY);
     doc.save(
-      `calculo_vrf_${this.getFormattedDateFileName(generateDate)}.pdf`
+      `calculo_vrf_${this.buscarDataNomePDF(data)}.pdf`
     );
   }
 
-  createPDF(): jsPDF {
+  crriarPDF(): jsPDF {
     const doc = new jsPDF({
       orientation: "portrait",
       format: "a4",
@@ -1106,7 +956,7 @@ export class CalculadoraVrfComponent implements OnInit {
     return doc;
   }
 
-  addPageTemplate(doc: jsPDF, image) {
+  addPaginaPDF(doc: jsPDF, image) {
     doc.addPage();
 
     // Adicionar imagem na primeira pagina
@@ -1135,38 +985,25 @@ export class CalculadoraVrfComponent implements OnInit {
     return 3 * this.TAB_SIZE;
   }
 
-  addBudgetInfo(doc: jsPDF, currentPositionY: number) {
-    currentPositionY = this.addTitle(doc, currentPositionY, "Dimensionamento sistema VRF", true);
+  addInformacoes(doc: jsPDF, currentPositionY: number) {
+    currentPositionY = this.addTitulo(doc, currentPositionY, "Dimensionamento sistema VRF", true);
 
-    currentPositionY = this.addSubtitle(doc, currentPositionY, "Dados do cliente", undefined, undefined);
+    let retornoPositionY = this.addDadosCliente(doc, currentPositionY);
 
-    const budgetInfo = [
-      ["Nome:", 'Gabriel Prada Teodoro'],
-      ["E-mail:", "gabriel.parada.teodoro@gmail.com"],
-      ["Telefone:", "(11) 98160-3313"],
-      ["Instalador:", "Instalador"],
-      ["Telefone instalador:", "(11) 98160-3313"],
-    ];
-    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo);
+    if (retornoPositionY != currentPositionY) {
+      currentPositionY = retornoPositionY + this.TAB_SIZE;
+    }
 
-    currentPositionY += this.TAB_SIZE;
+    currentPositionY = this.addParamDimensionamento(doc, currentPositionY);
 
-    currentPositionY = this.addSubtitle(doc, currentPositionY, "Parâmetros de dimensionamento", undefined, undefined);
-    const budgetInfo2 = [
-      ["Nome:", 'Samsung'],
-      ["Voltagem:", "220V"],
-      ["Tipo de descarga:", "Vertical"],
-      ["Ciclo:", "Quente/Frio"],
-      ["Faixa simultaneidade:", "101% a 110%"],
-    ];
-    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo2);
+    if (!!this.observacao) {
+      currentPositionY += this.TAB_SIZE;
+      const budgetInfo3 = [
+        ["Observações:", this.observacao],
+      ];
 
-    currentPositionY += this.TAB_SIZE;
-
-    const budgetInfo3 = [
-      ["Observações:", 'Teste de observação para ver como ficará'],
-    ];
-    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo3);
+      currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo3, true);
+    }
 
     currentPositionY += this.TAB_SIZE * 2;
 
@@ -1176,6 +1013,11 @@ export class CalculadoraVrfComponent implements OnInit {
     //incluir as combinações
     currentPositionY = this.addCombinacoes(doc, currentPositionY);
 
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.SMALL_FONT_SIZE * 2 + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
     //colocar o texto antes do rodapé
     this.addTextoRodape(doc);
 
@@ -1185,7 +1027,63 @@ export class CalculadoraVrfComponent implements OnInit {
     return (currentPositionY += 50);
   }
 
-  addTitle(doc, currentPositionY, title, withLine) {
+  addDadosCliente(doc, currentPositionY) {
+    if (!this.nomeCliente && !this.nomeObra && !this.telefone &&
+      !this.email && !this.instalador && !this.telInstalador) {
+      return currentPositionY;
+    }
+
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, "Dados do cliente", undefined, undefined);
+    let budgetInfo = [];
+    if (!!this.nomeCliente) {
+      budgetInfo.push(["Nome:", this.nomeCliente]);
+    }
+    if (!!this.nomeObra) {
+      budgetInfo.push(["Nome da obra:", this.nomeObra]);
+    }
+    if (!!this.email) {
+      budgetInfo.push(["E-mail:", this.email]);
+    }
+    if (!!this.telefone) {
+      let ddd = this.telefone.substring(0, 2);
+      let tel = this.telefone.substring(2);
+      let telFormatado = FormataTelefone.telefone_ddd_formata(tel, ddd);
+      budgetInfo.push(["Telefone:", telFormatado]);
+    }
+    if (!!this.instalador) {
+      budgetInfo.push(["Instalador:", this.instalador]);
+    }
+    if (!!this.telInstalador) {
+      let ddd = this.telInstalador.substring(0, 2);
+      let tel = this.telInstalador.substring(2);
+      let telFormatado = FormataTelefone.telefone_ddd_formata(tel, ddd);
+      budgetInfo.push(["Telefone instalador:", telFormatado]);
+    }
+
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo, false);
+
+    return currentPositionY;
+  }
+
+  addParamDimensionamento(doc, currentPositionY) {
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, "Parâmetros de dimensionamento", undefined, undefined);
+
+    let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
+    let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
+
+    const budgetInfo2 = [
+      ["Fabricante:", this.lstFabricantes.filter(x => x.value == this.fabricanteSelecionado)[0].label],
+      ["Voltagem:", `${this.lstVoltagens.filter(x => x.value == this.voltagem)[0].label}V`],
+      ["Tipo de descarga:", this.lstDescargas.filter(x => x.value == this.descarga)[0].label],
+      ["Ciclo:", this.lstCiclos.filter(x => x.value == this.ciclo)[0].label],
+      ["Faixa simultaneidade:", `${simultaneidadeMin}% a ${simultaneidadeMax}%`],
+    ];
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo2, false);
+
+    return currentPositionY;
+  }
+
+  addTitulo(doc, currentPositionY, title, withLine) {
     doc
       .setFontSize(this.TITLE_FONT_SIZE)
       .setFont(undefined, "bold")
@@ -1207,7 +1105,7 @@ export class CalculadoraVrfComponent implements OnInit {
     return (currentPositionY += this.TITLE_FONT_SIZE + 10);
   }
 
-  addSubtitle(doc, currentPositionY, title, withLine, twoTitle) {
+  addSubtitulo(doc, currentPositionY, title, withLine, twoTitle) {
     doc
       .setFontSize(this.SUBTITLE_FONT_SIZE)
       .setFont(undefined, "bold")
@@ -1237,7 +1135,7 @@ export class CalculadoraVrfComponent implements OnInit {
     return (currentPositionY += this.SUBTITLE_FONT_SIZE);
   }
 
-  addLabeledData(doc: jsPDF, currentPositionY: number, data) {
+  addLabeledData(doc: jsPDF, currentPositionY: number, data, splitText: boolean) {
     doc.setFontSize(this.NORMAL_FONT_SIZE);
 
     data.forEach(([label, value]) => {
@@ -1245,16 +1143,40 @@ export class CalculadoraVrfComponent implements OnInit {
       const labelWidth = doc
         .text(label, 2 * this.TAB_SIZE, currentPositionY)
         .getTextWidth(label);
+      if (splitText) {
+        let maxDescriptionWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE - labelWidth;
+        const descriptionLines = doc.splitTextToSize(
+          value,
+          maxDescriptionWidth
+        );
+        descriptionLines.forEach((line, index) => {
+          doc.setFont(undefined, "normal");
+          doc.text(line, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY, {
+            maxWidth: maxDescriptionWidth,
+            lineHeightFactor: 1.5,
+          });
 
-      doc.setFont(undefined, "normal");
-      doc.text(`${value}`, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY);
-      currentPositionY += this.NORMAL_FONT_SIZE;
+          if (
+            doc.internal.pageSize.height - currentPositionY <
+            this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          } else {
+            currentPositionY += this.NORMAL_FONT_SIZE;
+          }
+        });
+      }
+      else {
+        doc.setFont(undefined, "normal");
+        doc.text(`${value}`, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY);
+        currentPositionY += this.NORMAL_FONT_SIZE;
+      }
     });
 
     return currentPositionY;
   }
 
-  getFormattedDateFileName(date: Date): string {
+  buscarDataNomePDF(date: Date): string {
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = String(date.getFullYear());
@@ -1265,8 +1187,8 @@ export class CalculadoraVrfComponent implements OnInit {
   }
 
   addEvaporadoras(doc: jsPDF, currentPositionY: number) {
-    let optionTitle = `Evaporadoras`;
-    currentPositionY = this.addSubtitle(doc, currentPositionY, optionTitle, true, undefined);
+    let optionTitle = `Evaporadora(s)`;
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, optionTitle, true, undefined);
 
     currentPositionY = this.addHeaderEvapsPDF(doc, currentPositionY);
 
@@ -1274,16 +1196,24 @@ export class CalculadoraVrfComponent implements OnInit {
     let kcalTotal = 0;
     this.evaporadorasSelecionadas.forEach((product) => {
       currentPositionY = this.addProdutoEvap(doc, currentPositionY, product);
-      btuTotal += Number.parseInt(product.btu);
-      kcalTotal += Number.parseInt(product.kcal);
+      btuTotal += !product.btu ? 0 : Number.parseInt(product.btu);
+      kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
     });
 
     currentPositionY += 5;
 
+    let btuTotalString = btuTotal == 0 ? "" : btuTotal.toLocaleString("pt-br");
+    let kcalTotalString = kcalTotal == 0 ? "" : kcalTotal.toLocaleString("pt-br");
     const budgetInfo = [
-      ["Capacidade total (BTU/h):", `${btuTotal}`],
-      ["Capacidade total (kCal/h):", `${kcalTotal}`],
+      ["Capacidade total (BTU/h):", `${btuTotalString}`],
+      ["Capacidade total (kCal/h):", `${kcalTotalString}`],
     ];
+
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
     currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
 
     currentPositionY += this.TAB_SIZE * 2;
@@ -1297,14 +1227,14 @@ export class CalculadoraVrfComponent implements OnInit {
       .setTextColor("#000")
       .setFont(undefined, "bold");
 
-    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
-    doc.text("Qtde", 250, currentPositionY, {
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY + 10);
+    doc.text("Qtde", 250, currentPositionY + 10, {
       align: "right",
     });
     doc.text(
       "Capacidade (BTU/h)",
       333,
-      currentPositionY,
+      currentPositionY + 10,
       {
         align: "right",
       }
@@ -1312,13 +1242,13 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.text(
       "Capacidade (kCal/h)",
       doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
-      currentPositionY,
+      currentPositionY + 10,
       {
         align: "right",
       }
     );
 
-    return currentPositionY += 10;
+    return currentPositionY += 20;
   }
 
   addProdutoEvap(doc, currentPositionY, product: ProdutoTabela) {
@@ -1337,7 +1267,7 @@ export class CalculadoraVrfComponent implements OnInit {
       doc.internal.pageSize.height - currentPositionY <
       descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
     ) {
-      currentPositionY = this.addPageTemplate(doc, undefined);
+      currentPositionY = this.addPaginaPDF(doc, undefined);
     }
 
     let descriptionY = currentPositionY;
@@ -1363,14 +1293,14 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
 
     doc.text(
-      `${product.btu}`,
+      `${!product.btu ? "" : Number.parseInt(product.btu).toLocaleString("pt-br")}`,
       332,
       currentPositionY,
       { align: "right" }
     );
 
     doc.text(
-      `${product.kcal}`,
+      `${!product.kcal ? "" : Number.parseInt(product.kcal).toLocaleString("pt-br")}`,
       doc.internal.pageSize.width - 4 * this.TAB_SIZE,
       currentPositionY,
       { align: "right" }
@@ -1404,51 +1334,72 @@ export class CalculadoraVrfComponent implements OnInit {
 
   addCombinacoes(doc: jsPDF, currentPositionY: number) {
     let combinacoes = [this.combinacaoCom1aparelhos, this.combinacaoCom2aparelhos, this.combinacaoCom3aparelhos];
+    let opcoesSelecionadas = [this.opcao1, this.opcao2, this.opcao3];
+    let simultaneidades = [this.simultaneidadeCalculada1aparelho, this.simultaneidadeCalculada2aparelhos, this.simultaneidadeCalculada3aparelhos];
     combinacoes.forEach((c: ProdutoTabela[], index) => {
-      if (c.length > 0) {
-        let optionTitle = `Opção com ${index + 1} condensadora`;
-        // let simultaneidade = 
-        currentPositionY = this.addSubtitle(doc, currentPositionY, optionTitle, true, `Simultaneidade: ${this.simultaneidadeCalculada2aparelhos}%`);
-
-        currentPositionY = this.addHeaderCondPDF(doc, currentPositionY);
-
-        let kcalTotal = 0;
-        let hpTotal = 0;
-        c.forEach((product) => {
-          currentPositionY = this.addProdutoCond(doc, currentPositionY, product);
-          hpTotal += Number.parseInt(product.hp);
-          kcalTotal += !!product.kcal ? Number.parseInt(product.kcal) : 0;
-        });
-
-        const budgetInfo = [
-          ["Capacidade total (kCal/h):", `${kcalTotal}`],
-          ["Potência total (HP):", `${hpTotal}`],
-        ];
-
-        currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
-
-        currentPositionY += this.TAB_SIZE;
+      if(opcoesSelecionadas[index]){
+        if (c.length > 0) {
+          let optionTitle = `Opção com ${index + 1} condensadora(s)`;
+  
+          if (doc.internal.pageSize.height - currentPositionY <
+            this.SUBTITLE_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          }
+  
+          currentPositionY = this.addSubtitulo(doc, currentPositionY, optionTitle, true, `Simultaneidade: ${simultaneidades[index]}%`);
+  
+          currentPositionY = this.addHeaderCondPDF(doc, currentPositionY);
+  
+          let kcalTotal = 0;
+          let hpTotal = 0;
+          c.forEach((product) => {
+            currentPositionY = this.addProdutoCond(doc, currentPositionY, product);
+            hpTotal += !product.hp ? 0 : Number.parseInt(product.hp);
+            kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
+          });
+  
+          let kcalTotalString = kcalTotal == 0 ? "" : kcalTotal.toLocaleString("pt-br");
+          let hpTotalString = hpTotal == 0 ? "" : hpTotal.toLocaleString("pt-br");
+          const budgetInfo = [
+            ["Capacidade total (kCal/h):", `${kcalTotalString}`],
+            ["Potência total (HP):", `${hpTotalString}`],
+          ];
+  
+          if (doc.internal.pageSize.height - currentPositionY <
+            this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          }
+          currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
+  
+          currentPositionY += this.TAB_SIZE;
+        }
       }
-
     });
 
     return (currentPositionY += this.SUBTITLE_FONT_SIZE - 2);
   }
 
   addHeaderCondPDF(doc: jsPDF, currentPositionY: number) {
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
     doc
       .setFontSize(this.NORMAL_FONT_SIZE)
       .setTextColor("#000")
       .setFont(undefined, "bold");
 
-    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
-    doc.text("Qtde", 250, currentPositionY, {
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY + 10);
+    doc.text("Qtde", 250, currentPositionY + 10, {
       align: "right",
     });
     doc.text(
       "Capacidade (kCal/h)",
       333,
-      currentPositionY,
+      currentPositionY + 10,
       {
         align: "right",
       }
@@ -1456,13 +1407,13 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.text(
       "Potência (HP)",
       doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
-      currentPositionY,
+      currentPositionY + 10,
       {
         align: "right",
       }
     );
 
-    return currentPositionY += 10;
+    return currentPositionY += 20;
   }
 
   addProdutoCond(doc: jsPDF, currentPositionY, product: ProdutoTabela) {
@@ -1481,7 +1432,8 @@ export class CalculadoraVrfComponent implements OnInit {
       doc.internal.pageSize.height - currentPositionY <
       descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
     ) {
-      currentPositionY = this.addPageTemplate(doc, undefined);
+      doc.setDrawColor("#000");
+      currentPositionY = this.addPaginaPDF(doc, undefined);
     }
 
     let descriptionY = currentPositionY;
@@ -1507,14 +1459,14 @@ export class CalculadoraVrfComponent implements OnInit {
     doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
 
     doc.text(
-      `${!!product.kcal ? product.kcal : 0}`,
+      `${!product.kcal ? "" : Number.parseInt(product.kcal).toLocaleString("pt-br")}`,
       332,
       currentPositionY,
       { align: "right" }
     );
 
     doc.text(
-      `${product.hp}`,
+      `${!product.hp ? "" : Number.parseInt(product.hp).toLocaleString("pt-br")}`,
       doc.internal.pageSize.width - 4 * this.TAB_SIZE,
       currentPositionY,
       { align: "right" }
@@ -1550,12 +1502,12 @@ export class CalculadoraVrfComponent implements OnInit {
     let descriptionY = doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 4;
     descriptionLines.forEach((line) => {
       doc
-      .setFontSize(this.SMALL_FONT_SIZE)
-      .text(line, this.TAB_SIZE * 3 + maxDescriptionWidth / 2, descriptionY - 5, {
-        maxWidth: maxDescriptionWidth,
-        lineHeightFactor: 1.5,
-         align: "center" 
-      });
+        .setFontSize(this.SMALL_FONT_SIZE)
+        .text(line, this.TAB_SIZE * 3 + maxDescriptionWidth / 2, descriptionY - 5, {
+          maxWidth: maxDescriptionWidth,
+          lineHeightFactor: 1.5,
+          align: "center"
+        });
 
       descriptionY += this.SMALL_FONT_SIZE;
     });
@@ -1586,7 +1538,7 @@ export class CalculadoraVrfComponent implements OnInit {
           doc.internal.pageSize.width - doc.getTextWidth(pageFooter) / 2 - 45,
           doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 1.8
         )
-        .setFillColor("#818181")
+        .setFillColor("#000")
         .rect(
           2 * this.TAB_SIZE,
           doc.internal.pageSize.height - this.FOOTER_MARGIN,
