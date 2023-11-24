@@ -63,6 +63,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   carregando: boolean;
   cat: string;
   digitado: string = "";
+  listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
 
   ngOnInit(): void {
     this.carregando = true;
@@ -427,6 +428,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   addProduto(selecionados: ProdutoTela[]) {
+
+    if (selecionados.length == 0) {
+      this.alertaService.mostrarMensagem("Por favor, selecione um produto!");
+      return;
+    }
+
     let invalidos = selecionados.filter(x => !x.qtdeValida);
     if (invalidos && invalidos.length > 0) {
       let produtos: string;
@@ -439,61 +446,21 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         return;
       }
     }
-    let validaQtdeItensDesmembrados: boolean = true;
     if (selecionados && selecionados.length > 0) {
-      let qtdeItens: number = this.novoOrcamentoService.listaProdutosDesmembrados.length;
-      selecionados.forEach(p => {
-        let itemExiste = this.novoOrcamentoService.listaProdutosQtdeApoio.filter(x => x.produto == p.produtoDto.produto);
-        if(itemExiste.length > 0){
-          itemExiste[0].qtde = itemExiste[0].qtde + p.qtde;
-        }else{
-          this.novoOrcamentoService.listaProdutosQtdeApoio.push({produto: p.produtoDto.produto, qtde : p.qtde});
-        }
-
-        if (p.Filhos.length > 0) {
-          p.Filhos.forEach(x => {
-            let filhoteExiste = this.novoOrcamentoService.listaProdutosDesmembrados.filter(e => e.produto == x.produto);
-            if (filhoteExiste.length > 0) {
-              let qtdeAdicionar = p.qtde * x.qtde;
-              filhoteExiste[0].qtde = filhoteExiste[0].qtde + qtdeAdicionar;
-            }
-            else {
-              let novo = new ProdutoOrcamentoDto();
-              novo.produto = x.produto;
-              novo.qtde = p.qtde * x.qtde;
-              this.novoOrcamentoService.listaProdutosDesmembrados.push(novo);
-              qtdeItens++;
-            }
-          });
-        }
-        else {
-          let simplesExiste = this.novoOrcamentoService.listaProdutosDesmembrados.filter(e => e.produto == p.produtoDto.produto);
-          if (simplesExiste.length > 0) {
-            simplesExiste[0].qtde = simplesExiste[0].qtde + p.qtde;
-          }
-          else {
-            let novo = new ProdutoOrcamentoDto();
-            novo.produto = p.produtoDto.produto;
-            novo.qtde = p.qtde * p.qtde;
-            this.novoOrcamentoService.listaProdutosDesmembrados.push(novo);
-            qtdeItens++;
-          }
-        }
-        if (this.novoOrcamentoService.listaProdutosDesmembrados.length > this.novoOrcamentoService.limiteQtdeProdutoOpcao) {
-          this.novoOrcamentoService.listaProdutosDesmembrados.splice(this.novoOrcamentoService.listaProdutosDesmembrados.length - qtdeItens, qtdeItens);
-          this.mensagemService.showWarnViaToast("A quantidade de itens excede a quantidade máxima de itens permitida por opção!");
-          validaQtdeItensDesmembrados = false;
-          return;
-        }
-      });
-
-      if(!validaQtdeItensDesmembrados) return;
+      let listaDesmembrados = this.controlarQtdeItens(selecionados);
+      let listaProdutosQtdeApoio = this.controlarQtdeApoio(selecionados);
+      
+      if (listaDesmembrados.length > this.novoOrcamentoService.configValidade.LimiteQtdeItens) {
+        this.alertaService.mostrarMensagem("A quantidade de itens excede o permitido! Tente remover alguns produtos para prosseguir.");
+        return;
+      }
+      this.listaProdutosDesmembrados = JSON.parse(JSON.stringify(listaDesmembrados));
+      this.novoOrcamentoService.listaProdutosDesmembrados = this.listaProdutosDesmembrados;
+      this.novoOrcamentoService.listaProdutosQtdeApoio = JSON.parse(JSON.stringify(listaProdutosQtdeApoio));
 
       this.option.contentStyle(this.selecionados);
 
       this.limparListaTela();
-
-      return;
     }
 
     let elfoco = document.getElementById("btnAdd") as HTMLElement;
@@ -513,9 +480,77 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       return;
     }
 
-    let msg: string[] = new Array();
-    msg.push("Por favor, selecione um produto!");
-    this.mensagemService.showErrorViaToast(msg);
+
+  }
+
+  controlarQtdeApoio(selecionados: ProdutoTela[]) {
+    let listaQtdeApoio = new Array();
+    listaQtdeApoio = JSON.parse(JSON.stringify(this.novoOrcamentoService.listaProdutosQtdeApoio));
+    selecionados.forEach(p => {
+      let itemExiste = listaQtdeApoio.filter(x => x.produto == p.produtoDto.produto);
+      if (itemExiste.length > 0) {
+        itemExiste[0].qtde = itemExiste[0].qtde + p.qtde;
+      } else {
+        listaQtdeApoio.push({ produto: p.produtoDto.produto, qtde: p.qtde });
+      }
+    });
+
+    return listaQtdeApoio;
+  }
+
+  controlarQtdeItens(selecionados: ProdutoTela[]) {
+      let listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
+      listaProdutosDesmembrados = JSON.parse(JSON.stringify(this.novoOrcamentoService.listaProdutosDesmembrados));
+      selecionados.forEach(p => {
+        if (p.Filhos.length > 0) {
+          p.Filhos.forEach(x => {
+            let filhoteExiste = listaProdutosDesmembrados.filter(e => e.produto == x.produto);
+            if (filhoteExiste.length > 0) {
+              let qtdeAdicionar = p.qtde * x.qtde;
+              filhoteExiste[0].qtde = filhoteExiste[0].qtde + qtdeAdicionar;
+            }
+            else {
+              let novo = new ProdutoOrcamentoDto();
+              novo.produto = x.produto;
+              novo.qtde = p.qtde * x.qtde;
+              listaProdutosDesmembrados.push(novo);
+            }
+          });
+        }
+        else {
+          let simplesExiste = listaProdutosDesmembrados.filter(e => e.produto == p.produtoDto.produto);
+          if (simplesExiste.length > 0) {
+            simplesExiste[0].qtde = simplesExiste[0].qtde + p.qtde;
+          }
+          else {
+            let novo = new ProdutoOrcamentoDto();
+            novo.produto = p.produtoDto.produto;
+            novo.qtde = p.qtde * p.qtde;
+            listaProdutosDesmembrados.push(novo);
+          }
+        }
+      });
+
+      if(this.novoOrcamentoService.listaProdutosDesmembrados.length == 0)
+    return listaProdutosDesmembrados;
+
+    this.listaProdutosDesmembrados = this.novoOrcamentoService.listaProdutosDesmembrados;
+
+    // listaProdutosDesmembrados.forEach(x => {
+    //   let item = this.listaProdutosDesmembrados.filter(f => f.produto == x.produto);
+    //   let novo = new ProdutoOrcamentoDto();
+    //   novo.produto = x.produto;
+    //   if (item.length > 0) {
+    //     novo.qtde = item[0].qtde + x.qtde;
+    //   }
+    //   else {
+    //     novo.qtde = x.qtde;
+    //   }
+    //   listaApoio.push(novo);
+    // });
+
+
+    return listaProdutosDesmembrados;
   }
 
   limparListaTela() {

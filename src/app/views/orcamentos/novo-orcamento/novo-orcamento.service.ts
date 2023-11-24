@@ -39,7 +39,6 @@ export class NovoOrcamentoService {
   public mostrarOpcoes: boolean;
   public listaProdutosQtdeApoio = [];
   public listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
-  public limiteQtdeProdutoOpcao: number = 12;
   public pageItens: number = 3;
   public lstProdutosSelecionados: ProdutoOrcamentoDto[] = new Array();
   public lstProdutosSelecionadosApoio: ProdutoOrcamentoDto[];

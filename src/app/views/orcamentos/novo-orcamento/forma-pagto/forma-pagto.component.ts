@@ -417,6 +417,11 @@ export class FormaPagtoComponent extends TelaDesktopBaseComponent implements OnI
       return;
     }
 
+    if (this.novoOrcamentoService.listaProdutosDesmembrados.length > this.novoOrcamentoService.configValidade.LimiteQtdeItens) {
+      this.alertaService.mostrarMensagem("A quantidade de itens excede o permitido! Tente remover alguns produtos para prosseguir.");
+      return;
+    }
+
     let invalidos = this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.filter(x => x.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO);
     if (invalidos && invalidos.length > 0) {
       let produtos: string;

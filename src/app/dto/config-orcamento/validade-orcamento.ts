@@ -6,4 +6,5 @@ export class ValidadeOrcamento {
     MaxPeriodoConsultaFiltroPesquisa:number;
     MaxPeriodoConsulta_RelatorioGerencial:number;
     LimiteQtdeMaxOpcaoOrcamento:number;
+    LimiteQtdeItens:number;
 }
