@@ -239,7 +239,7 @@ export class NovoOrcamentoService {
 
       let pagto = this.formaPagamento.filter(f => f.idTipoPagamento == fPagto.tipo_parcelamento)[0];
 
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
         let total = 0;
         opcaoOrcamentoCotacaoDto.listaProdutos.forEach((x) => {
           let descReal = 100 * (x.precoLista - x.precoVenda) / x.precoLista;
@@ -247,28 +247,28 @@ export class NovoOrcamentoService {
             .formatarDecimal((x.precoListaBase * (1 - descReal / 100)) * x.qtde);
           total += precoBaseVenda;
         });
-        let meio = pagto.meios.filter(m => m.id == fPagto.op_av_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
+        let meio = pagto?.meios?.filter(m => m.id == fPagto.op_av_forma_pagto)[0]?.descricao;
+        texto = pagto?.tipoPagamentoDescricao + " em " + meio + " " + this.moedaUtils.formatarMoedaComPrefixo(total);
         return true;
       }
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
-        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO) {
+        texto = pagto?.tipoPagamentoDescricao + " em " + fp.c_pc_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_valor);
         return true;
       }
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
-        let meioEntrada = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_entrada_forma_pagto)[0].descricao;
-        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pce_prestacao_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + ":<br>Entrada: " + meioEntrada + " no valor de " +
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+        let meioEntrada = pagto?.meios?.filter(m => m.id.toString() == fPagto.op_pce_entrada_forma_pagto)[0]?.descricao;
+        let meioPrestacao = pagto?.meios?.filter(m => m.id.toString() == fPagto.op_pce_prestacao_forma_pagto)[0]?.descricao;
+        texto = pagto?.tipoPagamentoDescricao + ":<br>Entrada: " + meioEntrada + " no valor de " +
           this.moedaUtils.formatarMoedaComPrefixo(fPagto.o_pce_entrada_valor) +
           " <br> Demais Prestações: " + meioPrestacao + " em " + fPagto.c_pce_prestacao_qtde + " X de "
           + this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pce_prestacao_valor) + "<br> Período entre Parcelas: " +
           fPagto.c_pce_prestacao_periodo + " dias";
         return true;
       }
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
-        let meioPrimPrest = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_prim_prest_forma_pagto)[0].descricao;
-        let meioPrestacao = pagto.meios.filter(m => m.id.toString() == fPagto.op_pse_demais_prest_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + ":<br>1º Prestação: " + meioPrestacao + " no valor de " +
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_SEM_ENTRADA) {
+        let meioPrimPrest = pagto?.meios?.filter(m => m.id.toString() == fPagto.op_pse_prim_prest_forma_pagto)[0]?.descricao;
+        let meioPrestacao = pagto?.meios?.filter(m => m.id.toString() == fPagto.op_pse_demais_prest_forma_pagto)[0]?.descricao;
+        texto = pagto?.tipoPagamentoDescricao + ":<br>1º Prestação: " + meioPrestacao + " no valor de " +
           this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_prim_prest_valor) + " vencendo após " + fPagto.c_pse_prim_prest_apos + " dias" +
           "<br>Demais Prestações: " + meioPrestacao + " em " + fPagto.c_pse_demais_prest_qtde + " X de " +
           this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pse_demais_prest_valor) + "<br>Período entre Parcelas: " +
@@ -277,15 +277,15 @@ export class NovoOrcamentoService {
         return true;
       }
 
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
-        let meio = pagto.meios.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0].descricao;
-        texto = pagto.tipoPagamentoDescricao + " em " + meio + " no valor de " +
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+        let meio = pagto?.meios?.filter(m => m.id.toString() == fPagto.op_pu_forma_pagto)[0]?.descricao;
+        texto = pagto?.tipoPagamentoDescricao + " em " + meio + " no valor de " +
           this.moedaUtils.formatarMoedaComPrefixo(fPagto.c_pu_valor) + " vencendo após " + fPagto.c_pu_vencto_apos + " dias ";
         return true;
       }
 
-      if (pagto.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
-        texto = pagto.tipoPagamentoDescricao + " em " + fp.c_pc_maquineta_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_maquineta_valor);
+      if (pagto?.idTipoPagamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_CARTAO_MAQUINETA) {
+        texto = pagto?.tipoPagamentoDescricao + " em " + fp.c_pc_maquineta_qtde.toString() + " X de " + this.moedaUtils.formatarMoedaComPrefixo(fp.c_pc_maquineta_valor);
         return true;
       }
     });
