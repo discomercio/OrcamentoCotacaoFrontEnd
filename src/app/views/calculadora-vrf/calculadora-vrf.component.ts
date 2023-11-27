@@ -100,7 +100,10 @@ export class CalculadoraVrfComponent implements OnInit {
   textoRodape: string;
   imprimindo: boolean = false;
   constantes: Constantes = new Constantes();
-  clicouEvaporadora:boolean;
+  clicouEvaporadora: boolean;
+
+
+  imagem: any;
 
   ngOnInit(): void {
     this.clicouEvaporadora = false;
@@ -111,14 +114,14 @@ export class CalculadoraVrfComponent implements OnInit {
     this.buscarQtdeMaxCondensadoras();
     this.dataAtual = new Date().toLocaleString("pt-br");
 
-    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarLogoPDF(), this.buscarTextoRodapePDF(),
-    this.buscarRangeSimultaneidade()];
+    let promise: any = [this.buscarProdutos(), this.buscarOpcoes(), this.buscarTextoRodapePDF(),
+    this.buscarRangeSimultaneidade(), this.buscarParametroLogoImpressao(this.autenticacaoService._lojaLogado)];
     Promise.all(promise).then((r: any) => {
       this.setarProdutos(r[0]);
       this.setarOpcoes(r[1]);
-      this.setarLogoPDF(r[2]);
-      this.setarTextoRodapePDF(r[3]);
-      this.setarRangeSimultaneidade(r[4]);
+      this.setarTextoRodapePDF(r[2]);
+      this.setarRangeSimultaneidade(r[3]);
+      this.setarImagemLogoImpressao(r[4])
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -175,6 +178,11 @@ export class CalculadoraVrfComponent implements OnInit {
     return this.orcamentoService.buscarParametros(IdCfgParametro, this.autenticacaoService._lojaLogado, null).toPromise();
   }
 
+  buscarParametroLogoImpressao(loja: string): Promise<any> {
+    let IdCfgParametro = this.constantes.ModuloOrcamentoCotacao_CalculadoraVrf_LogoPdf;
+    return this.orcamentoService.buscarParametros(IdCfgParametro, loja, null).toPromise();
+  }
+
   setarProdutos(r: ProdutoCatalogoItemProdutosAtivosDados[]) {
     if (r != null) {
       this.produtosDados = r;
@@ -215,153 +223,10 @@ export class CalculadoraVrfComponent implements OnInit {
     }
   }
 
-  mostrarImpressao() {
-    if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
-      this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
-      return;
+  setarImagemLogoImpressao(r: any) {
+    if (r != null) {
+      this.imagem = "assets/layout/images/" + r[0]['Valor'];
     }
-    this.imprimindo = true;
-  }
-
-  gerarPDF1pagina(doc: jsPDF, htmlPdf: HTMLElement, margins: any) {
-
-    doc.html(htmlPdf, {
-      margin: [margins.top, margins.right, margins.bottom, margins.left],
-      callback: (doc) => {
-        doc.text('página 1', 520.3 / 2, 842 - 20);
-        doc.save('calculo_vrf');
-        let x: string = doc.output('bloburl').toString();
-        window.open(x);
-        this.imprimindo = false;
-      }
-    });
-    return;
-  }
-
-  gerarPDF2paginas(doc: jsPDF, margins: any, alturaPagina: number) {
-
-
-    let logo = document.getElementById("logo").cloneNode(true) as HTMLElement;
-    let titulo = document.getElementById("titulo").cloneNode(true) as HTMLElement;
-    let formulario = document.getElementById("formulario").cloneNode(true) as HTMLElement;
-    let opcao1;
-    let opcao2;
-    let opcao3;
-
-    let filho = document.getElementById("div-filho");
-    let filho2 = filho.cloneNode(true) as HTMLElement;
-
-    filho.append(logo);
-    filho.append(titulo);
-    filho.append(formulario);
-
-    filho2.append(logo.cloneNode(true) as HTMLElement);
-    let evaps = document.getElementById("evaps");
-    if (filho.clientHeight + evaps.clientHeight > alturaPagina) {
-      filho2.append(evaps.cloneNode(true) as HTMLElement);
-    }
-    else {
-      filho.append(evaps.cloneNode(true) as HTMLElement);
-    }
-
-    if (this.opcao1) {
-      opcao1 = document.getElementById("opcao1");
-      if (filho2.clientHeight > 0) {
-        //evaps jão esta na folha2
-        filho2.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao1.clientHeight > alturaPagina) {
-        //jogamos para outra página
-        filho2.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-      else {
-        filho.append(opcao1.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    if (this.opcao2) {
-      opcao2 = document.getElementById("opcao2");
-      if (filho2.clientHeight > 0) {
-        //evaps jão esta na folha2
-        filho2.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao2.clientHeight > alturaPagina) {
-        //jogamos para outra página
-        filho2.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-      else {
-        filho.append(opcao2.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    if (this.opcao3) {
-      opcao3 = document.getElementById("opcao3");
-
-      if (filho2.clientHeight > 0) {
-        filho2.append(opcao3.cloneNode(true) as HTMLElement);
-      }
-      else if (filho.clientHeight + opcao3.clientHeight > alturaPagina) {
-        filho2.append(opcao3.cloneNode(true) as HTMLElement);
-
-      }
-      else {
-        filho.append(opcao3.cloneNode(true) as HTMLElement);
-      }
-    }
-
-    let rodape = document.getElementById("rodape");
-    filho2.append(rodape.cloneNode(true) as HTMLElement);
-
-    let pai = document.getElementById("div-pai").cloneNode(true) as HTMLElement;
-    pai.append(filho.cloneNode(true) as HTMLElement);
-
-    doc.html(pai, {
-      margin: [margins.top, margins.right, margins.bottom, margins.left],
-      callback: (doc) => {
-        doc.text('página 1', 520.3 / 2, 842 - 20);
-        doc.addPage('pt', 'p');
-        doc.html(filho2, {
-          margin: [0, margins.right, margins.bottom, margins.left],
-          callback: (doc) => {
-            doc.text('página 2', 520.3 / 2, 842 - 25);
-            doc.save('calculo_vrf');
-            let x: string = doc.output('bloburl').toString();
-            window.open(x);
-            while (filho.hasChildNodes()) {
-              filho.removeChild(filho.firstChild);
-            };
-            this.imprimindo = false;
-          }, y: 855
-        });
-      }, html2canvas: { scale: 1 }
-    });
-  }
-
-  exportPdf() {
-
-    let doc = new jsPDF('p', 'pt', 'a4');
-
-    let margins = {
-      top: 40,
-      bottom: 40,
-      left: 40,
-      right: 40
-    };
-
-    let alturaPagina = 842 - 80;
-    doc.setProperties({ title: "calculo_vrf" });
-    doc.setFontSize(2);
-
-    let htmlPdf = document.getElementById("html-pdf");
-
-    let altHtmlPdf = htmlPdf.clientHeight;
-
-    if (altHtmlPdf < alturaPagina) {
-      this.gerarPDF1pagina(doc, htmlPdf, margins);
-      return;
-    }
-
-    this.gerarPDF2paginas(doc, margins, alturaPagina);
   }
 
   filtrarProdutosVrf() {
@@ -539,7 +404,7 @@ export class CalculadoraVrfComponent implements OnInit {
       return;
     }
 
-    if(this.clicouEvaporadora) return;
+    if (this.clicouEvaporadora) return;
 
     this.clicouEvaporadora = true;
     let largura: string = this.novoOrcamentoService.onResize();
@@ -553,7 +418,6 @@ export class CalculadoraVrfComponent implements OnInit {
         showHeader: false,
         contentStyle: (resultado: ProdutoTabela[]) => {
           if (resultado && resultado.length > 0) {
-            debugger;
             this.addEvapsSelecionadas(resultado);
           }
         }
@@ -1030,5 +894,670 @@ export class CalculadoraVrfComponent implements OnInit {
 
   voltar() {
     this.imprimindo = false;
+  }
+
+  TAB_SIZE = 10;
+  NORMAL_FONT_SIZE = 10;
+  TITLE_FONT_SIZE = 14;
+  SUBTITLE_FONT_SIZE = 12;
+  SMALL_FONT_SIZE = 8;
+  FOOTER_MARGIN = this.SMALL_FONT_SIZE * 3;
+
+  buscarImagemPDF() {
+    if (!this.opcao1 && !this.opcao2 && !this.opcao3) {
+      this.mensagemService.showWarnViaToast("Selecione ao menos 1 opção!");
+      return;
+    }
+    // this.getImageSize2(this.imagem);
+    let img = new Image();
+    img.src = this.imagem;
+
+    this.buscarTamanhoImagem(this.imagem).then(({ source, height, width }) => {
+      this.gerarPDF({ source, height, width });
+    });
+  }
+
+  // Função para pegar tamanho da imagem
+  buscarTamanhoImagem(source: string): any {
+    return new Promise((resolve) => {
+
+      const image = new Image();
+      image.onload = () => {
+        const height = image.height * 0.75;
+        const width = image.width * 0.75;
+
+        resolve({ source, height, width });
+      };
+      image.src = source;
+    });
+  }
+
+  gerarPDF(image) {
+    const data = new Date();
+
+    const doc = this.crriarPDF();
+
+    let currentPositionY = this.addPaginaPDF(doc, image);
+
+    currentPositionY = this.addInformacoes(doc, currentPositionY);
+    doc.save(
+      `calculo_vrf_${this.buscarDataNomePDF(data)}.pdf`
+    );
+  }
+
+  crriarPDF(): jsPDF {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      format: "a4",
+      unit: "px",
+    });
+
+    doc.deletePage(1);
+    return doc;
+  }
+
+  addPaginaPDF(doc: jsPDF, image) {
+    doc.addPage();
+
+    // Adicionar imagem na primeira pagina
+    if (doc.getNumberOfPages() === 1 && image?.source) {
+      doc.addImage(
+        image.source,
+        "PNG",
+        doc.internal.pageSize.width - image.width - (this.TAB_SIZE + this.TAB_SIZE),
+        this.TAB_SIZE,
+        image.width,
+        image.height
+      );
+    }
+
+    // Adicionar moldura do relatorio
+    doc
+      .setFillColor("#000")
+      .rect(
+        this.TAB_SIZE,
+        this.TAB_SIZE,
+        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - 2 * this.TAB_SIZE,
+        "S"
+      );
+
+    return 3 * this.TAB_SIZE;
+  }
+
+  addInformacoes(doc: jsPDF, currentPositionY: number) {
+    currentPositionY = this.addTitulo(doc, currentPositionY, "Dimensionamento sistema VRF", true);
+
+    let retornoPositionY = this.addDadosCliente(doc, currentPositionY);
+
+    if (retornoPositionY != currentPositionY) {
+      currentPositionY = retornoPositionY + this.TAB_SIZE;
+    }
+
+    currentPositionY = this.addParamDimensionamento(doc, currentPositionY);
+
+    if (!!this.observacao) {
+      currentPositionY += this.TAB_SIZE;
+      const budgetInfo3 = [
+        ["Observações:", this.observacao],
+      ];
+
+      currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo3, true);
+    }
+
+    currentPositionY += this.TAB_SIZE * 2;
+
+    //incluir evaporadoras
+    currentPositionY = this.addEvaporadoras(doc, currentPositionY);
+
+    //incluir as combinações
+    currentPositionY = this.addCombinacoes(doc, currentPositionY);
+
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.SMALL_FONT_SIZE * 2 + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
+    //colocar o texto antes do rodapé
+    this.addTextoRodape(doc);
+
+    const generateDate = new Date();
+    this.addPageFooter(doc, generateDate);
+
+    return (currentPositionY += 50);
+  }
+
+  addDadosCliente(doc, currentPositionY) {
+    if (!this.nomeCliente && !this.nomeObra && !this.telefone &&
+      !this.email && !this.instalador && !this.telInstalador) {
+      return currentPositionY;
+    }
+
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, "Dados do cliente", undefined, undefined);
+    let budgetInfo = [];
+    if (!!this.nomeCliente) {
+      budgetInfo.push(["Nome:", this.nomeCliente]);
+    }
+    if (!!this.nomeObra) {
+      budgetInfo.push(["Nome da obra:", this.nomeObra]);
+    }
+    if (!!this.email) {
+      budgetInfo.push(["E-mail:", this.email]);
+    }
+    if (!!this.telefone) {
+      let ddd = this.telefone.substring(0, 2);
+      let tel = this.telefone.substring(2);
+      let telFormatado = FormataTelefone.telefone_ddd_formata(tel, ddd);
+      budgetInfo.push(["Telefone:", telFormatado]);
+    }
+    if (!!this.instalador) {
+      budgetInfo.push(["Instalador:", this.instalador]);
+    }
+    if (!!this.telInstalador) {
+      let ddd = this.telInstalador.substring(0, 2);
+      let tel = this.telInstalador.substring(2);
+      let telFormatado = FormataTelefone.telefone_ddd_formata(tel, ddd);
+      budgetInfo.push(["Telefone instalador:", telFormatado]);
+    }
+
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo, false);
+
+    return currentPositionY;
+  }
+
+  addParamDimensionamento(doc, currentPositionY) {
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, "Parâmetros de dimensionamento", undefined, undefined);
+
+    let simultaneidadeMin = this.simultaneidade.split("|", 2)[0];
+    let simultaneidadeMax = this.simultaneidade.split("|", 2)[1];
+
+    const budgetInfo2 = [
+      ["Fabricante:", this.lstFabricantes.filter(x => x.value == this.fabricanteSelecionado)[0].label],
+      ["Voltagem:", `${this.lstVoltagens.filter(x => x.value == this.voltagem)[0].label}V`],
+      ["Tipo de descarga:", this.lstDescargas.filter(x => x.value == this.descarga)[0].label],
+      ["Ciclo:", this.lstCiclos.filter(x => x.value == this.ciclo)[0].label],
+      ["Faixa simultaneidade:", `${simultaneidadeMin}% a ${simultaneidadeMax}%`],
+    ];
+    currentPositionY = this.addLabeledData(doc, currentPositionY, budgetInfo2, false);
+
+    return currentPositionY;
+  }
+
+  addTitulo(doc, currentPositionY, title, withLine) {
+    doc
+      .setFontSize(this.TITLE_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text(title, 2 * this.TAB_SIZE, currentPositionY);
+
+    doc.setFontSize(this.NORMAL_FONT_SIZE).setFont(undefined, "normal");
+
+    if (withLine) {
+      doc
+        .setDrawColor("#000")
+        .line(
+          2 * this.TAB_SIZE,
+          currentPositionY + 5,
+          doc.getTextWidth(title) * 1.7,
+          currentPositionY + 5
+        );
+    }
+
+    return (currentPositionY += this.TITLE_FONT_SIZE + 10);
+  }
+
+  addSubtitulo(doc, currentPositionY, title, withLine, twoTitle) {
+    doc
+      .setFontSize(this.SUBTITLE_FONT_SIZE)
+      .setFont(undefined, "bold")
+      .text(title, 2 * this.TAB_SIZE, currentPositionY);
+
+    if (!!twoTitle) {
+      let twoTitleWidth = doc.getTextWidth(twoTitle);
+      doc
+        .setFontSize(this.SUBTITLE_FONT_SIZE)
+        .setFont(undefined, "bold")
+        .text(twoTitle, doc.internal.pageSize.width - twoTitleWidth - (this.TAB_SIZE * 2), currentPositionY);
+    }
+
+    doc.setFontSize(this.NORMAL_FONT_SIZE).setFont(undefined, "normal");
+
+    if (withLine) {
+      doc
+        .setDrawColor("#000")
+        .line(
+          2 * this.TAB_SIZE,
+          currentPositionY + 5,
+          doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+          currentPositionY + 5
+        );
+    }
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE);
+  }
+
+  addLabeledData(doc: jsPDF, currentPositionY: number, data, splitText: boolean) {
+    doc.setFontSize(this.NORMAL_FONT_SIZE);
+
+    data.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      const labelWidth = doc
+        .text(label, 2 * this.TAB_SIZE, currentPositionY)
+        .getTextWidth(label);
+      if (splitText) {
+        let maxDescriptionWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE - labelWidth;
+        const descriptionLines = doc.splitTextToSize(
+          value,
+          maxDescriptionWidth
+        );
+        descriptionLines.forEach((line, index) => {
+          doc.setFont(undefined, "normal");
+          doc.text(line, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY, {
+            maxWidth: maxDescriptionWidth,
+            lineHeightFactor: 1.5,
+          });
+
+          if (
+            doc.internal.pageSize.height - currentPositionY <
+            this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          } else {
+            currentPositionY += this.NORMAL_FONT_SIZE;
+          }
+        });
+      }
+      else {
+        doc.setFont(undefined, "normal");
+        doc.text(`${value}`, 2 * this.TAB_SIZE + labelWidth + 2, currentPositionY);
+        currentPositionY += this.NORMAL_FONT_SIZE;
+      }
+    });
+
+    return currentPositionY;
+  }
+
+  buscarDataNomePDF(date: Date): string {
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear());
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
+    return `${year}${month}${day}_${hours}${minutes}`;
+  }
+
+  addEvaporadoras(doc: jsPDF, currentPositionY: number) {
+    let optionTitle = `Evaporadora(s)`;
+    currentPositionY = this.addSubtitulo(doc, currentPositionY, optionTitle, true, undefined);
+
+    currentPositionY = this.addHeaderEvapsPDF(doc, currentPositionY);
+
+    let btuTotal = 0;
+    let kcalTotal = 0;
+    this.evaporadorasSelecionadas.forEach((product) => {
+      currentPositionY = this.addProdutoEvap(doc, currentPositionY, product);
+      btuTotal += !product.btu ? 0 : Number.parseInt(product.btu);
+      kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
+    });
+
+    currentPositionY += 5;
+
+    let btuTotalString = btuTotal == 0 ? "" : btuTotal.toLocaleString("pt-br");
+    let kcalTotalString = kcalTotal == 0 ? "" : kcalTotal.toLocaleString("pt-br");
+    const budgetInfo = [
+      ["Capacidade total (BTU/h):", `${btuTotalString}`],
+      ["Capacidade total (kCal/h):", `${kcalTotalString}`],
+    ];
+
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
+    currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
+
+    currentPositionY += this.TAB_SIZE * 2;
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE - 2);
+  }
+
+  addHeaderEvapsPDF(doc: jsPDF, currentPositionY: number) {
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY + 10);
+    doc.text("Qtde", 250, currentPositionY + 10, {
+      align: "right",
+    });
+    doc.text(
+      "Capacidade (BTU/h)",
+      333,
+      currentPositionY + 10,
+      {
+        align: "right",
+      }
+    );
+    doc.text(
+      "Capacidade (kCal/h)",
+      doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
+      currentPositionY + 10,
+      {
+        align: "right",
+      }
+    );
+
+    return currentPositionY += 20;
+  }
+
+  addProdutoEvap(doc, currentPositionY, product: ProdutoTabela) {
+    doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+    const maxDescriptionWidth = 260;
+
+    const productDescription = `${product.fabricante}/${product.produto} - ${product.descricao}`;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
+
+    let descriptionY = currentPositionY;
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE
+      );
+
+    descriptionLines.forEach((line) => {
+      doc.text(line, 3 * this.TAB_SIZE, descriptionY, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+
+    doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
+
+    doc.text(
+      `${!product.btu ? "" : Number.parseInt(product.btu).toLocaleString("pt-br")}`,
+      332,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    doc.text(
+      `${!product.kcal ? "" : Number.parseInt(product.kcal).toLocaleString("pt-br")}`,
+      doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    if (descriptionLines.length > 1) {
+      currentPositionY += this.SMALL_FONT_SIZE * (descriptionLines.length - 1);
+    }
+
+    return (currentPositionY += this.SMALL_FONT_SIZE + 3);
+  }
+
+  addLabeledDataEvaps(doc: jsPDF, currentPositionY: number, data) {
+    doc.setFontSize(this.SMALL_FONT_SIZE);
+
+
+    data.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      const valueWidth = doc.getTextWidth(value);
+      const labelWidth = doc.getTextWidth(label);
+      doc.text(label, doc.internal.pageSize.width - 3 * this.TAB_SIZE - valueWidth - 2, currentPositionY, { align: "right" })
+
+      doc.setFont(undefined, "normal");
+
+      doc.text(`${value}`, doc.internal.pageSize.width - 3 * this.TAB_SIZE, currentPositionY, { align: "right" });
+      currentPositionY += this.SMALL_FONT_SIZE;
+    });
+
+    return currentPositionY;
+  }
+
+  addCombinacoes(doc: jsPDF, currentPositionY: number) {
+    let combinacoes = [this.combinacaoCom1aparelhos, this.combinacaoCom2aparelhos, this.combinacaoCom3aparelhos];
+    let opcoesSelecionadas = [this.opcao1, this.opcao2, this.opcao3];
+    let simultaneidades = [this.simultaneidadeCalculada1aparelho, this.simultaneidadeCalculada2aparelhos, this.simultaneidadeCalculada3aparelhos];
+    combinacoes.forEach((c: ProdutoTabela[], index) => {
+      if(opcoesSelecionadas[index]){
+        if (c.length > 0) {
+          let optionTitle = `Opção com ${index + 1} condensadora(s)`;
+  
+          if (doc.internal.pageSize.height - currentPositionY <
+            this.SUBTITLE_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          }
+  
+          currentPositionY = this.addSubtitulo(doc, currentPositionY, optionTitle, true, `Simultaneidade: ${simultaneidades[index]}%`);
+  
+          currentPositionY = this.addHeaderCondPDF(doc, currentPositionY);
+  
+          let kcalTotal = 0;
+          let hpTotal = 0;
+          c.forEach((product) => {
+            currentPositionY = this.addProdutoCond(doc, currentPositionY, product);
+            hpTotal += !product.hp ? 0 : Number.parseInt(product.hp);
+            kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
+          });
+  
+          let kcalTotalString = kcalTotal == 0 ? "" : kcalTotal.toLocaleString("pt-br");
+          let hpTotalString = hpTotal == 0 ? "" : hpTotal.toLocaleString("pt-br");
+          const budgetInfo = [
+            ["Capacidade total (kCal/h):", `${kcalTotalString}`],
+            ["Potência total (HP):", `${hpTotalString}`],
+          ];
+  
+          if (doc.internal.pageSize.height - currentPositionY <
+            this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+          ) {
+            currentPositionY = this.addPaginaPDF(doc, undefined);
+          }
+          currentPositionY = this.addLabeledDataEvaps(doc, currentPositionY, budgetInfo);
+  
+          currentPositionY += this.TAB_SIZE;
+        }
+      }
+    });
+
+    return (currentPositionY += this.SUBTITLE_FONT_SIZE - 2);
+  }
+
+  addHeaderCondPDF(doc: jsPDF, currentPositionY: number) {
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.NORMAL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
+    doc
+      .setFontSize(this.NORMAL_FONT_SIZE)
+      .setTextColor("#000")
+      .setFont(undefined, "bold");
+
+    doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY + 10);
+    doc.text("Qtde", 250, currentPositionY + 10, {
+      align: "right",
+    });
+    doc.text(
+      "Capacidade (kCal/h)",
+      333,
+      currentPositionY + 10,
+      {
+        align: "right",
+      }
+    );
+    doc.text(
+      "Potência (HP)",
+      doc.internal.pageSize.width - 3.5 * this.TAB_SIZE,
+      currentPositionY + 10,
+      {
+        align: "right",
+      }
+    );
+
+    return currentPositionY += 20;
+  }
+
+  addProdutoCond(doc: jsPDF, currentPositionY, product: ProdutoTabela) {
+    doc.setFont(undefined, "normal").setFontSize(this.SMALL_FONT_SIZE);
+
+    const maxDescriptionWidth = 260;
+
+    const productDescription = `${product.fabricante}/${product.produto} - ${product.descricao}`;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    if (
+      doc.internal.pageSize.height - currentPositionY <
+      descriptionLines.length * this.SMALL_FONT_SIZE + this.FOOTER_MARGIN
+    ) {
+      doc.setDrawColor("#000");
+      currentPositionY = this.addPaginaPDF(doc, undefined);
+    }
+
+    let descriptionY = currentPositionY;
+
+    doc
+      .setDrawColor("#a5a5a5")
+      .line(
+        3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE,
+        doc.internal.pageSize.width - 3 * this.TAB_SIZE,
+        descriptionY - this.SMALL_FONT_SIZE
+      );
+
+    descriptionLines.forEach((line) => {
+      doc.text(line, 3 * this.TAB_SIZE, descriptionY, {
+        maxWidth: maxDescriptionWidth,
+        lineHeightFactor: 1.5,
+      });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+
+    doc.text(`${product.qtde}`, 249, currentPositionY, { align: "right" });
+
+    doc.text(
+      `${!product.kcal ? "" : Number.parseInt(product.kcal).toLocaleString("pt-br")}`,
+      332,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    doc.text(
+      `${!product.hp ? "" : Number.parseInt(product.hp).toLocaleString("pt-br")}`,
+      doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+      currentPositionY,
+      { align: "right" }
+    );
+
+    if (descriptionLines.length > 1) {
+      currentPositionY += this.SMALL_FONT_SIZE * (descriptionLines.length - 1);
+    }
+
+    return (currentPositionY += this.SMALL_FONT_SIZE + 3);
+  }
+
+  addTextoRodape(doc: jsPDF) {
+
+    doc
+      .setDrawColor("#000")
+      .line(
+        2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6,
+        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
+        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6
+      );
+
+    const maxDescriptionWidth = 380;
+
+    const productDescription = this.textoRodape;
+
+    const descriptionLines = doc.splitTextToSize(
+      productDescription,
+      maxDescriptionWidth
+    );
+
+    let descriptionY = doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 4;
+    descriptionLines.forEach((line) => {
+      doc
+        .setFontSize(this.SMALL_FONT_SIZE)
+        .text(line, this.TAB_SIZE * 3 + maxDescriptionWidth / 2, descriptionY - 5, {
+          maxWidth: maxDescriptionWidth,
+          lineHeightFactor: 1.5,
+          align: "center"
+        });
+
+      descriptionY += this.SMALL_FONT_SIZE;
+    });
+  }
+
+  addPageFooter(doc, generateDate) {
+    const totalPages = doc.internal.getNumberOfPages();
+
+    doc.setFontSize(this.SMALL_FONT_SIZE).setFont(undefined, "italic");
+
+    const footerDescription = `PDF gerado em ${this.getFormattedFooterDate(
+      generateDate
+    )}`;
+
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      const pageFooter = `Página ${i} de ${totalPages}`;
+
+      doc
+        .text(
+          footerDescription,
+          doc.internal.pageSize.width / 2 -
+          doc.getTextWidth(footerDescription) / 2,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 1.8
+        )
+        .text(
+          pageFooter,
+          doc.internal.pageSize.width - doc.getTextWidth(pageFooter) / 2 - 45,
+          doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 1.8
+        )
+        .setFillColor("#000")
+        .rect(
+          2 * this.TAB_SIZE,
+          doc.internal.pageSize.height - this.FOOTER_MARGIN,
+          doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+          0.5,
+          "F"
+        );
+    }
+  }
+
+  getFormattedFooterDate(date: Date): string {
+    return new Intl.DateTimeFormat("pt-BR", {
+      year: "numeric",
+      month: "numeric",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    })
+      .format(date)
+      .replace(", ", " às ");
   }
 }

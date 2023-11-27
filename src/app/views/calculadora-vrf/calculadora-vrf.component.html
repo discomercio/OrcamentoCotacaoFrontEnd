@@ -9,11 +9,11 @@
                 <div class="p-grid">
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Nome do cliente</label>
-                        <input pInputText type="text" [(ngModel)]="nomeCliente">
+                        <input pInputText type="text" [(ngModel)]="nomeCliente" maxlength="92">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Nome da obra</label>
-                        <input pInputText type="text" [(ngModel)]="nomeObra">
+                        <input pInputText type="text" [(ngModel)]="nomeObra" maxlength="85">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4 p-as-end">
                         <label>Telefone</label>
@@ -21,11 +21,11 @@
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label>E-mail</label>
-                        <input pInputText type="text" [(ngModel)]="email">
+                        <input pInputText type="text" [(ngModel)]="email" maxlength="82">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label>Nome do instalador/empresa</label>
-                        <input pInputText type="text" [(ngModel)]="instalador">
+                        <input pInputText type="text" [(ngModel)]="instalador" maxlength="88">
                     </div>
                     <div class="p-field p-col-12 p-lg-4 p-md-4 p-sm-4">
                         <label>Telefone do instalador/empresa</label>
@@ -345,283 +345,9 @@
                 </p-accordion>
             </div>
             <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0" *ngIf="calculado">
-                <button pButton type="button" icon="fa fa-print" (click)="mostrarImpressao()"
+                <button pButton type="button" icon="fa fa-print" (click)="buscarImagemPDF()"
                     label="Gerar PDF"></button>
             </div>
         </div>
     </div>
 </div>
-
-
-<!-- PARA IMPRESSÃO -->
-<div class="p-grid" *ngIf="imprimindo">
-    <div class="p-col-12 p-pb-0">
-        <div class="card p-text-center" style="max-width: 100%; overflow: auto;">
-            <div class="p-fluid p-formgrid p-grid p-col-12 p-mx-0 p-px-0 p-jc-between">
-                <div>
-                    <button pButton type="button" icon="fa fa-left" (click)="voltar()" label="Voltar"></button>
-                </div>
-                <div>
-                    <button pButton type="button" icon="fa fa-print" (click)="exportPdf()" label="Baixar PDF"></button>
-                </div>
-            </div>
-            <div id="html-pdf" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 520.3px;">
-                <div class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                    <!-- logo tipo -->
-                    <div id="logo" class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
-                        <img src="{{logo}}" routerLink="/" style="max-width: 80px;" />
-                        <span class="p-text-bold">
-                            {{dataAtual}}
-                        </span>
-                    </div>
-                    <!-- Título -->
-                    <div id="titulo" class="p-text-center">
-                        <h5 class="p-text-bold">
-                            Resumo do sistema VRF
-                        </h5>
-                    </div>
-                    <!-- campos do formulário -->
-                    <div id="formulario" class="p-grid p-col-12 p-px-0">
-                        <div class="p-lg-4" *ngIf="nomeCliente != ''">
-                            <span class="p-text-bold">Cliente:</span>&nbsp;
-                            <span>{{nomeCliente}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="nomeObra != ''">
-                            <span class="p-text-bold">Obra:</span>&nbsp;
-                            <span>{{nomeObra}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="telefone != ''">
-                            <span class="p-text-bold">Telefone:</span>&nbsp;
-                            <span class="p-text-nowrap">{{stringUtils.formataTextoTelefone(telefone)}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="email != ''">
-                            <span class="p-text-bold">E-mail:</span>&nbsp;
-                            <span>{{email}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="instalador != ''">
-                            <span class="p-text-bold">Instalador/Empresa:</span>&nbsp;
-                            <span>{{instalador}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="telInstalador != ''">
-                            <span class="p-text-bold">Telefone Instalador/Empresa:</span>&nbsp;
-                            <span class="p-text-nowrap">{{stringUtils.formataTextoTelefone(telInstalador)}}</span>
-                        </div>
-                        <div class="p-lg-4" *ngIf="observacao != ''">
-                            <span class="p-text-bold">Observações:</span>&nbsp;
-                            <span>{{observacao}}</span>
-                        </div>
-                    </div>
-                    <!-- lista de evaporadoras -->
-                    <div id="evaps" class="p-col-12 p-px-0">
-                        <div>
-                            <span class="p-text-bold">Evaporadoras</span>
-                        </div>
-                        <div class="p-col-12 p-px-0">
-                            <p-table #dt1 [value]="evaporadorasSelecionadas" [responsive]="false"
-                                responsiveLayout="stack" [ngClass]="{'carregando': carregando}" 
-                                styleClass="p-datatable-customers" [rows]="10" [filterDelay]="0">
-                                <ng-template pTemplate="header" let-p>
-                                    <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        <th class="p-text-left p-col-5 p-py-0" style="background-color: #cecece">Produto
-                                        </th>
-                                        <th class="p-text-center p-py-0 p-col-2" style="background-color: #cecece">Qtde
-                                        </th>
-                                        <th class="p-text-center p-py-0 p-col-2" style="background-color: #cecece">
-                                            Capacidade<br>
-                                            (BTU/h)</th>
-                                        <th class="p-text-center p-py-0 p-col-2" style="background-color: #cecece">
-                                            Capacidade<br>
-                                            (kcal/h)</th>
-                                    </tr>
-                                </ng-template>
-                                <ng-template pTemplate="body" let-p let-index="rowIndex">
-                                    <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;" [pSelectableRow]="p">
-                                        <td class="p-text-left p-d-inline-flex p-pl-2 p-py-1">
-                                            <p class="p-ml-2" 
-                                                [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
-                                            </p>
-                                        </td>
-                                        <td class="p-text-center p-py-1">{{p.qtde}}</td>
-                                        <td class="p-text-center p-py-1">{{p.btu}}</td>
-                                        <td class="p-text-center p-py-1"> {{p.kcal}}</td>
-                                    </tr>
-                                </ng-template>
-                            </p-table>
-                        </div>
-                    </div>
-                    <!-- lista de opção 1 condensadora -->
-                    <div id="opcao1" class="p-col-12 p-px-0" *ngIf="opcao1">
-                        <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Opção com 1 condensadora</span>
-                            </div>
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Simultaneidade</span>
-                                <span class="p-text-bold">
-                                    {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada1aparelho)}}%
-                                </span>
-                            </div>
-                        </div>
-                        <p-table #dataTable [value]="combinacaoCom1aparelhos" [responsive]="false"
-                            responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
-                            styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
-                            <ng-template pTemplate="header">
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                    <th class="p-text-left p-col-5 p-py-1" style="background-color: #cecece">Produto
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">Qtde</th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">
-                                        Capacidade (kcal/h)
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">HP</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-p>
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                    <td class="p-py-1" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        <p class="p-ml-2" 
-                                            [innerHtml]="stringUtils.formatarDescricao(p.fabricante, '', p.produto, p.descricao)">
-                                        </p>
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{p.qtde}}
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{p.kcal}}
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{p.hp}}
-                                    </td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;" colspan="4">
-                                        Não existem condensadoras para esse conjunto de evaporadoras
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                    <!-- lista de opção 2 condensadora -->
-                    <div id="opcao2" class="p-col-12 p-px-0" *ngIf="opcao2">
-                        <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Opção com 2 condensadoras</span>
-                            </div>
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Simultaneidade</span>
-                                <span class="p-text-bold">
-                                    {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada2aparelhos)}}%
-                                </span>
-                            </div>
-                        </div>
-                        <p-table #dataTable2 [value]="combinacaoCom2aparelhos" [responsive]="false"
-                            responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
-                            styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
-                            <ng-template pTemplate="header">
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                    <th class="p-text-left p-col-5 p-py-1" style="background-color: #cecece">Produto
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">Qtde</th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">
-                                        Capacidade (kcal/h)
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">HP</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-p2>
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;" *ngIf="combinacaoCom2aparelhos.length > 0">
-                                    <td style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        <p class="p-ml-2" 
-                                            [innerHtml]="stringUtils.formatarDescricao(p2.fabricante, '', p2.produto, p2.descricao)">
-                                        </p>
-                                    </td>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        {{p2.qtde}}
-                                    </td>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        {{p2.kcal}}
-                                    </td>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                        {{p2.hp}}
-                                    </td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;" colspan="4">
-                                        Não existem condensadoras para esse conjunto de evaporadoras
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                    <!-- lista de opção 3 condensadora -->
-                    <div id="opcao3" class="p-col-12 p-px-0" *ngIf="opcao3">
-                        <div class="p-col-12 p-d-inline-flex p-jc-between p-px-0">
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Opção com 3 condensadoras</span>
-                            </div>
-                            <div class="p-py-1">
-                                <span class="p-text-bold">Simultaneidade</span>
-                                <span class="p-text-bold">
-                                    {{moedaUtils.formatarParaFloatUmaCasaReturnZero(simultaneidadeCalculada3aparelhos)}}%
-                                </span>
-                            </div>
-                        </div>
-                        <p-table #dataTable3 [value]="combinacaoCom3aparelhos" [responsive]="false"
-                            responsiveLayout="stack" [ngClass]="{'carregando': carregando}" autoLayout="true"
-                            styleClass="p-datatable-customers p-datatable-sm" [rows]="10" [filterDelay]="0">
-                            <ng-template pTemplate="header">
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                    <th class="p-text-left p-col-5 p-py-1" style="background-color: #cecece">Produto
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">Qtde</th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">
-                                        Capacidade (kcal/h)
-                                    </th>
-                                    <th class="p-text-center p-col-2 p-py-1" style="background-color: #cecece">HP</th>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="body" let-p3>
-                                <tr style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;">
-                                    <td> 
-                                        <p class="p-ml-2" 
-                                            [innerHtml]="stringUtils.formatarDescricao(p3.fabricante, '', p3.produto, p3.descricao)">
-                                        </p>
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{p3.qtde}}
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{moedaUtils.formatarParaFloatUmaCasaReturnZero(p3.kcal)}}
-                                    </td>
-                                    <td class="p-text-center">
-                                        {{p3.hp}}
-                                    </td>
-                                </tr>
-                            </ng-template>
-                            <ng-template pTemplate="emptymessage">
-                                <tr>
-                                    <td class="p-text-center" style="font-size: 10px;font-family: Arial, Helvetica, sans-serif;" colspan="4">
-                                        Não existem condensadoras para esse conjunto de evaporadoras
-                                    </td>
-                                </tr>
-                            </ng-template>
-                        </p-table>
-                    </div>
-                    <!-- texto para rodapé -->
-                    <div id="rodape" style="font-size: 10px; text-align: left;" class="p-col-12 p-px-0">
-                        <p [innerHtml]="textoRodape"></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<div *ngIf="imprimindo" id="div-pai" class="p-grid p-col-12 p-d-inline-flex p-px-0" style="width: 530.3px;">
-
-</div>
-<div *ngIf="imprimindo" id="div-filho" class="p-col-12 p-p-0 p-px-0" style="font-size: 10px;width: 530.3px;font-family: Arial, Helvetica, sans-serif;"></div>
