@@ -343,7 +343,7 @@ export class CadastrarClienteComponent implements OnInit, AfterViewInit {
         return;
       }
 
-      let validade = new Date(this.novoOrcamentoService.orcamentoCotacaoDto.validade);
+      let validade = DataUtils.formata_formulario_date(this.novoOrcamentoService.orcamentoCotacaoDto.validade.toString());
       this.form.controls.Validade.setValue(validade);
     }
 
