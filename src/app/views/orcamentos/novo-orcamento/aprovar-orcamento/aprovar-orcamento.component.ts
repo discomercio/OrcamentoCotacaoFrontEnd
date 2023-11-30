@@ -270,7 +270,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
       this.novoOrcamentoService.orcamentoCotacaoDto = r;
 
-      this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(x =>{
+      this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.forEach(x => {
         this.activeState.push(true);
       });
 
@@ -1049,6 +1049,11 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       .setFontSize(this.NORMAL_FONT_SIZE)
       .setTextColor("#000")
       .setFont(undefined, "bold");
+
+    if (doc.internal.pageSize.height - currentPositionY <
+      this.NORMAL_FONT_SIZE + 2 * this.TITLE_FONT_SIZE + this.FOOTER_MARGIN) {
+      currentPositionY = this.addPageTemplate(doc, undefined);
+    }
 
     doc.text("Descrição", 3 * this.TAB_SIZE, currentPositionY);
     doc.text("Qtde", 300, currentPositionY, {
