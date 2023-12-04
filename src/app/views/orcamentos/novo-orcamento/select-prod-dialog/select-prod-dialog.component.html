@@ -128,9 +128,9 @@
             </div>
             <div class="p-col-6 p-d-inline-flex p-jc-end p-px-0 p-py-2">
                 <div class="p-p-2">
-                    <p-button icon="pi pi-plus" (click)="addProduto(selecionados)" *ngIf="!telaDesktop"></p-button>
+                    <p-button icon="pi pi-plus" (click)="addProdutoClique(selecionados)" *ngIf="!telaDesktop"></p-button>
                     <button *ngIf="telaDesktop" type="text" pButton label="Adicionar" icon="pi pi-plus"
-                        (click)="addProduto(selecionados)" style="width: auto" id="btnAdd" pAutoFocus [autofocus]="true"></button>
+                        (click)="addProdutoClique(selecionados)" style="width: auto" id="btnAdd" pAutoFocus [autofocus]="true"></button>
                 </div>
                 <div class="p-py-2">
                     <p-button icon="pi pi-times" (click)="fechar()" *ngIf="!telaDesktop"></p-button>
