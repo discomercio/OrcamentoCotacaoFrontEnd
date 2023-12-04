@@ -1196,8 +1196,8 @@ export class CalculadoraVrfComponent implements OnInit {
     let kcalTotal = 0;
     this.evaporadorasSelecionadas.forEach((product) => {
       currentPositionY = this.addProdutoEvap(doc, currentPositionY, product);
-      btuTotal += !product.btu ? 0 : Number.parseInt(product.btu);
-      kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
+      btuTotal += !product.btu ? 0 : Number.parseInt(product.btu) * product.qtde;
+      kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal) * product.qtde;
     });
 
     currentPositionY += 5;
@@ -1355,8 +1355,9 @@ export class CalculadoraVrfComponent implements OnInit {
           let hpTotal = 0;
           c.forEach((product) => {
             currentPositionY = this.addProdutoCond(doc, currentPositionY, product);
-            hpTotal += !product.hp ? 0 : Number.parseInt(product.hp);
-            kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal);
+            console.log(Number.parseInt(product.hp) * product.qtde);
+            hpTotal += !product.hp ? 0 : Number.parseInt(product.hp) * product.qtde;
+            kcalTotal += !product.kcal ? 0 : Number.parseInt(product.kcal) * product.qtde;
           });
   
           let kcalTotalString = kcalTotal == 0 ? "" : kcalTotal.toLocaleString("pt-br");

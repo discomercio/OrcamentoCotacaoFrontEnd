@@ -427,8 +427,11 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsTela = { ...this.prodsArray.filter(f => f.visivel == true) };
   }
 
-  addProduto(selecionados: ProdutoTela[]) {
+  addProdutoClique(selecionados: ProdutoTela[]){
+    this.addProduto(selecionados);
+  }
 
+  addProduto(selecionados: ProdutoTela[]) {
     if (selecionados.length == 0) {
       this.alertaService.mostrarMensagem("Por favor, selecione um produto!");
       return;
@@ -480,6 +483,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       return;
     }
 
+    
 
   }
 
@@ -692,12 +696,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
         if (el.getAttribute("id").indexOf("qtdeS_") > -1 && this.prodsTela.length == 1) {
           el.blur();
           this.cdref.detectChanges();
-          this.addProduto(this.selecionados);
           this.focoQtde = false;
 
           let btn = document.getElementById("btnAdd") as HTMLElement;
           btn.focus();
           this.focoBtnAdd = true;
+          btn.click()
         }
       }
     }
