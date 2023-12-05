@@ -80,8 +80,8 @@
                                             [ngStyle]="telaDesktop ? {'display':'none'}:{'display':'contents'}">Qtde</span>
                                         <div>
                                             <input class="{{telaDesktop ? 'p-text-right' : 'p-text-right p-ml-2'}}"
-                                                id="qtde_{{p.produto}}" type="number" pInputText placeholder="" [value]="p.Qtde"
-                                                [(ngModel)]="p.qtde" (change)="digitouQte(p)"
+                                                id="qtde_{{p.produto}}" type="number" pInputText placeholder="" [(ngModel)]="p.qtde"
+                                                (change)="digitouQte(p)"
                                                 [disabled]="carregandoProds" />
                                             <div *ngIf="!p.qtdeValida"
                                                 class="{{telaDesktop ? 'p-text-left' : 'p-text-right'}}">

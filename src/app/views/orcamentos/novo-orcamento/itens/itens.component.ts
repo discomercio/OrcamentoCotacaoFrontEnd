@@ -141,7 +141,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
     this.usuario = this.autenticacaoService.getUsuarioDadosToken();
     this.tipoUsuario = this.autenticacaoService._tipoUsuario;
     this.novoOrcamentoService.tipoUsuario = this.autenticacaoService._tipoUsuario;
-    
+
     if (this.novoOrcamentoService.opcaoOrcamentoCotacaoDto) {
       if (!this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos ||
         this.novoOrcamentoService.opcaoOrcamentoCotacaoDto.listaProdutos.length == 0) {
@@ -382,7 +382,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       return this.novoOrcamentoService.lstProdutosSelecionados.some(x => {
         const index = this.novoOrcamentoService.lstProdutosSelecionados.findIndex(f => f.produto == produto.produto);
         if (x.produto == produto.produto) {
-          x.qtde = x.qtde + produto.qtde;
+          x.qtde = Number.parseInt(x.qtde.toString()) + Number.parseInt(produto.qtde.toString());
           this.digitouQte(x);
           return true;
         }
@@ -447,9 +447,14 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
   }
 
   digitouQte(item: ProdutoOrcamentoDto): void {
-    // if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) item.qtde = 1;
     let input = document.getElementById(`qtde_${item.produto}`) as HTMLElement;
-    if (item.qtde <= 0 || item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) {
+    
+    let inputValue = input as HTMLInputElement
+    if (inputValue.value == null || Number.parseInt(inputValue.value) <= 0) {
+      item.qtde = 1;
+      inputValue.value = item.qtde.toString();
+    }
+    if (item.qtde > this.constantes.QTDE_MAX_ITENS_CRIACAO_ORCAMENTO) {
       input.classList.add("ng-dirty");
       input.classList.add("ng-invalid");
       input.classList.add("ng-touched");
@@ -482,7 +487,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       prodFilter.filhos.forEach(x => {
         let filhote = this.novoOrcamentoService.listaProdutosDesmembrados.filter(s => s.produto == x.produto);
         if (filhote.length > 0) {
-          let qtdeRemover = itemControle.qtde * x.qtde;
+          let qtdeRemover = Number.parseInt(itemControle.qtde) * x.qtde;
           filhote[0].qtde = filhote[0].qtde - qtdeRemover;
           let qtdeAdicionar = item.qtde * x.qtde;
           filhote[0].qtde = filhote[0].qtde + qtdeAdicionar;
@@ -494,7 +499,7 @@ export class ItensComponent extends TelaDesktopBaseComponent implements OnInit {
       itemSimples[0].qtde = item.qtde;
     }
 
-    itemControle.qtde = item.qtde;
+    itemControle.qtde = Number.parseInt(item.qtde.toString());
   }
 
   digitouPreco_NF(e: Event, item: ProdutoOrcamentoDto): void {
