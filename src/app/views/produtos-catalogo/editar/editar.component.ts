@@ -184,6 +184,16 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
   setarProdutoDetalhe(r: ProdutoCatalogo) {
     if (r != null) {
       this.produtoDetalhe = r;
+      if (this.produtoDetalhe.imagem) {
+        if (this.produtoDetalhe.imagem.Caminho != "sem-imagem.png") {
+          this.imagem = new ProdutoCatalogoImagem();
+          this.imagem.Caminho = this.produtoDetalhe.imagem.Caminho;
+          this.imagem.Ordem = this.produtoDetalhe.imagem.Ordem;
+        }
+        else {
+          this.produtoDetalhe.imagem = null;
+        }
+      }
     }
   }
 
@@ -251,7 +261,7 @@ export class ProdutosCatalogoEditarComponent implements OnInit {
     }).catch((e) => {
       this.carregando = false;
       this.alertaService.mostrarErroInternet(e);
-    }).finally(()=>{
+    }).finally(() => {
       this.carregando = false;
       this.produtoDetalhe.imagem = null;
       this.mensagemService.showSuccessViaToast("Imagem excluída com sucesso!");
