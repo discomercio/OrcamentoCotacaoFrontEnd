@@ -40,7 +40,7 @@ export class DadosOrcamentosComponent implements OnInit {
 
   filtro: Filtro = new Filtro();
   admModulo: boolean;
-  acessoUniversal:boolean;
+  acessoUniversal: boolean;
   usuario = new Usuario();
   tipoUsuario: number;
 
@@ -277,66 +277,50 @@ export class DadosOrcamentosComponent implements OnInit {
 
   criarJsonParaExportar(): any[] {
     let json = [];
-    this.relatorioDadosOrcamento.listaDadosOrcamento.forEach(x => {
-      let item = {
-        Loja: { t: 'n', v: x.Loja },
-        Orcamento: { t: 'n', v: x.Orcamento },
-        Status: x.Status,
-        PrePedido: x.PrePedido,
-        Pedido: x.Pedido,
-        Vendedor: x.Vendedor,
-        Indicador: x.Indicador,
-        IndicadorVendedor: x.IndicadorVendedor,
-        IdCliente: x.IdCliente ? { t: 'n', v: x.IdCliente } : null,
-        UsuarioCadastro: x.UsuarioCadastro,
-        UF: x.UF,
-        TipoCliente: x.TipoCliente,
-        ContribuinteIcms: x.ContribuinteIcms,
-        QtdeMsgPendente: { t: 'n', v: x.QtdeMsgPendente },
-        EntregaImediata: x.EntregaImediata,
-        PrevisaoEntrega: x.PrevisaoEntrega ? { t: 'd', v: new Date(new Date(x.PrevisaoEntrega).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null,
-        InstaladorInstala: x.InstaladorInstala,
-        ComissaoOpcao1: x.ComissaoOpcao1 ? { t: 'n', v: x.ComissaoOpcao1 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao1: x.DescMedioAVistaOpcao1 ? { t: 'n', v: x.DescMedioAVistaOpcao1 / 100, z: "0.00%" } : null,
-        DescMedioAPrazoOpcao1: x.DescMedioAPrazoOpcao1 ? { t: 'n', v: x.DescMedioAPrazoOpcao1 / 100, z: "0.00%" } : null,
-        FormaPagtoAVistaOpcao1: x.FormaPagtoAVistaOpcao1,
-        ValorFormaPagtoAVistaOpcao1: x.ValorFormaPagtoAVistaOpcao1 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao1, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao1: x.StatusDescSuperiorAVistaOpcao1,
-        FormaPagtoAPrazoOpcao1: x.FormaPagtoAPrazoOpcao1,
-        ValorFormaPagtoAPrazoOpcao1: x.ValorFormaPagtoAPrazoOpcao1 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao1, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao1: x.QtdeParcelasFormaPagtoAPrazoOpcao1 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao1 } : null,
-        StatusDescSuperiorAPrazoOpcao1: x.StatusDescSuperiorAPrazoOpcao1,
-        ComissaoOpcao2: x.ComissaoOpcao2 ? { t: 'n', v: x.ComissaoOpcao2 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao2: x.DescMedioAVistaOpcao2 ? { t: 'n', v: x.DescMedioAVistaOpcao2 / 100, z: "0.00%" } : null,
-        DescMedioAPrazoOpcao2: x.DescMedioAPrazoOpcao2 ? { t: 'n', v: x.DescMedioAPrazoOpcao2 / 100, z: "0.00%" } : null,
-        FormaPagtoAVistaOpcao2: x.FormaPagtoAVistaOpcao2,
-        ValorFormaPagtoAVistaOpcao2: x.ValorFormaPagtoAVistaOpcao2 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao2, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao2: x.StatusDescSuperiorAVistaOpcao2,
-        FormaPagtoAPrazoOpcao2: x.FormaPagtoAPrazoOpcao2,
-        ValorFormaPagtoAPrazoOpcao2: x.ValorFormaPagtoAPrazoOpcao2 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao2, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao2: x.QtdeParcelasFormaPagtoAPrazoOpcao2 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao2 } : null,
-        StatusDescSuperiorAPrazoOpcao2: x.StatusDescSuperiorAPrazoOpcao2,
-        ComissaoOpcao3: x.ComissaoOpcao3 ? { t: 'n', v: x.ComissaoOpcao3 / 100, z: "0.0%" } : null,
-        DescMedioAVistaOpcao3: x.DescMedioAVistaOpcao3 ? { t: 'n', v: x.DescMedioAVistaOpcao3 / 100, z: "0.00%" } : null,
-        DescMedioAPrazoOpcao3: x.DescMedioAPrazoOpcao3 ? { t: 'n', v: x.DescMedioAPrazoOpcao3 / 100, z: "0.00%" } : null,
-        FormaPagtoAVistaOpcao3: x.FormaPagtoAVistaOpcao3,
-        ValorFormaPagtoAVistaOpcao3: x.ValorFormaPagtoAVistaOpcao3 ? { t: 'n', v: x.ValorFormaPagtoAVistaOpcao3, z: "R$ #,##0.00" } : null,
-        StatusDescSuperiorAVistaOpcao3: x.StatusDescSuperiorAVistaOpcao3,
-        FormaPagtoAPrazoOpcao3: x.FormaPagtoAPrazoOpcao3,
-        ValorFormaPagtoAPrazoOpcao3: x.ValorFormaPagtoAPrazoOpcao3 ? { t: 'n', v: x.ValorFormaPagtoAPrazoOpcao3, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaPagtoAPrazoOpcao3: x.QtdeParcelasFormaPagtoAPrazoOpcao3 ? { t: 'n', v: x.QtdeParcelasFormaPagtoAPrazoOpcao3 } : null,
-        StatusDescSuperiorAPrazoOpcao3: x.StatusDescSuperiorAPrazoOpcao3,
-        OpcaoAprovada: x.OpcaoAprovada ? { t: 'n', v: x.OpcaoAprovada } : null,
-        ComissaoOpcaoAprovada: x.ComissaoOpcaoAprovada ? { t: 'n', v: x.ComissaoOpcaoAprovada / 100, z: "0.0%" } : null,
-        DescMedioOpcaoAprovada: x.DescMedioOpcaoAprovada ? { t: 'n', v: x.DescMedioOpcaoAprovada / 100, z: "0.00%" } : null,
-        FormaPagtoOpcaoAprovada: x.FormaPagtoOpcaoAprovada,
-        ValorFormaPagtoOpcaoAprovada: x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null,
-        QtdeParcelasFormaOpcaoAprovada: x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null,
-        StatusDescSuperiorOpcaoAprovada: x.StatusDescSuperiorOpcaoAprovada,
-        DataCadastro: x.DataCadastro ? { t: 'd', v: new Date(new Date(x.DataCadastro).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null,
-        Validade: x.Validade ? { t: 'd', v: new Date(new Date(x.Validade).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null
-      }
 
+    this.relatorioDadosOrcamento.listaDadosOrcamento.forEach(x => {
+      let item = {};
+      item["Loja"] = { t: 'n', v: x.Loja };
+      item["Orcamento"] = { t: 'n', v: x.Orcamento };
+      item["Status"] = x.Status;
+      item["PrePedido"] = x.PrePedido;
+      item["Pedido"] = x.Pedido;
+      item["Vendedor"] = x.Vendedor;
+      item["Indicador"] = x.Indicador;
+      item["IndicadorVendedor"] = x.IndicadorVendedor;
+      item["IdCliente"] = x.IdCliente ? { t: 'n', v: x.IdCliente } : null;
+      item["UsuarioCadastro"] = x.UsuarioCadastro;
+      item["UF"] = x.UF;
+      item["TipoCliente"] = x.TipoCliente;
+      item["ContribuinteIcms"] = x.ContribuinteIcms;
+      item["QtdeMsgPendente"] = { t: 'n', v: x.QtdeMsgPendente };
+      item["EntregaImediata"] = x.EntregaImediata;
+      item["PrevisaoEntrega"] = x.PrevisaoEntrega ? { t: 'd', v: new Date(new Date(x.PrevisaoEntrega).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null;
+      item["InstaladorInstala"] = x.InstaladorInstala;
+
+      for (let i = 0; i < x.ListaOpcoes.length; i++) {
+        item[`ComissaoOpcao${i + 1}`] = x.ListaOpcoes[i].ComissaoOpcao ? { t: 'n', v: x.ListaOpcoes[i].ComissaoOpcao / 100, z: "0.0%" } : null;
+        item[`DescMedioAVistaOpcao${i + 1}`] = x.ListaOpcoes[i].DescMedioAVistaOpcao ? { t: 'n', v: x.ListaOpcoes[i].DescMedioAVistaOpcao / 100, z: "0.00%" } : null;
+        item[`DescMedioAPrazoOpcao${i + 1}`] = x.ListaOpcoes[i].DescMedioAPrazoOpcao ? { t: 'n', v: x.ListaOpcoes[i].DescMedioAPrazoOpcao / 100, z: "0.00%" } : null
+        item[`FormaPagtoAVistaOpcao${i + 1}`] = x.ListaOpcoes[i].FormaPagtoAVistaOpcao;
+        item[`ValorFormaPagtoAVistaOpcao${i + 1}`] = x.ListaOpcoes[i].ValorFormaPagtoAVistaOpcao ? { t: 'n', v: x.ListaOpcoes[i].ValorFormaPagtoAVistaOpcao, z: "R$ #,##0.00" } : null;
+        item[`StatusDescSuperiorAVistaOpcao${i + 1}`] = x.ListaOpcoes[i].StatusDescSuperiorAVistaOpcao;
+        item[`FormaPagtoAPrazoOpcao${i + 1}`] = x.ListaOpcoes[i].FormaPagtoAPrazoOpcao;
+        item[`ValorFormaPagtoAPrazoOpcao${i + 1}`] = x.ListaOpcoes[i].ValorFormaPagtoAPrazoOpcao ? { t: 'n', v: x.ListaOpcoes[i].ValorFormaPagtoAPrazoOpcao, z: "R$ #,##0.00" } : null;
+        item[`QtdeParcelasFormaPagtoAPrazoOpcao${i + 1}`] = x.ListaOpcoes[i].QtdeParcelasFormaPagtoAPrazoOpcao ? { t: 'n', v: x.ListaOpcoes[i].QtdeParcelasFormaPagtoAPrazoOpcao } : null;
+        item[`StatusDescSuperiorAPrazoOpcao${i + 1}`] = x.ListaOpcoes[i].StatusDescSuperiorAPrazoOpcao;
+      };
+
+      item["OpcaoAprovada"] = x.OpcaoAprovada ? { t: 'n', v: x.OpcaoAprovada } : null;
+      item["ComissaoOpcaoAprovada"] = x.ComissaoOpcaoAprovada ? { t: 'n', v: x.ComissaoOpcaoAprovada / 100, z: "0.0%" } : null;
+      item["DescMedioOpcaoAprovada"] = x.DescMedioOpcaoAprovada ? { t: 'n', v: x.DescMedioOpcaoAprovada / 100, z: "0.00%" } : null;
+      item["FormaPagtoOpcaoAprovada"] = x.FormaPagtoOpcaoAprovada;
+      item["ValorFormaPagtoOpcaoAprovada"] = x.ValorFormaPagtoOpcaoAprovada ? { t: 'n', v: x.ValorFormaPagtoOpcaoAprovada, z: "R$ #,##0.00" } : null;
+      item["QtdeParcelasFormaOpcaoAprovada"] = x.QtdeParcelasFormaOpcaoAprovada ? { t: 'n', v: x.QtdeParcelasFormaOpcaoAprovada } : null;
+      item["StatusDescSuperiorOpcaoAprovada"] = x.StatusDescSuperiorOpcaoAprovada;
+      item["DataCadastro"] = x.DataCadastro ? { t: 'd', v: new Date(new Date(x.DataCadastro).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null;
+      item["Validade"] = x.Validade ? { t: 'd', v: new Date(new Date(x.Validade).setSeconds(this.constantes.BUG_DIFERENCA_CONVERSAO_DATA_REL_EXCEL)), z: "dd/MM/yyyy" } : null;
+      // }
       json.push(item);
     });
     /*
@@ -350,7 +334,6 @@ export class DadosOrcamentosComponent implements OnInit {
      *  APLICANDO ESSE AJUSTE, AS DATAS NO EXCEL NÃO DEVEM CONTER HORA, MINUTOS E SEGUNDOS
      *  CASO OCORRA DE SURGIR HORA, MINUTOS E SEGUNDOS, DEVEMOS CONVERSAR NOVAMENTE COM O HAMILTON SOBRE O OCORRIDO.
      */
-
     return json;
   }
 }
