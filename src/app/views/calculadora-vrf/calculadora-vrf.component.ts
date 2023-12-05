@@ -973,7 +973,7 @@ export class CalculadoraVrfComponent implements OnInit {
 
     // Adicionar moldura do relatorio
     doc
-      .setFillColor("#000")
+      .setFillColor("#000").setDrawColor("#000")
       .rect(
         this.TAB_SIZE,
         this.TAB_SIZE,
@@ -1019,7 +1019,7 @@ export class CalculadoraVrfComponent implements OnInit {
       currentPositionY = this.addPaginaPDF(doc, undefined);
     }
     //colocar o texto antes do rodapé
-    this.addTextoRodape(doc);
+    this.addTextoRodape(doc, currentPositionY + this.TAB_SIZE * 5);
 
     const generateDate = new Date();
     this.addPageFooter(doc, generateDate);
@@ -1480,18 +1480,10 @@ export class CalculadoraVrfComponent implements OnInit {
     return (currentPositionY += this.SMALL_FONT_SIZE + 3);
   }
 
-  addTextoRodape(doc: jsPDF) {
+  addTextoRodape(doc: jsPDF, currentPositionY: number) {
 
-    doc
-      .setDrawColor("#000")
-      .line(
-        2 * this.TAB_SIZE,
-        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6,
-        doc.internal.pageSize.width - 2 * this.TAB_SIZE,
-        doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 6
-      );
-
-    const maxDescriptionWidth = 380;
+    const maxDescriptionWidth = doc.internal.pageSize.width - 4 * this.TAB_SIZE - 5;
+    
 
     const productDescription = this.textoRodape;
 
@@ -1500,11 +1492,29 @@ export class CalculadoraVrfComponent implements OnInit {
       maxDescriptionWidth
     );
 
-    let descriptionY = doc.internal.pageSize.height - this.SMALL_FONT_SIZE * 4;
+    let descriptionY = currentPositionY - this.SMALL_FONT_SIZE * 3;
+
+    if (doc.internal.pageSize.height - descriptionY <
+      this.SMALL_FONT_SIZE * 2 + this.FOOTER_MARGIN
+    ) {
+      descriptionY = this.addPaginaPDF(doc, undefined);
+      descriptionY += this.TAB_SIZE / 2;
+    }
+
+    doc
+      .setDrawColor("#000")
+      .rect(
+        2 * this.TAB_SIZE,
+        descriptionY - 5 - this.TAB_SIZE,
+        doc.internal.pageSize.width - 4 * this.TAB_SIZE,
+        this.SMALL_FONT_SIZE * 3
+      );
+
     descriptionLines.forEach((line) => {
       doc
         .setFontSize(this.SMALL_FONT_SIZE)
-        .text(line, this.TAB_SIZE * 3 + maxDescriptionWidth / 2, descriptionY - 5, {
+        .setFont(undefined, "bold")
+        .text(line, this.TAB_SIZE * 2 + maxDescriptionWidth / 2 + 2, descriptionY - 5, {
           maxWidth: maxDescriptionWidth,
           lineHeightFactor: 1.5,
           align: "center"
@@ -1512,6 +1522,8 @@ export class CalculadoraVrfComponent implements OnInit {
 
       descriptionY += this.SMALL_FONT_SIZE;
     });
+
+    // doc.setFont(undefined, "normal");
   }
 
   addPageFooter(doc, generateDate) {
