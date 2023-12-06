@@ -311,9 +311,6 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     aprovacaoOrcamento.opcaoSequencia = this.novoOrcamentoService.orcamentoAprovacao.opcaoSequencia;
     aprovacaoOrcamento.pagtoAprovadoTexto = this.novoOrcamentoService.orcamentoAprovacao.pagtoAprovadoTexto;
 
-    
-
-    debugger;
     this.desconverterTelefones();
     if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();

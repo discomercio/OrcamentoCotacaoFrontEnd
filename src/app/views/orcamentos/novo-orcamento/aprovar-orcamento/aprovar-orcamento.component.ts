@@ -237,7 +237,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   }
 
   buscarParametroEmailBoleto() {
-    return this.orcamentoService.buscarParametroEmailBoleto().toPromise();
+    return this.orcamentoService.buscarParametroEmailBoleto("interno").toPromise();
   }
 
   setarPermissoes(response: PermissaoOrcamentoResponse) {

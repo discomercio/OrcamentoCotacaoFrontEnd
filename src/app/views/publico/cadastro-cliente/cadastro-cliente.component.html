@@ -104,6 +104,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-as-baseline p-py-0">
+                            <label for="emailBoleto">E-mail boleto</label>
+                            <input id="emailBoleto" type="text" formControlName="emailBoleto"
+                                [(ngModel)]="dadosCliente.EmailBoleto" pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPJ,'emailBoleto')">
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.emailBoleto.errors?.required">{{mensagemErro}}</small>
+                                <small class="p-error" *ngIf="formPJ.controls.emailBoleto.errors?.email">E-mail
+                                    inválido</small>
+                                <small class="p-error" *ngIf="formPJ.controls.emailBoleto.errors?.maxlength">*Quantidade
+                                    de
+                                    caracteres
+                                    excede o limite de
+                                    {{formPJ.controls.emailBoleto.errors.maxlength.requiredLength}}
+                                    caracteres</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- PJ => Telefone 1 | Ramal | Telefone 2 | Ramal -->
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid">
@@ -187,9 +209,11 @@
                             <div *ngIf="validacaoFormularioService.verificaCampo(formPJ,'inscricaoEstadual')">
                                 <small class="p-error"
                                     *ngIf="formPJ.controls.inscricaoEstadual.errors?.required">{{mensagemErro}}</small>
-                                <small class="p-error" *ngIf="formPJ.controls.inscricaoEstadual.errors?.maxlength">*Quantidade de
+                                <small class="p-error"
+                                    *ngIf="formPJ.controls.inscricaoEstadual.errors?.maxlength">*Quantidade de
                                     caracteres
-                                    excede o limite de {{formPJ.controls.inscricaoEstadual.errors.maxlength.requiredLength}}
+                                    excede o limite de
+                                    {{formPJ.controls.inscricaoEstadual.errors.maxlength.requiredLength}}
                                     caracteres</small>
                             </div>
                         </div>
@@ -274,6 +298,28 @@
                         </div>
                     </div>
                 </div>
+                <div class="p-col-12 p-py-0">
+                    <div class="p-fluid p-grid p-py-2">
+                        <div class="p-field p-col-12 p-lg-6 p-md-6 p-sm-6 p-py-0">
+                            <label for="emailBoleto">E-mail boleto</label>
+                            <input id="emailBoleto" type="text" [(ngModel)]="dadosCliente.EmailBoleto"
+                                formControlName="emailBoleto" pInputText maxlength="60">
+                            <div class="p-text-truncate"
+                                *ngIf="validacaoFormularioService.verificaCampo(formPF,'emailBoleto')">
+                                <small class="p-error" *ngIf="formPF.controls.emailBoleto.errors?.email">E-mail
+                                    inválido</small>
+                                <small class="p-error" *ngIf="formPF.controls.emailBoleto.errors?.maxlength">*Quantidade
+                                    de
+                                    caracteres
+                                    excede o limite de
+                                    {{formPF.controls.emailBoleto.errors.maxlength.requiredLength}}
+                                    caracteres</small>
+                                <small class="p-error" *ngIf="formPF.controls.emailBoleto.errors?.required">
+                                    {{mensagemErro}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- PF => Fone Residencial | Celular | Fone comercial | Ramal -->
                 <div class="p-col-12 p-py-0">
                     <div class="p-fluid p-grid">
@@ -346,7 +392,7 @@
                 </app-endereco-entrega>
             </div>
         </div>
-        
+
 
         <div class="p-grid p-jc-around">
             <div class="card p-col-12 p-lg-8 p-md-10 p-sm-10">

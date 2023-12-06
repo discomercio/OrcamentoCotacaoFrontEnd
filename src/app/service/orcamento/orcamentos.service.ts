@@ -109,7 +109,10 @@ export class OrcamentosService {
     return this.http.post<RelatorioDadosOrcamento>(`${this.appSettingsService.config.apiUrl}Relatorios/relatorioDadosOrcamento`, filtro);
   }
 
-  buscarParametroEmailBoleto(): Observable<MensagemDto> {
+  buscarParametroEmailBoleto(origem: string): Observable<MensagemDto> {
+    if (origem == "publico"){
+      return this.http.get<MensagemDto>(`${this.appSettingsService.config.apiUrl}publico/buscarParametroClienteEmailBoleto`);
+    }
     return this.http.get<MensagemDto>(`${this.appSettingsService.config.apiUrl}Orcamento/buscarParametroClienteEmailBoleto`);
   }
 }

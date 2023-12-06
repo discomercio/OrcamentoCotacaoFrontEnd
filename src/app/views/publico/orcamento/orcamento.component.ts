@@ -23,6 +23,7 @@ import { LojasService } from 'src/app/service/lojas/lojas.service';
 import { Title } from '@angular/platform-browser';
 import { lojaEstilo } from 'src/app/dto/lojas/lojaEstilo';
 import { OrcamentosService } from 'src/app/service/orcamento/orcamentos.service';
+import { MensagemDto } from 'src/app/dto/MensagemDto';
 
 @Component({
   selector: 'app-orcamento',
@@ -66,6 +67,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
   esconderBotaoAprovacao: boolean;
   paramGuid: any;
   activeState: boolean[] = [];
+  idMeioPagtoMonitorado: string;
+
   @ViewChild("publicHeader", { static: false }) publicHeader: PublicoHeaderComponent;
   @ViewChild("mensagemComponente", { static: true }) mensagemComponente: MensageriaComponent;
 
@@ -104,13 +107,15 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.buscarEstilo(),
       this.mensagemComponente.buscarListaMensagem(this.orcamento.id),
       this.buscarParametro(this.constantes.ModuloOrcamentoCotacao_Disclaimer_MedianteConfirmacaoEstoque),
-      this.buscarParametro(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete)];
+      this.buscarParametro(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete),
+      this.buscarParametroEmailBoleto()];
 
     Promise.all(promises).then((r: any) => {
       this.setarLojaEstilo(r[0]);
       this.mensagemComponente.setarListaMensagem(this.orcamento.id, r[1]);
       this.setarMensagemEstoque(r[2]);
       this.setarMensagemFrete(r[3]);
+      this.setarParametroEmailBoleto(r[4]);
     }).catch((e) => {
       this.mensagemComponente.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -146,6 +151,10 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return this.orcamentoService
       .buscarParametros(param, this.orcamento.loja, "publico")
       .toPromise();
+  }
+
+  buscarParametroEmailBoleto() {
+    return this.orcamentoService.buscarParametroEmailBoleto("publico").toPromise();
   }
 
   setarOrcamento(r: OrcamentoCotacaoDto) {
@@ -257,6 +266,12 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
   }
 
+  setarParametroEmailBoleto(response: MensagemDto) {
+    if (!!response) {
+      this.idMeioPagtoMonitorado = response.mensagem;
+    }
+  }
+
   ngAfterViewInit(): void {
     this.sub = this.activatedRoute.params.subscribe((param: any) => {
       //  this.buscarOrcamentoPorGuid(param); 
@@ -362,7 +377,8 @@ export class PublicoOrcamentoComponent extends TelaDesktopBaseComponent implemen
             idOpcao: opcao.id,
             idFormaPagto: opcao.pagtoSelecionado.id,
             pagtoAprovadoTexto : opcao.pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA ? "a vista" : "a prazo",
-            sequencia: opcao.sequencia
+            sequencia: opcao.sequencia,
+            idMeioPagtoMonitorado : this.idMeioPagtoMonitorado
           }
         });
       }
