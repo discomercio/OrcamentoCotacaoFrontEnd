@@ -38,6 +38,7 @@ import { OrcamentosOpcaoResponse } from 'src/app/dto/orcamentos/OrcamentosOpcaoR
 import { ScrollPanel } from 'primeng/scrollpanel';
 import { AprovacaoOrcamentoDto } from 'src/app/dto/orcamentos/aprocao-orcamento-dto';
 import { AppComponent } from 'src/app/main/app.component';
+import { MensagemDto } from 'src/app/dto/MensagemDto';
 
 @Component({
   selector: 'app-aprovar-orcamento',
@@ -235,6 +236,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     return this.orcamentoService.buscarParametros(this.constantes.ModuloOrcamentoCotacao_Disclaimer_Frete, loja, null).toPromise();
   }
 
+  buscarParametroEmailBoleto() {
+    return this.orcamentoService.buscarParametroEmailBoleto().toPromise();
+  }
+
   setarPermissoes(response: PermissaoOrcamentoResponse) {
     this.permissaoOrcamentoResponse = response;
 
@@ -312,7 +317,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     this.buscarParametroLogoImpressao(orcamento.loja), this.buscarParametroFraseEstoque(orcamento.loja),
     this.buscarParametroFraseFrete(orcamento.loja),
     this.buscarFormasPagto(orcamento.clienteOrcamentoCotacaoDto.tipo, comIndicacao,
-      this.autenticacaoService._tipoUsuario, apelido, apelidoParceiro)];
+      this.autenticacaoService._tipoUsuario, apelido, apelidoParceiro),
+    this.buscarParametroEmailBoleto()];
 
     Promise.all(promises).then((r) => {
       this.setarParceiro(r[0]);
@@ -321,6 +327,7 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       this.setarFraseEstoque(r[4][0].Valor);
       this.setarFraseFrete(r[5][0].Valor);
       this.editarOpcoes = this.validarEdicao(r[6]);
+      this.setarParametroEmailBoleto(r[7]);
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
       this.mensagemComponente.carregando = false;
@@ -401,6 +408,12 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
 
   setarFraseFrete(frase: string) {
     this.fraseFrete = frase;
+  }
+
+  setarParametroEmailBoleto(response: MensagemDto) {
+    if (!!response) {
+      this.novoOrcamentoService.idMeioPagtoMonitorado = response.mensagem;
+    }
   }
 
   validarEdicao(r: FormaPagto[]) {

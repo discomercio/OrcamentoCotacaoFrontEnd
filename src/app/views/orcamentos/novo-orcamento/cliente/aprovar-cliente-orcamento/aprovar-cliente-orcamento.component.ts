@@ -99,14 +99,8 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.criarForm();
     this.alcadaSuperior = this.verificarAlcadaDescontoSuperior();
     this.verificarContribuinteICMS();
+    this.verificarValidacaoEmailBoleto();
   }
-
-  // @HostListener('window:keyup', ['$event'])
-  // keyEvent(event: KeyboardEvent) {
-  //   if (event.which == 13 || event.keyCode == 13) {
-  //     this.salvar();
-  //   }
-  // }
 
   inicializarDadosClienteCadastroDto() {
     this.dadosClienteCadastroDto = new DadosClienteCadastroDto();
@@ -128,6 +122,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.dadosClienteCadastroDto.Ramal2 = "";
     this.dadosClienteCadastroDto.Observacao_Filiacao = "";
     this.dadosClienteCadastroDto.ProdutorRural = 0;
+    this.dadosClienteCadastroDto.EmailBoleto = "";
   }
 
   criarForm() {
@@ -141,6 +136,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
         rg: [""],
         email: ["", [Validators.email, Validators.maxLength(60)]],
         emailXml: ["", [Validators.email, Validators.maxLength(60)]],
+        emailBoleto: ["", [Validators.email, Validators.maxLength(60)]],
         telResidencial: [""],
         celular: [""],
         telComercial: [""],
@@ -164,6 +160,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       contato: ["", [Validators.required, Validators.maxLength(30)]],
       email: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
       emailXml: ["", [Validators.email]],
+      emailBoleto: ["", [Validators.email, Validators.maxLength(60)]],
       icms: [this.dadosCliente.Contribuinte_Icms_Status, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: ["", [Validators.maxLength(20)]]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
@@ -186,6 +183,42 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
       }
     }
     return retorno;
+  }
+
+  verificarValidacaoEmailBoleto(){
+    let baseOpcao = this.novoOrcamentoService.orcamentoCotacaoDto.listaOrcamentoCotacaoDto.filter(x => x.id == this.novoOrcamentoService.orcamentoAprovacao.idOpcao);
+    if(baseOpcao.length == 0){
+      this.alertaService.mostrarMensagem("Falha ao validar dados do cliente!");
+      return;
+    }
+
+    let validaEmailBoleto = false;
+    if(baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA){
+      if(this.novoOrcamentoService.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_av_forma_pagto}|`) > -1 || 
+      this.novoOrcamentoService.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_av_forma_pagto}|`) > -1){
+        validaEmailBoleto = true;
+      }
+    }
+    if(baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA){
+      if(this.novoOrcamentoService.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pce_entrada_forma_pagto}|`) > -1 || 
+      this.novoOrcamentoService.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pce_prestacao_forma_pagto}|`) > -1){
+        validaEmailBoleto = true;
+      }
+    }
+    if(baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA){
+      if(this.novoOrcamentoService.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pu_forma_pagto}|`) > -1){
+        validaEmailBoleto = true;
+      }
+    }
+
+    if(validaEmailBoleto){
+      if (this.clientePF){
+        this.formPF.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)]);
+      }
+      else{
+        this.formPJ.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)])
+      }
+    }
   }
 
   criarListaContrinuiteICMS() {
@@ -260,9 +293,7 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     this.dadosClienteCadastroDto.Indicador_Orcamentista = this.novoOrcamentoService.orcamentoCotacaoDto.parceiro;
     this.dadosClienteCadastroDto.Vendedor = this.novoOrcamentoService.orcamentoCotacaoDto.vendedor;
     this.dadosClienteCadastroDto.Loja = this.novoOrcamentoService.orcamentoCotacaoDto.loja;
-
-    // this.dadosClienteCadastroDto.UsuarioCadastro = this.aprovacaoPubicoService.BuscaDonoOrcamento();
-
+    
     this.dadosClienteCadastroDto.UsuarioCadastro = `[${this.autenticacaoService._tipoUsuario}] ${this.autenticacaoService._idUsuarioLogado}`;
 
     if (!this.validarDadosClienteCadastro()) return;
@@ -280,6 +311,9 @@ export class AprovarClienteOrcamentoComponent implements OnInit {
     aprovacaoOrcamento.opcaoSequencia = this.novoOrcamentoService.orcamentoAprovacao.opcaoSequencia;
     aprovacaoOrcamento.pagtoAprovadoTexto = this.novoOrcamentoService.orcamentoAprovacao.pagtoAprovadoTexto;
 
+    
+
+    debugger;
     this.desconverterTelefones();
     if (!this.clientePF && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       this.desconverterTelefonesEnderecoEntrega();

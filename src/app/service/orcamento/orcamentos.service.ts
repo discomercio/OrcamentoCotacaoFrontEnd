@@ -108,4 +108,8 @@ export class OrcamentosService {
   buscarRelatorioDadosOrcamento(filtro: Filtro): Observable<RelatorioDadosOrcamento> {
     return this.http.post<RelatorioDadosOrcamento>(`${this.appSettingsService.config.apiUrl}Relatorios/relatorioDadosOrcamento`, filtro);
   }
+
+  buscarParametroEmailBoleto(): Observable<MensagemDto> {
+    return this.http.get<MensagemDto>(`${this.appSettingsService.config.apiUrl}Orcamento/buscarParametroClienteEmailBoleto`);
+  }
 }
