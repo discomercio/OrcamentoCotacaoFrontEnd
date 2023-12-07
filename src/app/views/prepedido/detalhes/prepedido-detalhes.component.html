@@ -1,5 +1,6 @@
-<div class="content-area" >
-    <div class="nossobody" [ngClass]="{'carregando': carregando}" [ngStyle]="telaDesktop ? {'':''} : {'display':'block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'}">
+<div class="content-area">
+    <div class="nossobody" [ngClass]="{'carregando': carregando}"
+        [ngStyle]="telaDesktop ? {'':''} : {'display':'block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'}">
 
         <section id="myPrint">
             <br>
@@ -79,8 +80,8 @@
                                     &nbsp;</p>
                             </td>
                             <td align="center" valign="middle" style="width:15px">
-                                <a (click)="consultarCliente()"
-                                title="clique para visualizar o cadastro do cliente" style="cursor: pointer;">
+                                <a (click)="consultarCliente()" title="clique para visualizar o cadastro do cliente"
+                                    style="cursor: pointer;">
                                     <i class="fa fa-search"></i>
                                 </a>
                             </td>
@@ -119,69 +120,103 @@
                         <tr *ngIf="ehPf()">
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE RESIDENCIAL</p>
-                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddResidencial">({{this.prepedido?.DadosCliente.DddResidencial}})
-                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelefoneResidencial)}} &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddResidencial">
+                                    ({{this.prepedido?.DadosCliente.DddResidencial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelefoneResidencial)}}
+                                    &nbsp;</p>
                             </td>
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE COMERCIAL</p>
-                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial">({{this.prepedido?.DadosCliente.DddComercial}})
-                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial)}} &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial">
+                                    ({{this.prepedido?.DadosCliente.DddComercial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial)}}
+                                    &nbsp;</p>
+                                <p class="C" *ngIf="!this.prepedido?.DadosCliente.DddComercial">&nbsp;</p>
                             </td>
                             <td align="left">
                                 <p class="Rf">CELULAR</p>
-                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddCelular">({{this.prepedido?.DadosCliente.DddCelular}})
-                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.Celular)}} &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddCelular">
+                                    ({{this.prepedido?.DadosCliente.DddCelular}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.Celular)}} &nbsp;
+                                </p>
+                                <p class="C" *ngIf="!this.prepedido?.DadosCliente.DddCelular">
+                                    &nbsp;
+                                </p>
                             </td>
                         </tr>
                         <tr *ngIf="!ehPf()">
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
-                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial">({{this.prepedido?.DadosCliente.DddComercial}})
-                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial)}} &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial">
+                                    ({{this.prepedido?.DadosCliente.DddComercial}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial)}}
+                                    &nbsp;</p>
+                                <p class="C" *ngIf="!this.prepedido?.DadosCliente.DddComercial">&nbsp;</p>
                             </td>
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
-                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial2">({{this.prepedido?.DadosCliente.DddComercial2}})
-                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial2)}} &nbsp;</p>
+                                <p class="C" *ngIf="this.prepedido?.DadosCliente.DddComercial2">
+                                    ({{this.prepedido?.DadosCliente.DddComercial2}})
+                                    {{formatarTelefone.telefone_formata(this.prepedido?.DadosCliente.TelComercial2)}}
+                                    &nbsp;
+                                </p>
+                                <p class="C" *ngIf="!this.prepedido?.DadosCliente.DddComercial2">
+                                    &nbsp;
+                                </p>
                             </td>
-                        </tr>                
-        
+                        </tr>
+
                     </table>
 
                     <!--  E-MAIL DO CLIENTE  -->
                     <table width="649" class="QS" cellspacing="0">
                         <tr>
-                            <td align="left">
+                            <td class="MD" width="50%" align="left">
                                 <p class="Rf">E-MAIL</p>
                                 <p class="C">{{this.prepedido?.DadosCliente.Email}} &nbsp;</p>
+                            </td>
+                            <td class="MD" width="50%" align="left">
+                                <p class="Rf">E-MAIL (XML)</p>
+                                <p class="C">{{this.prepedido?.DadosCliente.EmailXml}} &nbsp;</p>
                             </td>
                         </tr>
                     </table>
 
-            <!--  ENDEREÇO DE ENTREGA  -->
+                    <table width="649" class="QS" cellspacing="0">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">E-MAIL BOLETO</p>
+                                <p class="C">{{this.prepedido?.DadosCliente.EmailBoleto}} &nbsp;</p>
+                            </td>
+                        </tr>
+                    </table>
 
-            <table width="649" class="QS" cellspacing="0" style="table-layout:fixed">
-                <tr>
-                    <td align="left">
-                        <p class="Rf">ENDEREÇO DE ENTREGA</p>
-                        <!-- <p class="C">{{formata_endereco_entrega()}} &nbsp;</p> -->
-                    </td>
-                </tr>
-                
-                <!-- afazer: alterar o modo como mostramos os dados de endereço de entrega -->
-                <tr *ngIf="this.prepedido?.EnderecoEntrega?.EndEtg_descricao_justificativa?.trim() != ''">
-                    <td align="left" *ngIf="this.prepedido?.EnderecoEntrega?.OutroEndereco"
-                        style="word-wrap:break-word">
+                    <!--  ENDEREÇO DE ENTREGA  -->
 
-                        <!-- alterando a forma como mostramos o endereço d entrega por conta dos novos campos -->
-                        <textarea name="c_obs1" id="c_obs1" class="PLLe" rows="{{qtdeLinhaEndereco}}"
-                            style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly tabindex=-1
-                            [innerHTML]="enderecoEntregaFormatado">                            
+                    <table width="649" class="QS" cellspacing="0" style="table-layout:fixed">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">ENDEREÇO DE ENTREGA</p>
+                                <p class="C" *ngIf="!this.prepedido?.EnderecoEntrega?.OutroEndereco">
+                                    &nbsp;
+                                </p>
+                            </td>
+                        </tr>
+
+                        <!-- afazer: alterar o modo como mostramos os dados de endereço de entrega -->
+                        <tr *ngIf="this.prepedido?.EnderecoEntrega?.EndEtg_descricao_justificativa?.trim() != ''">
+                            <td align="left" *ngIf="this.prepedido?.EnderecoEntrega?.OutroEndereco"
+                                style="word-wrap:break-word">
+
+                                <!-- alterando a forma como mostramos o endereço d entrega por conta dos novos campos -->
+                                <textarea name="c_obs1" id="c_obs1" class="PLLe" rows="{{qtdeLinhaEndereco}}"
+                                    style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly
+                                    tabindex=-1 [innerHTML]="enderecoEntregaFormatado">
                         </textarea>
-                    </td>
-                </tr>
+                            </td>
+                        </tr>
 
-            </table>
+                    </table>
 
                     <!--  R E L A Ç Ã O   D E   P R O D U T O S  -->
                     <br>
@@ -230,27 +265,31 @@
 
                             <!-- Preco RA -->
                             <td class="MDB" align="right" *ngIf="this.prepedido?.PermiteRAStatus == '1'">
-                                <input name="c_vl_NF" class="PLLd" style="width:62px;" value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_NF)}}'
-                                    readonly tabindex=-1>
+                                <input name="c_vl_NF" class="PLLd" style="width:62px;"
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_NF)}}' readonly tabindex=-1>
                             </td>
                             <!-- VlLista -->
                             <td class="MDB" align="right">
                                 <input name="c_preco_lista" class="PLLd" style="width:62px;"
-                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Lista)}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Lista)}}' readonly
+                                    tabindex=-1>
                             </td>
                             <!-- Desconto -->
                             <td class="MDB" align="right">
-                                <input name="c_desc" class="PLLd" style="width:28px;" value='{{moedaUtils.formatarPorcentagemUmaCasa(linha.Desc_Dado)}}'
-                                    readonly tabindex=-1>
+                                <input name="c_desc" class="PLLd" style="width:28px;"
+                                    value='{{moedaUtils.formatarPorcentagemUmaCasa(linha.Desc_Dado)}}' readonly
+                                    tabindex=-1>
                             </td>
                             <!-- VLVenda -->
                             <td class="MDB" align="right">
                                 <input name="c_vl_unitario" class="PLLd" style="width:62px;"
-                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Venda)}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.Preco_Venda)}}' readonly
+                                    tabindex=-1>
                             </td>
                             <!-- VlTotal -->
                             <td class="MDB" align="right"><input name="c_vl_total" class="PLLd" style="width:70px;"
-                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.VlTotalItem)}}' readonly tabindex=-1></td>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(linha.VlTotalItem)}}' readonly
+                                    tabindex=-1></td>
                         </tr>
 
 
@@ -268,8 +307,8 @@
                                                     </td>
                                                     <td class="MTBD" align="right">
                                                         <input name="c_perc_RT" id="c_perc_RT"
-                                                            [ngStyle]="{'color':verificaValor()?'green':'red'}" class="PLLd"
-                                                            style="width:90%;"
+                                                            [ngStyle]="{'color':verificaValor()?'green':'red'}"
+                                                            class="PLLd" style="width:90%;"
                                                             value='{{moedaUtils.formatarValorDuasCasaReturnZero(this.prepedido?.TotalFamiliaParcelaRA)}}'
                                                             readonly tabindex=-1>
                                                     </td>
@@ -285,7 +324,8 @@
                                                     </td>
                                                     <td class="MTBD" align="right"><input name="c_perc_RT"
                                                             id="c_perc_RT" class="PLLd" style="width:30px;color:blue;"
-                                                            value='{{moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.prepedido?.PercRT)}}' readonly tabindex=-1></td>
+                                                            value='{{moedaUtils.formatarPorcentagemUmaCasaReturnZero(this.prepedido?.PercRT)}}'
+                                                            readonly tabindex=-1></td>
                                                 </tr>
                                             </table>
                                         </td>
@@ -296,7 +336,8 @@
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MD" align="left">&nbsp;</td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" class="MDB" align="right">
                                 <input name="c_total_NF" id="c_total_NF" class="PLLd" style="width:70px;color:blue;"
-                                    value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido?.ValorTotalDestePedidoComRA)}}' readonly tabindex=-1>
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido?.ValorTotalDestePedidoComRA)}}'
+                                    readonly tabindex=-1>
                             </td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus == '1'" colspan="3" class="MD" align="left">
                                 &nbsp;
@@ -308,7 +349,8 @@
                             <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" align="left">&nbsp;</td>
                             <td *ngIf="this.prepedido?.PermiteRAStatus != '1'" class="MD" align="left">&nbsp;</td>
                             <td class="MDB" align="right"><input name="c_total_geral" id="c_total_geral" class="PLLd"
-                                    style="width:70px;color:blue;" value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido?.VlTotalDestePedido)}}'
+                                    style="width:70px;color:blue;"
+                                    value='{{moedaUtils.formatarMoedaSemPrefixo(this.prepedido?.VlTotalDestePedido)}}'
                                     readonly tabindex=-1>
                             </td>
                         </tr>
@@ -332,7 +374,7 @@
 
                         <td class="MB" align="left" colspan="5">
                             <p class="Rf">Previsão de Entrega</p>
-                            <p class="C">{{this.prepedido?.DetalhesPrepedido?.PrevisaoEntrega}}</p>
+                            <p class="C">{{this.prepedido?.DetalhesPrepedido?.PrevisaoEntrega}} &nbsp;</p>
                         </td>
                         <tr>
                             <td class="MD" align="left" nowrap>
@@ -385,8 +427,7 @@
             </div>
             <br>
             <div id="botao-voltar" style="text-align:center;">
-                <button pButton type="button" label="Voltar" icon="fa fa-reply"
-                    (click)="voltar()"></button>&nbsp;
+                <button pButton type="button" label="Voltar" icon="fa fa-reply" (click)="voltar()"></button>&nbsp;
             </div>
             <!-- FORMA PAGAMENTO-->
         </section>
