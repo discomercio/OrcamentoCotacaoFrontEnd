@@ -27,4 +27,5 @@ export class EnderecoCadastralClientePrepedidoDto {
     Endereco_ie: string;
     Endereco_rg: string;
     Endereco_contato: string;
+    Endereco_email_boleto:string;
 }

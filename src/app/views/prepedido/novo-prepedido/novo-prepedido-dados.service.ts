@@ -20,13 +20,13 @@ export class NovoPrepedidoDadosService {
   constructor() { }
 
   public setar(prePedidoDto: PrePedidoDto) {
-    
+
     this.prePedidoDto = prePedidoDto;
   }
 
   //somente setar dados do cliente
   public setarDTosParciais(clienteCadastroDto: DadosClienteCadastroDto,
-    enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro, 
+    enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro,
     endCadastralClientePrepedidoDto: EnderecoCadastralClientePrepedidoDto) {
     let p = this.prePedidoDto;
     p.DadosCliente = clienteCadastroDto;
@@ -35,8 +35,8 @@ export class NovoPrepedidoDadosService {
   }
 
   public criarNovo(clienteCadastroDto: DadosClienteCadastroDto,
-    enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro, 
-    endCadastralClientePrepedidoDto : EnderecoCadastralClientePrepedidoDto) {
+    enderecoEntregaDtoClienteCadastro: EnderecoEntregaDtoClienteCadastro,
+    endCadastralClientePrepedidoDto: EnderecoCadastralClientePrepedidoDto) {
     this.prePedidoDto = new PrePedidoDto();
     let p = this.prePedidoDto;
     //temos que criar os objetos...
@@ -61,7 +61,7 @@ export class NovoPrepedidoDadosService {
   }
 
 
-  public moedaUtils : MoedaUtils = new MoedaUtils();
+  public moedaUtils: MoedaUtils = new MoedaUtils();
   public totalPedido(): number {
     return this.prePedidoDto.VlTotalDestePedido = this.moedaUtils.formatarDecimal(
       this.prePedidoDto.ListaProdutos.reduce((sum, current) => sum + this.moedaUtils.formatarDecimal(current.TotalItem), 0));
@@ -76,6 +76,9 @@ export class NovoPrepedidoDadosService {
 
   //inidca se clicaou no botão Voltar da tela de itens; se estiver no celular,
   //precisa voltar para a segunda tela 9a tela do endereço de entrega
-  public clicadoBotaoVoltarDaTelaItens:boolean = false;
+  public clicadoBotaoVoltarDaTelaItens: boolean = false;
+
+  public idMeioPagtoMonitorado: string;
+  public validaEmailBoleto:boolean;
 }
 

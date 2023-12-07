@@ -49,6 +49,7 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
   ngOnInit() {
     this.verificarEmProcesso();
     this.dadosDoModelo();
+    this.verificarValidacaoEmailBoleto();
   }
 
   triggerResize() {
@@ -64,6 +65,9 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
   }
 
   continuar() {
+
+    debugger;
+
     this.carregando = true;
     if (!this.dadosParaModelo()) {
       this.carregando = false;
@@ -102,6 +106,29 @@ export class PrePedidoObservacoesComponent extends PassoPrepedidoBase implements
         this.alertaService.mostrarErroInternet(r);
       }
     });
+  }
+
+  verificarValidacaoEmailBoleto(){
+    debugger;
+    this.prePedidoDto.EnderecoCadastroClientePrepedido.Endereco_email_boleto
+    
+    if(this.prePedidoDto.FormaPagtoCriacao.Tipo_parcelamento == Number.parseInt(this.constantes.COD_FORMA_PAGTO_A_VISTA)){
+      if(this.novoPrepedidoDadosService.idMeioPagtoMonitorado.indexOf(`|${this.prePedidoDto.FormaPagtoCriacao.Op_av_forma_pagto}|`) > -1 || 
+      this.novoPrepedidoDadosService.idMeioPagtoMonitorado.indexOf(`|${this.prePedidoDto.FormaPagtoCriacao.Op_av_forma_pagto}|`) > -1){
+        this.novoPrepedidoDadosService.validaEmailBoleto = true;
+      }
+    }
+    if(this.prePedidoDto.FormaPagtoCriacao.Tipo_parcelamento == Number.parseInt(this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA)){
+      if(this.novoPrepedidoDadosService.idMeioPagtoMonitorado.indexOf(`|${this.prePedidoDto.FormaPagtoCriacao.Op_pce_entrada_forma_pagto}|`) > -1 || 
+      this.novoPrepedidoDadosService.idMeioPagtoMonitorado.indexOf(`|${this.prePedidoDto.FormaPagtoCriacao.Op_pce_prestacao_forma_pagto}|`) > -1){
+        this.novoPrepedidoDadosService.validaEmailBoleto = true;
+      }
+    }
+    if(this.prePedidoDto.FormaPagtoCriacao.Tipo_parcelamento == Number.parseInt(this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA)){
+      if(this.novoPrepedidoDadosService.idMeioPagtoMonitorado.indexOf(`|${this.prePedidoDto.FormaPagtoCriacao.Op_pu_forma_pagto}|`) > -1){
+        this.novoPrepedidoDadosService.validaEmailBoleto = true;
+      }
+    }
   }
 
   dadosDoModelo() {

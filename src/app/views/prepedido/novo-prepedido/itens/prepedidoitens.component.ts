@@ -27,6 +27,7 @@ import { ProdutoDto } from 'src/app/dto/prepedido/Produto/ProdutoDto';
 import { PrepedidoProdutoDtoPrepedido } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrepedidoProdutoDtoPrepedido';
 import { ConfirmationDialogComponent } from 'src/app/utilities/confirmation-dialog/confirmation-dialog.component';
 import { SweetalertService } from 'src/app/utilities/sweetalert/sweetalert.service';
+import { MensagemDto } from 'src/app/dto/MensagemDto';
 
 @Component({
   selector: 'app-prepedidoitens',
@@ -63,6 +64,7 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   public msgQtdePermitida: string = "";
   public clicouAddProd: boolean = false;
   public lstProdutoAdd: PrepedidoProdutoDtoPrepedido[] = [];
+  
   @ViewChild("dadosPagto", { static: false }) dadosPagto: DadosPagtoComponent;
 
   ngOnInit() {
@@ -106,12 +108,14 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
 
     this.telaDesktopService.carregando = true;
     this.criando = !this.prePedidoDto.NumeroPrePedido;
-    let promises:any = [this.buscarPermissaoRaStatus(), this.buscarProdutos(), this.buscarPercentualVlPedidoRA()];
+    let promises:any = [this.buscarPermissaoRaStatus(), this.buscarProdutos(), this.buscarPercentualVlPedidoRA(),
+    this.buscarParametroEmailBoleto()];
     Promise.all(promises).then((r: any) => {
       //setar retorno
       this.setarPermissaoRaStatus(r[0]);
       this.setarProdutos(r[1]);
       this.setarPercentualVlPedidoRA(r[2]);
+      this.setarParametroEmailBoleto(r[3]);
     }).catch((e) => {
       this.telaDesktopService.carregando = false;
       this.alertaService.mostrarErroInternet(e);
@@ -149,6 +153,10 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
     return this.prepedidoBuscarService.ObtemPercentualVlPedidoRA().toPromise();
   }
 
+  buscarParametroEmailBoleto() {
+    return this.prepedidoBuscarService.buscarParametroEmailBoleto("publico").toPromise();
+  }
+
   setarPermissaoRaStatus(r: number) {
     if (r != 0) {
       this.permite_RA_Status = true;
@@ -170,6 +178,12 @@ export class PrePedidoItensComponent extends TelaDesktopBaseComponent implements
   setarPercentualVlPedidoRA(r: number) {
     if (!!r) {
       this.percentualVlPedidoRA = r;
+    }
+  }
+
+  setarParametroEmailBoleto(response: MensagemDto) {
+    if (!!response) {
+      this.novoPrepedidoDadosService.idMeioPagtoMonitorado = response.mensagem;
     }
   }
 

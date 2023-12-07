@@ -272,6 +272,7 @@ export class ClienteCorpoComponent implements OnInit, OnChanges {
 
     this.enderecoCadastralClientePrepedidoDto.St_memorizacao_completa_enderecos = true;
 
+    this.enderecoCadastralClientePrepedidoDto.Endereco_email_boleto = this.dadosClienteCadastroDto.EmailBoleto;
   }
 
   //somente podemos fazer a inicialização da variável depois do AfterViewInit

@@ -59,6 +59,14 @@
                         Instala
                     </mat-slide-toggle>
                 </div>
+
+                <span *ngIf="!!novoPrepedidoDadosService.validaEmailBoleto">
+                    <mat-form-field style="width: 15em;">
+                        <input matInput type="text" placeholder="E-MAIL BOLETO" [ngModelOptions]="{standalone: true}"
+                        [required]="novoPrepedidoDadosService.validaEmailBoleto"
+                            [(ngModel)]="prePedidoDto.EnderecoCadastroClientePrepedido.Endereco_email_boleto" maxlength="60">
+                    </mat-form-field>
+                </span>
             </div>
             <div>
             </div>
