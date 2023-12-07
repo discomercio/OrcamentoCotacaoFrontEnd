@@ -34,6 +34,7 @@ import { ChangeDetectorRef } from '@angular/core';
 import { UsuariosPorListaLojasResponse } from 'src/app/dto/usuarios/usuarios-por-lista-lojas-response';
 import { ListaCodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/lista-codigo-descricao-response';
 import { CodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/codigo-descricao-response';
+import { newArray } from '@angular/compiler/src/util';
 
 @Component({
   selector: 'app-listar',
@@ -80,13 +81,13 @@ export class OrcamentosListarComponent implements OnInit {
   lstStatus: Array<OrcamentoCotacaoStatus>;
   lstParceiros: Array<OrcamentistaIndicadorDto>;
 
-  cboStatus: Array<DropDownItem> = [];
-  cboVendedores: Array<DropDownItem> = [];
-  cboFiltradoVendedores: Array<DropDownItem> = [];
-  cboParceiros: Array<DropDownItem> = [];
-  cboVendedoresParceiros: Array<DropDownItem> = [];
-  cboMensagens: Array<DropDownItem> = [];
-  cboDatas: Array<DropDownItem> = [];
+  cboStatus: Array<DropDownItem> = new Array();
+  cboVendedores: Array<DropDownItem> = new Array();
+  cboFiltradoVendedores: Array<DropDownItem> = new Array();
+  cboParceiros: Array<DropDownItem> = new Array();
+  cboVendedoresParceiros: Array<DropDownItem> = new Array();
+  cboMensagens: Array<DropDownItem> = new Array();
+  cboDatas: Array<DropDownItem> = new Array();
 
   idValuesTmp = 0;
 

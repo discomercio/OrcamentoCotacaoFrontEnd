@@ -105,7 +105,6 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
   fraseFrete: string;
 
   ngOnInit(): void {
-
     this.mensagemComponente.carregando = true;
     this.novoOrcamentoService.criarNovo();
     this.novoOrcamentoService.criarNovoOrcamentoItem();
@@ -749,7 +748,13 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
     }
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
 
-    debugger;
+    let urlAnterior = sessionStorage.getItem("urlAnterior");
+    if (!!urlAnterior && urlAnterior.indexOf("orcamentos/cliente/busca") > -1) {
+      sessionStorage.removeItem("urlAnterior");
+      this.router.navigate(['orcamentos/listar/orcamentos']);
+      return;
+    }
+
     this.location.back();
   }
 
@@ -1539,5 +1544,10 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       sessionStorage.removeItem("filtro");
       sessionStorage.removeItem("urlAnterior");
     }
+
+    if(this.router.url.indexOf('orcamentos/cliente/busca') > -1){
+      sessionStorage.setItem("urlAnterior", "orcamentos/cliente/busca");
+    }
+
   }
 }
