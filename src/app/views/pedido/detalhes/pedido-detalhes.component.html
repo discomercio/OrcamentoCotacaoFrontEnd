@@ -1,4 +1,5 @@
-<div class="content-area" [ngStyle]="!telaDesktop ?  {'display': 'inline-block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'} : {'':''}">
+<div class="content-area"
+    [ngStyle]="!telaDesktop ?  {'display': 'inline-block', 'max-width':'100%', 'overflow':'auto', 'max-height':'calc(100vh - 100px)'} : {'':''}">
     <div class="nossobody" *ngIf="pedido">
         <section id="myPrint">
             <br>
@@ -215,33 +216,54 @@
                                 <p class="C" *ngIf="pedido.DadosCliente.DddResidencial">
                                     ({{pedido.DadosCliente.DddResidencial}})
                                     {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelefoneResidencial)}}
-                                    &nbsp;</p>
+                                    &nbsp;
+                                </p>
+                                <p class="C" *ngIf="!pedido.DadosCliente.DddResidencial">
+                                    &nbsp;
+                                </p>
                             </td>
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE COMERCIAL</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddComercial">
                                     ({{pedido.DadosCliente.DddComercial}})
-                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;</p>
+                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;
+                                </p>
+                                <p class="C" *ngIf="!pedido.DadosCliente.DddComercial">
+                                    &nbsp;
+                                </p>
                             </td>
                             <td align="left">
                                 <p class="Rf">CELULAR</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddCelular">({{pedido.DadosCliente.DddCelular}})
                                     {{formatarTelefone.telefone_formata(pedido.DadosCliente.Celular)}} &nbsp;</p>
+                                <p class="C" *ngIf="!pedido.DadosCliente.DddCelular">
+                                    &nbsp;
+                                </p>
                             </td>
                         </tr>
                         <tr *ngIf="!ehPf()">
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddComercial">
-                                    ({{pedido.DadosCliente.DddComercial}}) 
-                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;<span *ngIf="pedido.DadosCliente.Ramal">- (Ramal {{pedido.DadosCliente.Ramal}}) </span></p>
-                                    
+                                    ({{pedido.DadosCliente.DddComercial}})
+                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial)}} &nbsp;<span
+                                        *ngIf="pedido.DadosCliente.Ramal">- (Ramal {{pedido.DadosCliente.Ramal}})
+                                    </span></p>
+                                <p class="C" *ngIf="!pedido.DadosCliente.DddComercial">
+                                    &nbsp;
+                                </p>
+
                             </td>
                             <td class="MD" width="33%" align="left">
                                 <p class="Rf">TELEFONE</p>
                                 <p class="C" *ngIf="pedido.DadosCliente.DddComercial2">
                                     ({{pedido.DadosCliente.DddComercial2}})
-                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial2)}} &nbsp;<span *ngIf="pedido.DadosCliente.Ramal2">- (Ramal {{pedido.DadosCliente.Ramal2}}) </span></p>
+                                    {{formatarTelefone.telefone_formata(pedido.DadosCliente.TelComercial2)}} &nbsp;<span
+                                        *ngIf="pedido.DadosCliente.Ramal2">- (Ramal {{pedido.DadosCliente.Ramal2}})
+                                    </span></p>
+                                <p class="C" *ngIf="!pedido.DadosCliente.DddComercial2">
+                                    &nbsp;
+                                </p>
                             </td>
                         </tr>
 
@@ -250,12 +272,26 @@
                     <!--  E-MAIL DO CLIENTE  -->
                     <table width="649" class="QS" cellspacing="0">
                         <tr>
-                            <td align="left">
+                            <td class="MD" width="50%" align="left">
                                 <p class="Rf">E-MAIL</p>
-                                <p class="C">{{pedido?.DadosCliente?.Email}} &nbsp;</p>
+                                <p class="C">{{pedido.DadosCliente.Email}} &nbsp;</p>
+                            </td>
+                            <td class="MD" width="50%" align="left">
+                                <p class="Rf">E-MAIL (XML)</p>
+                                <p class="C">{{pedido?.DadosCliente.EmailXml}} &nbsp;</p>
                             </td>
                         </tr>
                     </table>
+
+                    <table width="649" class="QS" cellspacing="0">
+                        <tr>
+                            <td align="left">
+                                <p class="Rf">E-MAIL BOLETO</p>
+                                <p class="C">{{pedido?.DadosCliente.EmailBoleto}} &nbsp;</p>
+                            </td>
+                        </tr>
+                    </table>
+
 
                     <!--  ENDEREÇO DE ENTREGA  -->
 
@@ -272,7 +308,12 @@
                                 <textarea name="c_obs1" id="c_obs1" class="PLLe" rows="{{qtdeLinhaEndereco}}"
                                     style="width:99%;margin-left:2pt; resize: auto; overflow: hidden;" readonly
                                     tabindex=-1 [innerHTML]="enderecoEntregaFormatado">
-                        </textarea>
+                                </textarea>
+                            </td>
+                            <td align="left" *ngIf="!pedido?.EnderecoEntrega?.OutroEndereco">
+                                <p class="C">
+                                    &nbsp;
+                                </p>
                             </td>
                         </tr>
 
@@ -436,7 +477,7 @@
                             </td>
                             <td class="MB" align="left" colspan="5">
                                 <p class="Rf">Previsão de Entrega</p>
-                                <p class="C">{{pedido?.DetalhesNF.PrevisaoEntrega}}</p>
+                                <p class="C">{{pedido?.DetalhesNF.PrevisaoEntrega}} &nbsp;</p>
                             </td>
                         </tr>
 
@@ -670,7 +711,8 @@
                                             <tr>
                                                 <td class="C MD MB tdWithPadding" width="33%" align="left" valign="top">
                                                     <span class="Rf" style="margin-left:0px;">ABERTA
-                                                        POR:</span>&nbsp;{{ocorrencia.Usuario}}</td>
+                                                        POR:</span>&nbsp;{{ocorrencia.Usuario}}
+                                                </td>
                                                 <td class="C MD MB tdWithPadding" width="33%" align="left" valign="top">
                                                     <span class="Rf" style="margin-left:0px;">EM:</span>&nbsp;
                                                     {{dataUtils.formata_data_e_talvez_hora_hhmmss(ocorrencia.Dt_Hr_Cadastro)}}

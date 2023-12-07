@@ -748,6 +748,8 @@ export class AprovarOrcamentoComponent extends TelaDesktopBaseComponent implemen
       sessionStorage.removeItem("urlAnterior");
     }
     this.novoOrcamentoService.orcamentoCotacaoDto = new OrcamentoCotacaoResponse();
+
+    debugger;
     this.location.back();
   }
 
