@@ -51,6 +51,7 @@ export class NovoOrcamentoService {
   public moedaUtils: MoedaUtils = new MoedaUtils();
   public percRTApoio: number;
   public selecProdInfo = new SelecProdInfo();
+  public idMeioPagtoMonitorado: string;
 
   tipoUsuario: number;
   percMaxComissaoEDescontoUtilizar: number;

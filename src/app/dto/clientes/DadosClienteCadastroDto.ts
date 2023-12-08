@@ -40,6 +40,7 @@ export class DadosClienteCadastroDto {
     EmailXml: string;
     Contato: string;
     UsuarioCadastro:string;
+    EmailBoleto:string;
 
     public static DadosClienteCadastroDtoDeEnderecoEntregaDtoClienteCadastro(end: EnderecoEntregaDtoClienteCadastro): DadosClienteCadastroDto {
         let dados: DadosClienteCadastroDto = new DadosClienteCadastroDto();
@@ -96,7 +97,7 @@ export class DadosClienteCadastroDto {
         dados.Cidade = end.Endereco_cidade != null ? end.Endereco_cidade : "";
         dados.Uf = end.Endereco_uf != null ? end.Endereco_uf : "";
         dados.Cep = end.Endereco_cep != null ? end.Endereco_cep : "";
-
+        
         return dados;
     }
 }

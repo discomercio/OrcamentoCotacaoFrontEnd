@@ -221,6 +221,21 @@ para não dar erro no console
     </span>
 
 
+    <!-- ************   E-MAIL BOLETO  ************  -->
+    <span *ngIf="cadastrando">
+        <mat-form-field floatLabel="floatLabel()" class="largura-maxima-campo-formulario">
+            <input matInput type="text" placeholder="E-MAIL BOLETO" [(ngModel)]="dadosClienteCadastroDto.EmailBoleto" 
+            maxlength="60">
+        </mat-form-field>
+    </span>
+    <span *ngIf="!cadastrando">
+        <div>
+            <span class="caixa">
+                <span class="rotulo">E-mail boleto:</span>
+                <span class="dado">{{dadosClienteCadastroDto?.EmailBoleto}}</span>
+            </span>
+        </div>
+    </span>
     <!-- ************   PRODUTOR RURAL / CONTRIBUINTE ICMS / IE ************  -->
     <!-- passamos apra o fim do formulário porque,. quando está confirnado um cliente já existente, os campos editáveis ficam no fim da tela -->
     <span *ngIf="ehPf()">
@@ -672,6 +687,14 @@ para não dar erro no console
                     [(ngModel)]="enderecoCadastralClientePrepedidoDto.Endereco_email_xml" id="emailXml" maxlength="60">
             </mat-form-field>
         </span>
+
+        <span>
+            <mat-form-field floatLabel="floatLabel()" class="largura-maxima-campo-formulario">
+                <input matInput type="text" placeholder="E-MAIL BOLETO"
+                    [(ngModel)]="enderecoCadastralClientePrepedidoDto.Endereco_email_boleto" maxlength="60">
+            </mat-form-field>
+        </span>
+
         <span *ngIf="!ehPf()">
             <span *ngIf="editarIcms">
                 <!-- se está confirando, precisa de um espaço maior em cima -->

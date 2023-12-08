@@ -14,6 +14,7 @@ import { PermissaoService } from 'src/app/service/permissao/permissao.service';
 import { PermissaoPedidoResponse } from 'src/app/dto/permissao/PermissaoPedidoResponse';
 import { TelaDesktopBaseComponent } from 'src/app/utilities/tela-desktop/tela-desktop-base.component';
 import { TelaDesktopService } from 'src/app/utilities/tela-desktop/tela-desktop.service';
+import { PedidoDto } from 'src/app/dto/pedido/DetalhesPedido/PedidoDto2';
 
 @Component({
   selector: 'app-pedido-detalhes',
@@ -35,7 +36,7 @@ export class PedidoDetalhesComponent extends TelaDesktopBaseComponent implements
   dataFormatarTela = DataUtils.formatarTela;
 
   numeroPedido = "";
-  pedido: any = null;
+  pedido: PedidoDto = null;
   stringUtils = new StringUtils();
   moedaUtils: MoedaUtils = new MoedaUtils();
   dataUtils: DataUtils = new DataUtils();
@@ -92,6 +93,7 @@ export class PedidoDetalhesComponent extends TelaDesktopBaseComponent implements
     if (this.numeroPedido) {
       this.pedidoService.carregar(this.numeroPedido).toPromise().then((r) => {
         if (r != null) {
+          debugger;
           this.pedido = r;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));

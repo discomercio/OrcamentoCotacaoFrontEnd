@@ -6,6 +6,7 @@ import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.se
 import { CodigoDescricaoRequest } from 'src/app/dto/codigo-descricao/codigo-descricao-request';
 import { CodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/codigo-descricao-response';
 import { ListaCodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/lista-codigo-descricao-response';
+import { PedidoDto } from 'src/app/dto/pedido/DetalhesPedido/PedidoDto2';
 
 @Injectable({
   providedIn: 'root'
@@ -28,7 +29,7 @@ export class PedidoService {
     this.carregando = true;
 
     this.pedidos$ = Observable.create(observer => {
-      this.http.get<any>(this.appSettingsService.config.apiUrl + 'api/pedido/buscarPedido', { params: params }).toPromise()
+      this.http.get<PedidoDto>(this.appSettingsService.config.apiUrl + 'api/pedido/buscarPedido', { params: params }).toPromise()
         .then(response => {
           if (response)
             this.carregando = false;

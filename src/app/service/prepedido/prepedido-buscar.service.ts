@@ -7,6 +7,7 @@ import { DadosClienteCadastroDto } from 'src/app/dto/prepedido/ClienteCadastro/D
 import { PrepedidoProdutoDtoPrepedido } from 'src/app/dto/prepedido/prepedido/DetalhesPrepedido/PrepedidoProdutoDtoPrepedido';
 import { CoeficienteDto } from 'src/app/dto/prepedido/Produto/CoeficienteDto';
 import { AppSettingsService } from 'src/app/utilities/appsettings/appsettings.service';
+import { MensagemDto } from 'src/app/dto/MensagemDto';
 
 @Injectable({
   providedIn: 'root'
@@ -79,5 +80,9 @@ export class PrepedidoBuscarService {
 
   public ObtemPercentualVlPedidoRA(): Observable<number> {
     return this.http.get<number>(this.appSettingsService.config.apiUrl + 'api/prepedido/obtemPercentualVlPedidoRA');
+  }
+
+  buscarParametroEmailBoleto(origem: string): Observable<MensagemDto> {
+    return this.http.get<MensagemDto>(`${this.appSettingsService.config.apiUrl}api/prepedido/buscarParametroClienteEmailBoleto`);
   }
 }

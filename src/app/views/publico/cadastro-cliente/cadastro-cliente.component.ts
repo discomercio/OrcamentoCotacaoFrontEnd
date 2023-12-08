@@ -73,14 +73,15 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   enderecoEntregaDtoClienteCadastro = new EnderecoEntregaDtoClienteCadastro();
   idOpcao: number;
   idFormaPagto: number;
-  pagtoAprovadoTexto:string;
-  sequencia:number;
+  pagtoAprovadoTexto: string;
+  sequencia: number;
   orientacaoPreenchimento: string;
   termoPrivacidade: string;
   privacidade: boolean = false;
   condicoesAnaliseCredito: string;
   condicoes: boolean = false;
   alcadaSuperior: boolean;
+  idMeioPagtoMonitorado: string;
 
   ngOnInit(): void {
     this.carregando = true;
@@ -98,6 +99,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       this.idFormaPagto = parseInt(params.idFormaPagto);
       this.pagtoAprovadoTexto = params.pagtoAprovadoTexto;
       this.sequencia = params.sequencia;
+      this.idMeioPagtoMonitorado = params.idMeioPagtoMonitorado;
     });
 
 
@@ -119,6 +121,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   ngAfterViewInit(): void {
     // this.cepComponente.verificarUF(this.verificarAlcadaDescontoSuperior(), this.aprovacaoPubicoService.orcamento.uf);
     this.alcadaSuperior = this.verificarAlcadaDescontoSuperior();
+    this.verificarValidacaoEmailBoleto();
   }
 
   inicializarDadosClienteCadastroDto() {
@@ -150,7 +153,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   verificarAlcadaDescontoSuperior(): boolean {
     let retorno = false;
-    if(this.aprovacaoPublicoService.orcamento){
+    if (this.aprovacaoPublicoService.orcamento) {
       let opcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao)[0];
       if (opcao && opcao.id != 0) {
         let produtos = opcao.listaProdutos.filter(x => x.idOperacaoAlcadaDescontoSuperior != null && x.idOperacaoAlcadaDescontoSuperior != 0);
@@ -159,7 +162,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         }
       }
     }
-    
+
     return retorno;
   }
 
@@ -185,7 +188,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   buscarCondicoesAnaliseCredito(loja: string): string {
     this.orcamentoService.buscarParametros(27, loja, "publico").toPromise().then((r) => {
       if (r != null) {
-        this.condicoesAnaliseCredito = r[0]['Valor'].replace("<a href=","<a target=_blank href=");
+        this.condicoesAnaliseCredito = r[0]['Valor'].replace("<a href=", "<a target=_blank href=");
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
@@ -196,7 +199,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   buscarTermoPrivacidade(loja: string): string {
     this.orcamentoService.buscarParametros(28, loja, "publico").toPromise().then((r) => {
       if (r != null) {
-        this.termoPrivacidade = r[0]['Valor'].replace("<a href=","<a target=_blank href=");
+        this.termoPrivacidade = r[0]['Valor'].replace("<a href=", "<a target=_blank href=");
       }
     }).catch((e) => {
       this.alertaService.mostrarErroInternet(e);
@@ -223,13 +226,14 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (this.clientePF()) {
       //é obrigatório informar ao menos 1 telefone, vamos criar uma validação própria para isso?
-      
+
       this.formPF = this.fb.group({
         nome: ["", [Validators.required, Validators.maxLength(60)]],
         cpfCnpj: ["", [Validators.required]],
         rg: [""],
         email: ["", [Validators.email, Validators.maxLength(60)]],
         emailXml: ["", [Validators.email, Validators.maxLength(60)]],
+        emailBoleto: ["", [Validators.email, Validators.maxLength(60)]],
         telResidencial: [""],
         celular: [""],
         telComercial: [""],
@@ -253,7 +257,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       ramal2: ["", [Validators.maxLength(4)]],
       contato: ["", [Validators.required, Validators.maxLength(30)]],
       email: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
-      emailXml: ["", [Validators.email]],
+      emailXml: ["", [Validators.email, Validators.maxLength(60)]],
+      emailBoleto: ["", [Validators.email, Validators.maxLength(60)]],
       icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPublicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: ["", [Validators.maxLength(20)]]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
@@ -317,6 +322,44 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     return true;
   }
 
+  verificarValidacaoEmailBoleto() {
+    if (this.aprovacaoPublicoService.orcamento){
+      let baseOpcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao);
+      if (baseOpcao.length == 0) {
+        this.alertaService.mostrarMensagem("Falha ao validar dados do cliente!");
+        return;
+      }
+  
+      let validaEmailBoleto = false;
+      if (baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
+        if (this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_av_forma_pagto}|`) > -1 ||
+          this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_av_forma_pagto}|`) > -1) {
+          validaEmailBoleto = true;
+        }
+      }
+      if (baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELADO_COM_ENTRADA) {
+        if (this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pce_entrada_forma_pagto}|`) > -1 ||
+          this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pce_prestacao_forma_pagto}|`) > -1) {
+          validaEmailBoleto = true;
+        }
+      }
+      if (baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_PARCELA_UNICA) {
+        if (this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_pu_forma_pagto}|`) > -1) {
+          validaEmailBoleto = true;
+        }
+      }
+  
+      if (validaEmailBoleto) {
+        if (this.clientePF()) {
+          this.formPF.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)]);
+        }
+        else {
+          this.formPJ.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)])
+        }
+      }
+    }
+  }
+
   salvar() {
 
     if (!this.privacidade || !this.condicoes) {
@@ -329,7 +372,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
     if (!this.validarForms()) return;
 
-    if(!this.validarAlcadaEUf()) return;
+    if (!this.validarAlcadaEUf()) return;
 
     this.converterTelefonesParaDadosClienteCadastroDto();
     this.dadosCliente.Cep = this.cepComponente.Cep;
@@ -390,7 +433,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
 
   }
 
-  validarAlcadaEUf():boolean{
+  validarAlcadaEUf(): boolean {
     if (this.alcadaSuperior && this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       if (this.enderecoEntrega.componenteCep.Uf != this.aprovacaoPublicoService.orcamento.uf) {
         this.alertaService.mostrarMensagem("A UF de endereço de entrega deve ser a mesma informada no orçamento!");
@@ -399,7 +442,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
         return false;
       }
     }
-    if (this.alcadaSuperior && !this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco){
+    if (this.alcadaSuperior && !this.enderecoEntrega.enderecoEntregaDtoClienteCadastro.OutroEndereco) {
       if (this.cepComponente.Uf != this.aprovacaoPublicoService.orcamento.uf) {
         this.alertaService.mostrarMensagem("A UF do cadastro de cliente deve ser a mesma informada no orçamento!");
         this.carregando = false;
