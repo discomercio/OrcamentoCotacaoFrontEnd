@@ -93,7 +93,6 @@ export class PedidoDetalhesComponent extends TelaDesktopBaseComponent implements
     if (this.numeroPedido) {
       this.pedidoService.carregar(this.numeroPedido).toPromise().then((r) => {
         if (r != null) {
-          debugger;
           this.pedido = r;
         }
       }).catch((r) => this.alertaService.mostrarErroInternet(r));
