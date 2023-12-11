@@ -35,6 +35,7 @@ import { UsuariosPorListaLojasResponse } from 'src/app/dto/usuarios/usuarios-por
 import { ListaCodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/lista-codigo-descricao-response';
 import { CodigoDescricaoResponse } from 'src/app/dto/codigo-descricao/codigo-descricao-response';
 import { newArray } from '@angular/compiler/src/util';
+import { PrepedidoService } from 'src/app/service/prepedido/orcamento/prepedido.service';
 
 @Component({
   selector: 'app-listar',
@@ -61,7 +62,8 @@ export class OrcamentosListarComponent implements OnInit {
     private readonly pedidoService: PedidoService,
     private readonly orcamentistaIndicadorService: OrcamentistaIndicadorService,
     private readonly orcamentistaIndicadorVendedorService: OrcamentistaIndicadorVendedorService,
-    private readonly cdr: ChangeDetectorRef) {
+    private readonly cdr: ChangeDetectorRef,
+    private readonly prepedidoService: PrepedidoService) {
     this.router.routeReuseStrategy.shouldReuseRoute = function () {
       return false;
     };
@@ -297,7 +299,7 @@ export class OrcamentosListarComponent implements OnInit {
         });
         this.carregandoVendedoresParceiros = false;
 
-        if(this.filtro.VendedorParceiros && this.filtro.VendedorParceiros.length > 0){
+        if (this.filtro.VendedorParceiros && this.filtro.VendedorParceiros.length > 0) {
           this.VendedorParceiros = this.filtro.VendedorParceiros;
         }
       }
@@ -673,9 +675,19 @@ export class OrcamentosListarComponent implements OnInit {
   }
 
   prepedido_OnClick(id) {
+    this.prepedidoService.carregar(id).toPromise().then((r) => {
     this.visualizando = true;
-    sessionStorage.setItem("urlAnterior", "prepedido/detalhes/");
-    this.router.navigate(["prepedido/detalhes/", id]);
+
+      if (!!r.NumeroPedido && r.St_Orc_Virou_Pedido) {
+        sessionStorage.setItem("urlAnterior", "pedido/detalhes/");
+        this.router.navigate(["pedido/detalhes/", r.NumeroPedido]);
+        return;
+      }
+      sessionStorage.setItem("urlAnterior", "prepedido/detalhes/");
+      this.router.navigate(["prepedido/detalhes/", id]);
+    }).catch((e) => {
+      this.alertaService.mostrarErroInternet(e);
+    });
   }
 
   pedido_OnClick(id) {
