@@ -1,5 +1,5 @@
 import { AlertaService } from './../../../components/alert-dialog/alerta.service';
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CadastroDto } from 'src/app/dto/orcamentos/CadastroDto';
 import { ValidacaoFormularioService } from 'src/app/utilities/validacao-formulario/validacao-formulario.service';
@@ -42,7 +42,8 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     telaDesktopService: TelaDesktopService,
     private readonly validacaoCustomizadaService: ValidacaoCustomizadaService,
     private readonly orcamentoService: OrcamentosService,
-    private readonly sweetalertService: SweetalertService
+    private readonly sweetalertService: SweetalertService,
+    private readonly cdr: ChangeDetectorRef
   ) { super(telaDesktopService); }
 
   @ViewChild("cepComponente", { static: false }) cepComponente: CepComponent;
@@ -143,6 +144,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
     this.dadosCliente.Ramal2 = "";
     this.dadosCliente.Observacao_Filiacao = "";
     this.dadosCliente.ProdutorRural = 0;
+    this.dadosCliente.EmailBoleto = "";
   }
 
   verificarContribuinteICMS() {
@@ -258,7 +260,7 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
       contato: ["", [Validators.required, Validators.maxLength(30)]],
       email: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
       emailXml: ["", [Validators.email, Validators.maxLength(60)]],
-      emailBoleto: ["", [Validators.email, Validators.maxLength(60)]],
+      emailBoleto: ["", [Validators.required, Validators.email, Validators.maxLength(60)]],
       icms: [this.dadosCliente.Contribuinte_Icms_Status = this.aprovacaoPublicoService.orcamento.contribuinteIcms, [Validators.required, Validators.max(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_ISENTO), Validators.min(this.constantes.COD_ST_CLIENTE_CONTRIBUINTE_ICMS_NAO)]],
       inscricaoEstadual: ["", [Validators.maxLength(20)]]
     }, { validators: this.validacaoCustomizadaService.cnpj_cpf_ok() });
@@ -323,13 +325,13 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
   }
 
   verificarValidacaoEmailBoleto() {
-    if (this.aprovacaoPublicoService.orcamento){
+    if (this.aprovacaoPublicoService.orcamento) {
       let baseOpcao = this.aprovacaoPublicoService.orcamento.listaOpcoes.filter(x => x.id == this.idOpcao);
       if (baseOpcao.length == 0) {
         this.alertaService.mostrarMensagem("Falha ao validar dados do cliente!");
         return;
       }
-  
+
       let validaEmailBoleto = false;
       if (baseOpcao[0].pagtoSelecionado.tipo_parcelamento == this.constantes.COD_FORMA_PAGTO_A_VISTA) {
         if (this.idMeioPagtoMonitorado.indexOf(`|${baseOpcao[0].pagtoSelecionado.op_av_forma_pagto}|`) > -1 ||
@@ -348,14 +350,17 @@ export class PublicoCadastroClienteComponent extends TelaDesktopBaseComponent im
           validaEmailBoleto = true;
         }
       }
-  
+
       if (validaEmailBoleto) {
         if (this.clientePF()) {
           this.formPF.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)]);
+          this.formPF.controls.emailBoleto.updateValueAndValidity();
         }
         else {
-          this.formPJ.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)])
+          this.formPJ.controls.emailBoleto.setValidators([Validators.required, Validators.email, Validators.maxLength(60)]);
+          this.formPJ.controls.emailBoleto.updateValueAndValidity();
         }
+        this.cdr.detectChanges();
       }
     }
   }

@@ -42,8 +42,7 @@ export class ValidacoesClienteUtils {
             validacoes = validacoes.concat(this.validarGeralPj(dadosClienteCadastroDto, true));
         }
 
-        debugger
-        if (!!dadosClienteCadastroDto.EmailBoleto || dadosClienteCadastroDto.EmailBoleto !== "") {
+        if (!!dadosClienteCadastroDto.EmailBoleto) {
             if (!ValidacoesUtils.email_ok(dadosClienteCadastroDto.EmailBoleto)) {
                 validacoes.push('E-mail boleto inválido!');
             }
