@@ -427,7 +427,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     this.prodsTela = { ...this.prodsArray.filter(f => f.visivel == true) };
   }
 
-  addProdutoClique(selecionados: ProdutoTela[]){
+  addProdutoClique(selecionados: ProdutoTela[]) {
     this.addProduto(selecionados);
   }
 
@@ -452,7 +452,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
     if (selecionados && selecionados.length > 0) {
       let listaDesmembrados = this.controlarQtdeItens(selecionados);
       let listaProdutosQtdeApoio = this.controlarQtdeApoio(selecionados);
-      
+
       if (listaDesmembrados.length > this.novoOrcamentoService.configValidade.LimiteQtdeItens) {
         this.alertaService.mostrarMensagem("A quantidade de itens excede o permitido! Tente remover alguns produtos para prosseguir.");
         return;
@@ -483,7 +483,7 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
       return;
     }
 
-    
+
 
   }
 
@@ -503,40 +503,40 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
   }
 
   controlarQtdeItens(selecionados: ProdutoTela[]) {
-      let listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
-      listaProdutosDesmembrados = JSON.parse(JSON.stringify(this.novoOrcamentoService.listaProdutosDesmembrados));
-      selecionados.forEach(p => {
-        if (p.Filhos.length > 0) {
-          p.Filhos.forEach(x => {
-            let filhoteExiste = listaProdutosDesmembrados.filter(e => e.produto == x.produto);
-            if (filhoteExiste.length > 0) {
-              let qtdeAdicionar = p.qtde * x.qtde;
-              filhoteExiste[0].qtde = filhoteExiste[0].qtde + qtdeAdicionar;
-            }
-            else {
-              let novo = new ProdutoOrcamentoDto();
-              novo.produto = x.produto;
-              novo.qtde = p.qtde * x.qtde;
-              listaProdutosDesmembrados.push(novo);
-            }
-          });
-        }
-        else {
-          let simplesExiste = listaProdutosDesmembrados.filter(e => e.produto == p.produtoDto.produto);
-          if (simplesExiste.length > 0) {
-            simplesExiste[0].qtde = simplesExiste[0].qtde + p.qtde;
+    let listaProdutosDesmembrados: Array<ProdutoOrcamentoDto> = new Array();
+    listaProdutosDesmembrados = JSON.parse(JSON.stringify(this.novoOrcamentoService.listaProdutosDesmembrados));
+    selecionados.forEach(p => {
+      if (p.Filhos.length > 0) {
+        p.Filhos.forEach(x => {
+          let filhoteExiste = listaProdutosDesmembrados.filter(e => e.produto == x.produto);
+          if (filhoteExiste.length > 0) {
+            let qtdeAdicionar = p.qtde * x.qtde;
+            filhoteExiste[0].qtde = filhoteExiste[0].qtde + qtdeAdicionar;
           }
           else {
             let novo = new ProdutoOrcamentoDto();
-            novo.produto = p.produtoDto.produto;
-            novo.qtde = p.qtde * p.qtde;
+            novo.produto = x.produto;
+            novo.qtde = p.qtde * x.qtde;
             listaProdutosDesmembrados.push(novo);
           }
+        });
+      }
+      else {
+        let simplesExiste = listaProdutosDesmembrados.filter(e => e.produto == p.produtoDto.produto);
+        if (simplesExiste.length > 0) {
+          simplesExiste[0].qtde = simplesExiste[0].qtde + p.qtde;
         }
-      });
+        else {
+          let novo = new ProdutoOrcamentoDto();
+          novo.produto = p.produtoDto.produto;
+          novo.qtde = p.qtde * p.qtde;
+          listaProdutosDesmembrados.push(novo);
+        }
+      }
+    });
 
-      if(this.novoOrcamentoService.listaProdutosDesmembrados.length == 0)
-    return listaProdutosDesmembrados;
+    if (this.novoOrcamentoService.listaProdutosDesmembrados.length == 0)
+      return listaProdutosDesmembrados;
 
     this.listaProdutosDesmembrados = this.novoOrcamentoService.listaProdutosDesmembrados;
 
@@ -686,10 +686,6 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
 
           this.cdref.detectChanges();
           this.pesquisar();
-          event.cancelBubble = true;
-          event.stopPropagation();
-          event.preventDefault();//esse cara que fez a diferença
-          event.stopImmediatePropagation();
           this.focoProduto = false;
         }
 
@@ -701,8 +697,12 @@ export class SelectProdDialogComponent extends TelaDesktopBaseComponent implemen
           let btn = document.getElementById("btnAdd") as HTMLElement;
           btn.focus();
           this.focoBtnAdd = true;
-          btn.click()
+          btn.click();
         }
+        event.cancelBubble = true;
+        event.stopPropagation();
+        event.preventDefault();//esse cara que fez a diferença
+        event.stopImmediatePropagation();
       }
     }
   }
